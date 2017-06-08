@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.graph.algo;
 
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+
 /**
  * Raised when {@link DirectedGraph} is not a DAG.
  *
