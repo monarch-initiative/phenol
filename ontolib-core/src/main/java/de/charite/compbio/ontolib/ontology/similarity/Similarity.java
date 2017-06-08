@@ -3,13 +3,15 @@ package de.charite.compbio.ontolib.ontology.similarity;
 import de.charite.compbio.ontolib.ontology.data.TermID;
 import java.util.Collection;
 
+// TODO: I'm completely ignoring GRASM scores for now
+
 /**
  * Interface for generic similarity computation between two "objects" from the world that are each
  * represented with one {@link Collection} of ontology {@link TermID}s.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface ObjectSimilarity {
+public interface Similarity {
 
   /**
    * @return String description of the similarity measure.

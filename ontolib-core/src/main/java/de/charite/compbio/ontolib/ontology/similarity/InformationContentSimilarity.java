@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public final class InformationContentSimilarity<T extends Term, R extends TermRelation>
     implements
-      ObjectSimilarity {
+      Similarity {
 
   /** The {@link Ontology} to compute the similarity for. */
   private final Ontology<T, R> ontology;
