@@ -3,8 +3,7 @@ package de.charite.compbio.ontolib.ontology.data;
 import java.io.Serializable;
 
 /**
- * Identifier of a {@link Term}, consisting of a {@link TermPrefix} and a
- * numeric ID.
+ * Identifier of a {@link Term}, consisting of a {@link TermPrefix} and a numeric ID.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

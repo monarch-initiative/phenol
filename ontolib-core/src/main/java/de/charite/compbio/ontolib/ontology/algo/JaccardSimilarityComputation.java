@@ -10,13 +10,13 @@ import java.util.Collection;
  *
  * @param <T>
  * @link Term} sub class to use in the contained classes
- * @param <R>
- *          {@link TermRelation} sub class to use in the contained classes
+ * @param <R> {@link TermRelation} sub class to use in the contained classes
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class JaccardSimilarityComputation<T extends Term,
-    R extends TermRelation> implements SimilarityComputation {
+public class JaccardSimilarityComputation<T extends Term, R extends TermRelation>
+    implements
+      SimilarityComputation {
 
   @Override
   public final double computeScore(final TermID t1, final TermID t2) {

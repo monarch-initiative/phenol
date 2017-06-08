@@ -15,8 +15,7 @@ public interface Term {
   TermID getID();
 
   /**
-   * @return {@link List} of this <code>Term</code>'s alternative
-   *         {@link TermID}s.
+   * @return {@link List} of this <code>Term</code>'s alternative {@link TermID}s.
    */
   List<TermID> getAltTermIDs();
 
@@ -41,14 +40,12 @@ public interface Term {
   String getSubset();
 
   /**
-   * @return {@link List} of {@link TermSynonyms} describing this
-   *         <code>Term</code>'s synonyms.
+   * @return {@link List} of {@link TermSynonym}s describing this <code>Term</code>'s synonyms.
    */
   List<TermSynonym> getSynonyms();
 
   /**
-   * @return <code>true</code> if "obsolete" flag is set, <code>false</code> if
-   *         not.
+   * @return <code>true</code> if "obsolete" flag is set, <code>false</code> if not.
    */
   boolean isObsolete();
 

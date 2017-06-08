@@ -3,8 +3,7 @@ package de.charite.compbio.ontolib.ontology.data;
 import java.util.List;
 
 /**
- * Interface for richly annotated information about a {@link Term}'s synoymous
- * description.
+ * Interface for richly annotated information about a {@link Term}'s synoymous description.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
