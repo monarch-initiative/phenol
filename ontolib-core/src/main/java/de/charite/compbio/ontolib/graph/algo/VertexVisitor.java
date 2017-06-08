@@ -18,7 +18,8 @@ public interface VertexVisitor<V, E extends Edge<V>> {
    *
    * @param g graph that the visitor is applied to
    * @param v currently visited vertex
+   * @return <code>true</code> when to continue iteration and <code>false</code> otherwise
    */
-  void visit(DirectedGraph<V, E> g, V v);
+  boolean visit(DirectedGraph<V, E> g, V v);
 
 }
