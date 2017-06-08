@@ -2,6 +2,7 @@ package de.charite.compbio.ontolib.ontology.data;
 
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -36,5 +37,11 @@ public interface Ontology<T extends Term, R extends TermRelation> {
    *         {@link TermRelation} sub class <code>R</code>.
    */
   Map<Integer, R> getEdgeMap();
+
+  // TODO: do we need this idiosyncratic?
+  boolean isRootTerm(TermID tID);
+
+  // TODO: should not be part of Ontology class!
+  Collection<TermID> getAncestors(TermID tID);
 
 }

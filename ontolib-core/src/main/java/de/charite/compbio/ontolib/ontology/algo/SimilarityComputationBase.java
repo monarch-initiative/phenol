@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public abstract class SimilarityComputationBase implements SimilarityComputation {
+public abstract class SimilarityComputationBase implements ObjectSimilarity {
 
   /** Implementation of pairwise term similarity. */
   private final OneToOneSimilarityComputation pairwiseImpl;
