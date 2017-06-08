@@ -2,8 +2,11 @@ package de.charite.compbio.ontolib.ontology.data;
 
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for ontologies to implement.
@@ -43,5 +46,16 @@ public interface Ontology<T extends Term, R extends TermRelation> {
 
   // TODO: should not be part of Ontology class!
   Collection<TermID> getAncestors(TermID tID);
+
+  // TODO: naming is bogus, should not be part of ontology class
+  /**
+   * Return all the terms including all ancestors terms.
+   *
+   * @param termIDs {@link Collection} of {@link TermID}s to gather all parents except for the root.
+   * @param includeRoot Whether or not to include the root's {@link TermID}
+   * @return {@link Set} of {@link Term}s including all {@link Term}s from <code>terms</code>,
+   *         including all ancestors, except for the root.
+   */
+  public Set<TermID> getAllAncestorTermIDs(Collection<TermID> termIDs, boolean includeRoot);
 
 }

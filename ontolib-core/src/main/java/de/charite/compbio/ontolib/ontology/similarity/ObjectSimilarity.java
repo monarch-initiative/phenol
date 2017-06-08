@@ -1,11 +1,11 @@
-package de.charite.compbio.ontolib.ontology.algo;
+package de.charite.compbio.ontolib.ontology.similarity;
 
 import de.charite.compbio.ontolib.ontology.data.TermID;
 import java.util.Collection;
 
 /**
  * Interface for generic similarity computation between two "objects" from the world that are each
- * represented with one {@link Collection} of ontology {@link Term}s.
+ * represented with one {@link Collection} of ontology {@link TermID}s.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

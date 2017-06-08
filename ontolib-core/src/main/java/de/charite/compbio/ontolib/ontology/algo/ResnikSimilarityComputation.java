@@ -4,6 +4,8 @@ import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermID;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
+import de.charite.compbio.ontolib.ontology.similarity.ObjectSimilarity;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -15,18 +17,31 @@ import java.util.Map;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class ResnikSimilarityComputation<T extends Term, R extends TermRelation>
-    extends SimilarityComputationBase {
+    implements
+      ObjectSimilarity {
 
-  /**
-   * Construct computation object for Resnik's similarity measure.
-   *
-   * @param ontology The {@link Ontology} to base the computation on
-   * @param informationContent Label for each {@link Term} in <code>ontology</code> with the
-   *        information content
-   */
-  public ResnikSimilarityComputation(final Ontology<T, R> ontology,
-      final Map<TermID, Double> informationContent) {
-    super(new ResnikOneToOneSimilarityComputation<T, R>(ontology, informationContent));
+  @Override
+  public String getName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getParameters() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean isSymmetric() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public double computeScore(Collection<TermID> query, Collection<TermID> target) {
+    // TODO Auto-generated method stub
+    return 0;
   }
 
 }
