@@ -2,6 +2,7 @@ package de.charite.compbio.ontolib.graph.data;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Set;
 
 /**
@@ -25,6 +28,9 @@ import java.util.Set;
 public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
     implements
       DirectedGraph<V, E> {
+
+  /** {@link Logger} object to use. */
+  private static final Logger LOGGER = LoggerFactory.getLogger(ImmutableDirectedGraph.class);
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -179,6 +185,9 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    */
   private static <Vertex> void checkCompatibility(Collection<Vertex> vertices,
       Collection<? extends Edge<Vertex>> edges) {
+    LOGGER.info("Checking vertices ({}) and edges ({}) for compatibility...",
+        new Object[] {vertices.size(), edges.size()});
+
     Set<Vertex> vertexSet = new HashSet<>(vertices);
     for (Edge<Vertex> edge : edges) {
       if (!vertexSet.contains(edge.getSource())) {
@@ -191,6 +200,8 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
         throw new VerticesAndEdgesIncompatibleException("Self-loop edge " + edge);
       }
     }
+
+    LOGGER.info("Vertices and edges are compatible!");
 
     // TODO: ensure the graph is simple?
   }
@@ -387,6 +398,9 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    */
   public static class Builder<V, E extends ImmutableEdge<V>> {
 
+    /** {@link Logger} object to use. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
+
     /** Vertices added to the builder so far. */
     private final List<V> vertices = new ArrayList<V>();
 
@@ -461,7 +475,22 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
      * @return Freshly built {@link ImmutableDirectedGraph}
      */
     public final ImmutableDirectedGraph<V, E> build(final boolean checkConsistency) {
-      return ImmutableDirectedGraph.construct(vertices, edges, checkConsistency);
+      // Ensure that no edge ID is seen twice.
+      LOGGER.info("Checking edge IDs...");
+      final Set<Integer> seen = new HashSet<>();
+      for (E e : edges) {
+        if (seen.contains(e.getID())) {
+          throw new RuntimeException("Duplicate edge ID " + e.getID() + " in edge list!");
+        }
+        seen.add(e.getID());
+      }
+      LOGGER.info("Edge IDs are sane.");
+
+      LOGGER.info("Building ImmutableDirectedGraph...");
+      final ImmutableDirectedGraph<V, E> result =
+          ImmutableDirectedGraph.construct(vertices, edges, checkConsistency);
+      LOGGER.info("ImmutableDirectedGraph was successfully built.");
+      return result;
     }
 
     /**
