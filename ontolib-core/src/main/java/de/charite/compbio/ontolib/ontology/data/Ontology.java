@@ -45,6 +45,14 @@ public interface Ontology<T extends Term, R extends TermRelation> {
   // TODO: should not be part of Ontology class!
   Collection<TermID> getAncestors(TermID tID);
 
+  TermID getRootTermID();
+
+  Collection<TermID> getTermIDs();
+
+  Collection<Term> getTerms();
+
+  int countTerms();
+
   // TODO: naming is bogus, should not be part of ontology class
   /**
    * Return all the terms including all ancestors terms.
