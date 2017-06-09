@@ -19,6 +19,7 @@ import java.util.Set;
  * @param <R> {@link TermRelation} sub class this <code>Ontology</code> uses.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public interface Ontology<T extends Term, R extends TermRelation> {
 

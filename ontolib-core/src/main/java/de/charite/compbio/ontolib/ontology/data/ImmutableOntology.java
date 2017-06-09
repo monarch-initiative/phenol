@@ -53,5 +53,29 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
     return result;
   }
 
+  @Override
+  public TermID getRootTermID() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Collection<TermID> getTermIDs() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Collection<Term> getTerms() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int countTerms() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
 
 }
