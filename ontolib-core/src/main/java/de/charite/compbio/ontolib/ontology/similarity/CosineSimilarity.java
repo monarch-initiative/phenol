@@ -19,7 +19,7 @@ import java.util.Set;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class ConsineSimilarity<T extends Term, R extends TermRelation>
+public final class CosineSimilarity<T extends Term, R extends TermRelation>
     implements
       Similarity {
 
@@ -38,7 +38,7 @@ public final class ConsineSimilarity<T extends Term, R extends TermRelation>
    *
    * @param ontology {@link Ontology} to base the computation on.
    */
-  public ConsineSimilarity(Ontology<T, R> ontology) {
+  public CosineSimilarity(Ontology<T, R> ontology) {
     this(ontology, false);
   }
 
@@ -48,7 +48,7 @@ public final class ConsineSimilarity<T extends Term, R extends TermRelation>
    * @param ontology {@link Ontology} to base the computation on.
    * @param oppositeAware Whether or not to be opposite aware.
    */
-  public ConsineSimilarity(Ontology<T, R> ontology, boolean oppositeAware) {
+  public CosineSimilarity(Ontology<T, R> ontology, boolean oppositeAware) {
     this.ontology = ontology;
     this.oppositeAware = oppositeAware;
   }
