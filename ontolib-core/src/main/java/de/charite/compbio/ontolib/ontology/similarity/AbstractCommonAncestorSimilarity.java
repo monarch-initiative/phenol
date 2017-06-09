@@ -7,8 +7,6 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Collection;
 import java.util.Map;
 
-// TODO(holtgrewe): we will require caching to make this fast enough
-
 /**
  * Abstract base class for similarity measures computed based on information content of common
  * ancestors, such as Resnik, Lin, and Jiang similarities.
@@ -23,11 +21,9 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
     implements
       Similarity {
 
+  // TODO: remove ontology?
   /** {@link Ontology} underlying the computation. */
   private final Ontology<T, R> ontology;
-
-  /** {@link Map} from {@link TermID} to its information content. */
-  private final Map<TermID, Double> termToIC;
 
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */
   private final boolean symmetric;
@@ -39,15 +35,15 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
    * Constructor.
    * 
    * @param ontology {@link Ontology} to base computations on.
-   * @param termToIC {@link Map} from {@link TermID} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
+   * @param pairwiseSimilarity {@link PairwiseSimilarity} to use for constructing set-to-set
+   *        similarity
    */
-  public AbstractCommonAncestorSimilarity(Ontology<T, R> ontology, Map<TermID, Double> termToIC,
-      boolean symmetric) {
+  public AbstractCommonAncestorSimilarity(Ontology<T, R> ontology, boolean symmetric,
+      PairwiseSimilarity pairwiseSimilarity) {
     this.ontology = ontology;
-    this.termToIC = termToIC;
     this.symmetric = symmetric;
-    this.pairwiseSimilarity = buildPairwiseSimilarity(this.ontology, this.termToIC);
+    this.pairwiseSimilarity = pairwiseSimilarity;
   }
 
   @Override
@@ -86,16 +82,6 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
   public final boolean isSymmetric() {
     return symmetric;
   }
-
-  /**
-   * Override in sub classes to get pairwise similarity computation.
-   *
-   * @param ontology {@link Ontology} to use for pairwise computation.
-   * @param termToIC {@link Map} from {@link TermID} to information content to use.
-   * @return Pairwise term similarity, to use in subclasses.
-   */
-  protected abstract PairwiseSimilarity buildPairwiseSimilarity(Ontology<T, R> ontology,
-      Map<TermID, Double> termToIC);
 
   public String getParameters() {
     return "{symmetric: " + this.isSymmetric() + "}";

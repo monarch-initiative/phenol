@@ -20,24 +20,44 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
 
   /**
    * Constructor.
+   *
+   * <p>
+   * The internally used {@link PairwiseSimilarity} is constructed from the given information
+   * content mapping. This precomputation is done at construction of the
+   * <code>ResnikSimilarity</code> object.
+   * </p>
    * 
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIC {@link Map} from {@link TermID} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public LinSimilarity(Ontology<T, R> ontology, Map<TermID, Double> termToIC, boolean symmetric) {
-    super(ontology, termToIC, symmetric);
+    super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIC));
   }
+
+
+  /**
+   * Constructor.
+   *
+   * <p>
+   * By passing in the {@link PairwiseSimilarity} explicitely here, an implementation with
+   * precomputation can be passed in explicitely, performing the precomputation explicitely earlier
+   * instead of implicitely on object construction.
+   * </p>
+   * 
+   * @param ontology {@link Ontology} to base computations on.
+   * @param symmetric Whether or not to compute score in symmetric fashion.
+   * @param pairwiseSimilarity {@link PairwiseSimilarity} to use internally.
+   */
+  public LinSimilarity(Ontology<T, R> ontology, boolean symmetric,
+      PairwiseSimilarity pairwiseSimilarity) {
+    super(ontology, symmetric, pairwiseSimilarity);
+  }
+
 
   @Override
   public String getName() {
     return "Lin similarity";
-  }
-
-  @Override
-  protected PairwiseSimilarity buildPairwiseSimilarity(Ontology<T, R> ontology,
-      Map<TermID, Double> termToIC) {
-    return new PairwiseLinSimilarity<T, R>(new PairwiseResnikSimilarity<T, R>(ontology, termToIC));
   }
 
 }
