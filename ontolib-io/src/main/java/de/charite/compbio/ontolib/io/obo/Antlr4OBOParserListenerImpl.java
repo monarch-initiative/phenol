@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefContext;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefListContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifierContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifierKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
@@ -17,9 +18,6 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
  */
 public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
 
-  /** {@link @Logger} instance to use for logging. */
-  private static final Logger LOGGER = LoggerFactory.getLogger(Antlr4OBOParserListenerImpl.class);
-
   /** maps nodes to Objects with Map<ParseTree,Object> */
   ParseTreeProperty<Object> values = new ParseTreeProperty<>();
 
@@ -29,6 +27,19 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
 
   public Object getValue(ParseTree node) {
     return values.get(node);
+  }
+
+  /**
+   * Exit <code>dbXRefList</code> rule, construct {@link DBXRef} object.  
+   */
+  @Override
+  public void exitDbXRefList(DbXRefListContext ctx) {
+    final DBXRefList dbXRefList = new DBXRefList();
+    for (DbXRefContext xrcCtx : ctx.dbXRef()) {
+      dbXRefList.addDBXRef((DBXRef) getValue(xrcCtx));
+    }
+
+    setValue(ctx, dbXRefList);
   }
 
   /**

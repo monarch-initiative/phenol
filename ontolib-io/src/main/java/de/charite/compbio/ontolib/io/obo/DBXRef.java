@@ -3,7 +3,7 @@ package de.charite.compbio.ontolib.io.obo;
 // TODO: Un-escape strings transparently
 
 /**
- * Representation of the dbXRef from the OBO file.
+ * Representation of the <code>dbXRef</code> from the OBO file.
  * 
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -50,6 +50,12 @@ public class DBXRef {
    */
   public TrailingModifier getTrailingModifier() {
     return trailingModifier;
+  }
+
+  @Override
+  public String toString() {
+    return "DBXRef [name=" + name + ", description=" + description + ", trailingModifier="
+        + trailingModifier + "]";
   }
 
 }
