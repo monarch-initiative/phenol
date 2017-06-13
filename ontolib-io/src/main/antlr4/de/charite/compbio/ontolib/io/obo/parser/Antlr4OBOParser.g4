@@ -146,9 +146,9 @@ instanceStanzaKeyValue
 stringValue
 :
   (
-    BooleanValue
+    ESC
+    | BooleanValue
     | SquareBraceOpen
-    | CurlyBraceOpen
     | CurlyBraceClose
     | SquareBraceOpen
     | SquareBraceClose

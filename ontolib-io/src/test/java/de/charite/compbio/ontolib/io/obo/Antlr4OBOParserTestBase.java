@@ -13,7 +13,7 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
 /**
  * Test class base for Antlr4 OBO parsers.
  *
- * @author mholtgre
+ * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class Antlr4OBOParserTestBase {
 
