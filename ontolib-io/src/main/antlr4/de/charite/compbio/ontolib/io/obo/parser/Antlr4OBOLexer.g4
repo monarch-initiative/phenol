@@ -273,12 +273,6 @@ Comment
 //
 // Hitting a colon in default mode switches over to the value mode
 
-fragment
-Colon
-:
-  ':'
-;
-
 ColonSpace
 :
   ':' ' '+ -> pushMode ( valueMode )
@@ -374,13 +368,14 @@ Space
 :
   ' '
 ;
+
 // A string without any space or non-alphanumeric character with special meaning
 
 Word
 :
   (
     ESC2
-    | ~[ \r\n[\]{},;="] // TODO: actually, ";" does need no escaping
+    | ~[ \r\n[\]{},="]
 
   )+
 ;
@@ -423,7 +418,7 @@ Comment2
 fragment
 ESC2
 :
-  '\\' [nWt:,;"[\]{}] // TODO: Actually, ";" cannot be escaped
+  '\\' [nWt,"[\]{}]
 
 ;
 
