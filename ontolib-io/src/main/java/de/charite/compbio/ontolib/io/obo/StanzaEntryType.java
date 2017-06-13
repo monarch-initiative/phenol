@@ -7,5 +7,7 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public enum StanzaEntryType {
   /** Stanza entry starting with <code>id</code>. */
-  ID;
+  ID,
+  /** Stanze entry starting with <code>name</code>. */
+  NAME;
 }

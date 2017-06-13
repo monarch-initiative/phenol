@@ -180,8 +180,11 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueName</code> rule. */
   @Override
   public void exitKeyValueName(KeyValueNameContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueName(ctx);
+    final String name = ctx.stringValue().getText();
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntryName(name, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueIsAnonymous</code> rule. */

@@ -8,69 +8,70 @@ import org.junit.Test;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.InstanceStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueIDContext;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueNameContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TermStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;
 
-public class Antlr4OBOParserTestStanzaEntryID extends Antlr4OBOParserTestBase {
+public class Antlr4OBOParserTestStanzaEntryName extends Antlr4OBOParserTestBase {
 
   @Test
   public void testParseNoModifierNoCommentAsTermKeyValue() {
-    final String text = "id: HP:1\n";
+    final String text = "name: Term Name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
 
   @Test
   public void testParseNoModifierNoCommentAsInstanceKeyValue() {
-    final String text = "id: HP:1\n";
+    final String text = "name: Term Name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
 
   @Test
   public void testParseNoModifierNoCommentAsTypedefKeyValue() {
-    final String text = "id: HP:1\n";
+    final String text = "name: Term Name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
 
   @Test
-  public void testParseNoModifierNoCommentAsKeyValueID() {
-    final String text = "id: HP:1\n";
+  public void testParseNoModifierNoCommentAsKeyValueName() {
+    final String text = "name: Term Name\n";
     final Antlr4OBOParser parser = buildParser(text);
-    final KeyValueIDContext ctx = parser.keyValueID();
-    final StanzaEntryID stanzaEntry = (StanzaEntryID) getListener().getValue(ctx);
+    final KeyValueNameContext ctx = parser.keyValueName();
+    final StanzaEntryName stanzaEntry = (StanzaEntryName) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
-    assertEquals("HP:1", stanzaEntry.getId());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
+    assertEquals("Term Name", stanzaEntry.getName());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
 
   @Test
   public void testParseModifierNoCommentAsKeyValueID() {
-    final String text = "id: HP:1 {key=value}\n";
+    final String text = "name: Term Name {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
-    final KeyValueIDContext ctx = parser.keyValueID();
-    final StanzaEntryID stanzaEntry = (StanzaEntryID) getListener().getValue(ctx);
+    final KeyValueNameContext ctx = parser.keyValueName();
+    final StanzaEntryName stanzaEntry = (StanzaEntryName) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
-    assertEquals("HP:1", stanzaEntry.getId());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
+    assertEquals("Term Name", stanzaEntry.getName());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -78,26 +79,26 @@ public class Antlr4OBOParserTestStanzaEntryID extends Antlr4OBOParserTestBase {
 
   @Test
   public void testParseNoModifierCommentAsKeyValueID() {
-    final String text = "id: HP:1 ! comment\n";
+    final String text = "name: Term Name ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
-    final KeyValueIDContext ctx = parser.keyValueID();
-    final StanzaEntryID stanzaEntry = (StanzaEntryID) getListener().getValue(ctx);
+    final KeyValueNameContext ctx = parser.keyValueName();
+    final StanzaEntryName stanzaEntry = (StanzaEntryName) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
-    assertEquals("HP:1", stanzaEntry.getId());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
+    assertEquals("Term Name", stanzaEntry.getName());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
 
   @Test
   public void testParseModifierCommentAsKeyValueID() {
-    final String text = "id: HP:1 {key=value} ! comment\n";
+    final String text = "name: Term Name {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
-    final KeyValueIDContext ctx = parser.keyValueID();
-    final StanzaEntryID stanzaEntry = (StanzaEntryID) getListener().getValue(ctx);
+    final KeyValueNameContext ctx = parser.keyValueName();
+    final StanzaEntryName stanzaEntry = (StanzaEntryName) getListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.ID, stanzaEntry.getType());
-    assertEquals("HP:1", stanzaEntry.getId());
+    assertEquals(StanzaEntryType.NAME, stanzaEntry.getType());
+    assertEquals("Term Name", stanzaEntry.getName());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
