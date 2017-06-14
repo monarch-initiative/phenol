@@ -7,24 +7,37 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryGeneric extends StanzaEntry {
 
+  /** Value of the tag. */
+  private final String tag;
+
   /** Value of stanza entry. */
   private final String value;
 
   /**
    * Constructor.
    *
+   * @param tag The value of the tag.
    * @param value The value of the ID stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryGeneric(String value, TrailingModifier trailingModifier, String comment) {
+  public StanzaEntryGeneric(String tag, String value, TrailingModifier trailingModifier,
+      String comment) {
     super(StanzaEntryType.GENERIC, trailingModifier, comment);
+    this.tag = tag;
     this.value = value;
   }
 
   /**
-   * @return The entry's ID value.
+   * @return The entry's tag.
+   */
+  public String getTag() {
+    return tag;
+  }
+
+  /**
+   * @return The entry's value.
    */
   public String getValue() {
     return value;
@@ -32,7 +45,7 @@ public final class StanzaEntryGeneric extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntryGeneric [value=" + value + ", getType()=" + getType()
+    return "StanzaEntryGeneric [tag=" + tag + ", value=" + value + ", getType()=" + getType()
         + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
         + "]";
   }

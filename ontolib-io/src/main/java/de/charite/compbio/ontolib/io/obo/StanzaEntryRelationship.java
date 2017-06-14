@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import java.util.List;
+
 /**
  * Representation of a stanza entry starting with <code>relationship</code>.
  *
@@ -7,32 +9,33 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryRelationship extends StanzaEntry {
 
-  /** ID of referenced term. */
-  private final String id;
-
   /** Name of the relationship type. */
   private final String relationshipType;
 
+  /** ID of referenced terms. */
+  private final List<String> ids;
+
   /**
    * Constructor.
+   * 
    * @param relationshipType Name of the relationship type.
-   * @param id The ID of the referenced term.
+   * @param ids The IDs of the referenced terms.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryRelationship(String relationshipType, String id,
+  public StanzaEntryRelationship(String relationshipType, List<String> ids,
       TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.RELATIONSHIP, trailingModifier, comment);
-    this.id = id;
+    this.ids = ids;
     this.relationshipType = relationshipType;
   }
 
   /**
-   * @return The ID of the referenced term.
+   * @return The IDs of the referenced term.
    */
-  public String getId() {
-    return id;
+  public List<String> getIds() {
+    return ids;
   }
 
   /**
@@ -44,7 +47,7 @@ public final class StanzaEntryRelationship extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntryRelationship [id=" + id + ", relationshipType=" + relationshipType
+    return "StanzaEntryRelationship [ids=" + ids + ", relationshipType=" + relationshipType
         + ", getType()=" + getType() + ", getTrailingModifier()=" + getTrailingModifier()
         + ", getComment()=" + getComment() + "]";
   }

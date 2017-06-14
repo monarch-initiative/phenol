@@ -104,7 +104,6 @@ typedefStanzaKeyValue
   | keyValueSynonym
   | keyValueXRef
   | keyValueIsA
-  | keyValueRelationship
   | keyValueIsObsolete
   | keyValueReplacedBy
   | keyValueConsider
@@ -236,12 +235,13 @@ keyValueSynonym
   )? eolComment2
 ;
 
+// Note that the trailingModifier for keyValueXRef comes straight from the dbXRef (for now).
+
 keyValueXRef
 :
   TagXRef ColonSpace dbXRef
-  (
-    Space trailingModifier
-  )? eolComment2
+  // (Space trailingModifier )?
+  eolComment2
 ;
 
 keyValueIsA
@@ -281,10 +281,10 @@ keyValueDisjointFrom
 
 keyValueRelationship
 :
-  TagRelationship ColonSpace
+  TagRelationship ColonSpace Word Space Word
   (
-    Word Space
-  )? Word
+    Space Word
+  )*
   (
     Space trailingModifier
   )? eolComment2

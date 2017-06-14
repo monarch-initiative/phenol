@@ -178,7 +178,7 @@ TagIsMetadata
 
 TagInstanceOf
 :
-  'is_metadata'
+  'instance_of'
 ;
 
 TagFormatVersion

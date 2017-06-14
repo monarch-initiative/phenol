@@ -2,10 +2,13 @@ package de.charite.compbio.ontolib.io.obo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import com.google.common.collect.Lists;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefListContext;
@@ -254,7 +257,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitKeyValueXRef(KeyValueXRefContext ctx) {
     final DBXRef dbXRef = (DBXRef) getValue(ctx.dbXRef());
-    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final TrailingModifier trailingModifier = dbXRef.getTrailingModifier();
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
     setValue(ctx, new StanzaEntryXRef(dbXRef, trailingModifier, comment));
@@ -267,7 +270,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryAltID(id, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryIsA(id, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueIntersectionOf</code> rule. */
@@ -312,18 +315,19 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitKeyValueRelationship(KeyValueRelationshipContext ctx) {
     final String relationshipType;
-    final String id;
-    if (ctx.Word().size() == 1) {
-      relationshipType = null;
-      id = ctx.Word(0).getText();
+    final List<String> ids;
+    if (ctx.Word().size() == 2) {
+      relationshipType = ctx.Word(0).getText();
+      ids = Lists.newArrayList(ctx.Word(1).getText());
     } else {
       relationshipType = ctx.Word(0).getText();
-      id = ctx.Word(1).getText();
+      ids = ctx.Word().subList(1, ctx.Word().size()).stream().map(t -> t.getText())
+          .collect(Collectors.toList());
     }
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryRelationship(relationshipType, id, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryRelationship(relationshipType, ids, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueIsObsolete</code> rule. */
@@ -379,11 +383,12 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueGeneric</code> rule. */
   @Override
   public void exitKeyValueGeneric(KeyValueGenericContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String tag = ctx.GenericStanzaTag().getText();
+    final String text = ctx.stringValue().getText();
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryGeneric(value, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryGeneric(tag, text, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueDomain</code> rule. */
@@ -453,7 +458,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryIsReflexive(isSymmetric, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryIsSymmetric(isSymmetric, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueIsAntisymmetric</code> rule. */
@@ -463,7 +468,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryIsReflexive(isAntisymmetric, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryIsAntisymmetric(isAntisymmetric, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueIsTransitive</code> rule. */
