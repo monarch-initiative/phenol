@@ -11,5 +11,7 @@ public enum StanzaEntryType {
   /** Stanze entry starting with <code>name</code>. */
   NAME,
   /** Stanza entry starting with <code>is_anonymous</code>. */
-  IS_ANONYMOUS;
+  IS_ANONYMOUS,
+  /** Stanza entry starting with <code>alt_id</code> */
+  ALT_ID;
 }

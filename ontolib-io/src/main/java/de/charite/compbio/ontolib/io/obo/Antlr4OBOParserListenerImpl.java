@@ -214,8 +214,11 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueIsAltID</code> rule. */
   @Override
   public void exitKeyValueAltID(KeyValueAltIDContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueAltID(ctx);
+    final String altID = ctx.stringValue().getText();
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntryAltID(altID, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueDef</code> rule. */
