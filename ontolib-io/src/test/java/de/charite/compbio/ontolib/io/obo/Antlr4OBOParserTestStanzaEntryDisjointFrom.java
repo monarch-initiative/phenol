@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryDisjointFrom extends Antlr4OBOParserT
     final String text = "disjoint_from: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DISJOINT_FROM, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryDisjointFrom extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDisjointFromContext ctx = parser.keyValueDisjointFrom();
     final StanzaEntryDisjointFrom stanzaEntry =
-        (StanzaEntryDisjointFrom) getListener().getValue(ctx);
+        (StanzaEntryDisjointFrom) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DISJOINT_FROM, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -43,7 +43,7 @@ public class Antlr4OBOParserTestStanzaEntryDisjointFrom extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDisjointFromContext ctx = parser.keyValueDisjointFrom();
     final StanzaEntryDisjointFrom stanzaEntry =
-        (StanzaEntryDisjointFrom) getListener().getValue(ctx);
+        (StanzaEntryDisjointFrom) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DISJOINT_FROM, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -58,7 +58,7 @@ public class Antlr4OBOParserTestStanzaEntryDisjointFrom extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDisjointFromContext ctx = parser.keyValueDisjointFrom();
     final StanzaEntryDisjointFrom stanzaEntry =
-        (StanzaEntryDisjointFrom) getListener().getValue(ctx);
+        (StanzaEntryDisjointFrom) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DISJOINT_FROM, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -72,7 +72,7 @@ public class Antlr4OBOParserTestStanzaEntryDisjointFrom extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDisjointFromContext ctx = parser.keyValueDisjointFrom();
     final StanzaEntryDisjointFrom stanzaEntry =
-        (StanzaEntryDisjointFrom) getListener().getValue(ctx);
+        (StanzaEntryDisjointFrom) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DISJOINT_FROM, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());

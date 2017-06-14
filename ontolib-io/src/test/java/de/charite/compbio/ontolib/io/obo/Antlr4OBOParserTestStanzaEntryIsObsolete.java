@@ -18,7 +18,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -30,7 +30,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -54,7 +54,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsObsoleteContext ctx = parser.keyValueIsObsolete();
-    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getListener().getValue(ctx);
+    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -67,7 +67,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsObsoleteContext ctx = parser.keyValueIsObsolete();
-    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getListener().getValue(ctx);
+    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -81,7 +81,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsObsoleteContext ctx = parser.keyValueIsObsolete();
-    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getListener().getValue(ctx);
+    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -94,7 +94,7 @@ public class Antlr4OBOParserTestStanzaEntryIsObsolete extends Antlr4OBOParserTes
     final String text = "is_obsolete: true {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsObsoleteContext ctx = parser.keyValueIsObsolete();
-    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getListener().getValue(ctx);
+    final StanzaEntryIsObsolete stanzaEntry = (StanzaEntryIsObsolete) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_OBSOLETE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());

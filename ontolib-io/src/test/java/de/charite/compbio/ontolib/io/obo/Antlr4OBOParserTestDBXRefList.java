@@ -14,7 +14,7 @@ public class Antlr4OBOParserTestDBXRefList extends Antlr4OBOParserTestBase {
     final String text = "[]";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefListContext ctx = parser.dbXRefList();
-    final DBXRefList dbXRefList = (DBXRefList) getListener().getValue(ctx);
+    final DBXRefList dbXRefList = (DBXRefList) getOuterListener().getValue(ctx);
 
     assertEquals(0, dbXRefList.getDbXRefs().size());
     assertEquals("DBXRefList [dbXRefs=[]]", dbXRefList.toString());
@@ -25,7 +25,7 @@ public class Antlr4OBOParserTestDBXRefList extends Antlr4OBOParserTestBase {
     final String text = "[name \"description\" {key=value}]";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefListContext ctx = parser.dbXRefList();
-    final DBXRefList dbXRefList = (DBXRefList) getListener().getValue(ctx);
+    final DBXRefList dbXRefList = (DBXRefList) getOuterListener().getValue(ctx);
 
     assertEquals(1, dbXRefList.getDbXRefs().size());
     assertEquals(
@@ -39,7 +39,7 @@ public class Antlr4OBOParserTestDBXRefList extends Antlr4OBOParserTestBase {
     final String text = "[name \"description\" {key=value}, name2 \"description2\" {key2=value2}]";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefListContext ctx = parser.dbXRefList();
-    final DBXRefList dbXRefList = (DBXRefList) getListener().getValue(ctx);
+    final DBXRefList dbXRefList = (DBXRefList) getOuterListener().getValue(ctx);
 
     assertEquals(2, dbXRefList.getDbXRefs().size());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=name, description=\"description\", "

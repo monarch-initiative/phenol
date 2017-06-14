@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIDMapping extends Antlr4OBOParserTest
     final String text = "id-mapping: FROM: TO:\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryIDMapping extends Antlr4OBOParserTest
     final String text = "id-mapping: FROM: TO:\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdMappingContext ctx = parser.keyValueIdMapping();
-    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getListener().getValue(ctx);
+    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceID());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntryIDMapping extends Antlr4OBOParserTest
     final String text = "id-mapping: FROM: TO: {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdMappingContext ctx = parser.keyValueIdMapping();
-    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getListener().getValue(ctx);
+    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceID());
@@ -57,7 +57,7 @@ public class Antlr4OBOParserTestStanzaEntryIDMapping extends Antlr4OBOParserTest
     final String text = "id-mapping: FROM: TO: ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdMappingContext ctx = parser.keyValueIdMapping();
-    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getListener().getValue(ctx);
+    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceID());
@@ -71,7 +71,7 @@ public class Antlr4OBOParserTestStanzaEntryIDMapping extends Antlr4OBOParserTest
     final String text = "id-mapping: FROM: TO: {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdMappingContext ctx = parser.keyValueIdMapping();
-    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getListener().getValue(ctx);
+    final StanzaEntryIDMapping stanzaEntry = (StanzaEntryIDMapping) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceID());

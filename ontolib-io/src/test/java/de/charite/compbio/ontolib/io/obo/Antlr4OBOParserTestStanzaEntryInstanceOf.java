@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryInstanceOf extends Antlr4OBOParserTes
     final String text = "instance_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryInstanceOf extends Antlr4OBOParserTes
     final String text = "instance_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInstanceOfContext ctx = parser.keyValueInstanceOf();
-    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getListener().getValue(ctx);
+    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryInstanceOf extends Antlr4OBOParserTes
     final String text = "instance_of: HP:1 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInstanceOfContext ctx = parser.keyValueInstanceOf();
-    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getListener().getValue(ctx);
+    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryInstanceOf extends Antlr4OBOParserTes
     final String text = "instance_of: HP:1 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInstanceOfContext ctx = parser.keyValueInstanceOf();
-    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getListener().getValue(ctx);
+    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryInstanceOf extends Antlr4OBOParserTes
     final String text = "instance_of: HP:1 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInstanceOfContext ctx = parser.keyValueInstanceOf();
-    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getListener().getValue(ctx);
+    final StanzaEntryInstanceOf stanzaEntry = (StanzaEntryInstanceOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());

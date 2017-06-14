@@ -6,9 +6,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.InstanceStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueInverseOfContext;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TermStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;
 
 public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTestBase {
@@ -18,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTest
     final String text = "inverse_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getListener().getValue(ctx);
+    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INVERSE_OF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -30,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTest
     final String text = "inverse_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInverseOfContext ctx = parser.keyValueInverseOf();
-    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getListener().getValue(ctx);
+    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INVERSE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -43,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTest
     final String text = "inverse_of: HP:1 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInverseOfContext ctx = parser.keyValueInverseOf();
-    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getListener().getValue(ctx);
+    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INVERSE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -57,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTest
     final String text = "inverse_of: HP:1 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInverseOfContext ctx = parser.keyValueInverseOf();
-    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getListener().getValue(ctx);
+    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INVERSE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -70,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryInverseOf extends Antlr4OBOParserTest
     final String text = "inverse_of: HP:1 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueInverseOfContext ctx = parser.keyValueInverseOf();
-    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getListener().getValue(ctx);
+    final StanzaEntryInverseOf stanzaEntry = (StanzaEntryInverseOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.INVERSE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());

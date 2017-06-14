@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\"\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\"\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
@@ -57,7 +57,7 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
@@ -71,7 +71,7 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());

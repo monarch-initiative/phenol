@@ -17,7 +17,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref]\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref]\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref]\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDefContext ctx = parser.keyValueDef();
-    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getListener().getValue(ctx);
+    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertEquals("\"Term Definition\"", stanzaEntry.getText());
@@ -56,7 +56,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref] {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDefContext ctx = parser.keyValueDef();
-    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getListener().getValue(ctx);
+    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertEquals("\"Term Definition\"", stanzaEntry.getText());
@@ -72,7 +72,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref] ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDefContext ctx = parser.keyValueDef();
-    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getListener().getValue(ctx);
+    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertEquals("\"Term Definition\"", stanzaEntry.getText());
@@ -87,7 +87,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref] {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDefContext ctx = parser.keyValueDef();
-    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getListener().getValue(ctx);
+    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertEquals("\"Term Definition\"", stanzaEntry.getText());
@@ -103,7 +103,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final String text = "def: \"Term Definition\" [database-ref] {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDefContext ctx = parser.keyValueDef();
-    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getListener().getValue(ctx);
+    final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
     assertEquals("\"Term Definition\"", stanzaEntry.getText());

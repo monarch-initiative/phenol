@@ -18,7 +18,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -30,7 +30,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -54,7 +54,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueXRefContext ctx = parser.keyValueXRef();
-    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getListener().getValue(ctx);
+    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertEquals("DBXRef [name=Other:ID, description=null, trailingModifier=null]",
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueXRefContext ctx = parser.keyValueXRef();
-    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getListener().getValue(ctx);
+    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertEquals("DBXRef [name=Other:ID, description=null, trailingModifier=TrailingModifier "
@@ -83,7 +83,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueXRefContext ctx = parser.keyValueXRef();
-    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getListener().getValue(ctx);
+    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertEquals("DBXRef [name=Other:ID, description=null, trailingModifier=null]",
@@ -97,7 +97,7 @@ public class Antlr4OBOParserTestStanzaEntryXRef extends Antlr4OBOParserTestBase 
     final String text = "xref: Other:ID {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueXRefContext ctx = parser.keyValueXRef();
-    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getListener().getValue(ctx);
+    final StanzaEntryXRef stanzaEntry = (StanzaEntryXRef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
     assertEquals("DBXRef [name=Other:ID, description=null, trailingModifier=TrailingModifier "

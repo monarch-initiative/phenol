@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryRange extends Antlr4OBOParserTestBase
     final String text = "range: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RANGE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryRange extends Antlr4OBOParserTestBase
     final String text = "range: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRangeContext ctx = parser.keyValueRange();
-    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getListener().getValue(ctx);
+    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RANGE, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryRange extends Antlr4OBOParserTestBase
     final String text = "range: HP:1 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRangeContext ctx = parser.keyValueRange();
-    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getListener().getValue(ctx);
+    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RANGE, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryRange extends Antlr4OBOParserTestBase
     final String text = "range: HP:1 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRangeContext ctx = parser.keyValueRange();
-    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getListener().getValue(ctx);
+    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RANGE, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryRange extends Antlr4OBOParserTestBase
     final String text = "range: HP:1 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRangeContext ctx = parser.keyValueRange();
-    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getListener().getValue(ctx);
+    final StanzaEntryRange stanzaEntry = (StanzaEntryRange) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RANGE, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getValue());

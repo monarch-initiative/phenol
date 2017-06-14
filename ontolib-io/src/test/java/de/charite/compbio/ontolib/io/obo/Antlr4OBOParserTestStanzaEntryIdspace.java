@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     final String text = "idspace: GO urn:lsid:bioontology.org:GO: \"gene ontology terms\"\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     final String text = "idspace: GO urn:lsid:bioontology.org:GO: \"gene ontology terms\"\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdspaceContext ctx = parser.keyValueIdspace();
-    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getListener().getValue(ctx);
+    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
@@ -44,7 +44,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
         "idspace: GO urn:lsid:bioontology.org:GO: \"gene ontology terms\" {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdspaceContext ctx = parser.keyValueIdspace();
-    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getListener().getValue(ctx);
+    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
@@ -61,7 +61,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
         "idspace: GO urn:lsid:bioontology.org:GO: \"gene ontology terms\" ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdspaceContext ctx = parser.keyValueIdspace();
-    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getListener().getValue(ctx);
+    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
@@ -77,7 +77,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
         "idspace: GO urn:lsid:bioontology.org:GO: \"gene ontology terms\" {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIdspaceContext ctx = parser.keyValueIdspace();
-    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getListener().getValue(ctx);
+    final StanzaEntryIdspace stanzaEntry = (StanzaEntryIdspace) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());

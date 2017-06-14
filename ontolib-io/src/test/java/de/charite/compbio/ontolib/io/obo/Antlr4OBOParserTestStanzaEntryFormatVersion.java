@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryFormatVersion extends Antlr4OBOParser
     final String text = "format-version: 1.2\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.FORMAT_VERSION, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryFormatVersion extends Antlr4OBOParser
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueFormatVersionContext ctx = parser.keyValueFormatVersion();
     final StanzaEntryFormatVersion stanzaEntry =
-        (StanzaEntryFormatVersion) getListener().getValue(ctx);
+        (StanzaEntryFormatVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.FORMAT_VERSION, stanzaEntry.getType());
     assertEquals("1.2", stanzaEntry.getValue());
@@ -43,7 +43,7 @@ public class Antlr4OBOParserTestStanzaEntryFormatVersion extends Antlr4OBOParser
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueFormatVersionContext ctx = parser.keyValueFormatVersion();
     final StanzaEntryFormatVersion stanzaEntry =
-        (StanzaEntryFormatVersion) getListener().getValue(ctx);
+        (StanzaEntryFormatVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.FORMAT_VERSION, stanzaEntry.getType());
     assertEquals("1.2", stanzaEntry.getValue());
@@ -58,7 +58,7 @@ public class Antlr4OBOParserTestStanzaEntryFormatVersion extends Antlr4OBOParser
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueFormatVersionContext ctx = parser.keyValueFormatVersion();
     final StanzaEntryFormatVersion stanzaEntry =
-        (StanzaEntryFormatVersion) getListener().getValue(ctx);
+        (StanzaEntryFormatVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.FORMAT_VERSION, stanzaEntry.getType());
     assertEquals("1.2", stanzaEntry.getValue());
@@ -72,7 +72,7 @@ public class Antlr4OBOParserTestStanzaEntryFormatVersion extends Antlr4OBOParser
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueFormatVersionContext ctx = parser.keyValueFormatVersion();
     final StanzaEntryFormatVersion stanzaEntry =
-        (StanzaEntryFormatVersion) getListener().getValue(ctx);
+        (StanzaEntryFormatVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.FORMAT_VERSION, stanzaEntry.getType());
     assertEquals("1.2", stanzaEntry.getValue());

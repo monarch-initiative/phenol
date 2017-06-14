@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryRelationship extends Antlr4OBOParserT
     final String text = "relationship: part_of HP:1 HP:2\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RELATIONSHIP, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryRelationship extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRelationshipContext ctx = parser.keyValueRelationship();
     final StanzaEntryRelationship stanzaEntry =
-        (StanzaEntryRelationship) getListener().getValue(ctx);
+        (StanzaEntryRelationship) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RELATIONSHIP, stanzaEntry.getType());
     assertEquals("part_of", stanzaEntry.getRelationshipType());
@@ -44,7 +44,7 @@ public class Antlr4OBOParserTestStanzaEntryRelationship extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRelationshipContext ctx = parser.keyValueRelationship();
     final StanzaEntryRelationship stanzaEntry =
-        (StanzaEntryRelationship) getListener().getValue(ctx);
+        (StanzaEntryRelationship) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RELATIONSHIP, stanzaEntry.getType());
     assertEquals("part_of", stanzaEntry.getRelationshipType());
@@ -60,7 +60,7 @@ public class Antlr4OBOParserTestStanzaEntryRelationship extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRelationshipContext ctx = parser.keyValueRelationship();
     final StanzaEntryRelationship stanzaEntry =
-        (StanzaEntryRelationship) getListener().getValue(ctx);
+        (StanzaEntryRelationship) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RELATIONSHIP, stanzaEntry.getType());
     assertEquals("part_of", stanzaEntry.getRelationshipType());
@@ -75,7 +75,7 @@ public class Antlr4OBOParserTestStanzaEntryRelationship extends Antlr4OBOParserT
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRelationshipContext ctx = parser.keyValueRelationship();
     final StanzaEntryRelationship stanzaEntry =
-        (StanzaEntryRelationship) getListener().getValue(ctx);
+        (StanzaEntryRelationship) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.RELATIONSHIP, stanzaEntry.getType());
     assertEquals("part_of", stanzaEntry.getRelationshipType());

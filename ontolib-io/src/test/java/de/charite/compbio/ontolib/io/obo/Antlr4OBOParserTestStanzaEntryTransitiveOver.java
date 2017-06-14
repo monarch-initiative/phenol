@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryTransitiveOver extends Antlr4OBOParse
     final String text = "transitive_over: other\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.TRANSITIVE_OVER, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryTransitiveOver extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueTransitiveOverContext ctx = parser.keyValueTransitiveOver();
     final StanzaEntryTransitiveOver stanzaEntry =
-        (StanzaEntryTransitiveOver) getListener().getValue(ctx);
+        (StanzaEntryTransitiveOver) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.TRANSITIVE_OVER, stanzaEntry.getType());
     assertEquals("other", stanzaEntry.getId());
@@ -43,7 +43,7 @@ public class Antlr4OBOParserTestStanzaEntryTransitiveOver extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueTransitiveOverContext ctx = parser.keyValueTransitiveOver();
     final StanzaEntryTransitiveOver stanzaEntry =
-        (StanzaEntryTransitiveOver) getListener().getValue(ctx);
+        (StanzaEntryTransitiveOver) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.TRANSITIVE_OVER, stanzaEntry.getType());
     assertEquals("other", stanzaEntry.getId());
@@ -58,7 +58,7 @@ public class Antlr4OBOParserTestStanzaEntryTransitiveOver extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueTransitiveOverContext ctx = parser.keyValueTransitiveOver();
     final StanzaEntryTransitiveOver stanzaEntry =
-        (StanzaEntryTransitiveOver) getListener().getValue(ctx);
+        (StanzaEntryTransitiveOver) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.TRANSITIVE_OVER, stanzaEntry.getType());
     assertEquals("other", stanzaEntry.getId());
@@ -72,7 +72,7 @@ public class Antlr4OBOParserTestStanzaEntryTransitiveOver extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueTransitiveOverContext ctx = parser.keyValueTransitiveOver();
     final StanzaEntryTransitiveOver stanzaEntry =
-        (StanzaEntryTransitiveOver) getListener().getValue(ctx);
+        (StanzaEntryTransitiveOver) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.TRANSITIVE_OVER, stanzaEntry.getType());
     assertEquals("other", stanzaEntry.getId());

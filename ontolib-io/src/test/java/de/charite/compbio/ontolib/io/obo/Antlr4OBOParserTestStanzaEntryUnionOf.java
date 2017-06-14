@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryUnionOf extends Antlr4OBOParserTestBa
     final String text = "union_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.UNION_OF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryUnionOf extends Antlr4OBOParserTestBa
     final String text = "union_of: HP:1\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueUnionOfContext ctx = parser.keyValueUnionOf();
-    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getListener().getValue(ctx);
+    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.UNION_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryUnionOf extends Antlr4OBOParserTestBa
     final String text = "union_of: HP:1 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueUnionOfContext ctx = parser.keyValueUnionOf();
-    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getListener().getValue(ctx);
+    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.UNION_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryUnionOf extends Antlr4OBOParserTestBa
     final String text = "union_of: HP:1 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueUnionOfContext ctx = parser.keyValueUnionOf();
-    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getListener().getValue(ctx);
+    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.UNION_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryUnionOf extends Antlr4OBOParserTestBa
     final String text = "union_of: HP:1 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueUnionOfContext ctx = parser.keyValueUnionOf();
-    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getListener().getValue(ctx);
+    final StanzaEntryUnionOf stanzaEntry = (StanzaEntryUnionOf) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.UNION_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());

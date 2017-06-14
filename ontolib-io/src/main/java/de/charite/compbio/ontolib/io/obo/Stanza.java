@@ -1,6 +1,10 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
 
@@ -33,6 +37,9 @@ public final class Stanza {
   /** List of {@link StanzaEntry} objects for this <code>Stanza</code>. */
   private final List<StanzaEntry> stanzaEntries;
 
+  /** Mapping from {@link StanzaEntryType} to list of objects of this stanza. */
+  private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
+
   /**
    * Constructor.
    *
@@ -46,6 +53,14 @@ public final class Stanza {
   private Stanza(StanzaType type, List<StanzaEntry> stanzaEntries) {
     this.type = type;
     this.stanzaEntries = Lists.newArrayList(stanzaEntries);
+
+    this.entryByType = new HashMap<>();
+    for (StanzaEntry e : stanzaEntries) {
+      if (!entryByType.containsKey(e.getType())) {
+        entryByType.put(e.getType(), new ArrayList<>());
+      }
+      entryByType.get(e.getType()).add(e);
+    }
   }
 
   /**
@@ -62,9 +77,19 @@ public final class Stanza {
     return stanzaEntries;
   }
 
+  /**
+   * @return {@link Map} from {@link StanzaEntryType} to {@link List} of {@link StanzaEntry}. Will
+   *         contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the
+   *         type.
+   */
+  public Map<StanzaEntryType, List<StanzaEntry>> getEntryByType() {
+    return entryByType;
+  }
+
   @Override
   public String toString() {
-    return "Stanza [type=" + type + ", stanzaEntries=" + stanzaEntries + "]";
+    return "Stanza [type=" + type + ", stanzaEntries=" + stanzaEntries + ", entryByType="
+        + new TreeMap<>(entryByType) + "]";
   }
 
 }

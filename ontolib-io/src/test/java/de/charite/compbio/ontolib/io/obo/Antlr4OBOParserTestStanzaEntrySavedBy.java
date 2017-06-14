@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntrySavedBy extends Antlr4OBOParserTestBa
     final String text = "saved-by: user1, user2\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SAVED_BY, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntrySavedBy extends Antlr4OBOParserTestBa
     final String text = "saved-by: user1, user2\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSavedByContext ctx = parser.keyValueSavedBy();
-    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getListener().getValue(ctx);
+    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SAVED_BY, stanzaEntry.getType());
     assertEquals("user1, user2", stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntrySavedBy extends Antlr4OBOParserTestBa
     final String text = "saved-by: user1, user2 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSavedByContext ctx = parser.keyValueSavedBy();
-    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getListener().getValue(ctx);
+    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SAVED_BY, stanzaEntry.getType());
     assertEquals("user1, user2", stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntrySavedBy extends Antlr4OBOParserTestBa
     final String text = "saved-by: user1, user2 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSavedByContext ctx = parser.keyValueSavedBy();
-    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getListener().getValue(ctx);
+    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SAVED_BY, stanzaEntry.getType());
     assertEquals("user1, user2", stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntrySavedBy extends Antlr4OBOParserTestBa
     final String text = "saved-by: user1, user2 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSavedByContext ctx = parser.keyValueSavedBy();
-    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getListener().getValue(ctx);
+    final StanzaEntrySavedBy stanzaEntry = (StanzaEntrySavedBy) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SAVED_BY, stanzaEntry.getType());
     assertEquals("user1, user2", stanzaEntry.getValue());

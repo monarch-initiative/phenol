@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryDate extends Antlr4OBOParserTestBase 
     final String text = "date: 2009-04-28T10:22:40Z\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryDate extends Antlr4OBOParserTestBase 
     final String text = "date: 2009-04-28T10:22:40Z\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDateContext ctx = parser.keyValueDate();
-    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getListener().getValue(ctx);
+    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATE, stanzaEntry.getType());
     assertEquals("2009-04-28T10:22:40Z", stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryDate extends Antlr4OBOParserTestBase 
     final String text = "date: 2009-04-28T10:22:40Z {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDateContext ctx = parser.keyValueDate();
-    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getListener().getValue(ctx);
+    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATE, stanzaEntry.getType());
     assertEquals("2009-04-28T10:22:40Z", stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryDate extends Antlr4OBOParserTestBase 
     final String text = "date: 2009-04-28T10:22:40Z ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDateContext ctx = parser.keyValueDate();
-    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getListener().getValue(ctx);
+    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATE, stanzaEntry.getType());
     assertEquals("2009-04-28T10:22:40Z", stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryDate extends Antlr4OBOParserTestBase 
     final String text = "date: 2009-04-28T10:22:40Z {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDateContext ctx = parser.keyValueDate();
-    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getListener().getValue(ctx);
+    final StanzaEntryDate stanzaEntry = (StanzaEntryDate) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATE, stanzaEntry.getType());
     assertEquals("2009-04-28T10:22:40Z", stanzaEntry.getValue());

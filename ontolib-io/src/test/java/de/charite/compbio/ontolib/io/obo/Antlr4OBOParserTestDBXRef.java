@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final String text = "HP:author";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefContext ctx = parser.dbXRef();
-    final DBXRef dbXRef = (DBXRef) getListener().getValue(ctx);
+    final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
     assertNull(dbXRef.getDescription());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final String text = "HP:author \"Author \\\"description\"";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefContext ctx = parser.dbXRef();
-    final DBXRef dbXRef = (DBXRef) getListener().getValue(ctx);
+    final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
     assertEquals("\"Author \\\"description\"", dbXRef.getDescription());
@@ -40,7 +40,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final String text = "HP:author {key1=value1,key2=value2}";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefContext ctx = parser.dbXRef();
-    final DBXRef dbXRef = (DBXRef) getListener().getValue(ctx);
+    final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
     assertEquals(null, dbXRef.getDescription());
@@ -52,7 +52,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final String text = "HP:author \"Author \\\"description\" {key1=value1,key2=value2}";
     final Antlr4OBOParser parser = buildParser(text, "valueMode");
     final DbXRefContext ctx = parser.dbXRef();
-    final DBXRef dbXRef = (DBXRef) getListener().getValue(ctx);
+    final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
     assertEquals("\"Author \\\"description\"", dbXRef.getDescription());

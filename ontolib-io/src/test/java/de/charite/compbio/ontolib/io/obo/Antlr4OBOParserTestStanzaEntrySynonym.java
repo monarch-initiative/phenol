@@ -17,7 +17,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymContext ctx = parser.keyValueSynonym();
-    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getListener().getValue(ctx);
+    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
@@ -57,7 +57,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymContext ctx = parser.keyValueSynonym();
-    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getListener().getValue(ctx);
+    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
@@ -74,7 +74,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymContext ctx = parser.keyValueSynonym();
-    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getListener().getValue(ctx);
+    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
@@ -90,7 +90,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
     final String text = "synonym: \"Synonym Name\" EXACT {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymContext ctx = parser.keyValueSynonym();
-    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getListener().getValue(ctx);
+    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
@@ -108,7 +108,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
         "synonym: \"Synonym Name\" EXACT MARKETING [db-xref] {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymContext ctx = parser.keyValueSynonym();
-    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getListener().getValue(ctx);
+    final StanzaEntrySynonym stanzaEntry = (StanzaEntrySynonym) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());

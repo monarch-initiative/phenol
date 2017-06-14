@@ -1,11 +1,15 @@
 package de.charite.compbio.ontolib.io.obo;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import java.util.ArrayList;
+
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.junit.Before;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 
@@ -16,9 +20,17 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
  */
 public class Antlr4OBOParserTestBase {
 
-  /** The parser base listener to use. */
-  private final Antlr4OBOParserListenerImpl listener = new Antlr4OBOParserListenerImpl();
+  /** The parse result listener to use. */
+  private final TestListener innerListener = new TestListener();
 
+  /** The parser base listener to use. */
+  protected final OBOParserListener outerListener = new OBOParserListener(innerListener);
+
+  @Before
+  public void setUp() {
+    setupStanzaKeyValues();
+  }
+  
   /**
    * Build and return {@link Antlr4OBOParser} for a given <code>text</code>.
    * 
@@ -27,8 +39,8 @@ public class Antlr4OBOParserTestBase {
    * @return {@link Antlr4OBOParser}, readily setup for parsing the OBO file.
    */
   protected Antlr4OBOParser buildParser(String text, String mode) {
-    ANTLRInputStream inputStream = new ANTLRInputStream(text);
-    OBOLexer l = new OBOLexer(inputStream);
+    final CodePointCharStream inputStream = CharStreams.fromString(text);
+    final OBOLexer l = new OBOLexer(inputStream);
 
     for (int i = 0; i < l.getModeNames().length; ++i) {
       if (mode.equals(l.getModeNames()[i])) {
@@ -48,7 +60,7 @@ public class Antlr4OBOParserTestBase {
 
     p.addErrorListener(new DiagnosticErrorListener());
 
-    p.addParseListener(listener);
+    p.addParseListener(outerListener);
 
     return p;
   }
@@ -58,10 +70,60 @@ public class Antlr4OBOParserTestBase {
   }
 
   /**
+   * @return The inner listener, used for coarser-granular access.
+   */
+  public TestListener getInnerListener() {
+    return innerListener;
+  }
+
+  /**
    * @return The listener, e.g., stores temporary values.
    */
-  public Antlr4OBOParserListenerImpl getListener() {
-    return listener;
+  public OBOParserListener getOuterListener() {
+    return outerListener;
+  }
+
+  protected static final class TestListener implements OBOParseResultListener {
+
+    private Header header = null;
+    private Stanza stanza = null;
+    private boolean parsingComplete = false;
+
+    @Override
+    public void parsedHeader(Header header) {
+      this.header = header;
+    }
+
+    @Override
+    public void parsedStanza(Stanza stanza) {
+      this.stanza = stanza;
+    }
+
+    @Override
+    public void parsedFile() {
+      this.parsingComplete = true;
+    }
+
+    public Header getHeader() {
+      return header;
+    }
+
+    public Stanza getStanza() {
+      return stanza;
+    }
+
+    public boolean isParsingComplete() {
+      return parsingComplete;
+    }
+
+  }
+
+  /**
+   * Setup <code>stanzaKeyValues</code> member of <code>outerListener</code> for testing.
+   */
+  protected void setupStanzaKeyValues() {
+    outerListener.stanzaKeyValues = new ArrayList<>();
   }
 
 }
+

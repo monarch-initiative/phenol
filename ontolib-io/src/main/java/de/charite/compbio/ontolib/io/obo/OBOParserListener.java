@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefListContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.EolComment2Context;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.HeaderContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.HeaderKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.InstanceStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueAltIDContext;
@@ -65,15 +66,34 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifier
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
 
+// TODO: validate the cardinality of entries in header/stanza
+
 /**
  * Master <code>ParseTreeListener</code> to use for OBO parsing.
  *
+ * <p>
+ * This class itself uses the listener pattern for customizing behaviour of storing the header and
+ * collecting all stanzas or an event-based implementation using {@link OBOParseResultListener}.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
+class OBOParserListener extends Antlr4OBOParserBaseListener {
 
-  /** maps nodes to Objects with Map<ParseTree,Object> */
-  ParseTreeProperty<Object> values = new ParseTreeProperty<>();
+  /** Internal listener for notifying on parsed parts. */
+  private final OBOParseResultListener listener;
+
+  /**
+   * Constructor.
+   *
+   * @param listener {@link OBOParseResultListener} to use.
+   */
+  public OBOParserListener(OBOParseResultListener listener) {
+    this.listener = listener;
+  }
+
+  /** Map nodes to Objects with Map&lt;ParseTree, Object&gt;. */
+  private ParseTreeProperty<Object> values = new ParseTreeProperty<>();
 
   /**
    * Set associated <code>value</code> for the given {@link ParseTree} <code>node</code>.
@@ -81,23 +101,85 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
    * @param node The {@link ParseTree} <code>node</code> to set the value for.
    * @param value The value to put for the given {@link ParseTree} <code>node</code>.
    */
-  public void setValue(ParseTree node, Object value) {
+  private void setValue(ParseTree node, Object value) {
     values.put(node, value);
   }
 
   /**
+   * Retrieve object stored for <code>node</code>.
+   *
+   * <p>
+   * Note that this just has package level access such that this class can be conveniently tested.
+   * </p>
+   *
    * @param node The {@link ParseTree} node to get the value for.
    * @return The value associated with <code>node</code>.
    */
-  public Object getValue(ParseTree node) {
+  Object getValue(ParseTree node) {
     return values.get(node);
+  }
+
+  /**
+   * Flush the {@link #values} mapping for allowing garbage collection.
+   */
+  void clearValues() {
+    values = new ParseTreeProperty<>();
   }
 
   /** Current {@link StanzaType}. */
   private StanzaType stanzaType = null;
 
-  /** List of current stanza's {@link StanzaEntry} objects. */
-  private List<StanzaEntry> stanzaKeyValues = null;
+  /**
+   * List of current stanza's {@link StanzaEntry} objects.
+   *
+   * <p>
+   * This has package level visibility for testing purposes.
+   * </p>
+   */
+  List<StanzaEntry> stanzaKeyValues = null;
+
+  /**
+   * Called on entering <code>stanza</code> rule.
+   */
+  @Override
+  public void enterHeader(HeaderContext ctx) {
+    // Create new list of key/value pairs
+    stanzaKeyValues = new ArrayList<StanzaEntry>();
+  }
+
+  /**
+   * Called on leaving <code>header</code>.
+   */
+  @Override
+  public void exitHeader(HeaderContext ctx) {
+    // Notify listener about being done with the header parsing
+    if (listener != null) {
+      listener.parsedHeader(Header.create(stanzaKeyValues));
+    }
+
+    // Zap stanza type and list of key/value pairs
+    stanzaType = null;
+    stanzaKeyValues = null;
+    // Clear mapping of parse tree nodes
+    clearValues();
+  }
+
+  /**
+   * Called on leaving <code>stanza</code> rule.
+   */
+  @Override
+  public void exitStanza(StanzaContext ctx) {
+    // Construct Stanza object and notify listener
+    if (listener != null) {
+      listener.parsedStanza(Stanza.create(stanzaType, stanzaKeyValues));
+    }
+
+    // Zap stanza type and list of key/value pairs
+    stanzaType = null;
+    stanzaKeyValues = null;
+    // Clear all values attached to parse tree nodes
+    clearValues();
+  }
 
   /**
    * Called on entering <code>stanza</code> rule.
@@ -115,20 +197,8 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
     } else if (ctx.instanceStanza() != null) {
       stanzaType = StanzaType.INSTANCE;
     } else {
-      throw new RuntimeException("Unexpected stanza type. This should not happen.");
+      // nop, header is a fake stanza
     }
-  }
-
-  /**
-   * Called on leaving <code>stanza</code> rule.
-   */
-  @Override
-  public void exitStanza(StanzaContext ctx) {
-    // Construct and store current Stanza object
-    setValue(ctx, Stanza.create(stanzaType, stanzaKeyValues));
-
-    // Zap list of key/value pairs
-    stanzaKeyValues = null;
   }
 
   /**
@@ -138,6 +208,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitTermStanzaKeyValue(TermStanzaKeyValueContext ctx) {
     setValue(ctx, getValue(ctx.getChild(0)));
+    stanzaKeyValues.add((StanzaEntry) getValue(ctx.getChild(0)));
   }
 
   /**
@@ -147,6 +218,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitInstanceStanzaKeyValue(InstanceStanzaKeyValueContext ctx) {
     setValue(ctx, getValue(ctx.getChild(0)));
+    stanzaKeyValues.add((StanzaEntry) getValue(ctx.getChild(0)));
   }
 
   /**
@@ -156,6 +228,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitTypedefStanzaKeyValue(TypedefStanzaKeyValueContext ctx) {
     setValue(ctx, getValue(ctx.getChild(0)));
+    stanzaKeyValues.add((StanzaEntry) getValue(ctx.getChild(0)));
   }
 
   /**
@@ -165,6 +238,7 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   @Override
   public void exitHeaderKeyValue(HeaderKeyValueContext ctx) {
     setValue(ctx, getValue(ctx.getChild(0)));
+    stanzaKeyValues.add((StanzaEntry) getValue(ctx.getChild(0)));
   }
 
   /** Called on leaving <code>keyValueID</code> rule. */

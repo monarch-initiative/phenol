@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
     final String text = "synonymtypedef: UK_SPELLING \"British spelling\" EXACT\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymtypedefContext ctx = parser.keyValueSynonymtypedef();
     final StanzaEntrySynonymtypedef stanzaEntry =
-        (StanzaEntrySynonymtypedef) getListener().getValue(ctx);
+        (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
     assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
@@ -45,7 +45,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymtypedefContext ctx = parser.keyValueSynonymtypedef();
     final StanzaEntrySynonymtypedef stanzaEntry =
-        (StanzaEntrySynonymtypedef) getListener().getValue(ctx);
+        (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
     assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
@@ -62,7 +62,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymtypedefContext ctx = parser.keyValueSynonymtypedef();
     final StanzaEntrySynonymtypedef stanzaEntry =
-        (StanzaEntrySynonymtypedef) getListener().getValue(ctx);
+        (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
     assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
@@ -79,7 +79,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSynonymtypedefContext ctx = parser.keyValueSynonymtypedef();
     final StanzaEntrySynonymtypedef stanzaEntry =
-        (StanzaEntrySynonymtypedef) getListener().getValue(ctx);
+        (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
     assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());

@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIsReflexive extends Antlr4OBOParserTe
     final String text = "is_reflexive: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_REFLEXIVE, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryIsReflexive extends Antlr4OBOParserTe
     final String text = "is_reflexive: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsReflexiveContext ctx = parser.keyValueIsReflexive();
-    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getListener().getValue(ctx);
+    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_REFLEXIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryIsReflexive extends Antlr4OBOParserTe
     final String text = "is_reflexive: true {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsReflexiveContext ctx = parser.keyValueIsReflexive();
-    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getListener().getValue(ctx);
+    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_REFLEXIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryIsReflexive extends Antlr4OBOParserTe
     final String text = "is_reflexive: true ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsReflexiveContext ctx = parser.keyValueIsReflexive();
-    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getListener().getValue(ctx);
+    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_REFLEXIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryIsReflexive extends Antlr4OBOParserTe
     final String text = "is_reflexive: true {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsReflexiveContext ctx = parser.keyValueIsReflexive();
-    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getListener().getValue(ctx);
+    final StanzaEntryIsReflexive stanzaEntry = (StanzaEntryIsReflexive) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_REFLEXIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());

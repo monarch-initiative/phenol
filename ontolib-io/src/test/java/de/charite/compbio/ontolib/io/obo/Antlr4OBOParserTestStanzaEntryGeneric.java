@@ -18,7 +18,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -30,7 +30,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -54,7 +54,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueGenericContext ctx = parser.keyValueGeneric();
-    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getListener().getValue(ctx);
+    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertEquals("Here is some arbitrary value", stanzaEntry.getValue());
@@ -67,7 +67,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueGenericContext ctx = parser.keyValueGeneric();
-    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getListener().getValue(ctx);
+    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertEquals("Here is some arbitrary value", stanzaEntry.getValue());
@@ -81,7 +81,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueGenericContext ctx = parser.keyValueGeneric();
-    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getListener().getValue(ctx);
+    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertEquals("Here is some arbitrary value", stanzaEntry.getValue());
@@ -94,7 +94,7 @@ public class Antlr4OBOParserTestStanzaEntryGeneric extends Antlr4OBOParserTestBa
     final String text = "some-tag: Here is some arbitrary value {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueGenericContext ctx = parser.keyValueGeneric();
-    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getListener().getValue(ctx);
+    final StanzaEntryGeneric stanzaEntry = (StanzaEntryGeneric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.GENERIC, stanzaEntry.getType());
     assertEquals("Here is some arbitrary value", stanzaEntry.getValue());

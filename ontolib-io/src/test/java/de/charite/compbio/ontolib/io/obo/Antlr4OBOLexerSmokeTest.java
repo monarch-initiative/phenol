@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,14 +19,14 @@ public class Antlr4OBOLexerSmokeTest extends SmokeTestBase {
 
   @Test
   public void testLexingMinimalFile() {
-    ANTLRInputStream inputStream = new ANTLRInputStream(MINIMAL_FILE);
+    final CodePointCharStream inputStream = CharStreams.fromString(MINIMAL_FILE);
     Antlr4OBOLexer l = new Antlr4OBOLexer(inputStream);
     l.getAllTokens();
   }
 
   @Test
   public void testLexingHeadOfHPO() {
-    ANTLRInputStream inputStream = new ANTLRInputStream(HEAD_HPO);
+    final CodePointCharStream inputStream = CharStreams.fromString(HEAD_HPO);
     Antlr4OBOLexer l = new Antlr4OBOLexer(inputStream);
     l.getAllTokens();
   }

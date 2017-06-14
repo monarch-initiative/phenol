@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryRemark extends Antlr4OBOParserTestBas
     final String text = "remark: Here is some text for you \\!\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.REMARK, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryRemark extends Antlr4OBOParserTestBas
     final String text = "remark: Here is some text for you \\!\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRemarkContext ctx = parser.keyValueRemark();
-    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getListener().getValue(ctx);
+    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.REMARK, stanzaEntry.getType());
     assertEquals("Here is some text for you \\!", stanzaEntry.getText());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryRemark extends Antlr4OBOParserTestBas
     final String text = "remark: Here is some text for you \\! {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRemarkContext ctx = parser.keyValueRemark();
-    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getListener().getValue(ctx);
+    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.REMARK, stanzaEntry.getType());
     assertEquals("Here is some text for you \\!", stanzaEntry.getText());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryRemark extends Antlr4OBOParserTestBas
     final String text = "remark: Here is some text for you \\! ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRemarkContext ctx = parser.keyValueRemark();
-    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getListener().getValue(ctx);
+    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.REMARK, stanzaEntry.getType());
     assertEquals("Here is some text for you \\!", stanzaEntry.getText());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryRemark extends Antlr4OBOParserTestBas
     final String text = "remark: Here is some text for you \\! {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueRemarkContext ctx = parser.keyValueRemark();
-    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getListener().getValue(ctx);
+    final StanzaEntryRemark stanzaEntry = (StanzaEntryRemark) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.REMARK, stanzaEntry.getType());
     assertEquals("Here is some text for you \\!", stanzaEntry.getText());

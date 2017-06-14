@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAntisymmetric extends Antlr4OBOPars
     final String text = "is_antisymmetric: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANTISYMMETRIC, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAntisymmetric extends Antlr4OBOPars
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsAntisymmetricContext ctx = parser.keyValueIsAntisymmetric();
     final StanzaEntryIsAntisymmetric stanzaEntry =
-        (StanzaEntryIsAntisymmetric) getListener().getValue(ctx);
+        (StanzaEntryIsAntisymmetric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANTISYMMETRIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -43,7 +43,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAntisymmetric extends Antlr4OBOPars
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsAntisymmetricContext ctx = parser.keyValueIsAntisymmetric();
     final StanzaEntryIsAntisymmetric stanzaEntry =
-        (StanzaEntryIsAntisymmetric) getListener().getValue(ctx);
+        (StanzaEntryIsAntisymmetric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANTISYMMETRIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -58,7 +58,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAntisymmetric extends Antlr4OBOPars
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsAntisymmetricContext ctx = parser.keyValueIsAntisymmetric();
     final StanzaEntryIsAntisymmetric stanzaEntry =
-        (StanzaEntryIsAntisymmetric) getListener().getValue(ctx);
+        (StanzaEntryIsAntisymmetric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANTISYMMETRIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -72,7 +72,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAntisymmetric extends Antlr4OBOPars
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsAntisymmetricContext ctx = parser.keyValueIsAntisymmetric();
     final StanzaEntryIsAntisymmetric stanzaEntry =
-        (StanzaEntryIsAntisymmetric) getListener().getValue(ctx);
+        (StanzaEntryIsAntisymmetric) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANTISYMMETRIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());

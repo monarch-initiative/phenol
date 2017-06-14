@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIsCyclic extends Antlr4OBOParserTestB
     final String text = "is_cyclic: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryIsCyclic extends Antlr4OBOParserTestB
     final String text = "is_cyclic: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsCyclicContext ctx = parser.keyValueIsCyclic();
-    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getListener().getValue(ctx);
+    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryIsCyclic extends Antlr4OBOParserTestB
     final String text = "is_cyclic: true {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsCyclicContext ctx = parser.keyValueIsCyclic();
-    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getListener().getValue(ctx);
+    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryIsCyclic extends Antlr4OBOParserTestB
     final String text = "is_cyclic: true ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsCyclicContext ctx = parser.keyValueIsCyclic();
-    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getListener().getValue(ctx);
+    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryIsCyclic extends Antlr4OBOParserTestB
     final String text = "is_cyclic: true {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsCyclicContext ctx = parser.keyValueIsCyclic();
-    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getListener().getValue(ctx);
+    final StanzaEntryIsCyclic stanzaEntry = (StanzaEntryIsCyclic) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());

@@ -18,7 +18,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -30,7 +30,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final InstanceStanzaKeyValueContext ctx = parser.instanceStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -42,7 +42,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -54,7 +54,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
-    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getListener().getValue(ctx);
+    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertEquals("Alternative-ID", stanzaEntry.getAltID());
@@ -67,7 +67,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
-    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getListener().getValue(ctx);
+    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertEquals("Alternative-ID", stanzaEntry.getAltID());
@@ -81,7 +81,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
-    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getListener().getValue(ctx);
+    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertEquals("Alternative-ID", stanzaEntry.getAltID());
@@ -94,7 +94,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
     final String text = "alt_id: Alternative-ID {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
-    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getListener().getValue(ctx);
+    final StanzaEntryAltID stanzaEntry = (StanzaEntryAltID) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.ALT_ID, stanzaEntry.getType());
     assertEquals("Alternative-ID", stanzaEntry.getAltID());

@@ -1,7 +1,8 @@
 package de.charite.compbio.ontolib.io.obo;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
@@ -19,9 +20,9 @@ public class Antlr4OBOParserSmokeTest extends SmokeTestBase {
 
   @Test
   public void testParsingMinimalFile() throws Exception {
-    ANTLRInputStream inputStream = new ANTLRInputStream(MINIMAL_FILE);
-    OBOLexer l = new OBOLexer(inputStream);
-    Antlr4OBOParser p = new Antlr4OBOParser(new CommonTokenStream(l));
+    final CodePointCharStream inputStream = CharStreams.fromString(MINIMAL_FILE);
+    final OBOLexer l = new OBOLexer(inputStream);
+    final Antlr4OBOParser p = new Antlr4OBOParser(new CommonTokenStream(l));
     p.addErrorListener(new BaseErrorListener() {
       @Override
       public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
@@ -39,9 +40,9 @@ public class Antlr4OBOParserSmokeTest extends SmokeTestBase {
 
   @Test
   public void testParsingHeadOfHPO() throws Exception {
-    ANTLRInputStream inputStream = new ANTLRInputStream(HEAD_HPO);
-    OBOLexer l = new OBOLexer(inputStream);
-    Antlr4OBOParser p = new Antlr4OBOParser(new CommonTokenStream(l));
+    final CodePointCharStream inputStream = CharStreams.fromString(HEAD_HPO);
+    final OBOLexer l = new OBOLexer(inputStream);
+    final Antlr4OBOParser p = new Antlr4OBOParser(new CommonTokenStream(l));
     p.addErrorListener(new BaseErrorListener() {
       @Override
       public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,

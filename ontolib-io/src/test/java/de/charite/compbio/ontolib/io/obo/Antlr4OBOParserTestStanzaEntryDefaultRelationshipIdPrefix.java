@@ -17,7 +17,7 @@ public class Antlr4OBOParserTestStanzaEntryDefaultRelationshipIdPrefix
     final String text = "default-relationship-id-prefix: prefix:\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -31,7 +31,7 @@ public class Antlr4OBOParserTestStanzaEntryDefaultRelationshipIdPrefix
     final KeyValueDefaultRelationshipIdPrefixContext ctx =
         parser.keyValueDefaultRelationshipIdPrefix();
     final StanzaEntryDefaultRelationshipIdPrefix stanzaEntry =
-        (StanzaEntryDefaultRelationshipIdPrefix) getListener().getValue(ctx);
+        (StanzaEntryDefaultRelationshipIdPrefix) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());
@@ -46,7 +46,7 @@ public class Antlr4OBOParserTestStanzaEntryDefaultRelationshipIdPrefix
     final KeyValueDefaultRelationshipIdPrefixContext ctx =
         parser.keyValueDefaultRelationshipIdPrefix();
     final StanzaEntryDefaultRelationshipIdPrefix stanzaEntry =
-        (StanzaEntryDefaultRelationshipIdPrefix) getListener().getValue(ctx);
+        (StanzaEntryDefaultRelationshipIdPrefix) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());
@@ -62,7 +62,7 @@ public class Antlr4OBOParserTestStanzaEntryDefaultRelationshipIdPrefix
     final KeyValueDefaultRelationshipIdPrefixContext ctx =
         parser.keyValueDefaultRelationshipIdPrefix();
     final StanzaEntryDefaultRelationshipIdPrefix stanzaEntry =
-        (StanzaEntryDefaultRelationshipIdPrefix) getListener().getValue(ctx);
+        (StanzaEntryDefaultRelationshipIdPrefix) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());
@@ -77,7 +77,7 @@ public class Antlr4OBOParserTestStanzaEntryDefaultRelationshipIdPrefix
     final KeyValueDefaultRelationshipIdPrefixContext ctx =
         parser.keyValueDefaultRelationshipIdPrefix();
     final StanzaEntryDefaultRelationshipIdPrefix stanzaEntry =
-        (StanzaEntryDefaultRelationshipIdPrefix) getListener().getValue(ctx);
+        (StanzaEntryDefaultRelationshipIdPrefix) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());

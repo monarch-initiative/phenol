@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryIsMetadata extends Antlr4OBOParserTes
     final String text = "is_metadata: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_METADATA, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryIsMetadata extends Antlr4OBOParserTes
     final String text = "is_metadata: true\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsMetadataContext ctx = parser.keyValueIsMetadata();
-    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getListener().getValue(ctx);
+    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_METADATA, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryIsMetadata extends Antlr4OBOParserTes
     final String text = "is_metadata: true {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsMetadataContext ctx = parser.keyValueIsMetadata();
-    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getListener().getValue(ctx);
+    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_METADATA, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryIsMetadata extends Antlr4OBOParserTes
     final String text = "is_metadata: true ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsMetadataContext ctx = parser.keyValueIsMetadata();
-    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getListener().getValue(ctx);
+    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_METADATA, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryIsMetadata extends Antlr4OBOParserTes
     final String text = "is_metadata: true {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueIsMetadataContext ctx = parser.keyValueIsMetadata();
-    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getListener().getValue(ctx);
+    final StanzaEntryIsMetadata stanzaEntry = (StanzaEntryIsMetadata) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_METADATA, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());

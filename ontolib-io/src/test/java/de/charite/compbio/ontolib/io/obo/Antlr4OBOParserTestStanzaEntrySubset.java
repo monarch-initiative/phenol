@@ -17,7 +17,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -29,7 +29,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetContext ctx = parser.keyValueSubset();
-    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getListener().getValue(ctx);
+    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());
@@ -54,7 +54,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetContext ctx = parser.keyValueSubset();
-    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getListener().getValue(ctx);
+    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetContext ctx = parser.keyValueSubset();
-    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getListener().getValue(ctx);
+    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());
@@ -81,7 +81,7 @@ public class Antlr4OBOParserTestStanzaEntrySubset extends Antlr4OBOParserTestBas
     final String text = "subset: subset-name {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetContext ctx = parser.keyValueSubset();
-    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getListener().getValue(ctx);
+    final StanzaEntrySubset stanzaEntry = (StanzaEntrySubset) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());

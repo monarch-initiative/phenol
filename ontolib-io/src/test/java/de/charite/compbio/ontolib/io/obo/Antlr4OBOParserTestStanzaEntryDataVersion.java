@@ -16,7 +16,7 @@ public class Antlr4OBOParserTestStanzaEntryDataVersion extends Antlr4OBOParserTe
     final String text = "data-version: releases/2017-06-10\n";
     final Antlr4OBOParser parser = buildParser(text);
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
-    final StanzaEntry stanzaEntry = (StanzaEntry) getListener().getValue(ctx);
+    final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATA_VERSION, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -28,7 +28,7 @@ public class Antlr4OBOParserTestStanzaEntryDataVersion extends Antlr4OBOParserTe
     final String text = "data-version: releases/2017-06-10\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDataVersionContext ctx = parser.keyValueDataVersion();
-    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getListener().getValue(ctx);
+    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATA_VERSION, stanzaEntry.getType());
     assertEquals("releases/2017-06-10", stanzaEntry.getValue());
@@ -41,7 +41,7 @@ public class Antlr4OBOParserTestStanzaEntryDataVersion extends Antlr4OBOParserTe
     final String text = "data-version: releases/2017-06-10 {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDataVersionContext ctx = parser.keyValueDataVersion();
-    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getListener().getValue(ctx);
+    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATA_VERSION, stanzaEntry.getType());
     assertEquals("releases/2017-06-10", stanzaEntry.getValue());
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestStanzaEntryDataVersion extends Antlr4OBOParserTe
     final String text = "data-version: releases/2017-06-10 ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDataVersionContext ctx = parser.keyValueDataVersion();
-    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getListener().getValue(ctx);
+    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATA_VERSION, stanzaEntry.getType());
     assertEquals("releases/2017-06-10", stanzaEntry.getValue());
@@ -68,7 +68,7 @@ public class Antlr4OBOParserTestStanzaEntryDataVersion extends Antlr4OBOParserTe
     final String text = "data-version: releases/2017-06-10 {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueDataVersionContext ctx = parser.keyValueDataVersion();
-    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getListener().getValue(ctx);
+    final StanzaEntryDataVersion stanzaEntry = (StanzaEntryDataVersion) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DATA_VERSION, stanzaEntry.getType());
     assertEquals("releases/2017-06-10", stanzaEntry.getValue());
