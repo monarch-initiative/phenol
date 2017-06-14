@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class TrailingModifier {
+public final class TrailingModifier {
 
   /** A list of key/value entries. */
   private final List<KeyValue> keyValue = new ArrayList<>();

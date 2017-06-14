@@ -32,8 +32,9 @@ public final class StanzaEntryComment extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntryText [text=" + text + ", getType()=" + getType() + ", getTrailingModifier()="
-        + getTrailingModifier() + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryComment [text=" + text + ", getType()=" + getType()
+        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+        + "]";
   }
 
 }

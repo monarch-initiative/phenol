@@ -1,11 +1,11 @@
 package de.charite.compbio.ontolib.io.obo;
 
 /**
- * Representation of a stanza entry starting with <code>is_anonymous</code>.
+ * Representation of a stanza entry starting with <code>is_symmetric</code>.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class StanzaEntryIsAnonymous extends StanzaEntry {
+public final class StanzaEntryIsSymmetric extends StanzaEntry {
 
   /** Boolean value of the stanza entry. */
   private final boolean value;
@@ -18,8 +18,8 @@ public final class StanzaEntryIsAnonymous extends StanzaEntry {
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryIsAnonymous(boolean value, TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.IS_ANONYMOUS, trailingModifier, comment);
+  public StanzaEntryIsSymmetric(boolean value, TrailingModifier trailingModifier, String comment) {
+    super(StanzaEntryType.IS_SYMMETRIC, trailingModifier, comment);
     this.value = value;
   }
 
@@ -32,7 +32,7 @@ public final class StanzaEntryIsAnonymous extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntryIsAnonymous [value=" + value + ", getType()=" + getType()
+    return "StanzaEntryIsSymmetric [value=" + value + ", getType()=" + getType()
         + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
         + "]";
   }

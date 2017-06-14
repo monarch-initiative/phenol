@@ -57,7 +57,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAnonymous extends Antlr4OBOParserTe
     final StanzaEntryIsAnonymous stanzaEntry = (StanzaEntryIsAnonymous) getListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANONYMOUS, stanzaEntry.getType());
-    assertEquals(true, stanzaEntry.isAnonymous());
+    assertEquals(true, stanzaEntry.getValue());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -70,7 +70,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAnonymous extends Antlr4OBOParserTe
     final StanzaEntryIsAnonymous stanzaEntry = (StanzaEntryIsAnonymous) getListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANONYMOUS, stanzaEntry.getType());
-    assertEquals(true, stanzaEntry.isAnonymous());
+    assertEquals(true, stanzaEntry.getValue());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -84,7 +84,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAnonymous extends Antlr4OBOParserTe
     final StanzaEntryIsAnonymous stanzaEntry = (StanzaEntryIsAnonymous) getListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANONYMOUS, stanzaEntry.getType());
-    assertEquals(true, stanzaEntry.isAnonymous());
+    assertEquals(true, stanzaEntry.getValue());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
@@ -97,7 +97,7 @@ public class Antlr4OBOParserTestStanzaEntryIsAnonymous extends Antlr4OBOParserTe
     final StanzaEntryIsAnonymous stanzaEntry = (StanzaEntryIsAnonymous) getListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.IS_ANONYMOUS, stanzaEntry.getType());
-    assertEquals(true, stanzaEntry.isAnonymous());
+    assertEquals(true, stanzaEntry.getValue());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());

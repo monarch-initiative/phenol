@@ -1,38 +1,38 @@
 package de.charite.compbio.ontolib.io.obo;
 
 /**
- * Representation of a stanza entry starting with <code>is_anonymous</code>.
+ * Representation of a stanza entry starting with <code>format-version</code>.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class StanzaEntryIsAnonymous extends StanzaEntry {
+public final class StanzaEntryFormatVersion extends StanzaEntry {
 
-  /** Boolean value of the stanza entry. */
-  private final boolean value;
+  /** Value of stanza entry. */
+  private final String value;
 
   /**
    * Constructor.
    *
-   * @param value The boolean value of the stanza.
+   * @param value The value of the ID stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryIsAnonymous(boolean value, TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.IS_ANONYMOUS, trailingModifier, comment);
+  public StanzaEntryFormatVersion(String value, TrailingModifier trailingModifier, String comment) {
+    super(StanzaEntryType.FORMAT_VERSION, trailingModifier, comment);
     this.value = value;
   }
 
   /**
-   * @return The entry's boolean value.
+   * @return The entry's value.
    */
-  public boolean getValue() {
+  public String getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryIsAnonymous [value=" + value + ", getType()=" + getType()
+    return "StanzaEntryFormatVersion [value=" + value + ", getType()=" + getType()
         + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
         + "]";
   }
