@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.InstanceStanzaKeyValueContext;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueIDContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueNameContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TermStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;

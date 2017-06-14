@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
 
 /**
  * Test class base for Antlr4 OBO parsers.
@@ -19,7 +18,7 @@ public class Antlr4OBOParserTestBase {
 
   /** The parser base listener to use. */
   private final Antlr4OBOParserListenerImpl listener = new Antlr4OBOParserListenerImpl();
-  
+
   /**
    * Build and return {@link Antlr4OBOParser} for a given <code>text</code>.
    * 
@@ -30,7 +29,7 @@ public class Antlr4OBOParserTestBase {
   protected Antlr4OBOParser buildParser(String text, String mode) {
     ANTLRInputStream inputStream = new ANTLRInputStream(text);
     OBOLexer l = new OBOLexer(inputStream);
-    
+
     for (int i = 0; i < l.getModeNames().length; ++i) {
       if (mode.equals(l.getModeNames()[i])) {
         l.mode(i);
@@ -50,10 +49,10 @@ public class Antlr4OBOParserTestBase {
     p.addErrorListener(new DiagnosticErrorListener());
 
     p.addParseListener(listener);
-    
+
     return p;
   }
-  
+
   protected Antlr4OBOParser buildParser(String text) {
     return buildParser(text, "DEFAULT_MODE");
   }

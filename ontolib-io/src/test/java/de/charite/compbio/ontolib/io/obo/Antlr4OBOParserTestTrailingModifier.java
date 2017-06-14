@@ -1,13 +1,10 @@
 package de.charite.compbio.ontolib.io.obo;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifierContext;
 
 public class Antlr4OBOParserTestTrailingModifier extends Antlr4OBOParserTestBase {

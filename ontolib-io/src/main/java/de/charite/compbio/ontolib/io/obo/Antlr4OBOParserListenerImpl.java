@@ -231,8 +231,12 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDef</code> rule. */
   @Override
   public void exitKeyValueDef(KeyValueDefContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueDef(ctx);
+    final String text = ctx.QuotedString().getText();
+    final DBXRefList dbXRefList = (DBXRefList) getValue(ctx.dbXRefList());
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntryDef(text, dbXRefList, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueComment</code> rule. */
@@ -245,8 +249,11 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueComment</code> rule. */
   @Override
   public void exitKeyValueComment(KeyValueCommentContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueComment(ctx);
+    final String text = ctx.stringValue().getText();
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntryComment(text, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueSubset</code> rule. */

@@ -199,7 +199,7 @@ keyValueAltID
 ;
 
 keyValueDef
-:
+: // note the mandatory dbXRefList here
   TagDef ColonSpace QuotedString Space dbXRefList
   (
     Space trailingModifier
