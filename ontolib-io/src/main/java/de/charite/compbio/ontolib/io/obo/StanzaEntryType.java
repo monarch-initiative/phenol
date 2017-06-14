@@ -19,5 +19,7 @@ public enum StanzaEntryType {
   /** Stanza entry starting with <code>comment</code>. */
   COMMENT,
   /** Stanza entry starting with <code>subset</code>. */
-  SUBSET;
+  SUBSET,
+  /** Stanza entry starting with <code>synonym</code>. */
+  SYNONYM;
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.DbXRefListContext;
@@ -283,8 +284,16 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSynonym</code> rule. */
   @Override
   public void exitKeyValueSynonym(KeyValueSynonymContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueSynonym(ctx);
+    final String text = ctx.QuotedString().getText();
+    final SynonymScopeIdentifier synonymScopeIdentifier =
+        SynonymScopeIdentifier.valueOf(ctx.ScopeIdentifier().getText());
+    final String scopeTypeName = trimmedEmptyToNull(ctx.Word());
+    final DBXRefList dbXRefList = (DBXRefList) getValue(ctx.dbXRefList());
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntrySynonym(text, synonymScopeIdentifier, scopeTypeName,
+        dbXRefList, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueXRef</code> rule. */
@@ -845,6 +854,15 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
       final String text = x.Comment2().getText();
       final int pos = text.indexOf('!');
       return trimmedEmptyToNull(text.substring(pos + 1, text.length()).trim());
+    }
+  }
+
+  /** Overload of {@link #trimmedEmptyToNull(String)} that handles {@link TerminalNode}. */
+  private static String trimmedEmptyToNull(TerminalNode n) {
+    if (n == null) {
+      return null;
+    } else {
+      return trimmedEmptyToNull(n.getText());
     }
   }
 

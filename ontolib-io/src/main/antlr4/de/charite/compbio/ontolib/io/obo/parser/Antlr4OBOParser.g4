@@ -224,10 +224,7 @@ keyValueSubset
 
 keyValueSynonym
 :
-  TagSynonym ColonSpace QuotedString
-  (
-    Space ScopeIdentifier
-  )?
+  TagSynonym ColonSpace QuotedString Space ScopeIdentifier
   (
     Space Word
   )?
