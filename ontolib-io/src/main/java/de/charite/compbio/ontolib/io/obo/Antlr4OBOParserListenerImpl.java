@@ -197,8 +197,11 @@ public class Antlr4OBOParserListenerImpl extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueIsAnonymous</code> rule. */
   @Override
   public void exitKeyValueIsAnonymous(KeyValueIsAnonymousContext ctx) {
-    // TODO Auto-generated method stub
-    super.exitKeyValueIsAnonymous(ctx);
+    final boolean isAnonymous = ctx.BooleanValue().getText().equals("true");
+    final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    final String comment = trimmedEmptyToNull(ctx.eolComment2());
+
+    setValue(ctx, new StanzaEntryIsAnonymous(isAnonymous, trailingModifier, comment));
   }
 
   /** Called on entering <code>keyValueIsAltID</code> rule. */
