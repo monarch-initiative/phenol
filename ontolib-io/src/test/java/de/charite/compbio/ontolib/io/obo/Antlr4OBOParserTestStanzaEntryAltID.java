@@ -50,7 +50,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
   }
 
   @Test
-  public void testParseNoModifierNoCommentAsKeyValueName() {
+  public void testParseNoModifierNoCommentAsKeyValueAltID() {
     final String text = "alt_id: Alternative-ID\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
@@ -63,7 +63,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
   }
 
   @Test
-  public void testParseModifierNoCommentAsKeyValueName() {
+  public void testParseModifierNoCommentAsKeyValueAltID() {
     final String text = "alt_id: Alternative-ID {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
@@ -77,7 +77,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
   }
 
   @Test
-  public void testParseNoModifierCommentAsKeyValueName() {
+  public void testParseNoModifierCommentAsKeyValueAltID() {
     final String text = "alt_id: Alternative-ID ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
@@ -90,7 +90,7 @@ public class Antlr4OBOParserTestStanzaEntryAltID extends Antlr4OBOParserTestBase
   }
 
   @Test
-  public void testParseModifierCommentAsKeyValueName() {
+  public void testParseModifierCommentAsKeyValueAltID() {
     final String text = "alt_id: Alternative-ID {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueAltIDContext ctx = parser.keyValueAltID();
