@@ -1,11 +1,11 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
+import java.util.Collection;
+
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermID;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Abstract base class for similarity measures computed based on information content of common
