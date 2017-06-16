@@ -33,7 +33,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIDSpace());
-    assertEquals("\"gene ontology terms\"", stanzaEntry.getDescription());
+    assertEquals("gene ontology terms", stanzaEntry.getDescription());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -49,7 +49,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIDSpace());
-    assertEquals("\"gene ontology terms\"", stanzaEntry.getDescription());
+    assertEquals("gene ontology terms", stanzaEntry.getDescription());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -66,7 +66,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIDSpace());
-    assertEquals("\"gene ontology terms\"", stanzaEntry.getDescription());
+    assertEquals("gene ontology terms", stanzaEntry.getDescription());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
@@ -82,7 +82,7 @@ public class Antlr4OBOParserTestStanzaEntryIdspace extends Antlr4OBOParserTestBa
     assertEquals(StanzaEntryType.IDSPACE, stanzaEntry.getType());
     assertEquals("GO", stanzaEntry.getLocalIDSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIDSpace());
-    assertEquals("\"gene ontology terms\"", stanzaEntry.getDescription());
+    assertEquals("gene ontology terms", stanzaEntry.getDescription());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());

@@ -246,7 +246,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueID</code> rule. */
   @Override
   public void exitKeyValueID(KeyValueIDContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -256,7 +256,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueName</code> rule. */
   @Override
   public void exitKeyValueName(KeyValueNameContext ctx) {
-    final String name = ctx.stringValue().getText();
+    final String name = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -276,7 +276,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueIsAltID</code> rule. */
   @Override
   public void exitKeyValueAltID(KeyValueAltIDContext ctx) {
-    final String altID = ctx.stringValue().getText();
+    final String altID = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -286,7 +286,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDef</code> rule. */
   @Override
   public void exitKeyValueDef(KeyValueDefContext ctx) {
-    final String text = ctx.QuotedString().getText();
+    final String text = OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     final DBXRefList dbXRefList = (DBXRefList) getValue(ctx.dbXRefList());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
@@ -297,7 +297,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueComment</code> rule. */
   @Override
   public void exitKeyValueComment(KeyValueCommentContext ctx) {
-    final String text = ctx.stringValue().getText();
+    final String text = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -307,7 +307,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSubset</code> rule. */
   @Override
   public void exitKeyValueSubset(KeyValueSubsetContext ctx) {
-    final String name = ctx.stringValue().getText();
+    final String name = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -317,10 +317,10 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSynonym</code> rule. */
   @Override
   public void exitKeyValueSynonym(KeyValueSynonymContext ctx) {
-    final String text = ctx.QuotedString().getText();
+    final String text = OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     final TermSynonymScope termSynonymScope =
         TermSynonymScope.valueOf(ctx.ScopeIdentifier().getText());
-    final String scopeTypeName = trimmedEmptyToNull(ctx.Word());
+    final String scopeTypeName = OBOEscapeUtils.unescape(trimmedEmptyToNull(ctx.Word()));
     final DBXRefList dbXRefList = (DBXRefList) getValue(ctx.dbXRefList());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
@@ -342,7 +342,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueIsA</code> rule. */
   @Override
   public void exitKeyValueIsA(KeyValueIsAContext ctx) {
-    final String id = ctx.Word().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.Word().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -356,10 +356,10 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
     final String id;
     if (ctx.Word().size() == 1) {
       relationshipType = null;
-      id = ctx.Word(0).getText();
+      id = OBOEscapeUtils.unescape(ctx.Word(0).getText());
     } else {
-      relationshipType = ctx.Word(0).getText();
-      id = ctx.Word(1).getText();
+      relationshipType = OBOEscapeUtils.unescape(ctx.Word(0).getText());
+      id = OBOEscapeUtils.unescape(ctx.Word(1).getText());
     }
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
@@ -370,7 +370,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueUnionOf</code> rule. */
   @Override
   public void exitKeyValueUnionOf(KeyValueUnionOfContext ctx) {
-    final String id = ctx.Word().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.Word().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -380,7 +380,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDisjointFrom</code> rule. */
   @Override
   public void exitKeyValueDisjointFrom(KeyValueDisjointFromContext ctx) {
-    final String id = ctx.Word().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.Word().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -393,12 +393,12 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
     final String relationshipType;
     final List<String> ids;
     if (ctx.Word().size() == 2) {
-      relationshipType = ctx.Word(0).getText();
-      ids = Lists.newArrayList(ctx.Word(1).getText());
+      relationshipType = OBOEscapeUtils.unescape(ctx.Word(0).getText());
+      ids = Lists.newArrayList(OBOEscapeUtils.unescape(ctx.Word(1).getText()));
     } else {
-      relationshipType = ctx.Word(0).getText();
-      ids = ctx.Word().subList(1, ctx.Word().size()).stream().map(t -> t.getText())
-          .collect(Collectors.toList());
+      relationshipType = OBOEscapeUtils.unescape(ctx.Word(0).getText());
+      ids = ctx.Word().subList(1, ctx.Word().size()).stream()
+          .map(t -> OBOEscapeUtils.unescape(t.getText())).collect(Collectors.toList());
     }
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
@@ -419,7 +419,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueReplacedBy</code> rule. */
   @Override
   public void exitKeyValueReplacedBy(KeyValueReplacedByContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -429,7 +429,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueConsider</code> rule. */
   @Override
   public void exitKeyValueConsider(KeyValueConsiderContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -439,7 +439,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueCreatedBy</code> rule. */
   @Override
   public void exitKeyValueCreatedBy(KeyValueCreatedByContext ctx) {
-    final String creator = ctx.stringValue().getText();
+    final String creator = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -449,7 +449,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueCreationDate</code> rule. */
   @Override
   public void exitKeyValueCreationDate(KeyValueCreationDateContext ctx) {
-    final String date = ctx.stringValue().getText();
+    final String date = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -459,8 +459,8 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueGeneric</code> rule. */
   @Override
   public void exitKeyValueGeneric(KeyValueGenericContext ctx) {
-    final String tag = ctx.GenericStanzaTag().getText();
-    final String text = ctx.stringValue().getText();
+    final String tag = OBOEscapeUtils.unescape(ctx.GenericStanzaTag().getText());
+    final String text = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -470,7 +470,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDomain</code> rule. */
   @Override
   public void exitKeyValueDomain(KeyValueDomainContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -480,7 +480,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueRange</code> rule. */
   @Override
   public void exitKeyValueRange(KeyValueRangeContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -490,7 +490,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueInverseOf</code> rule. */
   @Override
   public void exitKeyValueInverseOf(KeyValueInverseOfContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -500,7 +500,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueTransitiveOver</code> rule. */
   @Override
   public void exitKeyValueTransitiveOver(KeyValueTransitiveOverContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -570,7 +570,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueInstanceOf</code> rule. */
   @Override
   public void exitKeyValueInstanceOf(KeyValueInstanceOfContext ctx) {
-    final String id = ctx.stringValue().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -590,7 +590,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDataVersion</code> rule. */
   @Override
   public void exitKeyValueDataVersion(KeyValueDataVersionContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -600,7 +600,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDate</code> rule. */
   @Override
   public void exitKeyValueDate(KeyValueDateContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -610,7 +610,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSavedBy</code> rule. */
   @Override
   public void exitKeyValueSavedBy(KeyValueSavedByContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -620,7 +620,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueAutogeneratedBy</code> rule. */
   @Override
   public void exitKeyValueAutoGeneratedBy(KeyValueAutoGeneratedByContext ctx) {
-    final String creator = ctx.stringValue().getText();
+    final String creator = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -630,8 +630,8 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSubsetdef</code> rule. */
   @Override
   public void exitKeyValueSubsetdef(KeyValueSubsetdefContext ctx) {
-    final String id = ctx.Word().getText();
-    final String description = ctx.QuotedString().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.Word().getText());
+    final String description = OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -641,7 +641,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on entering <code>keyValueImport</code> rule. */
   @Override
   public void exitKeyValueImport(KeyValueImportContext ctx) {
-    final String value = ctx.stringValue().getText();
+    final String value = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -651,8 +651,8 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueSynonymTypedef</code> rule. */
   @Override
   public void exitKeyValueSynonymtypedef(KeyValueSynonymtypedefContext ctx) {
-    final String synonymTypeName = ctx.Word().getText();
-    final String description = ctx.QuotedString().getText();
+    final String synonymTypeName = OBOEscapeUtils.unescape(ctx.Word().getText());
+    final String description = OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     final TermSynonymScope termSynonymScope;
     if (ctx.ScopeIdentifier() != null) {
       termSynonymScope = TermSynonymScope.valueOf(ctx.ScopeIdentifier().getText());
@@ -669,11 +669,11 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueDefaultRelationshipIdspace</code> rule. */
   @Override
   public void exitKeyValueIdspace(KeyValueIdspaceContext ctx) {
-    final String localIDSpace = ctx.Word(0).getText();
-    final String remoteIDSpace = ctx.Word(1).getText();
+    final String localIDSpace = OBOEscapeUtils.unescape(ctx.Word(0).getText());
+    final String remoteIDSpace = OBOEscapeUtils.unescape(ctx.Word(1).getText());
     final String description;
     if (ctx.QuotedString() != null) {
-      description = ctx.QuotedString().getText();
+      description = OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     } else {
       description = null;
     }
@@ -688,7 +688,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   @Override
   public void exitKeyValueDefaultRelationshipIdPrefix(
       KeyValueDefaultRelationshipIdPrefixContext ctx) {
-    final String id = ctx.Word().getText();
+    final String id = OBOEscapeUtils.unescape(ctx.Word().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -698,8 +698,8 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueIdMapping</code> rule. */
   @Override
   public void exitKeyValueIdMapping(KeyValueIdMappingContext ctx) {
-    final String sourceID = ctx.Word(0).getText();
-    final String targetID = ctx.Word(1).getText();
+    final String sourceID = OBOEscapeUtils.unescape(ctx.Word(0).getText());
+    final String targetID = OBOEscapeUtils.unescape(ctx.Word(1).getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -709,7 +709,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   /** Called on leaving <code>keyValueRemark</code> rule. */
   @Override
   public void exitKeyValueRemark(KeyValueRemarkContext ctx) {
-    final String text = ctx.stringValue().getText();
+    final String text = OBOEscapeUtils.unescape(ctx.stringValue().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
@@ -734,8 +734,9 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
    */
   @Override
   public void exitDbXRef(DbXRefContext ctx) {
-    final String name = ctx.Word().getText();
-    final String description = (ctx.QuotedString() == null) ? null : ctx.QuotedString().getText();
+    final String name = OBOEscapeUtils.unescape(ctx.Word().getText());
+    final String description =
+        (ctx.QuotedString() == null) ? null : OBOEscapeUtils.unescape(ctx.QuotedString().getText());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
 
     setValue(ctx, new DBXRef(name, description, trailingModifier));
@@ -749,7 +750,8 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   public void exitTrailingModifier(TrailingModifierContext ctx) {
     final TrailingModifier tm = new TrailingModifier();
     for (TrailingModifierKeyValueContext kvCtx : ctx.trailingModifierKeyValue()) {
-      tm.addKeyValue(kvCtx.Word(0).getText().trim(), kvCtx.Word(1).getText().trim());
+      tm.addKeyValue(OBOEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
+          OBOEscapeUtils.unescape(kvCtx.Word(1).getText().trim()));
     }
 
     setValue(ctx, tm);

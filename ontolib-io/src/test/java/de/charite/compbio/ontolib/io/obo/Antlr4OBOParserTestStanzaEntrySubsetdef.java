@@ -28,11 +28,12 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\"\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry =
+        (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
-    assertEquals("\"GO Slim\"", stanzaEntry.getDescription());
+    assertEquals("GO Slim", stanzaEntry.getDescription());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -42,11 +43,12 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" {key=value}\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry =
+        (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
-    assertEquals("\"GO Slim\"", stanzaEntry.getDescription());
+    assertEquals("GO Slim", stanzaEntry.getDescription());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -57,11 +59,12 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry =
+        (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
-    assertEquals("\"GO Slim\"", stanzaEntry.getDescription());
+    assertEquals("GO Slim", stanzaEntry.getDescription());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
@@ -71,11 +74,12 @@ public class Antlr4OBOParserTestStanzaEntrySubsetdef extends Antlr4OBOParserTest
     final String text = "subsetdef: GO_SLIM \"GO Slim\" {key=value} ! comment\n";
     final Antlr4OBOParser parser = buildParser(text);
     final KeyValueSubsetdefContext ctx = parser.keyValueSubsetdef();
-    final StanzaEntrySubsetdef stanzaEntry = (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
+    final StanzaEntrySubsetdef stanzaEntry =
+        (StanzaEntrySubsetdef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SUBSETDEF, stanzaEntry.getType());
     assertEquals("GO_SLIM", stanzaEntry.getName());
-    assertEquals("\"GO Slim\"", stanzaEntry.getDescription());
+    assertEquals("GO Slim", stanzaEntry.getDescription());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());

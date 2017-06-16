@@ -44,7 +44,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
-    assertEquals("\"Term Definition\"", stanzaEntry.getText());
+    assertEquals("Term Definition", stanzaEntry.getText());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=database-ref, description=null, "
         + "trailingModifier=null]]]", stanzaEntry.getDbXRefList().toString());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -59,7 +59,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
-    assertEquals("\"Term Definition\"", stanzaEntry.getText());
+    assertEquals("Term Definition", stanzaEntry.getText());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=database-ref, description=null, "
         + "trailingModifier=null]]]", stanzaEntry.getDbXRefList().toString());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
@@ -75,7 +75,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
-    assertEquals("\"Term Definition\"", stanzaEntry.getText());
+    assertEquals("Term Definition", stanzaEntry.getText());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=database-ref, description=null, "
         + "trailingModifier=null]]]", stanzaEntry.getDbXRefList().toString());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -90,7 +90,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
-    assertEquals("\"Term Definition\"", stanzaEntry.getText());
+    assertEquals("Term Definition", stanzaEntry.getText());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=database-ref, description=null, "
         + "trailingModifier=null]]]", stanzaEntry.getDbXRefList().toString());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
@@ -106,7 +106,7 @@ public class Antlr4OBOParserTestStanzaEntryDef extends Antlr4OBOParserTestBase {
     final StanzaEntryDef stanzaEntry = (StanzaEntryDef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.DEF, stanzaEntry.getType());
-    assertEquals("\"Term Definition\"", stanzaEntry.getText());
+    assertEquals("Term Definition", stanzaEntry.getText());
     assertEquals("DBXRefList [dbXRefs=[DBXRef [name=database-ref, description=null, "
         + "trailingModifier=null]]]", stanzaEntry.getDbXRefList().toString());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
