@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class GOTerm implements Term {
 
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
+
   /** The HPO term's ID. */
   private final TermID id;
 

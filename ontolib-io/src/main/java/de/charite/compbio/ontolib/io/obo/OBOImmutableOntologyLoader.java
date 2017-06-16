@@ -1,18 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
@@ -22,6 +11,17 @@ import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermID;
 import de.charite.compbio.ontolib.ontology.data.TermPrefix;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Load OBO into an {@link ImmutableOntology}.
@@ -45,10 +45,20 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
    * Constructor.
    *
    * @param file The {@link File} to load from.
+   * @param debug Whether or not to allow debugging.
+   */
+  public OBOImmutableOntologyLoader(File file, boolean debug) {
+    this.file = file;
+    this.parser = new OBOParser(debug);
+  }
+
+  /**
+   * Constructor, debugging is disabled.
+   *
+   * @param file The {@link File} to load from.
    */
   public OBOImmutableOntologyLoader(File file) {
-    this.file = file;
-    this.parser = new OBOParser();
+    this(file, false);
   }
 
   /**
@@ -58,9 +68,14 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
    * @throws IOException In the case of problems with I/O.
    */
   public ImmutableOntology<T, R> load(OBOOntologyEntryFactory<T, R> factory) throws IOException {
-    // Construct helper and trigger parsing.
+    // Construct helper, set the term ID mapping into factory, and trigger parsing.
     final HelperListener helper = new HelperListener(factory);
-    parser.parseFile(file);
+    factory.setTermIDs(helper.getTermIDs());
+    parser.parseFile(file, helper);
+
+    if (helper.getAllTermIDs().size() == 0) {
+      throw new RuntimeException("No terms in ontology?!");
+    }
 
     /*
      * Note on the effect of event-based parsing.
@@ -79,13 +94,11 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
     // Construct edge list and relation map.
     final List<ImmutableEdge<TermID>> edges = new ArrayList<>();
     final Map<Integer, R> relationMap = new HashMap<>();
-    int edgeNo = 0;
     for (Entry<ImmutableTermID, List<BundledIsARelation>> e : helper.getIsATermIDPairs()
         .entrySet()) {
       for (BundledIsARelation b : e.getValue()) {
-        ImmutableEdge.construct(e.getKey(), b.getDest(), edgeNo);
-        relationMap.put(edgeNo, b.getRelation());
-        ++edgeNo;
+        ImmutableEdge.construct(e.getKey(), b.getDest(), b.getRelation().getID());
+        relationMap.put(b.getRelation().getID(), b.getRelation());
       }
     }
 
@@ -183,13 +196,14 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
 
     // TODO: At the moment, HP:1 and HP:01 would be mapped to different objects :(
     /** Term strings to terms. */
-    private final Map<String, ImmutableTermID> termIDs = new HashMap<>();
+    private final SortedMap<String, ImmutableTermID> termIDs = new TreeMap<>();
 
     /** Terms constructed from parsing. */
-    private final Map<ImmutableTermID, T> terms = new HashMap<>();
+    private final SortedMap<ImmutableTermID, T> terms = new TreeMap<>();
 
     /** Term relations constructed from parsing "is_a" relations. */
-    private final Map<ImmutableTermID, List<BundledIsARelation>> isATermIDPairs = new HashMap<>();
+    private final SortedMap<ImmutableTermID, List<BundledIsARelation>> isATermIDPairs =
+        new TreeMap<>();
 
     /** Factory for creating concrete term and term relation objects, injected into helper. */
     private final OBOOntologyEntryFactory<T, R> ontologyEntryFactory;
@@ -331,7 +345,7 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
     /**
      * @return Mapping from string term ID to term ID.
      */
-    public Map<String, ImmutableTermID> getTermIDs() {
+    public SortedMap<String, ImmutableTermID> getTermIDs() {
       return termIDs;
     }
 

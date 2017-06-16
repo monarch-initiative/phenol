@@ -11,6 +11,9 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
  */
 public class GOTermRelation implements TermRelation {
 
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
+
   /** Source {@link TermID}. */
   private final TermID source;
 

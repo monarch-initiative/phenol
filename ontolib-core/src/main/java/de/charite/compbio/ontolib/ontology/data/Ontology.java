@@ -54,7 +54,7 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
 
   Collection<TermID> getTermIDs();
 
-  Collection<Term> getTerms();
+  Collection<T> getTerms();
 
   int countTerms();
 

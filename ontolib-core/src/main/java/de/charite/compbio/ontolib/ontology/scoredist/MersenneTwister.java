@@ -250,8 +250,8 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
   public Object clone() {
     try {
       MersenneTwister f = (MersenneTwister) (super.clone());
-      f.mt = (int[]) (mt.clone());
-      f.mag01 = (int[]) (mag01.clone());
+      f.mt = mt.clone();
+      f.mag01 = mag01.clone();
       return f;
     } catch (CloneNotSupportedException e) {
       throw new InternalError();
@@ -796,7 +796,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     System.out.println("\nGrab 1000 booleans of increasing probability using nextBoolean(double)");
     r = new MersenneTwister(seed);
     for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextBoolean((double) (j / 999.0)) + " ");
+      System.out.print(r.nextBoolean(j / 999.0) + " ");
       if (j % 8 == 7) {
         System.out.println();
       }
@@ -808,7 +808,7 @@ public strictfp class MersenneTwister extends java.util.Random implements Serial
     System.out.println("\nGrab 1000 booleans of increasing probability using nextBoolean(float)");
     r = new MersenneTwister(seed);
     for (j = 0; j < 1000; j++) {
-      System.out.print(r.nextBoolean((float) (j / 999.0f)) + " ");
+      System.out.print(r.nextBoolean(j / 999.0f) + " ");
       if (j % 8 == 7) {
         System.out.println();
       }

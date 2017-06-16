@@ -2,6 +2,7 @@ package de.charite.compbio.ontolib.graph.data;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,8 +50,8 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param edgeFactory The {@link Edge.Factory} to use for constructing edges.
    * @return Freshly constructed {@link Builder} object.
    */
-  public static <V, E extends ImmutableEdge<V>> Builder<V, E> builder(
-      final Edge.Factory<V, E> edgeFactory) {
+  public static <V,
+      E extends ImmutableEdge<V>> Builder<V, E> builder(final Edge.Factory<V, E> edgeFactory) {
     return new Builder<V, E>(edgeFactory);
   }
 
@@ -381,6 +382,12 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
     // Construct sub graph
     return construct(vertexSubset, edgeSubset);
+  }
+
+  @Override
+  public String toString() {
+    return "ImmutableDirectedGraph [edgeLists=" + ImmutableSortedMap.copyOf(edgeLists)
+        + ", edgeCount=" + edgeCount + "]";
   }
 
   /**

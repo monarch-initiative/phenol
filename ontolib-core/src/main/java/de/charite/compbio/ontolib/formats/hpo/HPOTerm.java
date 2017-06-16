@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class HPOTerm implements Term {
 
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
+
   /** The HPO term's ID. */
   private final TermID id;
 
@@ -120,6 +123,14 @@ public class HPOTerm implements Term {
   @Override
   public String getCreationDate() {
     return creationDate;
+  }
+
+  @Override
+  public String toString() {
+    return "HPOTerm [id=" + id + ", altTermIDs=" + altTermIDs + ", name=" + name + ", definition="
+        + definition + ", comment=" + comment + ", subsets=" + subsets + ", synonyms=" + synonyms
+        + ", obsolete=" + obsolete + ", createdBy=" + createdBy + ", creationDate=" + creationDate
+        + "]";
   }
 
 }

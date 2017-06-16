@@ -1,7 +1,10 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermID;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Interface for constructing concrete {@link Term} and {@link TermRelation} objects in
@@ -14,6 +17,13 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
  */
 public interface OBOOntologyEntryFactory<T extends Term, R extends TermRelation> {
 
+  /**
+   * Set map from Term ID string to {@link ImmutableTermID} into factory.
+   *
+   * @param termIDs The term ID mapping to use.
+   */
+  public void setTermIDs(SortedMap<String, ImmutableTermID> termIDs);
+  
   /**
    * Construct term from {@link Stanza}.
    *

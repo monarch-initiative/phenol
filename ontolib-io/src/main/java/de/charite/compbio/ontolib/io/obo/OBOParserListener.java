@@ -171,6 +171,17 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
    */
   @Override
   public void exitStanza(StanzaContext ctx) {
+    // Extract and store current stanza type
+    if (ctx.termStanza() != null) {
+      stanzaType = StanzaType.TERM;
+    } else if (ctx.typedefStanza() != null) {
+      stanzaType = StanzaType.TYPEDEF;
+    } else if (ctx.instanceStanza() != null) {
+      stanzaType = StanzaType.INSTANCE;
+    } else {
+      // nop, header is a fake stanza
+    }
+
     // Construct Stanza object and notify listener
     if (listener != null) {
       listener.parsedStanza(Stanza.create(stanzaType, stanzaKeyValues));
@@ -190,17 +201,6 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   public void enterStanza(StanzaContext ctx) {
     // Create new list of key/value pairs
     stanzaKeyValues = new ArrayList<StanzaEntry>();
-
-    // Extract and store current stanza type
-    if (ctx.termStanza() != null) {
-      stanzaType = StanzaType.TERM;
-    } else if (ctx.typedefStanza() != null) {
-      stanzaType = StanzaType.TYPEDEF;
-    } else if (ctx.instanceStanza() != null) {
-      stanzaType = StanzaType.INSTANCE;
-    } else {
-      // nop, header is a fake stanza
-    }
   }
 
   /**

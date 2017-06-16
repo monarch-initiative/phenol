@@ -100,20 +100,17 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
 
   @Override
   public Collection<TermID> getTermIDs() {
-    // TODO Auto-generated method stub
-    return null;
+    return termMap.keySet();
   }
 
   @Override
-  public Collection<Term> getTerms() {
-    // TODO Auto-generated method stub
-    return null;
+  public Collection<T> getTerms() {
+    return termMap.values();
   }
 
   @Override
   public int countTerms() {
-    // TODO Auto-generated method stub
-    return 0;
+    return termMap.size();
   }
 
 }

@@ -19,11 +19,11 @@ import com.google.common.collect.Lists;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 
 /**
- * Driver code for parsing HGVS strings into HGVSVariant objects.
+ * Driver code for parsing OBO files.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class OBOParser {
+public final class OBOParser {
 
   /** The {@link Logger} object to use for logging. */
   private static final Logger LOGGER = LoggerFactory.getLogger(OBOParser.class);

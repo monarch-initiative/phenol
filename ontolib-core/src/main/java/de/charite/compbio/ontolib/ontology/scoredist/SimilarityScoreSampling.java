@@ -215,7 +215,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     double counter = 0.0;
     for (Entry<Double, Double> entry : result.entrySet()) {
       counter += entry.getValue();
-      result.put(entry.getKey(), ((double) counter) / numIterations);
+      result.put(entry.getKey(), counter / numIterations);
     }
 
     return result;

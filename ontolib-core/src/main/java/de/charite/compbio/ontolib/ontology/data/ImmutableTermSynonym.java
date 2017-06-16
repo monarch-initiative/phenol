@@ -60,4 +60,10 @@ public final class ImmutableTermSynonym implements TermSynonym {
     return termXRefs;
   }
 
+  @Override
+  public String toString() {
+    return "ImmutableTermSynonym [value=" + value + ", scope=" + scope + ", synonymTypeName="
+        + synonymTypeName + ", termXRefs=" + termXRefs + "]";
+  }
+
 }

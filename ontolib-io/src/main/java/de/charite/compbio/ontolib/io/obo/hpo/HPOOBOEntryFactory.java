@@ -1,11 +1,7 @@
 package de.charite.compbio.ontolib.io.obo.hpo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
-
+import de.charite.compbio.ontolib.formats.hpo.HPORelationQualifier;
 import de.charite.compbio.ontolib.formats.hpo.HPOTerm;
 import de.charite.compbio.ontolib.formats.hpo.HPOTermRelation;
 import de.charite.compbio.ontolib.io.obo.OBOImmutableOntologyLoader;
@@ -13,6 +9,7 @@ import de.charite.compbio.ontolib.io.obo.OBOOntologyEntryFactory;
 import de.charite.compbio.ontolib.io.obo.Stanza;
 import de.charite.compbio.ontolib.io.obo.StanzaEntry;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryAltID;
+import de.charite.compbio.ontolib.io.obo.StanzaEntryComment;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryCreatedBy;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryCreationDate;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryDef;
@@ -34,6 +31,9 @@ import de.charite.compbio.ontolib.ontology.data.TermID;
 import de.charite.compbio.ontolib.ontology.data.TermSynonym;
 import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
 import de.charite.compbio.ontolib.ontology.data.TermXRef;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 /**
  * Factory class for constructing {@link HPOTerm} and {@link HPOTermRelation} objects from
@@ -41,7 +41,7 @@ import de.charite.compbio.ontolib.ontology.data.TermXRef;
  * 
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOTermRelation> {
+class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOTermRelation> {
 
   /**
    * Mapping from string representation of term ID to {@link TermID}.
@@ -49,12 +49,13 @@ public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOT
    * All occuring termIDs must be previously registered into this map before calling any of this
    * object's functions. This happens in {@link OBOImmutableOntologyLoader}.
    */
-  private final Map<String, ImmutableTermID> termIDs;
+  private SortedMap<String, ImmutableTermID> termIDs = null;
 
-  /**
-   * @param termIDs The required mapping from string term id to {@link ImmutableTermID}.
-   */
-  public HPOOBOEntryFactory(Map<String, ImmutableTermID> termIDs) {
+  /** ID of next relation. */
+  private int nextRelationID = 1;
+
+  @Override
+  public void setTermIDs(SortedMap<String, ImmutableTermID> termIDs) {
     this.termIDs = termIDs;
   }
 
@@ -76,16 +77,16 @@ public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOT
     }
 
     final StanzaEntryDef defEntry =
-        this.<StanzaEntryDef>getCardinalityOneEntry(stanza, StanzaEntryType.DEF);
+        this.<StanzaEntryDef>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
     final String definition = (defEntry == null) ? null : defEntry.getText();
 
-    final StanzaEntryDef commentEntry =
-        this.<StanzaEntryDef>getCardinalityOneEntry(stanza, StanzaEntryType.DEF);
-    final String comment = (commentEntry == null) ? null : defEntry.getText();
+    final StanzaEntryComment commentEntry =
+        this.<StanzaEntryComment>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
+    final String comment = (commentEntry == null) ? null : commentEntry.getText();
 
     final List<String> subsets;
     final List<StanzaEntry> subsetEntryList = stanza.getEntryByType().get(StanzaEntryType.SUBSET);
-    if (altEntryList == null) {
+    if (subsetEntryList == null) {
       subsets = Lists.newArrayList();
     } else {
       subsets = subsetEntryList.stream().map(e -> ((StanzaEntrySubset) e).getName())
@@ -97,7 +98,7 @@ public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOT
     if (synonymEntryList == null) {
       synonyms = Lists.newArrayList();
     } else {
-      synonyms = subsetEntryList.stream().map(e -> {
+      synonyms = synonymEntryList.stream().map(e -> {
         final StanzaEntrySynonym s = (StanzaEntrySynonym) e;
 
         final String value = s.getText();
@@ -111,16 +112,16 @@ public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOT
       }).collect(Collectors.toList());
     }
 
-    final StanzaEntryIsObsolete isObsoleteEntry =
-        this.<StanzaEntryIsObsolete>getCardinalityOneEntry(stanza, StanzaEntryType.IS_OBSOLETE);
-    final boolean obsolete = isObsoleteEntry.getValue();
+    final StanzaEntryIsObsolete isObsoleteEntry = this.<
+        StanzaEntryIsObsolete>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.IS_OBSOLETE);
+    final boolean obsolete = (isObsoleteEntry == null) ? false : isObsoleteEntry.getValue();
 
     final StanzaEntryCreatedBy createdByEntry =
-        this.<StanzaEntryCreatedBy>getCardinalityOneEntry(stanza, StanzaEntryType.CREATED_BY);
+        this.<StanzaEntryCreatedBy>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
     final String createdBy = (createdByEntry == null) ? null : createdByEntry.getCreator();
 
-    final StanzaEntryCreationDate creationDateEntry =
-        this.<StanzaEntryCreationDate>getCardinalityOneEntry(stanza, StanzaEntryType.CREATION_DATE);
+    final StanzaEntryCreationDate creationDateEntry = this.<
+        StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATION_DATE);
     final String creationDate = (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
     return new HPOTerm(id, altTermIDs, name, definition, comment, subsets, synonyms, obsolete,
@@ -168,7 +169,10 @@ public class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOT
 
   @Override
   public HPOTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
-    throw new RuntimeException("Not implemented yet!");
+    final TermID sourceID =
+        termIDs.get(this.<StanzaEntryID>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
+    final TermID destID = termIDs.get(stanzaEntry.getId());
+    return new HPOTermRelation(sourceID, destID, nextRelationID, HPORelationQualifier.IS_A);
   }
 
   @Override
