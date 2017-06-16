@@ -565,7 +565,7 @@ dbXRefList
 
 dbXRef
 :
-  extWord
+  dbXRefWord
   (
     Space QuotedString
   )?
@@ -581,5 +581,16 @@ extWord
   (
     Word
     | Equals
+  )+
+;
+
+// Similar to extWord but also allowing square brace open.
+
+dbXRefWord
+:
+  (
+    Word
+    | Equals
+    | SquareBraceOpen
   )+
 ;

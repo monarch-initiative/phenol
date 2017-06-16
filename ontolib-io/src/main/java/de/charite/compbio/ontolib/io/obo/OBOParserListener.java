@@ -731,7 +731,7 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
    */
   @Override
   public void exitDbXRef(DbXRefContext ctx) {
-    final String name = OBOEscapeUtils.unescape(ctx.extWord().getText());
+    final String name = OBOEscapeUtils.unescape(ctx.dbXRefWord().getText());
     final String description = (ctx.QuotedString() == null)
         ? null
         : OBOEscapeUtils.unescape(ctx.QuotedString().getText().trim());
