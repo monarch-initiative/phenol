@@ -4,8 +4,10 @@ import de.charite.compbio.ontolib.formats.hpo.HPOntology;
 import de.charite.compbio.ontolib.io.obo.OBOParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
@@ -14,6 +16,12 @@ import java.io.ObjectOutputStream;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class App {
+
+  /** Sleep to wait for VisualVM. */
+  private static final int SLEEP = 30;
+
+  /** Number of repetitions to perform. */
+  private static final int REPETITIONS = 100;
 
   /** Command line arguments. */
   private final String[] args;
@@ -40,16 +48,28 @@ public class App {
    * Run application.
    */
   public void run() {
+    if (SLEEP > 0) {
+      System.err.println("Waiting for " + SLEEP + " seconds for VisualVM...");
+      try {
+        Thread.sleep(10_000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
     this.parseArgs();
-    switch (command) {
-      case PARSE_OBO:
-        parseOBO();
-        break;
-      case PARSE_HPO_OBO:
-        parseHPOOBO();
-        break;
-      default:
-        printUsageError("I don't know about command " + command);
+
+    for (int i = 0; i < REPETITIONS; ++i) {
+      switch (command) {
+        case PARSE_OBO:
+          parseOBO();
+          break;
+        case PARSE_HPO_OBO:
+          parseHPOOBO();
+          break;
+        default:
+          printUsageError("I don't know about command " + command);
+      }
     }
   }
 
@@ -72,7 +92,7 @@ public class App {
 
   private void parseHPOOBO() {
     System.err.println("Parsing HPO OBO...");
-    final long startTime = System.nanoTime();
+    long startTime = System.nanoTime();
 
     HPOOBOParser parser = new HPOOBOParser(inputFile);
     HPOntology hpo;
@@ -84,12 +104,13 @@ public class App {
       return; // javac does not understand this is unreachable
     }
 
-    final long endTime = System.nanoTime();
-    final double duration = (endTime - startTime) / 1_000_000_000.0;
+    long endTime = System.nanoTime();
+    double duration = (endTime - startTime) / 1_000_000_000.0;
     System.out.println("Parsing HPO OBO took " + duration + " seconds");
 
     if (outputSerFile != null) {
       System.out.println("Writing .ser file " + outputSerFile + "...");;
+      startTime = System.nanoTime();
       try (FileOutputStream fout = new FileOutputStream(outputSerFile);
           ObjectOutputStream oos = new ObjectOutputStream(fout)) {
         oos.writeObject(hpo);
@@ -98,6 +119,24 @@ public class App {
         System.exit(1);
       }
       System.err.println("Done writing .ser file.");
+      endTime = System.nanoTime();
+      duration = (endTime - startTime) / 1_000_000_000.0;
+      System.out.println("Writing .ser took " + duration + " seconds");
+
+
+      System.out.println("Loading .ser file " + outputSerFile + "...");;
+      startTime = System.nanoTime();
+      try (FileInputStream fin = new FileInputStream(outputSerFile);
+          ObjectInputStream ois = new ObjectInputStream(fin);) {
+        ois.readObject();
+      } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
+      System.err.println("Done loading .ser file.");
+      endTime = System.nanoTime();
+      duration = (endTime - startTime) / 1_000_000_000.0;
+      System.out.println("Reading .ser took " + duration + " seconds");
     }
   }
 
