@@ -9,13 +9,10 @@ import java.io.Serializable;
  */
 public interface TermXRef extends Serializable {
 
-  /** @return Identifier of the database of referred term */
-  String getDatabase();
-
   /** @return Cross-referenced term's ID */
-  String getXRefID();
+  TermID getID();
 
-  /** @return Cross-referenced name */
-  String getXRefName();
-
+  /** @return Description text. */
+  String getDescription();
+  
 }

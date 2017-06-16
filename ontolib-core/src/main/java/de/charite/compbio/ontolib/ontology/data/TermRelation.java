@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import java.io.Serializable;
+
 /**
  * Description of a term relation, such relations are directional
  *
@@ -10,7 +12,7 @@ package de.charite.compbio.ontolib.ontology.data;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermRelation {
+public interface TermRelation extends Serializable {
 
   /**
    * @return {@link TermID} of source {@link Term}

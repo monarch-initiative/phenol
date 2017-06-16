@@ -1,5 +1,6 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface Term {
+public interface Term extends Serializable {
 
   /**
    * @return {@link TermID} for this <code>Term</code>.
@@ -35,9 +36,10 @@ public interface Term {
   String getComment();
 
   /**
-   * @return <code>String</code> description of this <code>Term</code>'s subset.
+   * @return {@link List} of <code>String</code> with this <code>Term</code>'s subset names, empty
+   *         if part of no subset.
    */
-  String getSubset();
+  List<String> getSubsets();
 
   /**
    * @return {@link List} of {@link TermSynonym}s describing this <code>Term</code>'s synonyms.

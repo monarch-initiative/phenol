@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
+
 /**
  * Representation of a stanza entry starting with <code>synonym</code>.
  *
@@ -11,7 +13,7 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   private final String text;
 
   /** The scope identifier string. */
-  private final SynonymScopeIdentifier scopeIdentifier;
+  private final TermSynonymScope termSynonymScope;
 
   /** Optional synonym type name, <code>null</code> if missing. */
   private final String synonymTypeName;
@@ -23,19 +25,18 @@ public final class StanzaEntrySynonym extends StanzaEntry {
    * Constructor.
    *
    * @param text Synonym text
-   * @param scopeIdentifier {@link SynonymScopeIdentifier} of this synonym.
+   * @param termSynonymScope {@link TermSynonymScope} of this synonym.
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
    * @param dbXRefList Optional {@link DBXRefList}, <code>null</code> if missing.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntrySynonym(String text, SynonymScopeIdentifier scopeIdentifier,
-      String synonymTypeName, DBXRefList dbXRefList, TrailingModifier trailingModifier,
-      String comment) {
+  public StanzaEntrySynonym(String text, TermSynonymScope termSynonymScope, String synonymTypeName,
+      DBXRefList dbXRefList, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.SYNONYM, trailingModifier, comment);
     this.text = text;
-    this.scopeIdentifier = scopeIdentifier;
+    this.termSynonymScope = termSynonymScope;
     this.synonymTypeName = synonymTypeName;
     this.dbXRefList = dbXRefList;
   }
@@ -48,10 +49,10 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   }
 
   /**
-   * @return The {@link SynonymScopeIdentifier} of this synonym.
+   * @return The {@link TermSynonymScope} of this synonym.
    */
-  public SynonymScopeIdentifier getScopeIdentifier() {
-    return scopeIdentifier;
+  public TermSynonymScope getTermSynonymScope() {
+    return termSynonymScope;
   }
 
   /**
@@ -70,7 +71,7 @@ public final class StanzaEntrySynonym extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntrySynonym [text=" + text + ", scopeIdentifier=" + scopeIdentifier
+    return "StanzaEntrySynonym [text=" + text + ", termSynonymScope=" + termSynonymScope
         + ", synonymTypeName=" + synonymTypeName + ", dbXRefList=" + dbXRefList + ", getType()="
         + getType() + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()="
         + getComment() + "]";

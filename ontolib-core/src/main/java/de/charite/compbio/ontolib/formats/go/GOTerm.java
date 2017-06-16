@@ -28,8 +28,8 @@ public class GOTerm implements Term {
   /** The term's comment string. */
   private final String comment;
 
-  /** The subset that the term is in, <code>null</code> if none. */
-  private final String subset;
+  /** The names of the subsets that the term is in, empty if none. */
+  private final List<String> subsets;
 
   /** The list of term synonyms. */
   private final List<TermSynonym> synonyms;
@@ -51,21 +51,21 @@ public class GOTerm implements Term {
    * @param name Human-readable term name.
    * @param definition Term definition.
    * @param comment Term comment.
-   * @param subset The subset that the term is in.
+   * @param subsets The names of the subset that the term is in, empty if none.
    * @param synonyms The synonyms for the term.
    * @param obsolete Whether or not the term is obsolete.
    * @param createdBy Author of the term.
    * @param creationDate Date of creation of the term.
    */
   public GOTerm(TermID id, List<TermID> altTermIDs, String name, String definition, String comment,
-      String subset, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
+      List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
       String creationDate) {
     this.id = id;
     this.altTermIDs = altTermIDs;
     this.name = name;
     this.definition = definition;
     this.comment = comment;
-    this.subset = subset;
+    this.subsets = subsets;
     this.synonyms = synonyms;
     this.obsolete = obsolete;
     this.createdBy = createdBy;
@@ -98,8 +98,8 @@ public class GOTerm implements Term {
   }
 
   @Override
-  public String getSubset() {
-    return subset;
+  public List<String> getSubsets() {
+    return subsets;
   }
 
   @Override

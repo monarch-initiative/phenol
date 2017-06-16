@@ -1,0 +1,93 @@
+package de.charite.compbio.ontolib.ontology.data;
+
+/**
+ * Implementation of an immutable {@link TermID}.
+ *
+ * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ */
+public final class ImmutableTermID implements TermID {
+
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
+
+  /** Prefix of the TermID. */
+  private final TermPrefix prefix;
+
+  /** Numeric term identifier. */
+  private final int id;
+
+  /**
+   * Constructor.
+   *
+   * @param prefix Prefix to use.
+   * @param id Numeric term ID.
+   */
+  public ImmutableTermID(TermPrefix prefix, int id) {
+    super();
+    this.prefix = prefix;
+    this.id = id;
+  }
+
+  @Override
+  public int compareTo(TermID o) {
+    if (this == o) {
+      return 0;
+    }
+    final int tmp = prefix.compareTo(o.getPrefix());
+    if (tmp == 0) {
+      return id - o.getID();
+    } else {
+      return tmp;
+    }
+  }
+
+  @Override
+  public TermPrefix getPrefix() {
+    return prefix;
+  }
+
+  @Override
+  public int getID() {
+    return id;
+  }
+
+  @Override
+  public String toString() {
+    return "ImmutableTermID [prefix=" + prefix + ", id=" + id + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + id;
+    result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    ImmutableTermID other = (ImmutableTermID) obj;
+    if (id != other.id) {
+      return false;
+    }
+    if (prefix == null) {
+      if (other.prefix != null) {
+        return false;
+      }
+    } else if (!prefix.equals(other.prefix)) {
+      return false;
+    }
+    return true;
+  }
+
+}

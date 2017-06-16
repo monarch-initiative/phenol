@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
+
 /**
  * Representation of a stanza entry starting with <code>synomymtypedef</code>.
  *
@@ -8,13 +10,13 @@ package de.charite.compbio.ontolib.io.obo;
 public final class StanzaEntrySynonymtypedef extends StanzaEntry {
 
   /** Name of the synonym typedef. */
-  private final String synonymTypeName;
+  private final String termSynonymScope;
 
   /** Description string. */
   private final String description;
 
-  /** Optional {@link SynonymScopeIdentifier}, <code>null</code> for none. */
-  private final SynonymScopeIdentifier synonymScopeIdentifier;
+  /** Optional {@link TermSynonymScope}, <code>null</code> for none. */
+  private final TermSynonymScope synonymScopeIdentifier;
 
   /**
    * Constructor.
@@ -28,19 +30,18 @@ public final class StanzaEntrySynonymtypedef extends StanzaEntry {
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntrySynonymtypedef(String synonymTypeName, String description,
-      SynonymScopeIdentifier synonymScopeIdentifier, TrailingModifier trailingModifier,
-      String comment) {
+      TermSynonymScope termSynonymScope, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.SYNONYMTYPEDEF, trailingModifier, comment);
-    this.synonymTypeName = synonymTypeName;
+    this.termSynonymScope = synonymTypeName;
     this.description = description;
-    this.synonymScopeIdentifier = synonymScopeIdentifier;
+    this.synonymScopeIdentifier = termSynonymScope;
   }
 
   /**
    * @return The stanza's synonym type name.
    */
-  public String getSynonymTypeName() {
-    return synonymTypeName;
+  public String getTermSynonymScope() {
+    return termSynonymScope;
   }
 
   /**
@@ -51,15 +52,15 @@ public final class StanzaEntrySynonymtypedef extends StanzaEntry {
   }
 
   /**
-   * @return Optional {@link SynonymScopeIdentifier}, <code>null</code> for none.
+   * @return Optional {@link TermSynonymScope}, <code>null</code> for none.
    */
-  public SynonymScopeIdentifier getSynonymScopeIdentifier() {
+  public TermSynonymScope getSynonymScopeIdentifier() {
     return synonymScopeIdentifier;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntrySynonytypedef [synonymTypeName=" + synonymTypeName + ", description="
+    return "StanzaEntrySynonytypedef [termSynonymScope=" + termSynonymScope + ", description="
         + description + ", synonymScopeIdentifier=" + synonymScopeIdentifier + ", getType()="
         + getType() + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()="
         + getComment() + "]";

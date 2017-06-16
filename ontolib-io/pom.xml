@@ -20,6 +20,13 @@
   </properties>
 
   <dependencies>
+    <!-- Ontolib core -->
+    <dependency>
+      <groupId>de.charite.compbio</groupId>
+      <artifactId>ontolib-core</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+  
     <!-- Antlr4 runtime -->
     <dependency>
       <groupId>org.antlr</groupId>

@@ -1,10 +1,14 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import de.charite.compbio.ontolib.graph.data.DirectedGraph;
-import de.charite.compbio.ontolib.graph.data.Edge;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+import de.charite.compbio.ontolib.graph.data.Edge;
+
+// TODO: allow accessing file-wide meta information
 
 /**
  * Interface for ontologies to implement.
@@ -21,7 +25,7 @@ import java.util.Set;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public interface Ontology<T extends Term, R extends TermRelation> {
+public interface Ontology<T extends Term, R extends TermRelation> extends Serializable {
 
   /**
    * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure
@@ -38,7 +42,7 @@ public interface Ontology<T extends Term, R extends TermRelation> {
    * @return {@link Map} from <code>Integer</code> edge ID to corresponding value of
    *         {@link TermRelation} sub class <code>R</code>.
    */
-  Map<Integer, R> getEdgeMap();
+  Map<Integer, R> getRelationMap();
 
   // TODO: do we need this idiosyncratic?
   boolean isRootTerm(TermID tID);

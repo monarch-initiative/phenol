@@ -15,7 +15,7 @@ package de.charite.compbio.ontolib.io.obo;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class StanzaEntry {
+public class StanzaEntry {
 
   /** Description of this entry's type. */
   private final StanzaEntryType type;

@@ -9,6 +9,7 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueSynonymContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TermStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;
+import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
 
 public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBase {
 
@@ -45,7 +46,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXRefList());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -61,7 +62,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXRefList());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
@@ -78,7 +79,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXRefList());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -94,7 +95,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXRefList());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
@@ -112,7 +113,7 @@ public class Antlr4OBOParserTestStanzaEntrySynonym extends Antlr4OBOParserTestBa
 
     assertEquals(StanzaEntryType.SYNONYM, stanzaEntry.getType());
     assertEquals("\"Synonym Name\"", stanzaEntry.getText());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertEquals("MARKETING", stanzaEntry.getSynonymTypeName());
     assertEquals(
         "DBXRefList [dbXRefs=[DBXRef [name=db-xref, description=null, trailingModifier=null]]]",

@@ -8,6 +8,7 @@ import org.junit.Test;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.HeaderKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.KeyValueSynonymtypedefContext;
+import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
 
 public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParserTestBase {
 
@@ -32,9 +33,9 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
         (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
-    assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
+    assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("\"British spelling\"", stanzaEntry.getDescription());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getSynonymScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -48,9 +49,9 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
         (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
-    assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
+    assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("\"British spelling\"", stanzaEntry.getDescription());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getSynonymScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -65,9 +66,9 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
         (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
-    assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
+    assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("\"British spelling\"", stanzaEntry.getDescription());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getSynonymScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
@@ -82,9 +83,9 @@ public class Antlr4OBOParserTestStanzaEntrySynonymtypedef extends Antlr4OBOParse
         (StanzaEntrySynonymtypedef) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.SYNONYMTYPEDEF, stanzaEntry.getType());
-    assertEquals("UK_SPELLING", stanzaEntry.getSynonymTypeName());
+    assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("\"British spelling\"", stanzaEntry.getDescription());
-    assertEquals(SynonymScopeIdentifier.EXACT, stanzaEntry.getSynonymScopeIdentifier());
+    assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());

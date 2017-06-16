@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermPrefix extends Serializable {
+public interface TermPrefix extends Comparable<TermPrefix>, Serializable {
 
   /**
    * @return String value of the <code>TermPrefix</code>

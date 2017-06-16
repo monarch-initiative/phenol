@@ -65,8 +65,10 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifier
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TrailingModifierKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParser.TypedefStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OBOParserBaseListener;
+import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
 
 // TODO: validate the cardinality of entries in header/stanza
+// TODO: using Optional<> for optioanl entries would greatly simplify downstream processing
 
 /**
  * Master <code>ParseTreeListener</code> to use for OBO parsing.
@@ -316,14 +318,14 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   @Override
   public void exitKeyValueSynonym(KeyValueSynonymContext ctx) {
     final String text = ctx.QuotedString().getText();
-    final SynonymScopeIdentifier synonymScopeIdentifier =
-        SynonymScopeIdentifier.valueOf(ctx.ScopeIdentifier().getText());
+    final TermSynonymScope termSynonymScope =
+        TermSynonymScope.valueOf(ctx.ScopeIdentifier().getText());
     final String scopeTypeName = trimmedEmptyToNull(ctx.Word());
     final DBXRefList dbXRefList = (DBXRefList) getValue(ctx.dbXRefList());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntrySynonym(text, synonymScopeIdentifier, scopeTypeName, dbXRefList,
+    setValue(ctx, new StanzaEntrySynonym(text, termSynonymScope, scopeTypeName, dbXRefList,
         trailingModifier, comment));
   }
 
@@ -651,17 +653,17 @@ class OBOParserListener extends Antlr4OBOParserBaseListener {
   public void exitKeyValueSynonymtypedef(KeyValueSynonymtypedefContext ctx) {
     final String synonymTypeName = ctx.Word().getText();
     final String description = ctx.QuotedString().getText();
-    final SynonymScopeIdentifier synonymScopeIdentifier;
+    final TermSynonymScope termSynonymScope;
     if (ctx.ScopeIdentifier() != null) {
-      synonymScopeIdentifier = SynonymScopeIdentifier.valueOf(ctx.ScopeIdentifier().getText());
+      termSynonymScope = TermSynonymScope.valueOf(ctx.ScopeIdentifier().getText());
     } else {
-      synonymScopeIdentifier = null;
+      termSynonymScope = null;
     }
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntrySynonymtypedef(synonymTypeName, description,
-        synonymScopeIdentifier, trailingModifier, comment));
+    setValue(ctx, new StanzaEntrySynonymtypedef(synonymTypeName, description, termSynonymScope,
+        trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueDefaultRelationshipIdspace</code> rule. */
