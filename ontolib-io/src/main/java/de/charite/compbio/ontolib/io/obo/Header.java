@@ -17,7 +17,7 @@ public class Header {
   /**
    * Factory method.
    *
-   * @param stanzaKeyValues List of {@link StanzaKey} entry objects to construct with.
+   * @param stanzaKeyValues List of {@link StanzaEntry} objects to construct with.
    * @return Constructed {@link Header}.
    */
   public static Header create(List<StanzaEntry> stanzaKeyValues) {
@@ -33,7 +33,7 @@ public class Header {
   /**
    * Constructor.
    *
-   * @param entries {@link ListStanzaEntry} objects to initalize with.
+   * @param entries {@link List} of {@link StanzaEntry} objects to initalize with.
    */
   public Header(List<StanzaEntry> entries) {
     this.entries = new ArrayList<>(entries);

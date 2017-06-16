@@ -13,7 +13,7 @@ public final class StanzaEntryRange extends StanzaEntry {
   /**
    * Constructor.
    *
-   * @param id The range ID or value.
+   * @param value The range ID or value.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.

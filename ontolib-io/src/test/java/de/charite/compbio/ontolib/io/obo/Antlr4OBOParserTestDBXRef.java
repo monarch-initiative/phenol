@@ -31,7 +31,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
-    assertEquals("Author \"description", dbXRef.getDescription());
+    assertEquals("\"Author \\\"description\"", dbXRef.getDescription());
     assertNull(dbXRef.getTrailingModifier());
   }
 
@@ -55,7 +55,7 @@ public class Antlr4OBOParserTestDBXRef extends Antlr4OBOParserTestBase {
     final DBXRef dbXRef = (DBXRef) getOuterListener().getValue(ctx);
 
     assertEquals("HP:author", dbXRef.getName());
-    assertEquals("Author \"description", dbXRef.getDescription());
+    assertEquals("\"Author \\\"description\"", dbXRef.getDescription());
     assertEquals(
         "TrailingModifier [keyValue=[KeyValue [key=key1, value=value1], KeyValue [key=key2, "
             + "value=value2]]]",

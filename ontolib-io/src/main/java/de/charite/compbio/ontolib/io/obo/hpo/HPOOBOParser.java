@@ -15,6 +15,21 @@ import java.io.IOException;
 /**
  * Facade class for parsing the HPO from an OBO file.
  *
+ * <p>
+ * <b>Usage Example</b>
+ * <p>
+ *
+ * <pre>
+ * String fileName = "hp.obo";
+ * HPOOBOParser parser = new HPOOBOParser(new File(fileName));
+ * HPOntology hpo;
+ * try {
+ *   hpo = parser.parse();
+ * } except (IOException e) {
+ *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
+ * }
+ * </pre>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class HPOOBOParser {

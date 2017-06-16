@@ -23,8 +23,7 @@ public final class StanzaEntrySynonymtypedef extends StanzaEntry {
    *
    * @param synonymTypeName Synonym type name.
    * @param description Description string.
-   * @param synonymScopeIdentifier Optional {@link SynonymScopeIdentifier}, <code>null</code> for
-   *        none.
+   * @param termSynonymScope Optional {@link TermSynonymScope}, <code>null</code> for none.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.

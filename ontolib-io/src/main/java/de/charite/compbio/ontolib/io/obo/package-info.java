@@ -1,5 +1,5 @@
 /**
- * This package contains the generic code for parsing OBO files.
+ * Generic code for parsing OBO files.
  *
  * <p>
  * The facade classes here are {@link de.charite.compbio.ontolib.io.obo.OBOParser} and
@@ -19,11 +19,12 @@
  *
  * <p>
  * {@link de.charite.compbio.ontolib.io.obo.OBOImmutableOntologyLoader} allows you to directly build
- * an {@link de.charite.compbio.ontolib.io.obo.ImmutableOntology} from the stream of
+ * an {@link de.charite.compbio.ontolib.ontology.data.ImmutableOntology} from the stream of
  * {@link de.charite.compbio.ontolib.io.obo.Stanza} events. For each ontology to load (e.g., GO, HPO
  * etc.), there is a {@link de.charite.compbio.ontolib.io.obo.OBOOntologyEntryFactory}
  * implementation that has to be passed into the loader for construction of the concrete
- * {@link Term} and {@link TermRelation} implementations.
+ * {@link de.charite.compbio.ontolib.ontology.data.Term} and
+ * {@link de.charite.compbio.ontolib.ontology.data.TermRelation} implementations.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>

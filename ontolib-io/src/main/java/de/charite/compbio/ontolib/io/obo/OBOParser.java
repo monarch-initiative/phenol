@@ -76,7 +76,7 @@ public final class OBOParser {
   /**
    * Parse OBO file in one go.
    * 
-   * @param file Path to OBO file.
+   * @param oboString String with OBO file contents.
    * @return Completely parsed OBO file.
    *
    * @throws IOException In case of problems with file I/O. F
@@ -90,7 +90,7 @@ public final class OBOParser {
   /**
    * Parse OBO file, report complete parsing of header and stanzas via <code>listener</code>.
    * 
-   * @param file Path to OBO file.
+   * @param oboString String with OBO file contents.
    * @param listener Listener for parsing.
    *
    * @throws IOException In case of problems with file I/O.

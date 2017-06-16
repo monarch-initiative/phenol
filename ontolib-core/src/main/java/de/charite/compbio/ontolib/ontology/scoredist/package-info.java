@@ -1,5 +1,5 @@
 /**
- * Code for precomputing score distributions.
+ * Precomputation of score distributions.
  *
  * <p>
  * These precomputed score distributions can be used for empirical computation of p values.

@@ -17,7 +17,7 @@ public interface OBOParseResultListener {
   /**
    * Called when a stanza is completely parsed.
    *
-   * @param header {@link Stanza} parser result.
+   * @param stanza {@link Stanza} parser result.
    */
   void parsedStanza(Stanza stanza);
 

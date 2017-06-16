@@ -1,11 +1,11 @@
 /**
- * Utilities for ontology file I/O.
+ * Loading the HPO from OBO files.
  *
  * <p>
  * Use {@link de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser} for loading the HPO from OBO
- * format, the class Javadoc has a usage example.
+ * format.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-package de.charite.compbio.ontolib.io.obo.hpo;
+package de.charite.compbio.ontolib.io.utils;
