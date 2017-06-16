@@ -3,7 +3,6 @@ package de.charite.compbio.ontolib.io.obo;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermID;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
-import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -23,7 +22,7 @@ public interface OBOOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param termIDs The term ID mapping to use.
    */
   public void setTermIDs(SortedMap<String, ImmutableTermID> termIDs);
-  
+
   /**
    * Construct term from {@link Stanza}.
    *

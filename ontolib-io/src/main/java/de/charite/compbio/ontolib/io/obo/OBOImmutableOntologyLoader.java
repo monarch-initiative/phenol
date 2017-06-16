@@ -15,11 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -97,7 +95,7 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
     for (Entry<ImmutableTermID, List<BundledIsARelation>> e : helper.getIsATermIDPairs()
         .entrySet()) {
       for (BundledIsARelation b : e.getValue()) {
-        ImmutableEdge.construct(e.getKey(), b.getDest(), b.getRelation().getID());
+        edges.add(ImmutableEdge.construct(e.getKey(), b.getDest(), b.getRelation().getID()));
         relationMap.put(b.getRelation().getID(), b.getRelation());
       }
     }
@@ -133,17 +131,16 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
       return rootCandidates.get(0);
     } else {
       final TermPrefix rootPrefix = helper.getFirstTermID().getPrefix();
-      final int rootNumber = 0;
-      final ImmutableTermID rootID = new ImmutableTermID(rootPrefix, rootNumber);
-      // Bail out if "PREFIX:0" is already taken.
       // TODO: implement something smarter?
+      final String rootLocalID = helper.getFirstTermID().getID().replaceAll(".", "0");
+      final ImmutableTermID rootID = new ImmutableTermID(rootPrefix, rootLocalID);
       if (helper.getAllTermIDs().contains(rootID)) {
         throw new RuntimeException(
             "Tried to guess artificial root as " + rootID + " but is already taken.");
       }
 
       // Register term ID.
-      final String rootIDString = rootPrefix.getValue() + ":" + rootNumber;
+      final String rootIDString = rootPrefix.getValue() + ":" + rootLocalID;
       helper.getTermIDs().put(rootIDString, rootID);
       helper.getAllTermIDs().add(rootID);
 
@@ -191,8 +188,8 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
     /** First seen term ID, we will construct the artificial root term if necessary. */
     private ImmutableTermID firstTermID = null;
 
-    /** All constructed term IDs. */
-    private final Set<TermID> allTermIDs = new HashSet<>();
+    /** All TermID objects constructed from Term stanzas (only!). */
+    private final List<TermID> allTermIDs = new ArrayList<>();
 
     // TODO: At the moment, HP:1 and HP:01 would be mapped to different objects :(
     /** Term strings to terms. */
@@ -238,6 +235,7 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
         }
         final StanzaEntryID idEntry = (StanzaEntryID) idEntries.get(0);
         final ImmutableTermID sourceID = registeredTermID(idEntry.getId());
+        allTermIDs.add(sourceID);
 
         // Construct TermID objects for all alternative ids.
         final List<StanzaEntry> altIDEntries = stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
@@ -306,9 +304,8 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
         prefixes.put(tokens[0], tmpPrefix);
       }
 
-      tmpID = new ImmutableTermID(tmpPrefix, Integer.parseInt(tokens[1]));
+      tmpID = new ImmutableTermID(tmpPrefix, tokens[1]);
       termIDs.put(termIDStr, tmpID);
-      allTermIDs.add(tmpID);
 
       // Make sure to record the first term ID.
       if (firstTermID == null) {
@@ -338,7 +335,7 @@ public final class OBOImmutableOntologyLoader<T extends Term, R extends TermRela
     /**
      * @return Set of all seen term ids.
      */
-    public Set<TermID> getAllTermIDs() {
+    public List<TermID> getAllTermIDs() {
       return allTermIDs;
     }
 

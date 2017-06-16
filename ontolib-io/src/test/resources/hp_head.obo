@@ -30,32 +30,7 @@ logical-definition-view-relation: has_part
 id: HP:0000001
 name: All
 comment: Root of all terms in the Human Phenotype Ontology.
-xref: UMLS:0444868 ! UMLS:C0444868
-
-[Term]
-id: HP:0000002
-name: Abnormality of body height
-def: "Deviation from the norm of height with respect to that which is expected according to age and gender norms." [HPO:probinson]
-synonym: "Abnormality of body height" EXACT layperson []
-xref: UMLS:4025901 ! UMLS:C4025901
-is_a: HP:0001507 ! Growth abnormality
-created_by: peter
-creation_date: 2008-02-27T02:20:00Z
-
-[Term]
-id: HP:0000003
-name: Multicystic kidney dysplasia
-alt_id: HP:0004715
-def: "Multicystic dysplasia of the kidney is characterized by multiple cysts of varying size in the kidney and the absence of a normal pelvicaliceal system. The condition is associated with ureteral or ureteropelvic atresia, and the affected kidney is nonfunctional." [HPO:curators]
-comment: Multicystic kidney dysplasia is the result of abnormal fetal renal development in which the affected kidney is replaced by multiple cysts and has little or no residual function. The vast majority of multicystic kidneys are unilateral. Multicystic kidney can be diagnosed on prenatal ultrasound.
-synonym: "Multicystic dysplastic kidney" EXACT []
-synonym: "Multicystic kidneys" EXACT []
-synonym: "Multicystic renal dysplasia" EXACT []
-xref: MSH:021782 ! MSH:D021782
-xref: SNOMEDCT_US:204962002
-xref: SNOMEDCT_US:82525005
-xref: UMLS:3714581 ! UMLS:C3714581
-is_a: HP:0000107 ! Renal cyst
+xref: UMLS:C0444868
 
 [Term]
 id: HP:0000005
@@ -64,7 +39,7 @@ alt_id: HP:0001453
 alt_id: HP:0001461
 def: "The pattern in which a particular genetic trait or disorder is passed from one generation to the next." [HPO:probinson]
 synonym: "Inheritance" EXACT []
-xref: UMLS:1708511 ! UMLS:C1708511
+xref: UMLS:C1708511
 is_a: HP:0000001 ! All
 
 [Term]
@@ -82,7 +57,7 @@ synonym: "Autosomal dominant" EXACT []
 synonym: "Autosomal dominant form" RELATED [HPO:skoehler]
 synonym: "Autosomal dominant type" RELATED [HPO:skoehler]
 xref: SNOMEDCT_US:263681008
-xref: UMLS:0443147 ! UMLS:C0443147
+xref: UMLS:C0443147
 is_a: HP:0000005 ! Mode of inheritance
 
 [Term]
@@ -95,7 +70,6 @@ synonym: "Autosomal recessive" EXACT []
 synonym: "Autosomal recessive form" RELATED [HPO:skoehler]
 synonym: "Autosomal recessive predisposition" RELATED []
 xref: SNOMEDCT_US:258211005
-xref: UMLS:0441748 ! UMLS:C0441748
-xref: UMLS:4020899 ! UMLS:C4020899
+xref: UMLS:C0441748
+xref: UMLS:C4020899
 is_a: HP:0000005 ! Mode of inheritance
-

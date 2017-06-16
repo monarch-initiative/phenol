@@ -72,6 +72,11 @@ public class ImmutableEdge<V> implements Edge<V> {
     return new ImmutableEdge<V>(source, dest, id);
   }
 
+  @Override
+  public String toString() {
+    return "ImmutableEdge [source=" + source + ", dest=" + dest + ", id=" + id + "]";
+  }
+
   /**
    * Factory for {@link ImmutableEdge}.
    *

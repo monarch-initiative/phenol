@@ -19,6 +19,12 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  * corresponding labels.
  * </p>
  *
+ * <p>
+ * The graph contains one vertex for each Term in the loaded ontology (corresponding to
+ * <code>[Term]</code> stanzas in OBO). Terms that are just referred to are not represented in the
+ * ontology.
+ * </p>
+ *
  * @param <T> {@link Term} sub class this <code>Ontology</code> uses
  * @param <R> {@link TermRelation} sub class this <code>Ontology</code> uses.
  *
@@ -28,7 +34,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
 public interface Ontology<T extends Term, R extends TermRelation> extends Serializable {
 
   /**
-   * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure
+   * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure.
    */
   DirectedGraph<TermID, ? extends Edge<TermID>> getGraph();
 

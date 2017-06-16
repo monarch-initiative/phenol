@@ -172,7 +172,7 @@ class HPOOBOEntryFactory implements OBOOntologyEntryFactory<HPOTerm, HPOTermRela
     final TermID sourceID =
         termIDs.get(this.<StanzaEntryID>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermID destID = termIDs.get(stanzaEntry.getId());
-    return new HPOTermRelation(sourceID, destID, nextRelationID, HPORelationQualifier.IS_A);
+    return new HPOTermRelation(sourceID, destID, nextRelationID++, HPORelationQualifier.IS_A);
   }
 
   @Override
