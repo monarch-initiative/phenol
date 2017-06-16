@@ -25,7 +25,7 @@ import java.io.IOException;
  * HPOntology hpo;
  * try {
  *   hpo = parser.parse();
- * } except (IOException e) {
+ * } catch (IOException e) {
  *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
  * }
  * </pre>

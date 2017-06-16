@@ -375,7 +375,6 @@ Word
   (
     ESC2
     | ~[ \r\n[\]{},="]
-
   )+
 ;
 
@@ -417,7 +416,6 @@ Comment2
 ESC2
 :
   '\\' [nWt,"[\]{}]
-
 ;
 
 // Move errors from the lexer to the parser
