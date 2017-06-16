@@ -24,5 +24,5 @@ public interface TermID extends Comparable<TermID>, Serializable {
    * @return The full ID.
    */
   String getIDWithPrefix();
-  
+
 }
