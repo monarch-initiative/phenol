@@ -1,9 +1,12 @@
 package de.charite.compbio.ontolib.demos.benchmark_parsing;
 
+import de.charite.compbio.ontolib.formats.hpo.HPOntology;
 import de.charite.compbio.ontolib.io.obo.OBOParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * App for benchmarking parsing of ontology files.
@@ -18,8 +21,11 @@ public class App {
   /** Command to executed. */
   private Command command;
 
-  /** File to parse. */
-  private File file;
+  /** OBO file to parse. */
+  private File inputFile;
+
+  /** File to write serialized data to, if any. */
+  private File outputSerFile;
 
   /**
    * Construct with argument list.
@@ -48,11 +54,12 @@ public class App {
   }
 
   private void parseOBO() {
+    System.err.println("Parsing OBO...");
     final long startTime = System.nanoTime();
 
     final OBOParser parser = new OBOParser();
     try {
-      parser.parseFile(file);
+      parser.parseFile(inputFile);
     } catch (IOException e) {
       e.printStackTrace();
       System.exit(1);
@@ -64,48 +71,69 @@ public class App {
   }
 
   private void parseHPOOBO() {
+    System.err.println("Parsing HPO OBO...");
     final long startTime = System.nanoTime();
 
-    HPOOBOParser parser = new HPOOBOParser(file);
+    HPOOBOParser parser = new HPOOBOParser(inputFile);
+    HPOntology hpo;
     try {
-      parser.parse();
+      hpo = parser.parse();
     } catch (IOException e) {
       e.printStackTrace();
       System.exit(1);
+      return; // javac does not understand this is unreachable
     }
 
     final long endTime = System.nanoTime();
     final double duration = (endTime - startTime) / 1_000_000_000.0;
     System.out.println("Parsing HPO OBO took " + duration + " seconds");
+
+    if (outputSerFile != null) {
+      System.out.println("Writing .ser file " + outputSerFile + "...");;
+      try (FileOutputStream fout = new FileOutputStream(outputSerFile);
+          ObjectOutputStream oos = new ObjectOutputStream(fout)) {
+        oos.writeObject(hpo);
+      } catch (IOException e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
+      System.err.println("Done writing .ser file.");
+    }
   }
 
   /**
    * Parse command line arguments.
    */
   private void parseArgs() {
-    if (args.length != 2) {
+    if (args.length != 2 && args.length != 4) {
       printUsageError("Invalid argument count!");
     }
 
-    switch (args[0]) {
-      case "--obo":
-        command = Command.PARSE_OBO;
-        break;
-      case "--hpo-obo":
-        command = Command.PARSE_HPO_OBO;
-        break;
-      default:
-        printUsageError("Invalid first argument " + args[0]);
-        return;
+    for (int i = 0; i < args.length; i += 2) {
+      switch (args[i]) {
+        case "--obo":
+          inputFile = new File(args[i + 1]);
+          command = Command.PARSE_OBO;
+          break;
+        case "--hpo-obo":
+          command = Command.PARSE_HPO_OBO;
+          inputFile = new File(args[i + 1]);
+          break;
+        case "--output-ser":
+          outputSerFile = new File(args[i + 1]);
+          break;
+        default:
+          printUsageError("Invalid argument " + args[i]);
+          return;
+      }
     }
-
-    file = new File(args[1]);
   }
 
   /** Print error and usage, then exit. */
   private void printUsageError(String string) {
     System.err.println("ERROR: " + string + "\n");
-    System.err.println("Usage: java -jar app.jar (--obo FILE.obo|--hpo-obo hp.obo)");
+    System.err.println(
+        "Usage: java -jar app.jar [--output-ser FILE.ser] (--obo FILE.obo|--hpo-obo hp.obo)");
     System.exit(1);
   }
 
