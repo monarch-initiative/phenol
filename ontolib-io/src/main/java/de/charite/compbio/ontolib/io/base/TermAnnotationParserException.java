@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.io.base;
  */
 public class TermAnnotationParserException extends Exception {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /**

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,41 +28,49 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
     implements
       PairwiseSimilarity {
 
-  /** {@link Logger} object to use. */
+  /**
+   * {@link Logger} object to use.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(PairwiseResnikSimilarity.class);
 
-  /** {@link Ontology} to base computations on. */
+  /**
+   * {@link Ontology} to base computations on.
+   */
   private final Ontology<T, R> ontology;
 
-  /** {@link Map} from {@link TermID} to its information content. */
-  private final Map<TermID, Double> termToIC;
+  /**
+   * {@link Map} from {@link TermId} to its information content.
+   */
+  private final Map<TermId, Double> termToIc;
 
-  /** Precomputed similarities between all pairs of {@link TermID}s. */
-  private final Map<TermIDPair, Double> precomputedScores;
+  /**
+   * Precomputed similarities between all pairs of {@link TermId}s.
+   */
+  private final Map<TermIdPair, Double> precomputedScores;
 
   /**
    * Construct new {@link PairwiseResnikSimilarity}.
    * 
    * @param ontology {@link Ontology} to base computations on.
-   * @param termToIC {@link Map} from{@link TermID} to its information content.
+   * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
-  public PairwiseResnikSimilarity(Ontology<T, R> ontology, Map<TermID, Double> termToIC) {
+  public PairwiseResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
     this.ontology = ontology;
-    this.termToIC = termToIC;
+    this.termToIc = termToIc;
     this.precomputedScores = precomputeScores();
   }
 
   /**
    * @return Precomputed pairwise similarity scores.
    */
-  private Map<TermIDPair, Double> precomputeScores() {
+  private Map<TermIdPair, Double> precomputeScores() {
     LOGGER.info("Precomputing pairwise scores for {} terms...",
         new Object[] {ontology.countTerms()});
 
-    final Map<TermIDPair, Double> result = new HashMap<>();
-    for (TermID query : ontology.getTermIDs()) {
-      for (TermID target : ontology.getTermIDs()) {
-        result.put(new TermIDPair(query, target), computeScoreImpl(query, target));
+    final Map<TermIdPair, Double> result = new HashMap<>();
+    for (TermId query : ontology.getTermIds()) {
+      for (TermId target : ontology.getTermIds()) {
+        result.put(new TermIdPair(query, target), computeScoreImpl(query, target));
       }
     }
 
@@ -74,22 +82,22 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
    * Implementation of computing similarity score between a <code>query</code> and a
    * <code>query</code>.
    * 
-   * @param query Query {@link TermID}.
-   * @param target Target {@link TermID}.
+   * @param query Query {@link TermId}.
+   * @param target Target {@link TermId}.
    * @return Precomputed pairwise Resnik similarity score.
    */
-  public double computeScoreImpl(TermID query, TermID target) {
-    final Set<TermID> queryTerms = ontology.getAllAncestorTermIDs(Lists.newArrayList(query), true);
-    final Set<TermID> targetTerms =
-        ontology.getAllAncestorTermIDs(Lists.newArrayList(target), true);
+  public double computeScoreImpl(TermId query, TermId target) {
+    final Set<TermId> queryTerms = ontology.getAllAncestorTermIds(Lists.newArrayList(query), true);
+    final Set<TermId> targetTerms =
+        ontology.getAllAncestorTermIds(Lists.newArrayList(target), true);
 
-    return Sets.intersection(queryTerms, targetTerms).stream().mapToDouble(tID -> termToIC.get(tID))
+    return Sets.intersection(queryTerms, targetTerms).stream().mapToDouble(tId -> termToIc.get(tId))
         .max().orElse(0.0);
   }
 
   @Override
-  public double computeScore(TermID query, TermID target) {
-    return precomputedScores.get(new TermIDPair(query, target));
+  public double computeScore(TermId query, TermId target) {
+    return precomputedScores.get(new TermIdPair(query, target));
   }
 
   /**
@@ -100,34 +108,38 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
   }
 
   /**
-   * @return {@link Map} from {@link TermID} to information content.
+   * @return {@link Map} from {@link TermId} to information content.
    */
-  public Map<TermID, Double> getTermToIC() {
-    return termToIC;
+  public Map<TermId, Double> getTermToIc() {
+    return termToIc;
   }
 
   /**
-   * Simply a pair of {@link TermID}s, to be used for the precomputation in the pairwise Resnik
+   * Simply a pair of {@link TermId}s, to be used for the precomputation in the pairwise Resnik
    * similarity.
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
    */
-  private static class TermIDPair {
+  private static class TermIdPair {
 
-    /** Query {@link TermID}. */
-    private final TermID query;
+    /**
+     * Query {@link TermId}.
+     */
+    private final TermId query;
 
-    /** Target {@link TermID}. */
-    private final TermID target;
+    /**
+     * Target {@link TermId}.
+     */
+    private final TermId target;
 
     /**
      * Constructor.
      * 
-     * @param query Query {@link TermID}
-     * @param target Target {@link TermID}
+     * @param query Query {@link TermId}
+     * @param target Target {@link TermId}
      */
-    public TermIDPair(TermID query, TermID target) {
+    public TermIdPair(TermId query, TermId target) {
       this.query = query;
       this.target = target;
     }
@@ -152,7 +164,7 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
       if (getClass() != obj.getClass()) {
         return false;
       }
-      TermIDPair other = (TermIDPair) obj;
+      TermIdPair other = (TermIdPair) obj;
       if (query == null) {
         if (other.query != null) {
           return false;

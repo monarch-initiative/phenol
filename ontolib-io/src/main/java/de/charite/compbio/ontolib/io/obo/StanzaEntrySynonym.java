@@ -19,7 +19,7 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   private final String synonymTypeName;
 
   /** Optional dbXRef list of stanza entry, <code>null</code> if missing. */
-  private final DBXRefList dbXRefList;
+  private final DbXrefList dbXRefList;
 
   /**
    * Constructor.
@@ -27,13 +27,13 @@ public final class StanzaEntrySynonym extends StanzaEntry {
    * @param text Synonym text
    * @param termSynonymScope {@link TermSynonymScope} of this synonym.
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
-   * @param dbXRefList Optional {@link DBXRefList}, <code>null</code> if missing.
+   * @param dbXRefList Optional {@link DbXrefList}, <code>null</code> if missing.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntrySynonym(String text, TermSynonymScope termSynonymScope, String synonymTypeName,
-      DBXRefList dbXRefList, TrailingModifier trailingModifier, String comment) {
+      DbXrefList dbXRefList, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.SYNONYM, trailingModifier, comment);
     this.text = text;
     this.termSynonymScope = termSynonymScope;
@@ -63,9 +63,9 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   }
 
   /**
-   * @return Optional {@link DBXRefList}, <code>null</code> if empty.
+   * @return Optional {@link DbXrefList}, <code>null</code> if empty.
    */
-  public DBXRefList getDbXRefList() {
+  public DbXrefList getDbXRefList() {
     return dbXRefList;
   }
 

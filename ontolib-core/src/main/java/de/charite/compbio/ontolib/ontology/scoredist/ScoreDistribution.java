@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
  */
 public final class ScoreDistribution implements Serializable {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** Number of terms used for precomputing scores with. */
   private final int numTerms;
 
-  /** Mapping from "world object" ID to score distribution. */
+  /** Mapping from "world object" Id to score distribution. */
   private final Map<Integer, ObjectScoreDistribution> objectScoreDistributions;
 
   /**
@@ -28,7 +28,7 @@ public final class ScoreDistribution implements Serializable {
    *
    * <p>
    * This can be used for merging results obtained in parallel. All {@link ScoreDistribution}s must
-   * have the same number of terms and there must be no overlap in "world object" IDs.
+   * have the same number of terms and there must be no overlap in "world object" Ids.
    * </p>
    *
    * @param distributions {@link Collection} of {@link ScoreDistribution}s to merge.
@@ -46,7 +46,7 @@ public final class ScoreDistribution implements Serializable {
     for (ScoreDistribution d : distributions) {
       for (Entry<Integer, ObjectScoreDistribution> e : d.objectScoreDistributions.entrySet()) {
         if (mapping.containsKey(e.getKey())) {
-          throw new RuntimeException("Duplicate object ID " + e.getKey() + " detected");
+          throw new RuntimeException("Duplicate object Id " + e.getKey() + " detected");
         } else {
           mapping.put(e.getKey(), e.getValue());
         }
@@ -60,7 +60,7 @@ public final class ScoreDistribution implements Serializable {
    * Constructor.
    *
    * @param numTerms Number of terms that this score distribution was computed for.
-   * @param objectScoreDistributions {@link Map} from "world object" ID to
+   * @param objectScoreDistributions {@link Map} from "world object" Id to
    *        {@link ObjectScoreDistribution}.
    */
   public ScoreDistribution(int numTerms,
@@ -79,11 +79,11 @@ public final class ScoreDistribution implements Serializable {
   /**
    * Retrieve {@link ObjectScoreDistribution} for the given "world object".
    *
-   * @param objectID "World object" ID to get {@link ObjectScoreDistribution} for.
-   * @return The object score distributions for the given <code>objectID</code>.
+   * @param objectId "World object" Id to get {@link ObjectScoreDistribution} for.
+   * @return The object score distributions for the given <code>objectId</code>.
    */
-  public ObjectScoreDistribution getObjectScoreDistribution(int objectID) {
-    return objectScoreDistributions.get(objectID);
+  public ObjectScoreDistribution getObjectScoreDistribution(int objectId) {
+    return objectScoreDistributions.get(objectId);
   }
 
 }

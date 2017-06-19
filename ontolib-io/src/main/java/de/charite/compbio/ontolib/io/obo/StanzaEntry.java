@@ -20,7 +20,9 @@ public class StanzaEntry {
   /** Description of this entry's type. */
   private final StanzaEntryType type;
 
-  /** {@link TrailingModifier} of this StanzaEntry, <code>null</code> if none. */
+  /**
+   * {@link TrailingModifier} of this StanzaEntry, <code>null</code> if none.
+   */
   private final TrailingModifier trailingModifier;
 
   /** String with comment for this stanza entry, <code>null</code> if no trailing comment. */

@@ -29,10 +29,12 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
     implements
       DirectedGraph<V, E> {
 
-  /** {@link Logger} object to use. */
+  /**
+   * {@link Logger} object to use.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(ImmutableDirectedGraph.class);
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** Mapping from vertex to list of incoming and outgoing directed edges. */
@@ -183,13 +185,13 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    *
    * @raises VerticesAndEdgesIncompatibleException in case of incompatibilities.
    */
-  private static <Vertex> void checkCompatibility(Collection<Vertex> vertices,
-      Collection<? extends Edge<Vertex>> edges) {
+  private static <VertexT> void checkCompatibility(Collection<VertexT> vertices,
+      Collection<? extends Edge<VertexT>> edges) {
     LOGGER.info("Checking vertices ({}) and edges ({}) for compatibility...",
         new Object[] {vertices.size(), edges.size()});
 
-    Set<Vertex> vertexSet = new HashSet<>(vertices);
-    for (Edge<Vertex> edge : edges) {
+    Set<VertexT> vertexSet = new HashSet<>(vertices);
+    for (Edge<VertexT> edge : edges) {
       if (!vertexSet.contains(edge.getSource())) {
         throw new VerticesAndEdgesIncompatibleException("Unknown source edge in edge " + edge);
       }
@@ -364,17 +366,17 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
     // Create subset of vertices and edges
     Set<V> vertexSubset = new HashSet<V>();
-    Iterator<V> vIt = vertexIterator();
-    while (vIt.hasNext()) {
-      final V v = vIt.next();
+    Iterator<V> vertexIt = vertexIterator();
+    while (vertexIt.hasNext()) {
+      final V v = vertexIt.next();
       if (argVertexSet.contains(v)) {
         vertexSubset.add(v);
       }
     }
     Set<E> edgeSubset = new HashSet<E>();
-    Iterator<E> eIt = edgeIterator();
-    while (eIt.hasNext()) {
-      E e = eIt.next();
+    Iterator<E> edgeIt = edgeIterator();
+    while (edgeIt.hasNext()) {
+      E e = edgeIt.next();
       if (argVertexSet.contains(e.getSource()) && argVertexSet.contains(e.getDest())) {
         edgeSubset.add((E) e.clone());
       }
@@ -397,14 +399,16 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * Note that when using the {@link #addEdge(Object, Object)} API then the edge identifiers are
    * taken using the edge factory that can be retrieved with {@link #getEdgeFactory()}. When mixing
    * this function call with calls to {@link #addEdge(ImmutableEdge)}, take good care to update the
-   * next edge ID to give out via {@link ImmutableEdge.Factory#setNextEdgeID(int)}.
+   * next edge Id to give out via {@link ImmutableEdge.Factory#setNextEdgeId(int)}.
    * </p>
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
   public static class Builder<V, E extends ImmutableEdge<V>> {
 
-    /** {@link Logger} object to use. */
+    /**
+     * {@link Logger} object to use.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
 
     /** Vertices added to the builder so far. */
@@ -481,16 +485,16 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
      * @return Freshly built {@link ImmutableDirectedGraph}
      */
     public final ImmutableDirectedGraph<V, E> build(final boolean checkConsistency) {
-      // Ensure that no edge ID is seen twice.
-      LOGGER.info("Checking edge IDs...");
+      // Ensure that no edge Id is seen twice.
+      LOGGER.info("Checking edge Ids...");
       final Set<Integer> seen = new HashSet<>();
       for (E e : edges) {
-        if (seen.contains(e.getID())) {
-          throw new RuntimeException("Duplicate edge ID " + e.getID() + " in edge list!");
+        if (seen.contains(e.getId())) {
+          throw new RuntimeException("Duplicate edge Id " + e.getId() + " in edge list!");
         }
-        seen.add(e.getID());
+        seen.add(e.getId());
       }
-      LOGGER.info("Edge IDs are sane.");
+      LOGGER.info("Edge Ids are sane.");
 
       LOGGER.info("Building ImmutableDirectedGraph...");
       final ImmutableDirectedGraph<V, E> result =

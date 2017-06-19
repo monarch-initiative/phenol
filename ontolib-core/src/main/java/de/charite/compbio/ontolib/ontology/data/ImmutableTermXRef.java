@@ -7,11 +7,11 @@ package de.charite.compbio.ontolib.ontology.data;
  */
 public class ImmutableTermXRef implements TermXRef {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
-  /** Referenced term ID. */
-  private final TermID id;
+  /** Referenced term Id. */
+  private final TermId id;
 
   /** Referenced description. */
   private final String description;
@@ -19,16 +19,16 @@ public class ImmutableTermXRef implements TermXRef {
   /**
    * Constructor.
    *
-   * @param id The term's ID.
+   * @param id The term's Id.
    * @param description The cross reference description.
    */
-  public ImmutableTermXRef(TermID id, String description) {
+  public ImmutableTermXRef(TermId id, String description) {
     this.id = id;
     this.description = description;
   }
 
   @Override
-  public TermID getID() {
+  public TermId getId() {
     return id;
   }
 

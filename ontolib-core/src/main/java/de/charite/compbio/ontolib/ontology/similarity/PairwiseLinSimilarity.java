@@ -1,7 +1,7 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Map;
 
@@ -28,10 +28,10 @@ final class PairwiseLinSimilarity<T extends Term, R extends TermRelation>
   }
 
   @Override
-  public double computeScore(TermID query, TermID target) {
-    final Map<TermID, Double> termToIC = pairwiseResnik.getTermToIC();
+  public double computeScore(TermId query, TermId target) {
+    final Map<TermId, Double> termToIc = pairwiseResnik.getTermToIc();
     final double resnikScore = this.pairwiseResnik.computeScore(query, target);
-    return (2.0 * resnikScore) / (termToIC.get(query) + termToIC.get(target));
+    return (2.0 * resnikScore) / (termToIc.get(query) + termToIc.get(target));
   }
 
 }

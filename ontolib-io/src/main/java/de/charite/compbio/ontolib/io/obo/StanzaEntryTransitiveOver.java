@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryTransitiveOver extends StanzaEntry {
 
-  /** ID value of referenced relationship type. */
+  /** Id value of referenced relationship type. */
   private final String id;
 
   /**
    * Constructor.
    *
-   * @param id The ID of the referenced relationship type.
+   * @param id The Id of the referenced relationship type.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
@@ -24,7 +24,7 @@ public final class StanzaEntryTransitiveOver extends StanzaEntry {
   }
 
   /**
-   * @return The ID of the referenced relationship type.
+   * @return The Id of the referenced relationship type.
    */
   public String getId() {
     return id;

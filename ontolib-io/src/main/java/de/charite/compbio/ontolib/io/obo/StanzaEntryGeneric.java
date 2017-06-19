@@ -17,7 +17,7 @@ public final class StanzaEntryGeneric extends StanzaEntry {
    * Constructor.
    *
    * @param tag The value of the tag.
-   * @param value The value of the ID stanza entry.
+   * @param value The value of the Id stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.

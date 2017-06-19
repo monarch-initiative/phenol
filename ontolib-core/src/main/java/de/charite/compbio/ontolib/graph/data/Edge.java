@@ -11,16 +11,26 @@ import java.io.Serializable;
  */
 public interface Edge<V> extends Serializable, Cloneable {
 
-  /** @return source vertex (foot of directed edge) */
+  /**
+   * Query for source vertex.
+   *
+   * @return source vertex (foot of directed edge)
+   */
   V getSource();
 
-  /** @return destination vertex (tip of directed edge) */
+  /**
+   * Query for destination vertex.
+   *
+   * @return destination vertex (tip of directed edge)
+   */
   V getDest();
 
   /**
-   * @return numeric identifier of the edge, for mapping edge ID to edge properties
+   * Query for numeric edge ID.
+   *
+   * @return numeric identifier of the edge, for mapping edge Id to edge properties
    */
-  int getID();
+  int getId();
 
   /**
    * Interface for constructing edges of the correct type.
@@ -42,18 +52,18 @@ public interface Edge<V> extends Serializable, Cloneable {
     E construct(V u, V v);
     
     /**
-     * Get ID of next edge to construct.
+     * Get Id of next edge to construct.
      *
-     * @return Integer value of next edge ID.
+     * @return Integer value of next edge Id.
      */
-    int getNextEdgeID();
+    int getNextEdgeId();
 
     /**
-     * Set ID of next edge to construct.
+     * Set Id of next edge to construct.
      *
-     * @param nextEdgeID Integer value for next edge ID.
+     * @param nextEdgeId Integer value for next edge Id.
      */
-    void setNextEdgeID(final int nextEdgeID);
+    void setNextEdgeId(final int nextEdgeId);
   }
 
 }

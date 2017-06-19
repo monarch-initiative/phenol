@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.ontology.data;
  */
 public final class ImmutableTermPrefix implements TermPrefix {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** The prefix value. */

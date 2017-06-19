@@ -1,8 +1,8 @@
 package de.charite.compbio.ontolib.demos.benchmark_parsing;
 
-import de.charite.compbio.ontolib.formats.hpo.HPOntology;
-import de.charite.compbio.ontolib.io.obo.OBOParser;
-import de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser;
+import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
+import de.charite.compbio.ontolib.io.obo.OboParser;
+import de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -77,7 +77,7 @@ public class App {
     System.err.println("Parsing OBO...");
     final long startTime = System.nanoTime();
 
-    final OBOParser parser = new OBOParser();
+    final OboParser parser = new OboParser();
     try {
       parser.parseFile(inputFile);
     } catch (IOException e) {
@@ -94,8 +94,8 @@ public class App {
     System.err.println("Parsing HPO OBO...");
     long startTime = System.nanoTime();
 
-    HPOOBOParser parser = new HPOOBOParser(inputFile);
-    HPOntology hpo;
+    HpoOboParser parser = new HpoOboParser(inputFile);
+    HpoOntology hpo;
     try {
       hpo = parser.parse();
     } catch (IOException e) {

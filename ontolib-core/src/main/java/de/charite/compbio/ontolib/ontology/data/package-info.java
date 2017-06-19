@@ -10,7 +10,7 @@
  * <li>Redundancies should be kept to a minimum, in some places, it is possible functions are
  * offered for obtaining {@link java.util.Collection} or a {@link java.util.Iterator}, depending on
  * the user's requirements.</li>
- * <li>The API deals with {@link de.charite.compbio.ontolib.ontology.data.TermID}s on the graph
+ * <li>The API deals with {@link de.charite.compbio.ontolib.ontology.data.TermId}s on the graph
  * level. These are then linked to more richly attributed
  * {@link de.charite.compbio.ontolib.ontology.data.Term}s through {@link java.util.Map}s.</li>
  * <li>The central classes offer relatively minimal interfaces, decorator classes are used for

@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.ontology.similarity;
 
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Map;
 
@@ -28,11 +28,11 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
    * </p>
    * 
    * @param ontology {@link Ontology} to base computations on.
-   * @param termToIC {@link Map} from {@link TermID} to information content.
+   * @param termToIc {@link Map} from {@link TermId} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public LinSimilarity(Ontology<T, R> ontology, Map<TermID, Double> termToIC, boolean symmetric) {
-    super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIC));
+  public LinSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc, boolean symmetric) {
+    super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIc));
   }
 
 

@@ -15,7 +15,11 @@ import org.apache.commons.io.IOUtils;
  */
 public class ResourceUtils {
 
-  /** Helper function for reading resources into memory */
+  /**
+   * Helper function for reading resources into memory
+   *
+   * @param path to resource to read.
+   */
   public static String readResource(String path) {
     StringWriter writer = new StringWriter();
     try {
@@ -28,6 +32,9 @@ public class ResourceUtils {
 
   /**
    * Copy resource at the given path to the given output {@link File}.
+   * 
+   * @param path Source resource path.
+   * @param outFile File with output description.
    */
   public static void copyResourceToFile(String path, File outFile) {
     try (InputStream input = ResourceUtils.class.getResourceAsStream(path);

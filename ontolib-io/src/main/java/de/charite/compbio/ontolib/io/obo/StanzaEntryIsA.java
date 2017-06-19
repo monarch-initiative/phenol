@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryIsA extends StanzaEntry {
 
-  /** ID of referenced term. */
+  /** Id of referenced term. */
   private final String id;
 
   /**
    * Constructor.
    *
-   * @param id The value of the ID stanza entry.
+   * @param id The value of the Id stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
@@ -24,7 +24,7 @@ public final class StanzaEntryIsA extends StanzaEntry {
   }
 
   /**
-   * @return The ID of the referenced term.
+   * @return The Id of the referenced term.
    */
   public String getId() {
     return id;

@@ -10,19 +10,33 @@ import java.util.List;
  */
 public interface TermSynonym extends Serializable {
 
-  /** @return The synonym's label/value */
+  /**
+   * Query for synonym's label.
+   *
+   * @return The synonym's label/value
+   */
   String getValue();
 
-  /** @return The synonym scope. */
+  /**
+   * Query for synonym's scope.
+   *
+   * @return The synonym scope.
+   */
   TermSynonymScope getScope();
 
   /**
+   * Query for synonym type name.
+   *
    * @return Optional, further qualification of the synonym's type name, <code>null</code> if
    *         missing.
    */
   String getSynonymTypeName();
 
-  /** @return {@link List} of term cross-references, <code>null</code> if missing. */
+  /**
+   * Query for synonym's cross-references.
+   *
+   * @return {@link List} of term cross-references, <code>null</code> if missing.
+   */
   List<TermXRef> getTermXRefs();
 
 }

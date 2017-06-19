@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.graph.data;
  */
 public class VerticesAndEdgesIncompatibleException extends RuntimeException {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /**

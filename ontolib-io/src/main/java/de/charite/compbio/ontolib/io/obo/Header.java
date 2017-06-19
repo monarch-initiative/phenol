@@ -24,10 +24,14 @@ public class Header {
     return new Header(stanzaKeyValues);
   }
 
-  /** Wrapped {@link List} of {@link StanzaEntry} objects. */
+  /**
+   * Wrapped {@link List} of {@link StanzaEntry} objects.
+   */
   private final List<StanzaEntry> entries;
 
-  /** Mapping from {@link StanzaEntryType} to list of objects of this stanza. */
+  /**
+   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
+   */
   private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
 
   /**

@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.io.obo.hpo;
 
 import static org.junit.Assert.assertEquals;
 
-import de.charite.compbio.ontolib.formats.hpo.HPOGeneAnnotation;
+import de.charite.compbio.ontolib.formats.hpo.HpoGeneAnnotation;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
 import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 import java.io.File;
@@ -34,9 +34,9 @@ public class HpoGeneAnnotationParserTest {
     final HpoGeneAnnotationParser parser = new HpoGeneAnnotationParser(hpoGeneAnnotationHeadFile);
 
     // Read and check first record.
-    final HPOGeneAnnotation firstRecord = parser.next();
-    assertEquals("HPOGeneAnnotation [entrezGeneID=8192, entrezGeneSymbol=CLPP, termName=Primary "
-        + "amenorrhea, termID=ImmutableTermID [prefix=ImmutableTermPrefix [value=HP], "
+    final HpoGeneAnnotation firstRecord = parser.next();
+    assertEquals("HPOGeneAnnotation [entrezGeneId=8192, entrezGeneSymbol=CLPP, termName=Primary "
+        + "amenorrhea, termId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], "
         + "id=0000786]]", firstRecord.toString());
 
     // Read remaining records and check count.

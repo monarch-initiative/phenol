@@ -15,18 +15,24 @@ import java.io.Serializable;
 public interface TermRelation extends Serializable {
 
   /**
-   * @return {@link TermID} of source {@link Term}
+   * Query for relation's source (from).
+   *
+   * @return {@link TermId} of source {@link Term}
    */
-  TermID getSource();
+  TermId getSource();
 
   /**
-   * @return {@link TermID} of destination{@link Term}
+   * Query for relation's destination (to).
+   *
+   * @return {@link TermId} of destination{@link Term}
    */
-  TermID getDest();
+  TermId getDest();
 
   /**
+   * Query for numeric relation identifier.
+   *
    * @return Numeric identifier, for building efficient maps with further information
    */
-  int getID();
+  int getId();
 
 }

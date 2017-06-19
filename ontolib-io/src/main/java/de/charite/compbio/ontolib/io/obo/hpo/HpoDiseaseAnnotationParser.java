@@ -1,10 +1,10 @@
 package de.charite.compbio.ontolib.io.obo.hpo;
 
 import com.google.common.base.Enums;
-import de.charite.compbio.ontolib.formats.hpo.HPODiseaseAnnotation;
+import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParser;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
-import de.charite.compbio.ontolib.ontology.data.ImmutableTermID;
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,12 +34,16 @@ import java.io.IOException;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HPODiseaseAnnotation> {
+public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDiseaseAnnotation> {
 
-  /** The {@link File} to read from. */
+  /**
+   * The {@link File} to read from.
+   */
   private final File file;
 
-  /** The {@link BufferedReader} to use for reading line-wise. */
+  /**
+   * The {@link BufferedReader} to use for reading line-wise.
+   */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -67,16 +71,16 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HPODisea
    * @throws TermAnnotationParserException In case of problems with the first line in the file.
    */
   private void checkFirstLine() throws TermAnnotationParserException {
-    final String arr[] = nextLine.split("\t");
+    final String[] arr = nextLine.split("\t");
     if (arr.length != 14) {
       throw new TermAnnotationParserException(
           "Does not look like HPO disease annotation file. Invalid number of fields in first "
               + "line, expected 14, was " + arr.length);
     }
-    if (!Enums.getIfPresent(HPODiseaseAnnotation.DatabaseSource.class, arr[0]).isPresent()) {
+    if (!Enums.getIfPresent(HpoDiseaseAnnotation.DatabaseSource.class, arr[0]).isPresent()) {
       throw new TermAnnotationParserException(
           "Does not look like HPO disease annotation file. First field value was " + arr[0]
-              + " but was expected to be one of " + HPODiseaseAnnotation.DatabaseSource.values());
+              + " but was expected to be one of " + HpoDiseaseAnnotation.DatabaseSource.values());
     }
   }
 
@@ -86,8 +90,8 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HPODisea
   }
 
   @Override
-  public HPODiseaseAnnotation next() throws TermAnnotationParserException, IOException {
-    final String arr[] = nextLine.split("\t");
+  public HpoDiseaseAnnotation next() throws TermAnnotationParserException, IOException {
+    final String[] arr = nextLine.split("\t");
     if (arr.length != 14) {
       throw new TermAnnotationParserException(
           "Does not look like HPO disease annotation file. Invalid number of fields, expected "
@@ -98,7 +102,7 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HPODisea
     final String dbObjectId = arr[1];
     final String dbName = arr[2];
     final String qualifier = arr[3];
-    final ImmutableTermID hpoId = ImmutableTermID.constructWithPrefix(arr[4]);
+    final ImmutableTermId hpoId = ImmutableTermId.constructWithPrefix(arr[4]);
     final String dbReference = arr[5];
     final String evidenceCode = arr[6];
     final String onsetModifier = arr[7];
@@ -111,7 +115,7 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HPODisea
 
     nextLine = reader.readLine();
 
-    return new HPODiseaseAnnotation(db, dbObjectId, dbName, qualifier, hpoId, dbReference,
+    return new HpoDiseaseAnnotation(db, dbObjectId, dbName, qualifier, hpoId, dbReference,
         evidenceCode, onsetModifier, frequencyModifier, with, aspect, synonym, date, assignedBy);
   }
 

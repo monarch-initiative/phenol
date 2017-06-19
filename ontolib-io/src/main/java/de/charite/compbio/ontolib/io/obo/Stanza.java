@@ -1,12 +1,11 @@
 package de.charite.compbio.ontolib.io.obo;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.google.common.collect.Lists;
 
 /**
  * Base class for stanza representations.
@@ -34,10 +33,14 @@ public final class Stanza {
   /** The type of this stanza. */
   private final StanzaType type;
 
-  /** List of {@link StanzaEntry} objects for this <code>Stanza</code>. */
+  /**
+   * List of {@link StanzaEntry} objects for this <code>Stanza</code>.
+   */
   private final List<StanzaEntry> stanzaEntries;
 
-  /** Mapping from {@link StanzaEntryType} to list of objects of this stanza. */
+  /**
+   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
+   */
   private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
 
   /**
@@ -64,6 +67,8 @@ public final class Stanza {
   }
 
   /**
+   * Query for stanza type.
+   *
    * @return The {@link StanzaType}.
    */
   public StanzaType getType() {
@@ -71,6 +76,8 @@ public final class Stanza {
   }
 
   /**
+   * Query for stanza entries.
+   *
    * @return the stanzaEntries
    */
   public List<StanzaEntry> getStanzaEntries() {
@@ -78,6 +85,8 @@ public final class Stanza {
   }
 
   /**
+   * Query for entry by type.
+   *
    * @return {@link Map} from {@link StanzaEntryType} to {@link List} of {@link StanzaEntry}. Will
    *         contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the
    *         type.

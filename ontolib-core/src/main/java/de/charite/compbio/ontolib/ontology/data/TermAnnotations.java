@@ -15,7 +15,7 @@ import java.util.Map;
 public final class TermAnnotations {
 
   /**
-   * Construct mapping from {@link TermID} to {@link Collection} of "world object" labels from
+   * Construct mapping from {@link TermId} to {@link Collection} of "world object" labels from
    * {@link Collection} of {@link TermAnnotation}s.
    *
    * <p>
@@ -24,18 +24,18 @@ public final class TermAnnotations {
    * </p>
    *
    * @param annotations {@link Collection} of {@link TermAnnotation}s to convert.
-   * @return Constructed {@link Map} from {@link TermID} to {@link Collection} of "world object"
+   * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *         labels.
    */
-  public static Map<TermID, Collection<String>> constructTermAnnotationToLabelsMap(
+  public static Map<TermId, Collection<String>> constructTermAnnotationToLabelsMap(
       Collection<TermAnnotation> annotations) {
-    final Map<TermID, Collection<String>> result = new HashMap<>();
+    final Map<TermId, Collection<String>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      if (!result.containsKey(anno.getTermID())) {
-        result.put(anno.getTermID(), Sets.newHashSet(anno.getLabel()));
+      if (!result.containsKey(anno.getTermId())) {
+        result.put(anno.getTermId(), Sets.newHashSet(anno.getLabel()));
       } else {
-        result.get(anno.getTermID()).add(anno.getLabel());
+        result.get(anno.getTermId()).add(anno.getLabel());
       }
     }
 

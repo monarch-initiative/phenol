@@ -10,17 +10,17 @@ import java.io.Serializable;
  */
 public final class ScoreSamplingOptions implements Serializable, Cloneable {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** Number of threads to use for precomputation. */
   private int numThreads = 1;
 
-  /** Smallest "world object" ID to use, <code>null</code> for no limit */
-  private Integer minObjectID = null;
+  /** Smallest "world object" Id to use, <code>null</code> for no limit. */
+  private Integer minObjectId = null;
 
-  /** Largest "world object" ID to use, <code>null</code> for no limit */
-  private Integer maxObjectID = null;
+  /** Largest "world object" Id to use, <code>null</code> for no limit. */
+  private Integer maxObjectId = null;
 
   /** Smallest number of terms to perform precomputation for. */
   private int minNumTerms = 1;
@@ -47,18 +47,18 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * Construct with specific values for the options.
    *
    * @param numThreads Number of threads to use.
-   * @param minObjectID Smallest "world object" ID to use or <code>null</code> for no lower bound.
-   * @param maxObjectID Largest "world object" ID to use or <code>null</code> for no upper bound.
+   * @param minObjectId Smallest "world object" Id to use or <code>null</code> for no lower bound.
+   * @param maxObjectId Largest "world object" Id to use or <code>null</code> for no upper bound.
    * @param minNumTerms Smallest number of terms to compute precomputation for.
    * @param maxNumTerms Largest number of terms to compute precomputation for.
    * @param numIterations The number of iterations to run for.
    * @param seed The seed to use for the computation.
    */
-  public ScoreSamplingOptions(int numThreads, Integer minObjectID, Integer maxObjectID,
+  public ScoreSamplingOptions(int numThreads, Integer minObjectId, Integer maxObjectId,
       int minNumTerms, int maxNumTerms, int seed, int numIterations) {
     this.numThreads = numThreads;
-    this.minObjectID = minObjectID;
-    this.maxObjectID = maxObjectID;
+    this.minObjectId = minObjectId;
+    this.maxObjectId = maxObjectId;
     this.minNumTerms = minNumTerms;
     this.maxNumTerms = maxNumTerms;
     this.seed = seed;
@@ -86,43 +86,43 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   }
 
   /**
-   * @return Smallest "world object" ID to perform computation for, <code>null</code> for no bound.
+   * @return Smallest "world object" Id to perform computation for, <code>null</code> for no bound.
    */
-  public Integer getMinObjectID() {
-    return minObjectID;
+  public Integer getMinObjectId() {
+    return minObjectId;
   }
 
   /**
-   * Set smallest "world object" ID to perform computation for, <code>null</code> for no bound.
+   * Set smallest "world object" Id to perform computation for, <code>null</code> for no bound.
    *
    * <p>
    * The default is <code>null</code>.
    * </p>
    * 
-   * @param minObjectID Smallest "world object" ID to use or <code>null</code>.
+   * @param minObjectId Smallest "world object" Id to use or <code>null</code>.
    */
-  public void setMinObjectID(Integer minObjectID) {
-    this.minObjectID = minObjectID;
+  public void setMinObjectId(Integer minObjectId) {
+    this.minObjectId = minObjectId;
   }
 
   /**
-   * @return Largest "world object" ID to perform computation for, <code>null</code> for no bound.
+   * @return Largest "world object" Id to perform computation for, <code>null</code> for no bound.
    */
-  public Integer getMaxObjectID() {
-    return maxObjectID;
+  public Integer getMaxObjectId() {
+    return maxObjectId;
   }
 
   /**
-   * Set largest "world object" ID to perform computation for, <code>null</code> for no bound.
+   * Set largest "world object" Id to perform computation for, <code>null</code> for no bound.
    *
    * <p>
    * The default is <code>null</code>.
    * </p>
    * 
-   * @param maxObjectID Largest "world object" ID to use or <code>null</code>.
+   * @param maxObjectId Largest "world object" Id to use or <code>null</code>.
    */
-  public void setMaxObjectID(Integer maxObjectID) {
-    this.maxObjectID = maxObjectID;
+  public void setMaxObjectId(Integer maxObjectId) {
+    this.maxObjectId = maxObjectId;
   }
 
   /**
@@ -209,14 +209,14 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
 
   @Override
   public Object clone() throws CloneNotSupportedException {
-    return new ScoreSamplingOptions(numThreads, minObjectID, maxObjectID, minNumTerms, maxNumTerms,
+    return new ScoreSamplingOptions(numThreads, minObjectId, maxObjectId, minNumTerms, maxNumTerms,
         seed, numIterations);
   }
 
   @Override
   public String toString() {
-    return "ScoreSamplingOptions [numThreads=" + numThreads + ", minObjectID=" + minObjectID
-        + ", maxObjectID=" + maxObjectID + ", minNumTerms=" + minNumTerms + ", maxNumTerms="
+    return "ScoreSamplingOptions [numThreads=" + numThreads + ", minObjectId=" + minObjectId
+        + ", maxObjectId=" + maxObjectId + ", minNumTerms=" + minNumTerms + ", maxNumTerms="
         + maxNumTerms + ", numIterations=" + numIterations + ", seed=" + seed + "]";
   }
 

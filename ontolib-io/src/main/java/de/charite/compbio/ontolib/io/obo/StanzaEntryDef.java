@@ -11,18 +11,18 @@ public final class StanzaEntryDef extends StanzaEntry {
   private final String text;
 
   /** The dbXRef list of stanza entry. */
-  private final DBXRefList dbXRefList;
+  private final DbXrefList dbXRefList;
 
   /**
    * Constructor.
    *
    * @param text The value of the text stanza entry.
-   * @param dbXRefList The stanza's {@link DBXRefList}.
+   * @param dbXRefList The stanza's {@link DbXrefList}.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryDef(String text, DBXRefList dbXRefList, TrailingModifier trailingModifier,
+  public StanzaEntryDef(String text, DbXrefList dbXRefList, TrailingModifier trailingModifier,
       String comment) {
     super(StanzaEntryType.DEF, trailingModifier, comment);
     this.text = text;
@@ -39,7 +39,7 @@ public final class StanzaEntryDef extends StanzaEntry {
   /**
    * @return The entry's dbXRef list.
    */
-  public DBXRefList getDbXRefList() {
+  public DbXrefList getDbXRefList() {
     return dbXRefList;
   }
 

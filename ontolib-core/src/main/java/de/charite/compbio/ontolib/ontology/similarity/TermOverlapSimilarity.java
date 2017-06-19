@@ -3,7 +3,7 @@ package de.charite.compbio.ontolib.ontology.similarity;
 import com.google.common.collect.Sets;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Collection;
 import java.util.Set;
@@ -28,7 +28,9 @@ public final class TermOverlapSimilarity<T extends Term, R extends TermRelation>
     implements
       Similarity {
 
-  /** The {@link Ontology} to compute the similarity for. */
+  /**
+   * The {@link Ontology} to compute the similarity for.
+   */
   private final Ontology<T, R> ontology;
 
   /** Whether or not to compute in a normalized fashion. */
@@ -74,15 +76,15 @@ public final class TermOverlapSimilarity<T extends Term, R extends TermRelation>
   }
 
   @Override
-  public double computeScore(Collection<TermID> query, Collection<TermID> target) {
-    final Set<TermID> termIDsQuery = ontology.getAllAncestorTermIDs(query, false);
-    final Set<TermID> termIDsTarget = ontology.getAllAncestorTermIDs(target, false);
+  public double computeScore(Collection<TermId> query, Collection<TermId> target) {
+    final Set<TermId> termIdsQuery = ontology.getAllAncestorTermIds(query, false);
+    final Set<TermId> termIdsTarget = ontology.getAllAncestorTermIds(target, false);
 
-    double overlap = Sets.intersection(termIDsQuery, termIDsTarget).size();
+    double overlap = Sets.intersection(termIdsQuery, termIdsTarget).size();
     if (!normalized) {
       return overlap;
     } else {
-      return overlap / Math.min(termIDsQuery.size(), termIDsTarget.size());
+      return overlap / Math.min(termIdsQuery.size(), termIdsTarget.size());
     }
   }
 

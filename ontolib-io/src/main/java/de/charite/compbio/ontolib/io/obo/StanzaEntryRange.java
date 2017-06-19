@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryRange extends StanzaEntry {
 
-  /** The range ID or value. */
+  /** The range Id or value. */
   private final String value;
 
   /**
    * Constructor.
    *
-   * @param value The range ID or value.
+   * @param value The range Id or value.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
@@ -24,7 +24,7 @@ public final class StanzaEntryRange extends StanzaEntry {
   }
 
   /**
-   * @return The range ID or value.
+   * @return The range Id or value.
    */
   public String getValue() {
     return value;

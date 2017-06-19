@@ -9,7 +9,7 @@ import java.util.List;
  */
 public final class ImmutableTermSynonym implements TermSynonym {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** The synonym value. */

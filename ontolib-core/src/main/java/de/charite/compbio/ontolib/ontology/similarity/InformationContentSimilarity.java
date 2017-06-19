@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.ontology.similarity;
 
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Collection;
 
@@ -19,7 +19,9 @@ public final class InformationContentSimilarity<T extends Term, R extends TermRe
     implements
       Similarity {
 
-  /** The {@link Ontology} to compute the similarity for. */
+  /**
+   * The {@link Ontology} to compute the similarity for.
+   */
   private final Ontology<T, R> ontology;
 
   /** Whether or not to use symmetric computation. */
@@ -65,7 +67,7 @@ public final class InformationContentSimilarity<T extends Term, R extends TermRe
   }
 
   @Override
-  public double computeScore(Collection<TermID> query, Collection<TermID> target) {
+  public double computeScore(Collection<TermId> query, Collection<TermId> target) {
     // TODO Auto-generated method stub
     return 0;
   }

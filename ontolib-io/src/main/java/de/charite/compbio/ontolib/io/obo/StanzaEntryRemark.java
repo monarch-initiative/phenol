@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryRemark extends StanzaEntry {
 
-  /** ID value of stanza entry. */
+  /** Id value of stanza entry. */
   private final String text;
 
   /**

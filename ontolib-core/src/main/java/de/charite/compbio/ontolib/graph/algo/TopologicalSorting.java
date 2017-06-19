@@ -66,7 +66,7 @@ public final class TopologicalSorting<V, E extends Edge<V>, G extends DirectedGr
   private void startFromImpl(G g, Set<V> unmarked, Set<V> tmpMarked, V v,
       VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
     if (tmpMarked.contains(v)) {
-      throw new GraphNotDAGException("Graph is not a DAG");
+      throw new GraphNotDagException("Graph is not a DAG");
     }
     if (unmarked.contains(v)) {
       tmpMarked.add(v);

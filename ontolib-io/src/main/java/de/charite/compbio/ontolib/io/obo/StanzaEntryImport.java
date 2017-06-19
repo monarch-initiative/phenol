@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryImport extends StanzaEntry {
 
-  /** Either a URL or an ID to import. */
+  /** Either a URL or an Id to import. */
   private final String value;
 
   /**
    * Constructor.
    *
-   * @param value The URL or ID to import.
+   * @param value The URL or Id to import.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
@@ -24,7 +24,7 @@ public final class StanzaEntryImport extends StanzaEntry {
   }
 
   /**
-   * @return The URL or ID to import.
+   * @return The URL or Id to import.
    */
   public String getValue() {
     return value;

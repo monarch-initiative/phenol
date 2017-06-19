@@ -11,14 +11,14 @@ import java.util.List;
 public interface Term extends Serializable {
 
   /**
-   * @return {@link TermID} for this <code>Term</code>.
+   * @return {@link TermId} for this <code>Term</code>.
    */
-  TermID getID();
+  TermId getId();
 
   /**
-   * @return {@link List} of this <code>Term</code>'s alternative {@link TermID}s.
+   * @return {@link List} of this <code>Term</code>'s alternative {@link TermId}s.
    */
-  List<TermID> getAltTermIDs();
+  List<TermId> getAltTermIds();
 
   /**
    * = * @return <code>String</code> value for this <code>Term</code>'s name.
@@ -51,10 +51,18 @@ public interface Term extends Serializable {
    */
   boolean isObsolete();
 
-  /** @return <code>created_by</code> value. */
+  /**
+   * Query for creator.
+   *
+   * @return <code>created_by</code> value.
+   */
   String getCreatedBy();
 
-  /** @return <code>creation_date</code> value. */
+  /**
+   * Query for creation date.
+   *
+   * @return <code>creation_date</code> value.
+   */
   String getCreationDate();
 
 }

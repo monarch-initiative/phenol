@@ -1,11 +1,11 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
-import java.util.Collection;
-
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
+import java.util.Collection;
+
 
 /**
  * Abstract base class for similarity measures computed based on information content of common
@@ -22,7 +22,9 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
       Similarity {
 
   // TODO: remove ontology?
-  /** {@link Ontology} underlying the computation. */
+  /**
+   * {@link Ontology} underlying the computation.
+   */
   private final Ontology<T, R> ontology;
 
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */
@@ -47,7 +49,7 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
   }
 
   @Override
-  public final double computeScore(Collection<TermID> query, Collection<TermID> target) {
+  public final double computeScore(Collection<TermId> query, Collection<TermId> target) {
     if (symmetric) {
       return 0.5 * (computeScoreImpl(query, target) + computeScoreImpl(target, query));
     } else {
@@ -56,18 +58,18 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
   }
 
   /**
-   * Compute directed score between a query and a target set of {@link TermID}s.
+   * Compute directed score between a query and a target set of {@link TermId}s.
    *
-   * @param query Query set of {@link TermID}s.
-   * @param target Target set of {@link TermID}s
+   * @param query Query set of {@link TermId}s.
+   * @param target Target set of {@link TermId}s
    * @return Symmetric similarity score between <code>query</code> and <code>target</code>.
    */
-  protected final double computeScoreImpl(Collection<TermID> query, Collection<TermID> target) {
+  protected final double computeScoreImpl(Collection<TermId> query, Collection<TermId> target) {
     double sum = 0;
 
-    for (TermID q : query) {
+    for (TermId q : query) {
       double maxValue = 0.0;
-      for (TermID t : target) {
+      for (TermId t : target) {
         maxValue = Math.max(maxValue, pairwiseSimilarity.computeScore(q, t));
       }
       sum += maxValue;

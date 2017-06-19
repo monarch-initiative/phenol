@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public enum StanzaEntryType {
   /** Stanza entry starting with <code>alt_id</code>. */
-  ALT_ID,
+  ALT_Id,
   /** Stanza entry starting with <code>auto-generated-by</code>. */
   AUTO_GENERATED_BY,
   /** Stanza entry starting with <code>comment</code>. */
   COMMENT,
   /** Stanza entry starting with <code>consider</code>. */
-  CONSIDER,
+  CONSIdER,
   /** Stanza entry starting with <code>created-by</code>. */
   CREATED_BY,
   /** Stanza entry starting with <code>creation_date</code>. */
@@ -25,7 +25,7 @@ public enum StanzaEntryType {
   /** Stanza entry starting with <code>def</code>. */
   DEF,
   /** Stanza entry starting with <code>default-relationship-id-prefix</code>. */
-  DEFAULT_RELATIONSHIP_ID_PREFIX,
+  DEFAULT_RELATIONSHIP_Id_PREFIX,
   /** Stanza entry starting with <code>disjoint_from</code>. */
   DISJOINT_FROM,
   /** Stanza entry starting with <code>domain</code>. */
@@ -35,11 +35,11 @@ public enum StanzaEntryType {
   /** Stanza entry starting with other strings. */
   GENERIC,
   /** Stanza entry starting with <code>id</code>. */
-  ID,
+  Id,
   /** Stanza entry starting with <code>id-mapping</code>. */
-  ID_MAPPING,
+  Id_MAPPING,
   /** Stanza entry starting with <code>idspace</code>. */
-  IDSPACE,
+  IdSPACE,
   /** Stanza entry starting with <code>import</code>. */
   IMPORT,
   /** Stanza entry starting with <code>instance_of</code>. */

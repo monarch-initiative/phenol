@@ -13,14 +13,14 @@ public final class StanzaEntryDefaultRelationshipIdPrefix extends StanzaEntry {
   /**
    * Constructor.
    *
-   * @param value The value of the ID stanza entry.
+   * @param value The value of the Id stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryDefaultRelationshipIdPrefix(String value, TrailingModifier trailingModifier,
       String comment) {
-    super(StanzaEntryType.DEFAULT_RELATIONSHIP_ID_PREFIX, trailingModifier, comment);
+    super(StanzaEntryType.DEFAULT_RELATIONSHIP_Id_PREFIX, trailingModifier, comment);
     this.value = value;
   }
 

@@ -1,12 +1,11 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+import de.charite.compbio.ontolib.graph.data.Edge;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import de.charite.compbio.ontolib.graph.data.DirectedGraph;
-import de.charite.compbio.ontolib.graph.data.Edge;
 
 // TODO: allow accessing file-wide meta information
 
@@ -15,7 +14,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  *
  * <p>
  * Following the "composition over inheritance" paradigm, an <code>Ontology</code> is a composed of
- * a {@link DirectedGraph} and {@link Map}s assigning {@link TermID}s and edge ids to the
+ * a {@link DirectedGraph} and {@link Map}s assigning {@link TermId}s and edge ids to the
  * corresponding labels.
  * </p>
  *
@@ -36,29 +35,29 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
   /**
    * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure.
    */
-  DirectedGraph<TermID, ? extends Edge<TermID>> getGraph();
+  DirectedGraph<TermId, ? extends Edge<TermId>> getGraph();
 
   /**
-   * @return {@link Map} from {@link TermID} to corresponding value of {@link Term} sub class
+   * @return {@link Map} from {@link TermId} to corresponding value of {@link Term} sub class
    *         <code>T</code>.
    */
-  Map<TermID, T> getTermMap();
+  Map<TermId, T> getTermMap();
 
   /**
-   * @return {@link Map} from <code>Integer</code> edge ID to corresponding value of
+   * @return {@link Map} from <code>Integer</code> edge Id to corresponding value of
    *         {@link TermRelation} sub class <code>R</code>.
    */
   Map<Integer, R> getRelationMap();
 
   // TODO: do we need this idiosyncratic?
-  boolean isRootTerm(TermID tID);
+  boolean isRootTerm(TermId termId);
 
   // TODO: should not be part of Ontology class!
-  Collection<TermID> getAncestors(TermID tID);
+  Collection<TermId> getAncestors(TermId termId);
 
-  TermID getRootTermID();
+  TermId getRootTermId();
 
-  Collection<TermID> getTermIDs();
+  Collection<TermId> getTermIds();
 
   Collection<T> getTerms();
 
@@ -68,11 +67,11 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
   /**
    * Return all the terms including all ancestors terms.
    *
-   * @param termIDs {@link Collection} of {@link TermID}s to gather all parents except for the root.
-   * @param includeRoot Whether or not to include the root's {@link TermID}
+   * @param termIds {@link Collection} of {@link TermId}s to gather all parents except for the root.
+   * @param includeRoot Whether or not to include the root's {@link TermId}
    * @return {@link Set} of {@link Term}s including all {@link Term}s from <code>terms</code>,
    *         including all ancestors, except for the root.
    */
-  public Set<TermID> getAllAncestorTermIDs(Collection<TermID> termIDs, boolean includeRoot);
+  public Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot);
 
 }

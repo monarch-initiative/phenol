@@ -3,7 +3,7 @@ package de.charite.compbio.ontolib.ontology.data;
 import java.io.Serializable;
 
 /**
- * Prefix of a {@link TermID}.
+ * Prefix of a {@link TermId}.
  *
  * <p>
  * Usually, this is a string that is common to all terms in one ontology. Centralizing this in one
@@ -15,6 +15,8 @@ import java.io.Serializable;
 public interface TermPrefix extends Comparable<TermPrefix>, Serializable {
 
   /**
+   * Query for term prefix' string value.
+   *
    * @return String value of the <code>TermPrefix</code>
    */
   String getValue();

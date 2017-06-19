@@ -7,13 +7,13 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryDisjointFrom extends StanzaEntry {
 
-  /** ID of the disjoint term. */
+  /** Id of the disjoint term. */
   private final String id;
 
   /**
    * Constructor.
    *
-   * @param id The value of the ID stanza entry.
+   * @param id The value of the Id stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
@@ -24,7 +24,7 @@ public final class StanzaEntryDisjointFrom extends StanzaEntry {
   }
 
   /**
-   * @return The referenced term's ID value.
+   * @return The referenced term's Id value.
    */
   public String getId() {
     return id;

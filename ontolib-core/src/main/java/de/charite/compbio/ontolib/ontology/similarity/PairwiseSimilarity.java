@@ -1,14 +1,14 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 
 /**
  * Interface for computing similarity scores between two individual terms (identified by their
- * {@link TermID}).
+ * {@link TermId}).
  *
  * <p>
  * Based on this, {@link AbstractCommonAncestorSimilarity} implements its scores for full
- * {@link TermID} sets.
+ * {@link TermId} sets.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
@@ -16,12 +16,12 @@ import de.charite.compbio.ontolib.ontology.data.TermID;
 interface PairwiseSimilarity {
 
   /**
-   * Compute similarity score between two terms, given their {@link TermID}s.
+   * Compute similarity score between two terms, given their {@link TermId}s.
    *
-   * @param t1 first {@link TermID}
-   * @param t2 second {@lnk TermID}
+   * @param t1 first {@link TermId}
+   * @param t2 second {@lnk TermId}
    * @return Similarity score between the two terms
    */
-  public double computeScore(TermID t1, TermID t2);
+  public double computeScore(TermId t1, TermId t2);
 
 }

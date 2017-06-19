@@ -1,10 +1,10 @@
 package de.charite.compbio.ontolib.io.obo.hpo;
 
-import de.charite.compbio.ontolib.formats.hpo.HPOGeneAnnotation;
+import de.charite.compbio.ontolib.formats.hpo.HpoGeneAnnotation;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParser;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
-import de.charite.compbio.ontolib.ontology.data.ImmutableTermID;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,16 +34,20 @@ import java.io.IOException;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class HpoGeneAnnotationParser implements TermAnnotationParser<HPOGeneAnnotation> {
+public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnnotation> {
 
   /** Expected header string. */
   private static final String EXPECTED_HEADER =
       "#Format: entrez-gene-id<tab>entrez-gene-symbol<tab>HPO-Term-Name<tab>HPO-Term-ID";
 
-  /** The {@link File} to read from. */
+  /**
+   * The {@link File} to read from.
+   */
   private final File file;
 
-  /** The {@link BufferedReader} to use for reading line-wise. */
+  /**
+   * The {@link BufferedReader} to use for reading line-wise.
+   */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -84,16 +88,16 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HPOGeneAnno
   }
 
   @Override
-  public HPOGeneAnnotation next() throws IOException, TermAnnotationParserException {
-    final String arr[] = nextLine.split("\t");
+  public HpoGeneAnnotation next() throws IOException, TermAnnotationParserException {
+    final String[] arr = nextLine.split("\t");
     final int geneId = Integer.parseInt(arr[0]);
     final String geneSymbol = arr[1];
     final String hpoTermName = arr[2];
-    final TermID hpoTermId = ImmutableTermID.constructWithPrefix(arr[3]);
+    final TermId hpoTermId = ImmutableTermId.constructWithPrefix(arr[3]);
 
     nextLine = reader.readLine();
 
-    return new HPOGeneAnnotation(geneId, geneSymbol, hpoTermName, hpoTermId);
+    return new HpoGeneAnnotation(geneId, geneSymbol, hpoTermName, hpoTermId);
   }
 
   @Override

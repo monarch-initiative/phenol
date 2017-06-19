@@ -7,11 +7,11 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryIdspace extends StanzaEntry {
 
-  /** Local ID space */
-  private final String localIDSpace;
+  /** Local ID space. */
+  private final String localIdSpace;
 
-  /** Global ID space */
-  private final String globalIDSpace;
+  /** Global Id space. */
+  private final String globalIdSpace;
 
   /** Optional description, <code>null</code> for none. */
   private final String description;
@@ -19,37 +19,37 @@ public final class StanzaEntryIdspace extends StanzaEntry {
   /**
    * Constructor.
    *
-   * @param localIDSpace The local ID space.
-   * @param globalIDSpace The global ID space.
+   * @param localIdSpace The local Id space.
+   * @param globalIdSpace The global Id space.
    * @param description Optional description string, <code>null</code> for none.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryIdspace(String localIDSpace, String globalIDSpace, String description,
+  public StanzaEntryIdspace(String localIdSpace, String globalIdSpace, String description,
       TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.IDSPACE, trailingModifier, comment);
-    this.localIDSpace = localIDSpace;
-    this.globalIDSpace = globalIDSpace;
+    super(StanzaEntryType.IdSPACE, trailingModifier, comment);
+    this.localIdSpace = localIdSpace;
+    this.globalIdSpace = globalIdSpace;
     this.description = description;
   }
 
   /**
-   * @return The local ID space name.
+   * @return The local Id space name.
    */
-  public String getLocalIDSpace() {
-    return localIDSpace;
+  public String getLocalIdSpace() {
+    return localIdSpace;
   }
 
   /**
-   * @return The global ID space name.
+   * @return The global Id space name.
    */
-  public String getGlobalIDSpace() {
-    return globalIDSpace;
+  public String getGlobalIdSpace() {
+    return globalIdSpace;
   }
 
   /**
-   * @return The optional ID space description, <code>null</code> if empty.
+   * @return The optional Id space description, <code>null</code> if empty.
    */
   public String getDescription() {
     return description;
@@ -57,7 +57,7 @@ public final class StanzaEntryIdspace extends StanzaEntry {
 
   @Override
   public String toString() {
-    return "StanzaEntryIdspace [localIDSpace=" + localIDSpace + ", globalIDSpace=" + globalIDSpace
+    return "StanzaEntryIdspace [localIdSpace=" + localIdSpace + ", globalIdSpace=" + globalIdSpace
         + ", description=" + description + ", getType()=" + getType() + ", getTrailingModifier()="
         + getTrailingModifier() + ", getComment()=" + getComment() + "]";
   }

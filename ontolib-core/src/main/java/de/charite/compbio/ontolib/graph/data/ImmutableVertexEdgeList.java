@@ -21,7 +21,7 @@ import java.util.List;
 final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
     implements Serializable {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** List of in-edges. */
@@ -58,6 +58,8 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
   }
 
   /**
+   * Query for in edges.
+   *
    * @return {@link ImmutableList} of in-edges
    */
   public ImmutableList<E> getInEdges() {
@@ -65,6 +67,8 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
   }
 
   /**
+   * Query for out edges.
+   *
    * @return {@link ImmutableList} of out-edges
    */
   public ImmutableList<E> getOutEdges() {

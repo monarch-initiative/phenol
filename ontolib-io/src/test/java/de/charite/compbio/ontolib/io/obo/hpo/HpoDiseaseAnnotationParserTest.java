@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.io.obo.hpo;
 
 import static org.junit.Assert.assertEquals;
 
-import de.charite.compbio.ontolib.formats.hpo.HPODiseaseAnnotation;
+import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
 import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 import java.io.File;
@@ -33,11 +33,11 @@ public class HpoDiseaseAnnotationParserTest {
         new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationHeadFile);
 
     // Read and check first record.
-    final HPODiseaseAnnotation firstRecord = parser.next();
-    assertEquals("HPODiseaseAnnotation [db=OMIM, dbObjectID=101000, dbName=#101000 "
+    final HpoDiseaseAnnotation firstRecord = parser.next();
+    assertEquals("HPODiseaseAnnotation [db=OMIM, dbObjectId=101000, dbName=#101000 "
         + "NEUROFIBROMATOSIS, TYPE II; NF2;;NEUROFIBROMATOSIS, CENTRAL TYPE;;ACOUSTIC "
         + "SCHWANNOMAS, BILATERAL;;BILATERAL ACOUSTIC NEUROFIBROMATOSIS; BANF;;ACOUSTIC "
-        + "NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoID=ImmutableTermID "
+        + "NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoId=ImmutableTermId "
         + "[prefix=ImmutableTermPrefix [value=HP], id=0009737], dbReference=OMIM:101000, "
         + "evidenceCode=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=, "
         + "date=2010.06.18, assignedBy=HPO:skoehler]", firstRecord.toString());

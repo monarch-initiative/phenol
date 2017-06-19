@@ -1,16 +1,14 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
-
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -22,44 +20,44 @@ import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
  */
 public class ImmutableOntology<T extends Term, R extends TermRelation> implements Ontology<T, R> {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** The graph storing the ontology's structure. */
-  private final ImmutableDirectedGraph<TermID, ImmutableEdge<TermID>> graph;
+  private final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
 
-  /** ID of the root term. */
-  private final TermID rootTermID;
+  /** Id of the root term. */
+  private final TermId rootTermId;
 
-  /** The mapping from TermID to Term. */
-  private final ImmutableMap<TermID, T> termMap;
+  /** The mapping from TermId to Term. */
+  private final ImmutableMap<TermId, T> termMap;
 
-  /** The mapping from edge ID to TermRelation. */
+  /** The mapping from edge Id to TermRelation. */
   private final ImmutableMap<Integer, R> relationMap;
 
   /**
    * Constructor.
    *
    * @param graph Graph to use for underlying structure.
-   * @param rootTermID Root node's {@link TermID}.
-   * @param termMap Mapping from {@link TermID} to <code>T</code>.
-   * @param relationMap Mapping from numeric edge ID to <code>R</code>.
+   * @param rootTermId Root node's {@link TermId}.
+   * @param termMap Mapping from {@link TermId} to <code>T</code>.
+   * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
-  public ImmutableOntology(ImmutableDirectedGraph<TermID, ImmutableEdge<TermID>> graph,
-      TermID rootTermID, ImmutableMap<TermID, T> termMap, ImmutableMap<Integer, R> relationMap) {
+  public ImmutableOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph,
+      TermId rootTermId, ImmutableMap<TermId, T> termMap, ImmutableMap<Integer, R> relationMap) {
     this.graph = graph;
-    this.rootTermID = rootTermID;
+    this.rootTermId = rootTermId;
     this.termMap = termMap;
     this.relationMap = relationMap;
   }
 
   @Override
-  public DirectedGraph<TermID, ? extends Edge<TermID>> getGraph() {
+  public DirectedGraph<TermId, ? extends Edge<TermId>> getGraph() {
     return graph;
   }
 
   @Override
-  public Map<TermID, T> getTermMap() {
+  public Map<TermId, T> getTermMap() {
     return termMap;
   }
 
@@ -69,24 +67,24 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public boolean isRootTerm(TermID tID) {
-    return tID.equals(rootTermID);
+  public boolean isRootTerm(TermId termId) {
+    return termId.equals(rootTermId);
   }
 
   @Override
-  public Collection<TermID> getAncestors(TermID tID) {
+  public Collection<TermId> getAncestors(TermId termId) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public Set<TermID> getAllAncestorTermIDs(Collection<TermID> termIDs, boolean includeRoot) {
-    final Set<TermID> result = new HashSet<>();
-    for (TermID termID : termIDs) {
-      result.add(termID);
-      for (TermID ancestorID : getAncestors(termID)) {
-        if (includeRoot || !isRootTerm(ancestorID)) {
-          result.add(ancestorID);
+  public Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot) {
+    final Set<TermId> result = new HashSet<>();
+    for (TermId termId : termIds) {
+      result.add(termId);
+      for (TermId ancestorId : getAncestors(termId)) {
+        if (includeRoot || !isRootTerm(ancestorId)) {
+          result.add(ancestorId);
         }
       }
     }
@@ -94,12 +92,12 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public TermID getRootTermID() {
-    return rootTermID;
+  public TermId getRootTermId() {
+    return rootTermId;
   }
 
   @Override
-  public Collection<TermID> getTermIDs() {
+  public Collection<TermId> getTermIds() {
     return termMap.keySet();
   }
 

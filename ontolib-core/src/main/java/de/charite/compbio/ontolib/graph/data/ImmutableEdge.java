@@ -13,7 +13,7 @@ package de.charite.compbio.ontolib.graph.data;
  */
 public class ImmutableEdge<V> implements Edge<V> {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** Source vertex of immutable directed edge. */
@@ -63,7 +63,7 @@ public class ImmutableEdge<V> implements Edge<V> {
   }
 
   @Override
-  public final int getID() {
+  public final int getId() {
     return id;
   }
 
@@ -86,29 +86,29 @@ public class ImmutableEdge<V> implements Edge<V> {
    */
   public static class Factory<V> implements Edge.Factory<V, ImmutableEdge<V>> {
 
-    /** ID of next edge to add. */
-    private int nextEdgeID;
+    /** Id of next edge to add. */
+    private int nextEdgeId;
 
     /**
      * Default constructor.
      */
     public Factory() {
-      this.nextEdgeID = 1;
+      this.nextEdgeId = 1;
     }
 
     @Override
     public final ImmutableEdge<V> construct(final V u, final V v) {
-      return ImmutableEdge.construct(u, v, ++nextEdgeID);
+      return ImmutableEdge.construct(u, v, ++nextEdgeId);
     }
 
     @Override
-    public final int getNextEdgeID() {
-      return nextEdgeID;
+    public final int getNextEdgeId() {
+      return nextEdgeId;
     }
 
     @Override
-    public final void setNextEdgeID(final int nextEdgeID) {
-      this.nextEdgeID = nextEdgeID;
+    public final void setNextEdgeId(final int nextEdgeId) {
+      this.nextEdgeId = nextEdgeId;
     }
 
   }

@@ -2,7 +2,7 @@
  * Loading the HPO from OBO files.
  *
  * <p>
- * Use {@link de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser} for loading the HPO from OBO
+ * Use {@link de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser} for loading the HPO from OBO
  * format.
  * </p>
  *

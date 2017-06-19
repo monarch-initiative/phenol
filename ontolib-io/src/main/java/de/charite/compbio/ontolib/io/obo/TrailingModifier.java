@@ -57,14 +57,14 @@ public final class TrailingModifier {
     }
 
     /**
-     * @return the key
+     * @return The key.
      */
     public String getKey() {
       return key;
     }
 
     /**
-     * @return the value
+     * @return The value.
      */
     public String getValue() {
       return value;

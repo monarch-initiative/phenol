@@ -3,7 +3,7 @@ package de.charite.compbio.ontolib.ontology.similarity;
 import com.google.common.collect.Sets;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Collection;
 import java.util.Set;
@@ -27,7 +27,9 @@ public final class JaccardSimilarity<T extends Term, R extends TermRelation>
     implements
       Similarity {
 
-  /** The {@link Ontology} to compute the similarity for. */
+  /**
+   * The {@link Ontology} to compute the similarity for.
+   */
   private final Ontology<T, R> ontology;
 
   /** Whether or not to normalize score by union. */
@@ -73,13 +75,13 @@ public final class JaccardSimilarity<T extends Term, R extends TermRelation>
   }
 
   @Override
-  public double computeScore(Collection<TermID> query, Collection<TermID> target) {
-    final Set<TermID> termIDsQuery = ontology.getAllAncestorTermIDs(query, false);
-    final Set<TermID> termIDsTarget = ontology.getAllAncestorTermIDs(target, false);
+  public double computeScore(Collection<TermId> query, Collection<TermId> target) {
+    final Set<TermId> termIdsQuery = ontology.getAllAncestorTermIds(query, false);
+    final Set<TermId> termIdsTarget = ontology.getAllAncestorTermIds(target, false);
 
-    double intersectionSize = Sets.intersection(termIDsQuery, termIDsTarget).size();
+    double intersectionSize = Sets.intersection(termIdsQuery, termIdsTarget).size();
     if (normalized) {
-      return intersectionSize / Sets.union(termIDsQuery, termIDsTarget).size();
+      return intersectionSize / Sets.union(termIdsQuery, termIdsTarget).size();
     } else {
       return intersectionSize;
     }

@@ -3,7 +3,7 @@ package de.charite.compbio.ontolib.ontology.data;
 import java.io.Serializable;
 
 /**
- * A {@link TermAnnotation} links a {@link TermID} to a <code>String</code> <b>label</b> of a "world
+ * A {@link TermAnnotation} links a {@link TermId} to a <code>String</code> <b>label</b> of a "world
  * object".
  *
  * <p>
@@ -22,10 +22,18 @@ import java.io.Serializable;
  */
 public interface TermAnnotation extends Serializable, Comparable<TermAnnotation> {
 
-  /** @return The annotated term's {@link TermID}. */
-  TermID getTermID();
+  /**
+   * Query for annotated term's ID.
+   *
+   * @return The annotated term's {@link TermId}.
+   */
+  TermId getTermId();
 
-  /** @return The "world object" label that the term is annotated with. */
+  /**
+   * Query for "world object" label.
+   *
+   * @return The "world object" label that the term is annotated with.
+   */
   String getLabel();
 
 }

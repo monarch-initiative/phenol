@@ -15,7 +15,9 @@ public final class StanzaEntrySynonymtypedef extends StanzaEntry {
   /** Description string. */
   private final String description;
 
-  /** Optional {@link TermSynonymScope}, <code>null</code> for none. */
+  /**
+   * Optional {@link TermSynonymScope}, <code>null</code> for none.
+   */
   private final TermSynonymScope synonymScopeIdentifier;
 
   /**

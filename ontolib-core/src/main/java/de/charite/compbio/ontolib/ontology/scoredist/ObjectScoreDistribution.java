@@ -1,22 +1,22 @@
 package de.charite.compbio.ontolib.ontology.scoredist;
 
 import java.io.Serializable;
-import java.util.SortedMap;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 
 /**
- * Precomputed score distribution for a fixed number of terms and one world object IDs.
+ * Precomputed score distribution for a fixed number of terms and one world object Ids.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public final class ObjectScoreDistribution implements Serializable {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** "World object" identifier. */
-  private final int objectID;
+  private final int objectId;
 
   /** Number of terms used for precomputing scores with. */
   private final int numTerms;
@@ -32,14 +32,14 @@ public final class ObjectScoreDistribution implements Serializable {
    * Construct score distribution for a given number of terms, sample size, and cumulative
    * frequencies.
    * 
-   * @param objectID "World object" identifier.
+   * @param objectId "World object" identifier.
    * @param numTerms Number of terms used in precomputation.
    * @param sampleSize Sample size used for precomputation.
    * @param cumulativeFrequencies Cumulative frequencies of the scores.
    */
-  public ObjectScoreDistribution(int objectID, int numTerms, int sampleSize,
+  public ObjectScoreDistribution(int objectId, int numTerms, int sampleSize,
       SortedMap<Double, Double> cumulativeFrequencies) {
-    this.objectID = objectID;
+    this.objectId = objectId;
     this.numTerms = numTerms;
     this.sampleSize = sampleSize;
     this.cumulativeFrequencies = cumulativeFrequencies;
@@ -66,10 +66,10 @@ public final class ObjectScoreDistribution implements Serializable {
   }
 
   /**
-   * @return The world object ID for which the score has been precomputed.
+   * @return The world object Id for which the score has been precomputed.
    */
-  public int getObjectID() {
-    return objectID;
+  public int getObjectId() {
+    return objectId;
   }
 
   /**

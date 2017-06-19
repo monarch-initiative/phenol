@@ -259,6 +259,9 @@
         <configuration>
           <configLocation>/google_checks.xml</configLocation>
           <enableFilesSummary>false</enableFilesSummary>
+          <sourceDirectories>
+            <sourceDirectory>src/main/java</sourceDirectory>
+          </sourceDirectories>
         </configuration>
       </plugin>
     </plugins>

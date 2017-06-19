@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.ontology.scoredist;
 
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermID;
+import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import de.charite.compbio.ontolib.ontology.similarity.Similarity;
 import java.util.ArrayList;
@@ -38,13 +38,19 @@ import org.slf4j.LoggerFactory;
  */
 public final class SimilarityScoreSampling<T extends Term, R extends TermRelation> {
 
-  /** {@link Logger} object to use. */
+  /**
+   * {@link Logger} object to use.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
 
-  /** {@link Ontology} to use for computation. */
+  /**
+   * {@link Ontology} to use for computation.
+   */
   private final Ontology<T, R> ontology;
 
-  /** {@link Similarity} to use for the precomputation. */
+  /**
+   * {@link Similarity} to use for the precomputation.
+   */
   private final Similarity similarity;
 
   /** Configuration for score sampling. */
@@ -72,15 +78,15 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    *
    * <p>
    * Note that in general, this will be too slow and it will be required to split the work both by
-   * term count and by world object ID and distribute this to a parallel (cluster) computer.
+   * term count and by world object Id and distribute this to a parallel (cluster) computer.
    * </p>
    *
-   * @param labels {@link Map} from "world object" ID to a {@link Collection} of {@link TermID}
+   * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId}
    *        labels.
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
   public Map<Integer, ScoreDistribution> performSampling(
-      Map<Integer, ? extends Collection<TermID>> labels) {
+      Map<Integer, ? extends Collection<TermId>> labels) {
     Map<Integer, ScoreDistribution> result = new HashMap<>();
     for (int numTerms = options.getMinNumTerms(); numTerms <= options
         .getMaxNumTerms(); ++numTerms) {
@@ -98,13 +104,13 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    * {@link ScoreDistribution#merge(java.util.Collection)}.
    * </p>
    *
-   * @param labels {@link Map} from "world object" ID to a {@link Collection} of {@link TermID}
+   * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId}
    *        labels.
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.
    */
   public ScoreDistribution performSamplingForTermCount(
-      Map<Integer, ? extends Collection<TermID>> labels, int numTerms) {
+      Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
     LOGGER.info("Running precomputation for {} world objects using {} query terms...",
         new Object[] {labels.size(), numTerms});
 
@@ -119,7 +125,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
           () -> labels.entrySet().stream().filter(this::selectLabel).parallel()
               .map(
                   e -> performComputation(e.getKey(), e.getValue(), numTerms, progress, numObjects))
-              .collect(Collectors.toMap(ObjectScoreDistribution::getObjectID, Function.identity()));
+              .collect(Collectors.toMap(ObjectScoreDistribution::getObjectId, Function.identity()));
       distributions = forkJoinPool.submit(task).get();
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException("Problem during parallel execution.", e);
@@ -132,14 +138,14 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   /**
    * Select labels of world objects that fall into the range to precompute.
    *
-   * @param e Entry from world object ID map to collection of {@link TermID}s.
+   * @param e Entry from world object Id map to collection of {@link TermId}s.
    * @return Whether or not to select this label.
    */
-  private boolean selectLabel(Entry<Integer, ? extends Collection<TermID>> e) {
-    final int objectID = e.getKey();
-    if (options.getMinObjectID() != null && objectID < options.getMinObjectID()) {
+  private boolean selectLabel(Entry<Integer, ? extends Collection<TermId>> e) {
+    final int objectId = e.getKey();
+    if (options.getMinObjectId() != null && objectId < options.getMinObjectId()) {
       return false;
-    } else if (options.getMaxObjectID() != null && objectID > options.getMaxObjectID()) {
+    } else if (options.getMaxObjectId() != null && objectId > options.getMaxObjectId()) {
       return false;
     } else {
       return true;
@@ -147,28 +153,28 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   }
 
   /**
-   * Perform the sampling using the configuration, given "world object" <code>objectID</code> and
+   * Perform the sampling using the configuration, given "world object" <code>objectId</code> and
    * the given <code>terms</code> for this object.
    * 
-   * @param objectID "World object" id.
-   * @param terms The {@link TermID}s that this object is labeled with.
+   * @param objectId "World object" id.
+   * @param terms The {@link TermId}s that this object is labeled with.
    * @param numTerms Number of query terms to compute score distributions for.
    * @param progress Increased for each completed computation.
    * @param maxProgress Total number of computations to perform.
    * @return Resulting {@link ObjectScoreDistribution}.
    */
-  private ObjectScoreDistribution performComputation(int objectID, Collection<TermID> terms,
+  private ObjectScoreDistribution performComputation(int objectId, Collection<TermId> terms,
       int numTerms, AtomicInteger progress, int maxProgress) {
-    LOGGER.info("Running precomputation for world object {}.", new Object[] {objectID});
+    LOGGER.info("Running precomputation for world object {}.", new Object[] {objectId});
 
     // Create and seed MersenneTwister
     final MersenneTwister rng = new MersenneTwister();
-    rng.setSeed(options.getSeed() + objectID);
+    rng.setSeed(options.getSeed() + objectId);
 
     // Sample per-object score distribution
-    ObjectScoreDistribution result = new ObjectScoreDistribution(objectID, numTerms,
+    ObjectScoreDistribution result = new ObjectScoreDistribution(objectId, numTerms,
         options.getNumIterations(),
-        sampleScoreCumulativeRelFreq(objectID, terms, numTerms, options.getNumIterations(), rng));
+        sampleScoreCumulativeRelFreq(objectId, terms, numTerms, options.getNumIterations(), rng));
 
     // Update progress
     final int progressVal = progress.incrementAndGet();
@@ -177,30 +183,30 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
           new Object[] {progressVal, maxProgress, (100.0 * progressVal) / maxProgress});
     }
 
-    LOGGER.info("Done computing precomputation for world object {}.", new Object[] {objectID});
+    LOGGER.info("Done computing precomputation for world object {}.", new Object[] {objectId});
     return result;
   }
 
   /**
-   * Compute cumulative relative frequencies for the gene with the given "world object ID, number of
+   * Compute cumulative relative frequencies for the gene with the given "world object Id, number of
    * terms, iterations, and RNG using sampling.
    *
-   * @param objectID World object ID to compute for.
-   * @param terms The {@link TermID}s that this object is labeled with.
+   * @param objectId World object Id to compute for.
+   * @param terms The {@link TermId}s that this object is labeled with.
    * @param numTerms Number of query terms to use for the computation.
    * @param rng Random number generator to use.
    * @return Mapping between score and cumulative relative frequency (to use for p value
    *         computation).
    */
-  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(int objectID,
-      Collection<TermID> terms, int numTerms, int numIterations, Random rng) {
-    final List<TermID> allTermIDs = new ArrayList<TermID>(ontology.getTermIDs());
+  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(int objectId,
+      Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
+    final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency
     Map<Double, Long> counts = IntStream.range(0, numIterations - 1).boxed().parallel().map(i -> {
       // Sample numTerms Term objects from ontology.
-      final List<TermID> randomTerms = selectRandomElements(allTermIDs, numTerms, rng);
+      final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
       final double score = similarity.computeScore(randomTerms, terms);
       // Round to four decimal places.
       return Math.round(score * 1000.) / 1000.0;
@@ -229,10 +235,10 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    * <a href="http://stackoverflow.com/a/41322569/84349">Taken from StackOverflow.</a>
    * </p>
    *
-   * @param src
-   * @param count
-   * @param rng
-   * @return
+   * @param src {@link List} to sample random elements from.
+   * @param count Number of elements to sample.
+   * @param rng PRNG to use for random number generation.
+   * @return List of sampled elements.
    */
   private static <E> List<E> selectRandomElements(List<E> src, int count, Random rng) {
     // Avoid running infinitely

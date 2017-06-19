@@ -13,7 +13,7 @@ public final class StanzaEntryCreatedBy extends StanzaEntry {
   /**
    * Constructor.
    *
-   * @param creator The value of the ID stanza entry.
+   * @param creator The value of the Id stanza entry.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
