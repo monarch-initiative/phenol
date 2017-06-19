@@ -114,12 +114,12 @@ public class HpoOboParserTest {
             + "obsolete=false, createdBy=null, creationDate=null]}",
         ImmutableSortedMap.copyOf(ontology.getTermMap()).toString());
     assertEquals(
-        "{1=HPOTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix "
+        "{1=HpoTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix "
             + "[value=HP], id=0000005], dest=ImmutableTermId [prefix=ImmutableTermPrefix "
-            + "[value=HP], id=0000001], id=1, relationQualifier=IS_A], 2=HPOTermRelation "
+            + "[value=HP], id=0000001], id=1, relationQualifier=IS_A], 2=HpoTermRelation "
             + "[source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000006], "
             + "dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], "
-            + "id=2, relationQualifier=IS_A], 3=HPOTermRelation [source=ImmutableTermId "
+            + "id=2, relationQualifier=IS_A], 3=HpoTermRelation [source=ImmutableTermId "
             + "[prefix=ImmutableTermPrefix [value=HP], id=0000007], dest=ImmutableTermId "
             + "[prefix=ImmutableTermPrefix [value=HP], id=0000005], id=3, "
             + "relationQualifier=IS_A]}",

@@ -31,7 +31,7 @@ public class GoAnnotationGaf21ParserTest {
   }
 
   @Test
-  public void testParseHpoDiseaseAnnotationHead()
+  public void testParseGoDiseaseAnnotationHead()
       throws IOException, TermAnnotationParserException {
     final GoGeneAnnotationFileParser parser =
         new GoGeneAnnotationFileParser(goGeneAnnotationHeadFile);
@@ -40,7 +40,7 @@ public class GoAnnotationGaf21ParserTest {
     final GoGaf21Annotation firstRecord = parser.next();
     assertEquals(
         "GoGaf21Annotation [db=UniProtKB, dbObjectId=A0A024R161, "
-            + "dbObjectSymbol=DNAJC25-GNG10, qualifier=, hpoId=ImmutableTermId "
+            + "dbObjectSymbol=DNAJC25-GNG10, qualifier=, goId=ImmutableTermId "
             + "[prefix=ImmutableTermPrefix [value=GO], id=0004871], "
             + "dbReference=GO_REF:0000038, evidenceCode=IEA, with=UniProtKB-KW:KW-0807, "
             + "aspect=F, dbObjectName=Guanine nucleotide-binding protein subunit gamma, "

@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.formats.go;
+package de.charite.compbio.ontolib.formats.mpo;
 
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
@@ -6,17 +6,17 @@ import de.charite.compbio.ontolib.ontology.data.TermSynonym;
 import java.util.List;
 
 /**
- * Representation of a term in the GO.
+ * Representation of a term in the MPO.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public class GoTerm implements Term {
+public class MpoTerm implements Term {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
-  /** The GO term's Id. */
+  /** The MPO term's Id. */
   private final TermId id;
 
   /** Alternative term Ids. */
@@ -31,7 +31,7 @@ public class GoTerm implements Term {
   /** The term's comment string. */
   private final String comment;
 
-  /** The names of the subsets that the term is in, empty if none. */
+  /** The names of the subsets that the term is in, empty list if none. */
   private final List<String> subsets;
 
   /** The list of term synonyms. */
@@ -54,13 +54,13 @@ public class GoTerm implements Term {
    * @param name Human-readable term name.
    * @param definition Term definition.
    * @param comment Term comment.
-   * @param subsets The names of the subset that the term is in, empty if none.
+   * @param subsets The names of the subsets that the term is in, empty if none.
    * @param synonyms The synonyms for the term.
    * @param obsolete Whether or not the term is obsolete.
    * @param createdBy Author of the term.
    * @param creationDate Date of creation of the term.
    */
-  public GoTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
+  public MpoTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
       List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
       String creationDate) {
     this.id = id;
@@ -127,7 +127,7 @@ public class GoTerm implements Term {
 
   @Override
   public String toString() {
-    return "GoTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name + ", definition="
+    return "MPOTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name + ", definition="
         + definition + ", comment=" + comment + ", subsets=" + subsets + ", synonyms=" + synonyms
         + ", obsolete=" + obsolete + ", createdBy=" + createdBy + ", creationDate=" + creationDate
         + "]";

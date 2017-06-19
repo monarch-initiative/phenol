@@ -2,9 +2,11 @@ package de.charite.compbio.ontolib.demos.benchmark_parsing;
 
 import de.charite.compbio.ontolib.formats.go.GoOntology;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
+import de.charite.compbio.ontolib.formats.mpo.MpoOntology;
 import de.charite.compbio.ontolib.io.obo.OboParser;
 import de.charite.compbio.ontolib.io.obo.go.GoOboParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser;
+import de.charite.compbio.ontolib.io.obo.mpo.MpoOboParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,10 +22,10 @@ import java.io.ObjectOutputStream;
 public class App {
 
   /** Sleep to wait for VisualVM. */
-  private static final int SLEEP = 30;
+  private static final int SLEEP = 0;
 
   /** Number of repetitions to perform. */
-  private static final int REPETITIONS = 100;
+  private static final int REPETITIONS = 5;
 
   /** Command line arguments. */
   private final String[] args;
@@ -66,11 +68,14 @@ public class App {
         case PARSE_OBO:
           parseObo();
           break;
+        case PARSE_GO_OBO:
+          parseGoObo();
+          break;
         case PARSE_HPO_OBO:
           parseHpoObo();
           break;
-        case PARSE_GO_OBO:
-          parseGoObo();
+        case PARSE_MPO_OBO:
+          parseMpoObo();
           break;
         default:
           printUsageError("I don't know about command " + command);
@@ -118,6 +123,29 @@ public class App {
     }
   }
 
+  private void parseMpoObo() {
+    System.err.println("Parsing MPO OBO...");
+    long startTime = System.nanoTime();
+
+    MpoOboParser parser = new MpoOboParser(inputFile);
+    MpoOntology mpo;
+    try {
+      mpo = parser.parse();
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(1);
+      return; // javac does not understand this is unreachable
+    }
+
+    long endTime = System.nanoTime();
+    double duration = (endTime - startTime) / 1_000_000_000.0;
+    System.out.println("Parsing MPO OBO took " + duration + " seconds");
+
+    if (outputSerFile != null) {
+      writeAndLoadSer(mpo);
+    }
+  }
+
   private void parseGoObo() {
     System.err.println("Parsing GO OBO...");
     long startTime = System.nanoTime();
@@ -132,10 +160,9 @@ public class App {
       return; // javac does not understand this is unreachable
     }
 
-    System.err.println("Done writing .ser file.");
     long endTime = System.nanoTime();
     double duration = (endTime - startTime) / 1_000_000_000.0;
-    System.out.println("Writing .ser took " + duration + " seconds");
+    System.out.println("Parsing GO OBO took " + duration + " seconds");
 
     if (outputSerFile != null) {
       writeAndLoadSer(go);
@@ -186,12 +213,12 @@ public class App {
           inputFile = new File(args[i + 1]);
           command = Command.PARSE_OBO;
           break;
-        case "--hpo-obo":
-          command = Command.PARSE_HPO_OBO;
-          inputFile = new File(args[i + 1]);
-          break;
         case "--go-obo":
           command = Command.PARSE_GO_OBO;
+          inputFile = new File(args[i + 1]);
+          break;
+        case "--hpo-obo":
+          command = Command.PARSE_HPO_OBO;
           inputFile = new File(args[i + 1]);
           break;
         case "--output-ser":
@@ -207,8 +234,8 @@ public class App {
   /** Print error and usage, then exit. */
   private void printUsageError(String string) {
     System.err.println("ERROR: " + string + "\n");
-    System.err.println(
-        "Usage: java -jar app.jar [--output-ser FILE.ser] (--obo FILE.obo|--hpo-obo hp.obo)");
+    System.err.println("Usage: java -jar app.jar [--output-ser FILE.ser] "
+        + "(--obo FILE.obo|--[go|hpo|mpo]-obo FILE.obo)");
     System.exit(1);
   }
 
@@ -216,10 +243,12 @@ public class App {
   enum Command {
     /** Generic OBO parsing */
     PARSE_OBO,
+    /** Parse GO OBO file */
+    PARSE_GO_OBO,
     /** Parse HPO OBO file */
     PARSE_HPO_OBO,
-    /** Parse GO OBO file */
-    PARSE_GO_OBO;
+    /** Parse MPO OBO file */
+    PARSE_MPO_OBO;
   }
 
   /**

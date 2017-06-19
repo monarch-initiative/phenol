@@ -1,9 +1,9 @@
-package de.charite.compbio.ontolib.io.obo.hpo;
+package de.charite.compbio.ontolib.io.obo.mpo;
 
 import com.google.common.collect.Lists;
-import de.charite.compbio.ontolib.formats.hpo.HpoRelationQualifier;
-import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
-import de.charite.compbio.ontolib.formats.hpo.HpoTermRelation;
+import de.charite.compbio.ontolib.formats.mpo.MpoRelationQualifier;
+import de.charite.compbio.ontolib.formats.mpo.MpoTerm;
+import de.charite.compbio.ontolib.formats.mpo.MpoTermRelation;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.io.obo.OboOntologyEntryFactory;
 import de.charite.compbio.ontolib.io.obo.Stanza;
@@ -36,12 +36,12 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link HpoTerm} and {@link HpoTermRelation} objects from
+ * Factory class for constructing {@link MpoTerm} and {@link MpoTermRelation} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> {
+class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoTermRelation> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -62,7 +62,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   }
 
   @Override
-  public HpoTerm constructTerm(Stanza stanza) {
+  public MpoTerm constructTerm(Stanza stanza) {
     final TermId id =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
 
@@ -126,7 +126,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
         StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATION_DATE);
     final String creationDate = (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
-    return new HpoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
+    return new MpoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
         createdBy, creationDate);
   }
 
@@ -170,31 +170,31 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new HpoTermRelation(sourceId, destId, nextRelationId++, HpoRelationQualifier.IS_A);
+    return new MpoTermRelation(sourceId, destId, nextRelationId++, MpoRelationQualifier.IS_A);
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza,
+  public MpoTermRelation constructTermRelation(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 

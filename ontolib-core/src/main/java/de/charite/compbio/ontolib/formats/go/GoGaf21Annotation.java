@@ -435,7 +435,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public String toString() {
     return "GoGaf21Annotation [db=" + db + ", dbObjectId=" + dbObjectId + ", dbObjectSymbol="
-        + dbObjectSymbol + ", qualifier=" + qualifier + ", hpoId=" + goId + ", dbReference="
+        + dbObjectSymbol + ", qualifier=" + qualifier + ", goId=" + goId + ", dbReference="
         + dbReference + ", evidenceCode=" + evidenceCode + ", with=" + with + ", aspect=" + aspect
         + ", dbObjectName=" + dbObjectName + ", dbObjectSynonym=" + dbObjectSynonym
         + ", dbObjectType=" + dbObjectType + ", taxons=" + taxons + ", date=" + date

@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.formats.go;
+package de.charite.compbio.ontolib.formats.mpo;
 
 import com.google.common.collect.ImmutableMap;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
@@ -7,14 +7,14 @@ import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 
 /**
- * Implementation of the GO as an {@link ImmutableOntology}.
+ * Implementation of the MPO as an {@link ImmutableOntology}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> {
+public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoTermRelation> {
 
-  /** Serial UID for serialization. */
+  /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -22,20 +22,19 @@ public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> 
    *
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
-   * @param termMap Mapping from {@link TermId} to GO term.
-   * @param relationMap Mapping from numeric edge identifier to {@link GoTermRelation}.
+   * @param termMap Mapping from {@link TermId} to MPO term.
+   * @param relationMap Mapping from numeric edge identifier to {@link MpoTermRelation}.
    */
-  public GoOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
-      ImmutableMap<TermId, GoTerm> termMap, ImmutableMap<Integer, GoTermRelation> relationMap) {
+  public MpoOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      ImmutableMap<TermId, MpoTerm> termMap, ImmutableMap<Integer, MpoTermRelation> relationMap) {
     super(graph, rootTermId, termMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "GoOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
+    return "MPOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
         + ", getRelationMap()=" + getRelationMap() + ", getRootTermId()=" + getRootTermId()
-        + ", getTermIds()=" + getTermIds() + ", getTerms()=" + getTerms() + ", countTerms()="
-        + countTerms() + "]";
+        + ", getTermIds()=" + getTermIds() + ", getTerms()=" + getTerms() + "]";
   }
 
 }

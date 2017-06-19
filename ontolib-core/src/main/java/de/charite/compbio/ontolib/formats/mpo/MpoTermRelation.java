@@ -1,15 +1,15 @@
-package de.charite.compbio.ontolib.formats.hpo;
+package de.charite.compbio.ontolib.formats.mpo;
 
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 
 /**
- * {@link TermRelation} to use for the HPO.
+ * {@link TermRelation} to use for the MPO.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public class HpoTermRelation implements TermRelation {
+public class MpoTermRelation implements TermRelation {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -28,20 +28,20 @@ public class HpoTermRelation implements TermRelation {
   private final int id;
 
   /**
-   * {@link HpoRelationQualifier} for this term relation.
+   * {@link MpoRelationQualifier} for this term relation.
    */
-  private final HpoRelationQualifier relationQualifier;
+  private final MpoRelationQualifier relationQualifier;
 
   /**
    * Constructor.
-   * 
+   *
    * @param source Source {@link TermId}.
    * @param dest Destination {@link TermId}.
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationQualifier The relation's further qualifier.
    */
-  public HpoTermRelation(TermId source, TermId dest, int id,
-      HpoRelationQualifier relationQualifier) {
+  public MpoTermRelation(TermId source, TermId dest, int id,
+      MpoRelationQualifier relationQualifier) {
     this.source = source;
     this.dest = dest;
     this.id = id;
@@ -66,13 +66,13 @@ public class HpoTermRelation implements TermRelation {
   /**
    * @return The relation's qualifier.
    */
-  public HpoRelationQualifier getRelationQualifier() {
+  public MpoRelationQualifier getRelationQualifier() {
     return relationQualifier;
   }
 
   @Override
   public String toString() {
-    return "HpoTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
+    return "MpoTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
         + ", relationQualifier=" + relationQualifier + "]";
   }
 

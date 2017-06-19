@@ -1,9 +1,9 @@
-package de.charite.compbio.ontolib.io.obo.hpo;
+package de.charite.compbio.ontolib.io.obo.mpo;
 
 import com.google.common.collect.ImmutableMap;
-import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
-import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
-import de.charite.compbio.ontolib.formats.hpo.HpoTermRelation;
+import de.charite.compbio.ontolib.formats.mpo.MpoOntology;
+import de.charite.compbio.ontolib.formats.mpo.MpoTerm;
+import de.charite.compbio.ontolib.formats.mpo.MpoTermRelation;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
@@ -13,16 +13,16 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Facade class for parsing the HPO from an OBO file.
+ * Facade class for parsing the Mpo from an OBO file.
  *
  * <h5>Usage Example</h5>
  *
  * <pre>
  * String fileName = "hp.obo";
- * HPOOBOParser parser = new HPOOBOParser(new File(fileName));
- * HPOntology hpo;
+ * MpoOBOParser parser = new MpoOBOParser(new File(fileName));
+ * Mpontology Mpo;
  * try {
- *   hpo = parser.parse();
+ *   Mpo = parser.parse();
  * } catch (IOException e) {
  *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
  * }
@@ -30,7 +30,7 @@ import java.io.IOException;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class HpoOboParser {
+public final class MpoOboParser {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -44,7 +44,7 @@ public final class HpoOboParser {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public HpoOboParser(File oboFile, boolean debug) {
+  public MpoOboParser(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -54,28 +54,28 @@ public final class HpoOboParser {
    *
    * @param oboFile The OBO file to read.
    */
-  public HpoOboParser(File oboFile) {
+  public MpoOboParser(File oboFile) {
     this(oboFile, false);
   }
 
   /**
-   * Parse OBO file into {@link HpoOntology} object.
+   * Parse OBO file into {@link MpoOntology} object.
    *
-   * @return {@link HpoOntology} from parsing OBO file.
+   * @return {@link MpoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
   @SuppressWarnings("unchecked")
-  public HpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<HpoTerm, HpoTermRelation> loader =
+  public MpoOntology parse() throws IOException {
+    final OboImmutableOntologyLoader<MpoTerm, MpoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
-    final HpoOboFactory factory = new HpoOboFactory();
-    final ImmutableOntology<HpoTerm, HpoTermRelation> o = loader.load(factory);
+    final MpoOboFactory factory = new MpoOboFactory();
+    final ImmutableOntology<MpoTerm, MpoTermRelation> o = loader.load(factory);
 
-    // Convert ImmutableOntology into HPOntology. The casts here are ugly and require the
+    // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new HpoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
-        o.getRootTermId(), (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());
+    return new MpoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
+        o.getRootTermId(), (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
+        (ImmutableMap<Integer, MpoTermRelation>) o.getRelationMap());
   }
 
   /**
