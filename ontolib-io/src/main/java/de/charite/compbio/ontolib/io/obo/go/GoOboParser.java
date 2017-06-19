@@ -1,9 +1,10 @@
 package de.charite.compbio.ontolib.io.obo.go;
 
 import com.google.common.collect.ImmutableMap;
+import de.charite.compbio.ontolib.formats.go.GoOntology;
+import de.charite.compbio.ontolib.formats.go.GoTerm;
+import de.charite.compbio.ontolib.formats.go.GoTermRelation;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
-import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
-import de.charite.compbio.ontolib.formats.hpo.HpoTermRelation;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
@@ -18,11 +19,11 @@ import java.io.IOException;
  * <h5>Usage Example</h5>
  *
  * <pre>
- * String fileName = "hp.obo";
- * HPOOBOParser parser = new HPOOBOParser(new File(fileName));
- * HPOntology hpo;
+ * String fileName = "go.obo";
+ * GoOboParser parser = new GoOboParser(new File(fileName));
+ * GoOntology go;
  * try {
- *   hpo = parser.parse();
+ *   go = parser.parse();
  * } catch (IOException e) {
  *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
  * }
@@ -65,17 +66,17 @@ public final class GoOboParser {
    * @throws IOException In case of problems with file I/O.
    */
   @SuppressWarnings("unchecked")
-  public HpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<HpoTerm, HpoTermRelation> loader =
+  public GoOntology parse() throws IOException {
+    final OboImmutableOntologyLoader<GoTerm, GoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
     final GoOboFactory factory = new GoOboFactory();
-    final ImmutableOntology<HpoTerm, HpoTermRelation> o = loader.load(factory);
+    final ImmutableOntology<GoTerm, GoTermRelation> o = loader.load(factory);
 
-    // Convert ImmutableOntology into HPOntology. The casts here are ugly and require the
+    // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new HpoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
-        o.getRootTermId(), (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());
+    return new GoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
+        o.getRootTermId(), (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
+        (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());
   }
 
   /**

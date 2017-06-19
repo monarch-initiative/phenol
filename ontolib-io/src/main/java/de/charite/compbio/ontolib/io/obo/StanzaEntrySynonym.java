@@ -18,8 +18,8 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   /** Optional synonym type name, <code>null</code> if missing. */
   private final String synonymTypeName;
 
-  /** Optional dbXRef list of stanza entry, <code>null</code> if missing. */
-  private final DbXrefList dbXRefList;
+  /** Optional dbXref list of stanza entry, <code>null</code> if missing. */
+  private final DbXrefList dbXrefList;
 
   /**
    * Constructor.
@@ -27,18 +27,18 @@ public final class StanzaEntrySynonym extends StanzaEntry {
    * @param text Synonym text
    * @param termSynonymScope {@link TermSynonymScope} of this synonym.
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
-   * @param dbXRefList Optional {@link DbXrefList}, <code>null</code> if missing.
+   * @param dbXrefList Optional {@link DbXrefList}, <code>null</code> if missing.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntrySynonym(String text, TermSynonymScope termSynonymScope, String synonymTypeName,
-      DbXrefList dbXRefList, TrailingModifier trailingModifier, String comment) {
+      DbXrefList dbXrefList, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.SYNONYM, trailingModifier, comment);
     this.text = text;
     this.termSynonymScope = termSynonymScope;
     this.synonymTypeName = synonymTypeName;
-    this.dbXRefList = dbXRefList;
+    this.dbXrefList = dbXrefList;
   }
 
   /**
@@ -65,14 +65,14 @@ public final class StanzaEntrySynonym extends StanzaEntry {
   /**
    * @return Optional {@link DbXrefList}, <code>null</code> if empty.
    */
-  public DbXrefList getDbXRefList() {
-    return dbXRefList;
+  public DbXrefList getDbXrefList() {
+    return dbXrefList;
   }
 
   @Override
   public String toString() {
     return "StanzaEntrySynonym [text=" + text + ", termSynonymScope=" + termSynonymScope
-        + ", synonymTypeName=" + synonymTypeName + ", dbXRefList=" + dbXRefList + ", getType()="
+        + ", synonymTypeName=" + synonymTypeName + ", dbXrefList=" + dbXrefList + ", getType()="
         + getType() + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()="
         + getComment() + "]";
   }

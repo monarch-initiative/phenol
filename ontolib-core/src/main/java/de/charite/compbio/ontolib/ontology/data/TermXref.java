@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermXRef extends Serializable {
+public interface TermXref extends Serializable {
 
   /**
    * Query for cross-referenced term's ID.

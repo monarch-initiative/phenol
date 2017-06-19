@@ -1,7 +1,9 @@
 package de.charite.compbio.ontolib.demos.benchmark_parsing;
 
+import de.charite.compbio.ontolib.formats.go.GoOntology;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
 import de.charite.compbio.ontolib.io.obo.OboParser;
+import de.charite.compbio.ontolib.io.obo.go.GoOboParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,10 +64,13 @@ public class App {
     for (int i = 0; i < REPETITIONS; ++i) {
       switch (command) {
         case PARSE_OBO:
-          parseOBO();
+          parseObo();
           break;
         case PARSE_HPO_OBO:
-          parseHPOOBO();
+          parseHpoObo();
+          break;
+        case PARSE_GO_OBO:
+          parseGoObo();
           break;
         default:
           printUsageError("I don't know about command " + command);
@@ -73,7 +78,7 @@ public class App {
     }
   }
 
-  private void parseOBO() {
+  private void parseObo() {
     System.err.println("Parsing OBO...");
     final long startTime = System.nanoTime();
 
@@ -90,7 +95,7 @@ public class App {
     System.out.println("Parsing OBO took " + duration + " seconds");
   }
 
-  private void parseHPOOBO() {
+  private void parseHpoObo() {
     System.err.println("Parsing HPO OBO...");
     long startTime = System.nanoTime();
 
@@ -109,35 +114,62 @@ public class App {
     System.out.println("Parsing HPO OBO took " + duration + " seconds");
 
     if (outputSerFile != null) {
-      System.out.println("Writing .ser file " + outputSerFile + "...");;
-      startTime = System.nanoTime();
-      try (FileOutputStream fout = new FileOutputStream(outputSerFile);
-          ObjectOutputStream oos = new ObjectOutputStream(fout)) {
-        oos.writeObject(hpo);
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-      System.err.println("Done writing .ser file.");
-      endTime = System.nanoTime();
-      duration = (endTime - startTime) / 1_000_000_000.0;
-      System.out.println("Writing .ser took " + duration + " seconds");
-
-
-      System.out.println("Loading .ser file " + outputSerFile + "...");;
-      startTime = System.nanoTime();
-      try (FileInputStream fin = new FileInputStream(outputSerFile);
-          ObjectInputStream ois = new ObjectInputStream(fin);) {
-        ois.readObject();
-      } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-      System.err.println("Done loading .ser file.");
-      endTime = System.nanoTime();
-      duration = (endTime - startTime) / 1_000_000_000.0;
-      System.out.println("Reading .ser took " + duration + " seconds");
+      writeAndLoadSer(hpo);
     }
+  }
+
+  private void parseGoObo() {
+    System.err.println("Parsing GO OBO...");
+    long startTime = System.nanoTime();
+
+    GoOboParser parser = new GoOboParser(inputFile);
+    GoOntology go;
+    try {
+      go = parser.parse();
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(1);
+      return; // javac does not understand this is unreachable
+    }
+
+    System.err.println("Done writing .ser file.");
+    long endTime = System.nanoTime();
+    double duration = (endTime - startTime) / 1_000_000_000.0;
+    System.out.println("Writing .ser took " + duration + " seconds");
+
+    if (outputSerFile != null) {
+      writeAndLoadSer(go);
+    }
+  }
+
+  private void writeAndLoadSer(Object o) {
+    System.out.println("Writing .ser file " + outputSerFile + "...");;
+    long startTime = System.nanoTime();
+    try (FileOutputStream fout = new FileOutputStream(outputSerFile);
+        ObjectOutputStream oos = new ObjectOutputStream(fout)) {
+      oos.writeObject(o);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+    System.err.println("Done writing .ser file.");
+    long endTime = System.nanoTime();
+    double duration = (endTime - startTime) / 1_000_000_000.0;
+    System.out.println("Writing .ser took " + duration + " seconds");
+
+    System.out.println("Loading .ser file " + outputSerFile + "...");;
+    startTime = System.nanoTime();
+    try (FileInputStream fin = new FileInputStream(outputSerFile);
+        ObjectInputStream ois = new ObjectInputStream(fin);) {
+      ois.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+    System.err.println("Done loading .ser file.");
+    endTime = System.nanoTime();
+    duration = (endTime - startTime) / 1_000_000_000.0;
+    System.out.println("Reading .ser took " + duration + " seconds");
   }
 
   /**
@@ -156,6 +188,10 @@ public class App {
           break;
         case "--hpo-obo":
           command = Command.PARSE_HPO_OBO;
+          inputFile = new File(args[i + 1]);
+          break;
+        case "--go-obo":
+          command = Command.PARSE_GO_OBO;
           inputFile = new File(args[i + 1]);
           break;
         case "--output-ser":
@@ -181,7 +217,9 @@ public class App {
     /** Generic OBO parsing */
     PARSE_OBO,
     /** Parse HPO OBO file */
-    PARSE_HPO_OBO;
+    PARSE_HPO_OBO,
+    /** Parse GO OBO file */
+    PARSE_GO_OBO;
   }
 
   /**

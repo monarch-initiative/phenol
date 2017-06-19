@@ -26,11 +26,11 @@ import de.charite.compbio.ontolib.io.obo.StanzaEntryType;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryUnionOf;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermSynonym;
-import de.charite.compbio.ontolib.ontology.data.ImmutableTermXRef;
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermXref;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermSynonym;
 import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
-import de.charite.compbio.ontolib.ontology.data.TermXRef;
+import de.charite.compbio.ontolib.ontology.data.TermXref;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
@@ -106,11 +106,11 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
         final String value = s.getText();
         final TermSynonymScope scope = s.getTermSynonymScope();
         final String synonymTypeName = s.getSynonymTypeName();
-        final List<TermXRef> termXRefs = s.getDbXRefList().getDbXrefs().stream()
-            .map(xref -> new ImmutableTermXRef(termIds.get(xref.getName()), xref.getDescription()))
+        final List<TermXref> termXrefs = s.getDbXrefList().getDbXrefs().stream()
+            .map(xref -> new ImmutableTermXref(termIds.get(xref.getName()), xref.getDescription()))
             .collect(Collectors.toList());
 
-        return new ImmutableTermSynonym(value, scope, synonymTypeName, termXRefs);
+        return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
       }).collect(Collectors.toList());
     }
 

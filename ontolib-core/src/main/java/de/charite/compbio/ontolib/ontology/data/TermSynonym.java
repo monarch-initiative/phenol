@@ -37,6 +37,6 @@ public interface TermSynonym extends Serializable {
    *
    * @return {@link List} of term cross-references, <code>null</code> if missing.
    */
-  List<TermXRef> getTermXRefs();
+  List<TermXref> getTermXRefs();
 
 }

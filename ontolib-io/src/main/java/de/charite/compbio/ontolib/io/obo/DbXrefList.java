@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of the <code>dbXRefList</code> from the OBO file.
+ * Representation of the <code>dbXrefList</code> from the OBO file.
  * 
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -20,14 +20,14 @@ public class DbXrefList {
    *
    * @param dbXref The {@link DbXref} to add.
    */
-  public void addDbXRef(DbXref dbXref) {
+  public void addDbXref(DbXref dbXref) {
     dbXrefs.add(dbXref);
   }
 
   /**
    * Query for list of database cross references.
    *
-   * @return the dbXRefs
+   * @return the dbXrefs
    */
   public List<DbXref> getDbXrefs() {
     return dbXrefs;

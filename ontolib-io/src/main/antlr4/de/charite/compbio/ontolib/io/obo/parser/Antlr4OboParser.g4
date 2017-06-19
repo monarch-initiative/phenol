@@ -73,7 +73,7 @@ termStanzaKeyValue
   | keyValueComment
   | keyValueSubset
   | keyValueSynonym
-  | keyValueXRef
+  | keyValueXref
   | keyValueIsA
   | keyValueIntersectionOf
   | keyValueUnionOf
@@ -102,7 +102,7 @@ typedefStanzaKeyValue
   | keyValueComment
   | keyValueSubset
   | keyValueSynonym
-  | keyValueXRef
+  | keyValueXref
   | keyValueIsA
   | keyValueIsObsolete
   | keyValueReplacedBy
@@ -136,7 +136,7 @@ instanceStanzaKeyValue
   | keyValueAltId
   | keyValueComment
   | keyValueSynonym
-  | keyValueXRef
+  | keyValueXref
   | keyValueIsObsolete
   | keyValueReplacedBy
   | keyValueGeneric
@@ -198,8 +198,8 @@ keyValueAltId
 ;
 
 keyValueDef
-: // note the mandatory dbXRefList here
-  TagDef ColonSpace QuotedString Space dbXRefList
+: // note the mandatory dbXrefList here
+  TagDef ColonSpace QuotedString Space dbXrefList
   (
     Space trailingModifier
   )? eolComment2
@@ -228,18 +228,18 @@ keyValueSynonym
     Space extWord
   )?
   (
-    Space dbXRefList
+    Space dbXrefList
   )?
   (
     Space trailingModifier
   )? eolComment2
 ;
 
-// Note that the trailingModifier for keyValueXRef comes straight from the dbXRef (for now).
+// Note that the trailingModifier for keyValueXref comes straight from the dbXref (for now).
 
-keyValueXRef
+keyValueXref
 :
-  TagXRef ColonSpace dbXRef
+  TagXref ColonSpace dbXref
   // (Space trailingModifier )?
   eolComment2
 ;
@@ -549,23 +549,23 @@ trailingModifierKeyValue
 
 // dbxrefs
 
-dbXRefList
+dbXrefList
 :
   SquareBraceOpen
   (
-    dbXRef
+    dbXref
     (
       (
         Comma
         | Semicolon
-      ) Space* dbXRef
+      ) Space* dbXref
     )*
   )? SquareBraceClose
 ;
 
-dbXRef
+dbXref
 :
-  dbXRefWord
+  dbXrefWord
   (
     Space QuotedString
   )?
@@ -586,7 +586,7 @@ extWord
 
 // Similar to extWord but also allowing square brace open.
 
-dbXRefWord
+dbXrefWord
 :
   (
     Word

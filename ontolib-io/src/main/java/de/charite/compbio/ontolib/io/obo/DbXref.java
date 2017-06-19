@@ -62,7 +62,7 @@ public class DbXref {
 
   @Override
   public String toString() {
-    return "DBXRef [name=" + name + ", description=" + description + ", trailingModifier="
+    return "DbXref [name=" + name + ", description=" + description + ", trailingModifier="
         + trailingModifier + "]";
   }
 

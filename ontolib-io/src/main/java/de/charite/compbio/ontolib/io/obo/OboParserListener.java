@@ -1,8 +1,8 @@
 package de.charite.compbio.ontolib.io.obo;
 
 import com.google.common.collect.Lists;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXRefContext;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXRefListContext;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXrefContext;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXrefListContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.EolComment2Context;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.ExtWordContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.HeaderContext;
@@ -50,7 +50,7 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueSynonymC
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueSynonymtypedefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueTransitiveOverContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueUnionOfContext;
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueXRefContext;
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.KeyValueXrefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.StanzaContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.TermStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.TrailingModifierContext;
@@ -286,11 +286,11 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   @Override
   public void exitKeyValueDef(KeyValueDefContext ctx) {
     final String text = OboEscapeUtils.unescape(ctx.QuotedString().getText());
-    final DbXrefList dbXRefList = (DbXrefList) getValue(ctx.dbXRefList());
+    final DbXrefList dbXrefList = (DbXrefList) getValue(ctx.dbXrefList());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryDef(text, dbXRefList, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryDef(text, dbXrefList, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueComment</code> rule. */
@@ -320,22 +320,22 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     final TermSynonymScope termSynonymScope =
         TermSynonymScope.valueOf(ctx.ScopeIdentifier().getText());
     final String scopeTypeName = OboEscapeUtils.unescape(trimmedEmptyToNull(ctx.extWord()));
-    final DbXrefList dbXRefList = (DbXrefList) getValue(ctx.dbXRefList());
+    final DbXrefList dbXrefList = (DbXrefList) getValue(ctx.dbXrefList());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntrySynonym(text, termSynonymScope, scopeTypeName, dbXRefList,
+    setValue(ctx, new StanzaEntrySynonym(text, termSynonymScope, scopeTypeName, dbXrefList,
         trailingModifier, comment));
   }
 
-  /** Called on leaving <code>keyValueXRef</code> rule. */
+  /** Called on leaving <code>keyValueXref</code> rule. */
   @Override
-  public void exitKeyValueXRef(KeyValueXRefContext ctx) {
-    final DbXref dbXRef = (DbXref) getValue(ctx.dbXRef());
-    final TrailingModifier trailingModifier = dbXRef.getTrailingModifier();
+  public void exitKeyValueXref(KeyValueXrefContext ctx) {
+    final DbXref dbXref = (DbXref) getValue(ctx.dbXref());
+    final TrailingModifier trailingModifier = dbXref.getTrailingModifier();
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryXref(dbXRef, trailingModifier, comment));
+    setValue(ctx, new StanzaEntryXref(dbXref, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueIsA</code> rule. */
@@ -716,24 +716,24 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   }
 
   /**
-   * Called on leaving <code>dbXRefList</code> rule, construct {@link DbXref} object.
+   * Called on leaving <code>dbXrefList</code> rule, construct {@link DbXref} object.
    */
   @Override
-  public void exitDbXRefList(DbXRefListContext ctx) {
-    final DbXrefList dbXRefList = new DbXrefList();
-    for (DbXRefContext xrcCtx : ctx.dbXRef()) {
-      dbXRefList.addDbXRef((DbXref) getValue(xrcCtx));
+  public void exitDbXrefList(DbXrefListContext ctx) {
+    final DbXrefList dbXrefList = new DbXrefList();
+    for (DbXrefContext xrcCtx : ctx.dbXref()) {
+      dbXrefList.addDbXref((DbXref) getValue(xrcCtx));
     }
 
-    setValue(ctx, dbXRefList);
+    setValue(ctx, dbXrefList);
   }
 
   /**
-   * Called on leaving <code>dbXRef</code> rule, construct {@link DbXref} object.
+   * Called on leaving <code>dbXref</code> rule, construct {@link DbXref} object.
    */
   @Override
-  public void exitDbXRef(DbXRefContext ctx) {
-    final String name = OboEscapeUtils.unescape(ctx.dbXRefWord().getText());
+  public void exitDbXref(DbXrefContext ctx) {
+    final String name = OboEscapeUtils.unescape(ctx.dbXrefWord().getText());
     final String description = (ctx.QuotedString() == null)
         ? null
         : OboEscapeUtils.unescape(ctx.QuotedString().getText().trim());

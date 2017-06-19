@@ -1,11 +1,11 @@
 package de.charite.compbio.ontolib.ontology.data;
 
 /**
- * Immutable implementation of {@link TermXRef}.
+ * Immutable implementation of {@link TermXref}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ImmutableTermXRef implements TermXRef {
+public class ImmutableTermXref implements TermXref {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class ImmutableTermXRef implements TermXRef {
    * @param id The term's Id.
    * @param description The cross reference description.
    */
-  public ImmutableTermXRef(TermId id, String description) {
+  public ImmutableTermXref(TermId id, String description) {
     this.id = id;
     this.description = description;
   }

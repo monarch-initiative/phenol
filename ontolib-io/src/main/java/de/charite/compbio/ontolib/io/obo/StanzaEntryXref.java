@@ -7,8 +7,8 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public final class StanzaEntryXref extends StanzaEntry {
 
-  /** dbXRef value of stanza entry. */
-  private final DbXref dbXRef;
+  /** dbXref value of stanza entry. */
+  private final DbXref dbXref;
 
   /**
    * Constructor.
@@ -20,19 +20,19 @@ public final class StanzaEntryXref extends StanzaEntry {
    */
   public StanzaEntryXref(DbXref dbXref, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.XREF, trailingModifier, comment);
-    this.dbXRef = dbXref;
+    this.dbXref = dbXref;
   }
 
   /**
    * @return The entry's Id value.
    */
-  public DbXref getDbXRef() {
-    return dbXRef;
+  public DbXref getDbXref() {
+    return dbXref;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryXRef [dbXRef=" + dbXRef + ", getType()=" + getType()
+    return "StanzaEntryXref [dbXref=" + dbXref + ", getType()=" + getType()
         + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
         + "]";
   }

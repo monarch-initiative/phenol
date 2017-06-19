@@ -71,7 +71,7 @@ TagSynonym
   'synonym'
 ;
 
-TagXRef
+TagXref
 :
   'xref'
 ;

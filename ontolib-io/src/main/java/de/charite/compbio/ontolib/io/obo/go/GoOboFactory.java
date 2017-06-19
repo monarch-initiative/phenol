@@ -1,9 +1,9 @@
 package de.charite.compbio.ontolib.io.obo.go;
 
 import com.google.common.collect.Lists;
-import de.charite.compbio.ontolib.formats.hpo.HpoRelationQualifier;
-import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
-import de.charite.compbio.ontolib.formats.hpo.HpoTermRelation;
+import de.charite.compbio.ontolib.formats.go.GoRelationQualifier;
+import de.charite.compbio.ontolib.formats.go.GoTerm;
+import de.charite.compbio.ontolib.formats.go.GoTermRelation;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.io.obo.OboOntologyEntryFactory;
 import de.charite.compbio.ontolib.io.obo.Stanza;
@@ -26,22 +26,24 @@ import de.charite.compbio.ontolib.io.obo.StanzaEntryType;
 import de.charite.compbio.ontolib.io.obo.StanzaEntryUnionOf;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermSynonym;
-import de.charite.compbio.ontolib.ontology.data.ImmutableTermXRef;
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermXref;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermSynonym;
 import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
-import de.charite.compbio.ontolib.ontology.data.TermXRef;
+import de.charite.compbio.ontolib.ontology.data.TermXref;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
+// TODO: flesh out, then consolidate with HpoOboFactory and similar classes
+
 /**
- * Factory class for constructing {@link HpoTerm} and {@link HpoTermRelation} objects from
+ * Factory class for constructing {@link GoTerm} and {@link GoTermRelation} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  * 
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class GoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> {
+class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -62,7 +64,7 @@ class GoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> 
   }
 
   @Override
-  public HpoTerm constructTerm(Stanza stanza) {
+  public GoTerm constructTerm(Stanza stanza) {
     final TermId id =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
 
@@ -106,11 +108,11 @@ class GoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> 
         final String value = s.getText();
         final TermSynonymScope scope = s.getTermSynonymScope();
         final String synonymTypeName = s.getSynonymTypeName();
-        final List<TermXRef> termXRefs = s.getDbXRefList().getDbXrefs().stream()
-            .map(xref -> new ImmutableTermXRef(termIds.get(xref.getName()), xref.getDescription()))
+        final List<TermXref> termXrefs = s.getDbXrefList().getDbXrefs().stream()
+            .map(xref -> new ImmutableTermXref(termIds.get(xref.getName()), xref.getDescription()))
             .collect(Collectors.toList());
 
-        return new ImmutableTermSynonym(value, scope, synonymTypeName, termXRefs);
+        return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
       }).collect(Collectors.toList());
     }
 
@@ -126,7 +128,7 @@ class GoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> 
         StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATION_DATE);
     final String creationDate = (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
-    return new HpoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
+    return new GoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
         createdBy, creationDate);
   }
 
@@ -170,31 +172,31 @@ class GoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> 
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public GoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new HpoTermRelation(sourceId, destId, nextRelationId++, HpoRelationQualifier.IS_A);
+    return new GoTermRelation(sourceId, destId, nextRelationId++, GoRelationQualifier.IS_A);
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public GoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public GoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza,
+  public GoTermRelation constructTermRelation(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public GoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 

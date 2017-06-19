@@ -48,7 +48,7 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals("Synonym Name", stanzaEntry.getText());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
-    assertNull(stanzaEntry.getDbXRefList());
+    assertNull(stanzaEntry.getDbXrefList());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -64,7 +64,7 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals("Synonym Name", stanzaEntry.getText());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
-    assertNull(stanzaEntry.getDbXRefList());
+    assertNull(stanzaEntry.getDbXrefList());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
@@ -81,7 +81,7 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals("Synonym Name", stanzaEntry.getText());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
-    assertNull(stanzaEntry.getDbXRefList());
+    assertNull(stanzaEntry.getDbXrefList());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
   }
@@ -97,7 +97,7 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals("Synonym Name", stanzaEntry.getText());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
-    assertNull(stanzaEntry.getDbXRefList());
+    assertNull(stanzaEntry.getDbXrefList());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
@@ -116,8 +116,8 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertEquals("MARKETING", stanzaEntry.getSynonymTypeName());
     assertEquals(
-        "DBXRefList [dbXRefs=[DBXRef [name=db-xref, description=null, trailingModifier=null]]]",
-        stanzaEntry.getDbXRefList().toString());
+        "DbXrefList [dbXrefs=[DbXref [name=db-xref, description=null, trailingModifier=null]]]",
+        stanzaEntry.getDbXrefList().toString());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());

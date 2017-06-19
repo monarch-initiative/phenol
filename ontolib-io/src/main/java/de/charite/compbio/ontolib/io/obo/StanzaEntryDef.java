@@ -10,23 +10,23 @@ public final class StanzaEntryDef extends StanzaEntry {
   /** Comment value of stanza entry. */
   private final String text;
 
-  /** The dbXRef list of stanza entry. */
-  private final DbXrefList dbXRefList;
+  /** The dbXref list of stanza entry. */
+  private final DbXrefList dbXrefList;
 
   /**
    * Constructor.
    *
    * @param text The value of the text stanza entry.
-   * @param dbXRefList The stanza's {@link DbXrefList}.
+   * @param dbXrefList The stanza's {@link DbXrefList}.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
    *        <code>null</code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryDef(String text, DbXrefList dbXRefList, TrailingModifier trailingModifier,
+  public StanzaEntryDef(String text, DbXrefList dbXrefList, TrailingModifier trailingModifier,
       String comment) {
     super(StanzaEntryType.DEF, trailingModifier, comment);
     this.text = text;
-    this.dbXRefList = dbXRefList;
+    this.dbXrefList = dbXrefList;
   }
 
   /**
@@ -37,15 +37,15 @@ public final class StanzaEntryDef extends StanzaEntry {
   }
 
   /**
-   * @return The entry's dbXRef list.
+   * @return The entry's dbXref list.
    */
-  public DbXrefList getDbXRefList() {
-    return dbXRefList;
+  public DbXrefList getDbXrefList() {
+    return dbXrefList;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryDef [text=" + text + ", dbXRefList=" + dbXRefList + ", getType()="
+    return "StanzaEntryDef [text=" + text + ", dbXrefList=" + dbXrefList + ", getType()="
         + getType() + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()="
         + getComment() + "]";
   }

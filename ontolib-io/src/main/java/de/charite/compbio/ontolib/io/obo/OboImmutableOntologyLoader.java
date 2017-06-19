@@ -14,10 +14,13 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -32,6 +35,11 @@ import java.util.TreeMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class OboImmutableOntologyLoader<T extends Term, R extends TermRelation> {
+
+  /**
+   * The {@link Logger} object to use for logging.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(OboParser.class);
 
   /** File to load from. */
   private final File file;
@@ -123,6 +131,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     // Find root candidates (no outgoing is-a edges).
     final List<ImmutableTermId> rootCandidates =
         new ArrayList<>(helper.getRootCandidateStanzas().keySet());
+    Collections.sort(rootCandidates);
 
     // Get root or construct a synthetic one. Bail out if no root candidate was found.s
     if (rootCandidates.size() == 0) {
@@ -138,6 +147,9 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         throw new RuntimeException(
             "Tried to guess artificial root as " + rootId + " but is already taken.");
       }
+
+      LOGGER.info("Ontology had {} root terms {}, inserting artificial root term {}",
+          new Object[] {rootCandidates.size(), rootCandidates, rootId});
 
       // Register term Id.
       final String rootIdString = rootPrefix.getValue() + ":" + rootLocalId;
@@ -252,7 +264,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         final List<StanzaEntry> xRefEntries = stanza.getEntryByType().get(StanzaEntryType.XREF);
         if (xRefEntries != null) {
           for (StanzaEntry e : xRefEntries) {
-            registeredTermId(((StanzaEntryXref) e).getDbXRef().getName());
+            registeredTermId(((StanzaEntryXref) e).getDbXref().getName());
           }
         }
 
