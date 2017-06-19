@@ -33,6 +33,7 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    */
   public ResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc,
       boolean symmetric) {
+    // TODO: switch parameter order, make consisten with other similarities
     super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIc));
   }
 

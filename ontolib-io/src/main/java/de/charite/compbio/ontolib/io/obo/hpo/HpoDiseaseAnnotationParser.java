@@ -22,7 +22,7 @@ import java.io.IOException;
  * try {
  *   HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(inputFile);
  *   while (parser.hasNext()) {
- *     HPODiseaseAnnotation anno = parser.next();
+ *     HpoDiseaseAnnotation anno = parser.next();
  *     // ...
  *   }
  * } except (IOException e) {

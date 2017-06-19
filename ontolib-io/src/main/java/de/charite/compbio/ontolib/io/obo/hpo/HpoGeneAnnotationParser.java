@@ -20,9 +20,9 @@ import java.io.IOException;
  * <pre>
  * File inputFile = "genes_to_phenotype.txt";
  * try {
- *   HpoGeneAnnotationParser parser = new HpoDiseaseAnnotationParser(inputFile);
+ *   HpoGeneAnnotationParser parser = new HpoGeneAnnotationParser(inputFile);
  *   while (parser.hasNext()) {
- *     HPOGeneAnnotation anno = parser.next();
+ *     HpoGeneAnnotation anno = parser.next();
  *     // ...
  *   }
  * } except (IOException e) {

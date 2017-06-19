@@ -1,14 +1,18 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import com.google.common.collect.ImmutableMap;
-import de.charite.compbio.ontolib.graph.data.DirectedGraph;
-import de.charite.compbio.ontolib.graph.data.Edge;
-import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
-import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableMap;
+
+import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
+import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+import de.charite.compbio.ontolib.graph.data.Edge;
+import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
+import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -72,9 +76,22 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public Collection<TermId> getAncestors(TermId termId) {
-    // TODO Auto-generated method stub
-    return null;
+  public Collection<TermId> getAncestors(TermId termId, boolean includeRoot) {
+    // Perform BFS from termId towards the root, collecting vertices on the way into result.
+    final Set<TermId> result = new HashSet<>();
+
+    BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
+    bfs.startFromForward(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
+      @Override
+      public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
+        if (includeRoot || !isRootTerm(v)) {
+          result.add(v);
+        }
+        return true;
+      }
+    });
+
+    return result;
   }
 
   @Override
@@ -82,10 +99,8 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
     final Set<TermId> result = new HashSet<>();
     for (TermId termId : termIds) {
       result.add(termId);
-      for (TermId ancestorId : getAncestors(termId)) {
-        if (includeRoot || !isRootTerm(ancestorId)) {
-          result.add(ancestorId);
-        }
+      for (TermId ancestorId : getAncestors(termId, includeRoot)) {
+        result.add(ancestorId);
       }
     }
     return result;

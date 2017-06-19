@@ -56,6 +56,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   /** Configuration for score sampling. */
   private final ScoreSamplingOptions options;
 
+  // TODO: ontology already is in similarity? 
   /**
    * Constructor.
    *

@@ -53,7 +53,7 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
   boolean isRootTerm(TermId termId);
 
   // TODO: should not be part of Ontology class!
-  Collection<TermId> getAncestors(TermId termId);
+  Collection<TermId> getAncestors(TermId termId, boolean includeRoot);
 
   TermId getRootTermId();
 

@@ -1,9 +1,5 @@
 package de.charite.compbio.ontolib.graph.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,8 +10,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Implementation of an immutable (read-only) {@link DirectedGraph}.
@@ -52,8 +54,8 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param edgeFactory The {@link Edge.Factory} to use for constructing edges.
    * @return Freshly constructed {@link Builder} object.
    */
-  public static <V,
-      E extends ImmutableEdge<V>> Builder<V, E> builder(final Edge.Factory<V, E> edgeFactory) {
+  public static <V, E extends ImmutableEdge<V>> Builder<V, E> builder(
+      final Edge.Factory<V, E> edgeFactory) {
     return new Builder<V, E>(edgeFactory);
   }
 

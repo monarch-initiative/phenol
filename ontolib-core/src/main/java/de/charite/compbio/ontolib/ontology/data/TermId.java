@@ -2,6 +2,8 @@ package de.charite.compbio.ontolib.ontology.data;
 
 import java.io.Serializable;
 
+// TODO: actually, TermPrefix could be a string...
+
 /**
  * Identifier of a {@link Term}, consisting of a {@link TermPrefix} and a local Id string.
  *

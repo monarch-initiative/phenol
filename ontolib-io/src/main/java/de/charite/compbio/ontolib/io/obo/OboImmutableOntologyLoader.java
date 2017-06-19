@@ -241,6 +241,17 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     @Override
     public void parsedStanza(Stanza stanza) {
       if (stanza.getType() == StanzaType.TERM) { // ignore all but the terms
+        // Ignore entries marked as obsolete.
+        // TODO: copy and paste error in other instances!
+        if (stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE) != null) {
+          for (StanzaEntry e : stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE)) {
+            StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
+            if (entry.getValue()) {
+              return;   // skip this one
+            }
+          }
+        }
+
         // Obtain ImmutableTermId for the source term.
         final List<StanzaEntry> idEntries = stanza.getEntryByType().get(StanzaEntryType.Id);
         if (idEntries.size() != 1) {
