@@ -23,7 +23,7 @@ import java.io.IOException;
  *   HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(inputFile);
  *   while (parser.hasNext()) {
  *     HPODiseaseAnnotation anno = parser.next();
- *     // ...     
+ *     // ...
  *   }
  * } except (IOException e) {
  *   System.err.println("Problem reading from file.");
@@ -51,7 +51,7 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDisea
 
   /**
    * Create new parser for HPO gene annotation files.
-   * 
+   *
    * @param file The file to read from.
    *
    * @throws IOException In case of problems with opening and reading first line from

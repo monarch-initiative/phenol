@@ -35,7 +35,7 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /**
    * Constructor.
-   * 
+   *
    * @param entrezGeneId Numeric Entrez gene Id.
    * @param entrezGeneSymbol Entrez gene symbol.
    * @param hpoTermName HPO term name from annotation file.

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Representation of the <code>dbXrefList</code> from the OBO file.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class DbXrefList {

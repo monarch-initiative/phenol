@@ -31,7 +31,7 @@ public final class ObjectScoreDistribution implements Serializable {
   /**
    * Construct score distribution for a given number of terms, sample size, and cumulative
    * frequencies.
-   * 
+   *
    * @param objectId "World object" identifier.
    * @param numTerms Number of terms used in precomputation.
    * @param sampleSize Sample size used for precomputation.

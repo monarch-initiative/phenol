@@ -4,7 +4,7 @@ package de.charite.compbio.ontolib.io.obo;
 
 /**
  * Representation of the <code>dbXref</code> from the OBO file.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class DbXref {

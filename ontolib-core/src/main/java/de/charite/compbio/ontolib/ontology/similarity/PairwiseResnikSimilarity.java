@@ -50,7 +50,7 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
 
   /**
    * Construct new {@link PairwiseResnikSimilarity}.
-   * 
+   *
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
@@ -81,7 +81,7 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
   /**
    * Implementation of computing similarity score between a <code>query</code> and a
    * <code>query</code>.
-   * 
+   *
    * @param query Query {@link TermId}.
    * @param target Target {@link TermId}.
    * @return Precomputed pairwise Resnik similarity score.
@@ -135,7 +135,7 @@ final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
 
     /**
      * Constructor.
-     * 
+     *
      * @param query Query {@link TermId}
      * @param target Target {@link TermId}
      */

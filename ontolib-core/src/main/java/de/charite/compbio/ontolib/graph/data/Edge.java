@@ -50,7 +50,7 @@ public interface Edge<V> extends Serializable, Cloneable {
      * @return constructed {@link Edge}
      */
     E construct(V u, V v);
-    
+
     /**
      * Get Id of next edge to construct.
      *

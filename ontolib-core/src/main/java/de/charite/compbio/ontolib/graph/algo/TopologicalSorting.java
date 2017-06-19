@@ -32,7 +32,7 @@ public final class TopologicalSorting<V, E extends Edge<V>, G extends DirectedGr
 
   /**
    * Implementation of Tarjan's algorithm for topological sorting.
-   * 
+   *
    * @param g {@link DirectedGraph} to iterate
    * @param visitor {@link VertexVisitor} to use for notifying about reaching a vertex
    * @param selector {@link NeighborSelector} to use for selecting the next neighbor
@@ -56,7 +56,7 @@ public final class TopologicalSorting<V, E extends Edge<V>, G extends DirectedGr
 
   /**
    * Tarjan's <code>visit()</code>.
-   * 
+   *
    * @param g {@link DirectedGraph} to traverse
    * @param unmarked Unmarked vertices
    * @param tmpMarked Temporarily marked vertices

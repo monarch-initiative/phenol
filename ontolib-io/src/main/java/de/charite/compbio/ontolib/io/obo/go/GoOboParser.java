@@ -41,7 +41,7 @@ public final class GoOboParser {
 
   /**
    * Constructor.
-   * 
+   *
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
@@ -52,7 +52,7 @@ public final class GoOboParser {
 
   /**
    * Constructor, disabled debugging.
-   * 
+   *
    * @param oboFile The OBO file to read.
    */
   public GoOboParser(File oboFile) {

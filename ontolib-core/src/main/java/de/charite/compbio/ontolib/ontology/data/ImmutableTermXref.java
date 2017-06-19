@@ -41,5 +41,5 @@ public class ImmutableTermXref implements TermXref {
   public String toString() {
     return "ImmutableTermXRef [id=" + id + ", description=" + description + "]";
   }
-  
+
 }

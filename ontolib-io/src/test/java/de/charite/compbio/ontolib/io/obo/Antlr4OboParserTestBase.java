@@ -33,7 +33,7 @@ public class Antlr4OboParserTestBase {
 
   /**
    * Build and return {@link Antlr4OboParser} for a given <code>text</code>.
-   * 
+   *
    * @param text String with the text to parse.
    * @param mode Name of the mode to use.
    * @return {@link Antlr4OboParser}, readily setup for parsing the OBO file.

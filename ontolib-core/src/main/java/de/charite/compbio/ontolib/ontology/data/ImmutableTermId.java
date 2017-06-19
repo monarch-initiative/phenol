@@ -81,7 +81,7 @@ public final class ImmutableTermId implements TermId {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.lang.Object#hashCode()
    */
   @Override

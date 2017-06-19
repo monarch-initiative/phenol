@@ -96,7 +96,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
 
   /**
    * Constructor.
-   * 
+   *
    * @param db Database source, e.g., <code>"MIM"</code>.
    * @param dbObjectId Id in database, e.g., <code>"154700"</code>.
    * @param dbName Name in database, e.g., <code>"Achondrogenesis, type IB"</code>.

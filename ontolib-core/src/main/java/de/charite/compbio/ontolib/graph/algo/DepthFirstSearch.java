@@ -20,7 +20,7 @@ public final class DepthFirstSearch<V, E extends Edge<V>>
 
   /**
    * Generic implementation of BFS; forward/reverse edges are chosen using <code>selector</code>.
-   * 
+   *
    * @param g {@link DirectedGraph} to use for iteration.
    * @param v Vertex to start from.
    * @param visitor {@link VertexVisitor} to use for visiting vertices.

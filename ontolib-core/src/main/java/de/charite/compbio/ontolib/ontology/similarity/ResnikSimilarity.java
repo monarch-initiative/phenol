@@ -26,7 +26,7 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    * content mapping. This precomputation is done at construction of the
    * <code>ResnikSimilarity</code> object.
    * </p>
-   * 
+   *
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from {@link TermId} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
@@ -45,7 +45,7 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    * precomputation can be passed in explicitely, performing the precomputation explicitely earlier
    * instead of implicitely on object construction.
    * </p>
-   * 
+   *
    * @param ontology {@link Ontology} to base computations on.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use internally.

@@ -20,7 +20,7 @@ public class GraphNotDagException extends RuntimeException {
 
   /**
    * Construct graph with the given <code>message</code>.
-   * 
+   *
    * @param message for the exception
    */
   public GraphNotDagException(String message) {

@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 
 /**
  * Smoke test base calss with example OBO files.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class SmokeTestBase {

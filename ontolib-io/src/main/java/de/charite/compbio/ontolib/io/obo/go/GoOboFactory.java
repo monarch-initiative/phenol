@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 /**
  * Factory class for constructing {@link GoTerm} and {@link GoTermRelation} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
@@ -134,7 +134,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
 
   /**
    * Extract cardinality one entry (=tag) of type <code>type</code> from <code>stanza</code>.
-   * 
+   *
    * @param stanza {@link Stanza} to get {@link StanzaEntry} from.
    * @param type {@link StanzaEntryType} to use.
    * @return Resulting {@link StanzaEntry}, properly cast.
@@ -152,7 +152,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
   /**
    * Extract cardinality zero or one entry (=tag) of type <code>type</code> from
    * <code>stanza</code>.
-   * 
+   *
    * @param stanza {@link Stanza} to get {@link StanzaEntry} from.
    * @param type {@link StanzaEntryType} to use.
    * @return Resulting {@link StanzaEntry}, properly cast, or <code>null</code>.

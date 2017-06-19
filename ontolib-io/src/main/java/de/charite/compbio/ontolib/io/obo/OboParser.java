@@ -46,7 +46,7 @@ public final class OboParser {
 
   /**
    * Parse OBO file in one go.
-   * 
+   *
    * @param file Path to OBO file.
    * @return Completely parsed OBO file.
    *
@@ -60,7 +60,7 @@ public final class OboParser {
 
   /**
    * Parse OBO file, report complete parsing of header and stanzas via <code>listener</code>.
-   * 
+   *
    * @param file Path to OBO file.
    * @param listener Listener for parsing.
    *
@@ -74,7 +74,7 @@ public final class OboParser {
 
   /**
    * Parse OBO file in one go.
-   * 
+   *
    * @param oboString String with OBO file contents.
    * @return Completely parsed OBO file.
    *
@@ -88,7 +88,7 @@ public final class OboParser {
 
   /**
    * Parse OBO file, report complete parsing of header and stanzas via <code>listener</code>.
-   * 
+   *
    * @param oboString String with OBO file contents.
    * @param listener Listener for parsing.
    *

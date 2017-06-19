@@ -78,7 +78,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * <p>
    * The default is <code>1</code>.
    * </p>
-   * 
+   *
    * @param numThreads Number of threads to use.
    */
   public void setNumThreads(int numThreads) {
@@ -98,7 +98,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * <p>
    * The default is <code>null</code>.
    * </p>
-   * 
+   *
    * @param minObjectId Smallest "world object" Id to use or <code>null</code>.
    */
   public void setMinObjectId(Integer minObjectId) {
@@ -118,7 +118,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * <p>
    * The default is <code>null</code>.
    * </p>
-   * 
+   *
    * @param maxObjectId Largest "world object" Id to use or <code>null</code>.
    */
   public void setMaxObjectId(Integer maxObjectId) {
@@ -138,7 +138,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * <p>
    * The default is <code>1</code>.
    * </p>
-   * 
+   *
    * @param minNumTerms Smallest number of terms to perform precomputation for.
    */
   public void setMinNumTerms(int minNumTerms) {
@@ -158,7 +158,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * <p>
    * The default is <code>20</code>.
    * </p>
-   * 
+   *
    * @param maxNumTerms Smallest number of terms to perform precomputation for.
    */
   public void setMaxNumTerms(int maxNumTerms) {

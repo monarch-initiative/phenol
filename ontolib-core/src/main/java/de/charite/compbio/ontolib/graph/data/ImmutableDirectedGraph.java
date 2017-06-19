@@ -45,7 +45,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
   /**
    * Construct and return a {@link Builder} helper object.
-   * 
+   *
    * @param <V> Vertex type, see {@link DirectedGraph} for requirements on this type.
    * @param <E> Edge type, must be an {@link ImmutableEdge} of <code>V</code>.
    *
@@ -459,7 +459,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
     /**
      * Construct and add new {@link ImmutableEdge} between <code>source</code> and
      * <code>dest</code>, any label/weights are set to default values.
-     * 
+     *
      * <p>
      * Note that
      * </p>
@@ -509,7 +509,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
      * <p>
      * This is a forward to {@link #build(boolean)}, with argument <code>false</code>.
      * </p>
-     * 
+     *
      * @return Freshly built {@link ImmutableDirectedGraph}
      */
     public final ImmutableDirectedGraph<V, E> build() {

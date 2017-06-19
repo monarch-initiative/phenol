@@ -28,5 +28,5 @@ public class TermAnnotationParserException extends Exception {
   public TermAnnotationParserException(String message) {
     super(message);
   }
-  
+
 }

@@ -20,7 +20,7 @@ final class PairwiseLinSimilarity<T extends Term, R extends TermRelation>
 
   /**
    * Construct with inner {@link PairwiseResnikSimilarity}.
-   * 
+   *
    * @param pairwiseResnik Inner {@link PairwiseResnikSimilarity} to use.
    */
   public PairwiseLinSimilarity(PairwiseResnikSimilarity<T, R> pairwiseResnik) {

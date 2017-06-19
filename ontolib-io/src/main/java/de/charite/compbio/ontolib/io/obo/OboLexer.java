@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.LexerNoViableAltException;
 
 /**
  * Extends the generated Antlr4OboLexer to bail out at the first lexing error.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class OboLexer extends Antlr4OboLexer {

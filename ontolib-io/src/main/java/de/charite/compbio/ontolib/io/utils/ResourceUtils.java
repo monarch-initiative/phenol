@@ -32,7 +32,7 @@ public class ResourceUtils {
 
   /**
    * Copy resource at the given path to the given output {@link File}.
-   * 
+   *
    * @param path Source resource path.
    * @param outFile File with output description.
    */

@@ -17,7 +17,7 @@ interface NeighborSelector<V, E extends Edge<V>> {
 
   /**
    * Return {@link Iterator} of vertices to go from next from <code>v</code>.
-   * 
+   *
    * @param g {@link DirectedGraph} that contains <code>v</code>
    * @param v Vertex to iterate neighbors of
    * @return {@link Iterator} of vertices to go to next from <code>v</code>.

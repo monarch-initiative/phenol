@@ -35,7 +35,7 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
 
   /**
    * Constructor.
-   * 
+   *
    * @param ontology {@link Ontology} to base computations on.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use for constructing set-to-set

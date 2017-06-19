@@ -7,7 +7,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  * Provide default implementations for the <code>startFromForward()</code> and
  * <code>startFromReverse()</code> functions without {@link NeighborSelector} for traversal
  * algorithms that start at individual nodes.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends Edge<V>,
@@ -16,7 +16,7 @@ public abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends E
   /**
    * Start traversal in <code>G</code> from <code>v</code> over <b>outgoing</b> edges using
    * <code>visitor</code> for notifying about reaching a vertex.
-   * 
+   *
    * @param g {@link DirectedGraph} to traverse.
    * @param v Vertex to start traversal from.
    * @param visitor {@link VertexVisitor} to use.
@@ -29,7 +29,7 @@ public abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends E
   /**
    * Start traversal in <code>G</code> from <code>v</code> over <b>incoming</b> edges using
    * <code>visitor</code> for notifying about reaching a vertex.
-   * 
+   *
    * @param g {@link DirectedGraph} to traverse.
    * @param v Vertex to start traversal from.
    * @param visitor {@link VertexVisitor} to use.
@@ -41,7 +41,7 @@ public abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends E
 
   /**
    * Override for logic, using <code>selector</code> for chosing neighbors of <code>v</code>.
-   * 
+   *
    * @param g {@link DirectedGraph} to use for iteration.
    * @param v Vertex to start from.
    * @param visitor {@link VertexVisitor} to use for visiting vertices.

@@ -16,7 +16,7 @@ import java.io.ObjectOutputStream;
 
 /**
  * App for benchmarking parsing of ontology files.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class App {
@@ -41,7 +41,7 @@ public class App {
 
   /**
    * Construct with argument list.
-   * 
+   *
    * @param args Argument list.
    */
   public App(String[] args) {

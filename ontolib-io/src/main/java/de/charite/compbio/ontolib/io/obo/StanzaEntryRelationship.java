@@ -17,7 +17,7 @@ public final class StanzaEntryRelationship extends StanzaEntry {
 
   /**
    * Constructor.
-   * 
+   *
    * @param relationshipType Name of the relationship type.
    * @param ids The Ids of the referenced terms.
    * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,

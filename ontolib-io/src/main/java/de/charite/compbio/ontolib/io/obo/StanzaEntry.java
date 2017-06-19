@@ -30,7 +30,7 @@ public class StanzaEntry {
 
   /**
    * Constructor.
-   * 
+   *
    * <p>
    * Only to be used by sub classes' constructors.
    * </p>

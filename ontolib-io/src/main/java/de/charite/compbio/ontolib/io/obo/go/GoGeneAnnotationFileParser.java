@@ -24,7 +24,7 @@ import java.util.List;
  *   GoGeneAnnotationFileParser parser = new GoGeneAnnotationFileParser(inputFile);
  *   while (parser.hasNext()) {
  *     GoAnnotation anno = parser.next();
- *     // ...     
+ *     // ...
  *   }
  * } except (IOException e) {
  *   System.err.println("Problem reading from file.");
@@ -52,7 +52,7 @@ public final class GoGeneAnnotationFileParser implements TermAnnotationParser<Go
 
   /**
    * Create new parser for GO gene annotation file.
-   * 
+   *
    * @param file The file to read from.
    *
    * @throws IOException In case of problems with opening and reading from <code>file</code>.

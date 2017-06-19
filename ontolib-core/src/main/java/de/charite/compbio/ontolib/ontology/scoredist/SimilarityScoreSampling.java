@@ -155,7 +155,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   /**
    * Perform the sampling using the configuration, given "world object" <code>objectId</code> and
    * the given <code>terms</code> for this object.
-   * 
+   *
    * @param objectId "World object" id.
    * @param terms The {@link TermId}s that this object is labeled with.
    * @param numTerms Number of query terms to compute score distributions for.

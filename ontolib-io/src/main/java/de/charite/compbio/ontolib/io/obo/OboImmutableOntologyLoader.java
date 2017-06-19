@@ -85,7 +85,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
 
     /*
      * Note on the effect of event-based parsing.
-     * 
+     *
      * If the implementation is correct, we now have a relatively compact (depending on the
      * implementation of factory, of course) representation of the ontology in memory using the
      * objects from <code>ontolib-core</code> only. All objects that have the full representation of

@@ -34,7 +34,7 @@ public class GoTermRelation implements TermRelation {
 
   /**
    * Constructor.
-   * 
+   *
    * @param source Source {@link TermId}.
    * @param dest Destination {@link TermId}.
    * @param id The term relation's Id, corresponds to Id of edge in graph.

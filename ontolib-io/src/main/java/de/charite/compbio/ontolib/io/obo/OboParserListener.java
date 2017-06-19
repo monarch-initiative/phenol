@@ -96,7 +96,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
 
   /**
    * Set associated <code>value</code> for the given {@link ParseTree} <code>node</code>.
-   * 
+   *
    * @param node The {@link ParseTree} <code>node</code> to set the value for.
    * @param value The value to put for the given {@link ParseTree} <code>node</code>.
    */
@@ -764,7 +764,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
 
   /**
    * Convert <code>null</code> and (trimmed) empty string to <code>null</code>.
-   * 
+   *
    * @param s <code>String</code> to convert
    * @return Trimmed value of <code>s</code> or <code>null</code>.
    */

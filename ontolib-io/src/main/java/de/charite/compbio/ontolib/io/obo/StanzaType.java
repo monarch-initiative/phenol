@@ -2,7 +2,7 @@ package de.charite.compbio.ontolib.io.obo;
 
 /**
  * Enumeration of {@link Stanza} types.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public enum StanzaType {

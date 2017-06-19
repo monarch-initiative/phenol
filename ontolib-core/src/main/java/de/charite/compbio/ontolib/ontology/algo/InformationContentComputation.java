@@ -41,12 +41,12 @@ public final class InformationContentComputation<T extends Term, R extends TermR
 
   /**
    * Perform the actual computation.
-   * 
+   *
    * @param <LabelT> Labels for objects from "the real world". This could, e.g., be
    *        <code>String</code>s with gene names. This type has to properly implement
    *        <code>equals(Object)</code> and <code>hashValue()</code> as it is to be used as keys in
    *        a {@link HashMap}.
-   * 
+   *
    * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
@@ -91,7 +91,7 @@ public final class InformationContentComputation<T extends Term, R extends TermR
 
   /**
    * Calculate information content for each {@link TermId}.
-   * 
+   *
    * @param maxFreq Maximal frequency of any term (root's frequency).
    * @param termToFrequency {@link Map} from term to absolute frequency.
    * @return {@link Map} from {@link TermId} to information content.

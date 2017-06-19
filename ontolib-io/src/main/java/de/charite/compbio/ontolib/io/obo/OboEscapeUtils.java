@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * Utility code for escaping and unescaping strings in OBO.
- * 
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class OboEscapeUtils {
