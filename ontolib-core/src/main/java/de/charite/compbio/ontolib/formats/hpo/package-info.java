@@ -14,6 +14,13 @@
  * objects.
  * </p>
  *
+ * <p>
+ * You can use {@link de.charite.compbio.ontolib.io.obo.hpo.HpoDiseaseAnnotationParser} for loading
+ * the "phenotype annotation" files and
+ * {@link de.charite.compbio.ontolib.io.obo.hpo.HpoGeneAnnotationParser} for loading the "genes to
+ * phenotypes" annotation file.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */

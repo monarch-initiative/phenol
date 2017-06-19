@@ -17,6 +17,21 @@ public final class ImmutableTermID implements TermID {
   private final String id;
 
   /**
+   * Construct from term ID including prefix.
+   *
+   * @param termIdString String with term ID to construct with.
+   * @return Resulting {@link ImmutableTermID}.
+   */
+  public static ImmutableTermID constructWithPrefix(String termIdString) {
+    final String arr[] = termIdString.split(":", 2);
+    if (arr.length != 2) {
+      throw new RuntimeException("Term ID string \"" + termIdString + "\"does not have a prefix!");
+    } else {
+      return new ImmutableTermID(new ImmutableTermPrefix(arr[0]), arr[1]);
+    }
+  }
+
+  /**
    * Constructor.
    *
    * @param prefix Prefix to use.

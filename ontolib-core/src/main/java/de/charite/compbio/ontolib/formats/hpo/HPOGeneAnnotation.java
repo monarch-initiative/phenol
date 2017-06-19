@@ -7,6 +7,10 @@ import de.charite.compbio.ontolib.ontology.data.TermID;
 /**
  * Annotation of a HPO term (via its {@link TermID}) with genes.
  *
+ * <p>
+ * The <b>label</b> of this {@link TermAnnotation} is <code>"ENTREZ:${entrez_id}"</code>.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
@@ -22,25 +26,25 @@ public final class HPOGeneAnnotation implements TermAnnotation {
   private final String entrezGeneSymbol;
 
   /** HPO term name from annotation file. */
-  private final String termName;
+  private final String hpoTermName;
 
   /** HPO {@link TermID} annotated with gene. */
-  private final TermID termID;
+  private final TermID hpoTermID;
 
   /**
    * Constructor.
    * 
    * @param entrezGeneID Numeric Entrez gene ID.
    * @param entrezGeneSymbol Entrez gene symbol.
-   * @param termName HPO term name from annotation file.
-   * @param termID HPO {@link TermID} of annotated HPO term.
+   * @param hpoTermName HPO term name from annotation file.
+   * @param hpoTermID HPO {@link TermID} of annotated HPO term.
    */
-  public HPOGeneAnnotation(int entrezGeneID, String entrezGeneSymbol, String termName,
+  public HPOGeneAnnotation(int entrezGeneID, String entrezGeneSymbol, String hpoTermName,
       TermID hpoTermID) {
     this.entrezGeneID = entrezGeneID;
     this.entrezGeneSymbol = entrezGeneSymbol;
-    this.termName = termName;
-    this.termID = hpoTermID;
+    this.hpoTermName = hpoTermName;
+    this.hpoTermID = hpoTermID;
   }
 
   /**
@@ -61,7 +65,7 @@ public final class HPOGeneAnnotation implements TermAnnotation {
    * @return The HPO term name from the annotation.
    */
   public String getTermName() {
-    return termName;
+    return hpoTermName;
   }
 
   /**
@@ -69,7 +73,7 @@ public final class HPOGeneAnnotation implements TermAnnotation {
    */
   @Override
   public TermID getTermID() {
-    return termID;
+    return hpoTermID;
   }
 
   /**
@@ -77,13 +81,13 @@ public final class HPOGeneAnnotation implements TermAnnotation {
    */
   @Override
   public String getLabel() {
-    return termID.getIDWithPrefix();
+    return "ENTREZ:" + entrezGeneID;
   }
 
   @Override
   public String toString() {
     return "HPOGeneAnnotation [entrezGeneID=" + entrezGeneID + ", entrezGeneSymbol="
-        + entrezGeneSymbol + ", termName=" + termName + ", termID=" + termID + "]";
+        + entrezGeneSymbol + ", termName=" + hpoTermName + ", termID=" + hpoTermID + "]";
   }
 
   @Override
@@ -92,8 +96,8 @@ public final class HPOGeneAnnotation implements TermAnnotation {
     int result = 1;
     result = prime * result + entrezGeneID;
     result = prime * result + ((entrezGeneSymbol == null) ? 0 : entrezGeneSymbol.hashCode());
-    result = prime * result + ((termID == null) ? 0 : termID.hashCode());
-    result = prime * result + ((termName == null) ? 0 : termName.hashCode());
+    result = prime * result + ((hpoTermID == null) ? 0 : hpoTermID.hashCode());
+    result = prime * result + ((hpoTermName == null) ? 0 : hpoTermName.hashCode());
     return result;
   }
 
@@ -107,12 +111,12 @@ public final class HPOGeneAnnotation implements TermAnnotation {
     if (entrezGeneSymbol == null) {
       if (other.entrezGeneSymbol != null) return false;
     } else if (!entrezGeneSymbol.equals(other.entrezGeneSymbol)) return false;
-    if (termID == null) {
-      if (other.termID != null) return false;
-    } else if (!termID.equals(other.termID)) return false;
-    if (termName == null) {
-      if (other.termName != null) return false;
-    } else if (!termName.equals(other.termName)) return false;
+    if (hpoTermID == null) {
+      if (other.hpoTermID != null) return false;
+    } else if (!hpoTermID.equals(other.hpoTermID)) return false;
+    if (hpoTermName == null) {
+      if (other.hpoTermName != null) return false;
+    } else if (!hpoTermName.equals(other.hpoTermName)) return false;
     return true;
   }
 
@@ -124,8 +128,8 @@ public final class HPOGeneAnnotation implements TermAnnotation {
 
     final HPOGeneAnnotation that = (HPOGeneAnnotation) o;
     return ComparisonChain.start().compare(this.entrezGeneID, that.entrezGeneID)
-        .compare(this.entrezGeneSymbol, that.entrezGeneSymbol).compare(this.termName, that.termName)
-        .compare(this.termID, that.termID).result();
+        .compare(this.entrezGeneSymbol, that.entrezGeneSymbol).compare(this.hpoTermName, that.hpoTermName)
+        .compare(this.hpoTermID, that.hpoTermID).result();
   }
 
 }

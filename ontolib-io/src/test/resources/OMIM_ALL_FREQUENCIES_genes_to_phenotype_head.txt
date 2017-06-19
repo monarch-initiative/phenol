@@ -1,0 +1,10 @@
+#Format: entrez-gene-id<tab>entrez-gene-symbol<tab>HPO-Term-Name<tab>HPO-Term-ID
+8192	CLPP	Primary amenorrhea	HP:0000786
+8192	CLPP	Seizures	HP:0001250
+8192	CLPP	Short stature	HP:0004322
+8192	CLPP	Sensorineural hearing impairment	HP:0000407
+8192	CLPP	Autosomal recessive inheritance	HP:0000007
+8192	CLPP	Microcephaly	HP:0000252
+8192	CLPP	Hypoplasia of the uterus	HP:0000013
+8192	CLPP	Hypergonadotropic hypogonadism	HP:0000815
+2	A2M	Autosomal dominant inheritance	HP:0000006
