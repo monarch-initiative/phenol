@@ -15,7 +15,7 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  */
 public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> {
 
-  /** Serial UId for serialization. */
+  /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -33,7 +33,7 @@ public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> 
 
   @Override
   public String toString() {
-    return "GOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
+    return "GoOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
         + ", getRelationMap()=" + getRelationMap() + ", getRootTermId()=" + getRootTermId()
         + ", getTermIds()=" + getTermIds() + ", getTerms()=" + getTerms() + ", countTerms()="
         + countTerms() + "]";

@@ -1,5 +1,5 @@
 /**
- * Utilities for ontology file I/O.
+ * Utilities for Human Phenotype Ontology (HPO) file I/O.
  *
  * <p>
  * Use {@link de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser} for loading the HPO from OBO

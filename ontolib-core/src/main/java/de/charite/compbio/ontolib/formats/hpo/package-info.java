@@ -9,7 +9,7 @@
  * </p>
  *
  * <p>
- * You can use {@link de.charite.compbio.ontolib.io.obo.hpo.HPOOBOParser} for parsing OBO-formatted
+ * You can use {@link de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser} for parsing OBO-formatted
  * files and <code>String</codes>s into {@link de.charite.compbio.ontolib.formats.hpo.HpoOntology}
  * objects.
  * </p>

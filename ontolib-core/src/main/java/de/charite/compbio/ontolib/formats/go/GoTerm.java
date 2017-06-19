@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class GoTerm implements Term {
 
-  /** Serial UId for serialization. */
+  /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** The HPO term's Id. */
@@ -123,6 +123,14 @@ public class GoTerm implements Term {
   @Override
   public String getCreationDate() {
     return creationDate;
+  }
+
+  @Override
+  public String toString() {
+    return "GoTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name + ", definition="
+        + definition + ", comment=" + comment + ", subsets=" + subsets + ", synonyms=" + synonyms
+        + ", obsolete=" + obsolete + ", createdBy=" + createdBy + ", creationDate=" + creationDate
+        + "]";
   }
 
 }

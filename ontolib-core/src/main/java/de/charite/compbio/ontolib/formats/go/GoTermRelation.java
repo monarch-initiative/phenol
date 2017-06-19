@@ -11,7 +11,7 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
  */
 public class GoTermRelation implements TermRelation {
 
-  /** Serial UId for serialization. */
+  /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -40,8 +40,7 @@ public class GoTermRelation implements TermRelation {
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationQualifier The relation's further qualifier.
    */
-  public GoTermRelation(TermId source, TermId dest, int id,
-      GoRelationQualifier relationQualifier) {
+  public GoTermRelation(TermId source, TermId dest, int id, GoRelationQualifier relationQualifier) {
     this.source = source;
     this.dest = dest;
     this.id = id;
@@ -72,7 +71,7 @@ public class GoTermRelation implements TermRelation {
 
   @Override
   public String toString() {
-    return "HPOTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
+    return "GoTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
         + ", relationQualifier=" + relationQualifier + "]";
   }
 

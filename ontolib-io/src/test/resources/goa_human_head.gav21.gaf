@@ -1,0 +1,40 @@
+!GOC Validation Date: 06/16/2017 $
+!Submission Date: 6/6/2017
+!
+! The above "Submission Date" is when the annotation project provided
+! this file to the Gene Ontology Consortium (GOC).  The "GOC Validation
+! Date" indicates when this file was last changed as a result of a GOC
+! validation and filtering process.  
+!
+! Note: The contents of this file may differ from that submitted to the
+! GOC. The identifiers and syntax of the file have been checked, rows of
+! data not meeting the standards set by the GOC have been removed. This
+! file may also have annotations removed because the annotations for the
+! listed Taxonomy identifier are only allowed in a file provided by
+! another annotation project.  The original submitted file is available from:
+!  http://www.geneontology.org/gene-associations/submission/
+!
+! For information on which taxon are allowed in which files please see:
+!  http://www.geneontology.org/GO.annotation.shtml#script
+!
+!gaf-version: 2.0
+!Project_name: UniProt GO Annotation program (UniProt-GOA)
+!URL: http://www.ebi.ac.uk/GOA
+!Contact Email: goa@ebi.ac.uk
+!
+!The set of protein accessions included in this file is based on UniProt reference proteomes, which provide one protein per gene.
+!They include the protein sequences annotated in Swiss-Prot or the longest TrEMBL transcript if there is no Swiss-Prot record.
+!If a particular protein accession is not annotated with GO, then it will not appear in this file.
+!
+!Note that the annotation set in this file is filtered in order to reduce redundancy; the full, unfiltered set can be found in
+!ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/goa_uniprot_all.gz
+!
+!Generated: 2017-06-05 11:49
+!GO-version: http://purl.obolibrary.org/obo/go/releases/2017-06-02/go.owl
+!
+UniProtKB	A0A024R161	DNAJC25-GNG10		GO:0004871	GO_REF:0000038	IEA	UniProtKB-KW:KW-0807	F	Guanine nucleotide-binding protein subunit gamma	A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888	protein	taxon:9606	20170603	UniProt		
+UniProtKB	A0A024R161	DNAJC25-GNG10		GO:0005834	GO_REF:0000002	IEA	InterPro:IPR001770|InterPro:IPR015898	C	Guanine nucleotide-binding protein subunit gamma	A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888	protein	taxon:9606	20170603	InterPro		
+UniProtKB	A0A024R161	DNAJC25-GNG10		GO:0007186	GO_REF:0000002	IEA	InterPro:IPR001770|InterPro:IPR015898	P	Guanine nucleotide-binding protein subunit gamma	A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888	protein	taxon:9606	20170603	InterPro		
+UniProtKB	A0A024R216	HDGFRP3		GO:0005654	GO_REF:0000052	IDA		C	Hepatoma-derived growth factor, related protein 3, isoform CRA_a	A0A024R216_HUMAN|HDGFRP3|hCG_1811535	protein	taxon:9606	20110516	HPA		
+UniProtKB	A0A024R216	HDGFRP3		GO:0005829	GO_REF:0000107	IEA	UniProtKB:Q9JMG7|ensembl:ENSMUSP00000102926	C	Hepatoma-derived growth factor, related protein 3, isoform CRA_a	A0A024R216_HUMAN|HDGFRP3|hCG_1811535	protein	taxon:9606	20170603	Ensembl		
+UniProtKB	A0A024R216	HDGFRP3		GO:0007026	GO_REF:0000107	IEA	UniProtKB:Q9JMG7|ensembl:ENSMUSP00000102926	P	Hepatoma-derived growth factor, related protein 3, isoform CRA_a	A0A024R216_HUMAN|HDGFRP3|hCG_1811535	protein	taxon:9606	20170603	Ensembl		

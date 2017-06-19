@@ -242,7 +242,6 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     return dbObjectId;
   }
 
-
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof HpoDiseaseAnnotation)) {
