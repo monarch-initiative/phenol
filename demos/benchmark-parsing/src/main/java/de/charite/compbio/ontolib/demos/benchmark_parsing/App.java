@@ -22,7 +22,7 @@ import java.io.ObjectOutputStream;
 public class App {
 
   /** Sleep to wait for VisualVM. */
-  private static final int SLEEP = 0;
+  private static final int SLEEP = 30;
 
   /** Number of repetitions to perform. */
   private static final int REPETITIONS = 5;
