@@ -14,7 +14,7 @@
  * </p>
  *
  * <p>
- * You can use {@link de.charite.compbio.ontolib.io.obo.uberpheno.UphenoOboParser} for parsing
+ * You can use {@link de.charite.compbio.ontolib.io.obo.upheno.UphenoOboParser} for parsing
  * OBO-formatted files and <code>String</codes>s into
  * {@link de.charite.compbio.ontolib.formats.upheno.UphenoOntology} objects.
  * </p>

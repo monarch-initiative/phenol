@@ -104,10 +104,10 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    *
    * <p>
    * On parallelization, multiple {@link ScoreDistribution}s can be merged using
-   * {@link ScoreDistribution#merge(java.util.Collection)}.
+   * {@link ScoreDistributions#merge(java.util.Collection)}.
    * </p>
    *
-   * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId}
+   * @param labels {@link Map} from "world object" Id to a {@code Collection} of {@link TermId}
    *        labels.
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.

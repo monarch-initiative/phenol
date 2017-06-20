@@ -46,7 +46,7 @@ abstract class AbstractPairwiseResnikSimilarity<T extends Term, R extends TermRe
    *
    * <p>
    * This method is a performance hotspot and already well optimized. Further speedup can be gained
-   * through {@link PrecomputedPairwiseResnikSimilarity}.
+   * through {@link PrecomputingPairwiseResnikSimilarity}.
    * </p>
    *
    * @param query Query {@link TermId}.

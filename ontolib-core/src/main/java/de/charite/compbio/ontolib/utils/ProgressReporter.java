@@ -34,7 +34,7 @@ public final class ProgressReporter {
    * Constructor.
    *
    * @param logger {@link Logger} to write to
-   * @param elementType Label for element type (plural).
+   * @param elementsLabel Label for element type (plural).
    * @param totalCount Total number of elements to process.
    */
   public ProgressReporter(Logger logger, String elementsLabel, int totalCount) {
