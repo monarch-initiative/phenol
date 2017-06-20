@@ -10,7 +10,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends Edge<V>,
+abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends Edge<V>,
     G extends DirectedGraph<V, E>> {
 
   /**

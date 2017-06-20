@@ -38,6 +38,10 @@
  * <li>We need to flesh out the different parsing modes for the ontologies (maybe more than one
  * mode, e.g., "slim" and "fat"?) and consolidate the copy and paste code</li>
  * <li>We should implement BOQCA?!</li>
+ * <li>Provide CLI tools in ontolib-cli package, will require more library support, at least
+ * versionized serialization: Resnik precomputation + serialization, score distribution
+ * precomputation + serialization, matching term sets to "world object", e.g., disease or gene
+ * annotation with multi-testing correction, loading ontologies and serialization</li>
  * <li>Resolve all embedded TODO comments!</li>
  * </ul>
  *

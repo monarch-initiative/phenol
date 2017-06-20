@@ -5,6 +5,8 @@ import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import de.charite.compbio.ontolib.ontology.similarity.Similarity;
+import de.charite.compbio.ontolib.utils.MersenneTwister;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

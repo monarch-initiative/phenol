@@ -10,4 +10,6 @@
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO: add tests and then copy over demo code as examples in <h5>s
+// TODO: add Dijkstra's algorithm?
 package de.charite.compbio.ontolib.graph.algo;

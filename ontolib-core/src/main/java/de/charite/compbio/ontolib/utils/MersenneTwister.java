@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.ontology.scoredist;
+package de.charite.compbio.ontolib.utils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * <h3>MersenneTwister and MersenneTwisterFast</h3>
+ * <h5>MersenneTwister and MersenneTwisterFast</h5>
  *
  * <p>
  * <b>Version 22</b>, based on version MT199937(99/10/29) of the Mersenne Twister algorithm found at
@@ -33,7 +33,7 @@ import java.io.Serializable;
  * about 1/3 slower than MersenneTwisterFast.
  * </p>
  *
- * <h3>About the Mersenne Twister</h3>
+ * <h5>About the Mersenne Twister</h5>
  *
  * <p>
  * This is a Java version of the C-program for MT19937: Integer version. The MT19937 algorithm was
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * Computer Simulation,</i> Vol. 8, No. 1, January 1998, pp 3--30.
  * </p>
  *
- * <h3>About this Version</h3>
+ * <h5>About this Version</h5>
  *
  * <p>
  * <b>Changes since V21:</b> Minor documentation HTML fixes.
@@ -155,7 +155,7 @@ import java.io.Serializable;
  * Michael Lecuyer.
  * </p>
  *
- * <h3>Java notes</h3>
+ * <h5>Java notes</h5>
  *
  * <p>
  * This implementation implements the bug fixes made in Java 1.2's version of Random, which means it
@@ -178,7 +178,7 @@ import java.io.Serializable;
  * java.util.Random) should be used with them.
  * </p>
  *
- * <h3>License</h3>
+ * <h5>License</h5>
  *
  * <p>
  * Copyright (c) 2003 by Sean Luke. Portions copyright (c) 1993 by Michael Lecuyer. All rights

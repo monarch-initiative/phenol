@@ -9,7 +9,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface GraphVertexAllIteration<V, E extends Edge<V>, G extends DirectedGraph<V, E>> {
+interface GraphVertexAllIteration<V, E extends Edge<V>, G extends DirectedGraph<V, E>> {
 
   /**
    * Iterate all vertices in topological order (traversing edges in <b>forward direction</b>).
