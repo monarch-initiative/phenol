@@ -37,6 +37,7 @@
  * <li>So far no annotation of ZPO and GO to genes</li>
  * <li>We need to flesh out the different parsing modes for the ontologies (maybe more than one
  * mode, e.g., "slim" and "fat"?) and consolidate the copy and paste code</li>
+ * <li>We should implement BOQCA?!</li>
  * <li>Resolve all embedded TODO comments!</li>
  * </ul>
  *
