@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import com.google.common.collect.ComparisonChain;
+
 /**
  * Implementation of an immutable {@link TermId}.
  *
@@ -43,8 +45,9 @@ public final class ImmutableTermId implements TermId {
   }
 
   @Override
-  public int compareTo(TermId o) {
-    return id - o.getId();
+  public int compareTo(TermId that) {
+    return ComparisonChain.start().compare(this.getPrefix(), that.getPrefix())
+        .compare(this.getId(), that.getId()).result();
   }
 
   @Override
@@ -85,9 +88,9 @@ public final class ImmutableTermId implements TermId {
     // Manual short-cuts for the important special cases.
     if (this == obj) {
       return true;
-    } else if (obj instanceof ImmutableTermId) {
-      final ImmutableTermId that = (ImmutableTermId)obj; 
-      return this.prefix.equals(that.prefix) && (this.id == that.id);
+    } else if (obj instanceof TermId) {
+      final TermId that = (TermId) obj;
+      return this.prefix.equals(that.getPrefix()) && (this.id == that.getId());
     }
 
     if (obj == null) {
