@@ -13,11 +13,11 @@ public final class ImmutableTermId implements TermId {
   /** Prefix of the TermId. */
   private final TermPrefix prefix;
 
-  /** Term identifier behind the prefix. */
-  private final String id;
+  /** Numeric identifier behind the prefix. */
+  private final int id;
 
   /**
-   * Construct from term Id including prefix.
+   * Construct from term ID including prefix.
    *
    * @param termIdString String with term Id to construct with.
    * @return Resulting {@link ImmutableTermId}.
@@ -25,9 +25,9 @@ public final class ImmutableTermId implements TermId {
   public static ImmutableTermId constructWithPrefix(String termIdString) {
     final String[] arr = termIdString.split(":", 2);
     if (arr.length != 2) {
-      throw new RuntimeException("Term Id string \"" + termIdString + "\"does not have a prefix!");
+      throw new RuntimeException("Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
-      return new ImmutableTermId(new ImmutableTermPrefix(arr[0]), arr[1]);
+      return new ImmutableTermId(new ImmutableTermPrefix(arr[0]), Integer.parseInt(arr[1]));
     }
   }
 
@@ -35,24 +35,16 @@ public final class ImmutableTermId implements TermId {
    * Constructor.
    *
    * @param prefix Prefix to use.
-   * @param id Term identifier after the prefix.
+   * @param id Numeric term identifier after the prefix.
    */
-  public ImmutableTermId(TermPrefix prefix, String id) {
+  public ImmutableTermId(TermPrefix prefix, int id) {
     this.prefix = prefix;
     this.id = id;
   }
 
   @Override
   public int compareTo(TermId o) {
-    if (this == o) {
-      return 0;
-    }
-    final int tmp = prefix.compareTo(o.getPrefix());
-    if (tmp == 0) {
-      return id.compareTo(o.getId());
-    } else {
-      return tmp;
-    }
+    return id - o.getId();
   }
 
   @Override
@@ -61,7 +53,7 @@ public final class ImmutableTermId implements TermId {
   }
 
   @Override
-  public String getId() {
+  public int getId() {
     return id;
   }
 
@@ -70,7 +62,7 @@ public final class ImmutableTermId implements TermId {
     final StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(prefix);
     stringBuilder.append(":");
-    stringBuilder.append(id);
+    stringBuilder.append(String.format("%07d", id));
     return stringBuilder.toString();
   }
 
@@ -79,25 +71,25 @@ public final class ImmutableTermId implements TermId {
     return "ImmutableTermId [prefix=" + prefix + ", id=" + id + "]";
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+    result = prime * result + prefix.hashCode();
+    result = prime * result + id;
     return result;
   }
 
   @Override
   public boolean equals(Object obj) {
+    // Manual short-cuts for the important special cases.
     if (this == obj) {
       return true;
+    } else if (obj instanceof ImmutableTermId) {
+      final ImmutableTermId that = (ImmutableTermId)obj; 
+      return this.prefix.equals(that.prefix) && (this.id == that.id);
     }
+
     if (obj == null) {
       return false;
     }
@@ -105,11 +97,7 @@ public final class ImmutableTermId implements TermId {
       return false;
     }
     ImmutableTermId other = (ImmutableTermId) obj;
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
+    if (id != other.id) {
       return false;
     }
     if (prefix == null) {

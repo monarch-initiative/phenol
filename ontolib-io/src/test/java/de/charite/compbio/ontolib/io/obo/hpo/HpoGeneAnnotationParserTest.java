@@ -35,9 +35,9 @@ public class HpoGeneAnnotationParserTest {
 
     // Read and check first record.
     final HpoGeneAnnotation firstRecord = parser.next();
-    assertEquals("HPOGeneAnnotation [entrezGeneId=8192, entrezGeneSymbol=CLPP, termName=Primary "
-        + "amenorrhea, termId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], "
-        + "id=0000786]]", firstRecord.toString());
+    assertEquals(
+        "HPOGeneAnnotation [entrezGeneId=8192, entrezGeneSymbol=CLPP, termName=Primary amenorrhea, termId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=786]]",
+        firstRecord.toString());
 
     // Read remaining records and check count.
     int count = 1;

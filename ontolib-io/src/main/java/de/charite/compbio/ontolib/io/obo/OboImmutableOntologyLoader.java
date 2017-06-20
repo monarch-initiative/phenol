@@ -140,8 +140,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
       return rootCandidates.get(0);
     } else {
       final TermPrefix rootPrefix = helper.getFirstTermId().getPrefix();
-      // TODO: implement something smarter?
-      final String rootLocalId = helper.getFirstTermId().getId().replaceAll(".", "0");
+      final int rootLocalId = 0; // TODO: implement something smarter?
       final ImmutableTermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
       if (helper.getAllTermIds().contains(rootId)) {
         throw new RuntimeException(
@@ -247,7 +246,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
           for (StanzaEntry e : stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE)) {
             StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
             if (entry.getValue()) {
-              return;   // skip this one
+              return; // skip this one
             }
           }
         }
@@ -271,14 +270,6 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         }
 
         // TODO: generalize this registration through proper subclassing of StanzaEntry?
-        // Construct TermId objects for all "xref" tags.
-        final List<StanzaEntry> xRefEntries = stanza.getEntryByType().get(StanzaEntryType.XREF);
-        if (xRefEntries != null) {
-          for (StanzaEntry e : xRefEntries) {
-            registeredTermId(((StanzaEntryXref) e).getDbXref().getName());
-          }
-        }
-
         // Interpret all "is_a" relation entries and register them to termIdPairs.
         final List<StanzaEntry> entries = stanza.getEntryByType().get(StanzaEntryType.IS_A);
         if (entries != null) {
@@ -329,7 +320,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         prefixes.put(tokens[0], tmpPrefix);
       }
 
-      tmpId = new ImmutableTermId(tmpPrefix, tokens[1]);
+      tmpId = new ImmutableTermId(tmpPrefix, Integer.parseInt(tokens[1]));
       termIds.put(termIdStr, tmpId);
 
       // Make sure to record the first term Id.

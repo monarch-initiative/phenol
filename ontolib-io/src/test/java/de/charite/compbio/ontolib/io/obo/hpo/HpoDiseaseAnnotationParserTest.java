@@ -34,13 +34,9 @@ public class HpoDiseaseAnnotationParserTest {
 
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();
-    assertEquals("HPODiseaseAnnotation [db=OMIM, dbObjectId=101000, dbName=#101000 "
-        + "NEUROFIBROMATOSIS, TYPE II; NF2;;NEUROFIBROMATOSIS, CENTRAL TYPE;;ACOUSTIC "
-        + "SCHWANNOMAS, BILATERAL;;BILATERAL ACOUSTIC NEUROFIBROMATOSIS; BANF;;ACOUSTIC "
-        + "NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoId=ImmutableTermId "
-        + "[prefix=ImmutableTermPrefix [value=HP], id=0009737], dbReference=OMIM:101000, "
-        + "evidenceCode=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=, "
-        + "date=2010.06.18, assignedBy=HPO:skoehler]", firstRecord.toString());
+    assertEquals(
+        "HPODiseaseAnnotation [db=OMIM, dbObjectId=101000, dbName=#101000 NEUROFIBROMATOSIS, TYPE II; NF2;;NEUROFIBROMATOSIS, CENTRAL TYPE;;ACOUSTIC SCHWANNOMAS, BILATERAL;;BILATERAL ACOUSTIC NEUROFIBROMATOSIS; BANF;;ACOUSTIC NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=9737], dbReference=OMIM:101000, evidenceCode=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=, date=2010.06.18, assignedBy=HPO:skoehler]",
+        firstRecord.toString());
 
     // Read remaining records and check count.
     int count = 1;

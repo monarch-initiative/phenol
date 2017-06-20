@@ -34,6 +34,7 @@ import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotations;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermIds;
+import de.charite.compbio.ontolib.ontology.scoredist.ScoreDistribution;
 import de.charite.compbio.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import de.charite.compbio.ontolib.ontology.scoredist.SimilarityScoreSampling;
 import de.charite.compbio.ontolib.ontology.similarity.ResnikSimilarity;
@@ -127,11 +128,9 @@ public class App {
 
     // Compute information content of HPO terms, given the term-to-gene annotation.
     System.err.println("Performing IC precomputation...");
-    final Map<TermId, Collection<String>> termToLabels =
-        TermAnnotations.constructTermAnnotationToLabelsMap(annos);
     final Map<TermId, Double> icMap =
         new InformationContentComputation<HpoTerm, HpoTermRelation>(hpo)
-            .computeInformationContent(termToLabels);
+            .computeInformationContent(termIdToEntrezGeneIds);
     System.err.println("=> DONE: Performing IC precomputation");
 
     // TODO: Want shortcut for this important case?s
@@ -143,11 +142,9 @@ public class App {
               return (Integer) Integer.parseInt(tokens[1]);
             }, e -> e.getValue()));
 
-    // Perform Resnik similarity precomputation.
-    System.err.println("Performing Resnik precomputation...");
+    // Initialize Resnik similarity without precomputation
     final ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity =
         new ResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, icMap, false);
-    System.err.println("=> DONE: Performing Resnik precomputation");
 
     // Read file line-by line and process.
     Map<String, Integer> nameToCol = null;
@@ -182,10 +179,23 @@ public class App {
           final List<TermId> hpoTermIds = rawHpoTermIds.stream()
               .map(s -> ImmutableTermId.constructWithPrefix(s)).collect(Collectors.toList());
 
-          // Compute resnik similarity between the two sets of terms.
+          // Compute Resnik similarity between the two sets of terms.
           final double resnikSim = resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
+          // Benchmark...
+          List<Double> resnikTimes = new ArrayList<>();
+          for (int i = 0; i < 1_000; ++i) {
+            final long resnikStartTime = System.nanoTime();
+            resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
+            final long resnikEndTime = System.nanoTime();
+            resnikTimes.add((resnikEndTime - resnikStartTime) / 1_000_000.0);
+          }
+          double avg = resnikTimes.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+          double stdev = Math.sqrt(resnikTimes.stream().map(x -> (x - avg) * (x - avg))
+              .mapToDouble(Double::doubleValue).average().orElse(0.0) / resnikTimes.size());
+          System.err.println("Resnik computation took " + avg + " ms (stdev: " + stdev + ")");
 
           // Compute p value.
+          final long pValueStartTime = System.nanoTime();
           final ScoreSamplingOptions options = new ScoreSamplingOptions();
           options.setMinNumTerms(hpoTermIds.size());
           options.setMaxNumTerms(hpoTermIds.size());
@@ -193,10 +203,16 @@ public class App {
           options.setMaxObjectId(entrezId);
           final SimilarityScoreSampling<HpoTerm, HpoTermRelation> sampling =
               new SimilarityScoreSampling<HpoTerm, HpoTermRelation>(hpo, resnikSimilarity, options);
-          sampling.performSampling(labelToTermIds);
-
+          final Map<Integer, ScoreDistribution> scoreDist =
+              sampling.performSampling(labelToTermIds);
+          final double pValue = scoreDist.get(hpoTermIds.size())
+              .getObjectScoreDistribution(entrezId).estimatePValue(resnikSim);
+          final long pValueEndTime = System.nanoTime();
+          System.err.println(
+              "p value computation took " + (pValueStartTime - pValueEndTime) / 1_000_000 + " ms");
+          
           List<String> fields = Lists.newArrayList(Arrays.asList(line.split("\t")));
-          fields.addAll(ImmutableList.of(Double.toString(resnikSim), "NA"));
+          fields.addAll(ImmutableList.of(Double.toString(resnikSim), Double.toString(pValue)));
           System.out.println(Joiner.on('\t').join(fields));
         }
       }

@@ -5,7 +5,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
 import java.util.Iterator;
 
 /**
- * Implementation of {@link NeighborSelector} using out edges.
+ * Implementation of {@link NeighborSelector} using in-edges.
  *
  * <p>
  * This is an implementation detail and should not be used in client code.
@@ -17,7 +17,7 @@ class ReverseNeighborSelector<V, E extends Edge<V>> implements NeighborSelector<
 
   @Override
   public Iterator<V> nextFrom(DirectedGraph<V, E> g, V v) {
-    return g.viaOutEdgeIterator(v);
+    return g.viaInEdgeIterator(v);
   }
 
 }

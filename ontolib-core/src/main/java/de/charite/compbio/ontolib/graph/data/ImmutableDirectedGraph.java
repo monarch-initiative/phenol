@@ -169,6 +169,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
     // Fill edge builders
     for (E e : edges) {
       builders.get(e.getSource()).addOutEdge(e);
+      e.getSource().hashCode();
       builders.get(e.getDest()).addInEdge(e);
     }
     // Fill ImmutableMap builder and construct
@@ -336,7 +337,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
   @Override
   public Iterator<E> outEdgeIterator(V v) {
-    return edgeLists.get(v).getInEdges().iterator();
+    return edgeLists.get(v).getOutEdges().iterator();
   }
 
   @Override

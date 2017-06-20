@@ -1,18 +1,17 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
-
+import com.google.common.collect.ImmutableSet;
 import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
 import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -39,6 +38,10 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** The mapping from edge Id to TermRelation. */
   private final ImmutableMap<Integer, R> relationMap;
 
+  // TODO: should this be part of immutable ontology?
+  /** Precomputed ancestors (including vertex itself). */
+  private final ImmutableMap<TermId, ImmutableSet<TermId>> precomputedAncestors;
+
   /**
    * Constructor.
    *
@@ -53,6 +56,30 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
     this.rootTermId = rootTermId;
     this.termMap = termMap;
     this.relationMap = relationMap;
+    this.precomputedAncestors = precomputeAncestors();
+  }
+
+  /**
+   * @return Precomputed map from term id to list of ancestor term ids (a term is its own ancestor).
+   */
+  private ImmutableMap<TermId, ImmutableSet<TermId>> precomputeAncestors() {
+    final ImmutableMap.Builder<TermId, ImmutableSet<TermId>> mapBuilder = ImmutableMap.builder();
+
+    for (TermId termId : graph.getVertices()) {
+      final ImmutableSet.Builder<TermId> setBuilder = ImmutableSet.builder();
+      BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
+      bfs.startFromForward(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
+        @Override
+        public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
+          setBuilder.add(v);
+          return true;
+        }
+      });
+
+      mapBuilder.put(termId, setBuilder.build());
+    }
+
+    return mapBuilder.build();
   }
 
   @Override
@@ -76,32 +103,18 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public Collection<TermId> getAncestors(TermId termId, boolean includeRoot) {
-    // Perform BFS from termId towards the root, collecting vertices on the way into result.
-    final Set<TermId> result = new HashSet<>();
-
-    BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
-    bfs.startFromForward(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
-      @Override
-      public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
-        if (includeRoot || !isRootTerm(v)) {
-          result.add(v);
-        }
-        return true;
-      }
-    });
-
-    return result;
+  public Set<TermId> getAncestors(TermId termId, boolean includeRoot) {
+    if (!includeRoot) {
+      throw new RuntimeException("TODO: consolidate this :(");
+    }
+    return precomputedAncestors.get(termId);
   }
 
   @Override
   public Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot) {
     final Set<TermId> result = new HashSet<>();
     for (TermId termId : termIds) {
-      result.add(termId);
-      for (TermId ancestorId : getAncestors(termId, includeRoot)) {
-        result.add(ancestorId);
-      }
+      result.addAll(getAncestors(termId, includeRoot));
     }
     return result;
   }

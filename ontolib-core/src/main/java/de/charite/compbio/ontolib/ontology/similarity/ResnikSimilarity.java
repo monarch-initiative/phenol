@@ -23,8 +23,10 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    *
    * <p>
    * The internally used {@link PairwiseSimilarity} is constructed from the given information
-   * content mapping. This precomputation is done at construction of the
-   * <code>ResnikSimilarity</code> object.
+   * content mapping using {@linkPairwiseResnikSimilarity}. In case that you want to use perform
+   * this precomputation explicitely, use
+   * {@link #ResnikSimilarity(Ontology, boolean, PairwiseSimilarity)} with
+   * {@link PrecomputingResnikSimilarity}.
    * </p>
    *
    * @param ontology {@link Ontology} to base computations on.

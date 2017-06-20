@@ -1,11 +1,6 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import java.util.HashSet;
 import java.util.Set;
-
-import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
-import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
-import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 
 /**
  * Helper class with static utility methods on term ids.
