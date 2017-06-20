@@ -75,6 +75,7 @@ public final class HpoOboParser {
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new HpoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
         o.getRootTermId(), (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
+        (ImmutableMap<TermId, HpoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());
   }
 

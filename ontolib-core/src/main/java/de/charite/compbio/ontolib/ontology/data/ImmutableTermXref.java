@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.ontology.data;
  */
 public class ImmutableTermXref implements TermXref {
 
-  /** Serial UId for serialization. */
+  /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** Referenced term Id. */

@@ -7,7 +7,7 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public enum StanzaEntryType {
   /** Stanza entry starting with <code>alt_id</code>. */
-  ALT_Id,
+  ALT_ID,
   /** Stanza entry starting with <code>auto-generated-by</code>. */
   AUTO_GENERATED_BY,
   /** Stanza entry starting with <code>comment</code>. */

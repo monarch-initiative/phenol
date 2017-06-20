@@ -2,10 +2,7 @@ package de.charite.compbio.ontolib.ontology.scoredist;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Precomputed score distribution for all "world objects" and a fixed number of terms.
@@ -22,39 +19,6 @@ public final class ScoreDistribution implements Serializable {
 
   /** Mapping from "world object" Id to score distribution. */
   private final Map<Integer, ObjectScoreDistribution> objectScoreDistributions;
-
-  /**
-   * Merge a {@link Collection} of {@link ScoreDistribution}.
-   *
-   * <p>
-   * This can be used for merging results obtained in parallel. All {@link ScoreDistribution}s must
-   * have the same number of terms and there must be no overlap in "world object" Ids.
-   * </p>
-   *
-   * @param distributions {@link Collection} of {@link ScoreDistribution}s to merge.
-   * @return Merge result.
-   */
-  public static ScoreDistribution merge(Collection<ScoreDistribution> distributions) {
-    if (distributions.isEmpty()) {
-      throw new RuntimeException("Cannot merge zero ScoreDistributions objects.");
-    }
-    if (distributions.stream().map(d -> d.getNumTerms()).collect(Collectors.toSet()).size() != 1) {
-      throw new RuntimeException("Different numbers of terms used for precomputation");
-    }
-
-    Map<Integer, ObjectScoreDistribution> mapping = new HashMap<>();
-    for (ScoreDistribution d : distributions) {
-      for (Entry<Integer, ObjectScoreDistribution> e : d.objectScoreDistributions.entrySet()) {
-        if (mapping.containsKey(e.getKey())) {
-          throw new RuntimeException("Duplicate object Id " + e.getKey() + " detected");
-        } else {
-          mapping.put(e.getKey(), e.getValue());
-        }
-      }
-    }
-
-    return new ScoreDistribution(distributions.stream().findAny().get().getNumTerms(), mapping);
-  }
 
   /**
    * Constructor.
@@ -74,6 +38,13 @@ public final class ScoreDistribution implements Serializable {
    */
   public int getNumTerms() {
     return numTerms;
+  }
+
+  /**
+   * Retrieve {@link Collection} of "world object" ids.
+   */
+  public Collection<Integer> getObjectIds() {
+    return objectScoreDistributions.keySet();
   }
 
   /**

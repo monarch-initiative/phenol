@@ -19,10 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Load OBO into an {@link ImmutableOntology}.
@@ -111,7 +111,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph =
         ImmutableDirectedGraph.construct(helper.getAllTermIds(), edges, true);
     return new ImmutableOntology<T, R>(graph, rootTermId, ImmutableMap.copyOf(helper.getTerms()),
-        ImmutableMap.copyOf(relationMap));
+        ImmutableMap.copyOf(helper.getObsoleteTerms()), ImmutableMap.copyOf(relationMap));
   }
 
   /**
@@ -201,15 +201,18 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     /** First seen term Id, we will construct the artificial root term if necessary. */
     private ImmutableTermId firstTermId = null;
 
-    /** All TermId objects constructed from Term stanzas (only!). */
+    /** All TermId objects constructed from Term stanzas (only!), including obsolete terms. */
     private final List<TermId> allTermIds = new ArrayList<>();
 
     // TODO: At the moment, HP:1 and HP:01 would be mapped to different objects :(
     /** Term strings to terms. */
     private final SortedMap<String, ImmutableTermId> termIds = new TreeMap<>();
 
-    /** Terms constructed from parsing. */
+    /** Non-obsolete terms constructed from parsing. */
     private final SortedMap<ImmutableTermId, T> terms = new TreeMap<>();
+
+    /** Obsolete terms constructed from parsing. */
+    private final SortedMap<ImmutableTermId, T> obsoleteTerms = new TreeMap<>();
 
     /** Term relations constructed from parsing "is_a" relations. */
     private final SortedMap<ImmutableTermId, List<BundledIsARelation>> isATermIdPairs =
@@ -240,17 +243,6 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     @Override
     public void parsedStanza(Stanza stanza) {
       if (stanza.getType() == StanzaType.TERM) { // ignore all but the terms
-        // Ignore entries marked as obsolete.
-        // TODO: copy and paste error in other instances!
-        if (stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE) != null) {
-          for (StanzaEntry e : stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE)) {
-            StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
-            if (entry.getValue()) {
-              return; // skip this one
-            }
-          }
-        }
-
         // Obtain ImmutableTermId for the source term.
         final List<StanzaEntry> idEntries = stanza.getEntryByType().get(StanzaEntryType.Id);
         if (idEntries.size() != 1) {
@@ -259,10 +251,24 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         }
         final StanzaEntryId idEntry = (StanzaEntryId) idEntries.get(0);
         final ImmutableTermId sourceId = registeredTermId(idEntry.getId());
+
+        // Register term ID regardless of being obsolete.
         allTermIds.add(sourceId);
 
+        // Special handling of obsolete terms, they will not go to allTermIds and not into term map.
+        if (stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE) != null) {
+          for (StanzaEntry e : stanza.getEntryByType().get(StanzaEntryType.IS_OBSOLETE)) {
+            StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
+            if (entry.getValue()) {
+              // Special handling for obsolete terms.
+              obsoleteTerms.put(sourceId, ontologyEntryFactory.constructTerm(stanza));
+              return;
+            }
+          }
+        }
+
         // Construct TermId objects for all alternative ids.
-        final List<StanzaEntry> altIdEntries = stanza.getEntryByType().get(StanzaEntryType.ALT_Id);
+        final List<StanzaEntry> altIdEntries = stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
         if (altIdEntries != null) {
           for (StanzaEntry e : altIdEntries) {
             registeredTermId(((StanzaEntryAltId) e).getAltId());
@@ -363,10 +369,17 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     }
 
     /**
-     * @return Mapping from immutable term Id to term with all terms.
+     * @return Mapping from immutable term Id to term with non-obsolete terms.
      */
     public Map<ImmutableTermId, T> getTerms() {
       return terms;
+    }
+
+    /**
+     * @return Mapping from immutable term Id to term with obsolete terms.
+     */
+    public Map<ImmutableTermId, T> getObsoleteTerms() {
+      return obsoleteTerms;
     }
 
     /**

@@ -56,7 +56,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   /** Configuration for score sampling. */
   private final ScoreSamplingOptions options;
 
-  // TODO: ontology already is in similarity? 
+  // TODO: ontology already is in similarity?
   /**
    * Constructor.
    *
@@ -201,7 +201,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(int objectId,
       Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
-    final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getTermIds());
+    final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency

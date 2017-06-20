@@ -24,6 +24,11 @@ import java.util.Set;
  * ontology.
  * </p>
  *
+ * <p>
+ * While {@link Ontology} allows access to obsolete terms in the ontology, the obsolete terms are
+ * excluded from the underlying graph structure.
+ * </p>
+ *
  * @param <T> {@link Term} sub class this <code>Ontology</code> uses
  * @param <R> {@link TermRelation} sub class this <code>Ontology</code> uses.
  *
@@ -38,10 +43,20 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
   DirectedGraph<TermId, ? extends Edge<TermId>> getGraph();
 
   /**
+   * Return term id to term map without obsolete terms (used internally, corresponds to vertex set).
+   *
    * @return {@link Map} from {@link TermId} to corresponding value of {@link Term} sub class
    *         <code>T</code>.
    */
   Map<TermId, T> getTermMap();
+
+  /**
+   * Return term id to term map including obsolete terms.
+   *
+   * @return {@link Map} from {@link TermId} to corresponding value of {@link Term} sub class
+   *         <code>T</code>.
+   */
+  Map<TermId, T> getObsoleteTermMap();
 
   /**
    * @return {@link Map} from <code>Integer</code> edge Id to corresponding value of
@@ -57,7 +72,11 @@ public interface Ontology<T extends Term, R extends TermRelation> extends Serial
 
   TermId getRootTermId();
 
-  Collection<TermId> getTermIds();
+  Collection<TermId> getAllTermIds();
+
+  Collection<TermId> getNonObsoleteTermIds();
+
+  Collection<TermId> getObsoleteTermIds();
 
   Collection<T> getTerms();
 

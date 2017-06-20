@@ -19,7 +19,7 @@ public final class StanzaEntryAltId extends StanzaEntry {
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryAltId(String altId, TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.ALT_Id, trailingModifier, comment);
+    super(StanzaEntryType.ALT_ID, trailingModifier, comment);
     this.altId = altId;
   }
 

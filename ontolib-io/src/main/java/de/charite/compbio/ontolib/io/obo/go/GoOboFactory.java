@@ -72,7 +72,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
         this.<StanzaEntryName>getCardinalityOneEntry(stanza, StanzaEntryType.NAME).getName();
 
     final List<TermId> altTermIds;
-    final List<StanzaEntry> altEntryList = stanza.getEntryByType().get(StanzaEntryType.ALT_Id);
+    final List<StanzaEntry> altEntryList = stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
     if (altEntryList == null) {
       altTermIds = Lists.newArrayList();
     } else {

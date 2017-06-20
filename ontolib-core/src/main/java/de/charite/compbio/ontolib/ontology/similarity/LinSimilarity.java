@@ -32,7 +32,7 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public LinSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc, boolean symmetric) {
-    super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIc));
+    super(ontology, new PairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
   }
 
 
@@ -51,7 +51,7 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
    */
   public LinSimilarity(Ontology<T, R> ontology, boolean symmetric,
       PairwiseSimilarity pairwiseSimilarity) {
-    super(ontology, symmetric, pairwiseSimilarity);
+    super(ontology, pairwiseSimilarity, symmetric);
   }
 
 

@@ -1,17 +1,20 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
-import com.google.common.collect.Sets;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
+import de.charite.compbio.ontolib.utils.ProgressReporter;
+import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// TODO: ask Sebastian whether this is really necessary...
 
 /**
  * Implementation of pairwise Resnik similarity with precomputation.
@@ -19,14 +22,17 @@ import org.slf4j.LoggerFactory;
  * <p>
  * This lies at the core of most of of the more computationally expensive pairwise similarities'
  * computations. For this reason, the similarity is precomputed for all term pairs in the
- * {@link Ontology} which is computationally very expensive.
+ * {@link Ontology} which is computationally expensive.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends TermRelation>
-    extends AbstractPairwiseResnikSimilarity<T, R> {
+public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends TermRelation>
+    extends AbstractPairwiseResnikSimilarity<T, R> implements Serializable {
+
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
 
   /**
    * {@link Logger} object to use.
@@ -37,126 +43,88 @@ final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends TermR
   /**
    * Precomputed similarities between all pairs of {@link TermId}s.
    */
-  private final Map<TermIdPair, Double> precomputedScores;
+  private final Map<TermId, Map<TermId, Double>> precomputedScores;
+
+  /** Number of threads to use for precomputation. */
+  private final int numThreads;
 
   /**
    * Construct new {@link PrecomputingPairwiseResnikSimilarity}.
    *
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
+   * @param numThreads Number of threads to use for precomputation.
+   */
+  public PrecomputingPairwiseResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc,
+      int numThreads) {
+    super(ontology, termToIc);
+    this.numThreads = numThreads;
+    this.precomputedScores = precomputeScores();
+  }
+
+  /**
+   * Construct with thread count of one.
+   *
+   * @param ontology {@link Ontology} to base computations on.
+   * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
   public PrecomputingPairwiseResnikSimilarity(Ontology<T, R> ontology,
       Map<TermId, Double> termToIc) {
-    super(ontology, termToIc);
-    this.precomputedScores = precomputeScores();
+    this(ontology, termToIc, 1);
   }
 
   /**
    * @return Precomputed pairwise similarity scores.
    */
-  private Map<TermIdPair, Double> precomputeScores() {
+  private Map<TermId, Map<TermId, Double>> precomputeScores() {
     LOGGER.info("Precomputing pairwise scores for {} terms...",
         new Object[] {getOntology().countTerms()});
 
-    final Map<TermIdPair, Double> result = new HashMap<>();
-    for (TermId query : getOntology().getTermIds()) {
-      for (TermId target : getOntology().getTermIds()) {
-        result.put(new TermIdPair(query, target), computeScoreImpl(query, target));
-      }
+    final ProgressReporter progressReport =
+        new ProgressReporter(LOGGER, "genes", getOntology().countTerms());
+
+    // The task to execute in parallel.
+    final Callable<Map<TermId, Map<TermId, Double>>> task =
+        () -> getOntology().getNonObsoleteTermIds().stream().parallel().map(queryId -> {
+          final Map<TermId, Double> newMap = new HashMap<>();
+          for (TermId targetId : getOntology().getAllTermIds()) {
+            newMap.put(targetId, computeScoreImpl(queryId, targetId));
+          }
+
+          final Map<TermId, Map<TermId, Double>> result = new HashMap<>();
+          result.put(queryId, newMap);
+          progressReport.incCurrent();
+          return new AbstractMap.SimpleEntry<>(queryId, newMap);
+        }).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+
+    // Perform processing in an explicit ForkJoinPool so we are able to limit the thread count
+    final ForkJoinPool forkJoinPool = new ForkJoinPool(numThreads);
+    final Map<TermId, Map<TermId, Double>> result;
+    try {
+      progressReport.start();
+      result = forkJoinPool.submit(task).get();
+      progressReport.stop();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException("Problem during parallel execution.", e);
     }
 
     LOGGER.info("Done precomputing pairwise scores.");
     return result;
   }
 
-  /**
-   * Implementation of computing similarity score between a <code>query</code> and a
-   * <code>query</code>.
-   *
-   * @param query Query {@link TermId}.
-   * @param target Target {@link TermId}.
-   * @return Precomputed pairwise Resnik similarity score.
-   */
-  public double computeScoreImpl(TermId query, TermId target) {
-    final Set<TermId> queryTerms = getOntology().getAncestors(query, true);
-    final Set<TermId> targetTerms = getOntology().getAncestors(target, true);
-    return Sets.intersection(queryTerms, targetTerms).stream()
-        .mapToDouble(tId -> getTermToIc().get(tId)).max().orElse(0.0);
-  }
-
   @Override
   public double computeScore(TermId query, TermId target) {
-    return precomputedScores.get(new TermIdPair(query, target));
-  }
-
-  /**
-   * Simply a pair of {@link TermId}s, to be used for the precomputation in the pairwise Resnik
-   * similarity.
-   *
-   * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
-   * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
-   */
-  private static class TermIdPair {
-
-    /**
-     * Query {@link TermId}.
-     */
-    private final TermId query;
-
-    /**
-     * Target {@link TermId}.
-     */
-    private final TermId target;
-
-    /**
-     * Constructor.
-     *
-     * @param query Query {@link TermId}
-     * @param target Target {@link TermId}
-     */
-    public TermIdPair(TermId query, TermId target) {
-      this.query = query;
-      this.target = target;
+    final Map<TermId, Double> tmp1 = precomputedScores.get(query);
+    if (tmp1 == null) {
+      return 0.0;
     }
 
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((query == null) ? 0 : query.hashCode());
-      result = prime * result + ((target == null) ? 0 : target.hashCode());
-      return result;
+    final Double tmp2 = tmp1.get(target);
+    if (tmp2 == null) {
+      return 0.0;
+    } else {
+      return tmp2.doubleValue();
     }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      TermIdPair other = (TermIdPair) obj;
-      if (query == null) {
-        if (other.query != null) {
-          return false;
-        }
-      } else if (!query.equals(other.query)) {
-        return false;
-      }
-      if (target == null) {
-        if (other.target != null) {
-          return false;
-        }
-      } else if (!target.equals(other.target)) {
-        return false;
-      }
-      return true;
-    }
-
   }
 
 }

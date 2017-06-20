@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * <p>
  * This lies at the core of most of of the more computationally expensive pairwise similarities'
- * computations. If you want to precompute the pairwise similarity scores (computationally very
+ * computations. If you want to precompute the pairwise similarity scores (computationally
  * expensive), consider using {@link PrecomputingPairwiseResnikSimilarity}.
  * </p>
  *

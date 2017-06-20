@@ -1,27 +1,9 @@
 package de.charite.compbio.ontolib.demos.compute_similarities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import de.charite.compbio.ontolib.formats.hpo.HpoGeneAnnotation;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
 import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
@@ -35,9 +17,32 @@ import de.charite.compbio.ontolib.ontology.data.TermAnnotations;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermIds;
 import de.charite.compbio.ontolib.ontology.scoredist.ScoreDistribution;
+import de.charite.compbio.ontolib.ontology.scoredist.ScoreDistributions;
 import de.charite.compbio.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import de.charite.compbio.ontolib.ontology.scoredist.SimilarityScoreSampling;
+import de.charite.compbio.ontolib.ontology.similarity.PrecomputingPairwiseResnikSimilarity;
 import de.charite.compbio.ontolib.ontology.similarity.ResnikSimilarity;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+// TODO: This needs some refactorization love
 
 /**
  * App for computing similarity scores between gene (by entrez ID) and HPO term list.
@@ -45,6 +50,14 @@ import de.charite.compbio.ontolib.ontology.similarity.ResnikSimilarity;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class App {
+
+  /**
+   * {@link Logger} object to use.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
+  /** Number of threads to use. */
+  private final int numThreads = 4;
 
   /** Command line arguments. */
   private final String[] args;
@@ -73,7 +86,7 @@ public class App {
   public void run() {
     this.parseArgs();
 
-    System.err.println("Loading HPO...");
+    LOGGER.info("Loading HPO...");
     final HpoOntology hpo;
     try {
       hpo = new HpoOboParser(new File(pathHpObo)).parse();
@@ -82,10 +95,10 @@ public class App {
       System.exit(1);
       return; // javac complains otherwise
     }
-    System.err.println("=> DONE: Loading HPO");
+    LOGGER.info("DONE: Loading HPO");
 
     // Compute list of annoations and mapping from Entrez ID to term IDs.
-    System.err.println("Loading HPO to gene annotation file...");
+    LOGGER.info("Loading HPO to gene annotation file...");
     // Raw annotations as read from file.
     final List<HpoGeneAnnotation> annos = new ArrayList<>();
     // Build mappings from entrez gene ID to term IDs and the inverse. Note that these two mappings
@@ -124,14 +137,14 @@ public class App {
       e.printStackTrace();
       System.exit(1);
     }
-    System.err.println("=> DONE: Loading HPO to gene annotation file");
+    LOGGER.info("DONE: Loading HPO to gene annotation file");
 
     // Compute information content of HPO terms, given the term-to-gene annotation.
-    System.err.println("Performing IC precomputation...");
+    LOGGER.info("Performing IC precomputation...");
     final Map<TermId, Double> icMap =
         new InformationContentComputation<HpoTerm, HpoTermRelation>(hpo)
             .computeInformationContent(termIdToEntrezGeneIds);
-    System.err.println("=> DONE: Performing IC precomputation");
+    LOGGER.info("DONE: Performing IC precomputation");
 
     // TODO: Want shortcut for this important case?s
     // Build mapping from numeric Entrez gene ID to
@@ -142,9 +155,16 @@ public class App {
               return (Integer) Integer.parseInt(tokens[1]);
             }, e -> e.getValue()));
 
-    // Initialize Resnik similarity without precomputation
+    // Initialize Resnik similarity precomputation
+    LOGGER.info("Performing Resnik precomputation...");
+    final PrecomputingPairwiseResnikSimilarity<HpoTerm, HpoTermRelation> pairwiseResnikSimilarity =
+        new PrecomputingPairwiseResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, icMap, numThreads);
+    LOGGER.info("DONE: Performing Resnik precomputation");
     final ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity =
-        new ResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, icMap, false);
+        new ResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, pairwiseResnikSimilarity, false);
+
+    // Temporary storage of term count to score distributions.
+    final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();
 
     // Read file line-by line and process.
     Map<String, Integer> nameToCol = null;
@@ -171,52 +191,88 @@ public class App {
           // Compute term set from gene.
           final int entrezId = Integer.parseInt(arr[nameToCol.get("entrez_id")]);
           final Set<TermId> geneTermIds =
-              entrezGeneIdToTermIds.getOrDefault(entrezId, Sets.newHashSet());
+              entrezGeneIdToTermIds.getOrDefault(entrezId, new HashSet<>());
 
           // Convert string list of HPO terms to TermId objects.
           final List<String> rawHpoTermIds =
               Arrays.asList(arr[nameToCol.get("hpo_terms")].split(","));
-          final List<TermId> hpoTermIds = rawHpoTermIds.stream()
+          // TODO: add convenience routines for converting from term strings, filtering out obsolete
+          // ones, possibly falling back to replaced_by
+          final List<TermId> unfilteredHpoTermIds = rawHpoTermIds.stream()
               .map(s -> ImmutableTermId.constructWithPrefix(s)).collect(Collectors.toList());
+          final List<TermId> hpoTermIds = unfilteredHpoTermIds.stream().filter(termId -> {
+            if (hpo.getObsoleteTermMap().containsKey(termId)) {
+              LOGGER.warn("File contained term {} which is marked as obsolete!",
+                  new Object[] {termId.getIdWithPrefix()});
+              return false;
+            } else {
+              return true;
+            }
+          }).collect(Collectors.toList());
 
-          // Compute Resnik similarity between the two sets of terms.
-          final double resnikSim = resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
-          // Benchmark...
-          List<Double> resnikTimes = new ArrayList<>();
-          for (int i = 0; i < 1_000; ++i) {
-            final long resnikStartTime = System.nanoTime();
-            resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
-            final long resnikEndTime = System.nanoTime();
-            resnikTimes.add((resnikEndTime - resnikStartTime) / 1_000_000.0);
+          // Prepare values to write out.
+          final List<String> fields = Lists.newArrayList(Arrays.asList(line.split("\t")));
+
+          // Append names into output.
+          fields.add(Joiner.on('|').join(unfilteredHpoTermIds.stream().map(termId -> {
+            if (hpo.getObsoleteTermIds().contains(termId)) {
+              return hpo.getObsoleteTermMap().get(termId).getName() + " (obsolete)";
+            } else if (hpo.getTermMap().containsKey(termId)) {
+              return hpo.getTermMap().get(termId).getName();
+            } else {
+              return "UNRESOLVABLE: " + termId;
+            }
+          }).collect(Collectors.toList())));
+
+          // Compute Resnik similarity and p-value if the gene is annotated with any terms.
+          if (entrezGeneIdToTermIds.containsKey(entrezId)) {
+            // Compute Resnik similarity between the two sets of terms.
+            final double resnikSim = resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
+            fields.add(Double.toString(resnikSim));
+
+            LOGGER.info("Computing p-value...");
+            final ScoreSamplingOptions options = new ScoreSamplingOptions();
+            options.setNumThreads(numThreads);
+            options.setMinNumTerms(hpoTermIds.size());
+            options.setMaxNumTerms(hpoTermIds.size());
+            options.setMinObjectId(entrezId);
+            options.setMaxObjectId(entrezId);
+            final int termCount = hpoTermIds.size();
+
+            // Only re-precompute if we have no precomputation value yet.
+            if (!scoreDists.containsKey(termCount)
+                || scoreDists.get(termCount).getObjectScoreDistribution(entrezId) == null) {
+              final SimilarityScoreSampling<HpoTerm, HpoTermRelation> sampling =
+                  new SimilarityScoreSampling<HpoTerm, HpoTermRelation>(hpo, resnikSimilarity,
+                      options);
+              final Map<Integer, ScoreDistribution> tmpDists =
+                  sampling.performSampling(labelToTermIds);
+              if (!scoreDists.containsKey(termCount)) {
+                // no need to merge
+                scoreDists.put(termCount, tmpDists.get(termCount));
+              } else {
+                // we need to merge
+                scoreDists.put(termCount,
+                    ScoreDistributions.merge(scoreDists.get(termCount), tmpDists.get(termCount)));
+              }
+
+              final double pValue = scoreDists.get(hpoTermIds.size())
+                  .getObjectScoreDistribution(entrezId).estimatePValue(resnikSim);
+              fields.add(Double.toString(pValue));
+            }
+            LOGGER.info("DONE: p-value computation");
+          } else {
+            LOGGER.warn("Could not perform p value precomputation for Entrez gene ID {}, gene "
+                + "not linked to any terms!", new Object[] {entrezId});
+            fields.addAll(ImmutableList.of("NA", "NA"));
           }
-          double avg = resnikTimes.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-          double stdev = Math.sqrt(resnikTimes.stream().map(x -> (x - avg) * (x - avg))
-              .mapToDouble(Double::doubleValue).average().orElse(0.0) / resnikTimes.size());
-          System.err.println("Resnik computation took " + avg + " ms (stdev: " + stdev + ")");
 
-          // Compute p value.
-          final long pValueStartTime = System.nanoTime();
-          final ScoreSamplingOptions options = new ScoreSamplingOptions();
-          options.setMinNumTerms(hpoTermIds.size());
-          options.setMaxNumTerms(hpoTermIds.size());
-          options.setMinObjectId(entrezId);
-          options.setMaxObjectId(entrezId);
-          final SimilarityScoreSampling<HpoTerm, HpoTermRelation> sampling =
-              new SimilarityScoreSampling<HpoTerm, HpoTermRelation>(hpo, resnikSimilarity, options);
-          final Map<Integer, ScoreDistribution> scoreDist =
-              sampling.performSampling(labelToTermIds);
-          final double pValue = scoreDist.get(hpoTermIds.size())
-              .getObjectScoreDistribution(entrezId).estimatePValue(resnikSim);
-          final long pValueEndTime = System.nanoTime();
-          System.err.println(
-              "p value computation took " + (pValueStartTime - pValueEndTime) / 1_000_000 + " ms");
-          
-          List<String> fields = Lists.newArrayList(Arrays.asList(line.split("\t")));
-          fields.addAll(ImmutableList.of(Double.toString(resnikSim), Double.toString(pValue)));
           System.out.println(Joiner.on('\t').join(fields));
         }
       }
-    } catch (FileNotFoundException e) {
+    } catch (
+
+    FileNotFoundException e) {
       e.printStackTrace();
       System.exit(1);
     } catch (IOException e) {

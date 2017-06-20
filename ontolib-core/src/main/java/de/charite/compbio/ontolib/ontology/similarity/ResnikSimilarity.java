@@ -22,10 +22,10 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    * Constructor.
    *
    * <p>
-   * The internally used {@link PairwiseSimilarity} is constructed from the given information
-   * content mapping using {@linkPairwiseResnikSimilarity}. In case that you want to use perform
-   * this precomputation explicitely, use
-   * {@link #ResnikSimilarity(Ontology, boolean, PairwiseSimilarity)} with
+   * The internally used {@link PrecomputingPairwiseSimilarity} is constructed from the given
+   * information content mapping using {@linkPairwiseResnikSimilarity}. In case that you want to use
+   * perform this precomputation explicitely, use
+   * {@link #ResnikSimilarity(Ontology, PairwiseSimilarity, boolean)} with
    * {@link PrecomputingResnikSimilarity}.
    * </p>
    *
@@ -35,8 +35,7 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    */
   public ResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc,
       boolean symmetric) {
-    // TODO: switch parameter order, make consisten with other similarities
-    super(ontology, symmetric, new PairwiseResnikSimilarity<T, R>(ontology, termToIc));
+    super(ontology, new PrecomputingPairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
   }
 
 
@@ -50,12 +49,12 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    * </p>
    *
    * @param ontology {@link Ontology} to base computations on.
-   * @param symmetric Whether or not to compute score in symmetric fashion.
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use internally.
+   * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public ResnikSimilarity(Ontology<T, R> ontology, boolean symmetric,
-      PairwiseSimilarity pairwiseSimilarity) {
-    super(ontology, symmetric, pairwiseSimilarity);
+  public ResnikSimilarity(Ontology<T, R> ontology, PairwiseSimilarity pairwiseSimilarity,
+      boolean symmetric) {
+    super(ontology, pairwiseSimilarity, symmetric);
   }
 
   @Override

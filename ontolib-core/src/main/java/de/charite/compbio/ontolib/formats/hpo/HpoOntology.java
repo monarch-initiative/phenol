@@ -23,18 +23,23 @@ public final class HpoOntology extends ImmutableOntology<HpoTerm, HpoTermRelatio
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
    * @param termMap Mapping from {@link TermId} to HPO term.
+   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link HpoTermRelation}.
    */
   public HpoOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
-      ImmutableMap<TermId, HpoTerm> termMap, ImmutableMap<Integer, HpoTermRelation> relationMap) {
-    super(graph, rootTermId, termMap, relationMap);
+      ImmutableMap<TermId, HpoTerm> termMap, ImmutableMap<TermId, HpoTerm> obsoleteTermMap,
+      ImmutableMap<Integer, HpoTermRelation> relationMap) {
+    super(graph, rootTermId, termMap, obsoleteTermMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "HPOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
+    return "HpoOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
         + ", getRelationMap()=" + getRelationMap() + ", getRootTermId()=" + getRootTermId()
-        + ", getTermIds()=" + getTermIds() + ", getTerms()=" + getTerms() + "]";
+        + ", getAllTermIds()=" + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()="
+        + countTerms() + ", getObsoleteTermMap()=" + getObsoleteTermMap()
+        + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds() + ", getObsoleteTermIds()="
+        + getObsoleteTermIds() + "]";
   }
 
 }

@@ -2,6 +2,7 @@ package de.charite.compbio.ontolib.ontology.data;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
 import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
@@ -32,8 +33,14 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** Id of the root term. */
   private final TermId rootTermId;
 
-  /** The mapping from TermId to Term. */
+  /** The mapping from TermId to Term for non-obsolete terms. */
   private final ImmutableMap<TermId, T> termMap;
+
+  /** The mapping from TermId to Term for defined by obsolete terms. */
+  private final ImmutableMap<TermId, T> obsoleteTermMap;
+
+  /** Set of all term IDs. */
+  private final ImmutableSet<TermId> allTermIds;
 
   /** The mapping from edge Id to TermRelation. */
   private final ImmutableMap<Integer, R> relationMap;
@@ -47,14 +54,18 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
    *
    * @param graph Graph to use for underlying structure.
    * @param rootTermId Root node's {@link TermId}.
-   * @param termMap Mapping from {@link TermId} to <code>T</code>.
+   * @param termMap Mapping from {@link TermId} to <code>T</code>, excluding obsolete ones.
+   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
   public ImmutableOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph,
-      TermId rootTermId, ImmutableMap<TermId, T> termMap, ImmutableMap<Integer, R> relationMap) {
+      TermId rootTermId, ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
+      ImmutableMap<Integer, R> relationMap) {
     this.graph = graph;
     this.rootTermId = rootTermId;
     this.termMap = termMap;
+    this.obsoleteTermMap = obsoleteTermMap;
+    this.allTermIds = ImmutableSet.copyOf(Sets.union(termMap.keySet(), obsoleteTermMap.keySet()));
     this.relationMap = relationMap;
     this.precomputedAncestors = precomputeAncestors();
   }
@@ -125,8 +136,8 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public Collection<TermId> getTermIds() {
-    return termMap.keySet();
+  public Collection<TermId> getAllTermIds() {
+    return allTermIds;
   }
 
   @Override
@@ -137,6 +148,23 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   @Override
   public int countTerms() {
     return termMap.size();
+  }
+
+  @Override
+  public Map<TermId, T> getObsoleteTermMap() {
+    return obsoleteTermMap;
+  }
+
+  // TODO: Add "getAllTermMap()"?
+  
+  @Override
+  public Collection<TermId> getNonObsoleteTermIds() {
+    return termMap.keySet();
+  }
+
+  @Override
+  public Collection<TermId> getObsoleteTermIds() {
+    return obsoleteTermMap.keySet();
   }
 
 }

@@ -42,21 +42,25 @@ abstract class AbstractPairwiseResnikSimilarity<T extends Term, R extends TermRe
    * Implementation of computing similarity score between a <code>query</code> and a
    * <code>query</code>.
    *
+   * <h5>Performance Note</h5>
+   *
+   * <p>
+   * This method is a performance hotspot and already well optimized. Further speedup can be gained
+   * through {@link PrecomputedPairwiseResnikSimilarity}.
+   * </p>
+   *
    * @param query Query {@link TermId}.
    * @param target Target {@link TermId}.
    * @return Precomputed pairwise Resnik similarity score.
    */
-  protected double computeScoreImpl(TermId query, TermId target) {
-    final Set<TermId> queryTerms = ontology.getAncestors(query, true);
-    final Set<TermId> targetTerms = ontology.getAncestors(target, true);
+  public double computeScoreImpl(TermId query, TermId target) {
+    final Set<TermId> queryTerms = getOntology().getAncestors(query, true);
+    final Set<TermId> targetTerms = getOntology().getAncestors(target, true);
 
     double maxValue = 0.0;
-    for (TermId tId : queryTerms) {
-      if (targetTerms.contains(tId)) {
-        final double icValue = termToIc.get(tId);
-        if (icValue > maxValue) {
-          maxValue = icValue;
-        }
+    for (TermId termId : queryTerms) {
+      if (targetTerms.contains(termId)) {
+        maxValue = Double.max(maxValue, getTermToIc().get(termId));
       }
     }
     return maxValue;
