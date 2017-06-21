@@ -27,6 +27,23 @@ import org.slf4j.LoggerFactory;
  * {@link Ontology} which is computationally expensive.
  * </p>
  *
+ * <h5>Performance Notes</h5>
+ *
+ * <p>
+ * Note that there is a performance regression here in comparison to the old code. However, the
+ * other implementation used integer arrays only which assumed the limitations to terms from the
+ * same ontology and was more involved than the current one.
+ * </p>
+ *
+ * <p>
+ * For loading the HPO, this regression appears to be about two-fold, from 30 sec to 60 sec.
+ * </p>
+ *
+ * <p>
+ * In the future, this decision might be revoked and an implementation based on arrays might be
+ * chosen as well for performance reasons.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
