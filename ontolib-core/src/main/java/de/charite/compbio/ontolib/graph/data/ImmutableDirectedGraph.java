@@ -208,7 +208,18 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
     LOGGER.info("Vertices and edges are compatible!");
 
-    // TODO: ensure the graph is simple?
+    final Map<VertexT, Set<VertexT>> seen = new HashMap<>();
+    for (Edge<VertexT> edge : edges) {
+      if (!seen.containsKey(edge.getSource())) {
+        seen.put(edge.getSource(), new HashSet<>());
+      } else {
+        if (seen.get(edge.getSource()).contains(edge.getDest())) {
+          throw new GraphNotSimpleException("Seen edge twice: " + edge);
+        }
+      }
+      seen.get(edge.getSource()).add(edge.getDest());
+    }
+    LOGGER.info("Graph is simple!");
   }
 
   @Override

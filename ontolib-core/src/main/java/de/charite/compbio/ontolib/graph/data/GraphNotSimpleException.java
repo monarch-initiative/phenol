@@ -1,11 +1,11 @@
 package de.charite.compbio.ontolib.graph.data;
 
 /**
- * Exception raised when list of vertices and edges are incompatible on graph construction.
+ * Exception raised when the graph is not simple, i.e., there exist duplicate edges.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class VerticesAndEdgesIncompatibleException extends GraphConstructionException {
+public class GraphNotSimpleException extends GraphConstructionException {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -15,7 +15,7 @@ public class VerticesAndEdgesIncompatibleException extends GraphConstructionExce
    *
    * @param message Message for the exception.
    */
-  public VerticesAndEdgesIncompatibleException(final String message) {
+  public GraphNotSimpleException(final String message) {
     super(message);
   }
 
