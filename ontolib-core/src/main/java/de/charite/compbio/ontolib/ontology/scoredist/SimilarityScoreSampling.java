@@ -120,6 +120,8 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     final int numObjects = labels.size();
     final AtomicInteger progress = new AtomicInteger();
 
+    // TODO: This does not guarantee appropriate parallelism, see
+    // PrecomputingPairwiseResnikSimilarity for example of improvement.
     // Perform processing in an explicit ForkJoinPool so we are able to limit the thread count
     final ForkJoinPool forkJoinPool = new ForkJoinPool(options.getNumThreads());
     final Map<Integer, ObjectScoreDistribution> distributions;
@@ -207,7 +209,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency
-    Map<Double, Long> counts = IntStream.range(0, numIterations - 1).boxed().parallel().map(i -> {
+    Map<Double, Long> counts = IntStream.range(0, numIterations - 1).boxed().map(i -> {
       // Sample numTerms Term objects from ontology.
       final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
       final double score = similarity.computeScore(randomTerms, terms);

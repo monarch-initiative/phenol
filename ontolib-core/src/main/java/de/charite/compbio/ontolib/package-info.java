@@ -34,7 +34,7 @@
  * <li>Check coverage of ontolib-io module</li>
  * <li>Further split out ontology-specific parts into their own Maven artifacts?</li>
  * <li>Will need better project-wide documentation, can do with <tt>mvn site</tt>?</li>
- * <li>So far no annotation of ZPO and GO to genes</li>
+ * <li>So far no annotation of ZPO and Upheno to genes</li>
  * <li>We need to flesh out the different parsing modes for the ontologies (maybe more than one
  * mode, e.g., "slim" and "fat"?) and consolidate the copy and paste code</li>
  * <li>We should implement BOQCA?!</li>

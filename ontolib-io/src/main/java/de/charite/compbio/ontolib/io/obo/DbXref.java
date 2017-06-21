@@ -1,7 +1,5 @@
 package de.charite.compbio.ontolib.io.obo;
 
-// TODO: Un-escape strings transparently
-
 /**
  * Representation of the <code>dbXref</code> from the OBO file.
  *

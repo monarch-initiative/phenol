@@ -1,18 +1,20 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
+import com.google.common.collect.Lists;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import de.charite.compbio.ontolib.utils.ProgressReporter;
 import java.io.Serializable;
-import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,9 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
   /** Number of threads to use for precomputation. */
   private final int numThreads;
 
+  /** Number of genes to process for each chunk. */
+  private final int chunkSize = 100;
+
   /**
    * Construct new {@link PrecomputingPairwiseResnikSimilarity}.
    *
@@ -80,36 +85,50 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
     LOGGER.info("Precomputing pairwise scores for {} terms...",
         new Object[] {getOntology().countTerms()});
 
+    // Setup progress reporting.
     final ProgressReporter progressReport =
         new ProgressReporter(LOGGER, "genes", getOntology().countTerms());
+    progressReport.start();
 
-    // The task to execute in parallel.
-    final Callable<Map<TermId, Map<TermId, Double>>> task =
-        () -> getOntology().getNonObsoleteTermIds().stream().parallel().map(queryId -> {
-          final Map<TermId, Double> newMap = new HashMap<>();
-          for (TermId targetId : getOntology().getAllTermIds()) {
-            newMap.put(targetId, computeScoreImpl(queryId, targetId));
-          }
+    // Setup the task to execute in parallel, with concurrent hash map for collecting results.
+    final Map<TermId, Map<TermId, Double>> result = new ConcurrentHashMap<>();
+    Consumer<List<TermId>> task = (List<TermId> chunk) -> {
+      for (TermId queryId : chunk) {
+        final Map<TermId, Double> newMap = new HashMap<>();
+        for (TermId targetId : getOntology().getAllTermIds()) {
+          newMap.put(targetId, computeScoreImpl(queryId, targetId));
+        }
+        progressReport.incCurrent();
+        result.put(queryId, newMap);
+      }
+    };
 
-          final Map<TermId, Map<TermId, Double>> result = new HashMap<>();
-          result.put(queryId, newMap);
-          progressReport.incCurrent();
-          return new AbstractMap.SimpleEntry<>(queryId, newMap);
-        }).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
-
-    // Perform processing in an explicit ForkJoinPool so we are able to limit the thread count
-    final ForkJoinPool forkJoinPool = new ForkJoinPool(numThreads);
-    final Map<TermId, Map<TermId, Double>> result;
-    try {
-      progressReport.start();
-      result = forkJoinPool.submit(task).get();
-      progressReport.stop();
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException("Problem during parallel execution.", e);
+    // Execution of the task in a ThreadPoolExecutor. This is the only way in Java 8 to guarantee
+    // thread counts.
+    //
+    // It is a bit verbose but in the end, not that complicated.
+    //
+    // Setup thread pool executor and enforce that precicsely numThreads threads are present.
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(numThreads, numThreads, 5,
+        TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+    // Split the input into chunks to reduce task startup overhead
+    final List<List<TermId>> chunks =
+        Lists.partition(Lists.newArrayList(getOntology().getNonObsoleteTermIds()), chunkSize);
+    // Submit all chunks into the executor.
+    for (List<TermId> chunk : chunks) {
+      threadPoolExecutor.submit(() -> task.accept(chunk));
     }
+    // Shutdown executor and wait for all tasks being completed.
+    threadPoolExecutor.shutdown();
+    try {
+      threadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Could not wait for thread pool being done.", e);
+    }
+    progressReport.stop();
 
     LOGGER.info("Done precomputing pairwise scores.");
-    return result;
+    return new HashMap<>(result); // convert from concurrent to non-concurrent
   }
 
   @Override
