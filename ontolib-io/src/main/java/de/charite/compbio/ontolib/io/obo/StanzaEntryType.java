@@ -13,7 +13,7 @@ public enum StanzaEntryType {
   /** Stanza entry starting with <code>comment</code>. */
   COMMENT,
   /** Stanza entry starting with <code>consider</code>. */
-  CONSIdER,
+  CONSIDER,
   /** Stanza entry starting with <code>created-by</code>. */
   CREATED_BY,
   /** Stanza entry starting with <code>creation_date</code>. */
@@ -35,11 +35,11 @@ public enum StanzaEntryType {
   /** Stanza entry starting with other strings. */
   GENERIC,
   /** Stanza entry starting with <code>id</code>. */
-  Id,
+  ID,
   /** Stanza entry starting with <code>id-mapping</code>. */
-  Id_MAPPING,
+  ID_MAPPING,
   /** Stanza entry starting with <code>idspace</code>. */
-  IdSPACE,
+  IDSPACE,
   /** Stanza entry starting with <code>import</code>. */
   IMPORT,
   /** Stanza entry starting with <code>instance_of</code>. */

@@ -1,18 +1,21 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Sets;
+
 import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
 import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -26,6 +29,9 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
+
+  /** Meta information, as loaded from file. */
+  private final ImmutableSortedMap<String, String> metaInfo;
 
   /** The graph storing the ontology's structure. */
   private final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
@@ -52,15 +58,18 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /**
    * Constructor.
    *
+   * @param metaInfo {@link ImmutableMap} with meta information.
    * @param graph Graph to use for underlying structure.
    * @param rootTermId Root node's {@link TermId}.
    * @param termMap Mapping from {@link TermId} to <code>T</code>, excluding obsolete ones.
    * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
-  public ImmutableOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph,
-      TermId rootTermId, ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
+  public ImmutableOntology(ImmutableSortedMap<String, String> metaInfo,
+      ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
       ImmutableMap<Integer, R> relationMap) {
+    this.metaInfo = metaInfo;
     this.graph = graph;
     this.rootTermId = rootTermId;
     this.termMap = termMap;
@@ -91,6 +100,11 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
     }
 
     return mapBuilder.build();
+  }
+
+  @Override
+  public Map<String, String> getMetaInfo() {
+    return metaInfo;
   }
 
   @Override
@@ -156,7 +170,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   // TODO: Add "getAllTermMap()"?
-  
+
   @Override
   public Collection<TermId> getNonObsoleteTermIds() {
     return termMap.keySet();

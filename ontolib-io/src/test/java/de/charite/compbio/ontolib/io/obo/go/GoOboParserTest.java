@@ -45,6 +45,9 @@ public class GoOboParserTest {
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
     assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0]",
         ontology.getRootTermId().toString());
+    assertEquals(
+        "{data-version=releases/2017-06-16, remark=Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/go/never_in_taxon.owl>))) [Axioms: 18 Logical Axioms: 0]}",
+        ontology.getMetaInfo().toString());
   }
 
 }

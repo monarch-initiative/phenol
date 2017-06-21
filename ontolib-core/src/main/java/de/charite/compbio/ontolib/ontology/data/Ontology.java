@@ -1,11 +1,12 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import de.charite.compbio.ontolib.graph.data.DirectedGraph;
-import de.charite.compbio.ontolib.graph.data.Edge;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+import de.charite.compbio.ontolib.graph.data.Edge;
 
 // TODO: allow accessing file-wide meta information
 
@@ -29,6 +30,14 @@ import java.util.Set;
  * excluded from the underlying graph structure.
  * </p>
  *
+ * <h5>Invariants/Properties</h5>
+ *
+ * <ul>
+ * <li>{@code Ontology} instances have one root term (non-obsolete, having no incoming "is-a"
+ * relations), thus the graph is connected.</li>
+ * <li>The underlying graph is acyclic and simple (no two equal directed s-t edges).</li>
+ * </ul>
+ *
  * @param <T> {@link Term} sub class this <code>Ontology</code> uses
  * @param <R> {@link TermRelation} sub class this <code>Ontology</code> uses.
  *
@@ -36,6 +45,11 @@ import java.util.Set;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public interface Ontology<T extends Term, R extends TermRelation> extends Serializable {
+
+  /**
+   * @return {@link Map} with ontology meta information, e.g., as loaded from file.
+   */
+  Map<String, String> getMetaInfo();
 
   /**
    * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure.

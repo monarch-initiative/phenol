@@ -24,7 +24,7 @@ public final class StanzaEntryIdMapping extends StanzaEntry {
    */
   public StanzaEntryIdMapping(String sourceId, String targetId, TrailingModifier trailingModifier,
       String comment) {
-    super(StanzaEntryType.Id_MAPPING, trailingModifier, comment);
+    super(StanzaEntryType.ID_MAPPING, trailingModifier, comment);
     this.sourceId = sourceId;
     this.targetId = targetId;
   }

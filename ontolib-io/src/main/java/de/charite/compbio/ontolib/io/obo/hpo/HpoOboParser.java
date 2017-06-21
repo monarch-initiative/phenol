@@ -1,6 +1,11 @@
 package de.charite.compbio.ontolib.io.obo.hpo;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
 import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
 import de.charite.compbio.ontolib.formats.hpo.HpoTermRelation;
@@ -9,8 +14,6 @@ import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Facade class for parsing the HPO from an OBO file.
@@ -73,8 +76,9 @@ public final class HpoOboParser {
 
     // Convert ImmutableOntology into HPOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new HpoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
-        o.getRootTermId(), (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
+    return new HpoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
+        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, HpoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());
   }

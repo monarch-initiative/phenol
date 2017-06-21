@@ -64,7 +64,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   @Override
   public HpoTerm constructTerm(Stanza stanza) {
     final TermId id =
-        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
+        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
 
     final String name =
         this.<StanzaEntryName>getCardinalityOneEntry(stanza, StanzaEntryType.NAME).getName();
@@ -172,7 +172,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   @Override
   public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
-        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
+        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
     return new HpoTermRelation(sourceId, destId, nextRelationId++, HpoRelationQualifier.IS_A);
   }

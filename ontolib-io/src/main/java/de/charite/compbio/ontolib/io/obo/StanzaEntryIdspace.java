@@ -28,7 +28,7 @@ public final class StanzaEntryIdspace extends StanzaEntry {
    */
   public StanzaEntryIdspace(String localIdSpace, String globalIdSpace, String description,
       TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.IdSPACE, trailingModifier, comment);
+    super(StanzaEntryType.IDSPACE, trailingModifier, comment);
     this.localIdSpace = localIdSpace;
     this.globalIdSpace = globalIdSpace;
     this.description = description;

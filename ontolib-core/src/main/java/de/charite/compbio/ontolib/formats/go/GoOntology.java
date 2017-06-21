@@ -1,6 +1,8 @@
 package de.charite.compbio.ontolib.formats.go;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
@@ -20,26 +22,28 @@ public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> 
   /**
    * Constructor.
    *
+   * @param metaInfo {@link ImmutableSortedMap} with meta information.
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
    * @param termMap Mapping from {@link TermId} to GO term.
    * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link GoTermRelation}.
    */
-  public GoOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+  public GoOntology(ImmutableSortedMap<String, String> metaInfo,
+      ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
       ImmutableMap<TermId, GoTerm> termMap, ImmutableMap<TermId, GoTerm> obsoleteTermMap,
       ImmutableMap<Integer, GoTermRelation> relationMap) {
-    super(graph, rootTermId, termMap, obsoleteTermMap, relationMap);
+    super(metaInfo, graph, rootTermId, termMap, obsoleteTermMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "GoOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
-        + ", getRelationMap()=" + getRelationMap() + ", getRootTermId()=" + getRootTermId()
-        + ", getAllTermIds()=" + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()="
-        + countTerms() + ", getObsoleteTermMap()=" + getObsoleteTermMap()
-        + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds() + ", getObsoleteTermIds()="
-        + getObsoleteTermIds() + "]";
+    return "GoOntology [getMetaInfo()=" + ImmutableSortedMap.copyOf(getMetaInfo()) + ", getGraph()="
+        + getGraph() + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
+        + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
+        + ", getTerms()=" + getTerms() + ", countTerms()=" + countTerms()
+        + ", getObsoleteTermMap()=" + getObsoleteTermMap() + ", getNonObsoleteTermIds()="
+        + getNonObsoleteTermIds() + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
   }
 
 }

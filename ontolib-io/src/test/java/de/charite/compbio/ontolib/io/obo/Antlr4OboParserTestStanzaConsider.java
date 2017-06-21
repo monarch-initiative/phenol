@@ -19,7 +19,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final TermStanzaKeyValueContext ctx = parser.termStanzaKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -31,7 +31,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final TypedefStanzaKeyValueContext ctx = parser.typedefStanzaKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -43,7 +43,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final KeyValueConsiderContext ctx = parser.keyValueConsider();
     final StanzaEntryConsider stanzaEntry = (StanzaEntryConsider) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
@@ -56,7 +56,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final KeyValueConsiderContext ctx = parser.keyValueConsider();
     final StanzaEntryConsider stanzaEntry = (StanzaEntryConsider) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
@@ -70,7 +70,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final KeyValueConsiderContext ctx = parser.keyValueConsider();
     final StanzaEntryConsider stanzaEntry = (StanzaEntryConsider) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
@@ -83,7 +83,7 @@ public class Antlr4OboParserTestStanzaConsider extends Antlr4OboParserTestBase {
     final KeyValueConsiderContext ctx = parser.keyValueConsider();
     final StanzaEntryConsider stanzaEntry = (StanzaEntryConsider) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.CONSIdER, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.CONSIDER, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());

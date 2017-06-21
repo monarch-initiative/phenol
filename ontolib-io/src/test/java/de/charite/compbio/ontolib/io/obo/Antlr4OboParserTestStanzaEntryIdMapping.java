@@ -18,7 +18,7 @@ public class Antlr4OboParserTestStanzaEntryIdMapping extends Antlr4OboParserTest
     final HeaderKeyValueContext ctx = parser.headerKeyValue();
     final StanzaEntry stanzaEntry = (StanzaEntry) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.Id_MAPPING, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
   }
@@ -31,7 +31,7 @@ public class Antlr4OboParserTestStanzaEntryIdMapping extends Antlr4OboParserTest
     final StanzaEntryIdMapping stanzaEntry =
         (StanzaEntryIdMapping) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.Id_MAPPING, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceId());
     assertEquals("TO:", stanzaEntry.getTargetId());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -46,7 +46,7 @@ public class Antlr4OboParserTestStanzaEntryIdMapping extends Antlr4OboParserTest
     final StanzaEntryIdMapping stanzaEntry =
         (StanzaEntryIdMapping) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.Id_MAPPING, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceId());
     assertEquals("TO:", stanzaEntry.getTargetId());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
@@ -62,7 +62,7 @@ public class Antlr4OboParserTestStanzaEntryIdMapping extends Antlr4OboParserTest
     final StanzaEntryIdMapping stanzaEntry =
         (StanzaEntryIdMapping) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.Id_MAPPING, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceId());
     assertEquals("TO:", stanzaEntry.getTargetId());
     assertNull(stanzaEntry.getTrailingModifier());
@@ -77,7 +77,7 @@ public class Antlr4OboParserTestStanzaEntryIdMapping extends Antlr4OboParserTest
     final StanzaEntryIdMapping stanzaEntry =
         (StanzaEntryIdMapping) getOuterListener().getValue(ctx);
 
-    assertEquals(StanzaEntryType.Id_MAPPING, stanzaEntry.getType());
+    assertEquals(StanzaEntryType.ID_MAPPING, stanzaEntry.getType());
     assertEquals("FROM:", stanzaEntry.getSourceId());
     assertEquals("TO:", stanzaEntry.getTargetId());
     assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",

@@ -66,7 +66,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
   @Override
   public GoTerm constructTerm(Stanza stanza) {
     final TermId id =
-        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
+        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
 
     final String name =
         this.<StanzaEntryName>getCardinalityOneEntry(stanza, StanzaEntryType.NAME).getName();
@@ -174,7 +174,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
   @Override
   public GoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
-        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.Id).getId());
+        termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
     return new GoTermRelation(sourceId, destId, nextRelationId++, GoRelationQualifier.IS_A);
   }

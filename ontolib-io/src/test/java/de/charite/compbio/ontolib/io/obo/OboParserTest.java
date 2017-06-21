@@ -30,10 +30,10 @@ public class OboParserTest {
         + "getType()=FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]], "
         + "entryByType={FORMAT_VERSION=[StanzaEntryFormatVersion [value=1.2, getType()="
         + "FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]]}], stanzas="
-        + "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=Id, "
+        + "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=ID, "
         + "getTrailingModifier()=null, getComment()=null], StanzaEntryName [name=All, "
         + "getType()=NAME, getTrailingModifier()=null, getComment()=null]], entryByType="
-        + "{Id=[StanzaEntryId [id=HP:0000001, getType()=Id, getTrailingModifier()=null, "
+        + "{ID=[StanzaEntryId [id=HP:0000001, getType()=ID, getTrailingModifier()=null, "
         + "getComment()=null]], NAME=[StanzaEntryName [name=All, getType()=NAME, "
         + "getTrailingModifier()=null, getComment()=null]]}]]]", oboFile.toString());
   }
@@ -47,10 +47,10 @@ public class OboParserTest {
         + "[StanzaEntryFormatVersion [value=1.2, getType()=FORMAT_VERSION, getTrailingModifier()="
         + "null, getComment()=null]]}]", listener.getHeader().toString());
     assertEquals(
-        "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=Id, "
+        "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=ID, "
             + "getTrailingModifier()=null, getComment()=null], StanzaEntryName [name=All, "
             + "getType()=NAME, getTrailingModifier()=null, getComment()=null]], entryByType="
-            + "{Id=[StanzaEntryId [id=HP:0000001, getType()=Id, getTrailingModifier()=null, "
+            + "{ID=[StanzaEntryId [id=HP:0000001, getType()=ID, getTrailingModifier()=null, "
             + "getComment()=null]], NAME=[StanzaEntryName [name=All, getType()=NAME, "
             + "getTrailingModifier()=null, getComment()=null]]}]]",
         listener.getStanzas().toString());

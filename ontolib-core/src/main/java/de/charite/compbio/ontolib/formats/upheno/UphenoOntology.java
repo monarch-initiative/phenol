@@ -1,6 +1,8 @@
 package de.charite.compbio.ontolib.formats.upheno;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
@@ -20,27 +22,28 @@ public final class UphenoOntology extends ImmutableOntology<UphenoTerm, UphenoTe
   /**
    * Constructor.
    *
+   * @param metaInfo {@link ImmutableSortedFMap} with meta information.
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
    * @param termMap Mapping from {@link TermId} to Uberpheno term.
    * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link UphenoTermRelation}.
    */
-  public UphenoOntology(ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph,
-      TermId rootTermId, ImmutableMap<TermId, UphenoTerm> termMap,
-      ImmutableMap<TermId, UphenoTerm> obsoleteTermMap,
+  public UphenoOntology(ImmutableSortedMap<String, String> metaInfo,
+      ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      ImmutableMap<TermId, UphenoTerm> termMap, ImmutableMap<TermId, UphenoTerm> obsoleteTermMap,
       ImmutableMap<Integer, UphenoTermRelation> relationMap) {
-    super(graph, rootTermId, termMap, obsoleteTermMap, relationMap);
+    super(metaInfo, graph, rootTermId, termMap, obsoleteTermMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "UphenoOntology [getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap()
-        + ", getRelationMap()=" + getRelationMap() + ", getRootTermId()=" + getRootTermId()
-        + ", getAllTermIds()=" + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()="
-        + countTerms() + ", getObsoleteTermMap()=" + getObsoleteTermMap()
-        + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds() + ", getObsoleteTermIds()="
-        + getObsoleteTermIds() + "]";
+    return "UphenoOntology [getMetaInfo()=" + ImmutableSortedMap.copyOf(getMetaInfo())
+        + ", getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap() + ", getRelationMap()="
+        + getRelationMap() + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()="
+        + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()=" + countTerms()
+        + ", getObsoleteTermMap()=" + getObsoleteTermMap() + ", getNonObsoleteTermIds()="
+        + getNonObsoleteTermIds() + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
   }
 
 }

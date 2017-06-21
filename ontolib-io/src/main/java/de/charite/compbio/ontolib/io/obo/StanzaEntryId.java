@@ -19,7 +19,7 @@ public final class StanzaEntryId extends StanzaEntry {
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryId(String id, TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.Id, trailingModifier, comment);
+    super(StanzaEntryType.ID, trailingModifier, comment);
     this.id = id;
   }
 

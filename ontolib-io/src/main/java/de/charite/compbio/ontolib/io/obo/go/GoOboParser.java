@@ -1,6 +1,11 @@
 package de.charite.compbio.ontolib.io.obo.go;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+
 import de.charite.compbio.ontolib.formats.go.GoOntology;
 import de.charite.compbio.ontolib.formats.go.GoTerm;
 import de.charite.compbio.ontolib.formats.go.GoTermRelation;
@@ -10,8 +15,6 @@ import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Facade class for parsing the HPO from an OBO file.
@@ -81,8 +84,9 @@ public final class GoOboParser {
 
     // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new GoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
-        o.getRootTermId(), (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
+    return new GoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
+        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, GoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());
   }

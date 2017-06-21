@@ -2,16 +2,19 @@ package de.charite.compbio.ontolib.io.obo.hpo;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedSet;
-import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
-import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
+
+import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
+import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 
 public class HpoOboParserTest {
 
@@ -45,6 +48,9 @@ public class HpoOboParserTest {
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
     assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1]",
         ontology.getRootTermId().toString());
+    assertEquals(
+        "{data-version=releases/2017-04-13, saved-by=Peter Robinson, Sebastian Koehler, Sandra Doelken, Chris Mungall, Melissa Haendel, Nicole Vasilevsky, Monarch Initiative, et al.}",
+        ontology.getMetaInfo().toString());
   }
 
 }

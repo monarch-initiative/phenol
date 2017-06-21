@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 
 import de.charite.compbio.ontolib.formats.upheno.UphenoOntology;
 import de.charite.compbio.ontolib.formats.upheno.UphenoTerm;
@@ -75,8 +76,9 @@ public final class UphenoOboParser {
 
     // Convert ImmutableOntology into UberphenoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new UphenoOntology((ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(),
-        o.getRootTermId(), (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
+    return new UphenoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
+        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, UphenoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, UphenoTermRelation>) o.getRelationMap());
   }

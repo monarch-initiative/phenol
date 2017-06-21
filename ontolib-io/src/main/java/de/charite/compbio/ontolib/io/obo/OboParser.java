@@ -144,9 +144,7 @@ public final class OboParser {
     }
 
     /**
-     * Query for resulting header.
-     *
-     * @return Resulting header
+     * @return Resulting header.
      */
     public Header getHeader() {
       return header;

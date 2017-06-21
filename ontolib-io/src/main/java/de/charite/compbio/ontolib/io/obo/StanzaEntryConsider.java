@@ -19,7 +19,7 @@ public final class StanzaEntryConsider extends StanzaEntry {
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryConsider(String id, TrailingModifier trailingModifier, String comment) {
-    super(StanzaEntryType.CONSIdER, trailingModifier, comment);
+    super(StanzaEntryType.CONSIDER, trailingModifier, comment);
     this.id = id;
   }
 

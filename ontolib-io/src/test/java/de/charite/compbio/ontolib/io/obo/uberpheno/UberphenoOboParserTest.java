@@ -49,6 +49,7 @@ public class UberphenoOboParserTest {
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
     assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=UBERPHENO], id=1]",
         ontology.getRootTermId().toString());
+    assertEquals("{date=20:01:2012 06:00}", ontology.getMetaInfo().toString());
   }
 
 }

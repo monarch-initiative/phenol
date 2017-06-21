@@ -45,6 +45,7 @@ public class MpoOboParserTest {
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
     assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=1]",
         ontology.getRootTermId().toString());
+    assertEquals("{data-version=releases/2017-06-05}", ontology.getMetaInfo().toString());
   }
 
 }
