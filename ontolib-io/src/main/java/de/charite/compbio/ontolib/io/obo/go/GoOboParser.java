@@ -29,6 +29,13 @@ import java.io.IOException;
  * }
  * </pre>
  *
+ * <h5>Multiple Root Terms</h5>
+ *
+ * <p>
+ * The Gene Ontology has multiple root terms. As documented in {@link OboImmutableOntologyLoader},
+ * an artificial root term with id {@link GO:0000000} will be inserted.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class GoOboParser {
