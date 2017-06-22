@@ -28,6 +28,14 @@ abstract class AbstractPairwiseResnikSimilarity<T extends Term, R extends TermRe
   private final Map<TermId, Double> termToIc;
 
   /**
+   * Required default constructor for serialization.
+   */
+  protected AbstractPairwiseResnikSimilarity() {
+    this.ontology = null;
+    this.termToIc = null;
+  }
+  
+  /**
    * Construct new {@link AbstractPairwiseResnikSimilarity}.
    *
    * @param ontology {@link Ontology} to base computations on.

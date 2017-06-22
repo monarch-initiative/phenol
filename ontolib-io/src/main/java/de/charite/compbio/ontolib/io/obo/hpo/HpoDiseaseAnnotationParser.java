@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Parser for "phenotype annotation" files.
@@ -80,7 +81,7 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDisea
     if (!Enums.getIfPresent(HpoDiseaseAnnotation.DatabaseSource.class, arr[0]).isPresent()) {
       throw new TermAnnotationParserException(
           "Does not look like HPO disease annotation file. First field value was " + arr[0]
-              + " but was expected to be one of " + HpoDiseaseAnnotation.DatabaseSource.values());
+              + " but was expected to be one of " + Arrays.toString(HpoDiseaseAnnotation.DatabaseSource.values()));
     }
   }
 

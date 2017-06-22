@@ -143,7 +143,10 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
   @SuppressWarnings("unchecked")
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
-    if (typeEntries == null || typeEntries.size() != 1) {
+    if (typeEntries == null) {
+      throw new RuntimeException(
+          type + " tag must have cardinality 1 but was null (" + stanza + ")");
+    } else if (typeEntries.size() != 1) {
       throw new RuntimeException(type + " tag must have cardinality 1 but was " + typeEntries.size()
           + " (" + stanza + ")");
     }

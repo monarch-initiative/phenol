@@ -113,7 +113,7 @@ public final class GoGeneAnnotationFileParser implements TermAnnotationParser<Go
     final String dbObjectType = arr[11];
     final List<String> taxons = ImmutableList.copyOf(arr[12].split("\\|"));
     final String date = arr[13];
-    final String assignedBy = (arr.length < 15) ? null : arr[14];
+    final String assignedBy = arr[14];
     final String annotationExtension = (arr.length < 16) ? null : arr[15];
     final String geneProductFormId = (arr.length < 17) ? null : arr[16];
 
