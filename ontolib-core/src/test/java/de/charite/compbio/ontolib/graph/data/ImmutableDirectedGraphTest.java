@@ -114,10 +114,10 @@ public class ImmutableDirectedGraphTest {
     assertEquals(5, graph.countVertices());
     assertEquals("[1, 2, 3, 4, 5]", ImmutableSortedSet.copyOf(graph.getVertices()).toString());
 
-    Iterator<Integer> vIt = graph.vertexIterator();
+    Iterator<Integer> vertexIt = graph.vertexIterator();
     Set<Integer> vertices = new TreeSet<>();
-    while (vIt.hasNext()) {
-      vertices.add(vIt.next());
+    while (vertexIt.hasNext()) {
+      vertices.add(vertexIt.next());
     }
     assertEquals("[1, 2, 3, 4, 5]", vertices.toString());
 
@@ -130,10 +130,10 @@ public class ImmutableDirectedGraphTest {
             + "ImmutableEdge [source=3, dest=5, id=5], ImmutableEdge [source=4, dest=5, id=6]]",
         ImmutableSortedSet.copyOf(graph.getEdges()).toString());
 
-    Iterator<ImmutableEdge<Integer>> eIt = graph.edgeIterator();
+    Iterator<ImmutableEdge<Integer>> edgeIt = graph.edgeIterator();
     Set<ImmutableEdge<Integer>> edges = new TreeSet<>();
-    while (eIt.hasNext()) {
-      edges.add(eIt.next());
+    while (edgeIt.hasNext()) {
+      edges.add(edgeIt.next());
     }
     assertEquals(
         "[ImmutableEdge [source=1, dest=2, id=1], ImmutableEdge [source=1, dest=3, id=2], "

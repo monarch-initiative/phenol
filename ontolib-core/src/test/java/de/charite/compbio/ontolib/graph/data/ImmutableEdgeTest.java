@@ -2,18 +2,19 @@ package de.charite.compbio.ontolib.graph.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class ImmutableEdgeTest {
 
   private ImmutableEdge<Integer> edge;
-  
+
   @Before
   public void setUp() {
     edge = ImmutableEdge.construct(1, 2, 1);
   }
-  
+
   @Test
   public void testAccessors() {
     assertEquals(1, edge.getSource().intValue());
@@ -25,7 +26,7 @@ public class ImmutableEdgeTest {
   public void testToString() {
     assertEquals("ImmutableEdge [source=1, dest=2, id=1]", edge.toString());
   }
-  
+
   @Test
   @SuppressWarnings("unchecked")
   public void testClone() {
@@ -34,5 +35,5 @@ public class ImmutableEdgeTest {
     assertEquals(edge, e2);
     assertEquals("ImmutableEdge [source=1, dest=2, id=1]", e2.toString());
   }
-  
+
 }
