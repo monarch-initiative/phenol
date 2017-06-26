@@ -1,15 +1,20 @@
 package de.charite.compbio.ontolib.ontology.algo;
 
-import de.charite.compbio.ontolib.ontology.data.Ontology;
-import de.charite.compbio.ontolib.ontology.data.Term;
-import de.charite.compbio.ontolib.ontology.data.TermId;
-import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
+import de.charite.compbio.ontolib.ontology.data.Ontology;
+import de.charite.compbio.ontolib.ontology.data.Term;
+import de.charite.compbio.ontolib.ontology.data.TermId;
+import de.charite.compbio.ontolib.ontology.data.TermIds;
+import de.charite.compbio.ontolib.ontology.data.TermRelation;
 
 /**
  * Utility class for computing information content of {@link Term} (identified by their
@@ -39,8 +44,14 @@ public final class InformationContentComputation<T extends Term, R extends TermR
     this.ontology = ontology;
   }
 
+  // TODO: perform expansion to ancestors here?!
   /**
    * Perform the actual computation.
+   *
+   * <p>
+   * Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
+   * achieve this using {@link TermIds#augmentWithAncestors(ImmutableOntology, Set, boolean)}.
+   * </p>
    *
    * @param <LabelT> Labels for objects from "the real world". This could, e.g., be
    *        <code>String</code>s with gene names. This type has to properly implement
@@ -58,6 +69,9 @@ public final class InformationContentComputation<T extends Term, R extends TermR
     // Build mapping from TermId -> absolute frequency
     final TermId root = ontology.getRootTermId();
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
+    for (TermId termId : ontology.getNonObsoleteTermIds()) {
+      termToFrequency.put(termId, 0);
+    }
     for (Entry<TermId, ? extends Collection<LabelT>> e : termLabels.entrySet()) {
       termToFrequency.put(e.getKey(), e.getValue().size());
     }
@@ -86,7 +100,6 @@ public final class InformationContentComputation<T extends Term, R extends TermR
     LOGGER.info("Computing IC is complete.");
 
     return termToInformationContent;
-
   }
 
   /**

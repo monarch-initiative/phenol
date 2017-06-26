@@ -1,9 +1,31 @@
 package de.charite.compbio.ontolib.demos.compute_similarities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import de.charite.compbio.ontolib.formats.hpo.HpoGeneAnnotation;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
 import de.charite.compbio.ontolib.formats.hpo.HpoTerm;
@@ -22,25 +44,6 @@ import de.charite.compbio.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import de.charite.compbio.ontolib.ontology.scoredist.SimilarityScoreSampling;
 import de.charite.compbio.ontolib.ontology.similarity.PrecomputingPairwiseResnikSimilarity;
 import de.charite.compbio.ontolib.ontology.similarity.ResnikSimilarity;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // TODO: This needs some refactorization love
 
@@ -101,6 +104,7 @@ public class App {
     LOGGER.info("Loading HPO to gene annotation file...");
     // Raw annotations as read from file.
     final List<HpoGeneAnnotation> annos = new ArrayList<>();
+    // TODO: augmentation happens already below?
     // Build mappings from entrez gene ID to term IDs and the inverse. Note that these two mappings
     // are built using the implicit transitive labeling: if a term is anotated with A, then all of
     // its ancestors are labeled with this term as well.
@@ -149,7 +153,7 @@ public class App {
     // TODO: Want shortcut for this important case?s
     // Build mapping from numeric Entrez gene ID to
     final Map<Integer, Collection<TermId>> labelToTermIds =
-        TermAnnotations.constructTermLabelToAnnotationsMap(annos).entrySet().stream()
+        TermAnnotations.constructTermLabelToAnnotationsMap(hpo, annos).entrySet().stream()
             .collect(Collectors.toMap(e -> {
               final String[] tokens = e.getKey().split(":");
               return (Integer) Integer.parseInt(tokens[1]);

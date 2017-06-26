@@ -22,23 +22,30 @@ public final class TermAnnotations {
    * {@link Collection} of {@link TermAnnotation}s.
    *
    * <p>
+   * An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
+   * </p>
+   *
+   * <p>
    * Use this function for converting results from parsing term annotations to the appropriate
    * mapping for {@link InformationContentComputation}, for example.
    * </p>
    *
+   * @param ontology {@link Ontology} to use for computing implicit annotations.
    * @param annotations {@link Collection} of {@link TermAnnotation}s to convert.
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *         labels.
    */
   public static Map<TermId, Collection<String>> constructTermAnnotationToLabelsMap(
-      Collection<? extends TermAnnotation> annotations) {
+      Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
     final Map<TermId, Collection<String>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      if (!result.containsKey(anno.getTermId())) {
-        result.put(anno.getTermId(), Sets.newHashSet(anno.getLabel()));
-      } else {
-        result.get(anno.getTermId()).add(anno.getLabel());
+      for (TermId termId : ontology.getAncestors(anno.getTermId(), true)) {
+        if (!result.containsKey(termId)) {
+          result.put(termId, Sets.newHashSet(anno.getLabel()));
+        } else {
+          result.get(termId).add(anno.getLabel());
+        }
       }
     }
 
@@ -50,23 +57,30 @@ public final class TermAnnotations {
    * {@link Collection} of {@link TermAnnotation}s.
    *
    * <p>
+   * An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
+   * </p>
+   *
+   * <p>
    * Use this function for converting results from parsing term annotations to the appropriate
    * mapping for {@link SimilarityScoreSampling}, for example.
    * </p>
    *
+   * @param ontology {@link Ontology} to use for computing implicit annotations.
    * @param annotations {@link Collection} of {@link TermAnnotation}s to convert.
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *         labels.
    */
   public static Map<String, Collection<TermId>> constructTermLabelToAnnotationsMap(
-      Collection<? extends TermAnnotation> annotations) {
+      Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
     final Map<String, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      if (!result.containsKey(anno.getLabel())) {
-        result.put(anno.getLabel(), Sets.newHashSet(anno.getTermId()));
-      } else {
-        result.get(anno.getLabel()).add(anno.getTermId());
+      for (TermId termId : ontology.getAncestors(anno.getTermId(), true)) {
+        if (!result.containsKey(anno.getLabel())) {
+          result.put(anno.getLabel(), Sets.newHashSet(termId));
+        } else {
+          result.get(anno.getLabel()).add(termId);
+        }
       }
     }
 
