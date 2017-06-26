@@ -13,7 +13,7 @@ import java.util.Iterator;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-interface NeighborSelector<V, E extends Edge<V>> {
+interface NeighborSelector<V extends Comparable<V>, E extends Edge<V>> {
 
   /**
    * Return {@link Iterator} of vertices to go from next from <code>v</code>.

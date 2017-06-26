@@ -18,8 +18,9 @@ import java.util.List;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
-    implements Serializable {
+final class ImmutableVertexEdgeList<V extends Comparable<V>, E extends ImmutableEdge<V>>
+    implements
+      Serializable {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -31,28 +32,22 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
   private final ImmutableList<E> outEdges;
 
   /**
-   * @param <V>
-   *          Vertex type, see {@link DirectedGraph} for requirements on this
-   *          type.
-   * @param <E>
-   *          Edge type, must be an {@link ImmutableEdge} of <code>V</code>.
+   * @param <V> Vertex type, see {@link DirectedGraph} for requirements on this type.
+   * @param <E> Edge type, must be an {@link ImmutableEdge} of <code>V</code>.
    *
    * @return Newly constructed {@link Builder}
    */
-  public static <V, E extends ImmutableEdge<V>> Builder<V, E> builder() {
+  public static <V extends Comparable<V>, E extends ImmutableEdge<V>> Builder<V, E> builder() {
     return new Builder<V, E>();
   }
 
   /**
    * Constructor.
    *
-   * @param inEdges
-   *          {@link Collection} of in-edges
-   * @param outEdges
-   *          {@link Collection} of out-edges
+   * @param inEdges {@link Collection} of in-edges
+   * @param outEdges {@link Collection} of out-edges
    */
-  ImmutableVertexEdgeList(final Collection<E> inEdges,
-      final Collection<E> outEdges) {
+  ImmutableVertexEdgeList(final Collection<E> inEdges, final Collection<E> outEdges) {
     this.inEdges = ImmutableList.copyOf(inEdges);
     this.outEdges = ImmutableList.copyOf(outEdges);
   }
@@ -78,15 +73,12 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
   /**
    * Internal helper for construction of VertexEdgeList objects.
    *
-   * @param <V>
-   *          Vertex type, see {@link DirectedGraph} for requirements on this
-   *          type.
-   * @param <E>
-   *          Edge type, must be an {@link ImmutableEdge} of <code>V</code>.
+   * @param <V> Vertex type, see {@link DirectedGraph} for requirements on this type.
+   * @param <E> Edge type, must be an {@link ImmutableEdge} of <code>V</code>.
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
-  public static final class Builder<V, E extends ImmutableEdge<V>> {
+  public static final class Builder<V extends Comparable<V>, E extends ImmutableEdge<V>> {
     /** List of in-edges. */
     private final List<E> inEdges = new ArrayList<E>();
 
@@ -96,8 +88,7 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
     /**
      * Add in-edge to builder.
      *
-     * @param edge
-     *          {@link ImmutableEdge} to add as in-edge.
+     * @param edge {@link ImmutableEdge} to add as in-edge.
      */
     public void addInEdge(final E edge) {
       inEdges.add(edge);
@@ -106,8 +97,7 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
     /**
      * Add out-edge to builder.
      *
-     * @param edge
-     *          {@link ImmutableEdge} to add as out-edge.
+     * @param edge {@link ImmutableEdge} to add as out-edge.
      */
     public void addOutEdge(final E edge) {
       outEdges.add(edge);
@@ -125,8 +115,7 @@ final class ImmutableVertexEdgeList<V, E extends ImmutableEdge<V>>
 
   @Override
   public String toString() {
-    return "ImmutableVertexEdgeList [inEdges=" + inEdges + ", outEdges="
-        + outEdges + "]";
+    return "ImmutableVertexEdgeList [inEdges=" + inEdges + ", outEdges=" + outEdges + "]";
   }
 
 }

@@ -13,7 +13,7 @@ import java.util.Iterator;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface DirectedGraph<V, E extends Edge<V>> extends Serializable {
+public interface DirectedGraph<V extends Comparable<V>, E extends Edge<V>> extends Serializable {
 
   /**
    * Query for vertex containment.

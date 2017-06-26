@@ -1,5 +1,9 @@
 package de.charite.compbio.ontolib.graph.data;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.UnmodifiableIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,14 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Implementation of an immutable (read-only) {@link DirectedGraph}.
@@ -27,7 +25,7 @@ import com.google.common.collect.UnmodifiableIterator;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
+public final class ImmutableDirectedGraph<V extends Comparable<V>, E extends ImmutableEdge<V>>
     implements
       DirectedGraph<V, E> {
 
@@ -54,8 +52,8 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param edgeFactory The {@link Edge.Factory} to use for constructing edges.
    * @return Freshly constructed {@link Builder} object.
    */
-  public static <V, E extends ImmutableEdge<V>> Builder<V, E> builder(
-      final Edge.Factory<V, E> edgeFactory) {
+  public static <V extends Comparable<V>,
+      E extends ImmutableEdge<V>> Builder<V, E> builder(final Edge.Factory<V, E> edgeFactory) {
     return new Builder<V, E>(edgeFactory);
   }
 
@@ -71,8 +69,10 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @return the built {@link ImmutableDirectedGraph}
    */
   @SuppressWarnings("unchecked")
-  public static <V, E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
-      final Collection<V> vertices, final Collection<E> edges, final boolean checkCompatibility) {
+  public static <V extends Comparable<V>,
+      E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
+          final Collection<V> vertices, final Collection<E> edges,
+          final boolean checkCompatibility) {
     // Check compatibility if asked for
     if (checkCompatibility) {
       checkCompatibility(vertices, edges);
@@ -96,8 +96,9 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param checkCompatibility whether or not to check vertex and edge list to be compatible
    * @return the built {@link ImmutableDirectedGraph}
    */
-  public static <V, E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
-      final Collection<E> edges, final boolean checkCompatibility) {
+  public static <V extends Comparable<V>,
+      E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(final Collection<E> edges,
+          final boolean checkCompatibility) {
     // Collect the vertices in the same order as in edges
     List<V> vertices = new ArrayList<>();
     Set<V> vertexSet = new HashSet<>();
@@ -129,8 +130,9 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param edges {@link Collection} of edges to use for construction.
    * @return Freshly built {@link ImmutableDirectedGraph}.
    */
-  public static <V, E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
-      final Collection<V> vertices, final Collection<E> edges) {
+  public static <V extends Comparable<V>,
+      E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
+          final Collection<V> vertices, final Collection<E> edges) {
     return construct(vertices, edges, false);
   }
 
@@ -147,8 +149,9 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    * @param edges {@link Collection} of edges to use for construction.
    * @return Freshly built {@link ImmutableDirectedGraph}.
    */
-  public static <V, E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
-      final Collection<E> edges) {
+  public static <V extends Comparable<V>,
+      E extends ImmutableEdge<V>> ImmutableDirectedGraph<V, E> construct(
+          final Collection<E> edges) {
     return construct(edges, false);
   }
 
@@ -188,8 +191,8 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    *
    * @raises VerticesAndEdgesIncompatibleException in case of incompatibilities.
    */
-  private static <VertexT> void checkCompatibility(Collection<VertexT> vertices,
-      Collection<? extends Edge<VertexT>> edges) {
+  private static <VertexT extends Comparable<VertexT>> void checkCompatibility(
+      Collection<VertexT> vertices, Collection<? extends Edge<VertexT>> edges) {
     LOGGER.info("Checking vertices ({}) and edges ({}) for compatibility...",
         new Object[] {vertices.size(), edges.size()});
 
@@ -331,7 +334,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
 
       @Override
       public V next() {
-        return iter.next().getDest();
+        return iter.next().getSource();
       }
 
       @Override
@@ -418,7 +421,7 @@ public final class ImmutableDirectedGraph<V, E extends ImmutableEdge<V>>
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
-  public static class Builder<V, E extends ImmutableEdge<V>> {
+  public static class Builder<V extends Comparable<V>, E extends ImmutableEdge<V>> {
 
     /**
      * {@link Logger} object to use.

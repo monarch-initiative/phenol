@@ -11,7 +11,7 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface VertexVisitor<V, E extends Edge<V>> {
+public interface VertexVisitor<V extends Comparable<V>, E extends Edge<V>> {
 
   /**
    * Algorithms using <code>VertexVisitor</code> will call this function for each vertex.

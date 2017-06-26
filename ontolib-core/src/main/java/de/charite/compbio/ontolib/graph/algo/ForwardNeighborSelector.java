@@ -13,7 +13,9 @@ import java.util.Iterator;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class ForwardNeighborSelector<V, E extends Edge<V>> implements NeighborSelector<V, E> {
+class ForwardNeighborSelector<V extends Comparable<V>, E extends Edge<V>>
+    implements
+      NeighborSelector<V, E> {
 
   @Override
   public Iterator<V> nextFrom(DirectedGraph<V, E> g, V v) {

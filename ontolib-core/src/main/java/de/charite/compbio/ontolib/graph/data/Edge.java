@@ -9,7 +9,11 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface Edge<V> extends Serializable, Cloneable {
+public interface Edge<V extends Comparable<V>>
+    extends
+      Comparable<Edge<V>>,
+      Serializable,
+      Cloneable {
 
   /**
    * Query for source vertex.
@@ -40,7 +44,7 @@ public interface Edge<V> extends Serializable, Cloneable {
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
-  public interface Factory<V, E extends Edge<V>> {
+  public interface Factory<V extends Comparable<V>, E extends Edge<V>> {
     /**
      * Construct from given source and target vertex, other edge attributes are set to the default
      * value.

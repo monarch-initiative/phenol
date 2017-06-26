@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class BreadthFirstSearch<V, E extends Edge<V>>
+public final class BreadthFirstSearch<V extends Comparable<V>, E extends Edge<V>>
     extends AbstractGraphVertexStartFromVertexTraversal<V, E, DirectedGraph<V, E>> {
 
   /**

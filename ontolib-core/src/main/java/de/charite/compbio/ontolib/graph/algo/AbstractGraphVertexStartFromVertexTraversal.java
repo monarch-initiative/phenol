@@ -10,8 +10,8 @@ import de.charite.compbio.ontolib.graph.data.Edge;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-abstract class AbstractGraphVertexStartFromVertexTraversal<V, E extends Edge<V>,
-    G extends DirectedGraph<V, E>> {
+abstract class AbstractGraphVertexStartFromVertexTraversal<V extends Comparable<V>,
+    E extends Edge<V>, G extends DirectedGraph<V, E>> {
 
   /**
    * Start traversal in <code>G</code> from <code>v</code> over <b>outgoing</b> edges using

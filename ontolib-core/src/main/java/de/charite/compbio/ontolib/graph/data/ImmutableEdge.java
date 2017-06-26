@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.graph.data;
 
+import com.google.common.collect.ComparisonChain;
+
 /**
  * Implementation of an immutable {@link Edge}.
  *
@@ -11,7 +13,7 @@ package de.charite.compbio.ontolib.graph.data;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ImmutableEdge<V> implements Edge<V> {
+public class ImmutableEdge<V extends Comparable<V>> implements Edge<V> {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -35,7 +37,8 @@ public class ImmutableEdge<V> implements Edge<V> {
    * @param id Numeric edge identifier.
    * @return Freshly created {@link ImmutableEdge}.
    */
-  public static <V> ImmutableEdge<V> construct(final V source, final V dest, final int id) {
+  public static <V extends Comparable<V>> ImmutableEdge<V> construct(final V source, final V dest,
+      final int id) {
     return new ImmutableEdge<V>(source, dest, id);
   }
 
@@ -77,6 +80,49 @@ public class ImmutableEdge<V> implements Edge<V> {
     return "ImmutableEdge [source=" + source + ", dest=" + dest + ", id=" + id + "]";
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((dest == null) ? 0 : dest.hashCode());
+    result = prime * result + id;
+    result = prime * result + ((source == null) ? 0 : source.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    @SuppressWarnings("unchecked")
+    ImmutableEdge<V> other = (ImmutableEdge<V>) obj;
+    if (dest == null) {
+      if (other.dest != null) {
+        return false;
+      }
+    } else if (!dest.equals(other.dest)) {
+      return false;
+    }
+    if (id != other.id) {
+      return false;
+    }
+    if (source == null) {
+      if (other.source != null) {
+        return false;
+      }
+    } else if (!source.equals(other.source)) {
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Factory for {@link ImmutableEdge}.
    *
@@ -84,7 +130,9 @@ public class ImmutableEdge<V> implements Edge<V> {
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
-  public static class Factory<V> implements Edge.Factory<V, ImmutableEdge<V>> {
+  public static class Factory<V extends Comparable<V>>
+      implements
+        Edge.Factory<V, ImmutableEdge<V>> {
 
     /** Id of next edge to add. */
     private int nextEdgeId;
@@ -98,7 +146,7 @@ public class ImmutableEdge<V> implements Edge<V> {
 
     @Override
     public final ImmutableEdge<V> construct(final V u, final V v) {
-      return ImmutableEdge.construct(u, v, ++nextEdgeId);
+      return ImmutableEdge.construct(u, v, nextEdgeId++);
     }
 
     @Override
@@ -112,4 +160,16 @@ public class ImmutableEdge<V> implements Edge<V> {
     }
 
   }
+
+  @Override
+  public int compareTo(Edge<V> o) {
+    if (!(o instanceof ImmutableEdge)) {
+      throw new RuntimeException("Cannot compare " + o + " to " + this);
+    }
+    ImmutableEdge<V> that = (ImmutableEdge<V>) o;
+
+    return ComparisonChain.start().compare(this.source, that.source).compare(this.dest, that.dest)
+        .result();
+  }
+
 }

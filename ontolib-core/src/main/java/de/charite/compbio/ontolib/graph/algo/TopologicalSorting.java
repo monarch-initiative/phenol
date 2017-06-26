@@ -14,9 +14,8 @@ import java.util.Set;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class TopologicalSorting<V, E extends Edge<V>, G extends DirectedGraph<V, E>>
-    implements
-      GraphVertexAllIteration<V, E, G> {
+public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>,
+    G extends DirectedGraph<V, E>> implements GraphVertexAllIteration<V, E, G> {
 
   @Override
   public void startForward(G g, VertexVisitor<V, E> visitor) {
