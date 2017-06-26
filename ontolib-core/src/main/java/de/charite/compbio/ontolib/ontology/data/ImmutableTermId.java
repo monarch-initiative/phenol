@@ -63,7 +63,7 @@ public final class ImmutableTermId implements TermId {
   @Override
   public String getIdWithPrefix() {
     final StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(prefix);
+    stringBuilder.append(prefix.getValue());
     stringBuilder.append(":");
     stringBuilder.append(String.format("%07d", id));
     return stringBuilder.toString();

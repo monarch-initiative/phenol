@@ -39,7 +39,7 @@ public class ImmutableTermXref implements TermXref {
 
   @Override
   public String toString() {
-    return "ImmutableTermXRef [id=" + id + ", description=" + description + "]";
+    return "ImmutableTermXref [id=" + id + ", description=" + description + "]";
   }
 
 }

@@ -22,7 +22,7 @@ public final class ImmutableTermSynonym implements TermSynonym {
   private final String synonymTypeName;
 
   /** List of term xRefs, <code>null</code> if missing. */
-  private final List<TermXref> termXRefs;
+  private final List<TermXref> termXrefs;
 
   /**
    * Constructor.
@@ -30,14 +30,14 @@ public final class ImmutableTermSynonym implements TermSynonym {
    * @param value Synonym value.
    * @param scope Synonym scope.
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
-   * @param termXRefs Optional dbxref list, <code>null</code> if missing.
+   * @param termXrefs Optional dbxref list, <code>null</code> if missing.
    */
   public ImmutableTermSynonym(String value, TermSynonymScope scope, String synonymTypeName,
-      List<TermXref> termXRefs) {
+      List<TermXref> termXrefs) {
     this.value = value;
     this.scope = scope;
     this.synonymTypeName = synonymTypeName;
-    this.termXRefs = termXRefs;
+    this.termXrefs = termXrefs;
   }
 
   @Override
@@ -56,14 +56,14 @@ public final class ImmutableTermSynonym implements TermSynonym {
   }
 
   @Override
-  public List<TermXref> getTermXRefs() {
-    return termXRefs;
+  public List<TermXref> getTermXrefs() {
+    return termXrefs;
   }
 
   @Override
   public String toString() {
     return "ImmutableTermSynonym [value=" + value + ", scope=" + scope + ", synonymTypeName="
-        + synonymTypeName + ", termXRefs=" + termXRefs + "]";
+        + synonymTypeName + ", termXrefs=" + termXrefs + "]";
   }
 
 }
