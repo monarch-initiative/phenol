@@ -7,10 +7,10 @@ package de.charite.compbio.ontolib.io.obo;
  */
 public class DbXref {
 
-  /** The dbXRef name. */
+  /** The dbXref name. */
   private final String name;
 
-  /** The dbXRef description, <code>null</code> if missing. */
+  /** The dbXref description, <code>null</code> if missing. */
   private final String description;
 
   /**
@@ -21,8 +21,8 @@ public class DbXref {
   /**
    * Constructor.
    *
-   * @param name The dbXRef name.
-   * @param description The dbXRef description, <code>null</code> if missing.
+   * @param name The dbXref name.
+   * @param description The dbXref description, <code>null</code> if missing.
    * @param trailingModifier The trailing modifier, <code>null</code> if missing.
    */
   public DbXref(String name, String description, TrailingModifier trailingModifier) {
