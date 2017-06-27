@@ -1,19 +1,21 @@
 package de.charite.compbio.ontolib.ontology.data;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Sets;
+
 import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
 import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -43,13 +45,18 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** The mapping from TermId to Term for defined by obsolete terms. */
   private final ImmutableMap<TermId, T> obsoleteTermMap;
 
+  /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
+  private final ImmutableSet<TermId> nonObsoleteTermIds;
+
+  /** Set of obselete term ids, separate so maps can remain for sub ontology construction. */
+  private final ImmutableSet<TermId> obsoleteTermIds;
+
   /** Set of all term IDs. */
   private final ImmutableSet<TermId> allTermIds;
 
   /** The mapping from edge Id to TermRelation. */
   private final ImmutableMap<Integer, R> relationMap;
 
-  // TODO: should this be part of immutable ontology?
   /** Precomputed ancestors (including vertex itself). */
   private final ImmutableMap<TermId, ImmutableSet<TermId>> precomputedAncestors;
 
@@ -59,20 +66,26 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
    * @param metaInfo {@link ImmutableMap} with meta information.
    * @param graph Graph to use for underlying structure.
    * @param rootTermId Root node's {@link TermId}.
+   * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
+   * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to <code>T</code>, excluding obsolete ones.
    * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
   public ImmutableOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
       ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
       ImmutableMap<Integer, R> relationMap) {
     this.metaInfo = metaInfo;
     this.graph = graph;
     this.rootTermId = rootTermId;
     this.termMap = termMap;
+    this.nonObsoleteTermIds = ImmutableSet.copyOf(nonObsoleteTermIds);
+    this.obsoleteTermIds = ImmutableSet.copyOf(obsoleteTermIds);
     this.obsoleteTermMap = obsoleteTermMap;
-    this.allTermIds = ImmutableSet.copyOf(Sets.union(termMap.keySet(), obsoleteTermMap.keySet()));
+    this.allTermIds =
+        ImmutableSet.copyOf(Sets.union(this.nonObsoleteTermIds, this.obsoleteTermIds));
     this.relationMap = relationMap;
     this.precomputedAncestors = precomputeAncestors();
   }
@@ -176,12 +189,22 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
 
   @Override
   public Collection<TermId> getNonObsoleteTermIds() {
-    return termMap.keySet();
+    return nonObsoleteTermIds;
   }
 
   @Override
   public Collection<TermId> getObsoleteTermIds() {
-    return obsoleteTermMap.keySet();
+    return obsoleteTermIds;
+  }
+
+  @Override
+  public Ontology<T, R> subOntology(TermId subOntologyRoot) {
+    final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
+    final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> subGraph =
+        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) graph.subGraph(childTermIds);
+    return new ImmutableOntology<T, R>(metaInfo, subGraph, subOntologyRoot,
+        Sets.intersection(nonObsoleteTermIds, childTermIds),
+        Sets.intersection(obsoleteTermIds, childTermIds), termMap, obsoleteTermMap, relationMap);
   }
 
 }

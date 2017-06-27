@@ -9,7 +9,7 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class HpoSubontologyRootTermIds {
+public final class HpoSubOntologyRootTermIds {
 
   /** {@link TermId} of sub ontology "phenotypic abnormality". */
   public static final TermId PHENOTYPIC_ABNORMALITY =

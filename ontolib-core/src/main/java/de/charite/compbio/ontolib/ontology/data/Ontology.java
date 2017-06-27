@@ -65,4 +65,24 @@ public interface Ontology<T extends Term, R extends TermRelation>
     return getAllAncestorTermIds(termIds, true);
   }
 
+  /**
+   * Construct and return sub ontology, starting from {@code subOntologyRoot}.
+   *
+   * <h5>Sub Ontology Iteration Remark</h5>
+   *
+   * <p>
+   * The constructed sub ontology will use the same maps from {@link TermId} to {@link T} and same
+   * edge relation maps as the original ontology. However, the functions
+   * {@link Ontology#getAllTermIds()}, {@link Ontology#getNonObsoleteTermIds()},
+   * {@link Ontology#getObsoleteTermIds()}, and {@link Ontology#getTerms()} will only contain the
+   * ids of the sub ontology. The term ID and relation maps might contain more elements in the case
+   * of creating sub ontologies and might refer to elements that are not present in the term id sets
+   * or the graph.
+   * </p>
+   *
+   * @param subOntologyRoot {@link TermId} to use as root of sub ontology.
+   * @return Freshly created sub ontology.
+   */
+  Ontology<T, R> subOntology(TermId subOntologyRoot);
+
 }

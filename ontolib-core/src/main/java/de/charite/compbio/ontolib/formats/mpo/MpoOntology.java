@@ -1,5 +1,7 @@
 package de.charite.compbio.ontolib.formats.mpo;
 
+import java.util.Collection;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
@@ -25,15 +27,19 @@ public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoTermRelatio
    * @param metaInfo {@link ImmutableSortedMap} with meta information.
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
+   * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
+   * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to MPO term.
    * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link MpoTermRelation}.
    */
   public MpoOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
       ImmutableMap<TermId, MpoTerm> termMap, ImmutableMap<TermId, MpoTerm> obsoleteTermMap,
       ImmutableMap<Integer, MpoTermRelation> relationMap) {
-    super(metaInfo, graph, rootTermId, termMap, obsoleteTermMap, relationMap);
+    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap,
+        obsoleteTermMap, relationMap);
   }
 
   @Override

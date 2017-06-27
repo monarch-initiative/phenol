@@ -1,17 +1,20 @@
 package de.charite.compbio.ontolib.ontology.testdata.vegetables;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
+
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.TermId;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Before;
 
 /**
  * Re-useable base class for ontology-using tests.
@@ -116,8 +119,9 @@ public class VegetableOntologyTestBase {
     relationMapBuilder.put(7, new VegetableTermRelation(idBlueCarrot, idCarrot, 7));
     relationMap = relationMapBuilder.build();
 
-    ontology = new ImmutableOntology<VegetableTerm, VegetableTermRelation>(metaInfo, graph,
-        rootTermId, termMap, obsoleteTermMap, relationMap);
+    ontology =
+        new ImmutableOntology<VegetableTerm, VegetableTermRelation>(metaInfo, graph, rootTermId,
+            termMap.keySet(), obsoleteTermMap.keySet(), termMap, obsoleteTermMap, relationMap);
 
     recipeAnnotations = Lists.newArrayList(new VegetableRecipeAnnotation(idCarrot, "pumpkin soup"),
         new VegetableRecipeAnnotation(idPumpkin, "pumpkin soup"),

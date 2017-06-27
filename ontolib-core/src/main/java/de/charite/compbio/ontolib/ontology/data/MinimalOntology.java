@@ -31,6 +31,16 @@ import java.util.Map;
  * are excluded from the underlying graph structure.
  * </p>
  *
+ * <h5>Iterating</h5>
+ *
+ * <p>
+ * For iterating over terms and term IDs <b>only</b> use the the functions {@link #getAllTermIds()},
+ * {@link #getNonObsoleteTermIds()}, {@link #getObsoleteTermIds()}, and {@link #getTerms()}, and of
+ * course {@link #getGraph()}. These functions will only return containers with elements from this
+ * ontology. The term ID and relation maps might contain more elements in the case of creating sub
+ * ontologies and might refer to elements that are not present in the term id sets or the graph.
+ * </p>
+ *
  * <h5>Invariants/Properties</h5>
  *
  * <ul>
@@ -80,7 +90,7 @@ public interface MinimalOntology<T extends Term, R extends TermRelation> extends
   Map<Integer, R> getRelationMap();
 
   // TODO: consolidate naming
-  
+
   // TODO: do we need this idiosyncratic?
   boolean isRootTerm(TermId termId);
 
