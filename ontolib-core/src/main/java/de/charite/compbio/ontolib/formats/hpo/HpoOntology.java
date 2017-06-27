@@ -11,6 +11,11 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
 /**
  * Implementation of the HPO as an {@link ImmutableOntology}.
  *
+ * @see HpoFrequency
+ * @see HpoFrequencyTermIds
+ * @see HpoModeOfInheritanceTermIds
+ * @see HpoSubontologyRootTermIds
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
