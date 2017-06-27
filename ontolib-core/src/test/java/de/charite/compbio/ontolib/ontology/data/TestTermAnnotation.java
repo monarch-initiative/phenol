@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
 import com.google.common.collect.ComparisonChain;
+import de.charite.compbio.ontolib.OntoLibRuntimeException;
 
 public class TestTermAnnotation implements TermAnnotation {
 
@@ -27,7 +28,7 @@ public class TestTermAnnotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof TestTermAnnotation)) {
-      throw new RuntimeException("Cannot compare " + o + " to " + this);
+      throw new OntoLibRuntimeException("Cannot compare " + o + " to " + this);
     }
     TestTermAnnotation that = (TestTermAnnotation) o;
 

@@ -2,6 +2,7 @@ package de.charite.compbio.ontolib.formats.go;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
+import de.charite.compbio.ontolib.OntoLibRuntimeException;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import java.util.List;
@@ -256,7 +257,8 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof GoGaf21Annotation)) {
-      throw new RuntimeException("Can only compare GoGaf21Annotation with objects of same type");
+      throw new OntoLibRuntimeException(
+          "Can only compare GoGaf21Annotation with objects of same type");
     }
     GoGaf21Annotation that = (GoGaf21Annotation) o;
 

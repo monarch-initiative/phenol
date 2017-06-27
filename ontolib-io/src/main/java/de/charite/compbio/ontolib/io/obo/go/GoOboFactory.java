@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.io.obo.go;
 
 import com.google.common.collect.Lists;
+import de.charite.compbio.ontolib.OntoLibRuntimeException;
 import de.charite.compbio.ontolib.formats.go.GoRelationQualifier;
 import de.charite.compbio.ontolib.formats.go.GoTerm;
 import de.charite.compbio.ontolib.formats.go.GoTermRelation;
@@ -143,11 +144,11 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
-      throw new RuntimeException(
+      throw new OntoLibRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new RuntimeException(type + " tag must have cardinality 1 but was " + typeEntries.size()
-          + " (" + stanza + ")");
+      throw new OntoLibRuntimeException(type + " tag must have cardinality 1 but was "
+          + typeEntries.size() + " (" + stanza + ")");
     }
     return (E) typeEntries.get(0);
   }

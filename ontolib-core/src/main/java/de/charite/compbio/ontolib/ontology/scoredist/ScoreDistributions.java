@@ -23,13 +23,14 @@ public final class ScoreDistributions {
    *
    * @param distributions {@link Collection} of {@link ScoreDistribution}s to merge.
    * @return Merge result.
+   * @throws CannotMergeScoreDistributions In case of problems with {@code distributions}.
    */
   public static ScoreDistribution merge(Collection<ScoreDistribution> distributions) {
     if (distributions.isEmpty()) {
-      throw new RuntimeException("Cannot merge zero ScoreDistributions objects.");
+      throw new CannotMergeScoreDistributions("Cannot merge zero ScoreDistributions objects.");
     }
     if (distributions.stream().map(d -> d.getNumTerms()).collect(Collectors.toSet()).size() != 1) {
-      throw new RuntimeException("Different numbers of terms used for precomputation");
+      throw new CannotMergeScoreDistributions("Different numbers of terms used for precomputation");
     }
 
     Map<Integer, ObjectScoreDistribution> mapping = new HashMap<>();
@@ -37,7 +38,7 @@ public final class ScoreDistributions {
       for (Integer objectId : d.getObjectIds()) {
         final ObjectScoreDistribution dist = d.getObjectScoreDistribution(objectId);
         if (mapping.containsKey(objectId)) {
-          throw new RuntimeException("Duplicate object ID " + objectId + " detected");
+          throw new CannotMergeScoreDistributions("Duplicate object ID " + objectId + " detected");
         } else {
           mapping.put(objectId, dist);
         }
