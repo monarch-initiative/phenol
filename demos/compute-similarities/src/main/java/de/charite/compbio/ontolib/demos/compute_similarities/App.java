@@ -165,7 +165,7 @@ public class App {
         new PrecomputingPairwiseResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, icMap, numThreads);
     LOGGER.info("DONE: Performing Resnik precomputation");
     final ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity =
-        new ResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, pairwiseResnikSimilarity, false);
+        new ResnikSimilarity<HpoTerm, HpoTermRelation>(pairwiseResnikSimilarity, false);
 
     // Temporary storage of term count to score distributions.
     final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();

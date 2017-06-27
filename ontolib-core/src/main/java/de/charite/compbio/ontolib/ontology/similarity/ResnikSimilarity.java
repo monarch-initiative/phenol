@@ -35,7 +35,7 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    */
   public ResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc,
       boolean symmetric) {
-    super(ontology, new PrecomputingPairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
+    super(new PrecomputingPairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
   }
 
 
@@ -48,13 +48,11 @@ public final class ResnikSimilarity<T extends Term, R extends TermRelation>
    * instead of implicitely on object construction.
    * </p>
    *
-   * @param ontology {@link Ontology} to base computations on.
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use internally.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public ResnikSimilarity(Ontology<T, R> ontology, PairwiseSimilarity pairwiseSimilarity,
-      boolean symmetric) {
-    super(ontology, pairwiseSimilarity, symmetric);
+  public ResnikSimilarity(PairwiseSimilarity pairwiseSimilarity, boolean symmetric) {
+    super(pairwiseSimilarity, symmetric);
   }
 
   @Override

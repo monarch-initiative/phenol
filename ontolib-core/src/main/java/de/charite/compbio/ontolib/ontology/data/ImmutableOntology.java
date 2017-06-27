@@ -1,21 +1,19 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Sets;
-
 import de.charite.compbio.ontolib.graph.algo.BreadthFirstSearch;
 import de.charite.compbio.ontolib.graph.algo.VertexVisitor;
 import de.charite.compbio.ontolib.graph.data.DirectedGraph;
 import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -129,17 +127,22 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
 
   @Override
   public Set<TermId> getAncestors(TermId termId, boolean includeRoot) {
-    if (!includeRoot) {
-      throw new RuntimeException("TODO: consolidate this :(");
+    if (includeRoot) {
+      return precomputedAncestors.get(termId);
+    } else {
+      return ImmutableSet
+          .copyOf(Sets.difference(precomputedAncestors.get(termId), ImmutableSet.of(rootTermId)));
     }
-    return precomputedAncestors.get(termId);
   }
 
   @Override
   public Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot) {
     final Set<TermId> result = new HashSet<>();
     for (TermId termId : termIds) {
-      result.addAll(getAncestors(termId, includeRoot));
+      result.addAll(getAncestors(termId, true));
+    }
+    if (!includeRoot) {
+      result.remove(rootTermId);
     }
     return result;
   }

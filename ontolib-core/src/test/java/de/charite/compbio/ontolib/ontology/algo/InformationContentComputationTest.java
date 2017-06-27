@@ -2,16 +2,15 @@ package de.charite.compbio.ontolib.ontology.algo;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotations;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableTerm;
 import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableTermRelation;
+import java.util.Collection;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
 
 public class InformationContentComputationTest extends VegetableOntologyTestBase {
 

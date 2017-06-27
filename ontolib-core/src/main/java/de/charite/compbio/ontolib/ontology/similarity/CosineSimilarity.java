@@ -19,9 +19,7 @@ import java.util.Set;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class CosineSimilarity<T extends Term, R extends TermRelation>
-    implements
-      Similarity {
+public final class CosineSimilarity<T extends Term, R extends TermRelation> implements Similarity {
 
   /**
    * The {@link Ontology} to compute the similarity for.

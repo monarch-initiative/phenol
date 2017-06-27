@@ -1,20 +1,17 @@
 package de.charite.compbio.ontolib.ontology.testdata.vegetables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
-
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.TermId;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
 
 /**
  * Re-useable base class for ontology-using tests.
@@ -63,7 +60,7 @@ public class VegetableOntologyTestBase {
     idBlueCarrot = ImmutableTermId.constructWithPrefix("VO:0000007");
 
     vertices = ImmutableList.of(idVegetable, idRootVegetable, idLeafVegetable, idCarrot, idBeet,
-        idPumpkin);
+        idPumpkin, idBlueCarrot);
     edges = ImmutableList.of(ImmutableEdge.construct(idRootVegetable, idVegetable, 1),
         ImmutableEdge.construct(idLeafVegetable, idVegetable, 2),
         ImmutableEdge.construct(idCarrot, idRootVegetable, 3),
@@ -92,6 +89,10 @@ public class VegetableOntologyTestBase {
         new VegetableTerm(idCarrot, new ArrayList<>(), "carrot",
             "carrots are very tasty root vegetables", null, new ArrayList<>(), new ArrayList<>(),
             false, null, null));
+    termMapBuilder.put(idBlueCarrot,
+        new VegetableTerm(idBlueCarrot, new ArrayList<>(), "blue carrot",
+            "blue ones are even better", null, new ArrayList<>(), new ArrayList<>(), false, null,
+            null));
     termMapBuilder.put(idBeet,
         new VegetableTerm(idBeet, new ArrayList<>(), "beet root",
             "beets are tasty and can be used for coloring", null, new ArrayList<>(),

@@ -32,7 +32,7 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public LinSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc, boolean symmetric) {
-    super(ontology, new PairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
+    super(new PairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
   }
 
 
@@ -44,14 +44,12 @@ public class LinSimilarity<T extends Term, R extends TermRelation>
    * precomputation can be passed in explicitely, performing the precomputation explicitely earlier
    * instead of implicitely on object construction.
    * </p>
-   *
-   * @param ontology {@link Ontology} to base computations on.
-   * @param symmetric Whether or not to compute score in symmetric fashion.
+   * 
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use internally.
+   * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public LinSimilarity(Ontology<T, R> ontology, boolean symmetric,
-      PairwiseSimilarity pairwiseSimilarity) {
-    super(ontology, pairwiseSimilarity, symmetric);
+  public LinSimilarity(PairwiseSimilarity pairwiseSimilarity, boolean symmetric) {
+    super(pairwiseSimilarity, symmetric);
   }
 
 

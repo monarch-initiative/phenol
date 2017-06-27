@@ -1,6 +1,5 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
-import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
@@ -10,6 +9,11 @@ import java.util.Collection;
 /**
  * Abstract base class for similarity measures computed based on information content of common
  * ancestors, such as Resnik, Lin, and Jiang similarities.
+ *
+ * <p>
+ * Note that the common ancestor computation is not performed here explicitely but instead
+ * implicitly deferred to a {@link PairwiseSimilarity}.
+ * </p>
  *
  * @param <T> {@link Term} sub class to use in the contained classes
  * @param <R> {@link TermRelation} sub class to use in the contained classes
@@ -21,12 +25,6 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
     implements
       Similarity {
 
-  // TODO: remove ontology?
-  /**
-   * {@link Ontology} underlying the computation.
-   */
-  private final Ontology<T, R> ontology;
-
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */
   private final boolean symmetric;
 
@@ -36,14 +34,12 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
   /**
    * Constructor.
    *
-   * @param ontology {@link Ontology} to base computations on.
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use for constructing set-to-set
    *        similarity
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public AbstractCommonAncestorSimilarity(Ontology<T, R> ontology, PairwiseSimilarity pairwiseSimilarity,
+  public AbstractCommonAncestorSimilarity(PairwiseSimilarity pairwiseSimilarity,
       boolean symmetric) {
-    this.ontology = ontology;
     this.symmetric = symmetric;
     this.pairwiseSimilarity = pairwiseSimilarity;
   }
