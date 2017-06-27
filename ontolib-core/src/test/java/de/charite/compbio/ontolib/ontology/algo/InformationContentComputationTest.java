@@ -7,9 +7,11 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import de.charite.compbio.ontolib.ontology.data.TermAnnotations;
 import de.charite.compbio.ontolib.ontology.data.TermId;
+import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableOntologyTestBase;
+import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableTerm;
+import de.charite.compbio.ontolib.ontology.testdata.vegetables.VegetableTermRelation;
 
 public class InformationContentComputationTest extends VegetableOntologyTestBase {
 

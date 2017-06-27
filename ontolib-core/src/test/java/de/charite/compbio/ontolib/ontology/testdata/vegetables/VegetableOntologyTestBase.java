@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.ontology.algo;
+package de.charite.compbio.ontolib.ontology.testdata.vegetables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,28 +27,28 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  */
 public class VegetableOntologyTestBase {
 
-  ImmutableSortedMap<String, String> metaInfo;
+  protected ImmutableSortedMap<String, String> metaInfo;
 
-  ImmutableList<TermId> vertices;
-  ImmutableList<ImmutableEdge<TermId>> edges;
-  ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
+  protected ImmutableList<TermId> vertices;
+  protected ImmutableList<ImmutableEdge<TermId>> edges;
+  protected ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
 
-  TermId rootTermId;
-  ImmutableMap<TermId, VegetableTerm> termMap;
-  ImmutableMap<TermId, VegetableTerm> obsoleteTermMap;
-  ImmutableMap<Integer, VegetableTermRelation> relationMap;
+  protected TermId rootTermId;
+  protected ImmutableMap<TermId, VegetableTerm> termMap;
+  protected ImmutableMap<TermId, VegetableTerm> obsoleteTermMap;
+  protected ImmutableMap<Integer, VegetableTermRelation> relationMap;
 
-  ImmutableOntology<VegetableTerm, VegetableTermRelation> ontology;
+  protected ImmutableOntology<VegetableTerm, VegetableTermRelation> ontology;
 
-  ImmutableTermId idVegetable;
-  ImmutableTermId idRootVegetable;
-  ImmutableTermId idLeafVegetable;
-  ImmutableTermId idCarrot;
-  ImmutableTermId idBeet;
-  ImmutableTermId idPumpkin;
-  ImmutableTermId idBlueCarrot;
+  protected ImmutableTermId idVegetable;
+  protected ImmutableTermId idRootVegetable;
+  protected ImmutableTermId idLeafVegetable;
+  protected ImmutableTermId idCarrot;
+  protected ImmutableTermId idBeet;
+  protected ImmutableTermId idPumpkin;
+  protected ImmutableTermId idBlueCarrot;
 
-  List<VegetableRecipeAnnotation> recipeAnnotations;
+  protected List<VegetableRecipeAnnotation> recipeAnnotations;
 
   @Before
   public void setUp() {

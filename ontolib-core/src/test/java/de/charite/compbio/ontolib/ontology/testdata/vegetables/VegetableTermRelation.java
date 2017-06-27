@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.ontology.algo;
+package de.charite.compbio.ontolib.ontology.testdata.vegetables;
 
 import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import de.charite.compbio.ontolib.ontology.data.TermId;
