@@ -97,12 +97,11 @@ public final class DataSerializer {
   public Object load() throws SerializationException {
     LOGGER.info("Deserializing JannovarData from {}", new Object[] {filename});
     final long startTime = System.nanoTime();
-
-    Object result = null;
+    final Object result;
 
     try (FileInputStream fileIn = new FileInputStream(filename)) {
       // Check magic bytes at top of file
-      byte[] word = new byte[magicBytes.length];
+      final byte[] word = new byte[magicBytes.length];
       fileIn.read(word);
       if (!Arrays.equals(word, magicBytes)) {
         throw new SerializationException(
@@ -110,8 +109,8 @@ public final class DataSerializer {
       }
       try (GZIPInputStream gzIn = new GZIPInputStream(fileIn);
           ObjectInputStream in = new ObjectInputStream(gzIn)) {
-        String dbVersion = (String) in.readObject();
-        VersionComparator comp = new VersionComparator();
+        final String dbVersion = (String) in.readObject();
+        final VersionComparator comp = new VersionComparator();
         if (comp.compare(dbVersion, minVersion) < 0) {
           throw new SerializationException(
               filename + " was created by " + dbVersion + " but we need at least " + minVersion);
@@ -121,6 +120,7 @@ public final class DataSerializer {
     } catch (Exception e) {
       throw new SerializationException("Could not deserialize data from file", e);
     }
+
     LOGGER.info("Deserialization took {} sec.",
         new Object[] {(System.nanoTime() - startTime) / 1_000_000_000.0});
     return result;
