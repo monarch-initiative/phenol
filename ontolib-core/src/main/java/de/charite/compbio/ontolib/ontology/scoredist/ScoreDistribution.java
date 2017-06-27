@@ -57,4 +57,10 @@ public final class ScoreDistribution implements Serializable {
     return objectScoreDistributions.get(objectId);
   }
 
+  @Override
+  public String toString() {
+    return "ScoreDistribution [numTerms=" + numTerms + ", objectScoreDistributions="
+        + objectScoreDistributions + "]";
+  }
+  
 }

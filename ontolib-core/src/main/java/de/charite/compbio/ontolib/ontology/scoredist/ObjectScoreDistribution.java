@@ -54,6 +54,9 @@ public final class ObjectScoreDistribution implements Serializable {
   public double estimatePValue(double score) {
     Entry<Double, Double> previous = null;
     for (Entry<Double, Double> entry : cumulativeFrequencies.entrySet()) {
+      if (previous == null && score < entry.getKey()) {
+        return 1.0;  // smaller than all
+      }
       if (previous != null && previous.getKey() <= score && score < entry.getKey()) {
         // interpolate and return
         final double dx = (entry.getKey() - previous.getKey()) / 2.0;
@@ -86,4 +89,10 @@ public final class ObjectScoreDistribution implements Serializable {
     return sampleSize;
   }
 
+  @Override
+  public String toString() {
+    return "ObjectScoreDistribution [objectId=" + objectId + ", numTerms=" + numTerms
+        + ", sampleSize=" + sampleSize + ", cumulativeFrequencies=" + cumulativeFrequencies + "]";
+  }
+  
 }

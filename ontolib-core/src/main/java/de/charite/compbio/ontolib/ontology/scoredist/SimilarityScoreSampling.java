@@ -25,6 +25,8 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: The interface here assumes numeric world object ids but annotation is string label based. We need to homogonize.
+
 /**
  * Sampling algorithm for similarity scores.
  *
