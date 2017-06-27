@@ -74,7 +74,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
    */
   public ImmutableOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
-      Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
+      Collection<? extends TermId> nonObsoleteTermIds, Collection<? extends TermId> obsoleteTermIds,
       ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
       ImmutableMap<Integer, R> relationMap) {
     this.metaInfo = metaInfo;

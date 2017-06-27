@@ -86,6 +86,7 @@ public final class GoOboParser {
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new GoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, GoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());

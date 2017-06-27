@@ -73,3 +73,12 @@ xref: SNOMEDCT_US:258211005
 xref: UMLS:C0441748
 xref: UMLS:C4020899
 is_a: HP:0000005 ! Mode of inheritance
+
+[Term]
+id: HP:0000118
+name: Phenotypic abnormality
+def: "A phenotypic abnormality." [HPO:probinson]
+comment: This is the root of the phenotypic abnormality subontology of the HPO.
+synonym: "Organ abnormality" EXACT []
+xref: UMLS:C4021819
+is_a: HP:0000001 ! All

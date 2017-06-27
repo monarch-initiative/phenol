@@ -78,6 +78,7 @@ public final class MpoOboParser {
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new MpoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, MpoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, MpoTermRelation>) o.getRelationMap());

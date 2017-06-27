@@ -78,6 +78,7 @@ public final class UphenoOboParser {
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new UphenoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
         (ImmutableMap<TermId, UphenoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, UphenoTermRelation>) o.getRelationMap());
