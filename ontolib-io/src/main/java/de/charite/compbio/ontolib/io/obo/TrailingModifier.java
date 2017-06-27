@@ -1,9 +1,7 @@
 package de.charite.compbio.ontolib.io.obo;
 
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
-
-// TODO: make immutable, use immutable list, implement builder
 
 /**
  * Store the trailing modifier <code>{key=value, key=value, ...}</code> information.
@@ -13,22 +11,21 @@ import java.util.List;
 public final class TrailingModifier {
 
   /** A list of key/value entries. */
-  private final List<KeyValue> keyValue = new ArrayList<>();
+  private final ImmutableList<KeyValue> keyValue;
 
   /**
-   * Add key value pair.
+   * Constructor.
    *
-   * @param key The key of the pair.
-   * @param value The value of the pair.
+   * @param keyValue The key/value pairs to construct with.
    */
-  public void addKeyValue(String key, String value) {
-    keyValue.add(new KeyValue(key, value));
+  public TrailingModifier(List<KeyValue> keyValue) {
+    this.keyValue = ImmutableList.copyOf(keyValue);
   }
 
   /**
    * @return The contained key/value list.
    */
-  public List<KeyValue> getKeyValue() {
+  public ImmutableList<KeyValue> getKeyValue() {
     return keyValue;
   }
 

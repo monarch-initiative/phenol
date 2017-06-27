@@ -748,18 +748,18 @@ class OboParserListener extends Antlr4OboParserBaseListener {
    */
   @Override
   public void exitTrailingModifier(TrailingModifierContext ctx) {
-    final TrailingModifier tm = new TrailingModifier();
+    final TrailingModifierBuilder builder = new TrailingModifierBuilder();
     for (TrailingModifierKeyValueContext kvCtx : ctx.trailingModifierKeyValue()) {
       if (kvCtx.QuotedString() != null) {
-        tm.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
+        builder.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
             OboEscapeUtils.unescape(kvCtx.QuotedString().getText().trim()));
       } else {
-        tm.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
+        builder.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
             OboEscapeUtils.unescape(kvCtx.Word(1).getText().trim()));
       }
     }
 
-    setValue(ctx, tm);
+    setValue(ctx, builder.build());
   }
 
   /**
