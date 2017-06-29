@@ -1,5 +1,6 @@
 package de.charite.compbio.ontolib.ontology.similarity;
 
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
@@ -7,10 +8,10 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import de.charite.compbio.ontolib.utils.ProgressReporter;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -61,10 +62,8 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
   private static final Logger LOGGER =
       LoggerFactory.getLogger(PrecomputingPairwiseResnikSimilarity.class);
 
-  /**
-   * Precomputed similarities between all pairs of {@link TermId}s.
-   */
-  private final Map<TermId, Map<TermId, Double>> precomputedScores;
+  /** Precomputed data. */
+  PrecomputedScores precomputedScores;
 
   /** Number of threads to use for precomputation. */
   private final int numThreads;
@@ -81,8 +80,9 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
    */
   public PrecomputingPairwiseResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc,
       int numThreads) {
+    this.precomputedScores = new PrecomputedScores(ontology.getAllTermIds());
     this.numThreads = numThreads;
-    this.precomputedScores = precomputeScores(ontology, termToIc);
+    precomputeScores(ontology, termToIc);
   }
 
   /**
@@ -97,10 +97,9 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
   }
 
   /**
-   * @return Precomputed pairwise similarity scores.
+   * Precompute similarity scores.
    */
-  private Map<TermId, Map<TermId, Double>> precomputeScores(Ontology<T, R> ontology,
-      Map<TermId, Double> termToIc) {
+  private void precomputeScores(Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
     LOGGER.info("Precomputing pairwise scores for {} terms...",
         new Object[] {ontology.countTerms()});
 
@@ -114,15 +113,20 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    final Map<TermId, Map<TermId, Double>> result = new ConcurrentHashMap<>();
     Consumer<List<TermId>> task = (List<TermId> chunk) -> {
-      for (TermId queryId : chunk) {
-        final Map<TermId, Double> newMap = new HashMap<>();
-        for (TermId targetId : ontology.getAllTermIds()) {
-          newMap.put(targetId, pairwiseSimilarity.computeScore(queryId, targetId));
+      try {
+        for (TermId queryId : chunk) {
+          for (TermId targetId : ontology.getNonObsoleteTermIds()) {
+            if (queryId.compareTo(targetId) <= 0) {
+              precomputedScores.put(queryId, targetId,
+                  pairwiseSimilarity.computeScore(queryId, targetId));
+            }
+          }
+          progressReport.incCurrent();
         }
-        progressReport.incCurrent();
-        result.put(queryId, newMap);
+      } catch (Exception e) {
+        System.err.print("An exception occured in parallel processing!");
+        e.printStackTrace();
       }
     };
 
@@ -151,22 +155,64 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
     progressReport.stop();
 
     LOGGER.info("Done precomputing pairwise scores.");
-    return new HashMap<>(result); // convert from concurrent to non-concurrent
   }
 
   @Override
   public double computeScore(TermId query, TermId target) {
-    final Map<TermId, Double> tmp1 = precomputedScores.get(query);
-    if (tmp1 == null) {
-      return 0.0;
+    return precomputedScores.get(query, target);
+  }
+
+  /**
+   * Container class for storing precomputed scores efficiently.
+   *
+   * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+   */
+  private static final class PrecomputedScores {
+
+    /** Mapping from term ID to term index. */
+    private final HashMap<TermId, Integer> termIdToIdx;
+
+    /** Internal storage of the similarity scores as array of floats. */
+    private final float[] data;
+
+    /** Number of known termIds. */
+    private final int termIdCount;
+
+    PrecomputedScores(Collection<TermId> termIds) {
+      termIdCount = termIds.size();
+      data = new float[termIdCount * termIdCount];
+      termIdToIdx = new HashMap<>(termIdCount);
+
+      int i = 0;
+      for (TermId termId : ImmutableSortedSet.copyOf(termIds)) {
+        termIdToIdx.put(termId, i++);
+      }
     }
 
-    final Double tmp2 = tmp1.get(target);
-    if (tmp2 == null) {
-      return 0.0;
-    } else {
-      return tmp2.doubleValue();
+    /** Set score. */
+    public void put(TermId lhs, TermId rhs, double value) {
+      put(lhs, rhs, (float) value);
     }
+
+    /** Set score. */
+    public void put(TermId lhs, TermId rhs, float value) {
+      final int idxLhs = termIdToIdx.get(lhs);
+      final int idxRhs = termIdToIdx.get(rhs);
+      data[idxLhs * termIdCount + idxRhs] = (float) value;
+      data[idxRhs * termIdCount + idxLhs] = (float) value;
+    }
+
+    /** Get score. */
+    public float get(TermId lhs, TermId rhs) {
+      final Integer idxLhs = termIdToIdx.get(lhs);
+      final Integer idxRhs = termIdToIdx.get(rhs);
+      if (idxLhs == null || idxRhs == null) {
+        return 0.0f;
+      } else {
+        return data[idxLhs.intValue() * termIdCount + idxRhs.intValue()];
+      }
+    }
+
   }
 
 }

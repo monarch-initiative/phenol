@@ -29,7 +29,8 @@ public final class ImmutableTermId implements TermId {
   public static ImmutableTermId constructWithPrefix(String termIdString) {
     final String[] arr = termIdString.split(":", 2);
     if (arr.length != 2) {
-      throw new OntoLibRuntimeException("Term ID string \"" + termIdString + "\" does not have a prefix!");
+      throw new OntoLibRuntimeException(
+          "Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new ImmutableTermId(new ImmutableTermPrefix(arr[0]), Integer.parseInt(arr[1]));
     }
