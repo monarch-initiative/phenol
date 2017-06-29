@@ -65,7 +65,7 @@ public final class DataSerializer {
    * @throws SerializationException on problems with the serialization
    */
   public void save(Object data) throws SerializationException {
-    LOGGER.info("Serializing JannovarData to {}", new Object[] {filename});
+    LOGGER.info("Attempting serialization to {}", new Object[] {filename});
     final long startTime = System.nanoTime();
 
     try (FileOutputStream fos = new FileOutputStream(filename)) {
@@ -79,6 +79,10 @@ public final class DataSerializer {
         oos.writeObject(version);
         // Write actual data
         oos.writeObject(data);
+        // Make sure everything is written out.
+        oos.flush();
+        gzos.flush();
+        fos.flush();
       }
     } catch (Exception e) {
       throw new SerializationException("Could not serialize data file.", e);
@@ -95,7 +99,7 @@ public final class DataSerializer {
    * @throws SerializationException on problems with the deserialization
    */
   public Object load() throws SerializationException {
-    LOGGER.info("Deserializing JannovarData from {}", new Object[] {filename});
+    LOGGER.info("Attempting deserialization from {}", new Object[] {filename});
     final long startTime = System.nanoTime();
     final Object result;
 
@@ -121,7 +125,7 @@ public final class DataSerializer {
       throw new SerializationException("Could not deserialize data from file", e);
     }
 
-    LOGGER.info("Deserialization took {} sec.",
+    LOGGER.info("Done with deserialization, took {} sec.",
         new Object[] {(System.nanoTime() - startTime) / 1_000_000_000.0});
     return result;
   }

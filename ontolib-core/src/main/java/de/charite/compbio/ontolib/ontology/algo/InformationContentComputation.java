@@ -61,8 +61,8 @@ public final class InformationContentComputation<T extends Term, R extends TermR
    * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
-  public <LabelT> Map<TermId, Double> computeInformationContent(
-      Map<TermId, ? extends Collection<LabelT>> termLabels) {
+  public <LabelT> Map<TermId, Double>
+      computeInformationContent(Map<TermId, ? extends Collection<LabelT>> termLabels) {
     LOGGER.info("Computing IC of {} terms using {} labels...", new Object[] {ontology.countTerms(),
         termLabels.values().stream().mapToInt(l -> l.size()).sum()});
 
@@ -95,8 +95,10 @@ public final class InformationContentComputation<T extends Term, R extends TermR
       }
     }
 
-    LOGGER.warn("Frequency of {} non-obsolete terms was zero! Setting IC of these to {} = "
-        + "- log(1 / {}).", new Object[] {countIcZero, dummyIc, maxFreq});
+    if (countIcZero > 0) {
+      LOGGER.warn("Frequency of {} non-obsolete terms was zero! Their IC has been set to {} = "
+          + "- log(1 / {}).", new Object[] {countIcZero, dummyIc, maxFreq});
+    }
     LOGGER.info("Computing IC is complete.");
 
     return termToInformationContent;
