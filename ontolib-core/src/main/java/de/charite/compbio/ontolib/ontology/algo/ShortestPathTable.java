@@ -14,6 +14,8 @@ import de.charite.compbio.ontolib.graph.data.Edge;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 
+// TODO: test me!
+
 /**
  * Shortest path table for {@link Ontology} objects.
  *
