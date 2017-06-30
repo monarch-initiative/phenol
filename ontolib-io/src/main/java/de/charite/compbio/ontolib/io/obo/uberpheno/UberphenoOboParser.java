@@ -11,6 +11,7 @@ import de.charite.compbio.ontolib.formats.uberpheno.UberphenoTerm;
 import de.charite.compbio.ontolib.formats.uberpheno.UberphenoTermRelation;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
+import de.charite.compbio.ontolib.io.base.OntologyOboParser;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
@@ -33,7 +34,7 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class UberphenoOboParser {
+public final class UberphenoOboParser implements OntologyOboParser<UberphenoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -68,6 +69,7 @@ public final class UberphenoOboParser {
    * @throws IOException In case of problems with file I/O.
    */
   @SuppressWarnings("unchecked")
+  @Override
   public UberphenoOntology parse() throws IOException {
     final OboImmutableOntologyLoader<UberphenoTerm, UberphenoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
@@ -87,6 +89,7 @@ public final class UberphenoOboParser {
   /**
    * @return The OBO file to parse.
    */
+  @Override
   public File getOboFile() {
     return oboFile;
   }

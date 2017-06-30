@@ -12,6 +12,7 @@ import de.charite.compbio.ontolib.formats.go.GoTermRelation;
 import de.charite.compbio.ontolib.formats.hpo.HpoOntology;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
+import de.charite.compbio.ontolib.io.base.OntologyOboParser;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
@@ -41,7 +42,7 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class GoOboParser {
+public final class GoOboParser implements OntologyOboParser<GoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
