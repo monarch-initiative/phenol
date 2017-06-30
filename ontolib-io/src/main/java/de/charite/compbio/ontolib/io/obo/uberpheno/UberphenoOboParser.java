@@ -1,4 +1,4 @@
-package de.charite.compbio.ontolib.io.obo.mpo;
+package de.charite.compbio.ontolib.io.obo.uberpheno;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.io.IOException;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
-import de.charite.compbio.ontolib.formats.mpo.MpoOntology;
-import de.charite.compbio.ontolib.formats.mpo.MpoTerm;
-import de.charite.compbio.ontolib.formats.mpo.MpoTermRelation;
+import de.charite.compbio.ontolib.formats.uberpheno.UberphenoOntology;
+import de.charite.compbio.ontolib.formats.uberpheno.UberphenoTerm;
+import de.charite.compbio.ontolib.formats.uberpheno.UberphenoTermRelation;
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.io.obo.OboImmutableOntologyLoader;
@@ -16,16 +16,16 @@ import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 
 /**
- * Facade class for parsing the Mpo from an OBO file.
+ * Facade class for parsing the Uberpheno from an OBO file.
  *
  * <h5>Usage Example</h5>
  *
  * <pre>
- * String fileName = "mp.obo";
- * MpoOBOParser parser = new MpoOBOParser(new File(fileName));
- * Mpontology Mpo;
+ * String fileName = "crossSpeciesOntology.obo";
+ * UberphenoOBOParser parser = new UberphenoOBOParser(new File(fileName));
+ * Uberphenontology Uberpheno;
  * try {
- *   Mpo = parser.parse();
+ *   Uberpheno = parser.parse();
  * } catch (IOException e) {
  *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
  * }
@@ -33,7 +33,7 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class MpoOboParser {
+public final class UberphenoOboParser {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -47,7 +47,7 @@ public final class MpoOboParser {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public MpoOboParser(File oboFile, boolean debug) {
+  public UberphenoOboParser(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -57,31 +57,31 @@ public final class MpoOboParser {
    *
    * @param oboFile The OBO file to read.
    */
-  public MpoOboParser(File oboFile) {
+  public UberphenoOboParser(File oboFile) {
     this(oboFile, false);
   }
 
   /**
-   * Parse OBO file into {@link MpoOntology} object.
+   * Parse OBO file into {@link UberphenoOntology} object.
    *
-   * @return {@link MpoOntology} from parsing OBO file.
+   * @return {@link UberphenoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
   @SuppressWarnings("unchecked")
-  public MpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<MpoTerm, MpoTermRelation> loader =
+  public UberphenoOntology parse() throws IOException {
+    final OboImmutableOntologyLoader<UberphenoTerm, UberphenoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
-    final MpoOboFactory factory = new MpoOboFactory();
-    final ImmutableOntology<MpoTerm, MpoTermRelation> o = loader.load(factory);
+    final UberphenoOboFactory factory = new UberphenoOboFactory();
+    final ImmutableOntology<UberphenoTerm, UberphenoTermRelation> o = loader.load(factory);
 
-    // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
+    // Convert ImmutableOntology into Uberphenontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new MpoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
+    return new UberphenoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
-        (ImmutableMap<TermId, MpoTerm>) o.getObsoleteTermMap(),
-        (ImmutableMap<Integer, MpoTermRelation>) o.getRelationMap());
+        (ImmutableMap<TermId, UberphenoTerm>) o.getTermMap(),
+        (ImmutableMap<TermId, UberphenoTerm>) o.getObsoleteTermMap(),
+        (ImmutableMap<Integer, UberphenoTermRelation>) o.getRelationMap());
   }
 
   /**

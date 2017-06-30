@@ -72,7 +72,7 @@ public class UberphenoTermRelation implements TermRelation {
 
   @Override
   public String toString() {
-    return "GoTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
+    return "UberphenoTermRelation [source=" + source + ", dest=" + dest + ", id=" + id
         + ", relationQualifier=" + relationQualifier + "]";
   }
 

@@ -1,0 +1,12 @@
+#Entrez Gene ID of human gene ; Gene symbol ; Annotated Uberpheno term ; Evidence
+# For annotations stemming from human diseases 'Evidence' contains the Disease-ID (e.g. OMIM or Orphanet-ID
+# For annotations stemming from model organisms 'Evidence' contains the organism name and the ID of the gene in the model organism
+90639;COX19;Hyperphosphatemia (HP:0002905);Cox19 (MGI:1915283/MOUSE)
+90639;COX19;increased blood urea nitrogen level (MP:0005565);Cox19 (MGI:1915283/MOUSE)
+10998;SLC27A5;decreased fatty acid level (MP:0005282);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;decreased circulating ketone body level (MP:0003458);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;decreased saturated fatty acid level (MP:0005286);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;decreased circulating triglyceride level (MP:0002644);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;increased circulating glucose level (MP:0005559);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;decreased epididymal fat pad weight (MP:0009289);Slc27a5 (MGI:1347100/MOUSE)
+10998;SLC27A5;abnormal lipid level (MP:0001547);Slc27a5 (MGI:1347100/MOUSE)

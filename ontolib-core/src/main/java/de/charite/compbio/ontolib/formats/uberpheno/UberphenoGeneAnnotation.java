@@ -1,14 +1,15 @@
 package de.charite.compbio.ontolib.formats.uberpheno;
 
 import com.google.common.collect.ComparisonChain;
+
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 
 /**
- * Record from GAF v2.1 file.
+ * Record from Uberpheno gene annotation file.
  *
  * <p>
- * The <b>label</b> of this {@link TermAnnotation} is the <code>"${DB}:${DB_Object_ID}"</code>.
+ * The <b>label</b> of this {@link TermAnnotation} is the <code>"ENTREZ:${entrezGeneId}"</code>.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
