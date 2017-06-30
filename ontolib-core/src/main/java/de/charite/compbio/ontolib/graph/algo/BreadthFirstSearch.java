@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+// TODO: Create a helper class with static methods similar to OntologyTerms
 /**
  * Breadth-first-search for {@link DirectedGraph}s using the <b>visitor pattern</b>.
  *
