@@ -109,7 +109,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
 
     // Setup progress reporting.
     final ProgressReporter progressReport =
-        new ProgressReporter(LOGGER, "genes", ontology.countTerms());
+        new ProgressReporter(LOGGER, "objects", ontology.countTerms());
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.

@@ -1,31 +1,36 @@
 package de.charite.compbio.ontolib.ontology.scoredist;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.Term;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermRelation;
 import de.charite.compbio.ontolib.ontology.similarity.Similarity;
 import de.charite.compbio.ontolib.utils.MersenneTwister;
+import de.charite.compbio.ontolib.utils.ProgressReporter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-// TODO: The interface here assumes numeric world object ids but annotation is string label based. We need to homogonize.
+// TODO: The interface here assumes numeric world object ids but annotation is string label based.
+// We need to homogonize.
 
 /**
  * Sampling algorithm for similarity scores.
@@ -119,37 +124,61 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     LOGGER.info("Running precomputation for {} world objects using {} query terms...",
         new Object[] {labels.size(), numTerms});
 
-    final int numObjects = labels.size();
-    final AtomicInteger progress = new AtomicInteger();
+    // Setup progress reporting.
+    final ProgressReporter progressReport = new ProgressReporter(LOGGER, "objects", labels.size());
+    progressReport.start();
 
-    // TODO: This does not guarantee appropriate parallelism, see
-    // PrecomputingPairwiseResnikSimilarity for example of improvement.
-    // Perform processing in an explicit ForkJoinPool so we are able to limit the thread count
-    final ForkJoinPool forkJoinPool = new ForkJoinPool(options.getNumThreads());
-    final Map<Integer, ObjectScoreDistribution> distributions;
-    try {
-      final Callable<Map<Integer, ObjectScoreDistribution>> task =
-          () -> labels.entrySet().stream().filter(this::selectLabel).parallel()
-              .map(
-                  e -> performComputation(e.getKey(), e.getValue(), numTerms, progress, numObjects))
-              .collect(Collectors.toMap(ObjectScoreDistribution::getObjectId, Function.identity()));
-      distributions = forkJoinPool.submit(task).get();
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException("Problem during parallel execution.", e);
+    // Setup the task to execute in parallel, with concurrent hash map for collecting results.
+    final ConcurrentHashMap<Integer, ObjectScoreDistribution> distributions =
+        new ConcurrentHashMap<>();
+    Consumer<Integer> task = (Integer objectId) -> {
+      try {
+        final ObjectScoreDistribution dist =
+            performComputation(objectId, labels.get(objectId), numTerms);
+        distributions.put(dist.getObjectId(), dist);
+        progressReport.incCurrent();
+      } catch (Exception e) {
+        System.err.print("An exception occured in parallel processing!");
+        e.printStackTrace();
+      }
+    };
+
+    // Execution of the task in a ThreadPoolExecutor. This is the only way in Java 8 to guarantee
+    // thread counts.
+    //
+    // It is a bit verbose but in the end, not that complicated.
+    //
+    // Setup thread pool executor and enforce that precisely numThreads threads are present.
+    final int numThreads = options.getNumThreads();
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(numThreads, numThreads, 5,
+        TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+    // Submit all chunks into the executor.
+    final Iterator<Integer> objectIdIter =
+        labels.keySet().stream().filter(this::selectObject).iterator();
+    while (objectIdIter.hasNext()) {
+      threadPoolExecutor.submit(() -> task.accept(objectIdIter.next()));
     }
+    // Shutdown executor and wait for all tasks being completed.
+    threadPoolExecutor.shutdown();
+    try {
+      threadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Could not wait for thread pool being done.", e);
+    }
+    progressReport.stop();
 
     LOGGER.info("Done running precomputation.");
-    return new ScoreDistribution(numTerms, distributions);
+    // Convert from concurrent to non-concurrent hash map.
+    return new ScoreDistribution(numTerms, new HashMap<>(distributions));
   }
 
   /**
-   * Select labels of world objects that fall into the range to precompute.
+   * Select world object ids that are in the range selected by options.
    *
-   * @param e Entry from world object Id map to collection of {@link TermId}s.
-   * @return Whether or not to select this label.
+   * @param objectId Integer world object id.
+   * @return Whether or not to select this world object.
    */
-  private boolean selectLabel(Entry<Integer, ? extends Collection<TermId>> e) {
-    final int objectId = e.getKey();
+  private boolean selectObject(Integer objectId) {
     if (options.getMinObjectId() != null && objectId < options.getMinObjectId()) {
       return false;
     } else if (options.getMaxObjectId() != null && objectId > options.getMaxObjectId()) {
@@ -166,12 +195,10 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    * @param objectId "World object" id.
    * @param terms The {@link TermId}s that this object is labeled with.
    * @param numTerms Number of query terms to compute score distributions for.
-   * @param progress Increased for each completed computation.
-   * @param maxProgress Total number of computations to perform.
    * @return Resulting {@link ObjectScoreDistribution}.
    */
   private ObjectScoreDistribution performComputation(int objectId, Collection<TermId> terms,
-      int numTerms, AtomicInteger progress, int maxProgress) {
+      int numTerms) {
     LOGGER.info("Running precomputation for world object {}.", new Object[] {objectId});
 
     // Create and seed MersenneTwister
@@ -182,13 +209,6 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     ObjectScoreDistribution result = new ObjectScoreDistribution(objectId, numTerms,
         options.getNumIterations(),
         sampleScoreCumulativeRelFreq(objectId, terms, numTerms, options.getNumIterations(), rng));
-
-    // Update progress
-    final int progressVal = progress.incrementAndGet();
-    if (progressVal > 0 && (progressVal % 100 == 0 || progressVal == maxProgress)) {
-      LOGGER.info("Processed %d of %d terms (%d %%)",
-          new Object[] {progressVal, maxProgress, (100.0 * progressVal) / maxProgress});
-    }
 
     LOGGER.info("Done computing precomputation for world object {}.", new Object[] {objectId});
     return result;
