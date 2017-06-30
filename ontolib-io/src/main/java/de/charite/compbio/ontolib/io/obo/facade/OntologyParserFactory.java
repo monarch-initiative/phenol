@@ -6,10 +6,14 @@ import java.io.IOException;
 import de.charite.compbio.ontolib.io.base.OntologyOboParser;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParser;
 import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
+import de.charite.compbio.ontolib.io.obo.go.GoGeneAnnotationParser;
+import de.charite.compbio.ontolib.io.obo.go.GoOboParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HpoGeneAnnotationParser;
 import de.charite.compbio.ontolib.io.obo.hpo.HpoOboParser;
 import de.charite.compbio.ontolib.io.obo.uberpheno.UberphenoGeneAnnotationParser;
 import de.charite.compbio.ontolib.io.obo.uberpheno.UberphenoOboParser;
+import de.charite.compbio.ontolib.io.obo.upheno.UphenoGeneAnnotationParser;
+import de.charite.compbio.ontolib.io.obo.upheno.UphenoOboParser;
 import de.charite.compbio.ontolib.ontology.data.Ontology;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 
@@ -31,10 +35,14 @@ public final class OntologyParserFactory {
   public static OntologyOboParser<? extends Ontology<?, ?>> constructOboParser(
       OntologyType ontology, File oboFile) {
     switch (ontology) {
+      case GO:
+        return new GoOboParser(oboFile);
       case HPO:
         return new HpoOboParser(oboFile);
       case UBERPHENO:
         return new UberphenoOboParser(oboFile);
+      case UPHENO:
+        return new UphenoOboParser(oboFile);
       default:
         throw new RuntimeException("Invalid ontology selected " + ontology);
     }
@@ -54,10 +62,14 @@ public final class OntologyParserFactory {
   public static TermAnnotationParser<? extends TermAnnotation> constructGeneAnnotationParser(
       OntologyType ontology, File annoFile) throws IOException, TermAnnotationParserException {
     switch (ontology) {
+      case GO:
+        return new GoGeneAnnotationParser(annoFile);
       case HPO:
         return new HpoGeneAnnotationParser(annoFile);
       case UBERPHENO:
         return new UberphenoGeneAnnotationParser(annoFile);
+      case UPHENO:
+        return new UphenoGeneAnnotationParser(annoFile);
       default:
         throw new RuntimeException("Invalid ontology selected " + ontology);
     }

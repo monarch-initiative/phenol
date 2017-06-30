@@ -6,8 +6,14 @@ package de.charite.compbio.ontolib.io.obo.facade;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public enum OntologyType {
+  /** Gene Ontology */
+  GO,
+  /** Mammalian Phenotype Ontology */
+  MPO,
   /** Human Phenotype Ontology */
   HPO,
   /** Uberpheno Ontology */
-  UBERPHENO;
+  UBERPHENO,
+  /** Upheno Ontology */
+  UPHENO;
 }
