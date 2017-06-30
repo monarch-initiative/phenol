@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class GoGeneAnnotationFileParser implements TermAnnotationParser<GoGaf21Annotation> {
+public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf21Annotation> {
 
   /**
    * The {@link File} to read from.
@@ -58,7 +58,7 @@ public final class GoGeneAnnotationFileParser implements TermAnnotationParser<Go
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
-  public GoGeneAnnotationFileParser(File file) throws IOException, TermAnnotationParserException {
+  public GoGeneAnnotationParser(File file) throws IOException, TermAnnotationParserException {
     this.file = file;
     this.reader = new BufferedReader(new FileReader(file));
     this.nextLine = reader.readLine();

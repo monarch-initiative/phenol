@@ -7,7 +7,7 @@
  * </p>
  *
  * <p>
- * Use {@link de.charite.compbio.ontolib.io.obo.go.GoGeneAnnotationFileParser} for loading files in
+ * Use {@link de.charite.compbio.ontolib.io.obo.go.GoGeneAnnotationParser} for loading files in
  * the the "go annotation file" format.
  * </p>
  *

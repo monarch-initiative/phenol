@@ -32,8 +32,8 @@ public class GoAnnotationGaf21ParserTest {
 
   @Test
   public void testParseGoDiseaseAnnotationHead() throws IOException, TermAnnotationParserException {
-    final GoGeneAnnotationFileParser parser =
-        new GoGeneAnnotationFileParser(goGeneAnnotationHeadFile);
+    final GoGeneAnnotationParser parser =
+        new GoGeneAnnotationParser(goGeneAnnotationHeadFile);
 
     // Read and check first record.
     final GoGaf21Annotation firstRecord = parser.next();
