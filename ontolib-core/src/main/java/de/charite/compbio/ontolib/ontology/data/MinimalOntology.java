@@ -89,7 +89,7 @@ public interface MinimalOntology<T extends Term, R extends TermRelation> extends
   DirectedGraph<TermId, ? extends Edge<TermId>> getGraph();
 
   /**
-   * Return term id to term map without obsolete terms (used internally, corresponds to vertex set).
+   * Return term id to term map for all primary term IDs.
    *
    * @return {@link Map} from {@link TermId} to corresponding value of {@link Term} sub class
    *         <code>T</code>.
@@ -140,8 +140,7 @@ public interface MinimalOntology<T extends Term, R extends TermRelation> extends
   /**
    * @return The number of all terms in the ontology.
    */
-  default int countTerms() {
-    // TODO: rename to countAllTerms, remove from implementations?
+  default int countAllTerms() {
     return getAllTermIds().size();
   }
 

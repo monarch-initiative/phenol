@@ -378,8 +378,8 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
 
       final String prefixStr = termIdStr.substring(0, pos);
       final String localIdStr = termIdStr.substring(pos + 1);
-      final ImmutableTermPrefix tmpPrefix = new ImmutableTermPrefix(prefixStr);
-      if (tmpPrefix == null) {
+      final ImmutableTermPrefix tmpPrefix = prefixes.get(prefixStr);
+      if (!prefixes.containsKey(tmpPrefix)) {
         prefixes.put(prefixStr, new ImmutableTermPrefix(prefixStr));
       }
 

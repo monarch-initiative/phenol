@@ -40,7 +40,7 @@ public final class TermAnnotations {
     final Map<TermId, Collection<String>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      for (TermId termId : ontology.getAncestors(anno.getTermId(), true)) {
+      for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
         if (!result.containsKey(termId)) {
           result.put(termId, Sets.newHashSet(anno.getLabel()));
         } else {
@@ -75,7 +75,7 @@ public final class TermAnnotations {
     final Map<String, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      for (TermId termId : ontology.getAncestors(anno.getTermId(), true)) {
+      for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
         if (!result.containsKey(anno.getLabel())) {
           result.put(anno.getLabel(), Sets.newHashSet(termId));
         } else {

@@ -101,7 +101,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
    */
   private void precomputeScores(Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
     LOGGER.info("Precomputing pairwise scores for {} terms...",
-        new Object[] {ontology.countTerms()});
+        new Object[] {ontology.countAllTerms()});
 
     // Setup PairwiseResnikSimilarity to use for computing scores.
     final PairwiseResnikSimilarity<T, R> pairwiseSimilarity =
@@ -109,7 +109,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
 
     // Setup progress reporting.
     final ProgressReporter progressReport =
-        new ProgressReporter(LOGGER, "objects", ontology.countTerms());
+        new ProgressReporter(LOGGER, "objects", ontology.countAllTerms());
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.

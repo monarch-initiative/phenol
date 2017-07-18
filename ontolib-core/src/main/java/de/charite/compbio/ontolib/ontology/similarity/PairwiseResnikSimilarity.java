@@ -70,8 +70,8 @@ public final class PairwiseResnikSimilarity<T extends Term, R extends TermRelati
    * @return Precomputed pairwise Resnik similarity score.
    */
   public double computeScoreImpl(TermId query, TermId target) {
-    final Set<TermId> queryTerms = getOntology().getAncestors(query, true);
-    final Set<TermId> targetTerms = getOntology().getAncestors(target, true);
+    final Set<TermId> queryTerms = getOntology().getAncestorTermIds(query, true);
+    final Set<TermId> targetTerms = getOntology().getAncestorTermIds(target, true);
 
     double maxValue = 0.0;
     for (TermId termId : queryTerms) {

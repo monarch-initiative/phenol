@@ -63,7 +63,7 @@ public final class InformationContentComputation<T extends Term, R extends TermR
    */
   public <LabelT> Map<TermId, Double>
       computeInformationContent(Map<TermId, ? extends Collection<LabelT>> termLabels) {
-    LOGGER.info("Computing IC of {} terms using {} labels...", new Object[] {ontology.countTerms(),
+    LOGGER.info("Computing IC of {} terms using {} labels...", new Object[] {ontology.countAllTerms(),
         termLabels.values().stream().mapToInt(l -> l.size()).sum()});
 
     // Build mapping from TermId -> absolute frequency

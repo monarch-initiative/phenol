@@ -17,12 +17,8 @@ import java.util.Set;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public interface Ontology<T extends Term, R extends TermRelation>
-    extends
-      MinimalOntology<T, R>,
-      Serializable {
-
-  // TODO: consolidate naming
+public interface Ontology<T extends Term,
+    R extends TermRelation> extends MinimalOntology<T, R>, Serializable {
 
   /**
    * Return all the {@link TermId}s of all ancestors from {@code termId}.
@@ -31,7 +27,7 @@ public interface Ontology<T extends Term, R extends TermRelation>
    * @param includeRoot Whether or not to include the root.
    * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself).
    */
-  Set<TermId> getAncestors(TermId termId, boolean includeRoot);
+  Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot);
 
   /**
    * Return all the {@link TermId}s of all ancestors from {@code termId}, including root.
@@ -40,8 +36,8 @@ public interface Ontology<T extends Term, R extends TermRelation>
    * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself),
    *         including root.
    */
-  default Set<TermId> getAncestors(TermId termId) {
-    return getAncestors(termId, true);
+  default Set<TermId> getAncestorTermIds(TermId termId) {
+    return getAncestorTermIds(termId, true);
   }
 
   /**

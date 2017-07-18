@@ -39,7 +39,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** Id of the root term. */
   private final TermId rootTermId;
 
-  /** The mapping from TermId to Term for all obsolete terms. */
+  /** The mapping from TermId to Term for all terms. */
   private final ImmutableMap<TermId, T> termMap;
 
   /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
@@ -133,7 +133,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public Set<TermId> getAncestors(TermId termId, boolean includeRoot) {
+  public Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot) {
     if (includeRoot) {
       return precomputedAncestors.get(termId);
     } else {
@@ -146,7 +146,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   public Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot) {
     final Set<TermId> result = new HashSet<>();
     for (TermId termId : termIds) {
-      result.addAll(getAncestors(termId, true));
+      result.addAll(getAncestorTermIds(termId, true));
     }
     if (!includeRoot) {
       result.remove(rootTermId);
