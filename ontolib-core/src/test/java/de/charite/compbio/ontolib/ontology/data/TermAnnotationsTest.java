@@ -31,7 +31,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
     Map<TermId, Collection<String>> map = ImmutableSortedMap
         .copyOf(TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
     assertEquals(
-        "{ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=2]=[two, three, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=3]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=4]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=5]=[two, three, one]}",
+        "{ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002]=[two, three, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]=[two, three, one]}",
         map.toString());
   }
 
@@ -40,7 +40,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
     Map<String, Collection<TermId>> map = ImmutableSortedMap
         .copyOf(TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
     assertEquals(
-        "{one=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=2], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=4], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=3], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=5]], three=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=2], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=5]], two=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=2], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=4], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=3], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=5]]}",
+        "{one=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]], three=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]], two=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]]}",
         map.toString());
   }
 

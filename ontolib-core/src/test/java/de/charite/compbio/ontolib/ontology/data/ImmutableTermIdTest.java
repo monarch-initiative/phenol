@@ -18,14 +18,15 @@ public class ImmutableTermIdTest {
   @Before
   public void setUp() {
     termPrefix = new ImmutableTermPrefix("HP");
-    termId = new ImmutableTermId(termPrefix, 1);
-    termId2 = new ImmutableTermId(termPrefix, 2);
+    termId = new ImmutableTermId(termPrefix, "0000001");
+    termId2 = new ImmutableTermId(termPrefix, "0000002");
   }
 
   @Test
   public void testStaticConstructMethod() {
     ImmutableTermId otherId = ImmutableTermId.constructWithPrefix("HP:0000001");
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1]", otherId.toString());
+    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
+        otherId.toString());
     assertEquals(termId, otherId);
   }
 
@@ -35,17 +36,18 @@ public class ImmutableTermIdTest {
     assertThat(termId.compareTo(termId2), lessThan(0));
     assertThat(termId2.compareTo(termId), greaterThan(0));
   }
-  
+
   @Test
   public void testQueryFunctions() {
     assertSame(termPrefix, termId.getPrefix());
-    assertEquals(1, termId.getId());
+    assertEquals("0000001", termId.getId());
     assertEquals("HP:0000001", termId.getIdWithPrefix());
   }
-  
+
   @Test
   public void testToString() {
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1]", termId.toString());
+    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
+        termId.toString());
   }
 
 }

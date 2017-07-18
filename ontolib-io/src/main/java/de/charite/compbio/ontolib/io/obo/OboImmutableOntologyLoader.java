@@ -162,7 +162,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
       return rootCandidates.get(0);
     } else {
       final TermPrefix rootPrefix = helper.getFirstTermId().getPrefix();
-      final int rootLocalId = 0; // assumption: no term ID with numeric value "0"
+      final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
       final ImmutableTermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
       if (helper.getAllTermIds().contains(rootId)) {
         throw new RuntimeException(
@@ -372,18 +372,19 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         return tmpId;
       }
 
-      final String[] tokens = termIdStr.split(":", 2);
-      if (tokens.length != 2) {
+      final int pos = termIdStr.lastIndexOf(':');
+      if (pos == -1) {
         throw new RuntimeException("Term Id does not contain colon! " + termIdStr);
       }
 
-      ImmutableTermPrefix tmpPrefix = prefixes.get(tokens[0]);
+      final String prefixStr = termIdStr.substring(0, pos);
+      final String localIdStr = termIdStr.substring(pos + 1);
+      final ImmutableTermPrefix tmpPrefix = new ImmutableTermPrefix(prefixStr);
       if (tmpPrefix == null) {
-        tmpPrefix = new ImmutableTermPrefix(tokens[0]);
-        prefixes.put(tokens[0], tmpPrefix);
+        prefixes.put(prefixStr, new ImmutableTermPrefix(prefixStr));
       }
 
-      tmpId = new ImmutableTermId(tmpPrefix, Integer.parseInt(tokens[1]));
+      tmpId = new ImmutableTermId(tmpPrefix, localIdStr);
       termIds.put(termIdStr, tmpId);
 
       // Make sure to record the first term Id.

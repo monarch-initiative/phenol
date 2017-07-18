@@ -2,15 +2,17 @@ package de.charite.compbio.ontolib.io.obo.hpo;
 
 import static org.junit.Assert.assertEquals;
 
-import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
-import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
-import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
+import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
+import de.charite.compbio.ontolib.io.utils.ResourceUtils;
 
 public class HpoDiseaseAnnotationParserTest {
 
@@ -35,7 +37,7 @@ public class HpoDiseaseAnnotationParserTest {
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();
     assertEquals(
-        "HPODiseaseAnnotation [db=OMIM, dbObjectId=101000, dbName=#101000 NEUROFIBROMATOSIS, TYPE II; NF2;;NEUROFIBROMATOSIS, CENTRAL TYPE;;ACOUSTIC SCHWANNOMAS, BILATERAL;;BILATERAL ACOUSTIC NEUROFIBROMATOSIS; BANF;;ACOUSTIC NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=9737], dbReference=OMIM:101000, evidenceCode=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=, date=2010.06.18, assignedBy=HPO:skoehler]",
+        "HPODiseaseAnnotation [db=OMIM, dbObjectId=101000, dbName=#101000 NEUROFIBROMATOSIS, TYPE II; NF2;;NEUROFIBROMATOSIS, CENTRAL TYPE;;ACOUSTIC SCHWANNOMAS, BILATERAL;;BILATERAL ACOUSTIC NEUROFIBROMATOSIS; BANF;;ACOUSTIC NEURINOMA, BILATERAL; ACN, qualifier=NOT, hpoId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0009737], dbReference=OMIM:101000, evidenceDescription=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=, date=2010.06.18, assignedBy=HPO:skoehler]",
         firstRecord.toString());
 
     // Read remaining records and check count.

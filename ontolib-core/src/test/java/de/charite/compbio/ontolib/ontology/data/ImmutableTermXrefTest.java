@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,11 +18,12 @@ public class ImmutableTermXrefTest {
 
   @Test
   public void test() {
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=1]",
+    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
         termXref.getId().toString());
     assertEquals("Some description", termXref.getDescription());
-    assertEquals("ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], "
-        + "id=1], description=Some description]", termXref.toString());
+    assertEquals(
+        "ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=Some description]",
+        termXref.toString());
   }
 
 }

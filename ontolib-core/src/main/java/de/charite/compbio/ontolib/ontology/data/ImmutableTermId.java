@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
 import com.google.common.collect.ComparisonChain;
+
 import de.charite.compbio.ontolib.OntoLibRuntimeException;
 
 /**
@@ -16,8 +17,8 @@ public final class ImmutableTermId implements TermId {
   /** Prefix of the TermId. */
   private final TermPrefix prefix;
 
-  /** Numeric identifier behind the prefix. */
-  private final int id;
+  /** Identifier behind the prefix. */
+  private final String id;
 
   /**
    * Construct from term ID including prefix.
@@ -27,12 +28,13 @@ public final class ImmutableTermId implements TermId {
    * @throws OntoLibRuntimeException if the string does not have a prefix
    */
   public static ImmutableTermId constructWithPrefix(String termIdString) {
-    final String[] arr = termIdString.split(":", 2);
-    if (arr.length != 2) {
+    final int pos = termIdString.lastIndexOf(':');
+    if (pos == -1) {
       throw new OntoLibRuntimeException(
           "Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
-      return new ImmutableTermId(new ImmutableTermPrefix(arr[0]), Integer.parseInt(arr[1]));
+      return new ImmutableTermId(new ImmutableTermPrefix(termIdString.substring(0, pos)),
+          termIdString.substring(pos + 1));
     }
   }
 
@@ -40,9 +42,9 @@ public final class ImmutableTermId implements TermId {
    * Constructor.
    *
    * @param prefix Prefix to use.
-   * @param id Numeric term identifier after the prefix.
+   * @param id Identifier after the prefix.
    */
-  public ImmutableTermId(TermPrefix prefix, int id) {
+  public ImmutableTermId(TermPrefix prefix, String id) {
     this.prefix = prefix;
     this.id = id;
   }
@@ -59,7 +61,7 @@ public final class ImmutableTermId implements TermId {
   }
 
   @Override
-  public int getId() {
+  public String getId() {
     return id;
   }
 
@@ -68,7 +70,7 @@ public final class ImmutableTermId implements TermId {
     final StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(prefix.getValue());
     stringBuilder.append(":");
-    stringBuilder.append(String.format("%07d", id));
+    stringBuilder.append(id);
     return stringBuilder.toString();
   }
 
@@ -81,8 +83,8 @@ public final class ImmutableTermId implements TermId {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + prefix.hashCode();
-    result = prime * result + id;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
     return result;
   }
 
@@ -93,26 +95,19 @@ public final class ImmutableTermId implements TermId {
       return true;
     } else if (obj instanceof TermId) {
       final TermId that = (TermId) obj;
-      return this.prefix.equals(that.getPrefix()) && (this.id == that.getId());
+      return this.prefix.equals(that.getPrefix()) && (this.id.equals(that.getId()));
     }
 
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     ImmutableTermId other = (ImmutableTermId) obj;
-    if (id != other.id) {
-      return false;
-    }
+    if (id == null) {
+      if (other.id != null) return false;
+    } else if (!id.equals(other.id)) return false;
     if (prefix == null) {
-      if (other.prefix != null) {
-        return false;
-      }
-    } else if (!prefix.equals(other.prefix)) {
-      return false;
-    }
+      if (other.prefix != null) return false;
+    } else if (!prefix.equals(other.prefix)) return false;
     return true;
   }
 
