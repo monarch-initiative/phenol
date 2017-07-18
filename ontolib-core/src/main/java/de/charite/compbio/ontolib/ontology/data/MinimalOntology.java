@@ -1,17 +1,18 @@
 package de.charite.compbio.ontolib.ontology.data;
 
-import de.charite.compbio.ontolib.graph.data.DirectedGraph;
-import de.charite.compbio.ontolib.graph.data.Edge;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+
+import de.charite.compbio.ontolib.graph.data.DirectedGraph;
+import de.charite.compbio.ontolib.graph.data.Edge;
 
 /**
  * Interface for ontologies without the all-ancestor-related convenience functions.
  * 
  * <p>
- * Most classes will want to implement {@link Ontology} as the more interesting algorithms on
- * ontologies need fast access to all ancestors of a term.
+ * Most classes will want to work with {@link Ontology} instead of {@link MinimalOntology} as the
+ * more interesting algorithms on ontologies need fast access to all ancestors of a term.
  * </p>
  *
  * <p>
@@ -30,6 +31,26 @@ import java.util.Map;
  * While {@link MinimalOntology} allows access to obsolete terms in the ontology, the obsolete terms
  * are excluded from the underlying graph structure.
  * </p>
+ *
+ * <h5>Terms vs. Term IDs</h5>
+ *
+ * <p>
+ * OBO files contain lists of terms (besides other entry types). Each term has one primary
+ * identifier and a (possibly empty) list of alternative IDs. Terms can also be marked as obsolete.
+ * While appearing simple on the surface, this has several implications for this interface:
+ * </p>
+ *
+ * <ul>
+ * <li>The {@link Map}-returning function {@link #getTermMap()} returns a mapping from
+ * {@link TermId} to the corresponding {@code T} ({@code extends Term}), regardless of whether the
+ * key value is a primary or an alternative identifier and regardless of whether the value is an
+ * obsolete or non-obsolete term.</li>
+ * <li>The {@link Collection}-returning functions {@link #getNonObsoleteTermIds()},
+ * {@link #getObsoleteTermIds()}, and {@link #getAllTermIds()} return the primary term identifiers
+ * for non-obsolete, obsolete, and all term IDs. In the rare case that you need to obtain a list of
+ * the alternative term ids, themselves, you have to iterate the values of these maps and also
+ * evaluate the alternative term ids.</li>
+ * </ul>
  *
  * <h5>Iterating</h5>
  *
@@ -76,34 +97,66 @@ public interface MinimalOntology<T extends Term, R extends TermRelation> extends
   Map<TermId, T> getTermMap();
 
   /**
-   * Return term id to term map including obsolete terms.
-   *
-   * @return {@link Map} from {@link TermId} to corresponding value of {@link Term} sub class
-   *         <code>T</code>.
-   */
-  Map<TermId, T> getObsoleteTermMap();
-
-  /**
    * @return {@link Map} from <code>Integer</code> edge Id to corresponding value of
    *         {@link TermRelation} sub class <code>R</code>.
    */
   Map<Integer, R> getRelationMap();
 
-  // TODO: consolidate naming
+  /**
+   * Convenience method to query whether {@code termId} is the root term.
+   *
+   * @param termId The {@link TermId} to check "rootness" of.
+   * @return {@code true} if {@code termId} is the root node.
+   */
+  default boolean isRootTerm(TermId termId) {
+    return getRootTermId().equals(termId);
+  }
 
-  // TODO: do we need this idiosyncratic?
-  boolean isRootTerm(TermId termId);
-
+  /**
+   * @return The root's {@link TermId}.
+   */
   TermId getRootTermId();
 
+  /**
+   * @return {@link Collection} of <b>all</b> primary {@link TermId}s.
+   */
   Collection<TermId> getAllTermIds();
 
+  /**
+   * @return {@link Collection} of the <b>non-obsolete</b>, primary {@link TermId}s.
+   */
   Collection<TermId> getNonObsoleteTermIds();
 
+  /**
+   * @return {@link Collection} of the <b>obsolete</b>, primary {@link TermId}s.
+   */
   Collection<TermId> getObsoleteTermIds();
 
+  /**
+   * @return {@link Collection} of all term ({@code T}) objects, including the obsolete ones.
+   */
   Collection<T> getTerms();
 
-  int countTerms();
+  /**
+   * @return The number of all terms in the ontology.
+   */
+  default int countTerms() {
+    // TODO: rename to countAllTerms, remove from implementations?
+    return getAllTermIds().size();
+  }
+
+  /**
+   * @return The number of all terms in the ontology.
+   */
+  default int countObsoleteTerms() {
+    return getObsoleteTermIds().size();
+  }
+
+  /**
+   * @return The number of all terms in the ontology.
+   */
+  default int countNonObsoleteTerms() {
+    return getNonObsoleteTermIds().size();
+  }
 
 }

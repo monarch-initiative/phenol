@@ -1,15 +1,17 @@
 package de.charite.compbio.ontolib.io.obo.hpo;
 
-import com.google.common.base.Enums;
-import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
-import de.charite.compbio.ontolib.io.base.TermAnnotationParser;
-import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
-import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+
+import com.google.common.base.Enums;
+
+import de.charite.compbio.ontolib.formats.hpo.HpoDiseaseAnnotation;
+import de.charite.compbio.ontolib.io.base.TermAnnotationParser;
+import de.charite.compbio.ontolib.io.base.TermAnnotationParserException;
+import de.charite.compbio.ontolib.ontology.data.ImmutableTermId;
 
 /**
  * Parser for "phenotype annotation" files.
@@ -81,7 +83,8 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDisea
     if (!Enums.getIfPresent(HpoDiseaseAnnotation.DatabaseSource.class, arr[0]).isPresent()) {
       throw new TermAnnotationParserException(
           "Does not look like HPO disease annotation file. First field value was " + arr[0]
-              + " but was expected to be one of " + Arrays.toString(HpoDiseaseAnnotation.DatabaseSource.values()));
+              + " but was expected to be one of "
+              + Arrays.toString(HpoDiseaseAnnotation.DatabaseSource.values()));
     }
   }
 

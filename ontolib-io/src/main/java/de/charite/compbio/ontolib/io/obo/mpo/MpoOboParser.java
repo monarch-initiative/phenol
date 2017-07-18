@@ -81,7 +81,6 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
-        (ImmutableMap<TermId, MpoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, MpoTermRelation>) o.getRelationMap());
   }
 

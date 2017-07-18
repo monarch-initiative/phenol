@@ -39,11 +39,8 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** Id of the root term. */
   private final TermId rootTermId;
 
-  /** The mapping from TermId to Term for non-obsolete terms. */
+  /** The mapping from TermId to Term for all obsolete terms. */
   private final ImmutableMap<TermId, T> termMap;
-
-  /** The mapping from TermId to Term for defined by obsolete terms. */
-  private final ImmutableMap<TermId, T> obsoleteTermMap;
 
   /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
   private final ImmutableSet<TermId> nonObsoleteTermIds;
@@ -68,22 +65,19 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
    * @param rootTermId Root node's {@link TermId}.
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
-   * @param termMap Mapping from {@link TermId} to <code>T</code>, excluding obsolete ones.
-   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
+   * @param termMap Mapping from {@link TermId} to <code>T</code>.
    * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
   public ImmutableOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
       Collection<? extends TermId> nonObsoleteTermIds, Collection<? extends TermId> obsoleteTermIds,
-      ImmutableMap<TermId, T> termMap, ImmutableMap<TermId, T> obsoleteTermMap,
-      ImmutableMap<Integer, R> relationMap) {
+      ImmutableMap<TermId, T> termMap, ImmutableMap<Integer, R> relationMap) {
     this.metaInfo = metaInfo;
     this.graph = graph;
     this.rootTermId = rootTermId;
     this.termMap = termMap;
     this.nonObsoleteTermIds = ImmutableSet.copyOf(nonObsoleteTermIds);
     this.obsoleteTermIds = ImmutableSet.copyOf(obsoleteTermIds);
-    this.obsoleteTermMap = obsoleteTermMap;
     this.allTermIds =
         ImmutableSet.copyOf(Sets.union(this.nonObsoleteTermIds, this.obsoleteTermIds));
     this.relationMap = relationMap;
@@ -176,18 +170,6 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public int countTerms() {
-    return termMap.size();
-  }
-
-  @Override
-  public Map<TermId, T> getObsoleteTermMap() {
-    return obsoleteTermMap;
-  }
-
-  // TODO: Add "getAllTermMap()"?
-
-  @Override
   public Collection<TermId> getNonObsoleteTermIds() {
     return nonObsoleteTermIds;
   }
@@ -204,7 +186,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) graph.subGraph(childTermIds);
     return new ImmutableOntology<T, R>(metaInfo, subGraph, subOntologyRoot,
         Sets.intersection(nonObsoleteTermIds, childTermIds),
-        Sets.intersection(obsoleteTermIds, childTermIds), termMap, obsoleteTermMap, relationMap);
+        Sets.intersection(obsoleteTermIds, childTermIds), termMap, relationMap);
   }
 
 }

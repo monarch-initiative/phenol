@@ -75,7 +75,7 @@ public class ImmutableOntologyTestBase {
     relationMap = relationMapBuilder.build();
 
     ontology = new ImmutableOntology<TestTerm, TestTermRelation>(metaInfo, graph, rootTermId,
-        termMap.keySet(), obsoleteTermMap.keySet(), termMap, obsoleteTermMap, relationMap);
+        termMap.keySet(), obsoleteTermMap.keySet(), termMap, relationMap);
   }
 
 }

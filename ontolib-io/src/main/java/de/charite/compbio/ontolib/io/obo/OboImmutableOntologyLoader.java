@@ -132,8 +132,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         ImmutableDirectedGraph.construct(helper.getAllTermIds(), edges, true);
     return new ImmutableOntology<T, R>(ImmutableSortedMap.copyOf(helper.getMetaInfo()), graph,
         rootTermId, helper.getTerms().keySet(), helper.getObsoleteTerms().keySet(),
-        ImmutableMap.copyOf(helper.getTerms()), ImmutableMap.copyOf(helper.getObsoleteTerms()),
-        ImmutableMap.copyOf(relationMap));
+        ImmutableMap.copyOf(helper.getTerms()), ImmutableMap.copyOf(relationMap));
   }
 
   /**

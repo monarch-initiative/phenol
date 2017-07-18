@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 
@@ -35,7 +36,6 @@ public class VegetableOntologyTestBase {
 
   protected TermId rootTermId;
   protected ImmutableMap<TermId, VegetableTerm> termMap;
-  protected ImmutableMap<TermId, VegetableTerm> obsoleteTermMap;
   protected ImmutableMap<Integer, VegetableTermRelation> relationMap;
 
   protected ImmutableOntology<VegetableTerm, VegetableTermRelation> ontology;
@@ -106,8 +106,6 @@ public class VegetableOntologyTestBase {
             false, null, null));
     termMap = termMapBuilder.build();
 
-    obsoleteTermMap = ImmutableMap.of();
-
     ImmutableMap.Builder<Integer, VegetableTermRelation> relationMapBuilder =
         ImmutableMap.builder();
     relationMapBuilder.put(1, new VegetableTermRelation(idRootVegetable, idVegetable, 1));
@@ -119,9 +117,8 @@ public class VegetableOntologyTestBase {
     relationMapBuilder.put(7, new VegetableTermRelation(idBlueCarrot, idCarrot, 7));
     relationMap = relationMapBuilder.build();
 
-    ontology =
-        new ImmutableOntology<VegetableTerm, VegetableTermRelation>(metaInfo, graph, rootTermId,
-            termMap.keySet(), obsoleteTermMap.keySet(), termMap, obsoleteTermMap, relationMap);
+    ontology = new ImmutableOntology<VegetableTerm, VegetableTermRelation>(metaInfo, graph,
+        rootTermId, termMap.keySet(), ImmutableSet.of(), termMap, relationMap);
 
     recipeAnnotations = Lists.newArrayList(new VegetableRecipeAnnotation(idCarrot, "pumpkin soup"),
         new VegetableRecipeAnnotation(idPumpkin, "pumpkin soup"),

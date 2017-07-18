@@ -30,26 +30,22 @@ public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoTermRelatio
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to MPO term.
-   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link MpoTermRelation}.
    */
   public MpoOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, MpoTerm> termMap, ImmutableMap<TermId, MpoTerm> obsoleteTermMap,
-      ImmutableMap<Integer, MpoTermRelation> relationMap) {
-    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap,
-        obsoleteTermMap, relationMap);
+      ImmutableMap<TermId, MpoTerm> termMap, ImmutableMap<Integer, MpoTermRelation> relationMap) {
+    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "MpoOntology [getMetaInfo()=" + ImmutableSortedMap.copyOf(getMetaInfo())
-        + ", getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap() + ", getRelationMap()="
-        + getRelationMap() + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()="
-        + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()=" + countTerms()
-        + ", getObsoleteTermMap()=" + getObsoleteTermMap() + ", getNonObsoleteTermIds()="
-        + getNonObsoleteTermIds() + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
+    return "MpoOntology [getMetaInfo()=" + getMetaInfo() + ", getGraph()=" + getGraph()
+        + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
+        + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
+        + ", getTerms()=" + getTerms() + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds()
+        + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
   }
 
 }

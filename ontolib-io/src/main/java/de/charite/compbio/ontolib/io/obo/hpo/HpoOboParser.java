@@ -81,7 +81,6 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
-        (ImmutableMap<TermId, HpoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());
   }
 

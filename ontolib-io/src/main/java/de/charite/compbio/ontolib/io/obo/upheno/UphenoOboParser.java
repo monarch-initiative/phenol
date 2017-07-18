@@ -81,7 +81,6 @@ public final class UphenoOboParser implements OntologyOboParser<UphenoOntology> 
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
-        (ImmutableMap<TermId, UphenoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, UphenoTermRelation>) o.getRelationMap());
   }
 

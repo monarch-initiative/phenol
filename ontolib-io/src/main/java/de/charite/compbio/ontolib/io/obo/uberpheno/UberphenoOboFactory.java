@@ -1,6 +1,11 @@
 package de.charite.compbio.ontolib.io.obo.uberpheno;
 
+import java.util.List;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
+
 import de.charite.compbio.ontolib.OntoLibRuntimeException;
 import de.charite.compbio.ontolib.formats.uberpheno.UberphenoRelationQualifier;
 import de.charite.compbio.ontolib.formats.uberpheno.UberphenoTerm;
@@ -32,13 +37,10 @@ import de.charite.compbio.ontolib.ontology.data.TermId;
 import de.charite.compbio.ontolib.ontology.data.TermSynonym;
 import de.charite.compbio.ontolib.ontology.data.TermSynonymScope;
 import de.charite.compbio.ontolib.ontology.data.TermXref;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link UberphenoTerm} and {@link UberphenoTermRelation} objects from
- * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
+ * Factory class for constructing {@link UberphenoTerm} and {@link UberphenoTermRelation} objects
+ * from {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -178,16 +180,19 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new UberphenoTermRelation(sourceId, destId, nextRelationId++, UberphenoRelationQualifier.IS_A);
+    return new UberphenoTermRelation(sourceId, destId, nextRelationId++,
+        UberphenoRelationQualifier.IS_A);
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+      StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+      StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
@@ -198,7 +203,8 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+      StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 

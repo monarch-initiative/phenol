@@ -89,7 +89,6 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
         (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
-        (ImmutableMap<TermId, GoTerm>) o.getObsoleteTermMap(),
         (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());
   }
 

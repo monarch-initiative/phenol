@@ -1,12 +1,14 @@
 package de.charite.compbio.ontolib.formats.uberpheno;
 
+import java.util.Collection;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+
 import de.charite.compbio.ontolib.graph.data.ImmutableDirectedGraph;
 import de.charite.compbio.ontolib.graph.data.ImmutableEdge;
 import de.charite.compbio.ontolib.ontology.data.ImmutableOntology;
 import de.charite.compbio.ontolib.ontology.data.TermId;
-import java.util.Collection;
 
 /**
  * Implementation of the Uberpheno ontology as an {@link ImmutableOntology}.
@@ -29,27 +31,23 @@ public final class UberphenoOntology
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to GO term.
-   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link UberphenoTermRelation}.
    */
   public UberphenoOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
       ImmutableMap<TermId, UberphenoTerm> termMap,
-      ImmutableMap<TermId, UberphenoTerm> obsoleteTermMap,
       ImmutableMap<Integer, UberphenoTermRelation> relationMap) {
-    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap,
-        obsoleteTermMap, relationMap);
+    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "UberphenoOntology [getMetaInfo()=" + ImmutableSortedMap.copyOf(getMetaInfo())
-        + ", getGraph()=" + getGraph() + ", getTermMap()=" + getTermMap() + ", getRelationMap()="
-        + getRelationMap() + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()="
-        + getAllTermIds() + ", getTerms()=" + getTerms() + ", countTerms()=" + countTerms()
-        + ", getObsoleteTermMap()=" + getObsoleteTermMap() + ", getNonObsoleteTermIds()="
-        + getNonObsoleteTermIds() + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
+    return "UberphenoOntology [getMetaInfo()=" + getMetaInfo() + ", getGraph()=" + getGraph()
+        + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
+        + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
+        + ", getTerms()=" + getTerms() + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds()
+        + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
   }
 
 }

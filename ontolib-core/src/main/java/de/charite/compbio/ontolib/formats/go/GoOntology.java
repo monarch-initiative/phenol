@@ -30,26 +30,22 @@ public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> 
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to GO term.
-   * @param obsoleteTermMap Mapping from {@link TermId} to <code>T</code>, only obsolete ones.
    * @param relationMap Mapping from numeric edge identifier to {@link GoTermRelation}.
    */
   public GoOntology(ImmutableSortedMap<String, String> metaInfo,
       ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, GoTerm> termMap, ImmutableMap<TermId, GoTerm> obsoleteTermMap,
-      ImmutableMap<Integer, GoTermRelation> relationMap) {
-    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap,
-        obsoleteTermMap, relationMap);
+      ImmutableMap<TermId, GoTerm> termMap, ImmutableMap<Integer, GoTermRelation> relationMap) {
+    super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "GoOntology [getMetaInfo()=" + ImmutableSortedMap.copyOf(getMetaInfo()) + ", getGraph()="
-        + getGraph() + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
+    return "GoOntology [getMetaInfo()=" + getMetaInfo() + ", getGraph()=" + getGraph()
+        + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
         + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
-        + ", getTerms()=" + getTerms() + ", countTerms()=" + countTerms()
-        + ", getObsoleteTermMap()=" + getObsoleteTermMap() + ", getNonObsoleteTermIds()="
-        + getNonObsoleteTermIds() + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
+        + ", getTerms()=" + getTerms() + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds()
+        + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
   }
 
 }
