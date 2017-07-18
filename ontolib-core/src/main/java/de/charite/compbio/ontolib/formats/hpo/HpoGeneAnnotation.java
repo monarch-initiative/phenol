@@ -4,6 +4,8 @@ import com.google.common.collect.ComparisonChain;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 
+// TODO: obtain evidence code from ontology file?
+
 /**
  * Annotation of a HPO term (via its {@link TermId}) with genes.
  *

@@ -4,6 +4,7 @@ import com.google.common.collect.ComparisonChain;
 
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
+import java.util.Optional;
 
 /**
  * Annotate that a vegetable is used in a recipe.

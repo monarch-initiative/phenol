@@ -1,6 +1,7 @@
 package de.charite.compbio.ontolib.ontology.data;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * A {@link TermAnnotation} links a {@link TermId} to a <code>String</code> <b>label</b> of a "world
@@ -35,5 +36,29 @@ public interface TermAnnotation extends Serializable, Comparable<TermAnnotation>
    * @return The "world object" label that the term is annotated with.
    */
   String getLabel();
+
+  /**
+   * Query for evidence code.
+   *
+   * <p>
+   * The default implementation returns an empty {@link Optional} value.
+   * </p>
+   *
+   * @return Optional {@code String} with the identifier of the evidence code.
+   */
+  default Optional<String> getEvidenceCode() {
+    return Optional.empty();
+  }
+
+  /**
+   * Query for frequency of annotation in percent.
+   *
+   * <p>
+   * The default implementation always returns {@code Optional.empty()}.
+   * </p>
+   */
+  default Optional<Float> getFrequency() {
+    return Optional.empty();
+  }
 
 }

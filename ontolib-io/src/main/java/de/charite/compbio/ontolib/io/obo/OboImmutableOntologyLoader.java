@@ -48,7 +48,7 @@ import de.charite.compbio.ontolib.ontology.data.TermRelation;
  * </p>
  *
  * <p>
- * For example, in GO, the term {@link GO:0000000} will be created. This action will be loadded in
+ * For example, in GO, the term {@code GO:0000000} will be created. This action will be loadded in
  * the log level "INFO".
  * </p>
  *

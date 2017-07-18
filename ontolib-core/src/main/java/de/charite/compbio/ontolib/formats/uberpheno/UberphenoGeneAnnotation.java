@@ -1,9 +1,9 @@
 package de.charite.compbio.ontolib.formats.uberpheno;
 
 import com.google.common.collect.ComparisonChain;
-
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
+import java.util.Optional;
 
 /**
  * Record from Uberpheno gene annotation file.
@@ -86,6 +86,11 @@ public final class UberphenoGeneAnnotation implements TermAnnotation {
    */
   public String getEvidenceDescription() {
     return evidenceDescription;
+  }
+
+  @Override
+  public Optional<String> getEvidenceCode() {
+    return Optional.ofNullable(evidenceDescription);
   }
 
   @Override

@@ -6,6 +6,7 @@ import de.charite.compbio.ontolib.OntoLibRuntimeException;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Record from GAF v2.1 file.
@@ -163,11 +164,9 @@ public final class GoGaf21Annotation implements TermAnnotation {
     return dbReference;
   }
 
-  /**
-   * @return The evidence code.
-   */
-  public String getEvidenceCode() {
-    return evidenceCode;
+  @Override
+  public Optional<String> getEvidenceCode() {
+    return Optional.ofNullable(evidenceCode);
   }
 
   /**

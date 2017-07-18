@@ -3,6 +3,7 @@ package de.charite.compbio.ontolib.formats.hpo;
 import com.google.common.collect.ComparisonChain;
 import de.charite.compbio.ontolib.ontology.data.TermAnnotation;
 import de.charite.compbio.ontolib.ontology.data.TermId;
+import java.util.Optional;
 
 // TODO: discuss with Sebastian whether this is the correct naming and description
 // TODO: use more enumeration types?
@@ -66,9 +67,8 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   /** Reference of entry, e.g., <code>OMIM:154700</code> or <code>PMId:15517394</code>. */
   private final String dbReference;
 
-  // TODO: What does that mean?
-  /** Evidence code. */
-  private final String evidenceCode;
+  /** Evidence description. */
+  private final String evidenceDescription;
 
   /** Onset modifier; optional, <code>null</code> when missing. */
   private final String onsetModifier;
@@ -104,7 +104,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
    * @param hpoId Term Id into HPO.
    * @param dbReference Reference of entry, e.g., <code>OMIM:154700</code> or
    *        <code>PMId:15517394</code>.
-   * @param evidenceCode Evidence code.
+   * @param evidenceDescription Evidence description.
    * @param onsetModifier Onset modifier; optional, <code>null</code> when missing.
    * @param frequencyModifier Usually from the subontology Frequency or "70%" or "12 of 30";
    *        optional, <code>null</code> when missing.
@@ -115,7 +115,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
    * @param assignedBy Name of author.
    */
   public HpoDiseaseAnnotation(String db, String dbObjectId, String dbName, String qualifier,
-      TermId hpoId, String dbReference, String evidenceCode, String onsetModifier,
+      TermId hpoId, String dbReference, String evidenceDescription, String onsetModifier,
       String frequencyModifier, String with, String aspect, String synonym, String date,
       String assignedBy) {
     this.db = db;
@@ -124,7 +124,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     this.qualifier = qualifier;
     this.hpoId = hpoId;
     this.dbReference = dbReference;
-    this.evidenceCode = evidenceCode;
+    this.evidenceDescription = evidenceDescription;
     this.onsetModifier = onsetModifier;
     this.frequencyModifier = frequencyModifier;
     this.with = with;
@@ -177,10 +177,15 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   }
 
   /**
-   * @return Evidence code.
+   * @return Evidence description.
    */
-  public String getEvidenceCode() {
-    return evidenceCode;
+  public String getEvidenceDescription() {
+    return evidenceDescription;
+  }
+
+  @Override
+  public Optional<String> getEvidenceCode() {
+    return Optional.of(evidenceDescription);
   }
 
   /**
@@ -252,7 +257,8 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     return ComparisonChain.start().compare(this.db, that.db)
         .compare(this.dbObjectId, that.dbObjectId).compare(this.dbName, that.dbName)
         .compare(this.qualifier, that.qualifier).compare(this.hpoId, that.hpoId)
-        .compare(this.dbReference, that.dbReference).compare(this.evidenceCode, that.evidenceCode)
+        .compare(this.dbReference, that.dbReference)
+        .compare(this.evidenceDescription, that.evidenceDescription)
         .compare(this.onsetModifier, that.onsetModifier).compare(this.with, that.with)
         .compare(this.aspect, that.aspect).compare(this.synonym, that.synonym)
         .compare(this.date, that.date).compare(this.assignedBy, that.assignedBy).result();
@@ -262,7 +268,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   public String toString() {
     return "HPODiseaseAnnotation [db=" + db + ", dbObjectId=" + dbObjectId + ", dbName=" + dbName
         + ", qualifier=" + qualifier + ", hpoId=" + hpoId + ", dbReference=" + dbReference
-        + ", evidenceCode=" + evidenceCode + ", onsetModifier=" + onsetModifier
+        + ", evidenceDescription=" + evidenceDescription + ", onsetModifier=" + onsetModifier
         + ", frequencyModifier=" + frequencyModifier + ", with=" + with + ", aspect=" + aspect
         + ", synonym=" + synonym + ", date=" + date + ", assignedBy=" + assignedBy + "]";
   }
@@ -278,7 +284,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
     result = prime * result + ((dbObjectId == null) ? 0 : dbObjectId.hashCode());
     result = prime * result + ((dbReference == null) ? 0 : dbReference.hashCode());
-    result = prime * result + ((evidenceCode == null) ? 0 : evidenceCode.hashCode());
+    result = prime * result + ((evidenceDescription == null) ? 0 : evidenceDescription.hashCode());
     result = prime * result + ((frequencyModifier == null) ? 0 : frequencyModifier.hashCode());
     result = prime * result + ((hpoId == null) ? 0 : hpoId.hashCode());
     result = prime * result + ((onsetModifier == null) ? 0 : onsetModifier.hashCode());
@@ -349,11 +355,11 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     } else if (!dbReference.equals(other.dbReference)) {
       return false;
     }
-    if (evidenceCode == null) {
-      if (other.evidenceCode != null) {
+    if (evidenceDescription == null) {
+      if (other.evidenceDescription != null) {
         return false;
       }
-    } else if (!evidenceCode.equals(other.evidenceCode)) {
+    } else if (!evidenceDescription.equals(other.evidenceDescription)) {
       return false;
     }
     if (frequencyModifier == null) {
