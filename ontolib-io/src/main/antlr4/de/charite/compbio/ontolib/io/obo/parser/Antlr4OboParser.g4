@@ -592,5 +592,13 @@ dbXrefWord
     Word
     | Equals
     | SquareBraceOpen
-  )+
+    | Semicolon
+  )
+  (
+    Space?
+    Word
+    | Equals
+    | SquareBraceOpen
+    | Semicolon
+  )*
 ;
