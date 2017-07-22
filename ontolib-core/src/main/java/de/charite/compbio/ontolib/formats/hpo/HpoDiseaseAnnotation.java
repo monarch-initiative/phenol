@@ -38,6 +38,8 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
    * Enumeration for describing {@link HpoDiseaseAnnotation#getDb()}.
    */
   public enum DatabaseSource {
+    /** Decipher. */
+    DECIPHER,
     /** OMIM. */
     OMIM,
     /** Orphanet. */
