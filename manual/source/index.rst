@@ -1,20 +1,55 @@
-.. OntoLib documentation master file, created by
-   sphinx-quickstart on Sun Jul 23 15:14:30 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+==================================
+Welcome to OntoLib's Documentation
+==================================
 
-Welcome to OntoLib's documentation!
-===================================
+OntoLib is a modern Java (version 8 and above) library for working with (biological) ontologies.
+You can easily load an OBO file into an `Ontology` object and work with it in your code.
+Additionally, there is special support for important biological entities such as HPO and GO that make working with them easier by making important sub ontologies and terms more accessible.
+
+-------------
+Quick Example
+-------------
+
+  .. code-block:: java
+
+    HpoOntology hpo;
+    try (HpoOboParser hpoOboParser = new HpoOboParser(new File("hp.obo"))) {
+      hpo = hpoOboParser.parse();
+    } except (IOException e) {
+      System.exit(1);
+    }
+
+    Ontology<HpoTerm, HpoTermRelation> abnormalPhenoSubOntology =
+      hpo.getPhenotypicAbnormalitySubOntology();
+    for (TermId termId : abnormalPhenoSubOntology.getNonObsoleteTermIds()) {
+      // ...
+    }
+
+--------
+Feedback
+--------
+
+The best place to leave feedback, ask questions, and report bugs is the `OntoLib Issue Tracker <https://github.com/phenomics/ontolib/issues>`_.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :caption: Installation & Tutorial
+    :name: tutorial
+    :maxdepth: 1
+    :hidden:
 
+    install
+    tutorial_io
+    tutorial_hpo
+    tutorial_annotation
+    tutorial_similarity
 
+.. toctree::
+    :caption: Project Info
+    :name: project-info
+    :maxdepth: 1
+    :hidden:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    contributing
+    authors
+    history
+    license
