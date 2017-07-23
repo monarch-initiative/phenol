@@ -39,7 +39,7 @@ public class GoAnnotationGaf21ParserTest {
     // Read and check first record.
     final GoGaf21Annotation firstRecord = parser.next();
     assertEquals(
-        "GoGaf21Annotation [db=UniProtKB, dbObjectId=A0A024R161, dbObjectSymbol=DNAJC25-GNG10, qualifier=, goId=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0004871], dbReference=GO_REF:0000038, evidenceCode=IEA, with=UniProtKB-KW:KW-0807, aspect=F, dbObjectName=Guanine nucleotide-binding protein subunit gamma, dbObjectSynonym=A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888, dbObjectType=protein, taxons=[taxon:9606], date=Sat Jun 03 00:00:00 CEST 2017, assignedBy=UniProt, annotationExtension=null, geneProductFormId=null]",
+        "GoGaf21Annotation [db=UniProtKB, dbObjectId=A0A024R161, dbObjectSymbol=DNAJC25-GNG10, qualifier=, goId=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0004871], dbReference=GO_REF:0000038, evidenceCode=IEA, with=UniProtKB-KW:KW-0807, aspect=F, dbObjectName=Guanine nucleotide-binding protein subunit gamma, dbObjectSynonym=A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888, dbObjectType=protein, taxons=[taxon:9606], date=Sat Jun 03 00:00:00 UTC 2017, assignedBy=UniProt, annotationExtension=null, geneProductFormId=null]",
         firstRecord.toString());
 
     // Read remaining records and check count.

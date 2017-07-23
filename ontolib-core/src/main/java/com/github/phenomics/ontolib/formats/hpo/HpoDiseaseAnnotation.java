@@ -1,5 +1,6 @@
 package com.github.phenomics.ontolib.formats.hpo;
 
+import java.util.Date;
 import java.util.Optional;
 
 import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
@@ -10,7 +11,6 @@ import com.google.common.collect.ComparisonChain;
 // TODO: discuss with Sebastian whether this is the correct naming and description
 // TODO: use more enumeration types?
 // TODO: make synonym a list?
-// TODO: properly parse date?
 
 /**
  * Annotation of a {@link HpoTerm} (via its {@link TermId}) with clinical disease information.
@@ -93,7 +93,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   private final String synonym;
 
   /** Date of creation/modification. */
-  private final String date;
+  private final Date date;
 
   /** Name of assignment author. */
   private final String assignedBy;
@@ -120,7 +120,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
    */
   public HpoDiseaseAnnotation(String db, String dbObjectId, String dbName, String qualifier,
       TermId hpoId, String dbReference, String evidenceDescription, String onsetModifier,
-      String frequencyModifier, String with, String aspect, String synonym, String date,
+      String frequencyModifier, String with, String aspect, String synonym, Date date,
       String assignedBy) {
     this.db = db;
     this.dbObjectId = dbObjectId;
@@ -230,7 +230,7 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   /**
    * @return Date of creation/modification.
    */
-  public String getDate() {
+  public Date getDate() {
     return date;
   }
 

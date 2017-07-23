@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import com.github.phenomics.ontolib.formats.hpo.HpoDiseaseAnnotation;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParser;
@@ -113,10 +116,19 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDisea
     final String with = arr[9];
     final String aspect = arr[10];
     final String synonym = arr[11];
-    final String date = arr[12];
+    final String dateStr = arr[12];
     final String assignedBy = arr[13];
 
     nextLine = reader.readLine();
+
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+    Date date;
+    try {
+      date = format.parse(dateStr);
+    } catch (ParseException e) {
+      throw new TermAnnotationParserException(
+          "There was a problem parsing the date value " + dateStr, e);
+    }
 
     return new HpoDiseaseAnnotation(db, dbObjectId, dbName, qualifier, hpoId, dbReference,
         evidenceCode, onsetModifier, frequencyModifier, with, aspect, synonym, date, assignedBy);
