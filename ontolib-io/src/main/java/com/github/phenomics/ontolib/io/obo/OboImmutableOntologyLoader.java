@@ -316,7 +316,21 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
             StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
             if (entry.getValue()) {
               // Special handling for obsolete terms.
-              obsoleteTerms.put(sourceId, ontologyEntryFactory.constructTerm(stanza));
+              final T newTerm = ontologyEntryFactory.constructTerm(stanza);
+              obsoleteTerms.put(sourceId, newTerm);
+
+              // Construct TermId objects for all alternative ids.
+              final List<StanzaEntry> altIdEntries =
+                  stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
+              final List<ImmutableTermId> altTermIds = new ArrayList<>();
+              if (altIdEntries != null) {
+                for (StanzaEntry altIdEntry : altIdEntries) {
+                  final ImmutableTermId termId =
+                      registeredTermId(((StanzaEntryAltId) altIdEntry).getAltId());
+                  obsoleteTerms.put(termId, newTerm);
+                }
+              }
+
               return;
             }
           }
@@ -324,9 +338,10 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
 
         // Construct TermId objects for all alternative ids.
         final List<StanzaEntry> altIdEntries = stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
+        final List<ImmutableTermId> altTermIds = new ArrayList<>();
         if (altIdEntries != null) {
           for (StanzaEntry e : altIdEntries) {
-            registeredTermId(((StanzaEntryAltId) e).getAltId());
+            altTermIds.add(registeredTermId(((StanzaEntryAltId) e).getAltId()));
           }
         }
 
@@ -354,7 +369,13 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
         }
 
         // Construct the term through the factory.
-        terms.put(sourceId, ontologyEntryFactory.constructTerm(stanza));
+        final T term = ontologyEntryFactory.constructTerm(stanza);
+        terms.put(sourceId, term);
+
+        // Put into map from alternative IDs as well.
+        for (ImmutableTermId altTermId : altTermIds) {
+          terms.put(altTermId, term);
+        }
       }
     }
 
