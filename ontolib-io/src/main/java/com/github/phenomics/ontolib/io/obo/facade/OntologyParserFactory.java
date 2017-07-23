@@ -3,6 +3,7 @@ package com.github.phenomics.ontolib.io.obo.facade;
 import java.io.File;
 import java.io.IOException;
 
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.github.phenomics.ontolib.io.base.OntologyOboParser;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParser;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
