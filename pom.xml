@@ -26,7 +26,6 @@
   <modules>
     <module>ontolib-core</module>
     <module>ontolib-io</module>
-    <module>ontolib-onto</module>
   </modules>
 
   <!-- Inherit artifact from SonaType OSS pom.xml Following this article: 
