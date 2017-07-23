@@ -2,14 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.charite.compbio</groupId>
+  <groupId>com.github.phenomics</groupId>
   <artifactId>OntoLib</artifactId>
   <packaging>pom</packaging>
   <version>0.1-SNAPSHOT</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>OntoLib contains data structures and algorithms for processing ontologies</description>
-  <url>https://github.com/charite/OntoLib</url>
+  <url>https://github.com/phenomics/ontolib</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1,0 +1,81 @@
+package com.github.phenomics.ontolib.ontology.similarity;
+
+import com.github.phenomics.ontolib.ontology.data.Ontology;
+import com.github.phenomics.ontolib.ontology.data.Term;
+import com.github.phenomics.ontolib.ontology.data.TermId;
+import com.github.phenomics.ontolib.ontology.data.TermRelation;
+import com.google.common.collect.Sets;
+
+import java.util.Collection;
+import java.util.Set;
+
+// TODO: opposite aware computation is not implemented (yet)
+
+/**
+ * Implementation of cosine similarity.
+ *
+ * @param <T> {@link Term} sub class to use in the contained classes
+ * @param <R> {@link TermRelation} sub class to use in the contained classes
+ *
+ * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ */
+public final class CosineSimilarity<T extends Term, R extends TermRelation> implements Similarity {
+
+  /**
+   * The {@link Ontology} to compute the similarity for.
+   */
+  private final Ontology<T, R> ontology;
+
+  /** Whether or not to compute in an opposite-aware fashion. */
+  private final boolean oppositeAware;
+
+  /**
+   * Construct <code>CosineSimilarity</code> object for the given {@link Ontology}.
+   *
+   * <p>
+   * By default, similarity is <b>not</b> opposite aware.
+   * </p>
+   *
+   * @param ontology {@link Ontology} to base the computation on.
+   */
+  public CosineSimilarity(Ontology<T, R> ontology) {
+    this(ontology, false);
+  }
+
+  /**
+   * Construct <code>CosineSimilarity</code> object for the given {@link Ontology}.
+   *
+   * @param ontology {@link Ontology} to base the computation on.
+   * @param oppositeAware Whether or not to be opposite aware.
+   */
+  public CosineSimilarity(Ontology<T, R> ontology, boolean oppositeAware) {
+    this.ontology = ontology;
+    this.oppositeAware = oppositeAware;
+  }
+
+  @Override
+  public String getName() {
+    return "Cosine similarity";
+  }
+
+  @Override
+  public String getParameters() {
+    return "{oppositeAware: " + oppositeAware + "}";
+  }
+
+  @Override
+  public boolean isSymmetric() {
+    return true;
+  }
+
+  @Override
+  public double computeScore(Collection<TermId> query, Collection<TermId> target) {
+    final Set<TermId> termIdsQuery = ontology.getAllAncestorTermIds(query, false);
+    final Set<TermId> termIdsTarget = ontology.getAllAncestorTermIds(target, false);
+
+    return Sets.intersection(termIdsQuery, termIdsTarget).size()
+        / (Math.sqrt(termIdsQuery.size()) * Math.sqrt(termIdsTarget.size()));
+  }
+
+}

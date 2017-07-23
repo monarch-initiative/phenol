@@ -10,7 +10,7 @@
   <url>https://github.com/charite/OntoLib</url>
 
   <parent>
-    <groupId>de.charite.compbio</groupId>
+    <groupId>com.github.phenomics</groupId>
     <artifactId>OntoLib</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
