@@ -6,6 +6,7 @@ import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   private final List<String> taxons;
 
   /** Date. */
-  private final String date;
+  private final Date date;
 
   /** Assignment author. */
   private final String assignedBy;
@@ -95,7 +96,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
    * @param dbObjectSynonym The DB object synonym; optional, <code>null</code> when missing.
    * @param dbObjectType The DB object type, e.g., <code>"protein"</code>.
    * @param taxons Taxon(s), of cardinality 1 or 2.
-   * @param date Assignmetn date.
+   * @param date Assignment date.
    * @param assignedBy Assignment author.
    * @param annotationExtension Annotation extension; optional, <code>null</code> when missing.
    * @param geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.
@@ -103,7 +104,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   public GoGaf21Annotation(String db, String dbObjectId, String dbObjectSymbol, String qualifier,
       TermId goId, String dbReference, String evidenceCode, String with, String aspect,
       String dbObjectName, String dbObjectSynonym, String dbObjectType, List<String> taxons,
-      String date, String assignedBy, String annotationExtension, String geneProductFormId) {
+      Date date, String assignedBy, String annotationExtension, String geneProductFormId) {
     this.db = db;
     this.dbObjectId = dbObjectId;
     this.dbObjectSymbol = dbObjectSymbol;
@@ -215,7 +216,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   /**
    * @return The date.
    */
-  public String getDate() {
+  public Date getDate() {
     return date;
   }
 

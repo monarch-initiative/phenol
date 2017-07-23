@@ -1,16 +1,19 @@
 package com.github.phenomics.ontolib.io.obo.go;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import com.github.phenomics.ontolib.formats.go.GoGaf21Annotation;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParser;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
 import com.google.common.collect.ImmutableList;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Parser for GO "gene annotation file" (GAF) format.
@@ -113,12 +116,21 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     final String dbObjectSynonym = arr[10];
     final String dbObjectType = arr[11];
     final List<String> taxons = ImmutableList.copyOf(arr[12].split("\\|"));
-    final String date = arr[13];
+    final String dateStr = arr[13];
     final String assignedBy = arr[14];
     final String annotationExtension = (arr.length < 16) ? null : arr[15];
     final String geneProductFormId = (arr.length < 17) ? null : arr[16];
 
     nextLine = reader.readLine();
+
+    final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    Date date;
+    try {
+      date = format.parse(dateStr);
+    } catch (ParseException e) {
+      throw new TermAnnotationParserException(
+          "There was a problem parsing the date value " + dateStr, e);
+    }
 
     return new GoGaf21Annotation(db, dbObjectId, dbObjectSymbol, qualifier, goId, dbReference,
         evidenceCode, with, aspect, dbObjectName, dbObjectSynonym, dbObjectType, taxons, date,
