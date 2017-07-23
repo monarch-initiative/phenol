@@ -44,7 +44,7 @@ public final class OntologyParserFactory {
       case UPHENO:
         return new UphenoOboParser(oboFile);
       default:
-        throw new RuntimeException("Invalid ontology selected " + ontology);
+        throw new OntoLibRuntimeException("Invalid ontology selected " + ontology);
     }
   }
 

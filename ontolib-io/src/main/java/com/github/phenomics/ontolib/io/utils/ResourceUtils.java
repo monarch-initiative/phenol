@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+
 import org.apache.commons.io.IOUtils;
+
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 
 /**
  * Helper class with static methods for handling resources in tests
@@ -25,7 +28,7 @@ public class ResourceUtils {
     try {
       IOUtils.copy(ResourceUtils.class.getResourceAsStream(path), writer, "UTF-8");
     } catch (IOException e) {
-      throw new RuntimeException("Problem reading resource " + path, e);
+      throw new OntoLibRuntimeException("Problem reading resource " + path, e);
     }
     return writer.toString();
   }
@@ -45,7 +48,7 @@ public class ResourceUtils {
         os.write(buffer, 0, length);
       }
     } catch (IOException e) {
-      throw new RuntimeException("Problem with copying resource to file", e);
+      throw new OntoLibRuntimeException("Problem with copying resource to file", e);
     }
   }
 
