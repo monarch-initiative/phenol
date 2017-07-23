@@ -1,6 +1,7 @@
 package com.github.phenomics.ontolib.ontology.data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,8 +62,8 @@ public interface Term extends Serializable {
   /**
    * Query for creation date.
    *
-   * @return <code>creation_date</code> value.
+   * @return <code>creation_date</code> value, parsed to a {@link Date}.
    */
-  String getCreationDate();
+  Date getCreationDate();
 
 }

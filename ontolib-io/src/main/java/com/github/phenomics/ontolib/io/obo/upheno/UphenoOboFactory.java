@@ -1,5 +1,12 @@
 package com.github.phenomics.ontolib.io.obo.upheno;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
+
 import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.github.phenomics.ontolib.formats.upheno.UphenoRelationQualifier;
 import com.github.phenomics.ontolib.formats.upheno.UphenoTerm;
@@ -32,10 +39,6 @@ import com.github.phenomics.ontolib.ontology.data.TermSynonym;
 import com.github.phenomics.ontolib.ontology.data.TermSynonymScope;
 import com.github.phenomics.ontolib.ontology.data.TermXref;
 import com.google.common.collect.Lists;
-
-import java.util.List;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
 
 /**
  * Factory class for constructing {@link UphenoTerm} and {@link UphenoTermRelation} objects from
@@ -126,7 +129,18 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
 
     final StanzaEntryCreationDate creationDateEntry = this.<
         StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATION_DATE);
-    final String creationDate = (creationDateEntry == null) ? null : creationDateEntry.getValue();
+    final String creationDateStr =
+        (creationDateEntry == null) ? null : creationDateEntry.getValue();
+
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    Date creationDate = null;
+    if (creationDateStr != null) {
+      try {
+        creationDate = format.parse(creationDateStr);
+      } catch (ParseException e) {
+        throw new OntoLibRuntimeException("Problem parsing date string " + creationDateStr, e);
+      }
+    }
 
     return new UphenoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
         createdBy, creationDate);

@@ -1,5 +1,6 @@
 package com.github.phenomics.ontolib.ontology.data;
 
+import java.util.Date;
 import java.util.List;
 
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
@@ -20,11 +21,11 @@ public class TestTerm implements Term {
   private List<TermSynonym> termSynonyms;
   private boolean obsolete;
   private String createdBy;
-  private String creationDate;
+  private Date creationDate;
 
   public TestTerm(ImmutableTermId termId, List<TermId> altTermIds, String name, String definition,
       String comment, List<String> subsets, List<TermSynonym> termSynonyms, boolean obsolete,
-      String createdBy, String creationDate) {
+      String createdBy, Date creationDate) {
     this.termId = termId;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -83,7 +84,7 @@ public class TestTerm implements Term {
   }
 
   @Override
-  public String getCreationDate() {
+  public Date getCreationDate() {
     return creationDate;
   }
 

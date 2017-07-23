@@ -1,5 +1,6 @@
 package com.github.phenomics.ontolib.formats.hpo;
 
+import java.util.Date;
 import java.util.List;
 
 import com.github.phenomics.ontolib.ontology.data.Term;
@@ -45,7 +46,7 @@ public class HpoTerm implements Term {
   private final String createdBy;
 
   /** The term's creation date. */
-  private final String creationDate; // TODO: replace by Date?
+  private final Date creationDate;
 
   /**
    * Constructor.
@@ -63,7 +64,7 @@ public class HpoTerm implements Term {
    */
   public HpoTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
       List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
-      String creationDate) {
+      Date creationDate) {
     this.id = id;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -122,7 +123,7 @@ public class HpoTerm implements Term {
   }
 
   @Override
-  public String getCreationDate() {
+  public Date getCreationDate() {
     return creationDate;
   }
 
