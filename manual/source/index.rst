@@ -40,7 +40,6 @@ The best place to leave feedback, ask questions, and report bugs is the `OntoLib
     install
     tutorial_io
     tutorial_hpo
-    tutorial_annotation
     tutorial_similarity
 
 .. toctree::

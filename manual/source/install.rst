@@ -4,9 +4,9 @@
 Installation
 ============
 
-------------------
-Pre-built Binaries
-------------------
+--------------------------
+Use Maven Central Binaries
+--------------------------
 
 .. note::
 
@@ -16,7 +16,18 @@ Simply use the following snippet for your ``pom.xml`` for using OntoLib modules 
 
 .. code-block:: xml
 
-  TODO
+  <dependencies>
+    <dependency>
+      <groupId>com.github.phenomics</groupId>
+      <artifactId>ontolib-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.phenomics</groupId>
+      <artifactId>ontolib-io</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 
 .. _install_from_source:
 
