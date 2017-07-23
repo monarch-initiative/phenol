@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Phenomics/ontolib.svg?branch=master)](https://travis-ci.org/Phenomics/ontolib)
+
 # OntoLib
 
 A modern Java library for working with (biological) ontologies.

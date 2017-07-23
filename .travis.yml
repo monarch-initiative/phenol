@@ -1,0 +1,5 @@
+language: java
+
+# We only support Java 8, and Travis CI does not have OpenJDK 8 (yet).
+jdk:
+- oraclejdk8
