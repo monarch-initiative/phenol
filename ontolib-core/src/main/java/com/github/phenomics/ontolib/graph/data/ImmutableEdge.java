@@ -1,5 +1,6 @@
 package com.github.phenomics.ontolib.graph.data;
 
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
 /**
@@ -130,9 +131,8 @@ public class ImmutableEdge<V extends Comparable<V>> implements Edge<V> {
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
    */
-  public static class Factory<V extends Comparable<V>>
-      implements
-        Edge.Factory<V, ImmutableEdge<V>> {
+  public static class Factory<
+      V extends Comparable<V>> implements Edge.Factory<V, ImmutableEdge<V>> {
 
     /** Id of next edge to add. */
     private int nextEdgeId;
@@ -164,7 +164,7 @@ public class ImmutableEdge<V extends Comparable<V>> implements Edge<V> {
   @Override
   public int compareTo(Edge<V> o) {
     if (!(o instanceof ImmutableEdge)) {
-      throw new RuntimeException("Cannot compare " + o + " to " + this);
+      throw new OntoLibRuntimeException("Cannot compare " + o + " to " + this);
     }
     ImmutableEdge<V> that = (ImmutableEdge<V>) o;
 

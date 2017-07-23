@@ -1,7 +1,15 @@
 package com.github.phenomics.ontolib.io.obo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
 import com.github.phenomics.ontolib.ontology.data.TermSynonymScope;
 import com.google.common.collect.Lists;
+
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXrefContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.DbXrefListContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.EolComment2Context;
@@ -58,12 +66,6 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.TrailingModifier
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.TrailingModifierKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParser.TypedefStanzaKeyValueContext;
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParserBaseListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 // TODO: validate the cardinality of entries in header/stanza
 // TODO: using Optional<> for optioanl entries would greatly simplify downstream processing
@@ -178,9 +180,8 @@ class OboParserListener extends Antlr4OboParserBaseListener {
       stanzaType = StanzaType.TYPEDEF;
     } else if (ctx.instanceStanza() != null) {
       stanzaType = StanzaType.INSTANCE;
-    } else {
-      // nop, header is a fake stanza
     }
+    // else: header is a fake stanza, nop
 
     // Construct Stanza object and notify listener
     if (listener != null) {
@@ -773,11 +774,11 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     if (s == null) {
       return null;
     } else {
-      s = s.trim();
-      if (s.isEmpty()) {
+      final String str = s.trim();
+      if (str.isEmpty()) {
         return null;
       } else {
-        return s.trim();
+        return str.trim();
       }
     }
   }

@@ -80,6 +80,7 @@ public class App {
           break;
         default:
           printUsageError("I don't know about command " + command);
+          break;
       }
     }
   }
@@ -171,7 +172,7 @@ public class App {
   }
 
   private void writeAndLoadSer(Object o) {
-    System.out.println("Writing .ser file " + outputSerFile + "...");;
+    System.out.println("Writing .ser file " + outputSerFile + "...");
     long startTime = System.nanoTime();
     try (FileOutputStream fout = new FileOutputStream(outputSerFile);
         ObjectOutputStream oos = new ObjectOutputStream(fout)) {
@@ -185,7 +186,7 @@ public class App {
     double duration = (endTime - startTime) / 1_000_000_000.0;
     System.out.println("Writing .ser took " + duration + " seconds");
 
-    System.out.println("Loading .ser file " + outputSerFile + "...");;
+    System.out.println("Loading .ser file " + outputSerFile + "...");
     startTime = System.nanoTime();
     try (FileInputStream fin = new FileInputStream(outputSerFile);
         ObjectInputStream ois = new ObjectInputStream(fin);) {

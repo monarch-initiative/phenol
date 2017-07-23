@@ -34,13 +34,13 @@ public final class DepthFirstSearch<V extends Comparable<V>, E extends Edge<V>>
     final ArrayDeque<V> dequeue = new ArrayDeque<V>();
     dequeue.addLast(v);
     while (!dequeue.isEmpty()) {
-      v = dequeue.pollLast();
-      if (!seen.contains(v)) { // skip seen ones
-        seen.add(v);
-        if (!visitor.visit(g, v)) {
+      final V vertex = dequeue.pollLast();
+      if (!seen.contains(vertex)) { // skip seen ones
+        seen.add(vertex);
+        if (!visitor.visit(g, vertex)) {
           break;
         }
-        final Iterator<V> it = selector.nextFrom(g, v);
+        final Iterator<V> it = selector.nextFrom(g, vertex);
         while (it.hasNext()) {
           dequeue.add(it.next());
         }

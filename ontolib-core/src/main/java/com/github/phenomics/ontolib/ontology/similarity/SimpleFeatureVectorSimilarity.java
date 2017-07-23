@@ -18,11 +18,6 @@ import java.util.Collection;
  */
 public final class SimpleFeatureVectorSimilarity implements Similarity {
 
-  /**
-   * Construct <code>SimpleFeatureVectorSimilarity</code> object.
-   */
-  public SimpleFeatureVectorSimilarity() {}
-
   @Override
   public String getName() {
     return "Simple feature vector similarity";

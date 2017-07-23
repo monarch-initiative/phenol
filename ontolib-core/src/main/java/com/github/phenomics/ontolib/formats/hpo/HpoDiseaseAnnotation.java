@@ -1,10 +1,11 @@
 package com.github.phenomics.ontolib.formats.hpo;
 
+import java.util.Optional;
+
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.github.phenomics.ontolib.ontology.data.TermAnnotation;
 import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
-
-import java.util.Optional;
 
 // TODO: discuss with Sebastian whether this is the correct naming and description
 // TODO: use more enumeration types?
@@ -253,7 +254,8 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof HpoDiseaseAnnotation)) {
-      throw new RuntimeException("Can only compare HPODiseaseAnnotation with objects of same type");
+      throw new OntoLibRuntimeException(
+          "Can only compare HPODiseaseAnnotation with objects of same type");
     }
     HpoDiseaseAnnotation that = (HpoDiseaseAnnotation) o;
 

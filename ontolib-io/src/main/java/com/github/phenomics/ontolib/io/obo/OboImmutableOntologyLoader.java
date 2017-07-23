@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.github.phenomics.ontolib.graph.data.ImmutableDirectedGraph;
 import com.github.phenomics.ontolib.graph.data.ImmutableEdge;
 import com.github.phenomics.ontolib.ontology.data.ImmutableOntology;
@@ -99,7 +100,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     parser.parseFile(file, helper);
 
     if (helper.getAllTermIds().size() == 0) {
-      throw new RuntimeException("No terms in ontology?!");
+      throw new OntoLibRuntimeException("No terms in ontology?!");
     }
 
     /*
@@ -155,7 +156,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
 
     // Get root or construct a synthetic one. Bail out if no root candidate was found.s
     if (rootCandidates.size() == 0) {
-      throw new RuntimeException("No term without outgoing is-a edge. Empty or cyclic?");
+      throw new OntoLibRuntimeException("No term without outgoing is-a edge. Empty or cyclic?");
     } else if (rootCandidates.size() == 1) {
       return rootCandidates.get(0);
     } else {
@@ -163,7 +164,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
       final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
       final ImmutableTermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
       if (helper.getAllTermIds().contains(rootId)) {
-        throw new RuntimeException(
+        throw new OntoLibRuntimeException(
             "Tried to guess artificial root as " + rootId + " but is already taken.");
       }
 
@@ -322,7 +323,6 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
               // Construct TermId objects for all alternative ids.
               final List<StanzaEntry> altIdEntries =
                   stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
-              final List<ImmutableTermId> altTermIds = new ArrayList<>();
               if (altIdEntries != null) {
                 for (StanzaEntry altIdEntry : altIdEntries) {
                   final ImmutableTermId termId =
@@ -393,7 +393,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
 
       final int pos = termIdStr.lastIndexOf(':');
       if (pos == -1) {
-        throw new RuntimeException("Term Id does not contain colon! " + termIdStr);
+        throw new OntoLibRuntimeException("Term Id does not contain colon! " + termIdStr);
       }
 
       final String prefixStr = termIdStr.substring(0, pos);

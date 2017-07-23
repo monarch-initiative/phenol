@@ -12,10 +12,10 @@ import com.github.phenomics.ontolib.ontology.data.TermRelation;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  *
- * @param <OntologyT> The {@link Ontology} to return.
+ * @param <O> The {@link Ontology} to return.
  */
 public interface OntologyOboParser<
-    OntologyT extends Ontology<? extends Term, ? extends TermRelation>> {
+    O extends Ontology<? extends Term, ? extends TermRelation>> {
 
   /**
    * Parse and build specialized {@link Ontology}.
@@ -23,7 +23,7 @@ public interface OntologyOboParser<
    * @return The loaded {@link Ontology}.
    * @throws IOException In case of problem with reading from the file.
    */
-  OntologyT parse() throws IOException;
+  O parse() throws IOException;
 
   /**
    * @return The OBO {@link File} that is loaded.
