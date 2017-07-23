@@ -15,9 +15,6 @@ public final class TrailingModifierBuilder {
   /** A list of key/value entries. */
   private final List<TrailingModifier.KeyValue> keyValue = new ArrayList<>();
 
-  /** Default constructor. */
-  public TrailingModifierBuilder() {}
-
   /**
    * Add key value pair.
    *

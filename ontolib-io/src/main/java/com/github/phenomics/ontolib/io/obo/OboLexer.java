@@ -1,8 +1,11 @@
 package com.github.phenomics.ontolib.io.obo;
 
-import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboLexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
+
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
+
+import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboLexer;
 
 /**
  * Extends the generated Antlr4OboLexer to bail out at the first lexing error.
@@ -17,7 +20,7 @@ public class OboLexer extends Antlr4OboLexer {
 
   @Override
   public void recover(LexerNoViableAltException e) {
-    throw new RuntimeException(e); // bail out
+    throw new OntoLibRuntimeException("There was a problem with lexing OBO file.", e); // bail out
   }
 
 }

@@ -14,6 +14,19 @@ import java.util.TreeMap;
  */
 public final class Stanza {
 
+  /** The type of this stanza. */
+  private final StanzaType type;
+
+  /**
+   * List of {@link StanzaEntry} objects for this <code>Stanza</code>.
+   */
+  private final List<StanzaEntry> stanzaEntries;
+
+  /**
+   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
+   */
+  private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
+
   /**
    * Factory method for creating new {@link Stanza} object.
    *
@@ -29,19 +42,6 @@ public final class Stanza {
   public static Stanza create(StanzaType type, List<StanzaEntry> stanzaEntries) {
     return new Stanza(type, stanzaEntries);
   }
-
-  /** The type of this stanza. */
-  private final StanzaType type;
-
-  /**
-   * List of {@link StanzaEntry} objects for this <code>Stanza</code>.
-   */
-  private final List<StanzaEntry> stanzaEntries;
-
-  /**
-   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
-   */
-  private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
 
   /**
    * Constructor.

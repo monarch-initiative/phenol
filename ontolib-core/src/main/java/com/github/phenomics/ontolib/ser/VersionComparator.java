@@ -24,8 +24,10 @@ final class VersionComparator implements Comparator<String> {
     VersionTokenizer tokenizer1 = new VersionTokenizer(version1);
     VersionTokenizer tokenizer2 = new VersionTokenizer(version2);
 
-    int number1 = 0, number2 = 0;
-    String suffix1 = "", suffix2 = "";
+    int number1 = 0;
+    int number2 = 0;
+    String suffix1 = "";
+    String suffix2 = "";
 
     while (tokenizer1.moveNext()) {
       if (!tokenizer2.moveNext()) {

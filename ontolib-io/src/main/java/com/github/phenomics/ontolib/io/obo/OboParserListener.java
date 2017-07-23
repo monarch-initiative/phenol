@@ -83,6 +83,23 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   /** Internal listener for notifying on parsed parts. */
   private final OboParseResultListener listener;
 
+  /** Map nodes to Objects with Map&lt;ParseTree, Object&gt;. */
+  private ParseTreeProperty<Object> values = new ParseTreeProperty<>();
+
+  /**
+   * Current {@link StanzaType}.
+   */
+  private StanzaType stanzaType = null;
+
+  /**
+   * List of current stanza's {@link StanzaEntry} objects.
+   *
+   * <p>
+   * This has package level visibility for testing purposes.
+   * </p>
+   */
+  List<StanzaEntry> stanzaKeyValues = null;
+
   /**
    * Constructor.
    *
@@ -91,9 +108,6 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   public OboParserListener(OboParseResultListener listener) {
     this.listener = listener;
   }
-
-  /** Map nodes to Objects with Map&lt;ParseTree, Object&gt;. */
-  private ParseTreeProperty<Object> values = new ParseTreeProperty<>();
 
   /**
    * Set associated <code>value</code> for the given {@link ParseTree} <code>node</code>.
@@ -125,20 +139,6 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   void clearValues() {
     values = new ParseTreeProperty<>();
   }
-
-  /**
-   * Current {@link StanzaType}.
-   */
-  private StanzaType stanzaType = null;
-
-  /**
-   * List of current stanza's {@link StanzaEntry} objects.
-   *
-   * <p>
-   * This has package level visibility for testing purposes.
-   * </p>
-   */
-  List<StanzaEntry> stanzaKeyValues = null;
 
   /**
    * Called on entering <code>stanza</code> rule.

@@ -40,7 +40,8 @@ public final class DataSerializer {
     try {
       properties.load(DataSerializer.class.getResourceAsStream("/project.properties"));
     } catch (IOException e) {
-      throw new RuntimeException("Could not load project.properties for obtaining version", e);
+      throw new SerializationRuntimeException(
+          "Could not load project.properties for obtaining version", e);
     }
     return properties.getProperty("version");
   }

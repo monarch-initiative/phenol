@@ -15,16 +15,6 @@ import java.util.TreeMap;
 public class Header {
 
   /**
-   * Factory method.
-   *
-   * @param stanzaKeyValues List of {@link StanzaEntry} objects to construct with.
-   * @return Constructed {@link Header}.
-   */
-  public static Header create(List<StanzaEntry> stanzaKeyValues) {
-    return new Header(stanzaKeyValues);
-  }
-
-  /**
    * Wrapped {@link List} of {@link StanzaEntry} objects.
    */
   private final List<StanzaEntry> entries;
@@ -33,6 +23,16 @@ public class Header {
    * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
    */
   private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
+
+  /**
+   * Factory method.
+   *
+   * @param stanzaKeyValues List of {@link StanzaEntry} objects to construct with.
+   * @return Constructed {@link Header}.
+   */
+  public static Header create(List<StanzaEntry> stanzaKeyValues) {
+    return new Header(stanzaKeyValues);
+  }
 
   /**
    * Constructor.
