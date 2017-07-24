@@ -8,7 +8,7 @@
   <version>0.1-SNAPSHOT</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>OntoLib contains data structures and algorithms for processing ontologies</description>
+  <description>OntoLib contains data structures and algorithms for processing ontologies.</description>
   <url>https://github.com/phenomics/ontolib</url>
 
   <properties>
@@ -40,8 +40,8 @@
   <!-- License Information for Maven Central -->
   <licenses>
     <license>
-      <name>3-clause BSD</name>
-      <url>http://www.opensource.org/licenses/bsd-license.php</url>
+      <name>BSD 3-clause Clear License</name>
+      <url>https://spdx.org/licenses/BSD-3-Clause-Clear.html</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -69,9 +69,9 @@
 
   <!-- SCM Information for Maven Central -->
   <scm>
-    <connection>scm:git:git@github.com:charite/OntoLib.git</connection>
-    <developerConnection>scm:git:git@github.com:charite/OntoLib.git</developerConnection>
-    <url>scm:git:git@github.com:charite/OntoLib.git</url>
+    <connection>scm:git:git@github.com:phenomics/ontolib.git</connection>
+    <developerConnection>scm:git:git@github.com:phenomics/ontolib.git</developerConnection>
+    <url>scm:git:git@github.com:phenomics/ontolib.git</url>
   </scm>
 
   <dependencies>
