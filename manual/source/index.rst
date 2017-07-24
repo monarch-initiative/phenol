@@ -52,3 +52,4 @@ The best place to leave feedback, ask questions, and report bugs is the `OntoLib
     authors
     history
     license
+    release_howto
