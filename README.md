@@ -10,6 +10,7 @@ A modern Java library for working with (biological) ontologies.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
+- **Version:** 0.1
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson

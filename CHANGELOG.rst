@@ -2,8 +2,8 @@
 Changelog
 =========
 
---------------------------------
-v0.1-SNAPSHOT (work in progress)
---------------------------------
+----
+v0.1
+----
 
 - Everything is new.

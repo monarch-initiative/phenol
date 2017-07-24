@@ -5,7 +5,7 @@
   <groupId>de.charite.compbio</groupId>
   <artifactId>ontolib-demos-compute-similarities</artifactId>
   <packaging>jar</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
 
   <name>Match gene (by Entrez ID) and HPO terms from TSV file</name>
   <url>https://github.com/charite/ontolib</url>
