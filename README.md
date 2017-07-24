@@ -16,6 +16,7 @@ A modern Java library for working with (biological) ontologies.
     - Sebastian Koehler
     - Max Schubach
     - Manuel Holtgrewe
+- **Version:** 0.1
 - **Availability:**
     - Maven module `ontolib-core` for dealing with (biological) ontologies.
     - Maven module `ontolib-io` for reading ontologies from OBO files.
