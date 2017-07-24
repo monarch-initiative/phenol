@@ -142,7 +142,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'OntoLib.tex', u'OntoLib Documentation',
-     u'Sebastian Bauer, Peter N. Robinson, Sebastian Koehler, Max Schubach, Manuel Holtgrewe', 'manual'),
+     u'Sebastian Koehler, Manuel Holtgrewe', 'manual'),
 ]
 
 
