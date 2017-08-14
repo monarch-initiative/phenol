@@ -2,17 +2,15 @@ package com.github.phenomics.ontolib.io.obo.go;
 
 import static org.junit.Assert.assertEquals;
 
+import com.github.phenomics.ontolib.formats.go.GoGaf21Annotation;
+import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
+import com.github.phenomics.ontolib.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import com.github.phenomics.ontolib.formats.go.GoGaf21Annotation;
-import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
-import com.github.phenomics.ontolib.io.utils.ResourceUtils;
 
 /**
  * Test for loading first 40 lines of human GO annotation GAF v2.1.
@@ -28,6 +26,8 @@ public class GoAnnotationGaf21ParserTest {
 
   @Before
   public void setUp() throws IOException {
+    System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
+
     goGeneAnnotationHeadFile = tmpFolder.newFile("goa_human_head.gav21.gaf");
     ResourceUtils.copyResourceToFile("/goa_human_head.gav21.gaf", goGeneAnnotationHeadFile);
   }

@@ -2,17 +2,15 @@ package com.github.phenomics.ontolib.io.obo.hpo;
 
 import static org.junit.Assert.assertEquals;
 
+import com.github.phenomics.ontolib.formats.hpo.HpoDiseaseAnnotation;
+import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
+import com.github.phenomics.ontolib.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import com.github.phenomics.ontolib.formats.hpo.HpoDiseaseAnnotation;
-import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
-import com.github.phenomics.ontolib.io.utils.ResourceUtils;
 
 public class HpoDiseaseAnnotationParserTest {
 
@@ -23,6 +21,8 @@ public class HpoDiseaseAnnotationParserTest {
 
   @Before
   public void setUp() throws IOException {
+    System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
+
     hpoDiseaseAnnotationHeadFile = tmpFolder.newFile("negative_phenotype_annotation_head.tab");
     ResourceUtils.copyResourceToFile("/negative_phenotype_annotation_head.tab",
         hpoDiseaseAnnotationHeadFile);

@@ -415,7 +415,7 @@ Comment2
 
 Esc2
 :
-  '\\' [nWt,"[\]{}]
+  '\\' [nWt:,"[\]{}]
 ;
 
 // Move errors from the lexer to the parser
