@@ -1,5 +1,24 @@
 package com.github.phenomics.ontolib.cli;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
 import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
 import com.github.phenomics.ontolib.formats.hpo.HpoTerm;
@@ -11,19 +30,11 @@ import com.github.phenomics.ontolib.ontology.algo.InformationContentComputation;
 import com.github.phenomics.ontolib.ontology.data.ImmutableOntology;
 import com.github.phenomics.ontolib.ontology.data.TermAnnotations;
 import com.github.phenomics.ontolib.ontology.data.TermId;
+import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
+import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import com.github.phenomics.ontolib.ontology.scoredist.SimilarityScoreSampling;
 import com.github.phenomics.ontolib.ontology.similarity.ResnikSimilarity;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code precompute-scores} command.
@@ -55,6 +66,16 @@ public class PrecomputeScoresCommand {
   /** The Resnik similarity. */
   ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity;
 
+  /**
+   * The resulting score distribution; will be written out.
+   *
+   * <p>
+   * The output is a mapping from term count to {@link ScoreDistribution} which maps Entrez gene ID
+   * to empirical p value distribution.
+   * </p>
+   */
+  Map<Integer, ScoreDistribution> scoreDistribution;
+
   /** Constructor. */
   public PrecomputeScoresCommand(PrecomputeScoresOptions options) {
     this.options = options;
@@ -66,6 +87,7 @@ public class PrecomputeScoresCommand {
     loadOntology();
     precomputePairwiseResnik();
     performSampling();
+    writeDistribution();
     printFooter();
   }
 
@@ -148,9 +170,36 @@ public class PrecomputeScoresCommand {
     final SimilarityScoreSampling<HpoTerm, HpoTermRelation> sampling =
         new SimilarityScoreSampling<>(phenotypicAbnormalitySubOntology, resnikSimilarity,
             samplingOptions);
-    sampling.performSampling(objectIdToTermId);
+    scoreDistribution = sampling.performSampling(objectIdToTermId);
 
     LOGGER.info("Done with sampling.");
+  }
+
+  private void writeDistribution() {
+    LOGGER.info("Writing out score distribution...");
+
+    final File fout = new File(options.getOutputScoreDistFile());
+    try (PrintStream outStream = new PrintStream(fout)) {
+      outStream.print("#numTerms\tentrezId\tdistribution");
+      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
+        final int numTerms = e.getKey();
+        for (int entrezId : e.getValue().getObjectIds()) {
+          ObjectScoreDistribution dist = e.getValue().getObjectScoreDistribution(entrezId);
+
+          outStream.print(numTerms);
+          outStream.print("\t");
+          outStream.print(entrezId);
+          outStream.print("\t");
+          // TODO: need to extract sampled score distribution...
+          outStream.print("");
+          outStream.println();
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("ERROR: could not write to file", e);
+    }
+
+    LOGGER.info("Done writing out distribution.");
   }
 
   private void printFooter() {
