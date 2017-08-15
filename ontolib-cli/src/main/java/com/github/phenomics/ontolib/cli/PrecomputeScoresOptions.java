@@ -28,8 +28,8 @@ public class PrecomputeScoresOptions {
       description = "Maximal number of terms to precompute for.")
   private int maxNumTerms = 20;
 
-  @Parameter(names = {"--num-iterationss"}, description = "Number of iterations to run.")
-  private int numIterations;
+  @Parameter(names = {"--num-iterations"}, description = "Number of iterations to run.")
+  private int numIterations = 10_000;
 
   @Parameter(names = {"--seed"}, description = "Seed to use for RNG.")
   private int seed = 42;

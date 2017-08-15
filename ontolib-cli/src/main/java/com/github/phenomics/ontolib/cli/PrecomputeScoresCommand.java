@@ -35,6 +35,17 @@ import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import com.github.phenomics.ontolib.ontology.scoredist.SimilarityScoreSampling;
 import com.github.phenomics.ontolib.ontology.similarity.ResnikSimilarity;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code precompute-scores} command.
@@ -178,25 +189,15 @@ public class PrecomputeScoresCommand {
   private void writeDistribution() {
     LOGGER.info("Writing out score distribution...");
 
-    final File fout = new File(options.getOutputScoreDistFile());
-    try (PrintStream outStream = new PrintStream(fout)) {
-      outStream.print("#numTerms\tentrezId\tdistribution");
-      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
-        final int numTerms = e.getKey();
-        for (int entrezId : e.getValue().getObjectIds()) {
-          ObjectScoreDistribution dist = e.getValue().getObjectScoreDistribution(entrezId);
+    final int resolution = Math.min(1000, Math.max(100, options.getNumIterations() / 100));
 
-          outStream.print(numTerms);
-          outStream.print("\t");
-          outStream.print(entrezId);
-          outStream.print("\t");
-          // TODO: need to extract sampled score distribution...
-          outStream.print("");
-          outStream.println();
-        }
+    try (final ScoreDistributionWriter writer =
+        new ScoreDistributionWriter(new File(options.getOutputScoreDistFile()))) {
+      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
+        writer.write(e.getKey(), e.getValue(), resolution);
       }
-    } catch (IOException e) {
-      throw new RuntimeException("ERROR: could not write to file", e);
+    } catch (IOException e1) {
+      throw new RuntimeException("Problem writing to file", e1);
     }
 
     LOGGER.info("Done writing out distribution.");

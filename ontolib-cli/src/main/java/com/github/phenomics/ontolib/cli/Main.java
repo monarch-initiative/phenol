@@ -17,11 +17,14 @@ public class Main {
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   private static final String PRECOMPUTE_SCORES = "precompute-scores";
+  private static final String MERGE_SCORES = "merge-scores";
 
   public static void main(String[] argv) {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
+    final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final JCommander jc =
-        JCommander.newBuilder().addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions).build();
+        JCommander.newBuilder().addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
+            .addCommand(MERGE_SCORES, mergeScoresOptions).build();
     try {
       jc.parse(argv);
     } catch (ParameterException e) {
@@ -38,6 +41,9 @@ public class Main {
     switch (jc.getParsedCommand()) {
       case PRECOMPUTE_SCORES:
         new PrecomputeScoresCommand(precomputeScoresOptions).run();
+        break;
+      case MERGE_SCORES:
+        new MergeScoresCommand(mergeScoresOptions).run();
         break;
     }
   }
