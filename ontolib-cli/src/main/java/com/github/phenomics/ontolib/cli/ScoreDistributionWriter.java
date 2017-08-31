@@ -64,8 +64,8 @@ public class ScoreDistributionWriter implements Closeable {
       if (resolution != 0) {
         for (int i = 0; i <= resolution; ++i) {
           final double pos = (((double) scores.size() - 1) / resolution) * i;
-          final int left = (int) Math.floor(pos);
-          final int right = (int) Math.ceil(pos);
+          final int left = Math.max(0, (int) Math.floor(pos));
+          final int right = Math.min(scores.size() - 1, (int) Math.ceil(pos));
           final double dx = right - pos;
           final double score = scores.get(left) + (1 - dx) * (scores.get(right) - scores.get(left));
           final double pValue = dist.estimatePValue(score);
