@@ -6,6 +6,7 @@ Changelog
 v0.3 (work in progress)
 -----------------------
 
+- ``Ontology.getAncestorTermIds()`` now also resolves alternative term IDs.
 - Fixing dependency on slf4j components in ``ontolib-core`` and ``ontolib-io``.
 - Adding ``getPrimaryTermId()`` in ``Ontology``.
 

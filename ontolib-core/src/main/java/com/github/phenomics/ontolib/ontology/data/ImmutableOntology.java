@@ -42,10 +42,14 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   /** The mapping from TermId to Term for all terms. */
   private final ImmutableMap<TermId, T> termMap;
 
-  /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
+  /**
+   * Set of non-obselete term ids, separate so maps can remain for sub ontology construction.
+   */
   private final ImmutableSet<TermId> nonObsoleteTermIds;
 
-  /** Set of obselete term ids, separate so maps can remain for sub ontology construction. */
+  /**
+   * Set of obselete term ids, separate so maps can remain for sub ontology construction.
+   */
   private final ImmutableSet<TermId> obsoleteTermIds;
 
   /** Set of all term IDs. */
@@ -134,11 +138,16 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
 
   @Override
   public Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot) {
+    final TermId primaryTermId = getPrimaryTermId(termId);
+    if (primaryTermId == null) {
+      return ImmutableSet.of();
+    }
+
+    final ImmutableSet<TermId> precomputed = precomputedAncestors.getOrDefault(termId, ImmutableSet.of());
     if (includeRoot) {
-      return precomputedAncestors.get(termId);
+      return precomputed;
     } else {
-      return ImmutableSet
-          .copyOf(Sets.difference(precomputedAncestors.get(termId), ImmutableSet.of(rootTermId)));
+      return ImmutableSet.copyOf(Sets.difference(precomputed, ImmutableSet.of(rootTermId)));
     }
   }
 

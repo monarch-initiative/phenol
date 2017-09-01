@@ -41,7 +41,8 @@ public interface Ontology<T extends Term,
    * 
    * @param termId The {@link TermId} to query ancestor {@link TermId}s for.
    * @param includeRoot Whether or not to include the root.
-   * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself).
+   * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself),
+   *         an empty {@link Set} if {@code termId} is not a valid term ID in the ontology.
    */
   Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot);
 
