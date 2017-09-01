@@ -6,6 +6,7 @@ Changelog
 v0.3 (work in progress)
 -----------------------
 
+- Fixing dependency on slf4j components in ``ontolib-core`` and ``ontolib-io``.
 ----
 v0.2
 ----
