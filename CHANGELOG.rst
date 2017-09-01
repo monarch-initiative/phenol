@@ -7,6 +7,8 @@ v0.3 (work in progress)
 -----------------------
 
 - Fixing dependency on slf4j components in ``ontolib-core`` and ``ontolib-io``.
+- Adding ``getPrimaryTermId()`` in ``Ontology``.
+
 ----
 v0.2
 ----
