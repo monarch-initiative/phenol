@@ -2,9 +2,9 @@
 Changelog
 =========
 
------------------------
-v0.2 (work in progress)
------------------------
+----
+v0.2
+----
 
 - Making date parser for HPO annotation files more robust.
   It works now for positive and negative associations.
