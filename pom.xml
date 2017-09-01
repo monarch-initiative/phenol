@@ -4,7 +4,7 @@
   <groupId>com.github.phenomics</groupId>
   <artifactId>OntoLib</artifactId>
   <packaging>pom</packaging>
-  <version>0.2</version>
+  <version>0.3-SNAPSHOT</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>OntoLib contains data structures and algorithms for processing ontologies.</description>
