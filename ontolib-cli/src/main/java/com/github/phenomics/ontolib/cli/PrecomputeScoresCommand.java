@@ -1,24 +1,5 @@
 package com.github.phenomics.ontolib.cli;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
 import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
 import com.github.phenomics.ontolib.formats.hpo.HpoTerm;
@@ -30,7 +11,6 @@ import com.github.phenomics.ontolib.ontology.algo.InformationContentComputation;
 import com.github.phenomics.ontolib.ontology.data.ImmutableOntology;
 import com.github.phenomics.ontolib.ontology.data.TermAnnotations;
 import com.github.phenomics.ontolib.ontology.data.TermId;
-import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreSamplingOptions;
 import com.github.phenomics.ontolib.ontology.scoredist.SimilarityScoreSampling;
@@ -63,19 +43,19 @@ public class PrecomputeScoresCommand {
   private PrecomputeScoresOptions options;
 
   /** The HPO ontology. */
-  HpoOntology ontology;
+  private HpoOntology ontology;
 
   /** The phenotypic abnormality sub ontology. */
-  ImmutableOntology<HpoTerm, HpoTermRelation> phenotypicAbnormalitySubOntology;
+  private ImmutableOntology<HpoTerm, HpoTermRelation> phenotypicAbnormalitySubOntology;
 
   /** The object ID to TermId mapping. */
-  TreeMap<Integer, Collection<TermId>> objectIdToTermId = new TreeMap<>();
+  private TreeMap<Integer, Collection<TermId>> objectIdToTermId = new TreeMap<>();
 
   /** The TermId to object ID mapping. */
-  HashMap<TermId, Collection<Integer>> termIdToObjectId = new HashMap<>();
+  private HashMap<TermId, Collection<Integer>> termIdToObjectId = new HashMap<>();
 
   /** The Resnik similarity. */
-  ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity;
+  private ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity;
 
   /**
    * The resulting score distribution; will be written out.

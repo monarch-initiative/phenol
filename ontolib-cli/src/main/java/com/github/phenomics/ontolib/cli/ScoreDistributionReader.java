@@ -91,7 +91,7 @@ public class ScoreDistributionReader implements Closeable {
 
       nextLine = reader.readLine();
     }
-    
+
     for (Entry<Integer, Map<Integer, ObjectScoreDistribution>> e : tmp.entrySet()) {
       final int numTerms = e.getKey();
       result.put(numTerms, new ScoreDistribution(numTerms, e.getValue()));

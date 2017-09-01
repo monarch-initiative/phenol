@@ -20,12 +20,12 @@ public class PrecomputeScoresOptions {
   @Parameter(names = {"--max-object-id"}, description = "Largest object ID to process, if any.")
   private Integer maxObjectId;
 
-  @Parameter(names = {"--min-num-terms"},
-      description = "Minimal number of terms to precompute for.")
+  @Parameter(names = {
+      "--min-num-terms"}, description = "Minimal number of terms to precompute for.")
   private int minNumTerms = 1;
 
-  @Parameter(names = {"--max-num-terms"},
-      description = "Maximal number of terms to precompute for.")
+  @Parameter(names = {
+      "--max-num-terms"}, description = "Maximal number of terms to precompute for.")
   private int maxNumTerms = 20;
 
   @Parameter(names = {"--num-iterations"}, description = "Number of iterations to run.")
@@ -34,16 +34,16 @@ public class PrecomputeScoresOptions {
   @Parameter(names = {"--seed"}, description = "Seed to use for RNG.")
   private int seed = 42;
 
-  @Parameter(names = {"--input-obo-file"}, description = "Path to (HPO) OBO file to load.",
-      required = true)
+  @Parameter(names = {
+      "--input-obo-file"}, description = "Path to (HPO) OBO file to load.", required = true)
   private String oboFile;
 
-  @Parameter(names = {"--gene-to-term-file"}, description = "Path to gene-to-term link file.",
-      required = true)
+  @Parameter(names = {
+      "--gene-to-term-file"}, description = "Path to gene-to-term link file.", required = true)
   private String geneToTermLinkFile;
 
-  @Parameter(names = {"--output-score-dist"},
-      description = "Path to output score distribution file", required = true)
+  @Parameter(names = {
+      "--output-score-dist"}, description = "Path to output score distribution file", required = true)
   private String outputScoreDistFile;
 
   /**
