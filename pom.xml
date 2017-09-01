@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.phenomics</groupId>
@@ -21,9 +22,11 @@
     <antlr4.version>4.7</antlr4.version>
     <commons.io.version>2.4</commons.io.version>
     <mockito.version>2.8.47</mockito.version>
+    <jcommander.version>1.72</jcommander.version>
   </properties>
 
   <modules>
+    <module>ontolib-cli</module>
     <module>ontolib-core</module>
     <module>ontolib-io</module>
   </modules>
@@ -137,6 +140,7 @@
           <systemPropertyVariables>
             <user.language>en</user.language>
             <user.region>US</user.region>
+            <user.timezone>UTC</user.timezone>
           </systemPropertyVariables>
         </configuration>
       </plugin>

@@ -5,7 +5,7 @@
   <groupId>de.charite.compbio</groupId>
   <artifactId>ontolib-demos-benchmark-parsing</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 
   <name>Maven Quick Start Archetype</name>
   <url>https://github.com/charite/ontolib</url>

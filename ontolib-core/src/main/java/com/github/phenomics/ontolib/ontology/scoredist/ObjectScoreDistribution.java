@@ -1,8 +1,11 @@
 package com.github.phenomics.ontolib.ontology.scoredist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Precomputed score distribution for a fixed number of terms and one world object Ids.
@@ -55,7 +58,7 @@ public final class ObjectScoreDistribution implements Serializable {
     Entry<Double, Double> previous = null;
     for (Entry<Double, Double> entry : cumulativeFrequencies.entrySet()) {
       if (previous == null && score < entry.getKey()) {
-        return 1.0;  // smaller than all
+        return 1.0; // smaller than all
       }
       if (previous != null && previous.getKey() <= score && score < entry.getKey()) {
         // interpolate and return
@@ -66,6 +69,20 @@ public final class ObjectScoreDistribution implements Serializable {
     }
     // If we reach here, p value is 0.0
     return 0.0;
+  }
+
+  /**
+   * @return List of copy of observed scores, sorted ascendingly.
+   */
+  public List<Double> observedScores() {
+    return new ArrayList<>(cumulativeFrequencies.keySet());
+  }
+  
+  /**
+   * @return Copy of the score distribution.
+   */
+  public SortedMap<Double, Double> getCumulativeFrequencies() {
+    return new TreeMap<>(cumulativeFrequencies);
   }
 
   /**
@@ -94,5 +111,5 @@ public final class ObjectScoreDistribution implements Serializable {
     return "ObjectScoreDistribution [objectId=" + objectId + ", numTerms=" + numTerms
         + ", sampleSize=" + sampleSize + ", cumulativeFrequencies=" + cumulativeFrequencies + "]";
   }
-  
+
 }

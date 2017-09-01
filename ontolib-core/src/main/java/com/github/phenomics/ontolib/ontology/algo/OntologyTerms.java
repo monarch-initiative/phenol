@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.ontology.data;
+package com.github.phenomics.ontolib.ontology.algo;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,10 +7,14 @@ import com.github.phenomics.ontolib.graph.algo.BreadthFirstSearch;
 import com.github.phenomics.ontolib.graph.algo.VertexVisitor;
 import com.github.phenomics.ontolib.graph.data.DirectedGraph;
 import com.github.phenomics.ontolib.graph.data.ImmutableEdge;
+import com.github.phenomics.ontolib.ontology.data.Ontology;
+import com.github.phenomics.ontolib.ontology.data.TermId;
+import com.github.phenomics.ontolib.ontology.data.TermVisitor;
 
 // TODO: Maybe change the name to OntologyTermOperations or OntologyTermQueries?
 // TODO: test me!
-// TODO: implement BreadFirstSeach-like classes with instance methods for this as well
+// TODO: implement BreadFirstSeach-like classes with instance methods for this to equalize with graph.algo
+
 /**
  * Helper class with static methods for navigating Ontology terms.
  *

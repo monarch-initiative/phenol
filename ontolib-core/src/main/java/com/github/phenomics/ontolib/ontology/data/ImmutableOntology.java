@@ -11,6 +11,7 @@ import com.github.phenomics.ontolib.graph.data.DirectedGraph;
 import com.github.phenomics.ontolib.graph.data.Edge;
 import com.github.phenomics.ontolib.graph.data.ImmutableDirectedGraph;
 import com.github.phenomics.ontolib.graph.data.ImmutableEdge;
+import com.github.phenomics.ontolib.ontology.algo.OntologyTerms;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;

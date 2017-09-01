@@ -156,7 +156,8 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     final Iterator<Integer> objectIdIter =
         labels.keySet().stream().filter(this::selectObject).iterator();
     while (objectIdIter.hasNext()) {
-      threadPoolExecutor.submit(() -> task.accept(objectIdIter.next()));
+      final int objectId = objectIdIter.next();
+      threadPoolExecutor.submit(() -> task.accept(objectId));
     }
     // Shutdown executor and wait for all tasks being completed.
     threadPoolExecutor.shutdown();

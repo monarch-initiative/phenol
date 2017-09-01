@@ -4,7 +4,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +40,12 @@ public class ImmutableTermIdTest {
     assertEquals(0, termId.compareTo(termId));
     assertThat(termId.compareTo(termId2), lessThan(0));
     assertThat(termId2.compareTo(termId), greaterThan(0));
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(termId.equals(termId));
+    assertFalse(termId.equals(termId2));
   }
 
   @Test

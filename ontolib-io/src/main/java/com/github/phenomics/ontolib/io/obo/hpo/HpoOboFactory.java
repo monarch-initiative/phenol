@@ -132,7 +132,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
-    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     Date creationDate = null;
     if (creationDateStr != null) {
       try {

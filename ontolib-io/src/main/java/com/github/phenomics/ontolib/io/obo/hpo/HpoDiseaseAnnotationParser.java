@@ -14,6 +14,7 @@ import com.github.phenomics.ontolib.io.base.TermAnnotationParser;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
 import com.google.common.base.Enums;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Parser for "phenotype annotation" files.
@@ -121,13 +122,20 @@ public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDisea
 
     nextLine = reader.readLine();
 
-    final SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-    Date date;
-    try {
-      date = format.parse(dateStr);
-    } catch (ParseException e) {
+    final ImmutableList<String> formatStrings = ImmutableList.of("yyyy.MM.dd", "yyyy-MM-dd");
+    Date date = null;
+    for (String formatString : formatStrings) {
+      final SimpleDateFormat format = new SimpleDateFormat(formatString);
+      try {
+        date = format.parse(dateStr);
+        break;
+      } catch (ParseException e) {
+        continue; // swallow
+      }
+    }
+    if (date == null) {
       throw new TermAnnotationParserException(
-          "There was a problem parsing the date value " + dateStr, e);
+          "There was a problem parsing the date value " + dateStr);
     }
 
     return new HpoDiseaseAnnotation(db, dbObjectId, dbName, qualifier, hpoId, dbReference,

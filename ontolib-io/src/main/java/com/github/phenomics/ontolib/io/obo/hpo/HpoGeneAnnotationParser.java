@@ -1,15 +1,14 @@
 package com.github.phenomics.ontolib.io.obo.hpo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParser;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
 import com.github.phenomics.ontolib.ontology.data.TermId;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Parser for "genes to phenotype annotation" files.
@@ -26,10 +25,12 @@ import com.github.phenomics.ontolib.ontology.data.TermId;
  *     HpoGeneAnnotation anno = parser.next();
  *     // ...
  *   }
- * } except (IOException e) {
- *   System.err.println("Problem reading from file.");
- * } except (TermAnnotationException e) {
- *   System.err.println("Problem parsing file.");
+ * } catch (IOException e) {
+ *    e.printStackTrace();
+ *    System.err.println("Problem reading from file.");
+ * } catch (TermAnnotationParserException e) {
+ *    e.printStackTrace();
+ *    System.err.println("Problem reading from file.");
  * }
  * </pre>
  *

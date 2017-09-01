@@ -16,6 +16,8 @@ import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.github.phenomics.ontolib.ontology.data.TermIds;
 import com.github.phenomics.ontolib.ontology.data.TermRelation;
 
+// TODO: separate resulting precomputation DS and algorithm to equalize with graph.algo
+
 /**
  * Utility class for computing information content of {@link Term} (identified by their
  * {@link TermId}s) in an {@link Ontology}.

@@ -95,19 +95,9 @@ public final class ImmutableTermId implements TermId {
     } else if (obj instanceof TermId) {
       final TermId that = (TermId) obj;
       return this.prefix.equals(that.getPrefix()) && (this.id.equals(that.getId()));
+    } else {
+      return false;
     }
-
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    ImmutableTermId other = (ImmutableTermId) obj;
-    if (id == null) {
-      if (other.id != null) return false;
-    } else if (!id.equals(other.id)) return false;
-    if (prefix == null) {
-      if (other.prefix != null) return false;
-    } else if (!prefix.equals(other.prefix)) return false;
-    return true;
   }
 
 }
