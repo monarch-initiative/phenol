@@ -6,6 +6,8 @@ Changelog
 v0.3 (work in progress)
 -----------------------
 
+- Added ``Ontology.getParent()``.
+- Removed ``JaccardIcWeightedSimilarity``, ``JiangSimilarity``, ``LinSimilarity``, supporting code and tests.
 - Refactoring the code for object score I/O into ``ontolib-io`` package.
 - Adding support for score distribution reading and writing to H2 database files.
 - ``Ontology.getAncestorTermIds()`` now also resolves alternative term IDs.
