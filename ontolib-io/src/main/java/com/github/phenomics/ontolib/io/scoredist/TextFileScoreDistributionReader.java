@@ -1,9 +1,6 @@
-package com.github.phenomics.ontolib.cli;
+package com.github.phenomics.ontolib.io.scoredist;
 
-import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,14 +9,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.github.phenomics.ontolib.base.OntoLibException;
+import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
+import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
+
 /**
- * Helper class for reading in {@link ScoreDistribution} objects from text files.
+ * Class for reading in {@link ScoreDistribution} objects from text files.
  *
  * @see ScoreDistributionReader
+ * @see TextFileScoreDistributionWriter
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ScoreDistributionReader implements Closeable {
+public class TextFileScoreDistributionReader implements ScoreDistributionReader {
 
   /** Path to the file read from. */
   private final File inputFile;
@@ -34,12 +36,16 @@ public class ScoreDistributionReader implements Closeable {
    * Constructor.
    * 
    * @param inputFile Path to input file.
-   * @throws IOException In case of problems with file I/O.
+   * @throws OntoLibException In case of problems with file I/O.
    */
-  public ScoreDistributionReader(File inputFile) throws IOException {
+  public TextFileScoreDistributionReader(File inputFile) throws OntoLibException {
     this.inputFile = inputFile;
-    this.reader = new BufferedReader(new FileReader(this.inputFile));
-    readHeader();
+    try {
+      this.reader = new BufferedReader(new FileReader(this.inputFile));
+      readHeader();
+    } catch (IOException e) {
+      throw new OntoLibException("Problem initializing reader for file " + inputFile);
+    }
   }
 
   private void readHeader() throws IOException {
@@ -57,13 +63,18 @@ public class ScoreDistributionReader implements Closeable {
     nextLine = reader.readLine();
   }
 
-  /**
-   * Read all entries and return mapping from term count to {@link ScoreDistribution} object.
-   *
-   * @return Resulting score distributions from the file.
-   * @throws IOException In the case of problems read reading and parsing.
-   */
-  public Map<Integer, ScoreDistribution> readAll() throws IOException {
+  @Override
+  public ScoreDistribution readForTermCount(int termCount) throws OntoLibException {
+    final Map<Integer, ScoreDistribution> allDists = readAll();
+    if (!allDists.containsKey(termCount)) {
+      throw new OntoLibException("Distribution not found for term count: " + termCount);
+    } else {
+      return allDists.get(termCount);
+    }
+  }
+
+  @Override
+  public Map<Integer, ScoreDistribution> readAll() throws OntoLibException {
     final Map<Integer, ScoreDistribution> result = new HashMap<>();
 
     final Map<Integer, Map<Integer, ObjectScoreDistribution>> tmp = new HashMap<>();
@@ -89,7 +100,11 @@ public class ScoreDistributionReader implements Closeable {
       }
       tmp.get(numTerms).put(entrezId, scoreDist);
 
-      nextLine = reader.readLine();
+      try {
+        nextLine = reader.readLine();
+      } catch (IOException e) {
+        throw new OntoLibException("Could not load score distributions", e);
+      }
     }
 
     for (Entry<Integer, Map<Integer, ObjectScoreDistribution>> e : tmp.entrySet()) {
@@ -98,6 +113,19 @@ public class ScoreDistributionReader implements Closeable {
     }
 
     return result;
+  }
+
+  @Override
+  public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
+      throws OntoLibException {
+    final ObjectScoreDistribution result =
+        readForTermCount(termCount).getObjectScoreDistribution(objectId);
+    if (result != null) {
+      throw new OntoLibException(
+          "Distribution not found for term count: " + termCount + " and object ID: " + objectId);
+    } else {
+      return result;
+    }
   }
 
   @Override

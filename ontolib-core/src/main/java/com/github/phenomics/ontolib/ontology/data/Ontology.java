@@ -21,11 +21,28 @@ public interface Ontology<T extends Term,
     R extends TermRelation> extends MinimalOntology<T, R>, Serializable {
 
   /**
+   * Translate {@link TermId} to primary one (in case of alternative or deprecated term IDs).
+   *
+   * @param termId The {@link TermId} to translate.
+   * @return Primary {@link TermId} (might be the same as <code>termId</code>), <code>null</code>
+   *         if none could be found.
+   */
+  default TermId getPrimaryTermId(TermId termId) {
+    final Term term = getTermMap().get(termId);
+    if (term == null) {
+      return null;
+    } else {
+      return term.getId();
+    }
+  }
+
+  /**
    * Return all the {@link TermId}s of all ancestors from {@code termId}.
    * 
    * @param termId The {@link TermId} to query ancestor {@link TermId}s for.
    * @param includeRoot Whether or not to include the root.
-   * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself).
+   * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself),
+   *         an empty {@link Set} if {@code termId} is not a valid term ID in the ontology.
    */
   Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot);
 

@@ -6,6 +6,12 @@ Changelog
 v0.3 (work in progress)
 -----------------------
 
+- Refactoring the code for object score I/O into ``ontolib-io`` package.
+- Adding support for score distribution reading and writing to H2 database files.
+- ``Ontology.getAncestorTermIds()`` now also resolves alternative term IDs.
+- Fixing dependency on slf4j components in ``ontolib-core`` and ``ontolib-io``.
+- Adding ``getPrimaryTermId()`` in ``Ontology``.
+
 ----
 v0.2
 ----

@@ -1,9 +1,5 @@
-package com.github.phenomics.ontolib.cli;
+package com.github.phenomics.ontolib.io.scoredist;
 
-import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
-import com.google.common.base.Joiner;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,14 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
+import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
+import com.google.common.base.Joiner;
+
 /**
- * Helper class for writing out {@link ScoreDistribution} objects to text files.
+ * Class for writing out {@link ScoreDistribution} objects to text files.
  *
- * @see ScoreDistributionReader
+ * @see Hdf5ScoreDistributionWriter
+ * @see TextFileScoreDistributionReader
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ScoreDistributionWriter implements Closeable {
+public class TextFileScoreDistributionWriter implements ScoreDistributionWriter {
 
   /** Path to the file to write to. */
   private final File outputFile;
@@ -33,29 +34,13 @@ public class ScoreDistributionWriter implements Closeable {
    * @param outputFile Path to output file.
    * @throws FileNotFoundException If {@code outputFile} could not be opened for writing.
    */
-  public ScoreDistributionWriter(File outputFile) throws FileNotFoundException {
+  public TextFileScoreDistributionWriter(File outputFile) throws FileNotFoundException {
     this.outputFile = outputFile;
     this.out = new PrintStream(this.outputFile);
     this.out.println("#numTerms\tentrezId\tsampleSize\tdistribution");
   }
 
-  /**
-   * Write out score distribution with resolution of {@code 100}.
-   * 
-   * @see #write(int, ScoreDistribution, int)
-   */
-  public void write(int numTerms, ScoreDistribution scoreDistribution) {
-    write(numTerms, scoreDistribution, 100);
-  }
-
-  /**
-   * Write out score distribution.
-   *
-   * @param numTerms Number of terms that {@code scoreDistribution} was computed for.
-   * @param scoreDistribution The actual score distribution.
-   * @param resolution The number of points to write out from the resolution; {@code 0} for no
-   *        resampling.
-   */
+  @Override
   public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution) {
     for (int objectId : scoreDistribution.getObjectIds()) {
       final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);

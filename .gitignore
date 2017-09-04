@@ -36,6 +36,12 @@ manual/build/
 *.tar.gz
 *.rar
 
+# Javadoc-files
+ontolib-*/*.*/**/*.html
+ontolib-*/*.*/**/*.js
+ontolib-*/*.*/**/*.css
+ontolib-*/*.*/**/package-list
+
 # Maven .gitignore ----------------------------------------------------------
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
