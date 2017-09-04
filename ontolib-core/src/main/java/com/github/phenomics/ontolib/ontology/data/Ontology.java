@@ -2,6 +2,8 @@ package com.github.phenomics.ontolib.ontology.data;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -17,15 +19,17 @@ import java.util.Set;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public interface Ontology<T extends Term,
-    R extends TermRelation> extends MinimalOntology<T, R>, Serializable {
+public interface Ontology<T extends Term, R extends TermRelation>
+    extends
+      MinimalOntology<T, R>,
+      Serializable {
 
   /**
    * Translate {@link TermId} to primary one (in case of alternative or deprecated term IDs).
    *
    * @param termId The {@link TermId} to translate.
-   * @return Primary {@link TermId} (might be the same as <code>termId</code>), <code>null</code>
-   *         if none could be found.
+   * @return Primary {@link TermId} (might be the same as <code>termId</code>), <code>null</code> if
+   *         none could be found.
    */
   default TermId getPrimaryTermId(TermId termId) {
     final Term term = getTermMap().get(termId);
@@ -79,12 +83,27 @@ public interface Ontology<T extends Term,
   }
 
   /**
+   * Return the {@link TermId}s of the parents of {@code termId}.
+   *
+   * @param termId The ID of the term to query the parents for.
+   * @return The resulting parent {@link TermId}s of {@code termId}.
+   */
+  default Set<TermId> getParentTermIds(TermId termId) {
+    final Set<TermId> result = new HashSet<>();
+    final Iterator<TermId> it = getGraph().viaOutEdgeIterator(termId);
+    while (it.hasNext()) {
+      result.add(it.next());
+    }
+    return result;
+  }
+
+  /**
    * Construct and return sub ontology, starting from {@code subOntologyRoot}.
    *
    * <h5>Sub Ontology Iteration Remark</h5>
    *
    * <p>
-   * The constructed sub ontology will use the same maps from {@link TermId} to {@link T} and same
+   * The constructed sub ontology will use the same maps from {@link TermId} to {@code T} and same
    * edge relation maps as the original ontology. However, the functions
    * {@link Ontology#getAllTermIds()}, {@link Ontology#getNonObsoleteTermIds()},
    * {@link Ontology#getObsoleteTermIds()}, and {@link Ontology#getTerms()} will only contain the

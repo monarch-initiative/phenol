@@ -31,6 +31,9 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
         "[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]]",
         ontology.getNonObsoleteTermIds().toString());
     assertEquals("[]", ontology.getObsoleteTermIds().toString());
+    assertEquals(
+        "[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004]]",
+        ontology.getParentTermIds(id1).toString());
   }
 
 }
