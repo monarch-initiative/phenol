@@ -4,6 +4,7 @@ import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
 import com.github.phenomics.ontolib.formats.go.GoRelationQualifier;
 import com.github.phenomics.ontolib.formats.go.GoTerm;
 import com.github.phenomics.ontolib.formats.go.GoTermRelation;
+import com.github.phenomics.ontolib.io.obo.DbXref;
 import com.github.phenomics.ontolib.io.obo.OboImmutableOntologyLoader;
 import com.github.phenomics.ontolib.io.obo.OboOntologyEntryFactory;
 import com.github.phenomics.ontolib.io.obo.Stanza;
@@ -24,6 +25,10 @@ import com.github.phenomics.ontolib.io.obo.StanzaEntrySubset;
 import com.github.phenomics.ontolib.io.obo.StanzaEntrySynonym;
 import com.github.phenomics.ontolib.io.obo.StanzaEntryType;
 import com.github.phenomics.ontolib.io.obo.StanzaEntryUnionOf;
+import com.github.phenomics.ontolib.io.obo.StanzaEntryXref;
+import com.github.phenomics.ontolib.io.obo.TrailingModifier.KeyValue;
+import com.github.phenomics.ontolib.ontology.data.Dbxref;
+import com.github.phenomics.ontolib.ontology.data.ImmutableDbxref;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermSynonym;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermXref;
@@ -35,8 +40,11 @@ import com.google.common.collect.Lists;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
@@ -144,8 +152,29 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoTermRelation> {
       }
     }
 
+    final List<StanzaEntry> entryList = stanza.getEntryByType().get(StanzaEntryType.XREF);
+    final List<Dbxref> dbxrefList = new ArrayList<>();
+    if (entryList != null) {
+      final List<StanzaEntryXref> xrefs =
+          entryList.stream().map(entry -> (StanzaEntryXref) entry).collect(Collectors.toList());
+      for (StanzaEntryXref xref : xrefs) {
+        final DbXref dbXref = xref.getDbXref();
+        final Map<String, String> trailingModifiers;
+        if (dbXref.getTrailingModifier() != null) {
+          trailingModifiers = new HashMap<>();
+          for (KeyValue kv : dbXref.getTrailingModifier().getKeyValue()) {
+            trailingModifiers.put(kv.getKey(), kv.getValue());
+          }
+        } else {
+          trailingModifiers = null;
+        }
+        dbxrefList
+            .add(new ImmutableDbxref(dbXref.getName(), dbXref.getDescription(), trailingModifiers));
+      }
+    }
+
     return new GoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
-        createdBy, creationDate);
+        createdBy, creationDate, dbxrefList);
   }
 
   /**

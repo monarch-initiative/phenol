@@ -1,11 +1,11 @@
 package com.github.phenomics.ontolib.formats.uberpheno;
 
-import java.util.Date;
-import java.util.List;
-
+import com.github.phenomics.ontolib.ontology.data.Dbxref;
 import com.github.phenomics.ontolib.ontology.data.Term;
 import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.github.phenomics.ontolib.ontology.data.TermSynonym;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Representation of a term in the Uberpheno ontology.
@@ -48,6 +48,9 @@ public class UberphenoTerm implements Term {
   /** The term's creation date. */
   private final Date creationDate;
 
+  /** List of xrefs. */
+  private final List<Dbxref> xrefs;
+
   /**
    * Constructor.
    *
@@ -61,10 +64,11 @@ public class UberphenoTerm implements Term {
    * @param obsolete Whether or not the term is obsolete.
    * @param createdBy Author of the term.
    * @param creationDate Date of creation of the term.
+   * @param xrefs List of xrefs.
    */
-  public UberphenoTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
-      List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
-      Date creationDate) {
+  public UberphenoTerm(TermId id, List<TermId> altTermIds, String name, String definition,
+      String comment, List<String> subsets, List<TermSynonym> synonyms, boolean obsolete,
+      String createdBy, Date creationDate, List<Dbxref> xrefs) {
     this.id = id;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -75,6 +79,7 @@ public class UberphenoTerm implements Term {
     this.obsolete = obsolete;
     this.createdBy = createdBy;
     this.creationDate = creationDate;
+    this.xrefs = xrefs;
   }
 
   @Override
@@ -128,11 +133,16 @@ public class UberphenoTerm implements Term {
   }
 
   @Override
+  public List<Dbxref> getXrefs() {
+    return xrefs;
+  }
+
+  @Override
   public String toString() {
-    return "UberphenoTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name + ", definition="
-        + definition + ", comment=" + comment + ", subsets=" + subsets + ", synonyms=" + synonyms
-        + ", obsolete=" + obsolete + ", createdBy=" + createdBy + ", creationDate=" + creationDate
-        + "]";
+    return "UberphenoTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name
+        + ", definition=" + definition + ", comment=" + comment + ", subsets=" + subsets
+        + ", synonyms=" + synonyms + ", obsolete=" + obsolete + ", createdBy=" + createdBy
+        + ", creationDate=" + creationDate + ", xrefs=" + xrefs + "]";
   }
 
 }

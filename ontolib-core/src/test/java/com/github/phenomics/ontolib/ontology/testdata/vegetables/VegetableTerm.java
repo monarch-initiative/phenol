@@ -1,12 +1,12 @@
 package com.github.phenomics.ontolib.ontology.testdata.vegetables;
 
-import java.util.Date;
-import java.util.List;
-
+import com.github.phenomics.ontolib.ontology.data.Dbxref;
 import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
 import com.github.phenomics.ontolib.ontology.data.Term;
 import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.github.phenomics.ontolib.ontology.data.TermSynonym;
+import java.util.Date;
+import java.util.List;
 
 public class VegetableTerm implements Term {
 
@@ -22,10 +22,11 @@ public class VegetableTerm implements Term {
   private boolean obsolete;
   private String createdBy;
   private Date creationDate;
+  private List<Dbxref> xrefs;
 
   public VegetableTerm(ImmutableTermId termId, List<TermId> altTermIds, String name,
       String definition, String comment, List<String> subsets, List<TermSynonym> termSynonyms,
-      boolean obsolete, String createdBy, Date creationDate) {
+      boolean obsolete, String createdBy, Date creationDate, List<Dbxref> xrefs) {
     this.termId = termId;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -36,6 +37,7 @@ public class VegetableTerm implements Term {
     this.obsolete = obsolete;
     this.createdBy = createdBy;
     this.creationDate = creationDate;
+    this.xrefs = xrefs;
   }
 
   @Override
@@ -89,11 +91,16 @@ public class VegetableTerm implements Term {
   }
 
   @Override
+  public List<Dbxref> getXrefs() {
+    return xrefs;
+  }
+
+  @Override
   public String toString() {
     return "VegetableTerm [termId=" + termId + ", altTermIds=" + altTermIds + ", name=" + name
         + ", definition=" + definition + ", comment=" + comment + ", subsets=" + subsets
         + ", termSynonyms=" + termSynonyms + ", obsolete=" + obsolete + ", createdBy=" + createdBy
-        + ", creationDate=" + creationDate + "]";
+        + ", creationDate=" + creationDate + ", xrefs=" + xrefs + "]";
   }
 
 }

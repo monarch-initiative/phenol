@@ -78,31 +78,31 @@ public class VegetableOntologyTestBase {
     termMapBuilder.put(idVegetable,
         new VegetableTerm(idVegetable, new ArrayList<>(), "vegetable",
             "part of a plant that is consumed", null, new ArrayList<>(), new ArrayList<>(), false,
-            null, null));
+            null, null, new ArrayList<>()));
     termMapBuilder.put(idRootVegetable,
         new VegetableTerm(idRootVegetable, new ArrayList<>(), "root vegetable",
             "consumed root part of plant", null, new ArrayList<>(), new ArrayList<>(), false, null,
-            null));
+            null, new ArrayList<>()));
     termMapBuilder.put(idLeafVegetable,
         new VegetableTerm(idLeafVegetable, new ArrayList<>(), "leaf vegetable",
             "consumed leaf part of plant", null, new ArrayList<>(), new ArrayList<>(), false, null,
-            null));
+            null, new ArrayList<>()));
     termMapBuilder.put(idCarrot,
         new VegetableTerm(idCarrot, new ArrayList<>(), "carrot",
             "carrots are very tasty root vegetables", null, new ArrayList<>(), new ArrayList<>(),
-            false, null, null));
+            false, null, null, new ArrayList<>()));
     termMapBuilder.put(idBlueCarrot,
         new VegetableTerm(idBlueCarrot, new ArrayList<>(), "blue carrot",
             "blue ones are even better", null, new ArrayList<>(), new ArrayList<>(), false, null,
-            null));
+            null, new ArrayList<>()));
     termMapBuilder.put(idBeet,
         new VegetableTerm(idBeet, new ArrayList<>(), "beet root",
             "beets are tasty and can be used for coloring", null, new ArrayList<>(),
-            new ArrayList<>(), false, null, null));
+            new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(idPumpkin,
         new VegetableTerm(idPumpkin, new ArrayList<>(), "pumpkin",
             "pumpkins are great for soup and pickling", null, new ArrayList<>(), new ArrayList<>(),
-            false, null, null));
+            false, null, null, new ArrayList<>()));
     termMap = termMapBuilder.build();
 
     ImmutableMap.Builder<Integer, VegetableTermRelation> relationMapBuilder =

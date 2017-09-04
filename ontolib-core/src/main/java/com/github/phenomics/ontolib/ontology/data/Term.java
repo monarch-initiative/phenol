@@ -66,4 +66,9 @@ public interface Term extends Serializable {
    */
   Date getCreationDate();
 
+  /**
+   * Query for {@code xref} values.
+   */
+  List<Dbxref> getXrefs();
+
 }

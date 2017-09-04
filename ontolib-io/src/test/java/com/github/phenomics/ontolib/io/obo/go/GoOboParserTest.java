@@ -45,7 +45,7 @@ public class GoOboParserTest {
     assertThat(ImmutableSortedMap.copyOf(ontology.getTermMap()).toString(),
         startsWith("{ImmutableTermId"));
     assertThat(ImmutableSortedMap.copyOf(ontology.getTermMap()).toString(),
-        endsWith("createdBy=null, creationDate=null]}"));
+        endsWith("description=null, trailingModifiers=null]]]}"));
     assertEquals(
         "{1=GoTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=1, relationQualifier=IS_A], 2=GoTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=2, relationQualifier=IS_A], 3=GoTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=3, relationQualifier=IS_A]}",
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());

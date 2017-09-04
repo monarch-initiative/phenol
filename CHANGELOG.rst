@@ -6,6 +6,8 @@ Changelog
 v0.3 (work in progress)
 -----------------------
 
+- ``xref`` tags are now parsed and their content is available in ``Term``.
+  Added appropriate classes for representation.
 - Added ``Ontology.getParent()``.
 - Removed ``JaccardIcWeightedSimilarity``, ``JiangSimilarity``, ``LinSimilarity``, supporting code and tests.
 - Refactoring the code for object score I/O into ``ontolib-io`` package.

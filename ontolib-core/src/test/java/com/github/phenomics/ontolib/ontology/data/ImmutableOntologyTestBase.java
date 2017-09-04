@@ -54,15 +54,15 @@ public class ImmutableOntologyTestBase {
 
     ImmutableMap.Builder<TermId, TestTerm> termMapBuilder = ImmutableMap.builder();
     termMapBuilder.put(id1, new TestTerm(id1, new ArrayList<>(), "term1", "some definition 1", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null));
+        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(id2, new TestTerm(id2, new ArrayList<>(), "term2", "some definition 2", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null));
+        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(id3, new TestTerm(id3, new ArrayList<>(), "term3", "some definition 3", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null));
+        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(id4, new TestTerm(id4, new ArrayList<>(), "term4", "some definition 4", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null));
+        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(id5, new TestTerm(id5, new ArrayList<>(), "term5", "some definition 5", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null));
+        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMap = termMapBuilder.build();
 
     obsoleteTermMap = ImmutableMap.of();
