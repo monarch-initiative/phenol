@@ -8,6 +8,8 @@ import com.github.phenomics.ontolib.formats.hpo.HpoTermRelation;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
 import com.github.phenomics.ontolib.io.obo.hpo.HpoGeneAnnotationParser;
 import com.github.phenomics.ontolib.io.obo.hpo.HpoOboParser;
+import com.github.phenomics.ontolib.io.scoredist.ScoreDistributionWriter;
+import com.github.phenomics.ontolib.io.scoredist.TextFileScoreDistributionWriter;
 import com.github.phenomics.ontolib.ontology.algo.InformationContentComputation;
 import com.github.phenomics.ontolib.ontology.data.ImmutableOntology;
 import com.github.phenomics.ontolib.ontology.data.TermAnnotations;

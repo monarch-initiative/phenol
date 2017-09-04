@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.cli;
+package com.github.phenomics.ontolib.io.scoredist;
 
 import java.io.Closeable;
 

@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.cli;
+package com.github.phenomics.ontolib.io.scoredist;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,7 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map.Entry;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.github.phenomics.ontolib.base.OntoLibException;
 import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
@@ -21,9 +22,21 @@ import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
  * object initialization will fail.
  * </p>
  *
+ * <h4>H2 Dependency Notes</h4>
+ *
+ * <p>
+ * The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
+ * your calling code has to depend on H2.
+ * </p>
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class H2ScoreDistributionWriter implements ScoreDistributionWriter {
+
+  /**
+   * {@link Logger} object to use.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(H2ScoreDistributionWriter.class);
 
   /** Path to database. */
   private final String pathDb;
@@ -40,7 +53,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   /** H2 statement for creating table. */
   private final static String[] H2_CREATE_TABLE_STATEMENTS = new String[] {
       "CREATE TABLE %s (num_terms INT, entrez_id INT, sample_size INT, scores OTHER, p_values OTHER)",
-      "CREATE UNIQUE INDEX ON %s (num_terms, entrez_id)"};
+      "CREATE INDEX ON %s (num_terms)", "CREATE UNIQUE INDEX ON %s (num_terms, entrez_id)"};
 
   /** H2 statement for insterting into table. */
   private final static String H2_INSERT_STATEMENT =
@@ -69,11 +82,12 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    *         not {@code resetTableIfExists}.
    */
   private Connection openConnection(boolean resetTableIfExists) throws OntoLibException {
+    LOGGER.info("Opening connection to H2 database file at {} and configuring...", pathDb);
     // Open connection.
-    final Connection result;
+    final Connection resultConn;
     try {
       Class.forName("org.h2.Driver");
-      result = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
+      resultConn = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
     } catch (ClassNotFoundException e) {
       throw new OntoLibException("H2 driver class could not be found", e);
     } catch (SQLException e) {
@@ -82,8 +96,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
 
     // Check whether the table already exists.
     final boolean tableExists;
-    try (final ResultSet rs =
-        result.getMetaData().getTables(null, null, tableName, new String[] {"TABLE"})) {
+    try (final ResultSet rs = resultConn.getMetaData().getTables(null, null,
+        tableName.toUpperCase(), new String[] {"TABLE"})) {
       tableExists = rs.next();
     } catch (SQLException e) {
       throw new OntoLibException("Checking for table of name " + tableName + " failed", e);
@@ -95,24 +109,31 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       }
 
       // DROP table
-      try (final PreparedStatement stmt =
-          conn.prepareStatement(String.format(H2_DROP_TABLE_STATEMENT, tableName))) {
+      LOGGER.info("Table {} exists, dropping.", tableName);
+      final String sqlStmt = String.format(H2_DROP_TABLE_STATEMENT, tableName);
+      LOGGER.info("Executing SQL statement: {}", sqlStmt);
+      try (final PreparedStatement stmt = resultConn.prepareStatement(sqlStmt)) {
         stmt.executeUpdate();
       } catch (SQLException e) {
-        throw new OntoLibException("Could not drop table!");
+        throw new OntoLibException("Could not drop table with statement " + sqlStmt, e);
       }
     }
 
     // CREATE table, add indices
+    LOGGER.info("Creating table {} and indices...", tableName);
     for (String sql : H2_CREATE_TABLE_STATEMENTS) {
-      try (final PreparedStatement stmt = conn.prepareStatement(String.format(sql, tableName))) {
+      final String sqlStmt = String.format(sql, tableName);
+      LOGGER.info("Executing SQL statement: {}", sqlStmt);
+      try (final PreparedStatement stmt = resultConn.prepareStatement(sqlStmt)) {
         stmt.executeUpdate();
       } catch (SQLException e) {
-        throw new OntoLibException("Could execute table creation/index statement: " + sql);
+        throw new OntoLibException("Could execute table creation/index statement: " + sqlStmt, e);
       }
     }
 
-    return result;
+    LOGGER.info("Successfully connected and configured H2 database file.");
+
+    return resultConn;
   }
 
   @Override
@@ -172,7 +193,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       }
     }
 
-    try (final PreparedStatement stmt = conn.prepareStatement(H2_INSERT_STATEMENT)) {
+    final String sqlStmt = String.format(H2_INSERT_STATEMENT, tableName);
+    try (final PreparedStatement stmt = conn.prepareStatement(sqlStmt)) {
       stmt.setInt(1, numTerms);
       stmt.setInt(2, dist.getObjectId());
       stmt.setInt(3, dist.getSampleSize());
