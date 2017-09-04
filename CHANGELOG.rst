@@ -2,9 +2,9 @@
 Changelog
 =========
 
------------------------
-v0.3 (work in progress)
------------------------
+----
+v0.3
+----
 
 - ``xref`` tags are now parsed and their content is available in ``Term``.
   Added appropriate classes for representation.

@@ -10,7 +10,7 @@ A modern Java library for working with (biological) ontologies.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 0.2
+- **Version:** 0.3
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -18,5 +18,6 @@ A modern Java library for working with (biological) ontologies.
     - Max Schubach
     - Manuel Holtgrewe
 - **Availability:**
-    - Maven module `ontolib-core` for dealing with (biological) ontologies.
-    - Maven module `ontolib-io` for reading ontologies from OBO files.
+    - Maven module `ontolib-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
+    - Maven module `ontolib-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
+    - Maven module `ontolib-cli` for performing empirical score distribution computation as a stand-alone program.
