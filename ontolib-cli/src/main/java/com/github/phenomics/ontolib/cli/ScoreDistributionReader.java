@@ -1,108 +1,48 @@
 package com.github.phenomics.ontolib.cli;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Map;
+
+import com.github.phenomics.ontolib.base.OntoLibException;
 import com.github.phenomics.ontolib.ontology.scoredist.ObjectScoreDistribution;
 import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
- * Helper class for reading in {@link ScoreDistribution} objects from text files.
- *
- * @see ScoreDistributionReader
+ * Interface for score distribution reading.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ScoreDistributionReader implements Closeable {
-
-  /** Path to the file read from. */
-  private final File inputFile;
-
-  /** The {@link BufferedReader} to use. */
-  private final BufferedReader reader;
-
-  /** The currently read line. */
-  private String nextLine;
+public interface ScoreDistributionReader extends Closeable {
 
   /**
-   * Constructor.
-   * 
-   * @param inputFile Path to input file.
-   * @throws IOException In case of problems with file I/O.
+   * Read for the given {@code termCount} and {@code objectId}.
+   *
+   * @param termCount The number of terms to read for.
+   * @param objectId The "world object" ID to read for.
+   * @return {@link ObjectScoreDistribution} with the empirical distribution for the query.
+   * @throws IOException In the case of problems when reading and parsing.
    */
-  public ScoreDistributionReader(File inputFile) throws IOException {
-    this.inputFile = inputFile;
-    this.reader = new BufferedReader(new FileReader(this.inputFile));
-    readHeader();
-  }
+  ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
+      throws OntoLibException;
 
-  private void readHeader() throws IOException {
-    nextLine = reader.readLine();
-    if (nextLine == null) {
-      throw new IOException("Could not read header from file!");
-    }
-
-    final String expected = "#numTerms\tentrezId\tsampleSize\tdistribution";
-    if (!expected.equals(nextLine)) {
-      throw new IOException(
-          "Invalid header, was: \"" + nextLine + "\", expected: \"" + expected + "\"");
-    }
-
-    nextLine = reader.readLine();
-  }
+  /**
+   * Read and return entries for score distribution given a specific {@code termCount}.
+   *
+   * @param termCount The number of terms to return the score distribution for.
+   * @return {@link ScoreDistribution} for the given {@code termCount}.
+   * @throws IOException In the case of problems when reading or parsing.
+   */
+  ScoreDistribution readForTermCount(int termCount) throws OntoLibException;
 
   /**
    * Read all entries and return mapping from term count to {@link ScoreDistribution} object.
    *
    * @return Resulting score distributions from the file.
-   * @throws IOException In the case of problems read reading and parsing.
+   * @throws IOException In the case of problems when reading or parsing.
    */
-  public Map<Integer, ScoreDistribution> readAll() throws IOException {
-    final Map<Integer, ScoreDistribution> result = new HashMap<>();
+  Map<Integer, ScoreDistribution> readAll() throws OntoLibException;
 
-    final Map<Integer, Map<Integer, ObjectScoreDistribution>> tmp = new HashMap<>();
-
-    while (nextLine != null) {
-      final String[] arr = nextLine.trim().split("\t");
-      final int numTerms = Integer.parseInt(arr[0]);
-      final int entrezId = Integer.parseInt(arr[1]);
-      final int sampleSize = Integer.parseInt(arr[2]);
-      final String dist = arr[3];
-
-      final TreeMap<Double, Double> cumFreqs = new TreeMap<>();
-      for (String pairStr : dist.split(",")) {
-        final String[] pair = pairStr.split(":");
-        cumFreqs.put(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
-      }
-
-      final ObjectScoreDistribution scoreDist =
-          new ObjectScoreDistribution(entrezId, numTerms, sampleSize, cumFreqs);
-
-      if (!tmp.containsKey(numTerms)) {
-        tmp.put(numTerms, new TreeMap<>());
-      }
-      tmp.get(numTerms).put(entrezId, scoreDist);
-
-      nextLine = reader.readLine();
-    }
-
-    for (Entry<Integer, Map<Integer, ObjectScoreDistribution>> e : tmp.entrySet()) {
-      final int numTerms = e.getKey();
-      result.put(numTerms, new ScoreDistribution(numTerms, e.getValue()));
-    }
-
-    return result;
-  }
-
-  @Override
-  public void close() throws IOException {
-    this.reader.close();
-  }
+  void close() throws IOException;
 
 }

@@ -1,5 +1,6 @@
 package com.github.phenomics.ontolib.cli;
 
+import com.github.phenomics.ontolib.base.OntoLibException;
 import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
 import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
 import com.github.phenomics.ontolib.formats.hpo.HpoTerm;
@@ -172,12 +173,12 @@ public class PrecomputeScoresCommand {
     final int resolution = Math.min(1000, Math.max(100, options.getNumIterations() / 100));
 
     try (final ScoreDistributionWriter writer =
-        new ScoreDistributionWriter(new File(options.getOutputScoreDistFile()))) {
+        new TextFileScoreDistributionWriter(new File(options.getOutputScoreDistFile()))) {
       for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
         writer.write(e.getKey(), e.getValue(), resolution);
       }
-    } catch (IOException e1) {
-      throw new RuntimeException("Problem writing to file", e1);
+    } catch (IOException | OntoLibException e) {
+      throw new RuntimeException("Problem writing to file", e);
     }
 
     LOGGER.info("Done writing out distribution.");

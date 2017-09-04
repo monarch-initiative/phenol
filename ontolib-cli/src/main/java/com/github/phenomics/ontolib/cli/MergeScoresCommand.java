@@ -1,7 +1,5 @@
 package com.github.phenomics.ontolib.cli;
 
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistributions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +8,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.phenomics.ontolib.base.OntoLibException;
+import com.github.phenomics.ontolib.base.OntoLibRuntimeException;
+import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
+import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistributions;
 
 /**
  * Implementation of {@code merge-scores} command.
@@ -53,7 +57,8 @@ public class MergeScoresCommand {
     LOGGER.info("Loading distributions...");
 
     for (String inputPath : options.getInputFiles()) {
-      try (ScoreDistributionReader reader = new ScoreDistributionReader(new File(inputPath))) {
+      try (final ScoreDistributionReader reader =
+          new TextFileScoreDistributionReader(new File(inputPath))) {
         Map<Integer, ScoreDistribution> distributions = reader.readAll();
         for (Entry<Integer, ScoreDistribution> e : distributions.entrySet()) {
           if (!loadedDists.containsKey(e.getKey())) {
@@ -61,8 +66,8 @@ public class MergeScoresCommand {
           }
           loadedDists.get(e.getKey()).add(e.getValue());
         }
-      } catch (IOException e) {
-        throw new RuntimeException("Problem reading input file: " + inputPath, e);
+      } catch (OntoLibException | IOException e) {
+        throw new OntoLibRuntimeException("Problem reading input file: " + inputPath, e);
       }
     }
 
@@ -85,11 +90,11 @@ public class MergeScoresCommand {
     LOGGER.info("Writing result file...");
 
     try (ScoreDistributionWriter writer =
-        new ScoreDistributionWriter(new File(options.getOutputFile()))) {
+        new TextFileScoreDistributionWriter(new File(options.getOutputFile()))) {
       for (Entry<Integer, ScoreDistribution> e : mergedDists.entrySet()) {
         writer.write(e.getKey(), e.getValue(), 0);
       }
-    } catch (IOException e) {
+    } catch (IOException | OntoLibException e) {
       throw new RuntimeException("Problem writing to output file: " + options.getOutputFile(), e);
     }
 
