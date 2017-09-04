@@ -95,7 +95,7 @@ public class MergeScoresCommand {
     LOGGER.info("Writing result...");
     try (ScoreDistributionWriter writer = buildWriter()) {
       for (Entry<Integer, ScoreDistribution> e : mergedDists.entrySet()) {
-        writer.write(e.getKey(), e.getValue(), 0);
+        writer.write(e.getKey(), e.getValue(), options.getResampleToPoints());
       }
     } catch (IOException | OntoLibException e) {
       throw new RuntimeException("Problem writing to output file: " + options.getOutputFile(), e);

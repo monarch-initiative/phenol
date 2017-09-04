@@ -25,6 +25,10 @@ public class MergeScoresOptions {
   @Parameter(names = "--h2-table-name", description = "Name of table in H2 database when writing to H2 db.")
   private String h2TableName = "phenix_score_distribution";
 
+  @Parameter(names = "--resample-to-points", description = "Distribution will be resampled to this number "
+      + "of points (0 for no resampling, default)")
+  private int resampleToPoints = 0;
+
   /**
    * @return The input files to read.
    */
@@ -54,16 +58,17 @@ public class MergeScoresOptions {
   }
 
   /**
-   * @param outputFile Path to the output file to write to.
+   * @return The number of points to resample to.
    */
-  public void setOutputFile(String outputFile) {
-    this.outputFile = outputFile;
+  public int getResampleToPoints() {
+    return resampleToPoints;
   }
 
   @Override
   public String toString() {
     return "MergeScoresOptions [inputFiles=" + inputFiles + ", outputFile=" + outputFile
-        + ", writeToH2=" + writeToH2 + ", h2TableName=" + h2TableName + "]";
+        + ", writeToH2=" + writeToH2 + ", h2TableName=" + h2TableName + ", resampleToPoints="
+        + resampleToPoints + "]";
   }
 
 }
