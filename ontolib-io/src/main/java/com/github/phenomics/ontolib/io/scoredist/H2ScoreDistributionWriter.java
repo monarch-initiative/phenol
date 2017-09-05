@@ -87,7 +87,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
     final Connection resultConn;
     try {
       Class.forName("org.h2.Driver");
-      resultConn = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
+      resultConn = DriverManager.getConnection("jdbc:h2:" + pathDb + ";mv_store=false", "", "");
     } catch (ClassNotFoundException e) {
       throw new OntoLibException("H2 driver class could not be found", e);
     } catch (SQLException e) {
@@ -190,6 +190,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       for (Entry<Double, Double> e : dist.getCumulativeFrequencies().entrySet()) {
         scores[i] = e.getKey();
         pValues[i] = e.getValue();
+        i += 1;
       }
     }
 

@@ -39,15 +39,15 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   private final Connection conn;
 
   /** H2 query for selecting all term counts. */
-  private final static String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT (term_count) from %s";
+  private final static String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT (num_terms) from %s";
 
   /** H2 query for selecting by term count. */
   private final static String H2_SELECT_BY_TERM_COUNT_STATEMENT =
-      "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ?)";
+      "SELECT num_terms, entrez_id, sample_size, scores, p_values FROM %s WHERE (num_terms = ?)";
 
   /** H2 query for selecting by term count and object ID. */
   private final static String H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT =
-      "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ? AND object_id = ?)";
+      "SELECT num_terms, entrez_id, sample_size, scores, p_values FROM %s WHERE (num_terms = ? AND entrez_id = ?)";
 
   /**
    * Create new reader object.
@@ -74,7 +74,8 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
     final Connection result;
     try {
       Class.forName("org.h2.Driver");
-      result = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
+      result = DriverManager
+          .getConnection("jdbc:h2:" + pathDb + ";ACCESS_MODE_DATA=r;mv_store=false", "", "");
     } catch (ClassNotFoundException e) {
       throw new OntoLibException("H2 driver class could not be found", e);
     } catch (SQLException e) {
@@ -110,7 +111,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
       }
     } catch (SQLException e) {
       throw new OntoLibException("Problem with getting object score distribution for termCount: "
-          + termCount + ", objectId: " + objectId);
+          + termCount + ", objectId: " + objectId, e);
     }
 
     throw new OntoLibException(
