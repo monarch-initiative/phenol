@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/ontolib/badge/?version=latest)](http://ontolib.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core)
 
-# OntoLib
+# OLPG: Ontology Library for Phenomics and Genomics
 
 A modern Java library for working with (biological) ontologies. This repository was forked from https://github.com/Phenomics/ontolib on January 27, 2018. This fork will be developed to extend various aspects of ontolib and may be merged back with ontolib in the future.
 
