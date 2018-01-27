@@ -2,6 +2,16 @@
 Changelog
 =========
 
+
+----
+v0.4
+----
+- forked from ontolib
+- fixed mp.obo parse error
+- fixed subontology creation error (TermMap, TermRelation)
+- Adding Adding class ``OntologyAlgorithm`` with test class ``OntologyAlgorithmTest``.
+Implements functions to get children, parents, descendents and ancestors.
+
 ----
 v0.3
 ----
