@@ -1,9 +1,12 @@
 package com.github.phenomics.ontolib.ontology.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import java.util.Map;
 
 public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
 
@@ -35,5 +38,46 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
         "[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004]]",
         ontology.getParentTermIds(id1).toString());
   }
+
+
+  /**
+   * The subontology defined by Term with id4 should consist of only the terms id4 and id1.
+   * The termmap should thus contain only two terms. The subontology does not contain the original root of the ontology, id5.
+   */
+  @Test
+  public void testSubontologyCreation() {
+    ImmutableOntology<TestTerm, TestTermRelation> subontology=(ImmutableOntology<TestTerm, TestTermRelation>)ontology.subOntology(id4);
+    assertTrue(subontology.getTermMap().containsKey(id4));
+    assertTrue(subontology.getTermMap().containsKey(id1));
+    assertTrue(ontology.getTermMap().size()==5);
+    assertTrue(subontology.getTermMap().size()==2);
+    assertFalse(subontology.getTermMap().containsKey(id5));
+  }
+
+  /**
+   * The parent ontology has six relations
+   * 1  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], id=1]
+   2  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], id=2]
+   3  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], id=3]
+   4  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], id=4]
+   5  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], id=5]
+   6  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], id=6]
+   The subontology has just the terms id1 and id4, and thus should just have only one relation./subontology
+   3  TestTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], id=3]
+   */
+  @Test
+  public void testSubontologyRelations() {
+    ImmutableOntology<TestTerm, TestTermRelation> subontology=(ImmutableOntology<TestTerm, TestTermRelation>)ontology.subOntology(id4);
+    Map<Integer, TestTermRelation> relationMap = ontology.getRelationMap();
+    int expectedSize=6;
+    assertEquals(expectedSize,relationMap.size());
+    relationMap = subontology.getRelationMap();
+    expectedSize=1;
+    assertEquals(expectedSize,relationMap.size());
+  }
+
+
+
+
 
 }

@@ -1,9 +1,6 @@
 package com.github.phenomics.ontolib.ontology.data;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.github.phenomics.ontolib.graph.algo.BreadthFirstSearch;
 import com.github.phenomics.ontolib.graph.algo.VertexVisitor;
@@ -192,10 +189,34 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   public Ontology<T, R> subOntology(TermId subOntologyRoot) {
     final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
     final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> subGraph =
-        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) graph.subGraph(childTermIds);
-    return new ImmutableOntology<T, R>(metaInfo, subGraph, subOntologyRoot,
-        Sets.intersection(nonObsoleteTermIds, childTermIds),
-        Sets.intersection(obsoleteTermIds, childTermIds), termMap, relationMap);
+      (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) graph.subGraph(childTermIds);
+    Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds,childTermIds);
+    // make sure the Term map contains only terms from the subontology
+    final ImmutableMap.Builder<TermId,T> termBuilder = ImmutableMap.builder();
+
+    for (final TermId tid : intersectingTerms) {
+      termBuilder.put(tid,termMap.get(tid));
+    }
+    ImmutableMap<TermId,T> subsetTermMap=termBuilder.build();
+    // Only retain relations where both source and destination are terms in the subontology
+    final ImmutableMap.Builder<Integer,R> relationBuilder = ImmutableMap.builder();
+    for(Iterator<Map.Entry<Integer, R>> it = relationMap.entrySet().iterator(); it.hasNext(); ) {
+      Map.Entry<Integer, R> entry = it.next();
+      TermRelation tr = entry.getValue();
+      if (subsetTermMap.containsKey(tr.getSource()) && subsetTermMap.containsKey(tr.getDest())) {
+        relationBuilder.put(entry.getKey(),entry.getValue());
+      }
+    }
+    // Note: natural order returns a builder whose keys are ordered by their natural ordering.
+    final ImmutableSortedMap.Builder<String,String> metaInfoBuilder = ImmutableSortedMap.naturalOrder();
+    for (String key : metaInfo.keySet()) {
+      metaInfoBuilder.put(key,metaInfo.get(key));
+    }
+    metaInfoBuilder.put("provenance",String.format("Ontology created as a subset from original ontology with root %s",getTermMap().get(rootTermId).getName() ));
+    ImmutableSortedMap<String,String> extendedMetaInfo=metaInfoBuilder.build();
+
+    return new ImmutableOntology<T, R>(extendedMetaInfo, subGraph, subOntologyRoot,intersectingTerms,
+      Sets.intersection(obsoleteTermIds, childTermIds), subsetTermMap, relationBuilder.build());
   }
 
 }
