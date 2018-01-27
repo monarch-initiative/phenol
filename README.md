@@ -5,7 +5,7 @@
 
 # OntoLib
 
-A modern Java library for working with (biological) ontologies.
+A modern Java library for working with (biological) ontologies. This repository was forked from https://github.com/Phenomics/ontolib on January 27, 2018. This fork will be developed to extend various aspects of ontolib and may be merged back with ontolib in the future.
 
 ## In Brief
 
