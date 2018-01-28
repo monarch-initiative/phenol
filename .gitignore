@@ -58,3 +58,7 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+/ontolib-io/ontolib-io.iml
+/ontolib-core/ontolib-core.iml
+/ontolib-cli/ontolib-cli.iml
+.idea/
