@@ -33,45 +33,78 @@ public enum HpoFrequency {
 
   /**
    * @return Lower (inclusive) bound of {@code this} frequency category.
+   * Our default value for
+   * terms with no frequency will be always present since this applies to the majoriry for data
+   * for which we have no frequency data.
    */
-  public int lowerBound() {
+  public double lowerBound() {
     switch (this) {
       case ALWAYS_PRESENT:
-        return 100;
+        return 1D;
       case EXCLUDED:
-        return 0;
+        return 0D;
       case FREQUENT:
-        return 5;
+        return 0.05D;
       case OCCASIONAL:
-        return 1;
+        return 0.01D;
       case VERY_FREQUENT:
-        return 30;
+        return 0.30D;
       case VERY_RARE:
+        return 0.01D;
       default:
-        return 1;
+        return ALWAYS_PRESENT.lowerBound();
     }
   }
 
   /**
    * @return Upper (inclusive) bound of {@code this} frequency category.
+   * Our default value for
+   * terms with no frequency will be always present since this applies to the majoriry for data
+   * for which we have no frequency data.
    */
-  public int upperBound() {
+  public double mean() {
     switch (this) {
       case ALWAYS_PRESENT:
-        return 100;
+        return 1D;
       case EXCLUDED:
-        return 0;
+        return 0D;
       case FREQUENT:
-        return 29;
+        return 0.5*(0.05D+0.29D);
       case OCCASIONAL:
-        return 4;
+        return 0.5*(0.01D+0.04D);
       case VERY_FREQUENT:
-        return 79;
+        return 0.5*(0.30D+0.79D);
       case VERY_RARE:
+        return (0.01D+0.04D);
       default:
-        return 4;
+        return ALWAYS_PRESENT.mean();
     }
   }
+
+  /**
+   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for
+   * terms with no frequency will be always present since this applies to the majoriry for data
+   * for which we have no frequency data.
+   */
+  public double upperBound() {
+    switch (this) {
+      case ALWAYS_PRESENT:
+        return 1D;
+      case EXCLUDED:
+        return 0D;
+      case FREQUENT:
+        return 0.29D;
+      case OCCASIONAL:
+        return 0.04D;
+      case VERY_FREQUENT:
+        return 0.79D;
+      case VERY_RARE:
+        return 0.04D;
+      default:
+        return ALWAYS_PRESENT.upperBound();
+    }
+  }
+
 
   /**
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
