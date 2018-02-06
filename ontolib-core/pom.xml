@@ -10,8 +10,8 @@
 
   <parent>
     <groupId>com.github.phenomics</groupId>
-    <artifactId>OntoLib</artifactId>
-    <version>0.3</version>
+    <artifactId>OLPG</artifactId>
+    <version>0.1.2</version>
   </parent>
 
   <properties>
@@ -22,7 +22,7 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <!--Use filtering so that maven will replace placeholders with values 
+        <!--Use filtering so that maven will replace placeholders with values
           from the pom e.g. ${project.version} -->
         <filtering>true</filtering>
       </resource>
@@ -51,7 +51,7 @@
         </executions>
       </plugin>
 
-      <!-- Specify the resources which need to be made accessible to the 
+      <!-- Specify the resources which need to be made accessible to the
         user -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -68,7 +68,7 @@
               <resources>
                 <resource>
                   <directory>src/main/resources</directory>
-                  <!--Use filtering so that maven will replace placeholders 
+                  <!--Use filtering so that maven will replace placeholders
                     with values from the pom e.g. ${project.version} -->
                   <filtering>true</filtering>
                   <includes>

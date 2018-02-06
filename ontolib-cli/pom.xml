@@ -10,8 +10,8 @@
 
   <parent>
     <groupId>com.github.phenomics</groupId>
-    <artifactId>OntoLib</artifactId>
-    <version>0.3</version>
+    <artifactId>OLPG</artifactId>
+    <version>0.1.2</version>
   </parent>
 
   <properties>
@@ -57,7 +57,7 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <!--Use filtering so that maven will replace placeholders with values 
+        <!--Use filtering so that maven will replace placeholders with values
           from the pom e.g. ${project.version} -->
         <filtering>true</filtering>
       </resource>
@@ -73,15 +73,15 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <!-- set useUniqueVersions=false in order that the classpath 
+              <!-- set useUniqueVersions=false in order that the classpath
                 has the SNAPSHOT instead of the build number prefixed to the dependency -->
               <useUniqueVersions>false</useUniqueVersions>
               <mainClass>com.github.phenomics.ontolib.cli.Main</mainClass>
             </manifest>
           </archive>
-          <compilerArgument>-Xlint:all</compilerArgument>
+         <!-- <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
+          <showDeprecation>true</showDeprecation> -->
         </configuration>
       </plugin>
       <!-- More JAR building -->
@@ -105,7 +105,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Specify the resources which need to be made accessible to the 
+      <!-- Specify the resources which need to be made accessible to the
         user -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -122,7 +122,7 @@
               <resources>
                 <resource>
                   <directory>src/resources</directory>
-                  <!--Use filtering so that maven will replace placeholders 
+                  <!--Use filtering so that maven will replace placeholders
                     with values from the pom e.g. ${project.version} -->
                   <filtering>true</filtering>
                   <includes>
@@ -137,7 +137,7 @@
           </execution>
         </executions>
       </plugin>
-      <!--This plugin assembles the various elements together into a redistributable 
+      <!--This plugin assembles the various elements together into a redistributable
         zip/tar.gz file -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>

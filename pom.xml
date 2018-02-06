@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.phenomics</groupId>
-  <artifactId>OntoLib</artifactId>
+  <artifactId>OLPG</artifactId>
   <packaging>pom</packaging>
-  <version>0.3</version>
+  <version>0.1.2</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>OntoLib contains data structures and algorithms for processing ontologies.</description>
@@ -31,7 +31,7 @@
     <module>ontolib-io</module>
   </modules>
 
-  <!-- Inherit artifact from SonaType OSS pom.xml Following this article: 
+  <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
     http://java.dzone.com/articles/deploy-maven-central -->
   <parent>
     <groupId>org.sonatype.oss</groupId>
@@ -55,6 +55,12 @@
       <email>mail@sebastianbauer.info</email>
     </developer>
     <developer>
+      <name>Peter Robinson</name>
+      <email>peter.robinson@jax.org</email>
+      <organization>The Jackson Laboratory</organization>
+      <organizationUrl>https://www.jax.org</organizationUrl>
+    </developer>
+    <developer>
       <name>Manuel Holtgrewe</name>
       <email>Manuel.Holtgrewe@bihealth.de</email>
       <organization>Berlin Institute of Health</organization>
@@ -69,12 +75,12 @@
   </developers>
 
 
-  <!-- SCM Information for Maven Central -->
+  <!-- SCM Information for Maven Central
   <scm>
     <connection>scm:git:git@github.com:phenomics/ontolib.git</connection>
     <developerConnection>scm:git:git@github.com:phenomics/ontolib.git</developerConnection>
     <url>scm:git:git@github.com:phenomics/ontolib.git</url>
-  </scm>
+  </scm>-->
 
   <dependencies>
     <!-- JUnit testing -->
@@ -208,7 +214,7 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.7.2.201409121644</version>
         <executions>
-          <!-- Prepares the property pointing to the JaCoCo runtime agent 
+          <!-- Prepares the property pointing to the JaCoCo runtime agent
             which is passed as VM argument when Maven the Surefire plugin is executed. -->
           <execution>
             <id>pre-unit-test</id>
@@ -216,7 +222,7 @@
               <goal>prepare-agent</goal>
             </goals>
           </execution>
-          <!-- Ensures that the code coverage report for unit tests is created 
+          <!-- Ensures that the code coverage report for unit tests is created
             after unit tests have been run. -->
           <execution>
             <id>post-unit-test</id>

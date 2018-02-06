@@ -3,9 +3,18 @@ Changelog
 =========
 
 
-----
-v0.4
-----
+
+-------
+v.0.1.2
+-------
+- refactored HpoFreqeuncy class to return frequencies (i.e., a number in [0,1]) rather than percentage
+- Added HpoOnset classes
+- Added HpoDiseaseWithMetadata class to encompass frequency and onset data
+
+
+-----------
+v0.4/v0.1.1
+-----------
 - forked from ontolib
 - fixed mp.obo parse error
 - fixed subontology creation error (TermMap, TermRelation)
