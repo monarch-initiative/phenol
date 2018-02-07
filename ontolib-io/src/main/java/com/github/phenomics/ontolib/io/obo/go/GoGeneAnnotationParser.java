@@ -70,16 +70,13 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
   }
 
   /**
-   * Skip all header lines and check first data line.
+   * Skip all header lines and check next data line.
    *
    * @throws TermAnnotationParserException If the first line is not as expected.
    * @throws IOException If there is a problem with reading from the file.
    */
   private void skipHeaderAndCheckFirst() throws TermAnnotationParserException, IOException {
-    nextLine = reader.readLine();
-    while (nextLine == null || nextLine.startsWith("!")) {
-      nextLine = reader.readLine();
-    }
+    skipUntilData();
     if (nextLine == null) {
       throw new TermAnnotationParserException("GAF2.1 file contained no data!");
     }
@@ -90,6 +87,16 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     }
   }
 
+  /*
+   * Skip comment lines until data
+   *
+   */
+
+  private void skipUntilData() throws IOException {
+    while (nextLine == null || nextLine.startsWith("!")) {
+      nextLine = reader.readLine();
+    }
+  }
   @Override
   public boolean hasNext() {
     return nextLine != null;
@@ -97,12 +104,12 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
 
   @Override
   public GoGaf21Annotation next() throws IOException, TermAnnotationParserException {
+    skipUntilData();
     final String[] arr = nextLine.split("\t");
     if (arr.length < 15 || arr.length > 17) {
       throw new TermAnnotationParserException(
-          "GAF line had " + arr.length + " columns, but expected between 15 and 17 entries.");
+          "GAF line had " + arr.length + " columns, but expected between 15 and 17 entries. \n Line was:" + nextLine);
     }
-
     final String db = arr[0];
     final String dbObjectId = arr[1];
     final String dbObjectSymbol = arr[2];
