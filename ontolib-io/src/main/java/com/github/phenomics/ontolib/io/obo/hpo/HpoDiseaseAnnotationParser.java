@@ -37,9 +37,11 @@ import com.google.common.collect.ImmutableList;
  *   System.err.println("Problem parsing file.");
  * }
  * </pre>
+ * Note this parser is to be replaced by {@link HpoAnnotation2DiseaseParser} which includes the metadata.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+@Deprecated
 public class HpoDiseaseAnnotationParser implements TermAnnotationParser<HpoDiseaseAnnotation> {
 
   /**
