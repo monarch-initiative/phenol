@@ -3,10 +3,16 @@ Changelog
 =========
 
 
+------
+v0.1.4
+------
+- fix to GOA parser
+- added HPODiseaseWithMetaData parser
+- added functions to calculate Term relationships (sibling, subclass, related, not-related)
 
--------
-v.0.1.2
--------
+------
+v0.1.2
+------
 - refactored HpoFreqeuncy class to return frequencies (i.e., a number in [0,1]) rather than percentage
 - Added HpoOnset classes
 - Added HpoDiseaseWithMetadata class to encompass frequency and onset data

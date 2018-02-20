@@ -4,6 +4,7 @@ import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public final class HpoDiseaseWithMetadata {
     /** Name of the disease from annotation. */
     private final String name;
+    /** Name of the database, e.g., OMIM, DECIPHER, ORPHANET */
+    private final String database;
 
     private final String diseaseDatabaseId;
 
@@ -47,11 +50,13 @@ public final class HpoDiseaseWithMetadata {
      * @param modesOfInheritance {@link List} of modes of inheritance with their frequencies.
      */
     public HpoDiseaseWithMetadata(String name,
+                                  String dbase,
                                   String databaseId,
                                   List<TermIdWithMetadata> phenotypicAbnormalities,
                                   List<TermId> modesOfInheritance,
                                   List<TermId> notTerms) {
         this.name = name;
+        this.database=dbase;
         this.diseaseDatabaseId=databaseId;
         this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
         this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
@@ -97,6 +102,44 @@ public final class HpoDiseaseWithMetadata {
         return phenotypicAbnormalities.stream().filter( timd -> timd.getTermId().equals(id)).findAny().orElse(null);
     }
 
+  /**
+   * @param tid
+   * @return true if there is a direct annotation to tid. Does not include indirect annotations from annotation propagation rule.
+   */
+  public boolean isDirectlyAnnotatedTo(TermId tid) {
+      boolean matches=false;
+      for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
+        if (tiwm.getTermId().equals(tid)) return true;
+      }
+      return false;
+    }
+  /**
+   * @param tidset
+   * @return true if there is a direct annotation to any of the terms in tidset. Does not include indirect annotations from annotation propagation rule.
+   */
+  public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
+    boolean matches=false;
+    for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
+      if (tidset.contains(tiwm.getTermId())) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns the mean frequency of the feature in the disease.
+   * @param tid
+   * @return
+   */
+  public double getFrequencyOfTermInDisease(TermId tid) {
+    TermIdWithMetadata tiwm = phenotypicAbnormalities.
+      stream().
+      filter(twm -> twm.getTermId().equals(tid)).
+      findFirst().orElse(null);
+    if (tiwm==null) {
+      return 0D; // term not annotated to disease so frequency is zero
+    }
+    else return tiwm.getFrequency().mean();
+  }
 
 
     @Override
@@ -105,8 +148,8 @@ public final class HpoDiseaseWithMetadata {
           stream().
           map(TermIdWithMetadata::getIdWithPrefix).
           collect(Collectors.joining(";"));
-        return "HpoDisease [name=" + name + ", phenotypicAbnormalities=\n" + abnormalityList
-                + ", modesOfInheritance=" + modesOfInheritance + "]";
+        return String.format("HpoDisease [name=%s;%s:%s] phenotypicAbnormalities=\n%s" +
+                ", modesOfInheritance=%s",name,database,diseaseDatabaseId,abnormalityList,modesOfInheritance);
     }
 
 }

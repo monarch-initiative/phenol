@@ -9,7 +9,7 @@ import com.github.phenomics.ontolib.ontology.data.TermPrefix;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.0.1
  */
-interface TermIdWithMetadata extends TermId {
+public interface TermIdWithMetadata extends TermId {
 
 
 
