@@ -8,6 +8,7 @@ v0.1.4
 ------
 - fix to GOA parser
 - added HPODiseaseWithMetaData parser
+- added functions to calculate Term relationships (sibling, subclass, related, not-related)
 
 ------
 v0.1.2

@@ -12,6 +12,7 @@ import com.github.phenomics.ontolib.graph.data.ImmutableEdge;
 import com.github.phenomics.ontolib.ontology.data.Ontology;
 import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.util.*;
 
@@ -102,6 +103,15 @@ public class OntologyAlgorithm {
   }
 
 
+  public static Set<TermId> getParentTerms(Ontology ontology, Set<TermId> childTermIdSet,boolean includeOriginalTerm) {
+    ImmutableSet.Builder <TermId> parents = new ImmutableSet.Builder<>();
+    for (TermId tid:childTermIdSet) {
+      parents.addAll(getParentTerms(ontology, tid,false));
+    }
+    return parents.build();
+  }
+
+
 
 
   /**
@@ -142,6 +152,39 @@ public class OntologyAlgorithm {
   }
 
 
+  public static Set<TermId> getAncestorTerms(Ontology ontology, Set<TermId> children, boolean includeOriginalTerm) {
+    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+    if (includeOriginalTerm) builder.addAll(children);
+    Stack<TermId> stack = new Stack();
+    Set<TermId> parents = getParentTerms(ontology,children,false);
+    for (TermId t : parents) stack.push(t);
+    while (! stack.empty()) {
+      TermId tid = stack.pop();
+      builder.add(tid);
+      Set<TermId> prnts = getParentTerms(ontology,tid,false);
+      for (TermId t : prnts) stack.push(t);
+    }
+    return builder.build();
+  }
+
+  public static Set<TermId> getAncestorTerms(Ontology ontology, TermId child, boolean includeOriginalTerm) {
+    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+    if (includeOriginalTerm) builder.add(child);
+    Stack<TermId> stack = new Stack();
+    Set<TermId> parents = getParentTerms(ontology,child,false);
+    for (TermId t : parents) stack.push(t);
+    while (! stack.empty()) {
+      TermId tid = stack.pop();
+      builder.add(tid);
+      Set<TermId> prnts = getParentTerms(ontology,tid,false);
+      for (TermId t : prnts) stack.push(t);
+    }
+    return builder.build();
+  }
+
+
+
+
   /** Find all of the direct parents of childTermId (do not include "grandchildren" and other descendents).
    * @param ontology The ontology to which parentTermId belongs
    * @param childTermId The term whose parents were are seeking
@@ -162,5 +205,39 @@ public class OntologyAlgorithm {
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId childTermId) {
     return ontology.getAncestorTermIds(childTermId);
   }
+
+
+  public static boolean isSubclass(Ontology ontology, TermId source, TermId dest) {
+    return ontology.getAncestorTermIds(source).contains(dest);
+  }
+
+  public static boolean termsAreSiblings(Ontology ontology, TermId t1, TermId t2)  {
+    Set<TermId> parents1 = getParentTerms(ontology,t1,false); // false=do not include t1 itself
+    Set<TermId> parents2 = getParentTerms(ontology,t2,false); // ditto
+    return (!Sets.intersection(parents1,parents2).isEmpty());
+  }
+
+  /**
+   * @param ontology An ontology
+   * @param t1 One Ontology term
+   * @param t2 Another ontology term
+   * @return true iff t1 and t2 have a common ancestor that is not the root of the ontology
+   */
+  public static boolean termsAreRelated(Ontology ontology,TermId t1, TermId t2) {
+    Set<TermId> ancs1 = getAncestorTerms(ontology,t1,false);
+    Set<TermId> ancs2 = getAncestorTerms(ontology,t2,false);
+    Set<TermId> isect = Sets.intersection(ancs1,ancs2);
+    for (TermId tid : isect) {
+      if (! ontology.isRootTerm(tid)) { return true; }
+    }
+    return false;
+  }
+
+  public static boolean termsAreUnrelated(Ontology ontology,TermId t1, TermId t2) {
+    return (! termsAreRelated(ontology,t1,t2));
+  }
+
+
+
 
 }
