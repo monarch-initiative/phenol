@@ -144,8 +144,16 @@ public class HpoAnnotation2DiseaseParser {
   private TermId string2TermId(String hp) {
     if (! hp.startsWith("HP:")) {
       return null;
-    } else
-      return new ImmutableTermId(HP_PREFIX,hp.substring(3));
+    } else {
+     TermId tid= new ImmutableTermId(HP_PREFIX, hp.substring(3));
+     if (hpoPhenotypeOntology.getTermMap().containsKey(tid)) {
+       return hpoPhenotypeOntology.getTermMap().get(tid).getId(); // replace alt_id with current if if necessary
+     } else if (inheritancePhenotypeOntology.getTermMap().containsKey(tid)) {
+       return inheritancePhenotypeOntology.getTermMap().get(tid).getId();
+     } else {
+       return null;
+     }
+    }
   }
 
 
