@@ -8,13 +8,57 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/antlr4" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="module" module-name="ontolib-core" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.geneontology:obographs:0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.io-informatics.oss:jackson-jsonld:0.0.5" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.5.4" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jsonSchema:2.7.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-protobuf:2.7.2" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup:protoparser:4.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.prefixcommons:curie-util:0.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.19" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.owlapi:owlapi-distribution:4.2.6" level="project" />
+    <orderEntry type="library" name="Maven: org.tukaani:xz:1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-languages:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-datatypes:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-binary:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-n3:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-nquads:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-ntriples:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-rdfjson:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-rdfxml:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-trix:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-turtle:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-trig:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jsonld-java:jsonld-java-sesame:0.5.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: com.google.inject:guice:4.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-assistedinject:4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-multibindings:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-model:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-util:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-api:2.7.16" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jsonld-java:jsonld-java:0.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.3.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.3.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient-cache:4.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-all:1.3" level="project" />
