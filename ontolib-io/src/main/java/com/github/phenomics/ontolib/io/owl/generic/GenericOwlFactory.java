@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.io.owl.common;
+package com.github.phenomics.ontolib.io.owl.generic;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -9,9 +9,9 @@ import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.phenomics.ontolib.formats.common.CommonRelationQualifier;
-import com.github.phenomics.ontolib.formats.common.CommonTerm;
-import com.github.phenomics.ontolib.formats.common.CommonTermRelation;
+import com.github.phenomics.ontolib.formats.generic.GenericRelationQualifier;
+import com.github.phenomics.ontolib.formats.generic.GenericTerm;
+import com.github.phenomics.ontolib.formats.generic.GenericTermRelation;
 import com.github.phenomics.ontolib.formats.go.GoTerm;
 import com.github.phenomics.ontolib.formats.go.GoTermRelation;
 import com.github.phenomics.ontolib.io.obo.OboOntologyEntryFactory;
@@ -22,19 +22,19 @@ import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.github.phenomics.ontolib.ontology.data.TermSynonym;
 
 /**
- * Factory class for constructing {@link CommonTerm} and {@link CommonTermRelation} objects from Obographs's Nodes.
+ * Factory class for constructing {@link GenericTerm} and {@link GenericTermRelation} objects from Obographs's Nodes.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class CommonOwlFactory implements OwlOntologyEntryFactory<CommonTerm, CommonTermRelation>{
-	private static final Logger LOGGER = LoggerFactory.getLogger(CommonOwlFactory.class);
+public class GenericOwlFactory implements OwlOntologyEntryFactory<GenericTerm, GenericTermRelation>{
+	private static final Logger LOGGER = LoggerFactory.getLogger(GenericOwlFactory.class);
 
 	@Override
-	public CommonTerm constructTerm(Node node, TermId termId) {
-		CommonTerm commonTerm = new CommonTerm();
+	public GenericTerm constructTerm(Node node, TermId termId) {
+    GenericTerm commonTerm = new GenericTerm();
 		commonTerm.setId(termId);
 		commonTerm.setName(node.getLabel());
-		
+
 		Meta meta = node.getMeta();
 		if (meta == null) {
 			LOGGER.warn("No meta instance exists for the node: " + node.getId());
@@ -59,7 +59,7 @@ public class CommonOwlFactory implements OwlOntologyEntryFactory<CommonTerm, Com
 			f.setAccessible(true);
 			if (meta != null) {
 				Boolean deprecated = (Boolean) f.get(meta);
-				if (deprecated ==null || deprecated != true) 
+				if (deprecated ==null || deprecated != true)
 					isObsolete = false;
 				else if (deprecated)
 					isObsolete = true;
@@ -68,7 +68,7 @@ public class CommonOwlFactory implements OwlOntologyEntryFactory<CommonTerm, Com
 			LOGGER.error(e.getMessage());
 		}
 		commonTerm.setObsolete(isObsolete);
-		
+
 		// Additional properties/annotations can be further mapped by iterating BasicPropertyValue.
 		/*
 		List<BasicPropertyValue> bpvs = meta.getBasicPropertyValues();
@@ -82,9 +82,9 @@ public class CommonOwlFactory implements OwlOntologyEntryFactory<CommonTerm, Com
 		return commonTerm;
 	}
 
-	// It seems that only actual relation used across ontologies is "IS_A" one for now. 
+	// It seems that only actual relation used across ontologies is "IS_A" one for now.
 	@Override
-	public CommonTermRelation constructTermRelation(TermId source, TermId dest, int id) {
-		return new CommonTermRelation(source, dest, id, CommonRelationQualifier.IS_A);
+	public GenericTermRelation constructTermRelation(TermId source, TermId dest, int id) {
+		return new GenericTermRelation(source, dest, id, GenericRelationQualifier.IS_A);
 	}
 }

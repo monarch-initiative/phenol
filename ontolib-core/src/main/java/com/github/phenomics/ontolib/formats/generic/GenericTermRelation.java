@@ -1,9 +1,9 @@
-package com.github.phenomics.ontolib.formats.common;
+package com.github.phenomics.ontolib.formats.generic;
 
 import com.github.phenomics.ontolib.ontology.data.TermId;
 import com.github.phenomics.ontolib.ontology.data.TermRelation;
 
-public class CommonTermRelation implements TermRelation {
+public class GenericTermRelation implements TermRelation {
 
 	/** Serial UId for serialization. */
 	private static final long serialVersionUID = 1L;
@@ -22,9 +22,9 @@ public class CommonTermRelation implements TermRelation {
 	private final int id;
 
 	/**
-	 * {@link CommonRelationQualifier} for this term relation.
+	 * {@link GenericRelationQualifier} for this term relation.
 	 */
-	private final CommonRelationQualifier relationQualifier;
+	private final GenericRelationQualifier relationQualifier;
 
 	/**
 	 * Constructor.
@@ -34,8 +34,8 @@ public class CommonTermRelation implements TermRelation {
 	 * @param id The term relation's Id, corresponds to Id of edge in graph.
 	 * @param relationQualifier The relation's further qualifier.
 	 */
-	public CommonTermRelation(TermId source, TermId dest, int id,
-			CommonRelationQualifier relationQualifier) {
+	public GenericTermRelation(TermId source, TermId dest, int id,
+			GenericRelationQualifier relationQualifier) {
 		this.source = source;
 		this.dest = dest;
 		this.id = id;
@@ -60,7 +60,7 @@ public class CommonTermRelation implements TermRelation {
 	/**
 	 * @return The relation's qualifier.
 	 */
-	public CommonRelationQualifier getRelationQualifier() {
+	public GenericRelationQualifier getRelationQualifier() {
 		return relationQualifier;
 	}
 

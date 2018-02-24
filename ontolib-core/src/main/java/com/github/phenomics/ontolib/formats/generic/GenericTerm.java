@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.formats.common;
+package com.github.phenomics.ontolib.formats.generic;
 
 import com.github.phenomics.ontolib.ontology.data.Dbxref;
 import com.github.phenomics.ontolib.ontology.data.Term;
@@ -11,7 +11,7 @@ import java.util.List;
  * Representation of a term in common (folked from GoTerm)
  */
 
-public class CommonTerm implements Term {
+public class GenericTerm implements Term {
 
 	/** Serial UID for serialization. */
 	private static long serialVersionUID = 1L;
@@ -64,7 +64,7 @@ public class CommonTerm implements Term {
 	 * @param creationDate Date of creation of the term.
 	 * @Param xrefs The Term's xrefs.
 	 */
-	public CommonTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
+	public GenericTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
 			List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
 			Date creationDate, List<Dbxref> xrefs) {
 		this.id = id;
@@ -79,8 +79,8 @@ public class CommonTerm implements Term {
 		this.creationDate = creationDate;
 		this.xrefs = xrefs;
 	}
-	
-	public CommonTerm() {}
+
+	public GenericTerm() {}
 
 	@Override
 	public TermId getId() {

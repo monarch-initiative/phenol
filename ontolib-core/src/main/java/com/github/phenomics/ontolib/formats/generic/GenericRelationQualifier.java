@@ -1,11 +1,11 @@
-package com.github.phenomics.ontolib.formats.common;
+package com.github.phenomics.ontolib.formats.generic;
 
 /**
  * Enumeration for describing relation qualifiers (folked from GoRelationQualifer)
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public enum CommonRelationQualifier {
+public enum GenericRelationQualifier {
   /** "Is-a" relation. */
   IS_A,
   /** "Intersection-of" relation. */
