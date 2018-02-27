@@ -119,57 +119,9 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>[${guava.version}]</version>
+      <version>${guava.version}</version>
     </dependency>
-
-
-    <!-- the following dependencies are to solve enforcer plugin issues -->
-    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>[1.7.24]</version>
-    </dependency>
-
-    <!-- the following dependencies are to solve enforcer plugin issues -->
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-model</artifactId>
-      <version>[4.1.2]</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.github.jsonld-java/jsonld-java -->
-    <dependency>
-      <groupId>com.github.jsonld-java</groupId>
-      <artifactId>jsonld-java</artifactId>
-      <version>[0.11.1]</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>[${jackson.version}]</version>
-    </dependency>
-    <dependency>
-      <!-- Note: core-annotations version x.y.0 is generally compatible with
-           (identical to) version x.y.1, x.y.2, etc. -->
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>[${jackson.version}]</version>
-    </dependency>
-    <!--
-       <dependency>
-         <groupId>com.fasterxml.jackson.core</groupId>
-         <artifactId>jackson-databind</artifactId>
-         <version>[${jackson.version}]</version>
-       </dependency> -->
-
-
-
   </dependencies>
-
-
 
   <build>
     <plugins>
