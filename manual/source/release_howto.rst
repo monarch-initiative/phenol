@@ -4,7 +4,7 @@
 How-To: Release on Maven Central
 ================================
 
-This page describes the steps to release OntoLib on Maven Central.
+This page describes the steps to release Phenol on Maven Central. TODO update me
 
 ------------------------
 Read the following first

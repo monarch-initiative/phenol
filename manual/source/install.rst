@@ -18,13 +18,13 @@ Simply use the following snippet for your ``pom.xml`` for using OntoLib modules 
 
   <dependencies>
     <dependency>
-      <groupId>com.github.phenomics</groupId>
-      <artifactId>ontolib-core</artifactId>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.phenomics</groupId>
-      <artifactId>ontolib-io</artifactId>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-io</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
@@ -37,12 +37,12 @@ Install from Source
 
 .. note::
 
-    You only need to install from source if you want to develop OntoLib in Java yourself.
+    You only need to install from source if you want to develop Phenol in Java yourself.
 
-Prequisites
-===========
+Prerequisites
+=============
 
-For building OntoLib, you will need
+For building Phenol, you will need
 
 #. `Java JDK 8 or higher <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ for compiling OntoLib,
 #. `Maven 3 <http://maven.apache.org/>`_ for building OntoLib, and
@@ -87,18 +87,18 @@ Then, execute the following commands to fill ``~/.m2/settings.xml``.
 Building
 ========
 
-You can build OntoLib using ``mvn package``.
+You can build Phenol using ``mvn package``.
 This will automatically download all dependencies, build OntoLib, and run all tests.
 
 .. code-block:: console
 
-    ontolib # mvn package
+    phenol # mvn package
 
 In case that you have non-compiling test, you can use the `-DskipTests=true` parameter for skipping them.
 
 .. code-block:: console
 
-    ontolib # mvn install -DskipTests=true
+    phenol # mvn install -DskipTests=true
 
 Creating Eclipse Projects
 =========================
@@ -108,5 +108,5 @@ This can be done calling ``mvn eclipse:eclipse`` command after calling ``mvn ins
 
 .. code-block:: console
 
-    ontolib # mvn install
-    ontolib # mvn eclipse:eclipse
+    phenol # mvn install
+    phenol # mvn eclipse:eclipse
