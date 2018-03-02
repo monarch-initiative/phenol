@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.phenomics</groupId>
-  <artifactId>OLPG</artifactId>
+  <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>OntoLib contains data structures and algorithms for processing ontologies.</description>
@@ -22,13 +22,14 @@
     <commons.io.version>2.4</commons.io.version>
     <mockito.version>2.8.47</mockito.version>
     <jcommander.version>1.72</jcommander.version>
+    <jackson.version>2.9.4</jackson.version>
     <h2.version>1.4.196</h2.version>
   </properties>
 
   <modules>
-    <module>ontolib-cli</module>
-    <module>ontolib-core</module>
-    <module>ontolib-io</module>
+    <module>phenol-cli</module>
+    <module>phenol-core</module>
+    <module>phenol-io</module>
   </modules>
 
   <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
@@ -73,7 +74,6 @@
       <organizationUrl>https://www.charite.de</organizationUrl>
     </developer>
   </developers>
-
 
   <!-- SCM Information for Maven Central
   <scm>
@@ -122,8 +122,6 @@
     </dependency>
   </dependencies>
 
-
-
   <build>
     <plugins>
       <!-- JUnit testing -->
@@ -134,8 +132,7 @@
         <configuration>
           <forkCount>3</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>${argLine} -Xms512m -Xmx1024m -Duser.language=en
-            -Duser.region=US -Duser.timezone=UTC</argLine>
+          <argLine>-Xmx1024m -XX:MaxPermSize=256m -Duser.region=US -Duser.timezone=UTC</argLine>
           <systemPropertyVariables>
             <user.language>en</user.language>
             <user.region>US</user.region>
