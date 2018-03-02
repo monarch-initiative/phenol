@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Phenomics/ontolib.svg?branch=master)](https://travis-ci.org/Phenomics/ontolib)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/54470d686c484122a89f5a32030558d1)](https://www.codacy.com/app/Phenomics/ontolib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Phenomics/ontolib&amp;utm_campaign=Badge_Grade)
-[![Documentation Status](https://readthedocs.org/projects/ontolib/badge/?version=latest)](http://ontolib.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://phenol.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core)
 
 # Phenol: Ontology Library for Phenomics and Genomics
@@ -11,7 +11,7 @@ A modern Java library for working with (biological) ontologies. This repository 
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 0.3
+- **Version:** 0.1.5
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -19,6 +19,33 @@ A modern Java library for working with (biological) ontologies. This repository 
     - Max Schubach
     - Manuel Holtgrewe
 - **Availability:**
-    - Maven module `ontolib-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
-    - Maven module `ontolib-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
-    - Maven module `ontolib-cli` for performing empirical score distribution computation as a stand-alone program.
+    - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
+    - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
+    - Maven module `phenol-cli` for performing empirical score distribution computation as a stand-alone program.
+
+## Usage
+We are working on the first public distribution of phenol, which we will make available on maven central.
+For now, to use phenol in application code, it must be installed locally by cloning this GitHub
+repository and entering the following command.
+```aidl
+$ mvn install
+```
+This will install the phenol library code into your local maven repository (.m2 directory) and
+thereby make it available to application code, which can use phenol by adding the following
+stanza to the pom.xml file.
+```aidl
+<dependency>
+            <groupId>org.monarchinitiative.phenol</groupId>
+            <artifactId>phenol-io</artifactId>
+           <version>${phenol.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+```
+The above stanza shows the code that is needed for the phenol-io component, and also shows
+how to exclude the slf4j version from the application code (which can help to avoid maven enforcer errors).
+Add analogous stanzas for other phenol modules.

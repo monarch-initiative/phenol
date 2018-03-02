@@ -4,7 +4,8 @@
 Querying with Term Similarity
 =============================
 
-OntoLib provides multiple routines for computing the similarity of terms, given an ontology.
+<Todo-- update>
+Phenol provides multiple routines for computing the similarity of terms, given an ontology.
 For the "classic" similarity measures, the `Similarity` interface provides the corresponding interface definition.
 
 Here is how to compute the Jaccard similarity between two sets of terms.

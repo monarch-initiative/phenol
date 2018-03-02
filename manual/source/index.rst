@@ -1,10 +1,21 @@
 ==================================
-Welcome to OntoLib's Documentation
+Phenotype Ontology Library: Phenol
 ==================================
 
-OntoLib is a modern Java (version 8 and above) library for working with (biological) ontologies.
-You can easily load an OBO file into an `Ontology` object and work with it in your code.
-Additionally, there is special support for important biological entities such as HPO and GO that make working with them easier by making important sub ontologies and terms more accessible.
+Phenol is a modern Java (version 8 and above) library for working with
+phenotype and other attribute ontologies (including Gene Ontology). Phenolib
+was forked from `Ontolib <https://github.com/Phenomics/ontolib>`_  and is being extended to add additional functionality
+for working with phenotype annotations.
+
+
+-------
+Warning
+-------
+Phenol is undergoing substantial refactoring and is currently not intended for the faint of heart. We anticipate that
+phenol will be suitable for external use by Summer 2018.
+
+
+
 
 -------------
 Quick Example
@@ -29,7 +40,7 @@ Quick Example
 Feedback
 --------
 
-The best place to leave feedback, ask questions, and report bugs is the `OntoLib Issue Tracker <https://github.com/phenomics/ontolib/issues>`_.
+The best place to leave feedback, ask questions, and report bugs is the `Phenol Issue Tracker <https://github.com/monarchinitiative/phenol/issues>`_.
 
 .. toctree::
     :caption: Installation & Tutorial

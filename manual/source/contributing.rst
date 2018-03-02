@@ -43,9 +43,9 @@ If you want to start working on an issue then please write short message on the 
 Write Documentation
 ===================
 
-OntoLib could always use more documentation, whether as part of the official vcfpy docs, in docstrings, or even on the web in blog posts, articles, and such.
+Phenol could always use more documentation, whether as part of the official vcfpy docs, in docstrings, or even on the web in blog posts, articles, and such.
 
-OntoLib uses `Sphinx <https://sphinx-doc.org>`_ for the user manual (that you are currently reading).
+Phenol uses `Sphinx <https://sphinx-doc.org>`_ for the user manual (that you are currently reading).
 See `doc_guidelines` on how the documentation reStructuredText is used.
 See `doc_setup` on creating a local setup for building the documentation.
 
@@ -128,7 +128,7 @@ Use the following steps for installing Sphinx and the dependencies for building 
 
 .. code-block:: console
 
-    $ cd ontolib/manual
+    $ cd phenol/manual
     $ virtualenv -p python3 .venv
     $ source .venv/bin/activate
     $ pip install --upgrade -r requirements.txt
@@ -139,7 +139,7 @@ Afterwards, you can always use ``make html`` for building.
 
 .. code-block:: console
 
-    $ cd ontolib/manual
+    $ cd phenol/manual
     $ source .venv/bin/activate
     $ make html  # rebuild for changed files only
     $ make clean && make html  # force rebuild

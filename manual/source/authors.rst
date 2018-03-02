@@ -8,3 +8,4 @@ Authors
 - Peter N. Robinson
 - Sebastian Koehler
 - Manuel Holtgrewe
+- HyeongSik Kim
