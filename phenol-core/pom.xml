@@ -6,10 +6,10 @@
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>ontolib-core contains the core functionality for representing ontologies</description>
-  <url>https://github.com/phenomics/ontolib</url>
+  <url>https://github.com/monarch-initiative/phenol</url>
 
   <parent>
-    <groupId>com.github.phenomics</groupId>
+    <groupId>org.monarchinitiative</groupId>
     <artifactId>phenol</artifactId>
     <version>0.1.5</version>
   </parent>
