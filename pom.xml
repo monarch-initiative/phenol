@@ -4,7 +4,7 @@
   <groupId>com.github.phenomics</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description>OntoLib contains data structures and algorithms for processing ontologies.</description>
@@ -27,9 +27,9 @@
   </properties>
 
   <modules>
-    <module>ontolib-cli</module>
-    <module>ontolib-core</module>
-    <module>ontolib-io</module>
+    <module>phenol-cli</module>
+    <module>phenol-core</module>
+    <module>phenol-io</module>
   </modules>
 
   <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
