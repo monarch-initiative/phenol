@@ -9,7 +9,7 @@
   <url>https://github.com/phenomics/ontolib</url>
 
   <parent>
-    <groupId>com.github.phenomics</groupId>
+    <groupId>org.monarchinitiative</groupId>
     <artifactId>phenol</artifactId>
     <version>0.1.5</version>
   </parent>
