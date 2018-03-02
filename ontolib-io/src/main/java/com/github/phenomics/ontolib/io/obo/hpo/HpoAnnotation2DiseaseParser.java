@@ -16,7 +16,7 @@ import java.util.*;
 
 /**
  * This class parses the phenotype_annotation.tab file into a collection of HpoDisease objects. Note that for now
- * this class does not correspond to the design pattern in OLPG for annotation parsers. It makes more sense to me
+ * this class does not correspond to the design pattern in phenol for annotation parsers. It makes more sense to me
  * to have the parser construct the desired disease models rather than return a list of annotation lines. The annotation
  * lines and their semantics are very different for the various pheno-databases that it does not make much sense to
  * try to make a common data pattern--that is not what seems to be useful. THis class therefore is intended to be

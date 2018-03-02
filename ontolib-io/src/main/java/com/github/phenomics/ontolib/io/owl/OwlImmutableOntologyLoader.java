@@ -84,7 +84,7 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRela
 			return null;
 		}
 
-		// Mapping nodes in obographs to termIds in OLPG
+		// Mapping nodes in obographs to termIds in phenol
 		for (Node node: gNodes) {
 			Optional<String> nodeCurie = curieUtil.getCurie(node.getId());
 			if (nodeCurie.isPresent() != true) continue;
@@ -108,7 +108,7 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRela
 			return null;
 		}
 
-		// Mapping edges in obographs to termIds in OLPG
+		// Mapping edges in obographs to termIds in phenol
 		ImmutableEdge.Factory<TermId> edgeFactory = new ImmutableEdge.Factory<TermId>();
 		for (Edge edge: gEdges) {
 			Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
