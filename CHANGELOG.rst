@@ -2,6 +2,10 @@
 Changelog
 =========
 
+------
+v0.1.5
+------
+- changed package and project name to phenol - Phenotype Ontology Library
 
 ------
 v0.1.4
