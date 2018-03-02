@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>ontolib-io</artifactId>
+  <artifactId>phenol-io</artifactId>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>ontolib-io contains the generic I/O functionality for ontologies</description>
-  <url>https://github.com/phenomics/ontolib</url>
+  <description>phenol-io contains the generic I/O functionality for ontologies</description>
+  <url>https://github.com/monarchinitiative/phenol</url>
 
   <parent>
-    <groupId>org.monarchinitiative</groupId>
+    <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
     <version>0.1.5</version>
   </parent>
@@ -19,10 +19,10 @@
   </properties>
 
   <dependencies>
-    <!-- Ontolib core -->
+    <!-- Phenolib core -->
     <dependency>
-      <groupId>com.github.phenomics</groupId>
-      <artifactId>ontolib-core</artifactId>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-core</artifactId>
       <version>${project.parent.version}</version>
       <exclusions>
          <exclusion>

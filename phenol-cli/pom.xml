@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>ontolib-cli</artifactId>
+  <artifactId>phenol-cli</artifactId>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>ontolib-cli gives command line access to Ontolib score distribution precomputation</description>
-  <url>https://github.com/phenomics/ontolib</url>
+  <description>phenol-cli gives command line access to phenol</description>
+  <url>https://github.com/monarchinitiative/phenol</url>
 
   <parent>
-    <groupId>org.monarchinitiative</groupId>
+    <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
     <version>0.1.5</version>
   </parent>
@@ -33,15 +33,15 @@
       <version>${slf4j.version}</version>
     </dependency>
 
-    <!-- Ontolib modules -->
+    <!-- Phenol modules -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>ontolib-core</artifactId>
+      <artifactId>phenol-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>ontolib-io</artifactId>
+      <artifactId>phenol-io</artifactId>
       <version>${project.version}</version>
     </dependency>
 
