@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Phenomics/ontolib.svg?branch=master)](https://travis-ci.org/Phenomics/ontolib)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/54470d686c484122a89f5a32030558d1)](https://www.codacy.com/app/Phenomics/ontolib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Phenomics/ontolib&amp;utm_campaign=Badge_Grade)
-[![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://ontolib.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://phenol.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core)
 
 # Phenol: Ontology Library for Phenomics and Genomics
