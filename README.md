@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/monarch-initiative/phenol.svg?branch=master)](https://travis-ci.org/monarch-initiative/phenol)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/54470d686c484122a89f5a32030558d1)](https://www.codacy.com/app/Phenomics/ontolib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Phenomics/ontolib&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/55d852f506e344769d5d7a857e5fffed)](https://www.codacy.com/app/monarch-initiative/phenol?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=monarch-initiative/phenol&amp;utm_campaign=Badge_Grade)
 [![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://phenol.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.phenomics/ontolib-core)
 
