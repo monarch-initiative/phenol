@@ -107,6 +107,8 @@ public enum HpoFrequency {
 
 
   /**
+   * Return the {@link TermId} that corresponds to this HpoFrequency
+   * Our default is ALWAYS_PRESENT.
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
    */
   public TermId toTermId() {
@@ -123,7 +125,7 @@ public enum HpoFrequency {
         return HpoFrequencyTermIds.VERY_FREQUENT;
       case VERY_RARE:
       default:
-        return HpoFrequencyTermIds.VERY_RARE;
+        return HpoFrequencyTermIds.ALWAYS_PRESENT;
     }
   }
 

@@ -63,3 +63,6 @@ buildNumber.properties
 /ontolib-cli/ontolib-cli.iml
 .idea/
 BLA
+/phenol-io/phenol-io.iml
+/phenol-cli/phenol-cli.iml
+phenol-core/src/test/java/com/

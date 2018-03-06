@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
+@Deprecated
 public final class HpoDisease {
 
   /** Name of the disease from annotation. */
