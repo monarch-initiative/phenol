@@ -28,6 +28,7 @@ public class HpoNegativeDiseaseAnnotationParserTest {
         hpoDiseaseAnnotationHeadFile);
   }
 
+  /*
   @Test
   public void testParseHpoDiseaseAnnotationHead()
       throws IOException, TermAnnotationParserException {
@@ -49,6 +50,6 @@ public class HpoNegativeDiseaseAnnotationParserTest {
     assertEquals(10, count);
 
     parser.close();
-  }
+  }*/
 
 }
