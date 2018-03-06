@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
+
 /**
  * This class parses the phenotype_annotation.tab file into a collection of HpoDisease objects. Note that for now
  * this class does not correspond to the design pattern in phenol for annotation parsers. It makes more sense to me
@@ -24,11 +26,11 @@ public class HpoAnnotation2DiseaseParser {
 
 
   private String annotationFilePath =null;
+  private final HpoOntology ontology;
   private Ontology<HpoTerm, HpoTermRelation> hpoPhenotypeOntology=null;
   private Ontology<HpoTerm, HpoTermRelation> inheritancePhenotypeOntology=null;
 
   private static final TermPrefix HP_PREFIX = new ImmutableTermPrefix("HP");
-  private static final TermId INHERITANCE_ROOT = new ImmutableTermId(HP_PREFIX,"0000005");
   /** The default frequency will be 100% (Obligate, HP:0040280). This will be used if an annotation line has no
    * value for the Frequency modifier.    */
   private static final String DEFAULT_FREQUENCY="0040280";
@@ -36,15 +38,15 @@ public class HpoAnnotation2DiseaseParser {
 
 
 
-  Map<String,HpoDiseaseWithMetadata> diseaseMap;
+  private Map<String,HpoDiseaseWithMetadata> diseaseMap;
 
 
 
-  public HpoAnnotation2DiseaseParser(String annotationFile, Ontology<HpoTerm, HpoTermRelation> phenotypeOntology,
-                                     Ontology<HpoTerm, HpoTermRelation> inheritanceOntology){
+  public HpoAnnotation2DiseaseParser(String annotationFile, HpoOntology ontlgy){
     this.annotationFilePath =annotationFile;
-    this.hpoPhenotypeOntology=phenotypeOntology;
-    this.inheritancePhenotypeOntology=inheritanceOntology;
+    this.ontology=ontlgy;
+    this.hpoPhenotypeOntology=this.ontology.getPhenotypicAbnormalitySubOntology();
+    this.inheritancePhenotypeOntology=this.ontology.subOntology(INHERITANCE_ROOT);
     this.diseaseMap=new HashMap<>();
     parseAnnotation();
   }
@@ -164,10 +166,12 @@ public class HpoAnnotation2DiseaseParser {
     if (freq==null || freq.isEmpty()) return HpoFrequency.fromTermId(DEFAULT_FREQUENCY_ID);
     try {
       TermId tid = string2TermId(freq);
-      return HpoFrequency.fromTermId(tid);
+      if (tid!=null)
+        return HpoFrequency.fromTermId(tid);
     } catch (Exception e){
       e.printStackTrace();
     }
+    // if we get here we could not parse the Frequency, return the default 100%
     return HpoFrequency.fromTermId(DEFAULT_FREQUENCY_ID);
   }
 
@@ -190,11 +194,15 @@ public class HpoAnnotation2DiseaseParser {
     String NOT=A[3];
     TermId hpoId=string2TermId(A[4]);
     HpoOnset onsetModifier=getOnset(A[7]);
-    HpoFrequency freqeuncyModifier= getFrequency(A[8]);
+    HpoFrequency freqeuncyModifier;
+    if (A[8] !=null &&! A[8].isEmpty()) {
+      freqeuncyModifier = getFrequency(A[8]);
+    } else {
+      freqeuncyModifier=HpoFrequency.ALWAYS_PRESENT; // the default value
+    }
     boolean no=false;
     if (NOT!=null && NOT.equals("NOT")) no = true;
-    AnnotationLine aline = new AnnotationLine(DB,DBObjectId,DbObjectName,no, hpoId,onsetModifier,freqeuncyModifier);
-    return aline;
+    return new AnnotationLine(DB,DBObjectId,DbObjectName,no, hpoId,onsetModifier,freqeuncyModifier);
   }
 
   /**

@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v0.1.6
+------
+- refactored HPO disease annotation parser (changed API)
+
+------
 v0.1.5
 ------
 - changed package and project name to phenol - Phenotype Ontology Library
