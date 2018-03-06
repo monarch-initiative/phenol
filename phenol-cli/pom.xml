@@ -5,14 +5,14 @@
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  
+
   <description>phenol-cli gives command line access to phenol</description>
   <url>https://github.com/monarchinitiative/phenol</url>
 
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
   </parent>
 
   <properties>

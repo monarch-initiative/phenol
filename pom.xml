@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.5</version>
+  <version>0.1.6</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
 
@@ -21,7 +21,7 @@
     <checkstyle.version>2.17</checkstyle.version>
     <slf4j.version>1.7.24</slf4j.version>
     <antlr4.version>4.7</antlr4.version>
-    <commons.io.version>2.4</commons.io.version>
+    <commons.io.version>2.6</commons.io.version>
     <mockito.version>2.8.47</mockito.version>
     <jcommander.version>1.72</jcommander.version>
     <jackson.version>2.9.4</jackson.version>
