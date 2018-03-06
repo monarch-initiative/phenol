@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OntoLib'
+project = u'Phenol'
 copyright = u'2017, Sebastian Bauer, Peter N. Robinson, Sebastian Koehler, Max Schubach, Manuel Holtgrewe'
 author = u'Sebastian Bauer, Peter N. Robinson, Sebastian Koehler, Max Schubach, Manuel Holtgrewe'
 
@@ -114,7 +114,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'OntoLibdoc'
+htmlhelp_basename = 'Phenoldoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------

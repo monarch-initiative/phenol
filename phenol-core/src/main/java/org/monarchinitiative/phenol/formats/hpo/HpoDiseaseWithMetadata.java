@@ -103,7 +103,7 @@ public final class HpoDiseaseWithMetadata {
     }
 
   /**
-   * @param tid
+   * @param tid ID of an HPO Term
    * @return true if there is a direct annotation to tid. Does not include indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedTo(TermId tid) {
@@ -114,7 +114,7 @@ public final class HpoDiseaseWithMetadata {
       return false;
     }
   /**
-   * @param tidset
+   * @param tidset Set of ids of HPO Terms
    * @return true if there is a direct annotation to any of the terms in tidset. Does not include indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
@@ -127,8 +127,8 @@ public final class HpoDiseaseWithMetadata {
 
   /**
    * Returns the mean frequency of the feature in the disease.
-   * @param tid
-   * @return
+   * @param tid id of an HPO term
+   * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
   public double getFrequencyOfTermInDisease(TermId tid) {
     TermIdWithMetadata tiwm = phenotypicAbnormalities.
@@ -152,5 +152,11 @@ public final class HpoDiseaseWithMetadata {
                 ", modesOfInheritance=%s",name,database,diseaseDatabaseId,abnormalityList,modesOfInheritance);
     }
 
+  /**
+   * @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER
+   */
+  public String getDatabase() {
+    return database;
+  }
 }
 
