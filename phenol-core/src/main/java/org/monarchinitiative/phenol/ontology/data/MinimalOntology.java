@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 /**
  * Interface for ontologies without the all-ancestor-related convenience functions.
@@ -18,7 +18,7 @@ import org.monarchinitiative.phenol.graph.data.Edge;
  *
  * <p>
  * Following the "composition over inheritance" paradigm, an <code>Ontology</code> is a composed of
- * a {@link DirectedGraph} and {@link Map}s assigning {@link TermId}s and edge ids to the
+ * a {@link DefaultDirectedGraph} and {@link Map}s assigning {@link TermId}s and edge ids to the
  * corresponding labels.
  * </p>
  *
@@ -85,9 +85,9 @@ public interface MinimalOntology<T extends Term, R extends TermRelation> extends
   Map<String, String> getMetaInfo();
 
   /**
-   * @return {@link DirectedGraph} describing the <code>Ontology</code>'s structure.
+   * @return {@link DefaultDirectedGraph} describing the <code>Ontology</code>'s structure.
    */
-  DirectedGraph<TermId, ? extends Edge<TermId>> getGraph();
+  DefaultDirectedGraph<TermId, IdLabeledEdge> getGraph();
 
   /**
    * Return term id to term map for all primary term IDs.

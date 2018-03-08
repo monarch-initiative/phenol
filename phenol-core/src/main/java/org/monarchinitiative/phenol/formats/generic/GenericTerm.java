@@ -8,13 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Representation of a term in common (folked from GoTerm)
+ * Representation of a term in common (forked from GoTerm)
  */
 
 public class GenericTerm implements Term {
-
-	/** Serial UID for serialization. */
-	private static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8382263493662721530L;
 
 	/** The Common term's Id. */
 	private TermId id;

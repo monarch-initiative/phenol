@@ -3,12 +3,12 @@ package org.monarchinitiative.phenol.io.obo.go;
 import java.io.File;
 import java.io.IOException;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.formats.go.GoTerm;
 import org.monarchinitiative.phenol.formats.go.GoTermRelation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -75,7 +75,6 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
    * @return {@link HpoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
-  @SuppressWarnings("unchecked")
   public GoOntology parse() throws IOException {
     final OboImmutableOntologyLoader<GoTerm, GoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
@@ -85,7 +84,7 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
     // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new GoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
-        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
         (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());

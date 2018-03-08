@@ -2,12 +2,11 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import java.util.*;
 
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +30,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   private final ImmutableSortedMap<String, String> metaInfo;
 
   /** The graph storing the ontology's structure. */
-  private final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
+  private final DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
   /** Id of the root term. */
   private final TermId rootTermId;
@@ -70,7 +69,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
    * @param relationMap Mapping from numeric edge Id to <code>R</code>.
    */
   public ImmutableOntology(ImmutableSortedMap<String, String> metaInfo,
-      ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+      DefaultDirectedGraph<TermId, IdLabeledEdge> graph, TermId rootTermId,
       Collection<? extends TermId> nonObsoleteTermIds, Collection<? extends TermId> obsoleteTermIds,
       ImmutableMap<TermId, T> termMap, ImmutableMap<Integer, R> relationMap) {
     this.metaInfo = metaInfo;
@@ -91,12 +90,12 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   private ImmutableMap<TermId, ImmutableSet<TermId>> precomputeAncestors() {
     final ImmutableMap.Builder<TermId, ImmutableSet<TermId>> mapBuilder = ImmutableMap.builder();
 
-    for (TermId termId : graph.getVertices()) {
+    for (TermId termId : graph.vertexSet()) {
       final ImmutableSet.Builder<TermId> setBuilder = ImmutableSet.builder();
-      BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
-      bfs.startFromForward(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
+      BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
+      bfs.startFromForward(graph, termId, new VertexVisitor<TermId, IdLabeledEdge>() {
         @Override
-        public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
+        public boolean visit(DefaultDirectedGraph<TermId, IdLabeledEdge> g, TermId v) {
           setBuilder.add(v);
           return true;
         }
@@ -114,7 +113,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   }
 
   @Override
-  public DirectedGraph<TermId, ? extends Edge<TermId>> getGraph() {
+  public DefaultDirectedGraph<TermId, IdLabeledEdge> getGraph() {
     return graph;
   }
 
@@ -188,8 +187,7 @@ public class ImmutableOntology<T extends Term, R extends TermRelation> implement
   @Override
   public Ontology<T, R> subOntology(TermId subOntologyRoot) {
     final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
-    final ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> subGraph =
-      (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) graph.subGraph(childTermIds);
+    final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph = GraphUtility.subGraph(graph, childTermIds);
     Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds,childTermIds);
     // make sure the Term map contains only terms from the subontology
     final ImmutableMap.Builder<TermId,T> termBuilder = ImmutableMap.builder();

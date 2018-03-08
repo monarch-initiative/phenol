@@ -3,11 +3,11 @@ package org.monarchinitiative.phenol.io.obo.upheno;
 import java.io.File;
 import java.io.IOException;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.upheno.UphenoOntology;
 import org.monarchinitiative.phenol.formats.upheno.UphenoTerm;
 import org.monarchinitiative.phenol.formats.upheno.UphenoTermRelation;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -67,7 +67,6 @@ public final class UphenoOboParser implements OntologyOboParser<UphenoOntology> 
    * @return {@link UphenoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
-  @SuppressWarnings("unchecked")
   public UphenoOntology parse() throws IOException {
     final OboImmutableOntologyLoader<UphenoTerm, UphenoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
@@ -77,7 +76,7 @@ public final class UphenoOboParser implements OntologyOboParser<UphenoOntology> 
     // Convert ImmutableOntology into UberphenoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new UphenoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
-        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
         (ImmutableMap<Integer, UphenoTermRelation>) o.getRelationMap());

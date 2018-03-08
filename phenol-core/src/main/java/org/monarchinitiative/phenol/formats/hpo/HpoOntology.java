@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.formats.hpo;
 
 import java.util.Collection;
 
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
@@ -45,7 +45,7 @@ public final class HpoOntology extends ImmutableOntology<HpoTerm, HpoTermRelatio
    * @param relationMap Mapping from numeric edge identifier to {@link HpoTermRelation}.
    */
   public HpoOntology(ImmutableSortedMap<String, String> metaInfo,
-                     ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+                     DefaultDirectedGraph<TermId, IdLabeledEdge> graph, TermId rootTermId,
                      Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
                      ImmutableMap<TermId, HpoTerm> termMap, ImmutableMap<Integer, HpoTermRelation> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);

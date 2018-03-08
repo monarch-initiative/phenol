@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.formats.uberpheno;
 
 import java.util.Collection;
 
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +33,7 @@ public final class UberphenoOntology
    * @param relationMap Mapping from numeric edge identifier to {@link UberphenoTermRelation}.
    */
   public UberphenoOntology(ImmutableSortedMap<String, String> metaInfo,
-                           ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
+                           DefaultDirectedGraph<TermId, IdLabeledEdge> graph, TermId rootTermId,
                            Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
                            ImmutableMap<TermId, UberphenoTerm> termMap,
                            ImmutableMap<Integer, UberphenoTermRelation> relationMap) {

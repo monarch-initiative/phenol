@@ -3,13 +3,14 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 import java.io.File;
 import java.io.IOException;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
 import org.monarchinitiative.phenol.formats.hpo.HpoTermRelation;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
@@ -67,7 +68,6 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
    * @return {@link HpoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
-  @SuppressWarnings("unchecked")
   public HpoOntology parse() throws IOException {
     final OboImmutableOntologyLoader<HpoTerm, HpoTermRelation> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
@@ -77,7 +77,7 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
     // Convert ImmutableOntology into HPOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new HpoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
-        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
         (ImmutableMap<Integer, HpoTermRelation>) o.getRelationMap());

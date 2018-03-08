@@ -107,7 +107,6 @@ public final class HpoDiseaseWithMetadata {
    * @return true if there is a direct annotation to tid. Does not include indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedTo(TermId tid) {
-      boolean matches=false;
       for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
         if (tiwm.getTermId().equals(tid)) return true;
       }
@@ -118,7 +117,6 @@ public final class HpoDiseaseWithMetadata {
    * @return true if there is a direct annotation to any of the terms in tidset. Does not include indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
-    boolean matches=false;
     for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
       if (tidset.contains(tiwm.getTermId())) return true;
     }

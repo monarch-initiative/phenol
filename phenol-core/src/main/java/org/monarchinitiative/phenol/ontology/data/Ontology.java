@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
+
 /**
  * Interface for most ontology implementations to implement.
  *
@@ -90,7 +92,7 @@ public interface Ontology<T extends Term, R extends TermRelation>
    */
   default Set<TermId> getParentTermIds(TermId termId) {
     final Set<TermId> result = new HashSet<>();
-    final Iterator<TermId> it = getGraph().viaOutEdgeIterator(termId);
+    final Iterator<TermId> it = GraphUtility.viaOutEdgeIterator(getGraph(), termId);
     while (it.hasNext()) {
       result.add(it.next());
     }

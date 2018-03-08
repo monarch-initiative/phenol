@@ -1,13 +1,13 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * Interface for implementation of the <b>visitor pattern</b> for ontology terms (identified by
  * their {@link TermId}).
  *
- * @param <V> vertex type of graph, see {@link DirectedGraph} for requirements on vertex type
- * @param <E> edge type to use in the graph, also see {@link DirectedGraph} for details
+ * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
+ * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

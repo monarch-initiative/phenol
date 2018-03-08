@@ -12,6 +12,8 @@ import com.google.common.collect.ComparisonChain;
  * @version 0.0.2 (2017-11-24)
  */
 public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
+    private static final long serialVersionUID = -4247317041115647565L;
+
     /** The annotated {@link TermId}. */
     private final TermId termId;
 

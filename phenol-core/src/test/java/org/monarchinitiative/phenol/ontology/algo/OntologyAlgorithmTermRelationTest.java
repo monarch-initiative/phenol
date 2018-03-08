@@ -1,10 +1,13 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
-import com.google.common.collect.ImmutableList;
+
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.junit.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -22,9 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class OntologyAlgorithmTermRelationTest {
 
   private ImmutableSortedMap<String, String> metaInfo;
-  private ImmutableList<TermId> vertices;
-  private ImmutableList<ImmutableEdge<TermId>> edges;
-  private ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
+  private DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
   private TermId rootTermId;
   private ImmutableMap<TermId, TestTerm> termMap;
@@ -44,8 +45,6 @@ public class OntologyAlgorithmTermRelationTest {
   private ImmutableTermId t2_2;
   private ImmutableTermId t3_1;
   private ImmutableTermId t3_2;
-  private ImmutableTermId id5;
-
 
   @Before
   public void setUp() {
@@ -63,23 +62,20 @@ public class OntologyAlgorithmTermRelationTest {
     t2_2 = ImmutableTermId.constructWithPrefix("HP:0000010");
     t3_1 = ImmutableTermId.constructWithPrefix("HP:0000011");
     t3_2 = ImmutableTermId.constructWithPrefix("HP:0000012");
-    vertices = ImmutableList.of(root,t1,t2,t3,t1_1,t1_1_1,t1_1_2,t2_1,t2_2,t3_1,t3_2);
-    ImmutableList.Builder<ImmutableEdge<TermId>> builder = new ImmutableList.Builder();
-    builder.add(ImmutableEdge.construct(t1, root, 1));
-    builder.add(ImmutableEdge.construct(t2, root, 2));
-    builder.add(ImmutableEdge.construct(t3, root, 11));
-    builder.add(ImmutableEdge.construct(t1_1, t1, 3));
-    builder.add(ImmutableEdge.construct(t1_2, t1, 4));
-    builder.add(ImmutableEdge.construct(t1_1_1, t1_1, 5));
-    builder.add(ImmutableEdge.construct(t1_1_2, t1_1, 6));
-    builder.add(ImmutableEdge.construct(t2_1, t2, 7));
-    builder.add(ImmutableEdge.construct(t2_2, t2, 8));
-    builder.add(ImmutableEdge.construct(t3_1, t3, 9));
-    builder.add(ImmutableEdge.construct(t3_2, t3, 10));
-
-    edges = builder.build();
-    graph = ImmutableDirectedGraph.construct(edges);
-
+    
+    graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    GraphUtility.addEdgeToGraph(graph, t1, root, 1);
+    GraphUtility.addEdgeToGraph(graph, t2, root, 2);
+    GraphUtility.addEdgeToGraph(graph, t3, root, 11);
+    GraphUtility.addEdgeToGraph(graph, t1_1, t1, 3);
+    GraphUtility.addEdgeToGraph(graph, t1_2, t1, 4);
+    GraphUtility.addEdgeToGraph(graph, t1_1_1, t1_1, 5);
+    GraphUtility.addEdgeToGraph(graph, t1_1_2, t1_1, 6);
+    GraphUtility.addEdgeToGraph(graph, t2_1, t2, 7);
+    GraphUtility.addEdgeToGraph(graph, t2_2, t2, 8);
+    GraphUtility.addEdgeToGraph(graph, t3_1, t3, 9);
+    GraphUtility.addEdgeToGraph(graph, t3_2, t3, 10);
+    
     rootTermId = root;
 
     ImmutableMap.Builder<TermId, TestTerm> termMapBuilder = ImmutableMap.builder();
@@ -106,7 +102,6 @@ public class OntologyAlgorithmTermRelationTest {
       new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
     termMapBuilder.put(t3_2, new TestTerm(t3_2, new ArrayList<>(), "term3_2", "some definition 5", null,
       new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
-
 
     termMap = termMapBuilder.build();
 
@@ -155,8 +150,4 @@ public class OntologyAlgorithmTermRelationTest {
     assertFalse(OntologyAlgorithm.termsAreUnrelated(ontology,t1_1_1,t1_2));
     assertTrue(OntologyAlgorithm.termsAreUnrelated(ontology,t1_1_2,t3));
   }
-
-
-
-
 }

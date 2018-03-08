@@ -3,10 +3,10 @@ package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -30,8 +30,8 @@ public class VegetableOntologyTestBase {
   protected ImmutableSortedMap<String, String> metaInfo;
 
   protected ImmutableList<TermId> vertices;
-  protected ImmutableList<ImmutableEdge<TermId>> edges;
-  protected ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
+  protected ImmutableList<IdLabeledEdge> edges;
+  protected DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
   protected TermId rootTermId;
   protected ImmutableMap<TermId, VegetableTerm> termMap;
@@ -63,15 +63,16 @@ public class VegetableOntologyTestBase {
 
     vertices = ImmutableList.of(idVegetable, idRootVegetable, idLeafVegetable, idCarrot, idBeet,
         idPumpkin, idBlueCarrot);
-    edges = ImmutableList.of(ImmutableEdge.construct(idRootVegetable, idVegetable, 1),
-        ImmutableEdge.construct(idLeafVegetable, idVegetable, 2),
-        ImmutableEdge.construct(idCarrot, idRootVegetable, 3),
-        ImmutableEdge.construct(idBeet, idRootVegetable, 4),
-        ImmutableEdge.construct(idBeet, idLeafVegetable, 5),
-        ImmutableEdge.construct(idPumpkin, idRootVegetable, 6),
-        ImmutableEdge.construct(idBlueCarrot, idCarrot, 7));
-    graph = ImmutableDirectedGraph.construct(edges);
-
+    
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    GraphUtility.addEdgeToGraph(graph, idRootVegetable, idVegetable, 1);
+    GraphUtility.addEdgeToGraph(graph, idLeafVegetable, idVegetable, 2);
+    GraphUtility.addEdgeToGraph(graph, idCarrot, idRootVegetable, 3);
+    GraphUtility.addEdgeToGraph(graph, idBeet, idRootVegetable, 4);
+    GraphUtility.addEdgeToGraph(graph, idBeet, idLeafVegetable, 5);
+    GraphUtility.addEdgeToGraph(graph, idPumpkin, idRootVegetable, 6);
+    GraphUtility.addEdgeToGraph(graph, idBlueCarrot, idCarrot, 7);
+    
     rootTermId = idVegetable;
 
     ImmutableMap.Builder<TermId, VegetableTerm> termMapBuilder = ImmutableMap.builder();

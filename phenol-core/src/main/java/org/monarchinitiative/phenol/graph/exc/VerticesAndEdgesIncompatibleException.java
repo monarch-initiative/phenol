@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.data;
+package org.monarchinitiative.phenol.graph.exc;
 
 /**
  * Exception raised when list of vertices and edges are incompatible on graph construction.

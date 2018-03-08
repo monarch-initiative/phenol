@@ -7,8 +7,9 @@ import java.util.Set;
 
 import org.monarchinitiative.phenol.graph.algo.TopologicalSorting;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableSortedSet;
@@ -59,15 +60,14 @@ public final class ShortestPathTable {
     precomputeDistances(ontology);
   }
 
-  @SuppressWarnings("unchecked")
   private void precomputeDistances(Ontology<?, ?> ontology) {
     // Initialize with values "infinity".
     for (int i = 0; i < distances.length; ++i) {
       distances[i] = DISTANCE_INFINITY;
     }
     // Precompute distances from topological sorting.
-    new TopologicalSorting<TermId, Edge<TermId>, DirectedGraph<TermId, Edge<TermId>>>()
-        .startForward((DirectedGraph<TermId, Edge<TermId>>) ontology.getGraph(),
+    new TopologicalSorting<TermId, IdLabeledEdge, DefaultDirectedGraph<TermId, IdLabeledEdge>>()
+        .startForward((DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph(),
             new BuildDistanceTableVertexVisitor());
   }
 
@@ -134,13 +134,13 @@ public final class ShortestPathTable {
   /**
    * Helper class implementing the building of the vertex distance table.
    */
-  private class BuildDistanceTableVertexVisitor implements VertexVisitor<TermId, Edge<TermId>> {
+  private class BuildDistanceTableVertexVisitor implements VertexVisitor<TermId, IdLabeledEdge> {
 
     /** Set of TermId values that were already handled. */
     private final Set<TermId> seen = new HashSet<>();
 
     @Override
-    public boolean visit(DirectedGraph<TermId, Edge<TermId>> g, TermId termId) {
+    public boolean visit(DefaultDirectedGraph<TermId, IdLabeledEdge> g, TermId termId) {
       // Distance to self is 0.
       setDistance(termId, termId, 0);
 
@@ -148,7 +148,7 @@ public final class ShortestPathTable {
       // topological sorting!), via all reachable from here.
       for (TermId destTermId : seen) {
         int minDist = DISTANCE_INFINITY;
-        final Iterator<TermId> viaIter = g.viaOutEdgeIterator(termId);
+        final Iterator<TermId> viaIter = GraphUtility.viaOutEdgeIterator(g, termId);
         while (viaIter.hasNext()) {
           final TermId viaTermId = viaIter.next();
           final int tmpDist = getDistance(viaTermId, destTermId);

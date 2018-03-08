@@ -1,13 +1,14 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
+
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.junit.Test;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.util.ArrayList;
@@ -20,9 +21,7 @@ import static org.junit.Assert.*;
 public class OntologyAlgorithmTest {
 
   private ImmutableSortedMap<String, String> metaInfo;
-  private ImmutableList<TermId> vertices;
-  private ImmutableList<ImmutableEdge<TermId>> edges;
-  private ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph;
+  private DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
   private TermId rootTermId;
   private ImmutableMap<TermId, TestTerm> termMap;
@@ -45,13 +44,15 @@ public class OntologyAlgorithmTest {
     id3 = ImmutableTermId.constructWithPrefix("HP:0000003");
     id4 = ImmutableTermId.constructWithPrefix("HP:0000004");
     id5 = ImmutableTermId.constructWithPrefix("HP:0000005");
-    vertices = ImmutableList.of(id1, id2, id3, id4, id5);
-    edges =
-      ImmutableList.of(ImmutableEdge.construct(id1, id2, 1), ImmutableEdge.construct(id1, id3, 2),
-        ImmutableEdge.construct(id1, id4, 3), ImmutableEdge.construct(id2, id5, 4),
-        ImmutableEdge.construct(id3, id5, 5), ImmutableEdge.construct(id4, id5, 6));
-    graph = ImmutableDirectedGraph.construct(edges);
-
+    
+    graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    GraphUtility.addEdgeToGraph(graph, id1, id2, 1);
+    GraphUtility.addEdgeToGraph(graph, id1, id3, 2);
+    GraphUtility.addEdgeToGraph(graph, id1, id4, 3);
+    GraphUtility.addEdgeToGraph(graph, id2, id5, 4);
+    GraphUtility.addEdgeToGraph(graph, id3, id5, 5);
+    GraphUtility.addEdgeToGraph(graph, id4, id5, 6);
+    
     rootTermId = id5;
 
     ImmutableMap.Builder<TermId, TestTerm> termMapBuilder = ImmutableMap.builder();
@@ -206,3 +207,4 @@ public class OntologyAlgorithmTest {
 
 
 }
+

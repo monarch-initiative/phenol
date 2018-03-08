@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.data;
+package org.monarchinitiative.phenol.graph.exc;
 
 /**
  * Exception raised when the graph is not simple, i.e., there exist duplicate edges.

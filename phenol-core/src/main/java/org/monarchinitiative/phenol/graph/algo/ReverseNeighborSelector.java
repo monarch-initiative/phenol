@@ -2,8 +2,9 @@ package org.monarchinitiative.phenol.graph.algo;
 
 import java.util.Iterator;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.util.GraphUtility;
 
 /**
  * Implementation of {@link NeighborSelector} using in-edges.
@@ -14,13 +15,13 @@ import org.monarchinitiative.phenol.graph.data.Edge;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class ReverseNeighborSelector<V extends Comparable<V>, E extends Edge<V>>
+class ReverseNeighborSelector<V extends Comparable<V>, E extends IdLabeledEdge>
     implements
       NeighborSelector<V, E> {
 
   @Override
-  public Iterator<V> nextFrom(DirectedGraph<V, E> g, V v) {
-    return g.viaInEdgeIterator(v);
+  public Iterator<V> nextFrom(DefaultDirectedGraph<V, E> g, V v) {
+    return GraphUtility.viaInEdgeIterator(g, v);
   }
 
 }

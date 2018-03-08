@@ -1,15 +1,10 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import static org.junit.Assert.assertEquals;
-
-import org.monarchinitiative.phenol.formats.hpo.HpoDiseaseAnnotation;
-import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class HpoNegativeDiseaseAnnotationParserTest {

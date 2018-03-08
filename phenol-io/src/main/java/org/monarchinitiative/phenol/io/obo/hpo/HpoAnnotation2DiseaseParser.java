@@ -72,7 +72,7 @@ public class HpoAnnotation2DiseaseParser {
         if (disease2AnnotLineMap.containsKey(aline.DBObjectId)) {
           annots = disease2AnnotLineMap.get(aline.DBObjectId);
         } else {
-          annots = new ArrayList();
+          annots = new ArrayList<>();
           disease2AnnotLineMap.put(aline.DBObjectId,annots);
         }
 

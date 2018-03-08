@@ -13,9 +13,10 @@ import java.util.SortedMap;
 import org.geneontology.obographs.model.Edge;
 import org.geneontology.obographs.model.Graph;
 import org.geneontology.obographs.model.GraphDocument;
-import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.owlapi.FromOwl;
+import org.jgrapht.graph.ClassBasedEdgeFactory;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -23,9 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
@@ -52,7 +51,6 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRela
 	private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
 	private SortedMap<TermId, T> terms =  Maps.newTreeMap();
 	private Collection<TermId> termIdNodes = Sets.newHashSet();
-	private Collection<ImmutableEdge<TermId>> termIdEdges = Sets.newHashSet();
 	private Map<Integer, R> relationMap = Maps.newHashMap();
 
 	public OwlImmutableOntologyLoader(File file) {
@@ -107,7 +105,10 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRela
 		}
 
 		// Mapping edges in obographs to termIds in phenol
-		ImmutableEdge.Factory<TermId> edgeFactory = new ImmutableEdge.Factory<TermId>();
+		int edgeId = 1;
+		DefaultDirectedGraph<TermId, IdLabeledEdge> newGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class); 
+		final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory = new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+		
 		for (Edge edge: gEdges) {
 			Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
 			if (subCurie.isPresent() != true) {
@@ -115,43 +116,41 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRela
 				continue;
 			}
 
-			/*
-			Optional<String> predCurie = curieUtil.getCurie(edge.getPred());
-			if (predCurie.isPresent() != true) {
-				LOGGER.warn("No matching curie found for edge's predicate: " + edge.getPred());
-				continue;
-			}
-			*/
-
 			Optional<String> objCurie = curieUtil.getCurie(edge.getObj());
 			if (objCurie.isPresent() != true) {
 				LOGGER.warn("No matching curie found for edge's object: " + edge.getObj());
 				continue;
 			}
 
-			int edgeId = edgeFactory.getNextEdgeId();
 			ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurie.get());
 			ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurie.get());
-			ImmutableEdge<TermId> termIdEdge = edgeFactory.construct(subTermId, objTermId);
-			termIdEdges.add(termIdEdge);
-
+			
+			newGraph.addVertex(subTermId);
+			newGraph.addVertex(objTermId);
+			IdLabeledEdge e = edgeFactory.createEdge(subTermId, objTermId);
+			e.setId(edgeId);
+			newGraph.addEdge(subTermId, objTermId, e);
+			
 			R ctr =factory.constructTermRelation(subTermId, objTermId, edgeId);
 			relationMap.put(edgeId, ctr);
+			
+			edgeId += 1;
 		}
 
-		ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph =
-				ImmutableDirectedGraph.construct(termIdNodes, termIdEdges, true);
+		// TODO: add graph compatability check here.
 
 		// Let's not concern about the meta information of graph yet.
+		/*
 		Meta gMeta = g.getMeta();
+		*/
 		Map<String, String> metaInfo = new HashMap<>();
-
+		
 		// Borrowed the codes that create an artificial root from findOrCreateArtificalRoot in OboImmutableOntologyLoader
 		final TermPrefix rootPrefix = new ArrayList<TermId>(nonDepreTermIdNodes).get(0).getPrefix();
 		final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
 		final TermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
 
-		return new ImmutableOntology<T, R>(ImmutableSortedMap.copyOf(metaInfo), graph,
+		return new ImmutableOntology<T, R>(ImmutableSortedMap.copyOf(metaInfo), newGraph,
 				rootId, nonDepreTermIdNodes, depreTermIdNodes,
 				ImmutableMap.copyOf(terms), ImmutableMap.copyOf(relationMap));
 	}

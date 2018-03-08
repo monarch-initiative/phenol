@@ -5,19 +5,18 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
-
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 public class BreadthFirstSearchTest extends GraphAlgoTestBase {
 
   @Test
   public void testSimpleDagBfsForward() {
     List<Integer> visited = new ArrayList<>();
-    BreadthFirstSearch<Integer, ImmutableEdge<Integer>> bfs = new BreadthFirstSearch<>();
-    bfs.startFromForward(simpleDag, 1, new VertexVisitor<Integer, ImmutableEdge<Integer>>() {
+    BreadthFirstSearch<Integer, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
+    bfs.startFromForward(simpleDag, 1, new VertexVisitor<Integer, IdLabeledEdge>() {
       @Override
-      public boolean visit(DirectedGraph<Integer, ImmutableEdge<Integer>> g, Integer v) {
+      public boolean visit(DefaultDirectedGraph<Integer, IdLabeledEdge> g, Integer v) {
         visited.add(v);
         return true;
       }
@@ -29,10 +28,10 @@ public class BreadthFirstSearchTest extends GraphAlgoTestBase {
   @Test
   public void testSimpleDagBfsReverse() {
     List<Integer> visited = new ArrayList<>();
-    BreadthFirstSearch<Integer, ImmutableEdge<Integer>> bfs = new BreadthFirstSearch<>();
-    bfs.startFromReverse(simpleDag, 4, new VertexVisitor<Integer, ImmutableEdge<Integer>>() {
+    BreadthFirstSearch<Integer, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
+    bfs.startFromReverse(simpleDag, 4, new VertexVisitor<Integer, IdLabeledEdge>() {
       @Override
-      public boolean visit(DirectedGraph<Integer, ImmutableEdge<Integer>> g, Integer v) {
+      public boolean visit(DefaultDirectedGraph<Integer, IdLabeledEdge> g, Integer v) {
         visited.add(v);
         return true;
       }
@@ -44,10 +43,10 @@ public class BreadthFirstSearchTest extends GraphAlgoTestBase {
   @Test
   public void testSimpleLineBfsForward() {
     List<Integer> visited = new ArrayList<>();
-    BreadthFirstSearch<Integer, ImmutableEdge<Integer>> bfs = new BreadthFirstSearch<>();
-    bfs.startFromForward(simpleLine, 1, new VertexVisitor<Integer, ImmutableEdge<Integer>>() {
+    BreadthFirstSearch<Integer, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
+    bfs.startFromForward(simpleLine, 1, new VertexVisitor<Integer, IdLabeledEdge>() {
       @Override
-      public boolean visit(DirectedGraph<Integer, ImmutableEdge<Integer>> g, Integer v) {
+      public boolean visit(DefaultDirectedGraph<Integer, IdLabeledEdge> g, Integer v) {
         visited.add(v);
         return true;
       }
@@ -59,10 +58,10 @@ public class BreadthFirstSearchTest extends GraphAlgoTestBase {
   @Test
   public void testSimpleLineBfsReverse() {
     List<Integer> visited = new ArrayList<>();
-    BreadthFirstSearch<Integer, ImmutableEdge<Integer>> bfs = new BreadthFirstSearch<>();
-    bfs.startFromReverse(simpleLine, 5, new VertexVisitor<Integer, ImmutableEdge<Integer>>() {
+    BreadthFirstSearch<Integer, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
+    bfs.startFromReverse(simpleLine, 5, new VertexVisitor<Integer, IdLabeledEdge>() {
       @Override
-      public boolean visit(DirectedGraph<Integer, ImmutableEdge<Integer>> g, Integer v) {
+      public boolean visit(DefaultDirectedGraph<Integer, IdLabeledEdge> g, Integer v) {
         visited.add(v);
         return true;
       }

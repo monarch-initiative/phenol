@@ -13,10 +13,10 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.jgrapht.graph.ClassBasedEdgeFactory;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
@@ -117,19 +117,25 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
     // Get term Id (of possibly artificial) root.
     final ImmutableTermId rootTermId = findOrCreateArtificalRoot(helper, factory);
 
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
+    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory = new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+
     // Construct edge list and relation map.
-    final List<ImmutableEdge<TermId>> edges = new ArrayList<>();
     final Map<Integer, R> relationMap = new HashMap<>();
     for (Entry<ImmutableTermId, List<BundledIsARelation>> e : helper.getIsATermIdPairs()
         .entrySet()) {
       for (BundledIsARelation b : e.getValue()) {
-        edges.add(ImmutableEdge.construct(e.getKey(), b.getDest(), b.getRelation().getId()));
+        ImmutableTermId sourceTermId = e.getKey();
+        ImmutableTermId targetTermId = b.getDest();
+        graph.addVertex(e.getKey());
+        graph.addVertex(b.getDest());
+        IdLabeledEdge edge = edgeFactory.createEdge(sourceTermId, targetTermId);
+        edge.setId(b.getRelation().getId());
+        graph.addEdge(sourceTermId, targetTermId, edge);
         relationMap.put(b.getRelation().getId(), b.getRelation());
       }
     }
 
-    ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph =
-        ImmutableDirectedGraph.construct(helper.getAllTermIds(), edges, true);
     return new ImmutableOntology<T, R>(ImmutableSortedMap.copyOf(helper.getMetaInfo()), graph,
         rootTermId, helper.getTerms().keySet(), helper.getObsoleteTerms().keySet(),
         ImmutableMap.copyOf(helper.getTerms()), ImmutableMap.copyOf(relationMap));
@@ -399,7 +405,8 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends TermRela
       final String prefixStr = termIdStr.substring(0, pos);
       final String localIdStr = termIdStr.substring(pos + 1);
       ImmutableTermPrefix tmpPrefix = prefixes.get(prefixStr);
-      if (!prefixes.containsKey(tmpPrefix)) {
+      
+      if (tmpPrefix == null || prefixes.containsKey(tmpPrefix.getValue()) != true) {
         tmpPrefix = new ImmutableTermPrefix(prefixStr);
         prefixes.put(prefixStr, tmpPrefix);
       }
