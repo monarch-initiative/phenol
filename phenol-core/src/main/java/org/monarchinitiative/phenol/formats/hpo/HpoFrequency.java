@@ -6,13 +6,10 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 /**
  * Enumeration mapping to the "frequency" sub ontology of the HPO.
  *
- * <p>
- * Further provides methods for accessing lower and upper bounds as well as converting from and to
- * HPO {@link TermId} and from frequency in percent.
- * </p>
+ * <p>Further provides methods for accessing lower and upper bounds as well as converting from and
+ * to HPO {@link TermId} and from frequency in percent.
  *
  * @see HpoFrequencyTermIds
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
@@ -32,10 +29,9 @@ public enum HpoFrequency {
   EXCLUDED;
 
   /**
-   * @return Lower (inclusive) bound of {@code this} frequency category.
-   * Our default value for
-   * terms with no frequency will be always present since this applies to the majoriry for data
-   * for which we have no frequency data.
+   * @return Lower (inclusive) bound of {@code this} frequency category. Our default value for terms
+   *     with no frequency will be always present since this applies to the majoriry for data for
+   *     which we have no frequency data.
    */
   public double lowerBound() {
     switch (this) {
@@ -57,10 +53,9 @@ public enum HpoFrequency {
   }
 
   /**
-   * @return Upper (inclusive) bound of {@code this} frequency category.
-   * Our default value for
-   * terms with no frequency will be always present since this applies to the majoriry for data
-   * for which we have no frequency data.
+   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for terms
+   *     with no frequency will be always present since this applies to the majoriry for data for
+   *     which we have no frequency data.
    */
   public double mean() {
     switch (this) {
@@ -69,22 +64,22 @@ public enum HpoFrequency {
       case EXCLUDED:
         return 0D;
       case FREQUENT:
-        return 0.5*(0.05D+0.29D);
+        return 0.5 * (0.05D + 0.29D);
       case OCCASIONAL:
-        return 0.5*(0.01D+0.04D);
+        return 0.5 * (0.01D + 0.04D);
       case VERY_FREQUENT:
-        return 0.5*(0.30D+0.79D);
+        return 0.5 * (0.30D + 0.79D);
       case VERY_RARE:
-        return (0.01D+0.04D);
+        return (0.01D + 0.04D);
       default:
         return ALWAYS_PRESENT.mean();
     }
   }
 
   /**
-   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for
-   * terms with no frequency will be always present since this applies to the majoriry for data
-   * for which we have no frequency data.
+   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for terms
+   *     with no frequency will be always present since this applies to the majoriry for data for
+   *     which we have no frequency data.
    */
   public double upperBound() {
     switch (this) {
@@ -105,10 +100,9 @@ public enum HpoFrequency {
     }
   }
 
-
   /**
-   * Return the {@link TermId} that corresponds to this HpoFrequency
-   * Our default is ALWAYS_PRESENT.
+   * Return the {@link TermId} that corresponds to this HpoFrequency Our default is ALWAYS_PRESENT.
+   *
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
    */
   public TermId toTermId() {
@@ -134,8 +128,8 @@ public enum HpoFrequency {
    *
    * @param termId The {@link TermId} to convert.
    * @return Corresponding {@link HpoFrequency}.
-   * @throws OntoLibRuntimeException if {@code termId} is not a valid frequency sub ontology
-   *         {@link TermId}.
+   * @throws OntoLibRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
+   *     TermId}.
    */
   public static HpoFrequency fromTermId(TermId termId) {
     switch (termId.getIdWithPrefix()) {
@@ -178,5 +172,4 @@ public enum HpoFrequency {
       return ALWAYS_PRESENT;
     }
   }
-
 }

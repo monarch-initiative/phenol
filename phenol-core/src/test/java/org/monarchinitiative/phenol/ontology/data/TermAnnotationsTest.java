@@ -19,17 +19,19 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
   @Before
   public void setUp() {
     super.setUp();
-    annotations = Lists.newArrayList(
-        new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000001"), "one"),
-        new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000001"), "two"),
-        new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000002"), "one"),
-        new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000002"), "three"));
+    annotations =
+        Lists.newArrayList(
+            new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000001"), "one"),
+            new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000001"), "two"),
+            new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000002"), "one"),
+            new TestTermAnnotation(ImmutableTermId.constructWithPrefix("HP:0000002"), "three"));
   }
 
   @Test
   public void testConstructTermAnnotationToLabelsMap() {
-    Map<TermId, Collection<String>> map = ImmutableSortedMap
-        .copyOf(TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
+    Map<TermId, Collection<String>> map =
+        ImmutableSortedMap.copyOf(
+            TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
     assertEquals(
         "{ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002]=[two, three, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]=[two, three, one]}",
         map.toString());
@@ -37,11 +39,11 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
   @Test
   public void testConstructTermLabelToAnnotationsMap() {
-    Map<String, Collection<TermId>> map = ImmutableSortedMap
-        .copyOf(TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
+    Map<String, Collection<TermId>> map =
+        ImmutableSortedMap.copyOf(
+            TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
     assertEquals(
         "{one=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]], three=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]], two=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]]}",
         map.toString());
   }
-
 }

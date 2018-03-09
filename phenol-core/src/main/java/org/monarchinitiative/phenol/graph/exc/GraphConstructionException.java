@@ -19,5 +19,4 @@ public class GraphConstructionException extends RuntimeException {
   public GraphConstructionException(final String message) {
     super(message);
   }
-
 }

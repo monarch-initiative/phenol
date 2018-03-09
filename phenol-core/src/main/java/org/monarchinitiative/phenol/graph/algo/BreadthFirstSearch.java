@@ -14,7 +14,6 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
  *
  * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
  * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class BreadthFirstSearch<V extends Comparable<V>, E extends IdLabeledEdge>
@@ -29,7 +28,10 @@ public final class BreadthFirstSearch<V extends Comparable<V>, E extends IdLabel
    * @param selector {@link NeighborSelector} for selecting forward/reverse vertices.
    */
   @Override
-  protected void startFromImpl(DefaultDirectedGraph<V, E> g, V v, VertexVisitor<V, E> visitor,
+  protected void startFromImpl(
+      DefaultDirectedGraph<V, E> g,
+      V v,
+      VertexVisitor<V, E> visitor,
       NeighborSelector<V, E> selector) {
     final Set<V> seen = new HashSet<V>();
     final ArrayDeque<V> dequeue = new ArrayDeque<V>();
@@ -48,5 +50,4 @@ public final class BreadthFirstSearch<V extends Comparable<V>, E extends IdLabel
       }
     }
   }
-
 }

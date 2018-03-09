@@ -25,13 +25,14 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
@@ -42,116 +43,122 @@ import com.google.common.collect.Sets;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class OwlImmutableOntologyLoader<T extends Term, R extends TermRelation>{
-	private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
-	private static CurieUtil curieUtil;
-	private final File file;
+public final class OwlImmutableOntologyLoader<T extends Term, R extends Relationship> {
 
-	private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
-	private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
-	private SortedMap<TermId, T> terms =  Maps.newTreeMap();
-	private Collection<TermId> termIdNodes = Sets.newHashSet();
-	private Map<Integer, R> relationMap = Maps.newHashMap();
+  private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
+  private static CurieUtil curieUtil;
+  private final File file;
 
-	public OwlImmutableOntologyLoader(File file) {
-		this.file = file;
-		curieUtil = new CurieUtil(CurieMapGenerator.generate());
-	}
+  private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
+  private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
+  private SortedMap<TermId, T> terms = Maps.newTreeMap();
+  private Collection<TermId> termIdNodes = Sets.newHashSet();
+  private Map<Integer, R> relationMap = Maps.newHashMap();
 
-	public ImmutableOntology<T, R> load(OwlOntologyEntryFactory<T, R> factory)
-			throws IOException, OWLOntologyCreationException {
+  public OwlImmutableOntologyLoader(File file) {
+    this.file = file;
+    curieUtil = new CurieUtil(CurieMapGenerator.generate());
+  }
 
-		// We first load ontologies expressed in owl using Obographs's FromOwl class.
-		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = m.loadOntologyFromOntologyDocument(file);
-		FromOwl fromOwl = new FromOwl();
-		GraphDocument gd = fromOwl.generateGraphDocument(ontology);
+  public ImmutableOntology<T, R> load(OwlOntologyEntryFactory<T, R> factory)
+      throws IOException, OWLOntologyCreationException {
 
-		// We assume there is only one graph instance in the graph document instance.
-		Graph g = gd.getGraphs().get(0);
-		if (g == null) {
-			LOGGER.warn("No graph in the loaded ontology.");
-			return null;
-		}
+    // We first load ontologies expressed in owl using Obographs's FromOwl class.
+    OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+    OWLOntology ontology = m.loadOntologyFromOntologyDocument(file);
+    FromOwl fromOwl = new FromOwl();
+    GraphDocument gd = fromOwl.generateGraphDocument(ontology);
 
-		List<Node> gNodes = g.getNodes();
-		if (gNodes == null) {
-			LOGGER.warn("No nodes found in the loaded ontology.");
-			return null;
-		}
+    // We assume there is only one graph instance in the graph document instance.
+    Graph obograph = gd.getGraphs().get(0);
+    if (obograph == null) {
+      LOGGER.warn("No graph in the loaded ontology.");
+      return null;
+    }
 
-		// Mapping nodes in obographs to termIds in phenol
-		for (Node node: gNodes) {
-			Optional<String> nodeCurie = curieUtil.getCurie(node.getId());
-			if (nodeCurie.isPresent() != true) continue;
-			ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
-			T term = factory.constructTerm(node, termId);
+    List<Node> gNodes = obograph.getNodes();
+    if (gNodes == null) {
+      LOGGER.warn("No nodes found in the loaded ontology.");
+      return null;
+    }
 
-			if (term.isObsolete())
-				depreTermIdNodes.add(termId);
-			else
-				nonDepreTermIdNodes.add(termId);
+    // Mapping nodes in obographs to termIds in phenol
+    for (Node node : gNodes) {
+      Optional<String> nodeCurie = curieUtil.getCurie(node.getId());
+      if (nodeCurie.isPresent() != true) continue;
+      ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
+      T term = factory.constructTerm(node, termId);
 
-			terms.put(termId, term);
-		}
+      if (term.isObsolete()) depreTermIdNodes.add(termId);
+      else nonDepreTermIdNodes.add(termId);
 
-		termIdNodes.addAll(depreTermIdNodes);
-		termIdNodes.addAll(nonDepreTermIdNodes);
+      terms.put(termId, term);
+    }
 
-		List<Edge> gEdges = g.getEdges();
-		if (gEdges == null) {
-			LOGGER.warn("No edges found in the loaded ontology.");
-			return null;
-		}
+    termIdNodes.addAll(depreTermIdNodes);
+    termIdNodes.addAll(nonDepreTermIdNodes);
 
-		// Mapping edges in obographs to termIds in phenol
-		int edgeId = 1;
-		DefaultDirectedGraph<TermId, IdLabeledEdge> newGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class); 
-		final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory = new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
-		
-		for (Edge edge: gEdges) {
-			Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
-			if (subCurie.isPresent() != true) {
-				LOGGER.warn("No matching curie found for edge's subject: " + edge.getSub());
-				continue;
-			}
+    List<Edge> gEdges = obograph.getEdges();
+    if (gEdges == null) {
+      LOGGER.warn("No edges found in the loaded ontology.");
+      return null;
+    }
 
-			Optional<String> objCurie = curieUtil.getCurie(edge.getObj());
-			if (objCurie.isPresent() != true) {
-				LOGGER.warn("No matching curie found for edge's object: " + edge.getObj());
-				continue;
-			}
+    // Mapping edges in obographs to termIds in phenol
+    int edgeId = 1;
+    DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
+        new DefaultDirectedGraph<>(IdLabeledEdge.class);
+    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
+        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
-			ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurie.get());
-			ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurie.get());
-			
-			newGraph.addVertex(subTermId);
-			newGraph.addVertex(objTermId);
-			IdLabeledEdge e = edgeFactory.createEdge(subTermId, objTermId);
-			e.setId(edgeId);
-			newGraph.addEdge(subTermId, objTermId, e);
-			
-			R ctr =factory.constructTermRelation(subTermId, objTermId, edgeId);
-			relationMap.put(edgeId, ctr);
-			
-			edgeId += 1;
-		}
+    for (Edge edge : gEdges) {
+      Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
+      if (subCurie.isPresent() != true) {
+        LOGGER.warn("No matching curie found for edge's subject: " + edge.getSub());
+        continue;
+      }
 
-		// TODO: add graph compatability check here.
+      Optional<String> objCurie = curieUtil.getCurie(edge.getObj());
+      if (objCurie.isPresent() != true) {
+        LOGGER.warn("No matching curie found for edge's object: " + edge.getObj());
+        continue;
+      }
 
-		// Let's not concern about the meta information of graph yet.
-		/*
-		Meta gMeta = g.getMeta();
-		*/
-		Map<String, String> metaInfo = new HashMap<>();
-		
-		// Borrowed the codes that create an artificial root from findOrCreateArtificalRoot in OboImmutableOntologyLoader
-		final TermPrefix rootPrefix = new ArrayList<TermId>(nonDepreTermIdNodes).get(0).getPrefix();
-		final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
-		final TermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
+      ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurie.get());
+      ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurie.get());
 
-		return new ImmutableOntology<T, R>(ImmutableSortedMap.copyOf(metaInfo), newGraph,
-				rootId, nonDepreTermIdNodes, depreTermIdNodes,
-				ImmutableMap.copyOf(terms), ImmutableMap.copyOf(relationMap));
-	}
+      phenolGraph.addVertex(subTermId);
+      phenolGraph.addVertex(objTermId);
+      IdLabeledEdge e = edgeFactory.createEdge(subTermId, objTermId);
+      e.setId(edgeId);
+      phenolGraph.addEdge(subTermId, objTermId, e);
+
+      R ctr = factory.constructRelationship(subTermId, objTermId, edgeId);
+      relationMap.put(edgeId, ctr);
+
+      edgeId += 1;
+    }
+
+    CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
+
+    // Let's not concern about the meta information of graph yet.
+    /*
+    Meta gMeta = g.getMeta();
+    */
+    Map<String, String> metaInfo = new HashMap<>();
+
+    // Borrowed the codes that create an artificial root from findOrCreateArtificalRoot in OboImmutableOntologyLoader
+    final TermPrefix rootPrefix = new ArrayList<TermId>(nonDepreTermIdNodes).get(0).getPrefix();
+    final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
+    final TermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
+
+    return new ImmutableOntology<T, R>(
+        ImmutableSortedMap.copyOf(metaInfo),
+        phenolGraph,
+        rootId,
+        nonDepreTermIdNodes,
+        depreTermIdNodes,
+        ImmutableMap.copyOf(terms),
+        ImmutableMap.copyOf(relationMap));
+  }
 }

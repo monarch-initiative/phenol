@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoOntology;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTerm;
-import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTermRelation;
+import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationship;
 
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
@@ -71,10 +71,10 @@ public final class UberphenoOboParser implements OntologyOboParser<UberphenoOnto
    */
   @Override
   public UberphenoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<UberphenoTerm, UberphenoTermRelation> loader =
+    final OboImmutableOntologyLoader<UberphenoTerm, UberphenoRelationship> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
     final UberphenoOboFactory factory = new UberphenoOboFactory();
-    final ImmutableOntology<UberphenoTerm, UberphenoTermRelation> o = loader.load(factory);
+    final ImmutableOntology<UberphenoTerm, UberphenoRelationship> o = loader.load(factory);
 
     // Convert ImmutableOntology into Uberphenontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -82,7 +82,7 @@ public final class UberphenoOboParser implements OntologyOboParser<UberphenoOnto
         (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, UberphenoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, UberphenoTermRelation>) o.getRelationMap());
+        (ImmutableMap<Integer, UberphenoRelationship>) o.getRelationMap());
   }
 
   /**

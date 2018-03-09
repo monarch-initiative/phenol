@@ -7,16 +7,12 @@ import java.util.Optional;
  * A {@link TermAnnotation} links a {@link TermId} to a <code>String</code> <b>label</b> of a "world
  * object".
  *
- * <p>
- * For all annotated "world objects", the labels have to be unique for each object. The annotations
- * can then be used for, e.g., feeding into the information content computation and thus into the
- * similarity metrics computation algorithms.
- * </p>
+ * <p>For all annotated "world objects", the labels have to be unique for each object. The
+ * annotations can then be used for, e.g., feeding into the information content computation and thus
+ * into the similarity metrics computation algorithms.
  *
- * <p>
- * Implementing classes have to properly implement <code>hashValue()</code> and
- * <code>equals()</code>.
- * </p>
+ * <p>Implementing classes have to properly implement <code>hashValue()</code> and <code>equals()
+ * </code>.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -40,9 +36,7 @@ public interface TermAnnotation extends Serializable, Comparable<TermAnnotation>
   /**
    * Query for evidence code.
    *
-   * <p>
-   * The default implementation returns an empty {@link Optional} value.
-   * </p>
+   * <p>The default implementation returns an empty {@link Optional} value.
    *
    * @return Optional {@code String} with the identifier of the evidence code.
    */
@@ -53,12 +47,9 @@ public interface TermAnnotation extends Serializable, Comparable<TermAnnotation>
   /**
    * Query for frequency of annotation in percent.
    *
-   * <p>
-   * The default implementation always returns {@code Optional.empty()}.
-   * </p>
+   * <p>The default implementation always returns {@code Optional.empty()}.
    */
   default Optional<Float> getFrequency() {
     return Optional.empty();
   }
-
 }

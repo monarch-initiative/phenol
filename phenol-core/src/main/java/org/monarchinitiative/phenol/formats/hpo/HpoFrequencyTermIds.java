@@ -7,7 +7,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * Utility class with TermIds into the "frequency" sub ontology.
  *
  * @see HpoFrequency
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
@@ -30,5 +29,4 @@ public final class HpoFrequencyTermIds {
 
   /** {@link TermId} for "excluded (0% of the cases)". */
   public static final TermId EXCLUDED = ImmutableTermId.constructWithPrefix("HP:0040285");
-
 }

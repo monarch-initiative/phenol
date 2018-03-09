@@ -30,9 +30,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistributions;
  */
 public class MergeScoresCommand {
 
-  /**
-   * {@link Logger} object to use.
-   */
+  /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(MergeScoresCommand.class);
 
   /** Configuration parsed from command line. */
@@ -134,6 +132,4 @@ public class MergeScoresCommand {
   private void printFooter() {
     LOGGER.info("All Done.\nHave a nice day!\n");
   }
-
-
 }

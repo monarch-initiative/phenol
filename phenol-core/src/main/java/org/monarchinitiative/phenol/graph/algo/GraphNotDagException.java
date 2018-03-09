@@ -11,9 +11,7 @@ public class GraphNotDagException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  /**
-   * Defalt constructor.
-   */
+  /** Defalt constructor. */
   public GraphNotDagException() {
     super();
   }
@@ -26,5 +24,4 @@ public class GraphNotDagException extends RuntimeException {
   public GraphNotDagException(String message) {
     super(message);
   }
-
 }

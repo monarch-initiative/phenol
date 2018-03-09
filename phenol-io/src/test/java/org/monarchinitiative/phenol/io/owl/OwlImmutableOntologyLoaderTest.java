@@ -5,14 +5,17 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.monarchinitiative.phenol.formats.generic.GenericTerm;
-import org.monarchinitiative.phenol.formats.generic.GenericTermRelation;
+import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
- * A testcase that tests the codes of loading a dummy ontology bulit from ncit.owl.
+ * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
@@ -20,25 +23,26 @@ public class OwlImmutableOntologyLoaderTest {
   @Test
   public void testLoader() throws Exception {
     // ncit_module.owl contains 6 classes where 2 classes are dummy ones.
-    OwlImmutableOntologyLoader<GenericTerm, GenericTermRelation> loader =
-        new OwlImmutableOntologyLoader<GenericTerm, GenericTermRelation>(
+    final OwlImmutableOntologyLoader<GenericTerm, GenericRelationship> loader =
+        new OwlImmutableOntologyLoader<GenericTerm, GenericRelationship>(
             new File("src/test/resources/ncit_module.owl"));
 
-    GenericOwlFactory cof = new GenericOwlFactory();
-    ImmutableOntology<GenericTerm, GenericTermRelation> ontology = loader.load(cof);
+    final GenericOwlFactory cof = new GenericOwlFactory();
+    final ImmutableOntology<GenericTerm, GenericRelationship> ontology = loader.load(cof);
+    final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
-    /*
     assertEquals(
-    		"DefaultDirectedGraph [edgeLists={ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852]=ImmutableVertexEdgeList [inEdges=[ImmutableEdge [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1]], outEdges=[]], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919]=ImmutableVertexEdgeList [inEdges=[], outEdges=[ImmutableEdge [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2], ImmutableEdge [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1]]], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596]=ImmutableVertexEdgeList [inEdges=[ImmutableEdge [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2]], outEdges=[]], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C60312]=ImmutableVertexEdgeList [inEdges=[], outEdges=[]]}, edgeCount=2]",
-    		ontology.getGraph().toString());
-     */
-    
+        "([ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596]], [(ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919] : ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852])=(ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919],ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852]), (ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919] : ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596])=(ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919],ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596])])",
+        graph.toString());
+
+    assertEquals(graph.edgeSet().size(), 2);
+
     assertEquals(
         "[ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C60312], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852]]",
         ontology.getAllTermIds().toString());
 
     assertEquals(
-        "{1=CommonTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1, relationQualifier=IS_A], 2=CommonTermRelation [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2, relationQualifier=IS_A]}",
+        "{1=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1, relationType=IS_A], 2=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2, relationType=IS_A]}",
         ontology.getRelationMap().toString());
   }
 }

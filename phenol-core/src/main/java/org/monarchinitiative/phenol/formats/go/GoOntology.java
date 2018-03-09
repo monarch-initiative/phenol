@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSortedMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> {
+public final class GoOntology extends ImmutableOntology<GoTerm, GoRelationship> {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -28,22 +28,39 @@ public final class GoOntology extends ImmutableOntology<GoTerm, GoTermRelation> 
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to GO term.
-   * @param relationMap Mapping from numeric edge identifier to {@link GoTermRelation}.
+   * @param relationMap Mapping from numeric edge identifier to {@link GoRelationship}.
    */
-  public GoOntology(ImmutableSortedMap<String, String> metaInfo,
-                    DefaultDirectedGraph<TermId, IdLabeledEdge> graph, TermId rootTermId,
-                    Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
-                    ImmutableMap<TermId, GoTerm> termMap, ImmutableMap<Integer, GoTermRelation> relationMap) {
+  public GoOntology(
+      ImmutableSortedMap<String, String> metaInfo,
+      DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
+      TermId rootTermId,
+      Collection<TermId> nonObsoleteTermIds,
+      Collection<TermId> obsoleteTermIds,
+      ImmutableMap<TermId, GoTerm> termMap,
+      ImmutableMap<Integer, GoRelationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
-@Override
+  @Override
   public String toString() {
-    return "GoOntology [getMetaInfo()=" + getMetaInfo() + ", getGraph()=" + getGraph()
-        + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
-        + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
-        + ", getTerms()=" + getTerms() + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds()
-        + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
+    return "GoOntology [getMetaInfo()="
+        + getMetaInfo()
+        + ", getGraph()="
+        + getGraph()
+        + ", getTermMap()="
+        + getTermMap()
+        + ", getRelationMap()="
+        + getRelationMap()
+        + ", getRootTermId()="
+        + getRootTermId()
+        + ", getAllTermIds()="
+        + getAllTermIds()
+        + ", getTerms()="
+        + getTerms()
+        + ", getNonObsoleteTermIds()="
+        + getNonObsoleteTermIds()
+        + ", getObsoleteTermIds()="
+        + getObsoleteTermIds()
+        + "]";
   }
-
 }

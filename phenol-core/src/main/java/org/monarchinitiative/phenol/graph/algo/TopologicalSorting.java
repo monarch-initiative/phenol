@@ -12,11 +12,11 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
  *
  * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
  * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class TopologicalSorting<V extends Comparable<V>, E extends IdLabeledEdge,
-    G extends DefaultDirectedGraph<V, E>> implements GraphVertexAllIteration<V, E, G> {
+public final class TopologicalSorting<
+        V extends Comparable<V>, E extends IdLabeledEdge, G extends DefaultDirectedGraph<V, E>>
+    implements GraphVertexAllIteration<V, E, G> {
 
   @Override
   public void startForward(G g, VertexVisitor<V, E> visitor) {
@@ -63,8 +63,13 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends IdLabel
    * @param v Vertex to start from
    * @param selector {@link NeighborSelector} to select neighbors with
    */
-  private void startFromImpl(G g, Set<V> unmarked, Set<V> tmpMarked, V v,
-      VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
+  private void startFromImpl(
+      G g,
+      Set<V> unmarked,
+      Set<V> tmpMarked,
+      V v,
+      VertexVisitor<V, E> visitor,
+      NeighborSelector<V, E> selector) {
     if (tmpMarked.contains(v)) {
       throw new GraphNotDagException("Graph is not a DAG");
     }
@@ -81,5 +86,4 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends IdLabel
       }
     }
   }
-
 }

@@ -30,5 +30,4 @@ public class CannotMergeScoreDistributions extends OntoLibRuntimeException {
   public CannotMergeScoreDistributions(String message) {
     super(message);
   }
-
 }

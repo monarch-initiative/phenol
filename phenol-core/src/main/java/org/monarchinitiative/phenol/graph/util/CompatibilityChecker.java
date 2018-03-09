@@ -22,13 +22,13 @@ public class CompatibilityChecker {
    * @raises VerticesAndEdgesIncompatibleException in case of incompatibilities.
    */
   @SuppressWarnings("unchecked")
-  public static <VertexT extends Comparable<VertexT>> void checkCompatibility(
-      Collection<VertexT> vertices, Collection<? extends IdLabeledEdge> edges) {
+  public static <V extends Comparable<V>> void check(
+      Collection<V> vertices, Collection<IdLabeledEdge> edges) {
     LOGGER.info(
         "Checking vertices ({}) and edges ({}) for compatibility...",
         new Object[] {vertices.size(), edges.size()});
 
-    Set<VertexT> vertexSet = new HashSet<>(vertices);
+    Set<V> vertexSet = new HashSet<>(vertices);
     for (IdLabeledEdge edge : edges) {
       if (!vertexSet.contains(edge.getSource())) {
         throw new VerticesAndEdgesIncompatibleException("Unknown source edge in edge " + edge);
@@ -43,16 +43,16 @@ public class CompatibilityChecker {
 
     LOGGER.info("Vertices and edges are compatible!");
 
-    final Map<VertexT, Set<VertexT>> seen = new HashMap<>();
+    final Map<V, Set<V>> seen = new HashMap<>();
     for (IdLabeledEdge edge : edges) {
       if (!seen.containsKey(edge.getSource())) {
-        seen.put((VertexT) edge.getSource(), new HashSet<>());
+        seen.put((V) edge.getSource(), new HashSet<>());
       } else {
         if (seen.get(edge.getSource()).contains(edge.getTarget())) {
           throw new GraphNotSimpleException("Seen edge twice: " + edge);
         }
       }
-      seen.get(edge.getSource()).add((VertexT) edge.getTarget());
+      seen.get(edge.getSource()).add((V) edge.getTarget());
     }
     LOGGER.info("Graph is simple!");
   }

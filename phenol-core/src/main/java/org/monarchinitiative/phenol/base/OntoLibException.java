@@ -27,5 +27,4 @@ public class OntoLibException extends Exception {
   public OntoLibException(String message) {
     super(message);
   }
-
 }

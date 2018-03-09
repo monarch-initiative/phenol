@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.mpo.MpoRelationQualifier;
+import org.monarchinitiative.phenol.formats.mpo.MpoRelationType;
 import org.monarchinitiative.phenol.formats.mpo.MpoTerm;
-import org.monarchinitiative.phenol.formats.mpo.MpoTermRelation;
+import org.monarchinitiative.phenol.formats.mpo.MpoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
@@ -49,12 +49,12 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link MpoTerm} and {@link MpoTermRelation} objects from
+ * Factory class for constructing {@link MpoTerm} and {@link MpoRelationship} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoTermRelation> {
+class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -218,31 +218,31 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoTermRelation>
   }
 
   @Override
-  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new MpoTermRelation(sourceId, destId, nextRelationId++, MpoRelationQualifier.IS_A);
+    return new MpoRelationship(sourceId, destId, nextRelationId++, MpoRelationType.IS_A);
   }
 
   @Override
-  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoTermRelation constructTermRelation(Stanza stanza,
+  public MpoRelationship constructrelationship(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 

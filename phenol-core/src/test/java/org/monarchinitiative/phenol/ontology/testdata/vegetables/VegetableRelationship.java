@@ -2,9 +2,9 @@ package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
-public class VegetableTermRelation implements TermRelation {
+public class VegetableRelationship implements Relationship {
 
   private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,7 @@ public class VegetableTermRelation implements TermRelation {
   private ImmutableTermId dest;
   private int id;
 
-  public VegetableTermRelation(ImmutableTermId source, ImmutableTermId dest, int id) {
+  public VegetableRelationship(ImmutableTermId source, ImmutableTermId dest, int id) {
     this.source = source;
     this.dest = dest;
     this.id = id;
@@ -24,7 +24,7 @@ public class VegetableTermRelation implements TermRelation {
   }
 
   @Override
-  public TermId getDest() {
+  public TermId getTarget() {
     return dest;
   }
 
@@ -35,7 +35,6 @@ public class VegetableTermRelation implements TermRelation {
 
   @Override
   public String toString() {
-    return "VegetableTermRelation [source=" + source + ", dest=" + dest + ", id=" + id + "]";
+    return "VegetableRelationship [source=" + source + ", dest=" + dest + ", id=" + id + "]";
   }
-
 }

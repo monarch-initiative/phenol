@@ -7,14 +7,12 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * Utility class with constants from "Mode of Inheritance" sub ontology.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
- * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
- *  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a> * @author <a
+ *     href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public final class HpoModeOfInheritanceTermIds {
 
-
   public static final TermId INHERITANCE_ROOT = ImmutableTermId.constructWithPrefix("HP:0000005");
-
 
   /** {@link TermId} for term "heterogeneous"/"genetic heterogeneity". */
   public static final TermId HETEROGENEOUS = ImmutableTermId.constructWithPrefix("HP:0001425");

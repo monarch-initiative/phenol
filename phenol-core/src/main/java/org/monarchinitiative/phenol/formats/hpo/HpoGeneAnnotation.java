@@ -9,9 +9,7 @@ import com.google.common.collect.ComparisonChain;
 /**
  * Annotation of a HPO term (via its {@link TermId}) with genes.
  *
- * <p>
- * The <b>label</b> of this {@link TermAnnotation} is <code>"ENTREZ:${entrez_id}"</code>.
- * </p>
+ * <p>The <b>label</b> of this {@link TermAnnotation} is <code>"ENTREZ:${entrez_id}"</code>.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -30,9 +28,7 @@ public final class HpoGeneAnnotation implements TermAnnotation {
   /** HPO term name from annotation file. */
   private final String hpoTermName;
 
-  /**
-   * HPO {@link TermId} annotated with gene.
-   */
+  /** HPO {@link TermId} annotated with gene. */
   private final TermId hpoTermId;
 
   /**
@@ -43,46 +39,36 @@ public final class HpoGeneAnnotation implements TermAnnotation {
    * @param hpoTermName HPO term name from annotation file.
    * @param hpoTermId HPO {@link TermId} of annotated HPO term.
    */
-  public HpoGeneAnnotation(int entrezGeneId, String entrezGeneSymbol, String hpoTermName,
-      TermId hpoTermId) {
+  public HpoGeneAnnotation(
+      int entrezGeneId, String entrezGeneSymbol, String hpoTermName, TermId hpoTermId) {
     this.entrezGeneId = entrezGeneId;
     this.entrezGeneSymbol = entrezGeneSymbol;
     this.hpoTermName = hpoTermName;
     this.hpoTermId = hpoTermId;
   }
 
-  /**
-   * @return The numberic Entrez gene Id.
-   */
+  /** @return The numberic Entrez gene Id. */
   public int getEntrezGeneId() {
     return entrezGeneId;
   }
 
-  /**
-   * @return The Entrez gene name.
-   */
+  /** @return The Entrez gene name. */
   public String getEntrezGeneSymbol() {
     return entrezGeneSymbol;
   }
 
-  /**
-   * @return The HPO term name from the annotation.
-   */
+  /** @return The HPO term name from the annotation. */
   public String getTermName() {
     return hpoTermName;
   }
 
-  /**
-   * @return The annotated HPO term's {@link TermId}.
-   */
+  /** @return The annotated HPO term's {@link TermId}. */
   @Override
   public TermId getTermId() {
     return hpoTermId;
   }
 
-  /**
-   * @return The term's Id as string including prefix.
-   */
+  /** @return The term's Id as string including prefix. */
   @Override
   public String getLabel() {
     return "ENTREZ:" + entrezGeneId;
@@ -90,8 +76,15 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   @Override
   public String toString() {
-    return "HPOGeneAnnotation [entrezGeneId=" + entrezGeneId + ", entrezGeneSymbol="
-        + entrezGeneSymbol + ", termName=" + hpoTermName + ", termId=" + hpoTermId + "]";
+    return "HPOGeneAnnotation [entrezGeneId="
+        + entrezGeneId
+        + ", entrezGeneSymbol="
+        + entrezGeneSymbol
+        + ", termName="
+        + hpoTermName
+        + ", termId="
+        + hpoTermId
+        + "]";
   }
 
   @Override
@@ -151,10 +144,11 @@ public final class HpoGeneAnnotation implements TermAnnotation {
     }
 
     final HpoGeneAnnotation that = (HpoGeneAnnotation) o;
-    return ComparisonChain.start().compare(this.entrezGeneId, that.entrezGeneId)
+    return ComparisonChain.start()
+        .compare(this.entrezGeneId, that.entrezGeneId)
         .compare(this.entrezGeneSymbol, that.entrezGeneSymbol)
-        .compare(this.hpoTermName, that.hpoTermName).compare(this.hpoTermId, that.hpoTermId)
+        .compare(this.hpoTermName, that.hpoTermName)
+        .compare(this.hpoTermId, that.hpoTermId)
         .result();
   }
-
 }

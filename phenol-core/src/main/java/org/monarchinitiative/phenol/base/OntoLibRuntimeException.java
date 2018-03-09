@@ -27,5 +27,4 @@ public class OntoLibRuntimeException extends RuntimeException {
   public OntoLibRuntimeException(String message) {
     super(message);
   }
-
 }

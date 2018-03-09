@@ -13,8 +13,13 @@ public class ScoreDistributionTest {
 
   @Before
   public void setUp() {
-    dist = new ScoreDistribution(2, ImmutableMap.of(1, new ObjectScoreDistribution(1, 2, 10,
-        ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
+    dist =
+        new ScoreDistribution(
+            2,
+            ImmutableMap.of(
+                1,
+                new ObjectScoreDistribution(
+                    1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
   }
 
   @Test
@@ -23,5 +28,4 @@ public class ScoreDistributionTest {
     assertEquals("[1]", dist.getObjectIds().toString());
     assertEquals(1, dist.getObjectScoreDistribution(1).getObjectId());
   }
-
 }

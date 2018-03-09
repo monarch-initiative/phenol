@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.formats.go.GoTerm;
-import org.monarchinitiative.phenol.formats.go.GoTermRelation;
+import org.monarchinitiative.phenol.formats.go.GoRelationship;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
@@ -76,10 +76,10 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
    * @throws IOException In case of problems with file I/O.
    */
   public GoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<GoTerm, GoTermRelation> loader =
+    final OboImmutableOntologyLoader<GoTerm, GoRelationship> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
     final GoOboFactory factory = new GoOboFactory();
-    final ImmutableOntology<GoTerm, GoTermRelation> o = loader.load(factory);
+    final ImmutableOntology<GoTerm, GoRelationship> o = loader.load(factory);
 
     // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -87,7 +87,7 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
         (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, GoTermRelation>) o.getRelationMap());
+        (ImmutableMap<Integer, GoRelationship>) o.getRelationMap());
   }
 
   /**

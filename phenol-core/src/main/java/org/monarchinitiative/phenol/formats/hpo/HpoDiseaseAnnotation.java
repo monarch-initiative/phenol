@@ -15,30 +15,24 @@ import com.google.common.collect.ComparisonChain;
 /**
  * Annotation of a {@link HpoTerm} (via its {@link TermId}) with clinical disease information.
  *
- * <p>
- * Currently, the corresponding file link HPO term Ids with clinical disease information. Objects of
- * this class represent records from the following files:
- * </p>
+ * <p>Currently, the corresponding file link HPO term Ids with clinical disease information. Objects
+ * of this class represent records from the following files:
  *
  * <ul>
- * <li><code>negative_phenotype_annotation.tab</code></li>
- * <li><code>phenotype_annotation.tab</code></li>
- * <li><code>phenotype_annotation_hpoteam.tab</code></li>
+ *   <li><code>negative_phenotype_annotation.tab</code>
+ *   <li><code>phenotype_annotation.tab</code>
+ *   <li><code>phenotype_annotation_hpoteam.tab</code>
  * </ul>
  *
- * <p>
- * The <b>label</b> of this {@link TermAnnotation} is the {@link #getDbObjectId()} (the Id of the
+ * <p>The <b>label</b> of this {@link TermAnnotation} is the {@link #getDbObjectId()} (the Id of the
  * disease).
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public final class HpoDiseaseAnnotation implements TermAnnotation {
 
-  /**
-   * Enumeration for describing {@link HpoDiseaseAnnotation#getDb()}.
-   */
+  /** Enumeration for describing {@link HpoDiseaseAnnotation#getDb()}. */
   public enum DatabaseSource {
     /** Decipher. */
     DECIPHER,
@@ -106,21 +100,32 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
    * @param dbName Name in database, e.g., <code>"Achondrogenesis, type IB"</code>.
    * @param qualifier Qualifier, e.g., <code>"NOT"</code>; optional, <code>null</code> when missing.
    * @param hpoId Term Id into HPO.
-   * @param dbReference Reference of entry, e.g., <code>OMIM:154700</code> or
-   *        <code>PMId:15517394</code>.
+   * @param dbReference Reference of entry, e.g., <code>OMIM:154700</code> or <code>PMId:15517394
+   *     </code>.
    * @param evidenceDescription Evidence description.
    * @param onsetModifier Onset modifier; optional, <code>null</code> when missing.
    * @param frequencyModifier Usually from the subontology Frequency or "70%" or "12 of 30";
-   *        optional, <code>null</code> when missing.
+   *     optional, <code>null</code> when missing.
    * @param with Not applicable, always <code>null</code>.
    * @param aspect The annotated ontology, always <code>"O"</code>.
    * @param synonym with synonym text; optional, <code>null</code> when missing.
    * @param date Date of creation/modification.
    * @param assignedBy Name of author.
    */
-  public HpoDiseaseAnnotation(String db, String dbObjectId, String dbName, String qualifier,
-      TermId hpoId, String dbReference, String evidenceDescription, String onsetModifier,
-      String frequencyModifier, String with, String aspect, String synonym, Date date,
+  public HpoDiseaseAnnotation(
+      String db,
+      String dbObjectId,
+      String dbName,
+      String qualifier,
+      TermId hpoId,
+      String dbReference,
+      String evidenceDescription,
+      String onsetModifier,
+      String frequencyModifier,
+      String with,
+      String aspect,
+      String synonym,
+      Date date,
       String assignedBy) {
     this.db = db;
     this.dbObjectId = dbObjectId;
@@ -138,51 +143,37 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     this.assignedBy = assignedBy;
   }
 
-  /**
-   * @return Database source, e.g., <code>"MIM"</code>.
-   */
+  /** @return Database source, e.g., <code>"MIM"</code>. */
   public String getDb() {
     return db;
   }
 
-  /**
-   * @return Id in database, e.g., <code>"154700"</code>.
-   */
+  /** @return Id in database, e.g., <code>"154700"</code>. */
   public String getDbObjectId() {
     return dbObjectId;
   }
 
-  /**
-   * @return Name in database, e.g., <code>"Achondrogenesis, type IB"</code>.
-   */
+  /** @return Name in database, e.g., <code>"Achondrogenesis, type IB"</code>. */
   public String getDbName() {
     return dbName;
   }
 
-  /**
-   * @return Qualifier, e.g., <code>"NOT"</code>; optional, <code>null</code> when missing.
-   */
+  /** @return Qualifier, e.g., <code>"NOT"</code>; optional, <code>null</code> when missing. */
   public String getQualifier() {
     return qualifier;
   }
 
-  /**
-   * @return Term Id into HPO.
-   */
+  /** @return Term Id into HPO. */
   public TermId getHpoId() {
     return hpoId;
   }
 
-  /**
-   * @return Reference of entry, e.g., <code>OMIM:154700</code> or <code>PMId:15517394</code>.
-   */
+  /** @return Reference of entry, e.g., <code>OMIM:154700</code> or <code>PMId:15517394</code>. */
   public String getDbReference() {
     return dbReference;
   }
 
-  /**
-   * @return Evidence description.
-   */
+  /** @return Evidence description. */
   public String getEvidenceDescription() {
     return evidenceDescription;
   }
@@ -192,51 +183,37 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     return Optional.of(evidenceDescription);
   }
 
-  /**
-   * @return Onset modifier; optional, <code>null</code> when missing.
-   */
+  /** @return Onset modifier; optional, <code>null</code> when missing. */
   public String getOnsetModifier() {
     return onsetModifier;
   }
 
-  /**
-   * @return Frequency modifier; optional, <code>null</code> when missing.
-   */
+  /** @return Frequency modifier; optional, <code>null</code> when missing. */
   public String getFrequencyModifier() {
     return frequencyModifier;
   }
 
-  /**
-   * @return Currently not applicable, always empty; optional, <code>null</code> when missing.
-   */
+  /** @return Currently not applicable, always empty; optional, <code>null</code> when missing. */
   public String getWith() {
     return with;
   }
 
-  /**
-   * @return The annotated ontology, always <code>"O"</code>.
-   */
+  /** @return The annotated ontology, always <code>"O"</code>. */
   public String getAspect() {
     return aspect;
   }
 
-  /**
-   * @return String with synonym text; optional, <code>null</code> when missing.
-   */
+  /** @return String with synonym text; optional, <code>null</code> when missing. */
   public String getSynonym() {
     return synonym;
   }
 
-  /**
-   * @return Date of creation/modification.
-   */
+  /** @return Date of creation/modification. */
   public Date getDate() {
     return date;
   }
 
-  /**
-   * @return Name of author.
-   */
+  /** @return Name of author. */
   public String getAssignedBy() {
     return assignedBy;
   }
@@ -259,23 +236,54 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     }
     HpoDiseaseAnnotation that = (HpoDiseaseAnnotation) o;
 
-    return ComparisonChain.start().compare(this.db, that.db)
-        .compare(this.dbObjectId, that.dbObjectId).compare(this.dbName, that.dbName)
-        .compare(this.qualifier, that.qualifier).compare(this.hpoId, that.hpoId)
+    return ComparisonChain.start()
+        .compare(this.db, that.db)
+        .compare(this.dbObjectId, that.dbObjectId)
+        .compare(this.dbName, that.dbName)
+        .compare(this.qualifier, that.qualifier)
+        .compare(this.hpoId, that.hpoId)
         .compare(this.dbReference, that.dbReference)
         .compare(this.evidenceDescription, that.evidenceDescription)
-        .compare(this.onsetModifier, that.onsetModifier).compare(this.with, that.with)
-        .compare(this.aspect, that.aspect).compare(this.synonym, that.synonym)
-        .compare(this.date, that.date).compare(this.assignedBy, that.assignedBy).result();
+        .compare(this.onsetModifier, that.onsetModifier)
+        .compare(this.with, that.with)
+        .compare(this.aspect, that.aspect)
+        .compare(this.synonym, that.synonym)
+        .compare(this.date, that.date)
+        .compare(this.assignedBy, that.assignedBy)
+        .result();
   }
 
   @Override
   public String toString() {
-    return "HPODiseaseAnnotation [db=" + db + ", dbObjectId=" + dbObjectId + ", dbName=" + dbName
-        + ", qualifier=" + qualifier + ", hpoId=" + hpoId + ", dbReference=" + dbReference
-        + ", evidenceDescription=" + evidenceDescription + ", onsetModifier=" + onsetModifier
-        + ", frequencyModifier=" + frequencyModifier + ", with=" + with + ", aspect=" + aspect
-        + ", synonym=" + synonym + ", date=" + date + ", assignedBy=" + assignedBy + "]";
+    return "HPODiseaseAnnotation [db="
+        + db
+        + ", dbObjectId="
+        + dbObjectId
+        + ", dbName="
+        + dbName
+        + ", qualifier="
+        + qualifier
+        + ", hpoId="
+        + hpoId
+        + ", dbReference="
+        + dbReference
+        + ", evidenceDescription="
+        + evidenceDescription
+        + ", onsetModifier="
+        + onsetModifier
+        + ", frequencyModifier="
+        + frequencyModifier
+        + ", with="
+        + with
+        + ", aspect="
+        + aspect
+        + ", synonym="
+        + synonym
+        + ", date="
+        + date
+        + ", assignedBy="
+        + assignedBy
+        + "]";
   }
 
   @Override
@@ -411,5 +419,4 @@ public final class HpoDiseaseAnnotation implements TermAnnotation {
     }
     return true;
   }
-
 }

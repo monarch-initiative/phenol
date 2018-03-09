@@ -28,7 +28,7 @@ public interface TermSynonym extends Serializable {
    * Query for synonym type name.
    *
    * @return Optional, further qualification of the synonym's type name, <code>null</code> if
-   *         missing.
+   *     missing.
    */
   String getSynonymTypeName();
 
@@ -38,5 +38,4 @@ public interface TermSynonym extends Serializable {
    * @return {@link List} of term cross-references, <code>null</code> if missing.
    */
   List<TermXref> getTermXrefs();
-
 }

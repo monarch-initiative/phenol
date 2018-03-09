@@ -8,10 +8,8 @@ import java.util.Collection;
 /**
  * Implementation of simple feature vector similarity.
  *
- * <p>
- * The simple feature vector similarity is defined as the number of shared terms in two sets of
+ * <p>The simple feature vector similarity is defined as the number of shared terms in two sets of
  * terms.
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -37,5 +35,4 @@ public final class SimpleFeatureVectorSimilarity implements Similarity {
   public double computeScore(Collection<TermId> query, Collection<TermId> target) {
     return Sets.intersection(Sets.newHashSet(query), Sets.newHashSet(target)).size();
   }
-
 }

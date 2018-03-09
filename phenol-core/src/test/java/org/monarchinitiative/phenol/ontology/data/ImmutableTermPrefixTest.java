@@ -35,6 +35,4 @@ public class ImmutableTermPrefixTest {
   public void testToString() {
     assertEquals("ImmutableTermPrefix [value=HP]", termPrefix.toString());
   }
-
-
 }

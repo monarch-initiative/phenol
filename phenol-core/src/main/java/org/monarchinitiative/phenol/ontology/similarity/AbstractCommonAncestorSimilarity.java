@@ -4,27 +4,22 @@ import java.util.Collection;
 
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
-
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
  * Abstract base class for similarity measures computed based on information content of common
  * ancestors, such as Resnik, Lin, and Jiang similarities.
  *
- * <p>
- * Note that the common ancestor computation is not performed here explicitely but instead
+ * <p>Note that the common ancestor computation is not performed here explicitely but instead
  * implicitly deferred to a {@link PairwiseSimilarity}.
- * </p>
  *
  * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link TermRelation} sub class to use in the contained classes
- *
+ * @param <R> {@link Relationship} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRelation>
-    implements
-      Similarity {
+abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends Relationship>
+    implements Similarity {
 
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */
   private final boolean symmetric;
@@ -36,11 +31,11 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
    * Constructor.
    *
    * @param pairwiseSimilarity {@link PairwiseSimilarity} to use for constructing set-to-set
-   *        similarity
+   *     similarity
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public AbstractCommonAncestorSimilarity(PairwiseSimilarity pairwiseSimilarity,
-      boolean symmetric) {
+  public AbstractCommonAncestorSimilarity(
+      PairwiseSimilarity pairwiseSimilarity, boolean symmetric) {
     this.symmetric = symmetric;
     this.pairwiseSimilarity = pairwiseSimilarity;
   }
@@ -75,9 +70,7 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
     return sum / query.size();
   }
 
-  /**
-   * @return Whether score computation is to be symmetric.
-   */
+  /** @return Whether score computation is to be symmetric. */
   public final boolean isSymmetric() {
     return symmetric;
   }
@@ -85,5 +78,4 @@ abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends TermRe
   public String getParameters() {
     return "{symmetric: " + this.isSymmetric() + "}";
   }
-
 }

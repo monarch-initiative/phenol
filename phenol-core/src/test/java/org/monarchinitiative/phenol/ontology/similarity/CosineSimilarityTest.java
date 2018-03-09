@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 import com.google.common.collect.Lists;
 
 import org.junit.Before;
@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class CosineSimilarityTest extends VegetableOntologyTestBase {
 
-  CosineSimilarity<VegetableTerm, VegetableTermRelation> similarity;
+  CosineSimilarity<VegetableTerm, VegetableRelationship> similarity;
 
   @Before
   public void setUp() {
@@ -29,16 +29,21 @@ public class CosineSimilarityTest extends VegetableOntologyTestBase {
 
   @Test
   public void testComputeSimilarities() {
-    assertEquals(0.408,
-        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)), 0.01);
-    assertEquals(0.816,
+    assertEquals(
+        0.408,
+        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),
+        0.01);
+    assertEquals(
+        0.816,
         similarity.computeScore(Lists.newArrayList(idBlueCarrot), Lists.newArrayList(idCarrot)),
         0.01);
-    assertEquals(0.50,
-        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)), 0.01);
-    assertEquals(0.0,
+    assertEquals(
+        0.50,
+        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)),
+        0.01);
+    assertEquals(
+        0.0,
         similarity.computeScore(Lists.newArrayList(idLeafVegetable), Lists.newArrayList(idCarrot)),
         0.01);
   }
-
 }

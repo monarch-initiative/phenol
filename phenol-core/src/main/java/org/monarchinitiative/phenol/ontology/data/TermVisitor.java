@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  *
  * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
  * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public interface TermVisitor<O extends Ontology<?, ?>> {
@@ -21,5 +20,4 @@ public interface TermVisitor<O extends Ontology<?, ?>> {
    * @return {@code true} when to continue iteration and {@code false} otherwise.
    */
   boolean visit(O ontology, TermId termId);
-
 }

@@ -8,10 +8,8 @@ import com.google.common.collect.ImmutableList;
 /**
  * Model of a disease from the HPO annotations.
  *
- * <p>
- * The main purpose here is to separate phenotypic abnormalities from mode of inheritance and other
- * annotations.
- * </p>
+ * <p>The main purpose here is to separate phenotypic abnormalities from mode of inheritance and
+ * other annotations.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -35,38 +33,39 @@ public final class HpoDisease {
    * @param phenotypicAbnormalities {@link List} of phenotypic abnormalities with their frequencies.
    * @param modesOfInheritance {@link List} of modes of inheritance with their frequencies.
    */
-  public HpoDisease(String name, List<TermIdWithFrequency> phenotypicAbnormalities,
+  public HpoDisease(
+      String name,
+      List<TermIdWithFrequency> phenotypicAbnormalities,
       List<TermIdWithFrequency> modesOfInheritance) {
     this.name = name;
     this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
     this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
   }
 
-  /**
-   * @return The name of the disease.
-   */
+  /** @return The name of the disease. */
   public String getName() {
     return name;
   }
 
-  /**
-   * @return The list of frequency-annotated phenotypic abnormalities.
-   */
+  /** @return The list of frequency-annotated phenotypic abnormalities. */
   public List<TermIdWithFrequency> getPhenotypicAbnormalities() {
     return phenotypicAbnormalities;
   }
 
-  /**
-   * @return The list of frequency-annotated modes of inheritance.
-   */
+  /** @return The list of frequency-annotated modes of inheritance. */
   public List<TermIdWithFrequency> getModesOfInheritance() {
     return modesOfInheritance;
   }
 
   @Override
   public String toString() {
-    return "HpoDisease [name=" + name + ", phenotypicAbnormalities=" + phenotypicAbnormalities
-        + ", modesOfInheritance=" + modesOfInheritance + "]";
+    return "HpoDisease [name="
+        + name
+        + ", phenotypicAbnormalities="
+        + phenotypicAbnormalities
+        + ", modesOfInheritance="
+        + modesOfInheritance
+        + "]";
   }
 
   /** Annotate a {@link TermId} with frequency. */
@@ -89,16 +88,12 @@ public final class HpoDisease {
       this.frequency = frequency;
     }
 
-    /**
-     * @return The annotated {@link TermId}.
-     */
+    /** @return The annotated {@link TermId}. */
     public TermId getTermId() {
       return termId;
     }
 
-    /**
-     * @return The annotating {@link HpoFrequency}.
-     */
+    /** @return The annotating {@link HpoFrequency}. */
     public HpoFrequency getFrequency() {
       return frequency;
     }
@@ -107,7 +102,5 @@ public final class HpoDisease {
     public String toString() {
       return "TermIdWithFrequency [termId=" + termId + ", frequency=" + frequency + "]";
     }
-
   }
-
 }

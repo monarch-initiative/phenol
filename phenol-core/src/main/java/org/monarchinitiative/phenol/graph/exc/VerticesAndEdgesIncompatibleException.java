@@ -18,5 +18,4 @@ public class VerticesAndEdgesIncompatibleException extends GraphConstructionExce
   public VerticesAndEdgesIncompatibleException(final String message) {
     super(message);
   }
-
 }

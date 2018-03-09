@@ -37,9 +37,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Default constructor.
    *
-   * <p>
-   * See the setters' documentation for default values.
-   * </p>
+   * <p>See the setters' documentation for default values.
    */
   public ScoreSamplingOptions() {}
 
@@ -54,8 +52,14 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
    * @param numIterations The number of iterations to run for.
    * @param seed The seed to use for the computation.
    */
-  public ScoreSamplingOptions(int numThreads, Integer minObjectId, Integer maxObjectId,
-      int minNumTerms, int maxNumTerms, int seed, int numIterations) {
+  public ScoreSamplingOptions(
+      int numThreads,
+      Integer minObjectId,
+      Integer maxObjectId,
+      int minNumTerms,
+      int maxNumTerms,
+      int seed,
+      int numIterations) {
     this.numThreads = numThreads;
     this.minObjectId = minObjectId;
     this.maxObjectId = maxObjectId;
@@ -65,9 +69,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
     this.numIterations = numIterations;
   }
 
-  /**
-   * @return Number of threads to use.
-   */
+  /** @return Number of threads to use. */
   public int getNumThreads() {
     return numThreads;
   }
@@ -75,9 +77,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set number of threads to use for precomputation.
    *
-   * <p>
-   * The default is <code>1</code>.
-   * </p>
+   * <p>The default is <code>1</code>.
    *
    * @param numThreads Number of threads to use.
    */
@@ -95,9 +95,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set smallest "world object" Id to perform computation for, <code>null</code> for no bound.
    *
-   * <p>
-   * The default is <code>null</code>.
-   * </p>
+   * <p>The default is <code>null</code>.
    *
    * @param minObjectId Smallest "world object" Id to use or <code>null</code>.
    */
@@ -115,9 +113,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set largest "world object" Id to perform computation for, <code>null</code> for no bound.
    *
-   * <p>
-   * The default is <code>null</code>.
-   * </p>
+   * <p>The default is <code>null</code>.
    *
    * @param maxObjectId Largest "world object" Id to use or <code>null</code>.
    */
@@ -125,9 +121,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
     this.maxObjectId = maxObjectId;
   }
 
-  /**
-   * @return Smallest number of terms to perform precomputation for.
-   */
+  /** @return Smallest number of terms to perform precomputation for. */
   public int getMinNumTerms() {
     return minNumTerms;
   }
@@ -135,9 +129,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set Smallest number of terms to perform precomputation for.
    *
-   * <p>
-   * The default is <code>1</code>.
-   * </p>
+   * <p>The default is <code>1</code>.
    *
    * @param minNumTerms Smallest number of terms to perform precomputation for.
    */
@@ -145,9 +137,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
     this.minNumTerms = minNumTerms;
   }
 
-  /**
-   * @return Largest number of terms to perform precomputation for.
-   */
+  /** @return Largest number of terms to perform precomputation for. */
   public int getMaxNumTerms() {
     return maxNumTerms;
   }
@@ -155,9 +145,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set Smallest number of terms to perform precomputation for.
    *
-   * <p>
-   * The default is <code>20</code>.
-   * </p>
+   * <p>The default is <code>20</code>.
    *
    * @param maxNumTerms Smallest number of terms to perform precomputation for.
    */
@@ -165,11 +153,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
     this.maxNumTerms = maxNumTerms;
   }
 
-
-
-  /**
-   * @return The seed used for the PRNG.
-   */
+  /** @return The seed used for the PRNG. */
   public int getSeed() {
     return seed;
   }
@@ -177,9 +161,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set the seed to use for the PRNG.
    *
-   * <p>
-   * The default is <code>42</code>.
-   * </p>
+   * <p>The default is <code>42</code>.
    *
    * @param seed The seed to use for the PRNG.
    */
@@ -187,9 +169,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
     this.seed = seed;
   }
 
-  /**
-   * @return The number of iterations to run for.
-   */
+  /** @return The number of iterations to run for. */
   public int getNumIterations() {
     return numIterations;
   }
@@ -197,9 +177,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   /**
    * Set the number of iterations to run for.
    *
-   * <p>
-   * The default is <code>100_000</code>.
-   * </p>
+   * <p>The default is <code>100_000</code>.
    *
    * @param numIterations The number of iterations to run for.
    */
@@ -209,15 +187,26 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
 
   @Override
   public Object clone() throws CloneNotSupportedException {
-    return new ScoreSamplingOptions(numThreads, minObjectId, maxObjectId, minNumTerms, maxNumTerms,
-        seed, numIterations);
+    return new ScoreSamplingOptions(
+        numThreads, minObjectId, maxObjectId, minNumTerms, maxNumTerms, seed, numIterations);
   }
 
   @Override
   public String toString() {
-    return "ScoreSamplingOptions [numThreads=" + numThreads + ", minObjectId=" + minObjectId
-        + ", maxObjectId=" + maxObjectId + ", minNumTerms=" + minNumTerms + ", maxNumTerms="
-        + maxNumTerms + ", numIterations=" + numIterations + ", seed=" + seed + "]";
+    return "ScoreSamplingOptions [numThreads="
+        + numThreads
+        + ", minObjectId="
+        + minObjectId
+        + ", maxObjectId="
+        + maxObjectId
+        + ", minNumTerms="
+        + minNumTerms
+        + ", maxNumTerms="
+        + maxNumTerms
+        + ", numIterations="
+        + numIterations
+        + ", seed="
+        + seed
+        + "]";
   }
-
 }

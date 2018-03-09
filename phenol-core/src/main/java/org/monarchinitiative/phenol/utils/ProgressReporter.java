@@ -45,10 +45,8 @@ public final class ProgressReporter {
     this.stepCount = 0;
   }
 
-  /**
-   * Increment progress counter.
-   */
-  synchronized public void incCurrent() {
+  /** Increment progress counter. */
+  public synchronized void incCurrent() {
     setCurrent(this.current + 1);
   }
 
@@ -57,7 +55,7 @@ public final class ProgressReporter {
    *
    * @param current Current step's value.
    */
-  synchronized public void setCurrent(int current) {
+  public synchronized void setCurrent(int current) {
     int oldCurrent = this.current;
     this.current = current;
     if ((100 * oldCurrent / totalCount) != (100 * current / totalCount)) {
@@ -65,10 +63,8 @@ public final class ProgressReporter {
     }
   }
 
-  /**
-   * Print progress to the current position.
-   */
-  synchronized public void printProgress() {
+  /** Print progress to the current position. */
+  public synchronized void printProgress() {
     final long now = System.nanoTime();
     final double stepElapsedSec = (now - lastStepTime) / 1_000_000_000.0;
     final double elapsedSec = (now - startTime) / 1_000_000_000.0;
@@ -80,26 +76,29 @@ public final class ProgressReporter {
     logger.info(
         "Resnik precomputation done by {}% ({} of {} done, step elapsed: {} s, elapsed: "
             + "{} s, processing {} {}/s, estimated to go: {} s",
-        new Object[] {((int) (100.0 * current / totalCount)), current, totalCount, stepElapsedSec,
-            elapsedSec, elementsPerSec, elementsLabel, estimatedToGoSec});
+        new Object[] {
+          ((int) (100.0 * current / totalCount)),
+          current,
+          totalCount,
+          stepElapsedSec,
+          elapsedSec,
+          elementsPerSec,
+          elementsLabel,
+          estimatedToGoSec
+        });
   }
 
-  /**
-   * Set start timer.
-   */
-  synchronized public void start() {
+  /** Set start timer. */
+  public synchronized void start() {
     this.startTime = System.nanoTime();
     this.lastStepTime = startTime;
   }
 
-  /**
-   * Set current value to total value and print.
-   */
-  synchronized public void stop() {
+  /** Set current value to total value and print. */
+  public synchronized void stop() {
     if (current != totalCount) {
       current = totalCount;
     }
     printProgress();
   }
-
 }

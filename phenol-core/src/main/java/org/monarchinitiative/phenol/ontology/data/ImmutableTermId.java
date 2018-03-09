@@ -32,8 +32,8 @@ public final class ImmutableTermId implements TermId {
       throw new OntoLibRuntimeException(
           "Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
-      return new ImmutableTermId(new ImmutableTermPrefix(termIdString.substring(0, pos)),
-          termIdString.substring(pos + 1));
+      return new ImmutableTermId(
+          new ImmutableTermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
     }
   }
 
@@ -50,8 +50,10 @@ public final class ImmutableTermId implements TermId {
 
   @Override
   public int compareTo(TermId that) {
-    return ComparisonChain.start().compare(this.getPrefix(), that.getPrefix())
-        .compare(this.getId(), that.getId()).result();
+    return ComparisonChain.start()
+        .compare(this.getPrefix(), that.getPrefix())
+        .compare(this.getId(), that.getId())
+        .result();
   }
 
   @Override
@@ -99,5 +101,4 @@ public final class ImmutableTermId implements TermId {
       return false;
     }
   }
-
 }

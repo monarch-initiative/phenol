@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.graph.util.GraphUtility;
+import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
+/**
+ * Base/prerequisite codes for testing ImmutableOntology.
+ *
+ * @author Unknowns
+ * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
+ */
 public class ImmutableOntologyTestBase {
 
   ImmutableSortedMap<String, String> metaInfo;
@@ -22,9 +28,9 @@ public class ImmutableOntologyTestBase {
   TermId rootTermId;
   ImmutableMap<TermId, TestTerm> termMap;
   ImmutableMap<TermId, TestTerm> obsoleteTermMap;
-  ImmutableMap<Integer, TestTermRelation> relationMap;
+  ImmutableMap<Integer, TestRelationship> relationMap;
 
-  ImmutableOntology<TestTerm, TestTermRelation> ontology;
+  ImmutableOntology<TestTerm, TestRelationship> ontology;
 
   ImmutableTermId id1;
   ImmutableTermId id2;
@@ -42,43 +48,110 @@ public class ImmutableOntologyTestBase {
     id4 = ImmutableTermId.constructWithPrefix("HP:0000004");
     id5 = ImmutableTermId.constructWithPrefix("HP:0000005");
     vertices = ImmutableList.of(id1, id2, id3, id4, id5);
-    
-    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
-    GraphUtility.addEdgeToGraph(graph, id1, id2, 1);
-    GraphUtility.addEdgeToGraph(graph, id1, id3, 2);
-    GraphUtility.addEdgeToGraph(graph, id1, id4, 3);
-    GraphUtility.addEdgeToGraph(graph, id2, id5, 4);
-    GraphUtility.addEdgeToGraph(graph, id3, id5, 5);
-    GraphUtility.addEdgeToGraph(graph, id4, id5, 6);
-    
+
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
+        new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
+    GraphUtil.addEdgeToGraph(graph, id1, id3, 2);
+    GraphUtil.addEdgeToGraph(graph, id1, id4, 3);
+    GraphUtil.addEdgeToGraph(graph, id2, id5, 4);
+    GraphUtil.addEdgeToGraph(graph, id3, id5, 5);
+    GraphUtil.addEdgeToGraph(graph, id4, id5, 6);
+
     rootTermId = id5;
 
     ImmutableMap.Builder<TermId, TestTerm> termMapBuilder = ImmutableMap.builder();
-    termMapBuilder.put(id1, new TestTerm(id1, new ArrayList<>(), "term1", "some definition 1", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
-    termMapBuilder.put(id2, new TestTerm(id2, new ArrayList<>(), "term2", "some definition 2", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
-    termMapBuilder.put(id3, new TestTerm(id3, new ArrayList<>(), "term3", "some definition 3", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
-    termMapBuilder.put(id4, new TestTerm(id4, new ArrayList<>(), "term4", "some definition 4", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
-    termMapBuilder.put(id5, new TestTerm(id5, new ArrayList<>(), "term5", "some definition 5", null,
-        new ArrayList<>(), new ArrayList<>(), false, null, null, new ArrayList<>()));
+    termMapBuilder.put(
+        id1,
+        new TestTerm(
+            id1,
+            new ArrayList<>(),
+            "term1",
+            "some definition 1",
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            new ArrayList<>()));
+    termMapBuilder.put(
+        id2,
+        new TestTerm(
+            id2,
+            new ArrayList<>(),
+            "term2",
+            "some definition 2",
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            new ArrayList<>()));
+    termMapBuilder.put(
+        id3,
+        new TestTerm(
+            id3,
+            new ArrayList<>(),
+            "term3",
+            "some definition 3",
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            new ArrayList<>()));
+    termMapBuilder.put(
+        id4,
+        new TestTerm(
+            id4,
+            new ArrayList<>(),
+            "term4",
+            "some definition 4",
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            new ArrayList<>()));
+    termMapBuilder.put(
+        id5,
+        new TestTerm(
+            id5,
+            new ArrayList<>(),
+            "term5",
+            "some definition 5",
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            new ArrayList<>()));
     termMap = termMapBuilder.build();
 
     obsoleteTermMap = ImmutableMap.of();
 
-    ImmutableMap.Builder<Integer, TestTermRelation> relationMapBuilder = ImmutableMap.builder();
-    relationMapBuilder.put(1, new TestTermRelation(id1, id2, 1));
-    relationMapBuilder.put(2, new TestTermRelation(id1, id3, 2));
-    relationMapBuilder.put(3, new TestTermRelation(id1, id4, 3));
-    relationMapBuilder.put(4, new TestTermRelation(id2, id5, 4));
-    relationMapBuilder.put(5, new TestTermRelation(id3, id5, 5));
-    relationMapBuilder.put(6, new TestTermRelation(id4, id5, 6));
+    ImmutableMap.Builder<Integer, TestRelationship> relationMapBuilder = ImmutableMap.builder();
+    relationMapBuilder.put(1, new TestRelationship(id1, id2, 1));
+    relationMapBuilder.put(2, new TestRelationship(id1, id3, 2));
+    relationMapBuilder.put(3, new TestRelationship(id1, id4, 3));
+    relationMapBuilder.put(4, new TestRelationship(id2, id5, 4));
+    relationMapBuilder.put(5, new TestRelationship(id3, id5, 5));
+    relationMapBuilder.put(6, new TestRelationship(id4, id5, 6));
     relationMap = relationMapBuilder.build();
 
-    ontology = new ImmutableOntology<TestTerm, TestTermRelation>(metaInfo, graph, rootTermId,
-        termMap.keySet(), obsoleteTermMap.keySet(), termMap, relationMap);
+    ontology =
+        new ImmutableOntology<TestTerm, TestRelationship>(
+            metaInfo,
+            graph,
+            rootTermId,
+            termMap.keySet(),
+            obsoleteTermMap.keySet(),
+            termMap,
+            relationMap);
   }
-
 }

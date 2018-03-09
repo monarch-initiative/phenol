@@ -4,10 +4,10 @@ import org.geneontology.obographs.model.Node;
 
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
- * Interface for constructing concrete {@link Term} and {@link TermRelation} objects in
+ * Interface for constructing concrete {@link Term} and {@link Relationship} objects in
  * {@link OwlImmutableOntologyLoader}.
  *
  * @param <T> The type to use for terms.
@@ -15,7 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermRelation;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public interface OwlOntologyEntryFactory<T extends Term, R extends TermRelation> {
+public interface OwlOntologyEntryFactory<T extends Term, R extends Relationship> {
 	public T constructTerm(Node node, TermId termId);
-	public R constructTermRelation(TermId source, TermId dest, int id);
+	public R constructRelationship(TermId source, TermId dest, int id);
 }

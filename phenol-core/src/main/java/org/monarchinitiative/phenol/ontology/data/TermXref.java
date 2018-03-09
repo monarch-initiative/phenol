@@ -22,5 +22,4 @@ public interface TermXref extends Serializable {
    * @return Description text
    */
   String getDescription();
-
 }

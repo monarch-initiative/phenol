@@ -8,9 +8,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 /**
  * Abstraction for going over forward/reverse edges for traversal algorithms.
  *
- * <p>
- * This is an implementation detail and should not be used in client code.
- * </p>
+ * <p>This is an implementation detail and should not be used in client code.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -24,5 +22,4 @@ interface NeighborSelector<V extends Comparable<V>, E extends IdLabeledEdge> {
    * @return {@link Iterator} of vertices to go to next from <code>v</code>.
    */
   public Iterator<V> nextFrom(DefaultDirectedGraph<V, E> g, V v);
-
 }

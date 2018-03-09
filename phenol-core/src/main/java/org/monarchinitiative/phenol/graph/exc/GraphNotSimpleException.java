@@ -18,5 +18,4 @@ public class GraphNotSimpleException extends GraphConstructionException {
   public GraphNotSimpleException(final String message) {
     super(message);
   }
-
 }
