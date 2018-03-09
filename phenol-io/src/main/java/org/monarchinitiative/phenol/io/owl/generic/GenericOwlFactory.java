@@ -9,7 +9,7 @@ import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.monarchinitiative.phenol.formats.generic.GenericRelationType;
+import org.monarchinitiative.phenol.formats.generic.GenericRelationshipType;
 import org.monarchinitiative.phenol.formats.generic.GenericTerm;
 import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
@@ -81,6 +81,6 @@ public class GenericOwlFactory implements OwlOntologyEntryFactory<GenericTerm, G
 	// It seems that only actual relation used across ontologies is "IS_A" one for now.
 	@Override
 	public GenericRelationship constructRelationship(TermId source, TermId dest, int id) {
-		return new GenericRelationship(source, dest, id, GenericRelationType.IS_A);
+		return new GenericRelationship(source, dest, id, GenericRelationshipType.IS_A);
 	}
 }

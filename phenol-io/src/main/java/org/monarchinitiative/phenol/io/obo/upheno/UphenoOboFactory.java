@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.upheno;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.upheno.UphenoRelationType;
+import org.monarchinitiative.phenol.formats.upheno.UphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.upheno.UphenoTerm;
 import org.monarchinitiative.phenol.formats.upheno.UphenoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
@@ -222,7 +222,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new UphenoRelationship(sourceId, destId, nextRelationId++, UphenoRelationType.IS_A);
+    return new UphenoRelationship(sourceId, destId, nextRelationId++, UphenoRelationshipType.IS_A);
   }
 
   @Override

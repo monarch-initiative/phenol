@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.hpo.HpoRelationType;
+import org.monarchinitiative.phenol.formats.hpo.HpoRelationshipType;
 import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
 import org.monarchinitiative.phenol.formats.hpo.HpoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
@@ -222,7 +222,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoRelationship>
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new HpoRelationship(sourceId, destId, nextRelationId++, HpoRelationType.IS_A);
+    return new HpoRelationship(sourceId, destId, nextRelationId++, HpoRelationshipType.IS_A);
   }
 
   @Override

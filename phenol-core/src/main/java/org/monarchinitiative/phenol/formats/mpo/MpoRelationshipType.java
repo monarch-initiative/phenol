@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
-import org.monarchinitiative.phenol.ontology.data.RelationType;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 
 /**
  * Enumeration for describing relation qualifiers in the MPO.
@@ -9,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.RelationType;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public enum MpoRelationType implements RelationType {
+public enum MpoRelationshipType implements RelationshipType {
   /** "Is-of" relation. */
   IS_A,
   /** Unknown, used for any other relation. */

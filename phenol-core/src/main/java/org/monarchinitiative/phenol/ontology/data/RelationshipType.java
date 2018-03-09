@@ -6,4 +6,4 @@ package org.monarchinitiative.phenol.ontology.data;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public interface RelationType {}
+public interface RelationshipType {}

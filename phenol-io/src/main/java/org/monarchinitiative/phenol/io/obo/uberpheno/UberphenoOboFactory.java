@@ -11,7 +11,7 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationType;
+import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTerm;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
@@ -223,7 +223,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
     return new UberphenoRelationship(sourceId, destId, nextRelationId++,
-        UberphenoRelationType.IS_A);
+        UberphenoRelationshipType.IS_A);
   }
 
   @Override

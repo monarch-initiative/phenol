@@ -58,7 +58,7 @@ public class MpoOboParserTest {
         ImmutableSortedMap.copyOf(ontology.getTermMap()).toString());
 
     assertEquals(
-        "{1=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0000001], id=1, relationType=IS_A], 2=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001188], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], id=2, relationType=IS_A], 3=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0002075], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], id=3, relationType=IS_A]}",
+        "{1=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0000001], id=1, relationshipType=IS_A], 2=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001188], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], id=2, relationshipType=IS_A], 3=MpoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0002075], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=MP], id=0001186], id=3, relationshipType=IS_A]}",
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
 
     assertEquals(

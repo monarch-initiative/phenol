@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.uberpheno;
 
-import org.monarchinitiative.phenol.ontology.data.RelationType;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 
 /**
  * Enumeration for describing relation qualifiers in the Uberpheno ontology.
@@ -9,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.RelationType;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public enum UberphenoRelationType implements RelationType {
+public enum UberphenoRelationshipType implements RelationshipType {
   /** "Is-a" relation. */
   IS_A,
   /** Unknown, used for any other relation. */

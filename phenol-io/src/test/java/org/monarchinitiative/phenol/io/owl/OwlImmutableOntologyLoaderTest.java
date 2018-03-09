@@ -42,7 +42,7 @@ public class OwlImmutableOntologyLoaderTest {
         ontology.getAllTermIds().toString());
 
     assertEquals(
-        "{1=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1, relationType=IS_A], 2=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2, relationType=IS_A]}",
+        "{1=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2852], id=1, relationshipType=IS_A], 2=GenericRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C2919], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=NCIT], id=C48596], id=2, relationshipType=IS_A]}",
         ontology.getRelationMap().toString());
   }
 }

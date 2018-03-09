@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.formats.generic;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.RelationType;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
@@ -21,8 +21,8 @@ public class GenericRelationship implements Relationship {
   /** Id for this term relation, corresponds to Id of edge in graph. */
   protected final int id;
 
-  /** {@link RelationType} for this term relation. */
-  protected final RelationType relationType;
+  /** {@link RelationshipType} for this term relation. */
+  protected final RelationshipType relationshipType;
 
   /**
    * Constructor.
@@ -30,13 +30,13 @@ public class GenericRelationship implements Relationship {
    * @param source Source {@link TermId}.
    * @param dest Destination {@link TermId}.
    * @param id The term relation's Id, corresponds to Id of edge in graph.
-   * @param relationType The relation's type.
+   * @param relationshipType The relation's type.
    */
-  public GenericRelationship(TermId source, TermId dest, int id, RelationType relationType) {
+  public GenericRelationship(TermId source, TermId dest, int id, RelationshipType relationshipType) {
     this.source = source;
     this.target = dest;
     this.id = id;
-    this.relationType = relationType;
+    this.relationshipType = relationshipType;
   }
 
   @Override
@@ -55,8 +55,8 @@ public class GenericRelationship implements Relationship {
   }
 
   /** @return The relation's qualifier. */
-  public RelationType getRelationType() {
-    return relationType;
+  public RelationshipType getrelationshipType() {
+    return relationshipType;
   }
 
   @Override
@@ -67,8 +67,8 @@ public class GenericRelationship implements Relationship {
         + target
         + ", id="
         + id
-        + ", relationType="
-        + relationType
+        + ", relationshipType="
+        + relationshipType
         + "]";
   }
 }

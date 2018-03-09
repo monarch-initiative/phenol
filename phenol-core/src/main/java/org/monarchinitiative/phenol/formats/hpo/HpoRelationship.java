@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
-import org.monarchinitiative.phenol.ontology.data.RelationType;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
@@ -21,10 +21,10 @@ public class HpoRelationship extends GenericRelationship {
    * @param source Source {@link TermId}.
    * @param dest Destination {@link TermId}.
    * @param id The term relation's Id, corresponds to Id of edge in graph.
-   * @param relationType The relation's type.
+   * @param relationshipType The relation's type.
    */
-  public HpoRelationship(TermId source, TermId dest, int id, RelationType relationType) {
-    super(source, dest, id, relationType);
+  public HpoRelationship(TermId source, TermId dest, int id, RelationshipType relationshipType) {
+    super(source, dest, id, relationshipType);
   }
 
   @Override
@@ -35,8 +35,8 @@ public class HpoRelationship extends GenericRelationship {
         + target
         + ", id="
         + id
-        + ", relationType="
-        + relationType
+        + ", relationshipType="
+        + relationshipType
         + "]";
   }
 }

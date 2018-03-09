@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.go.GoRelationType;
+import org.monarchinitiative.phenol.formats.go.GoRelationshipType;
 import org.monarchinitiative.phenol.formats.go.GoTerm;
 import org.monarchinitiative.phenol.formats.go.GoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
@@ -224,7 +224,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoRelationship> {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new GoRelationship(sourceId, destId, nextRelationId++, GoRelationType.IS_A);
+    return new GoRelationship(sourceId, destId, nextRelationId++, GoRelationshipType.IS_A);
   }
 
   @Override
