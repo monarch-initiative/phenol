@@ -1,13 +1,13 @@
 package org.monarchinitiative.phenol.ser;
 
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 
 /**
  * Thrown on problems with data serialization and deserialization.
  *
  * @author <a href="mailto:manuel.holtgrewe@charite.de">Manuel Holtgrewe</a>
  */
-public class SerializationException extends OntoLibException {
+public class SerializationException extends PhenolException {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;

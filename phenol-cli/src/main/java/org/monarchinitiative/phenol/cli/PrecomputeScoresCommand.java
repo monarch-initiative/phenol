@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.cli;
 
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
@@ -187,7 +187,7 @@ public class PrecomputeScoresCommand {
       for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
         writer.write(e.getKey(), e.getValue(), resolution);
       }
-    } catch (IOException | OntoLibException e) {
+    } catch (IOException | PhenolException e) {
       throw new RuntimeException("Problem writing to file", e);
     }
 

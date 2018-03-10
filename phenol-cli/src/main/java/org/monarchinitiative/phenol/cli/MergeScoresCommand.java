@@ -13,7 +13,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
 import org.monarchinitiative.phenol.io.scoredist.H2ScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionReader;
@@ -71,7 +71,7 @@ public class MergeScoresCommand {
           }
           loadedDists.get(e.getKey()).add(e.getValue());
         }
-      } catch (OntoLibException | IOException e) {
+      } catch (PhenolException | IOException e) {
         throw new OntoLibRuntimeException("Problem reading input file: " + inputPath, e);
       }
     }
@@ -95,7 +95,7 @@ public class MergeScoresCommand {
       for (Entry<Integer, ScoreDistribution> e : mergedDists.entrySet()) {
         writer.write(e.getKey(), e.getValue(), options.getResampleToPoints());
       }
-    } catch (IOException | OntoLibException e) {
+    } catch (IOException | PhenolException e) {
       throw new RuntimeException("Problem writing to output file: " + options.getOutputFile(), e);
     }
     LOGGER.info("Done writing result.");
@@ -103,9 +103,9 @@ public class MergeScoresCommand {
 
   /**
    * @return {@link ScoreDistributionWriter}, depending on configured path and type.
-   * @throws OntoLibException in the case of problems creating the writer.
+   * @throws PhenolException in the case of problems creating the writer.
    */
-  private ScoreDistributionWriter buildWriter() throws OntoLibException {
+  private ScoreDistributionWriter buildWriter() throws PhenolException {
     if (options.isWriteToH2()) {
       LOGGER.info("Creating H2 database connection for writing score distribution...");
       final String pathDbAbs = new File(options.getOutputFile()).getAbsolutePath();
@@ -115,7 +115,7 @@ public class MergeScoresCommand {
       try {
         return new TextFileScoreDistributionWriter(new File(options.getOutputFile()));
       } catch (FileNotFoundException e) {
-        throw new OntoLibException("Could not find file " + options.getOutputFile(), e);
+        throw new PhenolException("Could not find file " + options.getOutputFile(), e);
       }
     }
   }
