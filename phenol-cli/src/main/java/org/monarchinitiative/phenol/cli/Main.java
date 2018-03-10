@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class Main {
-  /**
-   * {@link Logger} object to use.
-   */
+  /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   private static final String PRECOMPUTE_SCORES = "precompute-scores";
@@ -23,8 +21,10 @@ public class Main {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final JCommander jc =
-        JCommander.newBuilder().addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
-            .addCommand(MERGE_SCORES, mergeScoresOptions).build();
+        JCommander.newBuilder()
+            .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
+            .addCommand(MERGE_SCORES, mergeScoresOptions)
+            .build();
     try {
       jc.parse(argv);
     } catch (ParameterException e) {
@@ -47,5 +47,4 @@ public class Main {
         break;
     }
   }
-
 }

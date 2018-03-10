@@ -12,19 +12,13 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public interface Similarity {
 
-  /**
-   * @return String description of the similarity measure.
-   */
+  /** @return String description of the similarity measure. */
   String getName();
 
-  /**
-   * @return String description of the similarity measure's parameters.
-   */
+  /** @return String description of the similarity measure's parameters. */
   String getParameters();
 
-  /**
-   * @return Whether or not the similarity measure is symmetric.
-   */
+  /** @return Whether or not the similarity measure is symmetric. */
   boolean isSymmetric();
 
   /**
@@ -36,5 +30,4 @@ public interface Similarity {
    * @return asymmetric similarity score
    */
   double computeScore(Collection<TermId> query, Collection<TermId> target);
-
 }

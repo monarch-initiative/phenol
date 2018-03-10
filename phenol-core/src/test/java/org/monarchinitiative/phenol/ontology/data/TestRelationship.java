@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-public class TestTermRelation implements TermRelation {
+public class TestRelationship implements Relationship {
 
   private static final long serialVersionUID = 1L;
 
@@ -8,7 +8,7 @@ public class TestTermRelation implements TermRelation {
   private ImmutableTermId dest;
   private int id;
 
-  public TestTermRelation(ImmutableTermId source, ImmutableTermId dest, int id) {
+  public TestRelationship(ImmutableTermId source, ImmutableTermId dest, int id) {
     this.source = source;
     this.dest = dest;
     this.id = id;
@@ -20,7 +20,7 @@ public class TestTermRelation implements TermRelation {
   }
 
   @Override
-  public TermId getDest() {
+  public TermId getTarget() {
     return dest;
   }
 
@@ -31,7 +31,6 @@ public class TestTermRelation implements TermRelation {
 
   @Override
   public String toString() {
-    return "TestTermRelation [source=" + source + ", dest=" + dest + ", id=" + id + "]";
+    return "TestRelationship [source=" + source + ", dest=" + dest + ", id=" + id + "]";
   }
-
 }

@@ -32,5 +32,4 @@ public class ObjectScoreDistributionTest {
     assertEquals(0.42, objDist.estimatePValue(0.8), 0.01);
     assertEquals(0.0, objDist.estimatePValue(0.99), 0.01);
   }
-
 }

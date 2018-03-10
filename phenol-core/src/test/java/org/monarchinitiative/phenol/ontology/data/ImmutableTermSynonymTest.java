@@ -14,9 +14,13 @@ public class ImmutableTermSynonymTest {
   @Before
   public void setUp() {
     termSynonym =
-        new ImmutableTermSynonym("synonym", TermSynonymScope.EXACT, "BRITISH_ENGLISH",
+        new ImmutableTermSynonym(
+            "synonym",
+            TermSynonymScope.EXACT,
+            "BRITISH_ENGLISH",
             Lists.newArrayList(
-                new ImmutableTermXref(new ImmutableTermId(new ImmutableTermPrefix("HP"), "0000001"),
+                new ImmutableTermXref(
+                    new ImmutableTermId(new ImmutableTermPrefix("HP"), "0000001"),
                     "term description")));
   }
 
@@ -32,5 +36,4 @@ public class ImmutableTermSynonymTest {
         "ImmutableTermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=term description]]]",
         termSynonym.toString());
   }
-
 }

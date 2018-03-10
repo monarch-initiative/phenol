@@ -29,8 +29,7 @@ public class MersenneTwisterTest {
     for (int i = 0; i < 10_000; ++i) {
       values.add(rng.nextDouble());
     }
-    Assert.assertEquals(0.5, values.stream().mapToDouble(x -> (double) x).average().orElse(-1.0),
-        0.01);
+    Assert.assertEquals(
+        0.5, values.stream().mapToDouble(x -> (double) x).average().orElse(-1.0), 0.01);
   }
-
 }

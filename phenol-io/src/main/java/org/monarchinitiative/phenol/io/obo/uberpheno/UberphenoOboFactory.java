@@ -11,9 +11,9 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationQualifier;
+import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTerm;
-import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTermRelation;
+import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
@@ -49,12 +49,12 @@ import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.io.obo.*;
 
 /**
- * Factory class for constructing {@link UberphenoTerm} and {@link UberphenoTermRelation} objects
+ * Factory class for constructing {@link UberphenoTerm} and {@link UberphenoRelationship} objects
  * from {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, UberphenoTermRelation> {
+class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, UberphenoRelationship> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -218,34 +218,34 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public UberphenoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new UberphenoTermRelation(sourceId, destId, nextRelationId++,
-        UberphenoRelationQualifier.IS_A);
+    return new UberphenoRelationship(sourceId, destId, nextRelationId++,
+        UberphenoRelationshipType.IS_A);
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+  public UberphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+  public UberphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+  public UberphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UberphenoTermRelation constructTermRelation(Stanza stanza,
+  public UberphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }

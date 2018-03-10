@@ -5,14 +5,13 @@ import java.io.Serializable;
 /**
  * Description of a term relation, such relations are directional
  *
- * <p>
- * This corresponds to an edge in the ontology graph, and the type to use for the relation
+ * <p>This corresponds to an edge in the ontology graph, and the type to use for the relation
  * description (e.g., &quot;part of&quot; or &quot;down-regulates&quot; is ontology-specific.
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public interface TermRelation extends Serializable {
+public interface Relationship extends Serializable {
 
   /**
    * Query for relation's source (from).
@@ -26,7 +25,7 @@ public interface TermRelation extends Serializable {
    *
    * @return {@link TermId} of destination{@link Term}
    */
-  TermId getDest();
+  TermId getTarget();
 
   /**
    * Query for numeric relation identifier.
@@ -34,5 +33,4 @@ public interface TermRelation extends Serializable {
    * @return Numeric identifier, for building efficient maps with further information
    */
   int getId();
-
 }

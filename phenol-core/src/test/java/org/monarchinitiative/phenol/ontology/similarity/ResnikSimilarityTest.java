@@ -7,7 +7,7 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -17,18 +17,18 @@ import org.junit.Test;
 
 public class ResnikSimilarityTest extends VegetableOntologyTestBase {
 
-  ResnikSimilarity<VegetableTerm, VegetableTermRelation> similarity;
+  ResnikSimilarity<VegetableTerm, VegetableRelationship> similarity;
 
   @Before
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation<VegetableTerm, VegetableTermRelation> computation =
+    InformationContentComputation<VegetableTerm, VegetableRelationship> computation =
         new InformationContentComputation<>(ontology);
     Map<TermId, Collection<String>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
-    PairwiseResnikSimilarity<VegetableTerm, VegetableTermRelation> pairwise =
+    PairwiseResnikSimilarity<VegetableTerm, VegetableRelationship> pairwise =
         new PairwiseResnikSimilarity<>(ontology, informationContent);
 
     similarity = new ResnikSimilarity<>(pairwise, true);
@@ -43,16 +43,21 @@ public class ResnikSimilarityTest extends VegetableOntologyTestBase {
 
   @Test
   public void testComputeSimilarities() {
-    assertEquals(0.0,
-        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)), 0.01);
-    assertEquals(0.405,
+    assertEquals(
+        0.0,
+        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),
+        0.01);
+    assertEquals(
+        0.405,
         similarity.computeScore(Lists.newArrayList(idBlueCarrot), Lists.newArrayList(idCarrot)),
         0.01);
-    assertEquals(0.00,
-        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)), 0.01);
-    assertEquals(0.0,
+    assertEquals(
+        0.00,
+        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)),
+        0.01);
+    assertEquals(
+        0.0,
         similarity.computeScore(Lists.newArrayList(idLeafVegetable), Lists.newArrayList(idCarrot)),
         0.01);
   }
-
 }

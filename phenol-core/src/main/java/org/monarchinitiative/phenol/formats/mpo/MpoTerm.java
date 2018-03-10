@@ -67,9 +67,18 @@ public class MpoTerm implements Term {
    * @param creationDate Date of creation of the term.
    * @param xrefs List of xrefs.
    */
-  public MpoTerm(TermId id, List<TermId> altTermIds, String name, String definition, String comment,
-      List<String> subsets, List<TermSynonym> synonyms, boolean obsolete, String createdBy,
-      Date creationDate, List<Dbxref> xrefs) {
+  public MpoTerm(
+      TermId id,
+      List<TermId> altTermIds,
+      String name,
+      String definition,
+      String comment,
+      List<String> subsets,
+      List<TermSynonym> synonyms,
+      boolean obsolete,
+      String createdBy,
+      Date creationDate,
+      List<Dbxref> xrefs) {
     this.id = id;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -140,10 +149,28 @@ public class MpoTerm implements Term {
 
   @Override
   public String toString() {
-    return "MPOTerm [id=" + id + ", altTermIds=" + altTermIds + ", name=" + name + ", definition="
-        + definition + ", comment=" + comment + ", subsets=" + subsets + ", synonyms=" + synonyms
-        + ", obsolete=" + obsolete + ", createdBy=" + createdBy + ", creationDate=" + creationDate
-        + ", xrefs=" + xrefs + "]";
+    return "MPOTerm [id="
+        + id
+        + ", altTermIds="
+        + altTermIds
+        + ", name="
+        + name
+        + ", definition="
+        + definition
+        + ", comment="
+        + comment
+        + ", subsets="
+        + subsets
+        + ", synonyms="
+        + synonyms
+        + ", obsolete="
+        + obsolete
+        + ", createdBy="
+        + createdBy
+        + ", creationDate="
+        + creationDate
+        + ", xrefs="
+        + xrefs
+        + "]";
   }
-
 }

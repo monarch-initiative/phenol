@@ -52,5 +52,4 @@ public class ShortestPathTableTest extends VegetableOntologyTestBase {
     assertEquals(1, table.getDistanceSymmetric(idPumpkin, idRootVegetable));
     assertEquals(1, table.getDistanceSymmetric(idRootVegetable, idPumpkin));
   }
-
 }

@@ -27,8 +27,8 @@ public class HpoAnnotation2DiseaseParser {
 
   private String annotationFilePath =null;
   private final HpoOntology ontology;
-  private Ontology<HpoTerm, HpoTermRelation> hpoPhenotypeOntology=null;
-  private Ontology<HpoTerm, HpoTermRelation> inheritancePhenotypeOntology=null;
+  private Ontology<HpoTerm, HpoRelationship> hpoPhenotypeOntology=null;
+  private Ontology<HpoTerm, HpoRelationship> inheritancePhenotypeOntology=null;
 
   private static final TermPrefix HP_PREFIX = new ImmutableTermPrefix("HP");
   /** The default frequency will be 100% (Obligate, HP:0040280). This will be used if an annotation line has no
@@ -72,7 +72,7 @@ public class HpoAnnotation2DiseaseParser {
         if (disease2AnnotLineMap.containsKey(aline.DBObjectId)) {
           annots = disease2AnnotLineMap.get(aline.DBObjectId);
         } else {
-          annots = new ArrayList();
+          annots = new ArrayList<>();
           disease2AnnotLineMap.put(aline.DBObjectId,annots);
         }
 

@@ -3,11 +3,11 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 import java.io.File;
 import java.io.IOException;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
 import org.monarchinitiative.phenol.formats.mpo.MpoTerm;
-import org.monarchinitiative.phenol.formats.mpo.MpoTermRelation;
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.monarchinitiative.phenol.formats.mpo.MpoRelationship;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -67,20 +67,19 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    * @return {@link MpoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
-  @SuppressWarnings("unchecked")
   public MpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<MpoTerm, MpoTermRelation> loader =
+    final OboImmutableOntologyLoader<MpoTerm, MpoRelationship> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
     final MpoOboFactory factory = new MpoOboFactory();
-    final ImmutableOntology<MpoTerm, MpoTermRelation> o = loader.load(factory);
+    final ImmutableOntology<MpoTerm, MpoRelationship> o = loader.load(factory);
 
     // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
     return new MpoOntology((ImmutableSortedMap<String, String>) o.getMetaInfo(),
-        (ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>>) o.getGraph(), o.getRootTermId(),
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) o.getGraph(), o.getRootTermId(),
         o.getNonObsoleteTermIds(), o.getObsoleteTermIds(),
         (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, MpoTermRelation>) o.getRelationMap());
+        (ImmutableMap<Integer, MpoRelationship>) o.getRelationMap());
   }
 
   /**

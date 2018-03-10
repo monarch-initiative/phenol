@@ -6,39 +6,29 @@ import java.util.Set;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
  * Implementation of pairwise Resnik similarity without precomputation.
  *
- * <p>
- * This lies at the core of most of of the more computationally expensive pairwise similarities'
+ * <p>This lies at the core of most of of the more computationally expensive pairwise similarities'
  * computations. See {@link PrecomputingPairwiseResnikSimilarity} for a variant where the similarity
  * scores can be precomputed and serialized.
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
- *
  * @see PrecomputingPairwiseResnikSimilarity
  */
-public final class PairwiseResnikSimilarity<T extends Term, R extends TermRelation>
-    implements
-      PairwiseSimilarity {
+public final class PairwiseResnikSimilarity<T extends Term, R extends Relationship>
+    implements PairwiseSimilarity {
 
-  /**
-   * {@link Ontology} to base computations on.
-   */
+  /** {@link Ontology} to base computations on. */
   private final Ontology<T, R> ontology;
 
-  /**
-   * {@link Map} from {@link TermId} to its information content.
-   */
+  /** {@link Map} from {@link TermId} to its information content. */
   private final Map<TermId, Double> termToIc;
 
-  /**
-   * Required default constructor for serialization.
-   */
+  /** Required default constructor for serialization. */
   protected PairwiseResnikSimilarity() {
     this.ontology = null;
     this.termToIc = null;
@@ -56,15 +46,13 @@ public final class PairwiseResnikSimilarity<T extends Term, R extends TermRelati
   }
 
   /**
-   * Implementation of computing similarity score between a <code>query</code> and a
-   * <code>query</code>.
+   * Implementation of computing similarity score between a <code>query</code> and a <code>query
+   * </code>.
    *
    * <h5>Performance Note</h5>
    *
-   * <p>
-   * This method is a performance hotspot and already well optimized. Further speedup can be gained
-   * through {@link PrecomputingPairwiseResnikSimilarity}.
-   * </p>
+   * <p>This method is a performance hotspot and already well optimized. Further speedup can be
+   * gained through {@link PrecomputingPairwiseResnikSimilarity}.
    *
    * @param query Query {@link TermId}.
    * @param target Target {@link TermId}.
@@ -88,18 +76,13 @@ public final class PairwiseResnikSimilarity<T extends Term, R extends TermRelati
     return computeScoreImpl(query, target);
   }
 
-  /**
-   * @return Underlying {@link Ontology}.
-   */
+  /** @return Underlying {@link Ontology}. */
   public Ontology<T, R> getOntology() {
     return ontology;
   }
 
-  /**
-   * @return {@link Map} from {@link TermId} to information content.
-   */
+  /** @return {@link Map} from {@link TermId} to information content. */
   public Map<TermId, Double> getTermToIc() {
     return termToIc;
   }
-
 }

@@ -12,17 +12,17 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 
 public class PairwiseResnikSimilarityTest extends VegetableOntologyTestBase {
 
-  PairwiseResnikSimilarity<VegetableTerm, VegetableTermRelation> similarity;
+  PairwiseResnikSimilarity<VegetableTerm, VegetableRelationship> similarity;
 
   @Before
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation<VegetableTerm, VegetableTermRelation> computation =
+    InformationContentComputation<VegetableTerm, VegetableRelationship> computation =
         new InformationContentComputation<>(ontology);
     Map<TermId, Collection<String>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
@@ -38,5 +38,4 @@ public class PairwiseResnikSimilarityTest extends VegetableOntologyTestBase {
     assertEquals(0.0, similarity.computeScore(idPumpkin, idCarrot), 0.01);
     assertEquals(0.0, similarity.computeScore(idLeafVegetable, idCarrot), 0.01);
   }
-
 }

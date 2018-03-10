@@ -4,10 +4,10 @@ import java.util.SortedMap;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
- * Interface for constructing concrete {@link Term} and {@link TermRelation} objects in
+ * Interface for constructing concrete {@link Term} and {@link Relationship} objects in
  * {@link OboImmutableOntologyLoader}.
  *
  * @param <T> The type to use for terms.
@@ -15,7 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermRelation;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation> {
+public interface OboOntologyEntryFactory<T extends Term, R extends Relationship> {
 
   /**
    * Set map from Term Id string to {@link ImmutableTermId} into factory.
@@ -39,7 +39,7 @@ public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param stanzaEntry The <code>is_a</code> tag.
    * @return The constructed <code>T</code>.
    */
-  public R constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry);
+  public R constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry);
 
   /**
    * Construct term from {@link Stanza} and <code>disjoint_from</code> tag.
@@ -48,7 +48,7 @@ public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param stanzaEntry The <code>disjoint_from</code> tag.
    * @return The constructed <code>T</code>.
    */
-  public R constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry);
+  public R constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry);
 
   /**
    * Construct term from {@link Stanza} and <code>union_of</code> tag.
@@ -57,7 +57,7 @@ public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param stanzaEntry The <code>union_of</code> tag.
    * @return The constructed <code>T</code>.
    */
-  public R constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry);
+  public R constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry);
 
   /**
    * Construct term from {@link Stanza} and <code>intersection_of</code> tag.
@@ -66,7 +66,7 @@ public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param stanzaEntry The <code>intersection_of</code> tag.
    * @return The constructed <code>T</code>.
    */
-  public R constructTermRelation(Stanza stanza, StanzaEntryIntersectionOf stanzaEntry);
+  public R constructrelationship(Stanza stanza, StanzaEntryIntersectionOf stanzaEntry);
 
   /**
    * Construct term from {@link Stanza} and <code>relationship</code> tag.
@@ -75,6 +75,6 @@ public interface OboOntologyEntryFactory<T extends Term, R extends TermRelation>
    * @param stanzaEntry The <code>relationship</code> tag.
    * @return The constructed <code>T</code>.
    */
-  public R constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry);
+  public R constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry);
 
 }

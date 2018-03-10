@@ -5,7 +5,7 @@ package org.monarchinitiative.phenol.base;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class OntoLibException extends Exception {
+public class PhenolException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class OntoLibException extends Exception {
    * @param message Message of exception.
    * @param cause Causing {@link Throwable}.
    */
-  public OntoLibException(String message, Throwable cause) {
+  public PhenolException(String message, Throwable cause) {
     super(message, cause);
   }
 
@@ -24,8 +24,7 @@ public class OntoLibException extends Exception {
    *
    * @param message Message of exception.
    */
-  public OntoLibException(String message) {
+  public PhenolException(String message) {
     super(message);
   }
-
 }

@@ -1,12 +1,10 @@
 /**
  * Algorithms for operating on graphs.
  *
- * <p>
- * The most important class of algorithms for ontologies are based on graph traversal. Thus, you
+ * <p>The most important class of algorithms for ontologies are based on graph traversal. Thus, you
  * will find the usual, common such algorithms in this module. The central concept here is the
- * <b>visitor pattern</b>, codified by the
- * {@link org.monarchinitiative.phenol.graph.algo.VertexVisitor} interface.
- * </p>
+ * <b>visitor pattern</b>, codified by the {@link
+ * org.monarchinitiative.phenol.graph.algo.VertexVisitor} interface.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

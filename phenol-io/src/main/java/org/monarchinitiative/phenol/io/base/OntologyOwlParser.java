@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 public interface OntologyOwlParser<
-	O extends Ontology<? extends Term, ? extends TermRelation>> {
+	O extends Ontology<? extends Term, ? extends Relationship>> {
 	/**
 	 * Parse and build specialized {@link Ontology}.
 	 *

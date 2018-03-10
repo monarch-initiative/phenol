@@ -19,9 +19,18 @@ public class TestTerm implements Term {
   private Date creationDate;
   private List<Dbxref> xrefs;
 
-  public TestTerm(ImmutableTermId termId, List<TermId> altTermIds, String name, String definition,
-      String comment, List<String> subsets, List<TermSynonym> termSynonyms, boolean obsolete,
-      String createdBy, Date creationDate, List<Dbxref> xrefs) {
+  public TestTerm(
+      ImmutableTermId termId,
+      List<TermId> altTermIds,
+      String name,
+      String definition,
+      String comment,
+      List<String> subsets,
+      List<TermSynonym> termSynonyms,
+      boolean obsolete,
+      String createdBy,
+      Date creationDate,
+      List<Dbxref> xrefs) {
     this.termId = termId;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -92,10 +101,28 @@ public class TestTerm implements Term {
 
   @Override
   public String toString() {
-    return "TestTerm [termId=" + termId + ", altTermIds=" + altTermIds + ", name=" + name
-        + ", definition=" + definition + ", comment=" + comment + ", subsets=" + subsets
-        + ", termSynonyms=" + termSynonyms + ", obsolete=" + obsolete + ", createdBy=" + createdBy
-        + ", creationDate=" + creationDate + ", xrefs=" + xrefs + "]";
+    return "TestTerm [termId="
+        + termId
+        + ", altTermIds="
+        + altTermIds
+        + ", name="
+        + name
+        + ", definition="
+        + definition
+        + ", comment="
+        + comment
+        + ", subsets="
+        + subsets
+        + ", termSynonyms="
+        + termSynonyms
+        + ", obsolete="
+        + obsolete
+        + ", createdBy="
+        + createdBy
+        + ", creationDate="
+        + creationDate
+        + ", xrefs="
+        + xrefs
+        + "]";
   }
-
 }

@@ -5,9 +5,7 @@ import java.util.Comparator;
 /**
  * Compare two version strings.
  *
- * <p>
- * Taken from http://stackoverflow.com/a/10034633/84349
- * </p>
+ * <p>Taken from http://stackoverflow.com/a/10034633/84349
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -68,7 +66,6 @@ final class VersionComparator implements Comparator<String> {
       // Lexical comparison of suffixes
       int result = suffix1.compareTo(suffix2);
       if (result != 0) return result;
-
     }
 
     if (tokenizer2.moveNext()) {
@@ -87,5 +84,4 @@ final class VersionComparator implements Comparator<String> {
 
     return 0;
   }
-
 }

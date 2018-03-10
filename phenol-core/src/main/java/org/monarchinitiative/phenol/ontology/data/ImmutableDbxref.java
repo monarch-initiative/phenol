@@ -53,8 +53,12 @@ public class ImmutableDbxref implements Dbxref {
 
   @Override
   public String toString() {
-    return "ImmutableDbxref [name=" + name + ", description=" + description + ", trailingModifiers="
-        + trailingModifiers + "]";
+    return "ImmutableDbxref [name="
+        + name
+        + ", description="
+        + description
+        + ", trailingModifiers="
+        + trailingModifiers
+        + "]";
   }
-
 }

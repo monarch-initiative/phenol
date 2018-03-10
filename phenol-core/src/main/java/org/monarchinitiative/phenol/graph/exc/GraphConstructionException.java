@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.data;
+package org.monarchinitiative.phenol.graph.exc;
 
 /**
  * Exception raised when there are problems with graph components such as incompatibility between
@@ -19,5 +19,4 @@ public class GraphConstructionException extends RuntimeException {
   public GraphConstructionException(final String message) {
     super(message);
   }
-
 }

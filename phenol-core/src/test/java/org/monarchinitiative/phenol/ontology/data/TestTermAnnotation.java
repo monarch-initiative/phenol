@@ -32,7 +32,9 @@ public class TestTermAnnotation implements TermAnnotation {
     }
     TestTermAnnotation that = (TestTermAnnotation) o;
 
-    return ComparisonChain.start().compare(this.termId, that.termId).compare(this.label, that.label)
+    return ComparisonChain.start()
+        .compare(this.termId, that.termId)
+        .compare(this.label, that.label)
         .result();
   }
 
@@ -40,5 +42,4 @@ public class TestTermAnnotation implements TermAnnotation {
   public String toString() {
     return "TestTermAnnotation [termId=" + termId + ", label=" + label + "]";
   }
-
 }

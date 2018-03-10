@@ -38,7 +38,9 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
     }
     VegetableRecipeAnnotation that = (VegetableRecipeAnnotation) o;
 
-    return ComparisonChain.start().compare(this.termId, that.termId).compare(this.label, that.label)
+    return ComparisonChain.start()
+        .compare(this.termId, that.termId)
+        .compare(this.label, that.label)
         .result();
   }
 
@@ -46,5 +48,4 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   public String toString() {
     return "VegetableTermAnnotation [termId=" + termId + ", label=" + label + "]";
   }
-
 }

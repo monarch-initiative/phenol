@@ -66,3 +66,6 @@ BLA
 /phenol-io/phenol-io.iml
 /phenol-cli/phenol-cli.iml
 phenol-core/src/test/java/com/
+
+*.checkstyle
+/phenol-core/phenol-core.iml

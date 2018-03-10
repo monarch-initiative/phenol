@@ -24,7 +24,7 @@
  * etc.), there is a {@link org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory}
  * implementation that has to be passed into the loader for construction of the concrete
  * {@link org.monarchinitiative.phenol.ontology.data.Term} and
- * {@link org.monarchinitiative.phenol.ontology.data.TermRelation} implementations.
+ * {@link org.monarchinitiative.phenol.ontology.data.Relationship} implementations.
  * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>

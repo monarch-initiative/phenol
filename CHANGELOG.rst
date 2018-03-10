@@ -2,6 +2,13 @@
 Changelog
 =========
 
+
+------
+v0.1.7
+------
+- refactored phenol to use JGraphT library
+- Adding OWLAPI based parser
+
 ------
 v0.1.6
 ------

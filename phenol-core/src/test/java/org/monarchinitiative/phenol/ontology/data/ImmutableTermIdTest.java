@@ -27,8 +27,8 @@ public class ImmutableTermIdTest {
   @Test
   public void testStaticConstructMethod() {
     ImmutableTermId otherId = ImmutableTermId.constructWithPrefix("HP:0000001");
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
-        otherId.toString());
+    assertEquals(
+        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]", otherId.toString());
     assertEquals(termId, otherId);
   }
 
@@ -54,8 +54,7 @@ public class ImmutableTermIdTest {
 
   @Test
   public void testToString() {
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
-        termId.toString());
+    assertEquals(
+        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]", termId.toString());
   }
-
 }

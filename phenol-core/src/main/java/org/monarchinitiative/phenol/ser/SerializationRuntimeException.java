@@ -30,5 +30,4 @@ public class SerializationRuntimeException extends OntoLibRuntimeException {
   public SerializationRuntimeException(String message) {
     super(message);
   }
-
 }

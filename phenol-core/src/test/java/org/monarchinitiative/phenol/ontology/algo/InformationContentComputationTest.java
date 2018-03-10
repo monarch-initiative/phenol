@@ -11,11 +11,11 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 
 public class InformationContentComputationTest extends VegetableOntologyTestBase {
 
-  InformationContentComputation<VegetableTerm, VegetableTermRelation> computation;
+  InformationContentComputation<VegetableTerm, VegetableRelationship> computation;
 
   @Before
   public void setUp() {
@@ -39,5 +39,4 @@ public class InformationContentComputationTest extends VegetableOntologyTestBase
     assertEquals(0.405, informationContent.get(idPumpkin).doubleValue(), 0.001);
     assertEquals(1.099, informationContent.get(idBlueCarrot).doubleValue(), 0.01);
   }
-
 }

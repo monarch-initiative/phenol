@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +19,18 @@ import org.monarchinitiative.phenol.ontology.data.TermIds;
 // TODO: separate resulting precomputation DS and algorithm to equalize with graph.algo
 
 /**
- * Utility class for computing information content of {@link Term} (identified by their
- * {@link TermId}s) in an {@link Ontology}.
+ * Utility class for computing information content of {@link Term} (identified by their {@link
+ * TermId}s) in an {@link Ontology}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class InformationContentComputation<T extends Term, R extends TermRelation> {
+public final class InformationContentComputation<T extends Term, R extends Relationship> {
 
-  /**
-   * {@link Logger} object to use.
-   */
+  /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(InformationContentComputation.class);
 
-  /**
-   * {@link Ontology} to work on for computations.
-   */
+  /** {@link Ontology} to work on for computations. */
   private final Ontology<T, R> ontology;
 
   /**
@@ -50,23 +46,22 @@ public final class InformationContentComputation<T extends Term, R extends TermR
   /**
    * Perform the actual computation.
    *
-   * <p>
-   * Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
+   * <p>Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
    * achieve this using {@link TermIds#augmentWithAncestors(ImmutableOntology, Set, boolean)}.
-   * </p>
    *
-   * @param <LabelT> Labels for objects from "the real world". This could, e.g., be
-   *        <code>String</code>s with gene names. This type has to properly implement
-   *        <code>equals(Object)</code> and <code>hashValue()</code> as it is to be used as keys in
-   *        a {@link HashMap}.
-   *
+   * @param <LabelT> Labels for objects from "the real world". This could, e.g., be <code>String
+   *     </code>s with gene names. This type has to properly implement <code>equals(Object)</code>
+   *     and <code>hashValue()</code> as it is to be used as keys in a {@link HashMap}.
    * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
-  public <LabelT> Map<TermId, Double>
-      computeInformationContent(Map<TermId, ? extends Collection<LabelT>> termLabels) {
-    LOGGER.info("Computing IC of {} terms using {} labels...", new Object[] {ontology.countAllTerms(),
-        termLabels.values().stream().mapToInt(l -> l.size()).sum()});
+  public <LabelT> Map<TermId, Double> computeInformationContent(
+      Map<TermId, ? extends Collection<LabelT>> termLabels) {
+    LOGGER.info(
+        "Computing IC of {} terms using {} labels...",
+        new Object[] {
+          ontology.countAllTerms(), termLabels.values().stream().mapToInt(l -> l.size()).sum()
+        });
 
     // Build mapping from TermId -> absolute frequency
     final TermId root = ontology.getRootTermId();
@@ -98,8 +93,10 @@ public final class InformationContentComputation<T extends Term, R extends TermR
     }
 
     if (countIcZero > 0) {
-      LOGGER.warn("Frequency of {} non-obsolete terms was zero! Their IC has been set to {} = "
-          + "- log(1 / {}).", new Object[] {countIcZero, dummyIc, maxFreq});
+      LOGGER.warn(
+          "Frequency of {} non-obsolete terms was zero! Their IC has been set to {} = "
+              + "- log(1 / {}).",
+          new Object[] {countIcZero, dummyIc, maxFreq});
     }
     LOGGER.info("Computing IC is complete.");
 
@@ -113,8 +110,8 @@ public final class InformationContentComputation<T extends Term, R extends TermR
    * @param termToFrequency {@link Map} from term to absolute frequency.
    * @return {@link Map} from {@link TermId} to information content.
    */
-  private Map<TermId, Double> caculateInformationContent(double maxFreq,
-      Map<TermId, Integer> termToFrequency) {
+  private Map<TermId, Double> caculateInformationContent(
+      double maxFreq, Map<TermId, Integer> termToFrequency) {
     final Map<TermId, Double> termToIc = new HashMap<>();
 
     for (Entry<TermId, Integer> e : termToFrequency.entrySet()) {
@@ -125,5 +122,4 @@ public final class InformationContentComputation<T extends Term, R extends TermR
 
     return termToIc;
   }
-
 }

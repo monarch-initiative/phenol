@@ -16,8 +16,7 @@ public final class HpoSubOntologyRootTermIds {
       ImmutableTermId.constructWithPrefix("HP:0000118");
 
   /** {@link TermId} of sub ontology "clinical modifier". */
-  public static final TermId CLINICAL_MODIFIER =
-      ImmutableTermId.constructWithPrefix("HP:0012823");
+  public static final TermId CLINICAL_MODIFIER = ImmutableTermId.constructWithPrefix("HP:0012823");
 
   /** {@link TermId} of sub ontology "mortality/aging". */
   public static final TermId MORTALITY_AGING = ImmutableTermId.constructWithPrefix("HP:0040006");
@@ -28,5 +27,4 @@ public final class HpoSubOntologyRootTermIds {
   /** {@link TermId} of sub ontology "mode of inheritance". */
   public static final TermId MODE_OF_INHERITANCE =
       ImmutableTermId.constructWithPrefix("HP:0000005");
-
 }
