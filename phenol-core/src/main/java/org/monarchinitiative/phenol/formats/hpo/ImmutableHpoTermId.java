@@ -1,27 +1,34 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import com.google.common.collect.ComparisonChain;
 
+import java.util.List;
+
 /**
- * Represent an HPO Term together with a Frequency and an Onset. This is intended to be used to
+ * Represent an HPO Term together with a Frequency and an Onset and modifiers.
+ * This is intended to be used to
  * represent a disease annotation.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
- * @version 0.0.2 (2017-11-24)
+ * @version 0.1.3 (2018-03-12)
  */
-public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
-  private static final long serialVersionUID = -4247317041115647565L;
+public class ImmutableHpoTermId implements HpoTermId {
+  private static final long serialVersionUID = 2L;
 
   /** The annotated {@link TermId}. */
   private final TermId termId;
 
   /** The {@link HpoFrequency}. */
-  private final HpoFrequency frequency;
+  private final double frequency;
   /** The characteristic age of onset of a feature in a certain disease. */
   private final HpoOnset onset;
+  /** List of modifiers of this annotation. List can be empty but cannot be null */
+  private final List<TermId> modifierList;
+
   /** If no information is available, then assume that the feature is always present! */
   private static final HpoFrequency DEFAULT_HPO_FREQUENCY = HpoFrequency.ALWAYS_PRESENT;
   /**
@@ -34,25 +41,23 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
    * Constructor.
    *
    * @param termId Annotated {@link TermId}.
-   * @param frequency That the term is annotated with.
+   * @param f The frequency the term is annotated with.
    */
-  public ImmutableTermIdWithMetadata(TermId termId, HpoFrequency frequency, HpoOnset onset) {
+  public ImmutableHpoTermId(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
-    this.frequency = frequency != null ? frequency : DEFAULT_HPO_FREQUENCY;
+    this.frequency = f;
     this.onset = onset != null ? onset : DEFAULT_HPO_ONSET;
+    this.modifierList=modifiers;
   }
 
-  public ImmutableTermIdWithMetadata(TermId t) {
+  public ImmutableHpoTermId(TermId t) {
     this.termId = t;
-    this.frequency = DEFAULT_HPO_FREQUENCY;
+    this.frequency = DEFAULT_HPO_FREQUENCY.mean();
     this.onset = DEFAULT_HPO_ONSET;
+    this.modifierList= (new ImmutableList.Builder<TermId>()).build();
   }
 
-  public ImmutableTermIdWithMetadata(TermPrefix prefix, String id) {
-    this.termId = new ImmutableTermId(prefix, id);
-    this.frequency = DEFAULT_HPO_FREQUENCY;
-    this.onset = DEFAULT_HPO_ONSET;
-  }
+
 
   /** @return The annotated {@link TermId}. */
   public TermId getTermId() {
@@ -60,7 +65,7 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
   }
 
   /** @return The annotating {@link HpoFrequency}. */
-  public HpoFrequency getFrequency() {
+  public double getFrequency() {
     return frequency;
   }
 
@@ -68,9 +73,11 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
     return onset;
   }
 
+  public List<TermId> getModifiers() { return modifierList; }
+
   @Override
   public String toString() {
-    return "TermIdWithMetadata [termId="
+    return "HpoTermId [termId="
         + termId
         + ", frequency="
         + frequency
@@ -109,11 +116,11 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
   @Override
   public boolean equals(Object that) {
     if (that == null) return false;
-    if (!(that instanceof TermIdWithMetadata)) return false;
-    TermIdWithMetadata otherTIDM = (TermIdWithMetadata) that;
+    if (!(that instanceof HpoTermId)) return false;
+    HpoTermId otherTIDM = (HpoTermId) that;
 
     return termId.getId().equals(otherTIDM.getId())
-        && frequency.equals(otherTIDM.getFrequency())
+        && frequency == otherTIDM.getFrequency()
         && onset.equals(otherTIDM.getOnset());
   }
 
@@ -121,8 +128,9 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
   public int hashCode() {
     int result = 17;
     result = 31 * result + termId.hashCode();
-    result = 31 * result + frequency.hashCode();
+    result = 31 * result + Double.valueOf(frequency).hashCode();
     result = 31 * result + onset.hashCode();
+    result = 31 * result + modifierList.hashCode();
     return result;
   }
 
@@ -142,10 +150,51 @@ public class ImmutableTermIdWithMetadata implements TermIdWithMetadata {
             .compare(this.getId(), that.getId())
             .result();
     if (c != 0) return c;
-    else if (this.frequency != null || this.onset != null) {
+    else if (this.onset != null) {
       return 1;
     } else {
       return 0;
+    }
+  }
+
+
+  public static class Builder {
+    private final TermId termId;
+
+    /** The {@link HpoFrequency}. */
+    private double frequency=-1.0D; // flag
+    /** The characteristic age of onset of a feature in a certain disease. */
+    private HpoOnset onset=null;
+    /** List of modifiers of this annotation. List can be empty but cannot be null */
+    private List<TermId> modifierList=null;
+
+    public Builder(TermId tid) {
+      this.termId=tid;
+    }
+    public Builder onset(HpoOnset o) {
+      this.onset=o;
+      return this;
+    }
+    public Builder frequency(double f) {
+      this.frequency=f;
+      return this;
+    }
+    public Builder modifierList(List<TermId> L) {
+      this.modifierList=L;
+      return this;
+    }
+
+    public ImmutableHpoTermId build() {
+      if (modifierList==null) {
+        this.modifierList= (new ImmutableList.Builder<TermId>()).build();
+      }
+      if (onset==null) {
+        onset=DEFAULT_HPO_ONSET;
+      }
+      if (frequency <0) {
+        frequency=HpoFrequency.ALWAYS_PRESENT.mean();
+      }
+      return new ImmutableHpoTermId(termId,frequency,onset,modifierList);
     }
   }
 }

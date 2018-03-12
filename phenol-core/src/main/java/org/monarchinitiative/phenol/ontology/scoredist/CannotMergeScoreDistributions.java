@@ -1,13 +1,13 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 /**
  * Thrown in case of problems in {@link ScoreDistributions}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class CannotMergeScoreDistributions extends OntoLibRuntimeException {
+public class CannotMergeScoreDistributions extends PhenolRuntimeException {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -128,7 +128,7 @@ public enum HpoFrequency {
    *
    * @param termId The {@link TermId} to convert.
    * @return Corresponding {@link HpoFrequency}.
-   * @throws OntoLibRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
+   * @throws PhenolRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
    *     TermId}.
    */
   public static HpoFrequency fromTermId(TermId termId) {
@@ -146,7 +146,7 @@ public enum HpoFrequency {
       case "HP:0040285":
         return EXCLUDED;
       default:
-        throw new OntoLibRuntimeException(
+        throw new PhenolRuntimeException(
             "TermId " + termId + " is not a valid frequency sub ontology term ID");
     }
   }

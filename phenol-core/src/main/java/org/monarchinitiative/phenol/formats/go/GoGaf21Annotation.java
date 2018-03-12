@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.go;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
@@ -238,7 +238,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof GoGaf21Annotation)) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           "Can only compare GoGaf21Annotation with objects of same type");
     }
     GoGaf21Annotation that = (GoGaf21Annotation) o;

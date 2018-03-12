@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.io.obo;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 /**
  * Enumeration of {@link Stanza} types.
@@ -27,7 +27,7 @@ public enum StanzaType {
       case TYPEDEF:
         return "[Typedef]";
       default:
-        throw new OntoLibRuntimeException("Unknown StanzaType, this should not happen!");
+        throw new PhenolRuntimeException("Unknown StanzaType, this should not happen!");
     }
 
   }

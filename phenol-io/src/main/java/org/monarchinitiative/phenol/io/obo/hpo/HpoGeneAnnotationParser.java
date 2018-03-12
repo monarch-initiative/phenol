@@ -34,6 +34,8 @@ import java.io.IOException;
  * }
  * </pre>
  *
+ * TODO refactor to use new phenol classes
+ *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnnotation> {

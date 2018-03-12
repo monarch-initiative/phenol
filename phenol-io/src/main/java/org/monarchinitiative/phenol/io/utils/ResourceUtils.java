@@ -9,7 +9,7 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 /**
  * Helper class with static methods for handling resources in tests
@@ -28,7 +28,7 @@ public class ResourceUtils {
     try {
       IOUtils.copy(ResourceUtils.class.getResourceAsStream(path), writer, "UTF-8");
     } catch (IOException e) {
-      throw new OntoLibRuntimeException("Problem reading resource " + path, e);
+      throw new PhenolRuntimeException("Problem reading resource " + path, e);
     }
     return writer.toString();
   }
@@ -48,7 +48,7 @@ public class ResourceUtils {
         os.write(buffer, 0, length);
       }
     } catch (IOException e) {
-      throw new OntoLibRuntimeException("Problem with copying resource to file", e);
+      throw new PhenolRuntimeException("Problem with copying resource to file", e);
     }
   }
 

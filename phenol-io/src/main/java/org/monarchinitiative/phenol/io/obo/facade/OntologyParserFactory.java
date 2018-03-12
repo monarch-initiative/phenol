@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.io.obo.facade;
 import java.io.File;
 import java.io.IOException;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
@@ -45,7 +45,7 @@ public final class OntologyParserFactory {
       case UPHENO:
         return new UphenoOboParser(oboFile);
       default:
-        throw new OntoLibRuntimeException("Invalid ontology selected " + ontology);
+        throw new PhenolRuntimeException("Invalid ontology selected " + ontology);
     }
   }
 
