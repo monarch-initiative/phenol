@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.io.obo;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboLexer;
 
@@ -20,7 +20,7 @@ public class OboLexer extends Antlr4OboLexer {
 
   @Override
   public void recover(LexerNoViableAltException e) {
-    throw new OntoLibRuntimeException("There was a problem with lexing OBO file.", e); // bail out
+    throw new PhenolRuntimeException("There was a problem with lexing OBO file.", e); // bail out
   }
 
 }

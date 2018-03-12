@@ -16,10 +16,8 @@ public final class ScoreDistributions {
   /**
    * Merge a {@link Collection} of {@link ScoreDistribution}.
    *
-   * <p>
-   * This can be used for merging results obtained in parallel. All {@link ScoreDistribution}s must
-   * have the same number of terms and there must be no overlap in "world object" Ids.
-   * </p>
+   * <p>This can be used for merging results obtained in parallel. All {@link ScoreDistribution}s
+   * must have the same number of terms and there must be no overlap in "world object" Ids.
    *
    * @param distributions {@link Collection} of {@link ScoreDistribution}s to merge.
    * @return Merge result.
@@ -57,5 +55,4 @@ public final class ScoreDistributions {
   public static ScoreDistribution merge(ScoreDistribution... distributions) {
     return merge(Arrays.asList(distributions));
   }
-
 }

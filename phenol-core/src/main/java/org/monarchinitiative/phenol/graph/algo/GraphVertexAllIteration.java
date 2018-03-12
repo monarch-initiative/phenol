@@ -1,26 +1,24 @@
 package org.monarchinitiative.phenol.graph.algo;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 /**
- * Interface for iteration of {@link DirectedGraph} vertices using the Visitor pattern, starting
- * from specific vertex.
+ * Interface for iteration of {@link DefaultDirectedGraph} vertices using the Visitor pattern,
+ * starting from specific vertex.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-interface GraphVertexAllIteration<V extends Comparable<V>, E extends Edge<V>,
-    G extends DirectedGraph<V, E>> {
+interface GraphVertexAllIteration<
+    V extends Comparable<V>, E extends IdLabeledEdge, G extends DefaultDirectedGraph<V, E>> {
 
   /**
    * Iterate all vertices in topological order (traversing edges in <b>forward direction</b>).
    *
-   * <p>
-   * {@link VertexVisitor#visit(DirectedGraph, Object)} will be called for vertices of the graph
-   * starting from <code>v</code>
-   * </p>
+   * <p>{@link VertexVisitor#visit(DefaultDirectedGraph, Object)} will be called for vertices of the
+   * graph starting from <code>v</code>
    *
-   * @param g {@link DirectedGraph} to iterate over
+   * @param g {@link DefaultDirectedGraph} to iterate over
    * @param visitor {@link VertexVisitor} to use for notifying about reaching a vertex
    */
   public void startForward(G g, VertexVisitor<V, E> visitor);
@@ -29,14 +27,11 @@ interface GraphVertexAllIteration<V extends Comparable<V>, E extends Edge<V>,
    * Iterate all vertices in reverse topological order (traversing edges in <b>reverse
    * direction</b>).
    *
-   * <p>
-   * {@link VertexVisitor#visit(DirectedGraph, Object)} will be called for vertices of the graph
-   * starting from <code>v</code>
-   * </p>
+   * <p>{@link VertexVisitor#visit(DefaultDirectedGraph, Object)} will be called for vertices of the
+   * graph starting from <code>v</code>
    *
-   * @param g {@link DirectedGraph} to iterate over
+   * @param g {@link DefaultDirectedGraph} to iterate over
    * @param visitor {@link VertexVisitor} to use for notifying about reaching a vertex
    */
   public void startReverse(G g, VertexVisitor<V, E> visitor);
-
 }

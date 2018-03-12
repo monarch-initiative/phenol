@@ -18,12 +18,12 @@ public class ImmutableTermXrefTest {
 
   @Test
   public void test() {
-    assertEquals("ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
+    assertEquals(
+        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
         termXref.getId().toString());
     assertEquals("Some description", termXref.getDescription());
     assertEquals(
         "ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=Some description]",
         termXref.toString());
   }
-
 }

@@ -17,10 +17,9 @@ public final class TermIds {
    * @param includeRoot Whether or not to include the root.
    * @return Augmented version of {@code termIds} (not a copy) with ancestors of all elements.
    */
-  public static Set<TermId> augmentWithAncestors(ImmutableOntology<?, ?> ontology,
-      Set<TermId> termIds, boolean includeRoot) {
+  public static Set<TermId> augmentWithAncestors(
+      ImmutableOntology<?, ?> ontology, Set<TermId> termIds, boolean includeRoot) {
     termIds.addAll(ontology.getAllAncestorTermIds(termIds, includeRoot));
     return termIds;
   }
-
 }

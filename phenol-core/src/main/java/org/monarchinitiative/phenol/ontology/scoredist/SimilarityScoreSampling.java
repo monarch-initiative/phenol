@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.MersenneTwister;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
@@ -35,31 +35,22 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 /**
  * Sampling algorithm for similarity scores.
  *
- * <p>
- * The resulting precomputed {@link ScoreDistribution} can be used for empirical estimation of p
+ * <p>The resulting precomputed {@link ScoreDistribution} can be used for empirical estimation of p
  * values.
- * </p>
  *
  * @param <T> {@link Term} sub class this <code>Ontology</code> uses.
- * @param <R> {@link TermRelation} sub class this <code>Ontology</code> uses.
- *
+ * @param <R> {@link Relationship} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T extends Term, R extends TermRelation> {
+public final class SimilarityScoreSampling<T extends Term, R extends Relationship> {
 
-  /**
-   * {@link Logger} object to use.
-   */
+  /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
 
-  /**
-   * {@link Ontology} to use for computation.
-   */
+  /** {@link Ontology} to use for computation. */
   private final Ontology<T, R> ontology;
 
-  /**
-   * {@link Similarity} to use for the precomputation.
-   */
+  /** {@link Similarity} to use for the precomputation. */
   private final Similarity similarity;
 
   /** Configuration for score sampling. */
@@ -71,8 +62,8 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    *
    * @param options Configuration for score sampling.
    */
-  public SimilarityScoreSampling(Ontology<T, R> ontology, Similarity similarity,
-      ScoreSamplingOptions options) {
+  public SimilarityScoreSampling(
+      Ontology<T, R> ontology, Similarity similarity, ScoreSamplingOptions options) {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
@@ -86,42 +77,40 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   /**
    * Perform the sampling for all configured query term counts.
    *
-   * <p>
-   * Note that in general, this will be too slow and it will be required to split the work both by
-   * term count and by world object Id and distribute this to a parallel (cluster) computer.
-   * </p>
+   * <p>Note that in general, this will be too slow and it will be required to split the work both
+   * by term count and by world object Id and distribute this to a parallel (cluster) computer.
    *
    * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId}
-   *        labels.
+   *     labels.
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
   public Map<Integer, ScoreDistribution> performSampling(
       Map<Integer, ? extends Collection<TermId>> labels) {
     Map<Integer, ScoreDistribution> result = new HashMap<>();
-    for (int numTerms = options.getMinNumTerms(); numTerms <= options
-        .getMaxNumTerms(); ++numTerms) {
+    for (int numTerms = options.getMinNumTerms();
+        numTerms <= options.getMaxNumTerms();
+        ++numTerms) {
       result.put(numTerms, performSamplingForTermCount(labels, numTerms));
     }
     return result;
   }
 
   /**
-   * Perform the sampling for a given number of terms and return the resulting
-   * {@link ScoreDistribution}.
+   * Perform the sampling for a given number of terms and return the resulting {@link
+   * ScoreDistribution}.
    *
-   * <p>
-   * On parallelization, multiple {@link ScoreDistribution}s can be merged using
-   * {@link ScoreDistributions#merge(java.util.Collection)}.
-   * </p>
+   * <p>On parallelization, multiple {@link ScoreDistribution}s can be merged using {@link
+   * ScoreDistributions#merge(java.util.Collection)}.
    *
    * @param labels {@link Map} from "world object" Id to a {@code Collection} of {@link TermId}
-   *        labels.
+   *     labels.
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.
    */
   public ScoreDistribution performSamplingForTermCount(
       Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
-    LOGGER.info("Running precomputation for {} world objects using {} query terms...",
+    LOGGER.info(
+        "Running precomputation for {} world objects using {} query terms...",
         new Object[] {labels.size(), numTerms});
 
     // Setup progress reporting.
@@ -131,17 +120,18 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
     final ConcurrentHashMap<Integer, ObjectScoreDistribution> distributions =
         new ConcurrentHashMap<>();
-    Consumer<Integer> task = (Integer objectId) -> {
-      try {
-        final ObjectScoreDistribution dist =
-            performComputation(objectId, labels.get(objectId), numTerms);
-        distributions.put(dist.getObjectId(), dist);
-        progressReport.incCurrent();
-      } catch (Exception e) {
-        System.err.print("An exception occured in parallel processing!");
-        e.printStackTrace();
-      }
-    };
+    Consumer<Integer> task =
+        (Integer objectId) -> {
+          try {
+            final ObjectScoreDistribution dist =
+                performComputation(objectId, labels.get(objectId), numTerms);
+            distributions.put(dist.getObjectId(), dist);
+            progressReport.incCurrent();
+          } catch (Exception e) {
+            System.err.print("An exception occured in parallel processing!");
+            e.printStackTrace();
+          }
+        };
 
     // Execution of the task in a ThreadPoolExecutor. This is the only way in Java 8 to guarantee
     // thread counts.
@@ -150,8 +140,9 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     //
     // Setup thread pool executor and enforce that precisely numThreads threads are present.
     final int numThreads = options.getNumThreads();
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(numThreads, numThreads, 5,
-        TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+    ThreadPoolExecutor threadPoolExecutor =
+        new ThreadPoolExecutor(
+            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
     // Submit all chunks into the executor.
     final Iterator<Integer> objectIdIter =
         labels.keySet().stream().filter(this::selectObject).iterator();
@@ -198,8 +189,8 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ObjectScoreDistribution}.
    */
-  private ObjectScoreDistribution performComputation(int objectId, Collection<TermId> terms,
-      int numTerms) {
+  private ObjectScoreDistribution performComputation(
+      int objectId, Collection<TermId> terms, int numTerms) {
     LOGGER.info("Running precomputation for world object {}.", new Object[] {objectId});
 
     // Create and seed MersenneTwister
@@ -207,9 +198,13 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
     rng.setSeed(options.getSeed() + objectId);
 
     // Sample per-object score distribution
-    ObjectScoreDistribution result = new ObjectScoreDistribution(objectId, numTerms,
-        options.getNumIterations(),
-        sampleScoreCumulativeRelFreq(objectId, terms, numTerms, options.getNumIterations(), rng));
+    ObjectScoreDistribution result =
+        new ObjectScoreDistribution(
+            objectId,
+            numTerms,
+            options.getNumIterations(),
+            sampleScoreCumulativeRelFreq(
+                objectId, terms, numTerms, options.getNumIterations(), rng));
 
     LOGGER.info("Done computing precomputation for world object {}.", new Object[] {objectId});
     return result;
@@ -224,21 +219,26 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
    * @param numTerms Number of query terms to use for the computation.
    * @param rng Random number generator to use.
    * @return Mapping between score and cumulative relative frequency (to use for p value
-   *         computation).
+   *     computation).
    */
-  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(int objectId,
-      Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
+  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
+      int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
     final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency
-    Map<Double, Long> counts = IntStream.range(0, numIterations - 1).boxed().map(i -> {
-      // Sample numTerms Term objects from ontology.
-      final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
-      final double score = similarity.computeScore(randomTerms, terms);
-      // Round to four decimal places.
-      return Math.round(score * 1000.) / 1000.0;
-    }).collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
+    Map<Double, Long> counts =
+        IntStream.range(0, numIterations - 1)
+            .boxed()
+            .map(
+                i -> {
+                  // Sample numTerms Term objects from ontology.
+                  final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
+                  final double score = similarity.computeScore(randomTerms, terms);
+                  // Round to four decimal places.
+                  return Math.round(score * 1000.) / 1000.0;
+                })
+            .collect(Collectors.groupingByConcurrent(Function.identity(), Collectors.counting()));
     counts.putIfAbsent(0.0, 0L);
 
     // Create cumulative relative frequencies
@@ -256,12 +256,10 @@ public final class SimilarityScoreSampling<T extends Term, R extends TermRelatio
   }
 
   /**
-   * Sample <code>count</code> random elements from the given {@link List} using PRNG
-   * <code>rng</code>.
+   * Sample <code>count</code> random elements from the given {@link List} using PRNG <code>rng
+   * </code>.
    *
-   * <p>
-   * <a href="http://stackoverflow.com/a/41322569/84349">Taken from StackOverflow.</a>
-   * </p>
+   * <p><a href="http://stackoverflow.com/a/41322569/84349">Taken from StackOverflow.</a>
    *
    * @param src {@link List} to sample random elements from.
    * @param count Number of elements to sample.

@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.hpo.HpoRelationQualifier;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.formats.hpo.HpoRelationshipType;
 import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
-import org.monarchinitiative.phenol.formats.hpo.HpoTermRelation;
+import org.monarchinitiative.phenol.formats.hpo.HpoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
@@ -49,12 +49,12 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link HpoTerm} and {@link HpoTermRelation} objects from
+ * Factory class for constructing {@link HpoTerm} and {@link HpoRelationship} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation> {
+class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoRelationship> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -146,7 +146,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
       try {
         creationDate = format.parse(creationDateStr);
       } catch (ParseException e) {
-        throw new OntoLibRuntimeException("Problem parsing date string " + creationDateStr, e);
+        throw new PhenolRuntimeException("Problem parsing date string " + creationDateStr, e);
       }
     }
 
@@ -186,10 +186,10 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new OntoLibRuntimeException(type + " tag must have cardinality 1 but was "
+      throw new PhenolRuntimeException(type + " tag must have cardinality 1 but was "
           + typeEntries.size() + " (" + stanza + ")");
     }
     return (E) typeEntries.get(0);
@@ -218,31 +218,31 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoTermRelation>
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public HpoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new HpoTermRelation(sourceId, destId, nextRelationId++, HpoRelationQualifier.IS_A);
+    return new HpoRelationship(sourceId, destId, nextRelationId++, HpoRelationshipType.IS_A);
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public HpoRelationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public HpoRelationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza,
+  public HpoRelationship constructrelationship(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public HpoTermRelation constructTermRelation(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public HpoRelationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 

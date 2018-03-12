@@ -24,25 +24,21 @@ public final class ScoreDistribution implements Serializable {
    * Constructor.
    *
    * @param numTerms Number of terms that this score distribution was computed for.
-   * @param objectScoreDistributions {@link Map} from "world object" Id to
-   *        {@link ObjectScoreDistribution}.
+   * @param objectScoreDistributions {@link Map} from "world object" Id to {@link
+   *     ObjectScoreDistribution}.
    */
-  public ScoreDistribution(int numTerms,
-      Map<Integer, ObjectScoreDistribution> objectScoreDistributions) {
+  public ScoreDistribution(
+      int numTerms, Map<Integer, ObjectScoreDistribution> objectScoreDistributions) {
     this.numTerms = numTerms;
     this.objectScoreDistributions = objectScoreDistributions;
   }
 
-  /**
-   * @return The number of terms the score distributions have been precomputed with.
-   */
+  /** @return The number of terms the score distributions have been precomputed with. */
   public int getNumTerms() {
     return numTerms;
   }
 
-  /**
-   * Retrieve {@link Collection} of "world object" ids.
-   */
+  /** Retrieve {@link Collection} of "world object" ids. */
   public Collection<Integer> getObjectIds() {
     return objectScoreDistributions.keySet();
   }
@@ -59,8 +55,10 @@ public final class ScoreDistribution implements Serializable {
 
   @Override
   public String toString() {
-    return "ScoreDistribution [numTerms=" + numTerms + ", objectScoreDistributions="
-        + objectScoreDistributions + "]";
+    return "ScoreDistribution [numTerms="
+        + numTerms
+        + ", objectScoreDistributions="
+        + objectScoreDistributions
+        + "]";
   }
-
 }

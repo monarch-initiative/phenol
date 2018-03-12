@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
 /**
@@ -24,16 +24,16 @@ public final class ImmutableTermId implements TermId {
    *
    * @param termIdString String with term Id to construct with.
    * @return Resulting {@link ImmutableTermId}.
-   * @throws OntoLibRuntimeException if the string does not have a prefix
+   * @throws PhenolRuntimeException if the string does not have a prefix
    */
   public static ImmutableTermId constructWithPrefix(String termIdString) {
     final int pos = termIdString.lastIndexOf(':');
     if (pos == -1) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           "Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
-      return new ImmutableTermId(new ImmutableTermPrefix(termIdString.substring(0, pos)),
-          termIdString.substring(pos + 1));
+      return new ImmutableTermId(
+          new ImmutableTermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
     }
   }
 
@@ -50,8 +50,10 @@ public final class ImmutableTermId implements TermId {
 
   @Override
   public int compareTo(TermId that) {
-    return ComparisonChain.start().compare(this.getPrefix(), that.getPrefix())
-        .compare(this.getId(), that.getId()).result();
+    return ComparisonChain.start()
+        .compare(this.getPrefix(), that.getPrefix())
+        .compare(this.getId(), that.getId())
+        .result();
   }
 
   @Override
@@ -99,5 +101,4 @@ public final class ImmutableTermId implements TermId {
       return false;
     }
   }
-
 }

@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.formats.uberpheno;
 
 import java.util.Collection;
 
-import org.monarchinitiative.phenol.graph.data.ImmutableDirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableSortedMap;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public final class UberphenoOntology
-    extends ImmutableOntology<UberphenoTerm, UberphenoTermRelation> {
+    extends ImmutableOntology<UberphenoTerm, UberphenoRelationship> {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -30,23 +30,39 @@ public final class UberphenoOntology
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to GO term.
-   * @param relationMap Mapping from numeric edge identifier to {@link UberphenoTermRelation}.
+   * @param relationMap Mapping from numeric edge identifier to {@link UberphenoRelationship}.
    */
-  public UberphenoOntology(ImmutableSortedMap<String, String> metaInfo,
-                           ImmutableDirectedGraph<TermId, ImmutableEdge<TermId>> graph, TermId rootTermId,
-                           Collection<TermId> nonObsoleteTermIds, Collection<TermId> obsoleteTermIds,
-                           ImmutableMap<TermId, UberphenoTerm> termMap,
-                           ImmutableMap<Integer, UberphenoTermRelation> relationMap) {
+  public UberphenoOntology(
+      ImmutableSortedMap<String, String> metaInfo,
+      DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
+      TermId rootTermId,
+      Collection<TermId> nonObsoleteTermIds,
+      Collection<TermId> obsoleteTermIds,
+      ImmutableMap<TermId, UberphenoTerm> termMap,
+      ImmutableMap<Integer, UberphenoRelationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
   @Override
   public String toString() {
-    return "UberphenoOntology [getMetaInfo()=" + getMetaInfo() + ", getGraph()=" + getGraph()
-        + ", getTermMap()=" + getTermMap() + ", getRelationMap()=" + getRelationMap()
-        + ", getRootTermId()=" + getRootTermId() + ", getAllTermIds()=" + getAllTermIds()
-        + ", getTerms()=" + getTerms() + ", getNonObsoleteTermIds()=" + getNonObsoleteTermIds()
-        + ", getObsoleteTermIds()=" + getObsoleteTermIds() + "]";
+    return "UberphenoOntology [getMetaInfo()="
+        + getMetaInfo()
+        + ", getGraph()="
+        + getGraph()
+        + ", getTermMap()="
+        + getTermMap()
+        + ", getRelationMap()="
+        + getRelationMap()
+        + ", getRootTermId()="
+        + getRootTermId()
+        + ", getAllTermIds()="
+        + getAllTermIds()
+        + ", getTerms()="
+        + getTerms()
+        + ", getNonObsoleteTermIds()="
+        + getNonObsoleteTermIds()
+        + ", getObsoleteTermIds()="
+        + getObsoleteTermIds()
+        + "]";
   }
-
 }

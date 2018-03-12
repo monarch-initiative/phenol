@@ -24,9 +24,18 @@ public class VegetableTerm implements Term {
   private Date creationDate;
   private List<Dbxref> xrefs;
 
-  public VegetableTerm(ImmutableTermId termId, List<TermId> altTermIds, String name,
-      String definition, String comment, List<String> subsets, List<TermSynonym> termSynonyms,
-      boolean obsolete, String createdBy, Date creationDate, List<Dbxref> xrefs) {
+  public VegetableTerm(
+      ImmutableTermId termId,
+      List<TermId> altTermIds,
+      String name,
+      String definition,
+      String comment,
+      List<String> subsets,
+      List<TermSynonym> termSynonyms,
+      boolean obsolete,
+      String createdBy,
+      Date creationDate,
+      List<Dbxref> xrefs) {
     this.termId = termId;
     this.altTermIds = altTermIds;
     this.name = name;
@@ -97,10 +106,28 @@ public class VegetableTerm implements Term {
 
   @Override
   public String toString() {
-    return "VegetableTerm [termId=" + termId + ", altTermIds=" + altTermIds + ", name=" + name
-        + ", definition=" + definition + ", comment=" + comment + ", subsets=" + subsets
-        + ", termSynonyms=" + termSynonyms + ", obsolete=" + obsolete + ", createdBy=" + createdBy
-        + ", creationDate=" + creationDate + ", xrefs=" + xrefs + "]";
+    return "VegetableTerm [termId="
+        + termId
+        + ", altTermIds="
+        + altTermIds
+        + ", name="
+        + name
+        + ", definition="
+        + definition
+        + ", comment="
+        + comment
+        + ", subsets="
+        + subsets
+        + ", termSynonyms="
+        + termSynonyms
+        + ", obsolete="
+        + obsolete
+        + ", createdBy="
+        + createdBy
+        + ", creationDate="
+        + creationDate
+        + ", xrefs="
+        + xrefs
+        + "]";
   }
-
 }

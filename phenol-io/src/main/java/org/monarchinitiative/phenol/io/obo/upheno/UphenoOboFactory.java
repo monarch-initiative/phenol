@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.upheno;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
-import org.monarchinitiative.phenol.formats.upheno.UphenoRelationQualifier;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.formats.upheno.UphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.upheno.UphenoTerm;
-import org.monarchinitiative.phenol.formats.upheno.UphenoTermRelation;
+import org.monarchinitiative.phenol.formats.upheno.UphenoRelationship;
 import org.monarchinitiative.phenol.io.obo.DbXref;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
@@ -49,12 +49,12 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link UphenoTerm} and {@link UphenoTermRelation} objects from
+ * Factory class for constructing {@link UphenoTerm} and {@link UphenoRelationship} objects from
  * {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTermRelation> {
+class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRelationship> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -146,7 +146,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
       try {
         creationDate = format.parse(creationDateStr);
       } catch (ParseException e) {
-        throw new OntoLibRuntimeException("Problem parsing date string " + creationDateStr, e);
+        throw new PhenolRuntimeException("Problem parsing date string " + creationDateStr, e);
       }
     }
 
@@ -186,10 +186,10 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new OntoLibRuntimeException(type + " tag must have cardinality 1 but was "
+      throw new PhenolRuntimeException(type + " tag must have cardinality 1 but was "
           + typeEntries.size() + " (" + stanza + ")");
     }
     return (E) typeEntries.get(0);
@@ -210,7 +210,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
     if (typeEntries == null) {
       return null;
     } else if (typeEntries.size() != 1) {
-      throw new OntoLibRuntimeException(type + " tag must have cardinality <= 1 but was "
+      throw new PhenolRuntimeException(type + " tag must have cardinality <= 1 but was "
           + typeEntries.size() + " (" + stanza + ")");
     } else {
       return (E) typeEntries.get(0);
@@ -218,32 +218,32 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoTerm
   }
 
   @Override
-  public UphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public UphenoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new UphenoTermRelation(sourceId, destId, nextRelationId++, UphenoRelationQualifier.IS_A);
+    return new UphenoRelationship(sourceId, destId, nextRelationId++, UphenoRelationshipType.IS_A);
   }
 
   @Override
-  public UphenoTermRelation constructTermRelation(Stanza stanza,
+  public UphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UphenoTermRelation constructTermRelation(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public UphenoRelationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UphenoTermRelation constructTermRelation(Stanza stanza,
+  public UphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UphenoTermRelation constructTermRelation(Stanza stanza,
+  public UphenoRelationship constructrelationship(Stanza stanza,
       StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }

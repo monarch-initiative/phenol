@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.6</version>
+  <version>0.1.7</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
 
@@ -26,6 +26,7 @@
     <jcommander.version>1.72</jcommander.version>
     <jackson.version>2.9.4</jackson.version>
     <h2.version>1.4.196</h2.version>
+    <jgrapht.version>1.1.0</jgrapht.version>
   </properties>
 
   <modules>
@@ -75,6 +76,12 @@
       <organization>Charite University Medicine Berlin</organization>
       <organizationUrl>https://www.charite.de</organizationUrl>
     </developer>
+    <developer>
+      <name>HyeongSik Kim</name>
+      <email>HyeongSikKim@lbl.gov</email>
+      <organization>Lawrence Berkeley National Laboratory</organization>
+      <organizationUrl>https://www.lbl.gov</organizationUrl>
+    </developer>
   </developers>
 
   <!-- SCM Information for Maven Central
@@ -121,6 +128,12 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+      <version>${jgrapht.version}</version>
     </dependency>
   </dependencies>
 

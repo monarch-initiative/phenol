@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
@@ -36,15 +36,15 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
    * Constructor.
    *
    * @param inputFile Path to input file.
-   * @throws OntoLibException In case of problems with file I/O.
+   * @throws PhenolException In case of problems with file I/O.
    */
-  public TextFileScoreDistributionReader(File inputFile) throws OntoLibException {
+  public TextFileScoreDistributionReader(File inputFile) throws PhenolException {
     this.inputFile = inputFile;
     try {
       this.reader = new BufferedReader(new FileReader(this.inputFile));
       readHeader();
     } catch (IOException e) {
-      throw new OntoLibException("Problem initializing reader for file " + inputFile);
+      throw new PhenolException("Problem initializing reader for file " + inputFile);
     }
   }
 
@@ -64,17 +64,17 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
   }
 
   @Override
-  public ScoreDistribution readForTermCount(int termCount) throws OntoLibException {
+  public ScoreDistribution readForTermCount(int termCount) throws PhenolException {
     final Map<Integer, ScoreDistribution> allDists = readAll();
     if (!allDists.containsKey(termCount)) {
-      throw new OntoLibException("Distribution not found for term count: " + termCount);
+      throw new PhenolException("Distribution not found for term count: " + termCount);
     } else {
       return allDists.get(termCount);
     }
   }
 
   @Override
-  public Map<Integer, ScoreDistribution> readAll() throws OntoLibException {
+  public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
     final Map<Integer, ScoreDistribution> result = new HashMap<>();
 
     final Map<Integer, Map<Integer, ObjectScoreDistribution>> tmp = new HashMap<>();
@@ -103,7 +103,7 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
       try {
         nextLine = reader.readLine();
       } catch (IOException e) {
-        throw new OntoLibException("Could not load score distributions", e);
+        throw new PhenolException("Could not load score distributions", e);
       }
     }
 
@@ -117,11 +117,11 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
 
   @Override
   public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
-      throws OntoLibException {
+      throws PhenolException {
     final ObjectScoreDistribution result =
         readForTermCount(termCount).getObjectScoreDistribution(objectId);
     if (result != null) {
-      throw new OntoLibException(
+      throw new PhenolException(
           "Distribution not found for term count: " + termCount + " and object ID: " + objectId);
     } else {
       return result;

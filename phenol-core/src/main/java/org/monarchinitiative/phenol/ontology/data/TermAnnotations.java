@@ -20,19 +20,15 @@ public final class TermAnnotations {
    * Construct mapping from {@link TermId} to {@link Collection} of "world object" labels from
    * {@link Collection} of {@link TermAnnotation}s.
    *
-   * <p>
-   * An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
-   * </p>
+   * <p>An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
    *
-   * <p>
-   * Use this function for converting results from parsing term annotations to the appropriate
+   * <p>Use this function for converting results from parsing term annotations to the appropriate
    * mapping for {@link InformationContentComputation}, for example.
-   * </p>
    *
    * @param ontology {@link Ontology} to use for computing implicit annotations.
    * @param annotations {@link Collection} of {@link TermAnnotation}s to convert.
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
-   *         labels.
+   *     labels.
    */
   public static Map<TermId, Collection<String>> constructTermAnnotationToLabelsMap(
       Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
@@ -55,19 +51,15 @@ public final class TermAnnotations {
    * Construct mapping from "world object" label to {@link Collection} of {@link TermId}s from
    * {@link Collection} of {@link TermAnnotation}s.
    *
-   * <p>
-   * An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
-   * </p>
+   * <p>An {@link Ontology} will be used for the implicit assignment of annotations to ancestors.
    *
-   * <p>
-   * Use this function for converting results from parsing term annotations to the appropriate
+   * <p>Use this function for converting results from parsing term annotations to the appropriate
    * mapping for {@link SimilarityScoreSampling}, for example.
-   * </p>
    *
    * @param ontology {@link Ontology} to use for computing implicit annotations.
    * @param annotations {@link Collection} of {@link TermAnnotation}s to convert.
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
-   *         labels.
+   *     labels.
    */
   public static Map<String, Collection<TermId>> constructTermLabelToAnnotationsMap(
       Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
@@ -85,5 +77,4 @@ public final class TermAnnotations {
 
     return result;
   }
-
 }

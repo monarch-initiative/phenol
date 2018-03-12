@@ -32,9 +32,7 @@ public final class DataSerializer {
   /** Minimal supported version of Jannovar in this version */
   private final String minVersion;
 
-  /**
-   * @return Version string loaded from {@code /project.properties}.
-   */
+  /** @return Version string loaded from {@code /project.properties}. */
   public static String getVersion() {
     final Properties properties = new Properties();
     try {
@@ -89,7 +87,8 @@ public final class DataSerializer {
       throw new SerializationException("Could not serialize data file.", e);
     }
 
-    LOGGER.info("Serialization took {} sec.",
+    LOGGER.info(
+        "Serialization took {} sec.",
         new Object[] {(System.nanoTime() - startTime) / 1_000_000_000.0});
   }
 
@@ -126,9 +125,9 @@ public final class DataSerializer {
       throw new SerializationException("Could not deserialize data from file", e);
     }
 
-    LOGGER.info("Done with deserialization, took {} sec.",
+    LOGGER.info(
+        "Done with deserialization, took {} sec.",
         new Object[] {(System.nanoTime() - startTime) / 1_000_000_000.0});
     return result;
   }
-
 }

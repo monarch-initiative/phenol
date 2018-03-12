@@ -1,13 +1,13 @@
 package org.monarchinitiative.phenol.ser;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 /**
  * Unchecked exception thrown on problems with data serialization and deserialization.
  *
  * @author <a href="mailto:manuel.holtgrewe@charite.de">Manuel Holtgrewe</a>
  */
-public class SerializationRuntimeException extends OntoLibRuntimeException {
+public class SerializationRuntimeException extends PhenolRuntimeException {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -30,5 +30,4 @@ public class SerializationRuntimeException extends OntoLibRuntimeException {
   public SerializationRuntimeException(String message) {
     super(message);
   }
-
 }

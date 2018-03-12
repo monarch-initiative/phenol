@@ -3,10 +3,10 @@ package org.monarchinitiative.phenol.ontology.algo;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.ImmutableEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermVisitor;
@@ -20,10 +20,8 @@ import org.monarchinitiative.phenol.ontology.data.TermVisitor;
  *
  * <h5>Implementation Note</h5>
  *
- * <p>
- * The methods simply reduce the ontology visiting to visiting vertices int he underlying graphs via
- * BFS.
- * </p>
+ * <p>The methods simply reduce the ontology visiting to visiting vertices int he underlying graphs
+ * via BFS.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -35,25 +33,26 @@ public final class OntologyTerms {
    *
    * @param termId The root of the sub ontology DAG to query for.
    * @param ontology The {@link Ontology} to iterate in.
-   *
    * @param <O> {@link Ontology} specialization to use.
    */
-  public static <O extends Ontology<?, ?>> void visitChildrenOf(TermId termId, O ontology,
-      TermVisitor<O> termVisitor) {
+  public static <O extends Ontology<?, ?>> void visitChildrenOf(
+      TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
-    BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
+    BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?
-    @SuppressWarnings("unchecked")
-    DirectedGraph<TermId, ImmutableEdge<TermId>> graph =
-        (DirectedGraph<TermId, ImmutableEdge<TermId>>) ontology.getGraph();
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph();
 
     // Perform BFS.
-    bfs.startFromReverse(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
-      @Override
-      public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
-        return termVisitor.visit(ontology, v);
-      }
-    });
+    bfs.startFromReverse(
+        graph,
+        termId,
+        new VertexVisitor<TermId, IdLabeledEdge>() {
+          @Override
+          public boolean visit(DefaultDirectedGraph<TermId, IdLabeledEdge> g, TermId v) {
+            return termVisitor.visit(ontology, v);
+          }
+        });
   }
 
   /**
@@ -62,20 +61,22 @@ public final class OntologyTerms {
    * @param termId The root of the sub ontology DAG to query for.
    * @param ontology The {@link Ontology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of children of the term corresponding to
-   *         {@link @termId} (including {@link termId}).
-   *
+   *     {@link @termId} (including {@link termId}).
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology<?, ?>> Set<TermId> childrenOf(TermId termId, O ontology) {
     Set<TermId> result = new HashSet<>();
 
-    visitChildrenOf(termId, ontology, new TermVisitor<O>() {
-      @Override
-      public boolean visit(O ontology, TermId termId) {
-        result.add(termId);
-        return true;
-      }
-    });
+    visitChildrenOf(
+        termId,
+        ontology,
+        new TermVisitor<O>() {
+          @Override
+          public boolean visit(O ontology, TermId termId) {
+            result.add(termId);
+            return true;
+          }
+        });
 
     return result;
   }
@@ -85,25 +86,26 @@ public final class OntologyTerms {
    *
    * @param termId The {@link TermId} of the term to visit the parents of.
    * @param ontology The {@link Ontology} to iterate in.
-   *
    * @param <O> {@link Ontology} specialization to use.
    */
-  public static <O extends Ontology<?, ?>> void visitParentsOf(TermId termId, O ontology,
-      TermVisitor<O> termVisitor) {
+  public static <O extends Ontology<?, ?>> void visitParentsOf(
+      TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
-    BreadthFirstSearch<TermId, ImmutableEdge<TermId>> bfs = new BreadthFirstSearch<>();
+    BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?
-    @SuppressWarnings("unchecked")
-    DirectedGraph<TermId, ImmutableEdge<TermId>> graph =
-        (DirectedGraph<TermId, ImmutableEdge<TermId>>) ontology.getGraph();
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
+        (DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph();
 
     // Perform BFS.
-    bfs.startFromForward(graph, termId, new VertexVisitor<TermId, ImmutableEdge<TermId>>() {
-      @Override
-      public boolean visit(DirectedGraph<TermId, ImmutableEdge<TermId>> g, TermId v) {
-        return termVisitor.visit(ontology, v);
-      }
-    });
+    bfs.startFromForward(
+        graph,
+        termId,
+        new VertexVisitor<TermId, IdLabeledEdge>() {
+          @Override
+          public boolean visit(DefaultDirectedGraph<TermId, IdLabeledEdge> g, TermId v) {
+            return termVisitor.visit(ontology, v);
+          }
+        });
   }
 
   /**
@@ -112,22 +114,23 @@ public final class OntologyTerms {
    * @param termId The {@link TermId} of the term to visit the parents of.
    * @param ontology The {@link Ontology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of parents of the term corresponding to
-   *         {@link @termId} (including {@link termId}).
-   *
+   *     {@link @termId} (including {@link termId}).
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology<?, ?>> Set<TermId> parentsOf(TermId termId, O ontology) {
     Set<TermId> result = new HashSet<>();
 
-    visitParentsOf(termId, ontology, new TermVisitor<O>() {
-      @Override
-      public boolean visit(O ontology, TermId termId) {
-        result.add(termId);
-        return true;
-      }
-    });
+    visitParentsOf(
+        termId,
+        ontology,
+        new TermVisitor<O>() {
+          @Override
+          public boolean visit(O ontology, TermId termId) {
+            result.add(termId);
+            return true;
+          }
+        });
 
     return result;
   }
-
 }

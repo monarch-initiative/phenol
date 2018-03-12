@@ -15,10 +15,20 @@ public class ScoreDistributionsTest {
 
   @Before
   public void setUp() {
-    dist1 = new ScoreDistribution(2, ImmutableMap.of(1, new ObjectScoreDistribution(1, 2, 10,
-        ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
-    dist2 = new ScoreDistribution(2, ImmutableMap.of(2, new ObjectScoreDistribution(2, 2, 10,
-        ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
+    dist1 =
+        new ScoreDistribution(
+            2,
+            ImmutableMap.of(
+                1,
+                new ObjectScoreDistribution(
+                    1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
+    dist2 =
+        new ScoreDistribution(
+            2,
+            ImmutableMap.of(
+                2,
+                new ObjectScoreDistribution(
+                    2, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
   }
 
   @Test
@@ -29,5 +39,4 @@ public class ScoreDistributionsTest {
     assertEquals(1, result.getObjectScoreDistribution(1).getObjectId());
     assertEquals(2, result.getObjectScoreDistribution(2).getObjectId());
   }
-
 }

@@ -12,7 +12,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermVisitor;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 
 public class OntologyTermsTest extends VegetableOntologyTestBase {
 
@@ -20,11 +20,13 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
   public void testVisitChildrenOf() {
     Set<TermId> children = new TreeSet<>();
 
-    OntologyTerms.visitChildrenOf(idRootVegetable, ontology,
-        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableTermRelation>>() {
+    OntologyTerms.visitChildrenOf(
+        idRootVegetable,
+        ontology,
+        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableRelationship>>() {
           @Override
-          public boolean visit(ImmutableOntology<VegetableTerm, VegetableTermRelation> ontology,
-              TermId termId) {
+          public boolean visit(
+              ImmutableOntology<VegetableTerm, VegetableRelationship> ontology, TermId termId) {
             children.add(termId);
             return true;
           }
@@ -46,11 +48,13 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
   public void testVisitParentsOf() {
     Set<TermId> parents = new TreeSet<>();
 
-    OntologyTerms.visitParentsOf(idBlueCarrot, ontology,
-        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableTermRelation>>() {
+    OntologyTerms.visitParentsOf(
+        idBlueCarrot,
+        ontology,
+        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableRelationship>>() {
           @Override
-          public boolean visit(ImmutableOntology<VegetableTerm, VegetableTermRelation> ontology,
-              TermId termId) {
+          public boolean visit(
+              ImmutableOntology<VegetableTerm, VegetableRelationship> ontology, TermId termId) {
             parents.add(termId);
             return true;
           }
@@ -67,5 +71,4 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
         "[ImmutableTermId [prefix=ImmutableTermPrefix [value=VO], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=VO], id=0000007], ImmutableTermId [prefix=ImmutableTermPrefix [value=VO], id=0000001], ImmutableTermId [prefix=ImmutableTermPrefix [value=VO], id=0000002]]",
         OntologyTerms.parentsOf(idBlueCarrot, ontology).toString());
   }
-
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
@@ -65,10 +65,10 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @param pathDb Path to the database to use.
    * @param dataTableName Name of the table to use.
    * @param resetTableIfExists Whether or not to reset the table if it already exists. Otherwise,
-   *        {@link OntoLibException} will be thrown.
+   *        {@link PhenolException} will be thrown.
    */
   public H2ScoreDistributionWriter(String pathDb, String dataTableName, boolean resetTableIfExists)
-      throws OntoLibException {
+      throws PhenolException {
     this.pathDb = pathDb;
     this.tableName = dataTableName;
     this.conn = openConnection(resetTableIfExists);
@@ -78,10 +78,10 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * Open H2 database connection and perform initialization.
    *
    * @return Initialized {@link Connection} to H2 database.
-   * @throws OntoLibException if there was a problem with initialization (e.g., table existed but
+   * @throws PhenolException if there was a problem with initialization (e.g., table existed but
    *         not {@code resetTableIfExists}.
    */
-  private Connection openConnection(boolean resetTableIfExists) throws OntoLibException {
+  private Connection openConnection(boolean resetTableIfExists) throws PhenolException {
     LOGGER.info("Opening connection to H2 database file at {} and configuring...", pathDb);
     // Open connection.
     final Connection resultConn;
@@ -89,9 +89,9 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       Class.forName("org.h2.Driver");
       resultConn = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
     } catch (ClassNotFoundException e) {
-      throw new OntoLibException("H2 driver class could not be found", e);
+      throw new PhenolException("H2 driver class could not be found", e);
     } catch (SQLException e) {
-      throw new OntoLibException("Could not open database at " + pathDb, e);
+      throw new PhenolException("Could not open database at " + pathDb, e);
     }
 
     // Check whether the table already exists.
@@ -100,12 +100,12 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
         tableName.toUpperCase(), new String[] {"TABLE"})) {
       tableExists = rs.next();
     } catch (SQLException e) {
-      throw new OntoLibException("Checking for table of name " + tableName + " failed", e);
+      throw new PhenolException("Checking for table of name " + tableName + " failed", e);
     }
 
     if (tableExists) {
       if (!resetTableIfExists) {
-        throw new OntoLibException("Table exists but not allowed to reset!");
+        throw new PhenolException("Table exists but not allowed to reset!");
       }
 
       // DROP table
@@ -115,7 +115,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       try (final PreparedStatement stmt = resultConn.prepareStatement(sqlStmt)) {
         stmt.executeUpdate();
       } catch (SQLException e) {
-        throw new OntoLibException("Could not drop table with statement " + sqlStmt, e);
+        throw new PhenolException("Could not drop table with statement " + sqlStmt, e);
       }
     }
 
@@ -127,7 +127,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       try (final PreparedStatement stmt = resultConn.prepareStatement(sqlStmt)) {
         stmt.executeUpdate();
       } catch (SQLException e) {
-        throw new OntoLibException("Could execute table creation/index statement: " + sqlStmt, e);
+        throw new PhenolException("Could execute table creation/index statement: " + sqlStmt, e);
       }
     }
 
@@ -147,7 +147,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
 
   @Override
   public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution)
-      throws OntoLibException {
+      throws PhenolException {
     for (int objectId : scoreDistribution.getObjectIds()) {
       final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
       writeObjectScoreDistribution(numTerms, dist, resolution);
@@ -160,10 +160,10 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @param numTerms Number of terms to write for.
    * @param dist {@link ObjectScoreDistribution} to write out.
    * @param resolution The resolution, {@code 0} for no change.
-   * @throws OntoLibException In case of problems when writing to database.
+   * @throws PhenolException In case of problems when writing to database.
    */
   private void writeObjectScoreDistribution(int numTerms, ObjectScoreDistribution dist,
-      int resolution) throws OntoLibException {
+      int resolution) throws PhenolException {
     final double scores[];
     final double pValues[];
 
@@ -202,7 +202,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       stmt.setObject(5, pValues);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new OntoLibException("Problem with inserting into score distribution table", e);
+      throw new PhenolException("Problem with inserting into score distribution table", e);
     }
   }
 

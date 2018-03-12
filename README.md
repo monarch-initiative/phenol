@@ -11,13 +11,14 @@ A modern Java library for working with (biological) ontologies. This repository 
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 0.1.5
+- **Version:** 0.1.6
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
     - Sebastian Koehler
     - Max Schubach
     - Manuel Holtgrewe
+    - HyeongSik Kim
 - **Availability:**
     - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
     - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).

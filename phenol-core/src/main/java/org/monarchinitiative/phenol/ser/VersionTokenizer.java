@@ -43,16 +43,12 @@ final class VersionTokenizer {
     return number;
   }
 
-  /**
-   * @return Suffix.
-   */
+  /** @return Suffix. */
   public String getSuffix() {
     return suffix;
   }
 
-  /**
-   * @return Whether value has been set.
-   */
+  /** @return Whether value has been set. */
   public boolean getHasValue() {
     return hasValue;
   }
@@ -101,5 +97,4 @@ final class VersionTokenizer {
 
     return true;
   }
-
 }

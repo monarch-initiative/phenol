@@ -18,29 +18,30 @@ import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRecipeAnnotation;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTermRelation;
+import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
 
 public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
 
-  SimilarityScoreSampling<VegetableTerm, VegetableTermRelation> scoreSampling;
-  ResnikSimilarity<VegetableTerm, VegetableTermRelation> resnikSimilarity;
+  SimilarityScoreSampling<VegetableTerm, VegetableRelationship> scoreSampling;
+  ResnikSimilarity<VegetableTerm, VegetableRelationship> resnikSimilarity;
 
   @Before
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation<VegetableTerm, VegetableTermRelation> computation =
+    InformationContentComputation<VegetableTerm, VegetableRelationship> computation =
         new InformationContentComputation<>(ontology);
     Map<TermId, Collection<String>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
-    PairwiseResnikSimilarity<VegetableTerm, VegetableTermRelation> pairwise =
+    PairwiseResnikSimilarity<VegetableTerm, VegetableRelationship> pairwise =
         new PairwiseResnikSimilarity<>(ontology, informationContent);
     resnikSimilarity = new ResnikSimilarity<>(pairwise, true);
 
     ScoreSamplingOptions options = new ScoreSamplingOptions(1, null, null, 2, 2, 10_000, 42);
-    scoreSampling = new SimilarityScoreSampling<VegetableTerm, VegetableTermRelation>(ontology,
-        resnikSimilarity, options);
+    scoreSampling =
+        new SimilarityScoreSampling<VegetableTerm, VegetableRelationship>(
+            ontology, resnikSimilarity, options);
   }
 
   @Test
@@ -69,5 +70,4 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
     assertEquals(0.0, dist.getObjectScoreDistribution(1).estimatePValue(0.6), 0.01);
     assertEquals(0.0, dist.getObjectScoreDistribution(1).estimatePValue(0.8), 0.01);
   }
-
 }

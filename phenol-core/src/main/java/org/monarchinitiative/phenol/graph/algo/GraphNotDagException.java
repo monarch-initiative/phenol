@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.graph.algo;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
- * Raised when {@link DirectedGraph} is not a DAG.
+ * Raised when {@link DefaultDirectedGraph} is not a DAG.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -11,9 +11,7 @@ public class GraphNotDagException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  /**
-   * Defalt constructor.
-   */
+  /** Defalt constructor. */
   public GraphNotDagException() {
     super();
   }
@@ -26,5 +24,4 @@ public class GraphNotDagException extends RuntimeException {
   public GraphNotDagException(String message) {
     super(message);
   }
-
 }

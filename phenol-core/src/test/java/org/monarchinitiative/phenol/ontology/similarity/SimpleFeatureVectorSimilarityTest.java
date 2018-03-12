@@ -26,25 +26,31 @@ public class SimpleFeatureVectorSimilarityTest {
 
   @Test
   public void testComputeSimilarities() {
-    assertEquals(1.0,
+    assertEquals(
+        1.0,
         similarity.computeScore(
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"),
+            Lists.newArrayList(
+                ImmutableTermId.constructWithPrefix("HP:0000008"),
                 ImmutableTermId.constructWithPrefix("HP:0000009")),
             Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"))),
         0.01);
-    assertEquals(1.0,
+    assertEquals(
+        1.0,
         similarity.computeScore(
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"),
+            Lists.newArrayList(
+                ImmutableTermId.constructWithPrefix("HP:0000008"),
                 ImmutableTermId.constructWithPrefix("HP:0000009")),
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"),
+            Lists.newArrayList(
+                ImmutableTermId.constructWithPrefix("HP:0000008"),
                 ImmutableTermId.constructWithPrefix("HP:0000010"))),
         0.01);
-    assertEquals(0.0,
+    assertEquals(
+        0.0,
         similarity.computeScore(
             Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000009")),
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"),
+            Lists.newArrayList(
+                ImmutableTermId.constructWithPrefix("HP:0000008"),
                 ImmutableTermId.constructWithPrefix("HP:0000010"))),
         0.01);
   }
-
 }

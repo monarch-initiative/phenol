@@ -71,5 +71,4 @@ public final class ImmutableTermPrefix implements TermPrefix {
     }
     return true;
   }
-
 }

@@ -24,5 +24,4 @@ public class ScoreSamplingOptionsTest {
         "ScoreSamplingOptions [numThreads=1, minObjectId=1, maxObjectId=2, minNumTerms=3, maxNumTerms=4, numIterations=6, seed=5]",
         samplingOptions.toString());
   }
-
 }

@@ -2,6 +2,14 @@
 Changelog
 =========
 
+
+------
+v0.1.7
+------
+- refactored phenol to use JGraphT library
+- Adding OWLAPI based parser
+- Refactoring HPO Disease annotation parser
+
 ------
 v0.1.6
 ------

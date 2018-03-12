@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.go;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
@@ -13,9 +13,7 @@ import java.util.Optional;
 /**
  * Record from GAF v2.1 file.
  *
- * <p>
- * The <b>label</b> of this {@link TermAnnotation} is the <code>"${DB}:${DB_Object_ID}"</code>.
- * </p>
+ * <p>The <b>label</b> of this {@link TermAnnotation} is the <code>"${DB}:${DB_Object_ID}"</code>.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
@@ -90,7 +88,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
    * @param dbReference Reference of entry, e.g., <code>PMID:2676709</code>.
    * @param evidenceCode Evidence code, e.g., <code>"IMP"</code>.
    * @param with With (or) From, e.g., <code>"GO:0000346"</code>; optional, <code>null</code> when
-   *        missing.
+   *     missing.
    * @param aspect The annotated ontology, e.g., <code>"F"</code>.
    * @param dbObjectName The DB object name; optional, <code>null</code> when missing.
    * @param dbObjectSynonym The DB object synonym; optional, <code>null</code> when missing.
@@ -101,10 +99,24 @@ public final class GoGaf21Annotation implements TermAnnotation {
    * @param annotationExtension Annotation extension; optional, <code>null</code> when missing.
    * @param geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.
    */
-  public GoGaf21Annotation(String db, String dbObjectId, String dbObjectSymbol, String qualifier,
-      TermId goId, String dbReference, String evidenceCode, String with, String aspect,
-      String dbObjectName, String dbObjectSynonym, String dbObjectType, List<String> taxons,
-      Date date, String assignedBy, String annotationExtension, String geneProductFormId) {
+  public GoGaf21Annotation(
+      String db,
+      String dbObjectId,
+      String dbObjectSymbol,
+      String qualifier,
+      TermId goId,
+      String dbReference,
+      String evidenceCode,
+      String with,
+      String aspect,
+      String dbObjectName,
+      String dbObjectSynonym,
+      String dbObjectType,
+      List<String> taxons,
+      Date date,
+      String assignedBy,
+      String annotationExtension,
+      String geneProductFormId) {
     this.db = db;
     this.dbObjectId = dbObjectId;
     this.dbObjectSymbol = dbObjectSymbol;
@@ -124,44 +136,32 @@ public final class GoGaf21Annotation implements TermAnnotation {
     this.geneProductFormId = geneProductFormId;
   }
 
-  /**
-   * @return The database name.
-   */
+  /** @return The database name. */
   public String getDb() {
     return db;
   }
 
-  /**
-   * @return The object's ID in the database.
-   */
+  /** @return The object's ID in the database. */
   public String getDbObjectId() {
     return dbObjectId;
   }
 
-  /**
-   * @return The object's symbol in the database.
-   */
+  /** @return The object's symbol in the database. */
   public String getDbObjectSymbol() {
     return dbObjectSymbol;
   }
 
-  /**
-   * @return The object's qualifier.
-   */
+  /** @return The object's qualifier. */
   public String getQualifier() {
     return qualifier;
   }
 
-  /**
-   * @return The GO term ID.
-   */
+  /** @return The GO term ID. */
   public TermId getGoId() {
     return goId;
   }
 
-  /**
-   * @return The database reference.
-   */
+  /** @return The database reference. */
   public String getDbReference() {
     return dbReference;
   }
@@ -171,72 +171,52 @@ public final class GoGaf21Annotation implements TermAnnotation {
     return Optional.ofNullable(evidenceCode);
   }
 
-  /**
-   * @return The "with (or) from" value.
-   */
+  /** @return The "with (or) from" value. */
   public String getWith() {
     return with;
   }
 
-  /**
-   * @return The aspect value.
-   */
+  /** @return The aspect value. */
   public String getAspect() {
     return aspect;
   }
 
-  /**
-   * @return The database object name.
-   */
+  /** @return The database object name. */
   public String getDbObjectName() {
     return dbObjectName;
   }
 
-  /**
-   * @return The database object synonym.
-   */
+  /** @return The database object synonym. */
   public String getDbObjectSynonym() {
     return dbObjectSynonym;
   }
 
-  /**
-   * @return The database object type.
-   */
+  /** @return The database object type. */
   public String getDbObjectType() {
     return dbObjectType;
   }
 
-  /**
-   * @return The taxons, cardinality 1 or 2.
-   */
+  /** @return The taxons, cardinality 1 or 2. */
   public List<String> getTaxons() {
     return taxons;
   }
 
-  /**
-   * @return The date.
-   */
+  /** @return The date. */
   public Date getDate() {
     return date;
   }
 
-  /**
-   * @return The "assigned by" value.
-   */
+  /** @return The "assigned by" value. */
   public String getAssignedBy() {
     return assignedBy;
   }
 
-  /**
-   * @return The annotation extension value.
-   */
+  /** @return The annotation extension value. */
   public String getAnnotationExtension() {
     return annotationExtension;
   }
 
-  /**
-   * @return The gene product form ID.
-   */
+  /** @return The gene product form ID. */
   public String getGeneProductFormId() {
     return geneProductFormId;
   }
@@ -258,23 +238,30 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof GoGaf21Annotation)) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           "Can only compare GoGaf21Annotation with objects of same type");
     }
     GoGaf21Annotation that = (GoGaf21Annotation) o;
 
-    return ComparisonChain.start().compare(this.annotationExtension, that.annotationExtension)
-        .compare(this.aspect, that.aspect).compare(this.assignedBy, that.assignedBy)
-        .compare(this.date, that.date).compare(this.db, that.db)
-        .compare(this.dbObjectId, that.dbObjectId).compare(this.dbObjectName, that.dbObjectName)
+    return ComparisonChain.start()
+        .compare(this.annotationExtension, that.annotationExtension)
+        .compare(this.aspect, that.aspect)
+        .compare(this.assignedBy, that.assignedBy)
+        .compare(this.date, that.date)
+        .compare(this.db, that.db)
+        .compare(this.dbObjectId, that.dbObjectId)
+        .compare(this.dbObjectName, that.dbObjectName)
         .compare(this.dbObjectSymbol, that.dbObjectSymbol)
         .compare(this.dbObjectSynonym, that.dbObjectSynonym)
-        .compare(this.dbObjectType, that.dbObjectType).compare(this.dbReference, that.dbReference)
+        .compare(this.dbObjectType, that.dbObjectType)
+        .compare(this.dbReference, that.dbReference)
         .compare(this.evidenceCode, that.evidenceCode)
-        .compare(this.geneProductFormId, that.geneProductFormId).compare(this.goId, that.goId)
+        .compare(this.geneProductFormId, that.geneProductFormId)
+        .compare(this.goId, that.goId)
         .compare(this.qualifier, that.qualifier)
         .compare(this.taxons, that.taxons, Ordering.<String>natural().lexicographical())
-        .compare(this.with, that.with).result();
+        .compare(this.with, that.with)
+        .result();
   }
 
   @Override
@@ -437,13 +424,40 @@ public final class GoGaf21Annotation implements TermAnnotation {
 
   @Override
   public String toString() {
-    return "GoGaf21Annotation [db=" + db + ", dbObjectId=" + dbObjectId + ", dbObjectSymbol="
-        + dbObjectSymbol + ", qualifier=" + qualifier + ", goId=" + goId + ", dbReference="
-        + dbReference + ", evidenceCode=" + evidenceCode + ", with=" + with + ", aspect=" + aspect
-        + ", dbObjectName=" + dbObjectName + ", dbObjectSynonym=" + dbObjectSynonym
-        + ", dbObjectType=" + dbObjectType + ", taxons=" + taxons + ", date=" + date
-        + ", assignedBy=" + assignedBy + ", annotationExtension=" + annotationExtension
-        + ", geneProductFormId=" + geneProductFormId + "]";
+    return "GoGaf21Annotation [db="
+        + db
+        + ", dbObjectId="
+        + dbObjectId
+        + ", dbObjectSymbol="
+        + dbObjectSymbol
+        + ", qualifier="
+        + qualifier
+        + ", goId="
+        + goId
+        + ", dbReference="
+        + dbReference
+        + ", evidenceCode="
+        + evidenceCode
+        + ", with="
+        + with
+        + ", aspect="
+        + aspect
+        + ", dbObjectName="
+        + dbObjectName
+        + ", dbObjectSynonym="
+        + dbObjectSynonym
+        + ", dbObjectType="
+        + dbObjectType
+        + ", taxons="
+        + taxons
+        + ", date="
+        + date
+        + ", assignedBy="
+        + assignedBy
+        + ", annotationExtension="
+        + annotationExtension
+        + ", geneProductFormId="
+        + geneProductFormId
+        + "]";
   }
-
 }

@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.ontology.similarity;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermRelation;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
@@ -15,16 +15,13 @@ import java.util.Set;
  * Implementation of cosine similarity.
  *
  * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link TermRelation} sub class to use in the contained classes
- *
+ * @param <R> {@link Relationship} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class CosineSimilarity<T extends Term, R extends TermRelation> implements Similarity {
+public final class CosineSimilarity<T extends Term, R extends Relationship> implements Similarity {
 
-  /**
-   * The {@link Ontology} to compute the similarity for.
-   */
+  /** The {@link Ontology} to compute the similarity for. */
   private final Ontology<T, R> ontology;
 
   /** Whether or not to compute in an opposite-aware fashion. */
@@ -33,9 +30,7 @@ public final class CosineSimilarity<T extends Term, R extends TermRelation> impl
   /**
    * Construct <code>CosineSimilarity</code> object for the given {@link Ontology}.
    *
-   * <p>
-   * By default, similarity is <b>not</b> opposite aware.
-   * </p>
+   * <p>By default, similarity is <b>not</b> opposite aware.
    *
    * @param ontology {@link Ontology} to base the computation on.
    */
@@ -77,5 +72,4 @@ public final class CosineSimilarity<T extends Term, R extends TermRelation> impl
     return Sets.intersection(termIdsQuery, termIdsTarget).size()
         / (Math.sqrt(termIdsQuery.size()) * Math.sqrt(termIdsTarget.size()));
   }
-
 }

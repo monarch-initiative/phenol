@@ -4,19 +4,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.monarchinitiative.phenol.graph.data.DirectedGraph;
-import org.monarchinitiative.phenol.graph.data.Edge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 /**
- * Topological sorting for {@link DirectedGraph}s using the <b>visitor pattern</b>.
+ * Topological sorting for {@link DefaultDirectedGraph}s using the <b>visitor pattern</b>.
  *
- * @param <V> vertex type of graph, see {@link DirectedGraph} for requirements on vertex type
- * @param <E> edge type to use in the graph, also see {@link DirectedGraph} for details
- *
+ * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
+ * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>,
-    G extends DirectedGraph<V, E>> implements GraphVertexAllIteration<V, E, G> {
+public final class TopologicalSorting<
+        V extends Comparable<V>, E extends IdLabeledEdge, G extends DefaultDirectedGraph<V, E>>
+    implements GraphVertexAllIteration<V, E, G> {
 
   @Override
   public void startForward(G g, VertexVisitor<V, E> visitor) {
@@ -33,7 +33,7 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>
   /**
    * Implementation of Tarjan's algorithm for topological sorting.
    *
-   * @param g {@link DirectedGraph} to iterate
+   * @param g {@link DefaultDirectedGraph} to iterate
    * @param visitor {@link VertexVisitor} to use for notifying about reaching a vertex
    * @param selector {@link NeighborSelector} to use for selecting the next neighbor
    */
@@ -42,7 +42,7 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>
 
     // Collect unmarked vertices
     final Set<V> unmarked = new HashSet<V>();
-    final Iterator<V> vertexIterator = g.vertexIterator();
+    final Iterator<V> vertexIterator = g.vertexSet().iterator();
     while (vertexIterator.hasNext()) {
       unmarked.add(vertexIterator.next());
     }
@@ -57,14 +57,19 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>
   /**
    * Tarjan's <code>visit()</code>.
    *
-   * @param g {@link DirectedGraph} to traverse
+   * @param g {@link DefaultDirectedGraph} to traverse
    * @param unmarked Unmarked vertices
    * @param tmpMarked Temporarily marked vertices
    * @param v Vertex to start from
    * @param selector {@link NeighborSelector} to select neighbors with
    */
-  private void startFromImpl(G g, Set<V> unmarked, Set<V> tmpMarked, V v,
-      VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
+  private void startFromImpl(
+      G g,
+      Set<V> unmarked,
+      Set<V> tmpMarked,
+      V v,
+      VertexVisitor<V, E> visitor,
+      NeighborSelector<V, E> selector) {
     if (tmpMarked.contains(v)) {
       throw new GraphNotDagException("Graph is not a DAG");
     }
@@ -81,5 +86,4 @@ public final class TopologicalSorting<V extends Comparable<V>, E extends Edge<V>
       }
     }
   }
-
 }

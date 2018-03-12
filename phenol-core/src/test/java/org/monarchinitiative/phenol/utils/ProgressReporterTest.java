@@ -31,5 +31,4 @@ public class ProgressReporterTest {
     // Just check count and that String-varargs is there.
     verify(logger, times(101)).info(any(String.class), ArgumentMatchers.<Object[]>any());
   }
-
 }

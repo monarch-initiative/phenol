@@ -9,19 +9,14 @@ import java.util.Map;
  */
 public interface Dbxref {
 
-  /**
-   * @return Name of the dbxref (first component).
-   */
+  /** @return Name of the dbxref (first component). */
   String getName();
 
-  /**
-   * @return Description of the dbxref (second component, optional, {@code null} if missing).
-   */
+  /** @return Description of the dbxref (second component, optional, {@code null} if missing). */
   String getDescription();
 
   /**
    * @return Trailing modifiers of the dbxref (third component, optional, {@code null} if missing).
    */
   Map<String, String> getTrailingModifiers();
-
 }

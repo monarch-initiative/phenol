@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.io.scoredist;
 
-import org.monarchinitiative.phenol.base.OntoLibException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import java.io.IOException;
@@ -54,9 +54,9 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
    *
    * @param pathDb Path to H2 database to read from.
    * @param tableName Name of table to use for scores.
-   * @throws OntoLibException If there was a problem opening the H2 database connection.
+   * @throws PhenolException If there was a problem opening the H2 database connection.
    */
-  public H2ScoreDistributionReader(String pathDb, String tableName) throws OntoLibException {
+  public H2ScoreDistributionReader(String pathDb, String tableName) throws PhenolException {
     super();
     this.pathDb = pathDb;
     this.tableName = tableName;
@@ -67,18 +67,18 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
    * Open connection and perform checks.
    *
    * @return New {@link Connection} to H2 database.
-   * @throws OntoLibException In the case of problem with connecting.
+   * @throws PhenolException In the case of problem with connecting.
    */
-  private Connection openConnection() throws OntoLibException {
+  private Connection openConnection() throws PhenolException {
     // Open connection.
     final Connection result;
     try {
       Class.forName("org.h2.Driver");
       result = DriverManager.getConnection("jdbc:h2:" + pathDb, "", "");
     } catch (ClassNotFoundException e) {
-      throw new OntoLibException("H2 driver class could not be found", e);
+      throw new PhenolException("H2 driver class could not be found", e);
     } catch (SQLException e) {
-      throw new OntoLibException("Could not open database at " + pathDb, e);
+      throw new PhenolException("Could not open database at " + pathDb, e);
     }
 
     // Check whether the table already exists.
@@ -87,10 +87,10 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
         result.getMetaData().getTables(null, null, tableName, new String[] {"TABLE"})) {
       tableExists = rs.next();
       if (!tableExists) {
-        throw new OntoLibException("Table of name " + tableName + " does not exist in database!");
+        throw new PhenolException("Table of name " + tableName + " does not exist in database!");
       }
     } catch (SQLException e) {
-      throw new OntoLibException("Checking for table of name " + tableName + " failed", e);
+      throw new PhenolException("Checking for table of name " + tableName + " failed", e);
     }
 
     return result;
@@ -98,7 +98,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
 
   @Override
   public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
-      throws OntoLibException {
+      throws PhenolException {
     try (final PreparedStatement stmt = conn
         .prepareStatement(String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
       stmt.setInt(1, termCount);
@@ -109,11 +109,11 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
         }
       }
     } catch (SQLException e) {
-      throw new OntoLibException("Problem with getting object score distribution for termCount: "
+      throw new PhenolException("Problem with getting object score distribution for termCount: "
           + termCount + ", objectId: " + objectId);
     }
 
-    throw new OntoLibException(
+    throw new PhenolException(
         "Found no object for termCount: " + termCount + ", objectId: " + objectId);
   }
 
@@ -131,7 +131,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
     final int sampleSize = rs.getInt(3);
     final double[] scores = (double[]) rs.getObject(4);
     final double[] pValues = (double[]) rs.getObject(5);
-    final TreeMap<Double, Double> scoreDist = new TreeMap<Double, Double>();
+    final TreeMap<Double, Double> scoreDist = new TreeMap<>();
     for (int i = 0; i < scores.length; ++i) {
       scoreDist.put(scores[i], pValues[i]);
     }
@@ -139,7 +139,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   }
 
   @Override
-  public ScoreDistribution readForTermCount(int termCount) throws OntoLibException {
+  public ScoreDistribution readForTermCount(int termCount) throws PhenolException {
     final Map<Integer, ObjectScoreDistribution> dists = new HashMap<>();
 
     try (final PreparedStatement stmt =
@@ -152,19 +152,19 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
         }
       }
     } catch (SQLException e) {
-      throw new OntoLibException(
+      throw new PhenolException(
           "Problem with getting object score distributions for termCount: " + termCount);
     }
 
     if (dists.size() == 0) {
-      throw new OntoLibException("Found no score distributions for termCount: " + termCount);
+      throw new PhenolException("Found no score distributions for termCount: " + termCount);
     } else {
       return new ScoreDistribution(termCount, dists);
     }
   }
 
   @Override
-  public Map<Integer, ScoreDistribution> readAll() throws OntoLibException {
+  public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
     // Get all term counts.
     final List<Integer> termCounts = new ArrayList<>();
     try (
@@ -175,7 +175,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
         termCounts.add(rs.getInt(1));
       }
     } catch (SQLException e) {
-      throw new OntoLibException("Problem querying the database for term counts", e);
+      throw new PhenolException("Problem querying the database for term counts", e);
     }
 
     // Query for all term counts.

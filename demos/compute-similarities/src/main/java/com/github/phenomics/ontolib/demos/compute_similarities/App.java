@@ -29,7 +29,7 @@ import com.google.common.collect.Sets;
 import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
 import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
 import com.github.phenomics.ontolib.formats.hpo.HpoTerm;
-import com.github.phenomics.ontolib.formats.hpo.HpoTermRelation;
+import com.github.phenomics.ontolib.formats.hpo.Hporelationship;
 import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
 import com.github.phenomics.ontolib.io.obo.hpo.HpoGeneAnnotationParser;
 import com.github.phenomics.ontolib.io.obo.hpo.HpoOboParser;
@@ -146,7 +146,7 @@ public class App {
     // Compute information content of HPO terms, given the term-to-gene annotation.
     LOGGER.info("Performing IC precomputation...");
     final Map<TermId, Double> icMap =
-        new InformationContentComputation<HpoTerm, HpoTermRelation>(hpo)
+        new InformationContentComputation<HpoTerm, Hporelationship>(hpo)
             .computeInformationContent(termIdToEntrezGeneIds);
     LOGGER.info("DONE: Performing IC precomputation");
 
@@ -161,11 +161,11 @@ public class App {
 
     // Initialize Resnik similarity precomputation
     LOGGER.info("Performing Resnik precomputation...");
-    final PrecomputingPairwiseResnikSimilarity<HpoTerm, HpoTermRelation> pairwiseResnikSimilarity =
-        new PrecomputingPairwiseResnikSimilarity<HpoTerm, HpoTermRelation>(hpo, icMap, numThreads);
+    final PrecomputingPairwiseResnikSimilarity<HpoTerm, Hporelationship> pairwiseResnikSimilarity =
+        new PrecomputingPairwiseResnikSimilarity<HpoTerm, Hporelationship>(hpo, icMap, numThreads);
     LOGGER.info("DONE: Performing Resnik precomputation");
-    final ResnikSimilarity<HpoTerm, HpoTermRelation> resnikSimilarity =
-        new ResnikSimilarity<HpoTerm, HpoTermRelation>(pairwiseResnikSimilarity, false);
+    final ResnikSimilarity<HpoTerm, Hporelationship> resnikSimilarity =
+        new ResnikSimilarity<HpoTerm, Hporelationship>(pairwiseResnikSimilarity, false);
 
     // Temporary storage of term count to score distributions.
     final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();
@@ -246,8 +246,8 @@ public class App {
             // Only re-precompute if we have no precomputation value yet.
             if (!scoreDists.containsKey(termCount)
                 || scoreDists.get(termCount).getObjectScoreDistribution(entrezId) == null) {
-              final SimilarityScoreSampling<HpoTerm, HpoTermRelation> sampling =
-                  new SimilarityScoreSampling<HpoTerm, HpoTermRelation>(hpo, resnikSimilarity,
+              final SimilarityScoreSampling<HpoTerm, Hporelationship> sampling =
+                  new SimilarityScoreSampling<HpoTerm, Hporelationship>(hpo, resnikSimilarity,
                       options);
               final Map<Integer, ScoreDistribution> tmpDists =
                   sampling.performSampling(labelToTermIds);
