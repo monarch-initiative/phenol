@@ -22,7 +22,7 @@ import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermI
  * a replacement for HpoDiseaseAnnotationParser but will almost certainly require refactoring in the future.
  */
 
-public class HpoAnnotation2DiseaseParser {
+public class HpoDiseaseAnnotationParser {
 
 
   private String annotationFilePath =null;
@@ -42,7 +42,7 @@ public class HpoAnnotation2DiseaseParser {
 
 
 
-  public HpoAnnotation2DiseaseParser(String annotationFile, HpoOntology ontlgy){
+  public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy){
     this.annotationFilePath =annotationFile;
     this.ontology=ontlgy;
     this.hpoPhenotypeOntology=this.ontology.getPhenotypicAbnormalitySubOntology();
@@ -60,15 +60,15 @@ public class HpoAnnotation2DiseaseParser {
    */
   private void  parseAnnotation() {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
-    Map<String,List<AnnotationLine>> disease2AnnotLineMap = new HashMap<>();
+    Map<String,List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
       String line;
       while ((line=br.readLine())!=null) {
         //System.out.println(line);
-        AnnotationLine aline = parseAnnotationLine(line);
-        List<AnnotationLine> annots;
+        HpoAnnotationLine aline = parseAnnotationLine(line);
+        List<HpoAnnotationLine> annots;
         if (disease2AnnotLineMap.containsKey(aline.DBObjectId)) {
           annots = disease2AnnotLineMap.get(aline.DBObjectId);
         } else {
@@ -87,13 +87,13 @@ public class HpoAnnotation2DiseaseParser {
     // When we get down here, we have added all of the disease annotations to the disease2AnnotLineMap
     // Now we want to transform that into HpoDisease objects
     for (String diseaseId : disease2AnnotLineMap.keySet()) {
-      List<AnnotationLine> annots=disease2AnnotLineMap.get(diseaseId);
+      List<HpoAnnotationLine> annots=disease2AnnotLineMap.get(diseaseId);
       final ImmutableList.Builder<TermIdWithMetadata> phenoListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> negativeTermListBuilder = ImmutableList.builder();
       String diseaseName=null;
       String database=null;
-      for (AnnotationLine line: annots) {
+      for (HpoAnnotationLine line: annots) {
         if (isInheritanceTerm( line.hpoId) ) {
           inheritanceListBuilder.add(line.hpoId);
         } else if (line.NOT) {
@@ -182,7 +182,7 @@ public class HpoAnnotation2DiseaseParser {
 
 
 
-  private AnnotationLine parseAnnotationLine(String line) {
+  private HpoAnnotationLine parseAnnotationLine(String line) {
     String A[]=line.split("\t");
     if (A.length < 14) {
       System.err.println(String.format("Malformed annotation line with %d (instead of 14) fields: %s",A.length,line ));
@@ -202,36 +202,10 @@ public class HpoAnnotation2DiseaseParser {
     }
     boolean no=false;
     if (NOT!=null && NOT.equals("NOT")) no = true;
-    return new AnnotationLine(DB,DBObjectId,DbObjectName,no, hpoId,onsetModifier,freqeuncyModifier);
+    return new HpoAnnotationLine(DB,DBObjectId,DbObjectName,no, hpoId,onsetModifier,freqeuncyModifier);
   }
 
-  /**
-   * A convenience class that will allow us to collect the annotation lines for each disease that we want to
-   * parse; from these data, we will construct the {@link HpoDiseaseWithMetadata}
-   * objects
-   */
-  private static class AnnotationLine {
-    String database;
-    String DBObjectId;
-    String DbObjectName;
-    boolean NOT=false;
-    TermId hpoId;
-    HpoOnset onsetModifier;
-    HpoFrequency freqeuncyModifier;
-
-    public AnnotationLine(String DB, String objectId,String name,boolean isNot, TermId termId, HpoOnset onset, HpoFrequency freq) {
-      database=DB;
-      DBObjectId=objectId;
-      DbObjectName=name;
-      NOT=isNot;
-      hpoId=termId;
-      onsetModifier=onset;
-      freqeuncyModifier=freq;
-    }
-
-
-  }
-
+  
 
 
 
