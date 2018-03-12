@@ -7,19 +7,18 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-public class HpoNegativeDiseaseAnnotationParserTest {
+public class HpoDiseaseAnnotationParserTest {
 
   @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
-  private File hpoDiseaseAnnotationHeadFile;
+  private File hpoDiseaseAnnotationToyFile;
 
   @Before
   public void setUp() throws IOException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-
-    hpoDiseaseAnnotationHeadFile = tmpFolder.newFile("negative_phenotype_annotation_head.tab");
+    hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile(
-        "/negative_phenotype_annotation_head.tab", hpoDiseaseAnnotationHeadFile);
+        "/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
   }
 
   /*
@@ -27,7 +26,7 @@ public class HpoNegativeDiseaseAnnotationParserTest {
   public void testParseHpoDiseaseAnnotationHead()
       throws IOException, TermAnnotationParserException {
     final HpoDiseaseAnnotationParser parser =
-        new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationHeadFile);
+        new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile);
 
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();
