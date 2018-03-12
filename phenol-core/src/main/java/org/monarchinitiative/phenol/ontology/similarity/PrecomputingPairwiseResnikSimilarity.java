@@ -188,8 +188,8 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
     public void put(TermId lhs, TermId rhs, float value) {
       final int idxLhs = termIdToIdx.get(lhs);
       final int idxRhs = termIdToIdx.get(rhs);
-      data[idxLhs * termIdCount + idxRhs] = (float) value;
-      data[idxRhs * termIdCount + idxLhs] = (float) value;
+      data[idxLhs * termIdCount + idxRhs] = value;
+      data[idxRhs * termIdCount + idxLhs] = value;
     }
 
     /** Get score. */

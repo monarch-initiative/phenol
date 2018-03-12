@@ -14,8 +14,8 @@ public final class StanzaEntryCreatedBy extends StanzaEntry {
    * Constructor.
    *
    * @param creator The value of the Id stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryCreatedBy(String creator, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryCreatedBy extends StanzaEntry {
     this.creator = creator;
   }
 
-  /**
-   * @return The entry's creator value.
-   */
+  /** @return The entry's creator value. */
   public String getCreator() {
     return creator;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryCreatedBy [creator=" + creator + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryCreatedBy [creator="
+        + creator
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

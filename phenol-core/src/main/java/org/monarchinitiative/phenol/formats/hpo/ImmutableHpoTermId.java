@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import com.google.common.collect.ComparisonChain;
@@ -9,9 +8,8 @@ import com.google.common.collect.ComparisonChain;
 import java.util.List;
 
 /**
- * Represent an HPO Term together with a Frequency and an Onset and modifiers.
- * This is intended to be used to
- * represent a disease annotation.
+ * Represent an HPO Term together with a Frequency and an Onset and modifiers. This is intended to
+ * be used to represent a disease annotation.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.3 (2018-03-12)
@@ -47,17 +45,15 @@ public class ImmutableHpoTermId implements HpoTermId {
     this.termId = termId;
     this.frequency = f;
     this.onset = onset != null ? onset : DEFAULT_HPO_ONSET;
-    this.modifierList=modifiers;
+    this.modifierList = modifiers;
   }
 
   public ImmutableHpoTermId(TermId t) {
     this.termId = t;
     this.frequency = DEFAULT_HPO_FREQUENCY.mean();
     this.onset = DEFAULT_HPO_ONSET;
-    this.modifierList= (new ImmutableList.Builder<TermId>()).build();
+    this.modifierList = (new ImmutableList.Builder<TermId>()).build();
   }
-
-
 
   /** @return The annotated {@link TermId}. */
   public TermId getTermId() {
@@ -73,17 +69,13 @@ public class ImmutableHpoTermId implements HpoTermId {
     return onset;
   }
 
-  public List<TermId> getModifiers() { return modifierList; }
+  public List<TermId> getModifiers() {
+    return modifierList;
+  }
 
   @Override
   public String toString() {
-    return "HpoTermId [termId="
-        + termId
-        + ", frequency="
-        + frequency
-        + ", onset="
-        + onset
-        + "]";
+    return "HpoTermId [termId=" + termId + ", frequency=" + frequency + ", onset=" + onset + "]";
   }
 
   /**
@@ -157,44 +149,46 @@ public class ImmutableHpoTermId implements HpoTermId {
     }
   }
 
-
   public static class Builder {
     private final TermId termId;
 
     /** The {@link HpoFrequency}. */
-    private double frequency=-1.0D; // flag
+    private double frequency = -1.0D; // flag
     /** The characteristic age of onset of a feature in a certain disease. */
-    private HpoOnset onset=null;
+    private HpoOnset onset = null;
     /** List of modifiers of this annotation. List can be empty but cannot be null */
-    private List<TermId> modifierList=null;
+    private List<TermId> modifierList = null;
 
     public Builder(TermId tid) {
-      this.termId=tid;
+      this.termId = tid;
     }
+
     public Builder onset(HpoOnset o) {
-      this.onset=o;
+      this.onset = o;
       return this;
     }
+
     public Builder frequency(double f) {
-      this.frequency=f;
+      this.frequency = f;
       return this;
     }
+
     public Builder modifierList(List<TermId> L) {
-      this.modifierList=L;
+      this.modifierList = L;
       return this;
     }
 
     public ImmutableHpoTermId build() {
-      if (modifierList==null) {
-        this.modifierList= (new ImmutableList.Builder<TermId>()).build();
+      if (modifierList == null) {
+        this.modifierList = (new ImmutableList.Builder<TermId>()).build();
       }
-      if (onset==null) {
-        onset=DEFAULT_HPO_ONSET;
+      if (onset == null) {
+        onset = DEFAULT_HPO_ONSET;
       }
-      if (frequency <0) {
-        frequency=HpoFrequency.ALWAYS_PRESENT.mean();
+      if (frequency < 0) {
+        frequency = HpoFrequency.ALWAYS_PRESENT.mean();
       }
-      return new ImmutableHpoTermId(termId,frequency,onset,modifierList);
+      return new ImmutableHpoTermId(termId, frequency, onset, modifierList);
     }
   }
 }

@@ -14,8 +14,8 @@ public final class StanzaEntryAltId extends StanzaEntry {
    * Constructor.
    *
    * @param altId The value of the alt_id stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryAltId(String altId, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryAltId extends StanzaEntry {
     this.altId = altId;
   }
 
-  /**
-   * @return The entry's name value.
-   */
+  /** @return The entry's name value. */
   public String getAltId() {
     return altId;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryAltId [altId=" + altId + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryAltId [altId="
+        + altId
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

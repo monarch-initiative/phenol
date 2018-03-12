@@ -32,7 +32,8 @@ public class GenericRelationship implements Relationship {
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationshipType The relation's type.
    */
-  public GenericRelationship(TermId source, TermId dest, int id, RelationshipType relationshipType) {
+  public GenericRelationship(
+      TermId source, TermId dest, int id, RelationshipType relationshipType) {
     this.source = source;
     this.target = dest;
     this.id = id;

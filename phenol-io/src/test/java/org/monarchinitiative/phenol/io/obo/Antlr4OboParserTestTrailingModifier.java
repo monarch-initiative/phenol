@@ -43,6 +43,4 @@ public class Antlr4OboParserTestTrailingModifier extends Antlr4OboParserTestBase
         "TrailingModifier [keyValue=[KeyValue [key=k, value=v], KeyValue [key=l, value=w]]]",
         tm.toString());
   }
-
-
 }

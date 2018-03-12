@@ -60,5 +60,4 @@ public class Antlr4OboParserTestDbXref extends Antlr4OboParserTestBase {
             + "value=value2]]]",
         dbXref.getTrailingModifier().toString());
   }
-
 }

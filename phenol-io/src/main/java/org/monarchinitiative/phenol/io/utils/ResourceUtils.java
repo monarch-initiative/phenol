@@ -51,5 +51,4 @@ public class ResourceUtils {
       throw new PhenolRuntimeException("Problem with copying resource to file", e);
     }
   }
-
 }

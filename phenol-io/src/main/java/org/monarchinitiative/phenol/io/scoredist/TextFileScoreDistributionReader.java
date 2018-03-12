@@ -18,7 +18,6 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  *
  * @see ScoreDistributionReader
  * @see TextFileScoreDistributionWriter
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class TextFileScoreDistributionReader implements ScoreDistributionReader {
@@ -132,5 +131,4 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
   public void close() throws IOException {
     this.reader.close();
   }
-
 }

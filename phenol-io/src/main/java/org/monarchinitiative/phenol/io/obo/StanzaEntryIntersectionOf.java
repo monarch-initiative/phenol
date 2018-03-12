@@ -18,36 +18,39 @@ public final class StanzaEntryIntersectionOf extends StanzaEntry {
    *
    * @param relationshipType Optional name of the relationship type, <code>null</code>.
    * @param id The Id of the referenced term.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryIntersectionOf(String relationshipType, String id,
-      TrailingModifier trailingModifier, String comment) {
+  public StanzaEntryIntersectionOf(
+      String relationshipType, String id, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.INTERSECTION_OF, trailingModifier, comment);
     this.id = id;
     this.relationshipType = relationshipType;
   }
 
-  /**
-   * @return The Id of the referenced term.
-   */
+  /** @return The Id of the referenced term. */
   public String getId() {
     return id;
   }
 
-  /**
-   * @return The relationship type.
-   */
+  /** @return The relationship type. */
   public String getRelationshipType() {
     return relationshipType;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryIntersectionOf [id=" + id + ", relationshipType = " + relationshipType
-        + ", getType()=" + getType() + ", getTrailingModifier()=" + getTrailingModifier()
-        + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryIntersectionOf [id="
+        + id
+        + ", relationshipType = "
+        + relationshipType
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

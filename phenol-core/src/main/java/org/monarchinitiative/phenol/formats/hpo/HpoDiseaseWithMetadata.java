@@ -88,8 +88,7 @@ public final class HpoDiseaseWithMetadata {
   /**
    * Users can user this function to get the HpoTermId corresponding to a TermId
    *
-   * @param id id of the plain {@link TermId} for which we want to have the {@link
-   *     HpoTermId}.
+   * @param id id of the plain {@link TermId} for which we want to have the {@link HpoTermId}.
    * @return corresponding {@link HpoTermId} or null if not present.
    */
   public HpoTermId getTermIdWithMetadata(TermId id) {

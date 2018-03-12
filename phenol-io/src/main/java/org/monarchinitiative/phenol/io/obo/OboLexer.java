@@ -22,5 +22,4 @@ public class OboLexer extends Antlr4OboLexer {
   public void recover(LexerNoViableAltException e) {
     throw new PhenolRuntimeException("There was a problem with lexing OBO file.", e); // bail out
   }
-
 }

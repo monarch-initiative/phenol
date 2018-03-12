@@ -53,7 +53,8 @@ public class Antlr4OboParserTestStanzaEntrySynonymtypedef extends Antlr4OboParse
     assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("British spelling", stanzaEntry.getDescription());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -87,9 +88,9 @@ public class Antlr4OboParserTestStanzaEntrySynonymtypedef extends Antlr4OboParse
     assertEquals("UK_SPELLING", stanzaEntry.getTermSynonymScope());
     assertEquals("British spelling", stanzaEntry.getDescription());
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getSynonymScopeIdentifier());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

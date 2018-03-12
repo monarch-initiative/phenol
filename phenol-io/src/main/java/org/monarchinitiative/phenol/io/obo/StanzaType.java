@@ -15,9 +15,7 @@ public enum StanzaType {
   /** <code>[Typedef]</code> stanza. */
   TYPEDEF;
 
-  /**
-   * @return Return the stanza header string.
-   */
+  /** @return Return the stanza header string. */
   public String getHeader() {
     switch (this) {
       case TERM:
@@ -29,6 +27,5 @@ public enum StanzaType {
       default:
         throw new PhenolRuntimeException("Unknown StanzaType, this should not happen!");
     }
-
   }
 }

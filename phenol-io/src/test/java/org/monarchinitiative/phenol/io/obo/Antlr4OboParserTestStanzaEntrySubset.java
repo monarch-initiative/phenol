@@ -58,7 +58,8 @@ public class Antlr4OboParserTestStanzaEntrySubset extends Antlr4OboParserTestBas
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -85,9 +86,9 @@ public class Antlr4OboParserTestStanzaEntrySubset extends Antlr4OboParserTestBas
 
     assertEquals(StanzaEntryType.SUBSET, stanzaEntry.getType());
     assertEquals("subset-name", stanzaEntry.getName());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

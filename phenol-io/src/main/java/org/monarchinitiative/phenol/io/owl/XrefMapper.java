@@ -10,9 +10,9 @@ import org.monarchinitiative.phenol.ontology.data.TermXref;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public class XrefMapper {
-	public static TermXref mapXref(String xref) {
-		ImmutableTermId xrefTermId = ImmutableTermId.constructWithPrefix(xref);
-		TermXref termXref = new ImmutableTermXref(xrefTermId, null);
-		return termXref;
-	}
+  public static TermXref mapXref(String xref) {
+    ImmutableTermId xrefTermId = ImmutableTermId.constructWithPrefix(xref);
+    TermXref termXref = new ImmutableTermXref(xrefTermId, null);
+    return termXref;
+  }
 }

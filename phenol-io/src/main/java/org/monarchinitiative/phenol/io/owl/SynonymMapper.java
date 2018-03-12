@@ -17,38 +17,38 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public class SynonymMapper {
-	public static List<TermSynonym> mapSynonyms(List<SynonymPropertyValue> spvs) {
-		if (spvs == null) return null;
-		List<TermSynonym> termSynonymList = Lists.newArrayList();
-		for (SynonymPropertyValue spv: spvs) {
+  public static List<TermSynonym> mapSynonyms(List<SynonymPropertyValue> spvs) {
+    if (spvs == null) return null;
+    List<TermSynonym> termSynonymList = Lists.newArrayList();
+    for (SynonymPropertyValue spv : spvs) {
 
-			// Map the scope of Synonym
-			TermSynonymScope scope = null;
-			String pred = spv.getPred();
-			if (pred.equals(PREDS.hasExactSynonym.toString())) {
-				scope = TermSynonymScope.EXACT;
-			} else if (pred.equals(PREDS.hasBroadSynonym.toString())) {
-				scope = TermSynonymScope.BROAD;
-			} else if (pred.equals(PREDS.hasNarrowSynonym.toString())) {
-				scope = TermSynonymScope.NARROW;
-			} else if (pred.equals(PREDS.hasRelatedSynonym.toString())) {
-				scope = TermSynonymScope.RELATED;
-			}
+      // Map the scope of Synonym
+      TermSynonymScope scope = null;
+      String pred = spv.getPred();
+      if (pred.equals(PREDS.hasExactSynonym.toString())) {
+        scope = TermSynonymScope.EXACT;
+      } else if (pred.equals(PREDS.hasBroadSynonym.toString())) {
+        scope = TermSynonymScope.BROAD;
+      } else if (pred.equals(PREDS.hasNarrowSynonym.toString())) {
+        scope = TermSynonymScope.NARROW;
+      } else if (pred.equals(PREDS.hasRelatedSynonym.toString())) {
+        scope = TermSynonymScope.RELATED;
+      }
 
-			// Map the synonym's type name.
-			String synonymTypeName = String.join(", ", spv.getTypes());
+      // Map the synonym's type name.
+      String synonymTypeName = String.join(", ", spv.getTypes());
 
-			// Map the synonym's cross-references.
-			List<String> xrefs = spv.getXrefs();
-			List<TermXref> termXrefs = Lists.newArrayList();
-			for (String xref: xrefs) {
-				termXrefs.add(XrefMapper.mapXref(xref));
-			}
+      // Map the synonym's cross-references.
+      List<String> xrefs = spv.getXrefs();
+      List<TermXref> termXrefs = Lists.newArrayList();
+      for (String xref : xrefs) {
+        termXrefs.add(XrefMapper.mapXref(xref));
+      }
 
-			TermSynonym its = new ImmutableTermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
-			termSynonymList.add(its);
-		}
+      TermSynonym its = new ImmutableTermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
+      termSynonymList.add(its);
+    }
 
-		return termSynonymList;
-	}
+    return termSynonymList;
+  }
 }
