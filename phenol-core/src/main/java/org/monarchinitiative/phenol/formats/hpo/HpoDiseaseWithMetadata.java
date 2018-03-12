@@ -28,7 +28,7 @@ public final class HpoDiseaseWithMetadata {
   private final String diseaseDatabaseId;
 
   /** {@link TermId}s with phenotypic abnormalities and their frequencies. */
-  private final List<TermIdWithMetadata> phenotypicAbnormalities;
+  private final List<HpoTermId> phenotypicAbnormalities;
 
   /** {@link TermId}s with mode of inheritance and their frequencies. */
   private final List<TermId> modesOfInheritance;
@@ -50,7 +50,7 @@ public final class HpoDiseaseWithMetadata {
       String name,
       String dbase,
       String databaseId,
-      List<TermIdWithMetadata> phenotypicAbnormalities,
+      List<HpoTermId> phenotypicAbnormalities,
       List<TermId> modesOfInheritance,
       List<TermId> notTerms) {
     this.name = name;
@@ -72,7 +72,7 @@ public final class HpoDiseaseWithMetadata {
   }
 
   /** @return The list of frequency-annotated phenotypic abnormalities. */
-  public List<TermIdWithMetadata> getPhenotypicAbnormalities() {
+  public List<HpoTermId> getPhenotypicAbnormalities() {
     return phenotypicAbnormalities;
   }
 
@@ -86,13 +86,13 @@ public final class HpoDiseaseWithMetadata {
   }
 
   /**
-   * Users can user this function to get the TermIdWithMetadata corresponding to a TermId
+   * Users can user this function to get the HpoTermId corresponding to a TermId
    *
    * @param id id of the plain {@link TermId} for which we want to have the {@link
-   *     TermIdWithMetadata}.
-   * @return corresponding {@link TermIdWithMetadata} or null if not present.
+   *     HpoTermId}.
+   * @return corresponding {@link HpoTermId} or null if not present.
    */
-  public TermIdWithMetadata getTermIdWithMetadata(TermId id) {
+  public HpoTermId getTermIdWithMetadata(TermId id) {
     return phenotypicAbnormalities
         .stream()
         .filter(timd -> timd.getTermId().equals(id))
@@ -106,7 +106,7 @@ public final class HpoDiseaseWithMetadata {
    *     annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedTo(TermId tid) {
-    for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
+    for (HpoTermId tiwm : phenotypicAbnormalities) {
       if (tiwm.getTermId().equals(tid)) return true;
     }
     return false;
@@ -117,7 +117,7 @@ public final class HpoDiseaseWithMetadata {
    *     indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
-    for (TermIdWithMetadata tiwm : phenotypicAbnormalities) {
+    for (HpoTermId tiwm : phenotypicAbnormalities) {
       if (tidset.contains(tiwm.getTermId())) return true;
     }
     return false;
@@ -130,7 +130,7 @@ public final class HpoDiseaseWithMetadata {
    * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
   public double getFrequencyOfTermInDisease(TermId tid) {
-    TermIdWithMetadata tiwm =
+    HpoTermId tiwm =
         phenotypicAbnormalities
             .stream()
             .filter(twm -> twm.getTermId().equals(tid))
@@ -138,7 +138,7 @@ public final class HpoDiseaseWithMetadata {
             .orElse(null);
     if (tiwm == null) {
       return 0D; // term not annotated to disease so frequency is zero
-    } else return tiwm.getFrequency().mean();
+    } else return tiwm.getFrequency();
   }
 
   @Override
@@ -146,7 +146,7 @@ public final class HpoDiseaseWithMetadata {
     String abnormalityList =
         phenotypicAbnormalities
             .stream()
-            .map(TermIdWithMetadata::getIdWithPrefix)
+            .map(HpoTermId::getIdWithPrefix)
             .collect(Collectors.joining(";"));
     return String.format(
         "HpoDisease [name=%s;%s:%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",

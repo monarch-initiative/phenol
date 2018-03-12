@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -94,7 +94,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
     parser.parseFile(file, helper);
 
     if (helper.getAllTermIds().size() == 0) {
-      throw new OntoLibRuntimeException("No terms in ontology?!");
+      throw new PhenolRuntimeException("No terms in ontology?!");
     }
 
     /*
@@ -163,7 +163,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
 
     // Get root or construct a synthetic one. Bail out if no root candidate was found.s
     if (rootCandidates.size() == 0) {
-      throw new OntoLibRuntimeException("No term without outgoing is-a edge. Empty or cyclic?");
+      throw new PhenolRuntimeException("No term without outgoing is-a edge. Empty or cyclic?");
     } else if (rootCandidates.size() == 1) {
       return rootCandidates.get(0);
     } else {
@@ -171,7 +171,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
       final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
       final ImmutableTermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
       if (helper.getAllTermIds().contains(rootId)) {
-        throw new OntoLibRuntimeException(
+        throw new PhenolRuntimeException(
             "Tried to guess artificial root as " + rootId + " but is already taken.");
       }
 
@@ -397,7 +397,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
 
       final int pos = termIdStr.lastIndexOf(':');
       if (pos == -1) {
-        throw new OntoLibRuntimeException("Term Id does not contain colon! " + termIdStr);
+        throw new PhenolRuntimeException("Term Id does not contain colon! " + termIdStr);
       }
 
       final String prefixStr = termIdStr.substring(0, pos);

@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
 public class TestTermAnnotation implements TermAnnotation {
@@ -28,7 +28,7 @@ public class TestTermAnnotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof TestTermAnnotation)) {
-      throw new OntoLibRuntimeException("Cannot compare " + o + " to " + this);
+      throw new PhenolRuntimeException("Cannot compare " + o + " to " + this);
     }
     TestTermAnnotation that = (TestTermAnnotation) o;
 

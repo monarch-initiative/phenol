@@ -29,43 +29,37 @@ public class ImmutableTermIdWithMetadataTest {
     defaultFrequency = HpoFrequency.fromTermId(DEFAULT_FREQUENCY_ID);
   }
 
-  @Test
-  public void testEqualityOfTerms1() {
-    TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
-    TermIdWithMetadata oxycephaly =
-        new ImmutableTermIdWithMetadata(oxycephalyId, defaultFrequency, null);
-    assertEquals(oxycephaly, oxycephaly);
-  }
 
+
+  /** Different onset means the terms are not equal */
   @Test
   public void testEqualityOfTerms2() {
     TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
-    TermIdWithMetadata oxycephaly1 =
-        new ImmutableTermIdWithMetadata(oxycephalyId, defaultFrequency, null);
-    TermIdWithMetadata oxycephaly2 =
-        new ImmutableTermIdWithMetadata(oxycephalyId, defaultFrequency, HpoOnset.ADULT_ONSET);
+    HpoTermId oxycephaly1 =new ImmutableHpoTermId.Builder(oxycephalyId).onset(HpoOnset.ADULT_ONSET).build();
+    HpoTermId oxycephaly2 =new ImmutableHpoTermId.Builder(oxycephalyId).build();
     assertNotEquals(oxycephaly1, oxycephaly2);
   }
 
+  /** Different onset means the terms are not equal */
   @Test
   public void testEqualityOfTerms3() {
     TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
-    TermIdWithMetadata oxycephaly1 =
-        new ImmutableTermIdWithMetadata(oxycephalyId, defaultFrequency, HpoOnset.ADULT_ONSET);
-    TermIdWithMetadata oxycephaly2 =
-        new ImmutableTermIdWithMetadata(oxycephalyId, defaultFrequency, HpoOnset.ADULT_ONSET);
-    assertEquals(oxycephaly1, oxycephaly2);
+    HpoTermId oxycephaly1 =new ImmutableHpoTermId.Builder(oxycephalyId).onset(HpoOnset.ADULT_ONSET).build();
+    HpoTermId oxycephaly2 =new ImmutableHpoTermId.Builder(oxycephalyId).onset(HpoOnset.CHILDHOOD_ONSET).build();
+    assertNotEquals(oxycephaly1, oxycephaly2);
   }
 
   @Test
   public void testEqualityOfTerms4() {
     TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
-    TermIdWithMetadata oxycephaly1 =
-        new ImmutableTermIdWithMetadata(
-            oxycephalyId, HpoFrequency.ALWAYS_PRESENT, HpoOnset.ADULT_ONSET);
-    TermIdWithMetadata oxycephaly2 =
-        new ImmutableTermIdWithMetadata(
-            oxycephalyId, HpoFrequency.OCCASIONAL, HpoOnset.ADULT_ONSET);
+    HpoTermId oxycephaly1 =new ImmutableHpoTermId.Builder(oxycephalyId).
+      onset(HpoOnset.ADULT_ONSET).
+      frequency(HpoFrequency.ALWAYS_PRESENT.mean()).
+      build();
+
+    HpoTermId oxycephaly2 =new ImmutableHpoTermId.Builder(oxycephalyId).
+      onset(HpoOnset.ADULT_ONSET).frequency(HpoFrequency.
+      OCCASIONAL.mean()).build();
     assertNotEquals(oxycephaly1, oxycephaly2);
   }
 }

@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.scoredist.H2ScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionReader;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
@@ -72,7 +72,7 @@ public class MergeScoresCommand {
           loadedDists.get(e.getKey()).add(e.getValue());
         }
       } catch (PhenolException | IOException e) {
-        throw new OntoLibRuntimeException("Problem reading input file: " + inputPath, e);
+        throw new PhenolRuntimeException("Problem reading input file: " + inputPath, e);
       }
     }
 

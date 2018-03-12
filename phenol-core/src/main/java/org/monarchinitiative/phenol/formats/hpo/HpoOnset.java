@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoOnsetTermIds.ONSET_TERMID;
@@ -44,7 +44,7 @@ public enum HpoOnset {
       case CONGENITAL_ONSET:
         return 0.0;
       case NEONATAL_ONSET:
-        return (double) 0.0;
+        return 0.0;
       case INFANTILE_ONSET:
         return 0;
       case CHILDHOOD_ONSET:
@@ -125,7 +125,7 @@ public enum HpoOnset {
    *
    * @param termId The {@link TermId} to convert.
    * @return Corresponding {@link HpoFrequency}.
-   * @throws OntoLibRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
+   * @throws PhenolRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
    *     TermId}.
    */
   public static HpoOnset fromTermId(TermId termId) {
@@ -157,7 +157,7 @@ public enum HpoOnset {
       case "HP:0011463":
         return CHILDHOOD_ONSET;
       default:
-        throw new OntoLibRuntimeException(
+        throw new PhenolRuntimeException(
             "TermId " + termId + " is not a valid onset sub ontology term ID");
     }
   }
@@ -167,7 +167,7 @@ public enum HpoOnset {
    *
    * @param termId The {@link TermId} to convert.
    * @return Corresponding {@link HpoFrequency}.
-   * @throws OntoLibRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
+   * @throws PhenolRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
    *     TermId}.
    */
   public static HpoOnset fromHpoIdString(String termId) {
@@ -199,7 +199,7 @@ public enum HpoOnset {
       case "HP:0011463":
         return CHILDHOOD_ONSET;
       default:
-        throw new OntoLibRuntimeException(
+        throw new PhenolRuntimeException(
             "TermId " + termId + " is not a valid onset sub ontology term ID");
     }
   }

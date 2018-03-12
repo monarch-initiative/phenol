@@ -69,3 +69,4 @@ phenol-core/src/test/java/com/
 
 *.checkstyle
 /phenol-core/phenol-core.iml
+/phenol-cli/ontolib-cli.iml

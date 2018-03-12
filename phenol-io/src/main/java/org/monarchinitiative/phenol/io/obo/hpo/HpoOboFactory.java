@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.hpo.HpoRelationshipType;
 import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
 import org.monarchinitiative.phenol.formats.hpo.HpoRelationship;
@@ -146,7 +146,7 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoRelationship>
       try {
         creationDate = format.parse(creationDateStr);
       } catch (ParseException e) {
-        throw new OntoLibRuntimeException("Problem parsing date string " + creationDateStr, e);
+        throw new PhenolRuntimeException("Problem parsing date string " + creationDateStr, e);
       }
     }
 
@@ -186,10 +186,10 @@ class HpoOboFactory implements OboOntologyEntryFactory<HpoTerm, HpoRelationship>
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new OntoLibRuntimeException(type + " tag must have cardinality 1 but was "
+      throw new PhenolRuntimeException(type + " tag must have cardinality 1 but was "
           + typeEntries.size() + " (" + stanza + ")");
     }
     return (E) typeEntries.get(0);

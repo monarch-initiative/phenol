@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
 /**
@@ -24,12 +24,12 @@ public final class ImmutableTermId implements TermId {
    *
    * @param termIdString String with term Id to construct with.
    * @return Resulting {@link ImmutableTermId}.
-   * @throws OntoLibRuntimeException if the string does not have a prefix
+   * @throws PhenolRuntimeException if the string does not have a prefix
    */
   public static ImmutableTermId constructWithPrefix(String termIdString) {
     final int pos = termIdString.lastIndexOf(':');
     if (pos == -1) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           "Term ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new ImmutableTermId(

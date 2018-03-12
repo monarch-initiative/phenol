@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
-import org.monarchinitiative.phenol.base.OntoLibRuntimeException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTerm;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationship;
@@ -146,7 +146,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
       try {
         creationDate = format.parse(creationDateStr);
       } catch (ParseException e) {
-        throw new OntoLibRuntimeException("Problem parsing date string " + creationDateStr, e);
+        throw new PhenolRuntimeException("Problem parsing date string " + creationDateStr, e);
       }
     }
 
@@ -186,10 +186,10 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
   protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
-      throw new OntoLibRuntimeException(
+      throw new PhenolRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new OntoLibRuntimeException(type + " tag must have cardinality 1 but was "
+      throw new PhenolRuntimeException(type + " tag must have cardinality 1 but was "
           + typeEntries.size() + " (" + stanza + ")");
     }
     return (E) typeEntries.get(0);
