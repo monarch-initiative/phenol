@@ -21,9 +21,6 @@ public interface OboParseResultListener {
    */
   void parsedStanza(Stanza stanza);
 
-  /**
-   * Called when the file has been completely parsed.
-   */
+  /** Called when the file has been completely parsed. */
   void parsedFile();
-
 }

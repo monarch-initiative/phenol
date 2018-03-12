@@ -14,28 +14,31 @@ public final class StanzaEntryIsAntisymmetric extends StanzaEntry {
    * Constructor.
    *
    * @param value The boolean value of the stanza.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryIsAntisymmetric(boolean value, TrailingModifier trailingModifier,
-      String comment) {
+  public StanzaEntryIsAntisymmetric(
+      boolean value, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.IS_ANTISYMMETRIC, trailingModifier, comment);
     this.value = value;
   }
 
-  /**
-   * @return The entry's boolean value.
-   */
+  /** @return The entry's boolean value. */
   public boolean getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryIsAntisymmetric [value=" + value + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryIsAntisymmetric [value="
+        + value
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

@@ -14,8 +14,8 @@ public final class StanzaEntrySubset extends StanzaEntry {
    * Constructor.
    *
    * @param name The name of the subset stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntrySubset(String name, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntrySubset extends StanzaEntry {
     this.name = name;
   }
 
-  /**
-   * @return The entry's name value.
-   */
+  /** @return The entry's name value. */
   public String getName() {
     return name;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntrySubset [name=" + name + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntrySubset [name="
+        + name
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

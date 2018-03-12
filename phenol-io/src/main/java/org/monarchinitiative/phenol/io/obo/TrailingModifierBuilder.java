@@ -25,11 +25,8 @@ public final class TrailingModifierBuilder {
     keyValue.add(new TrailingModifier.KeyValue(key, value));
   }
 
-  /**
-   * @return Construct and return new {@link TrailingModifier} object.
-   */
+  /** @return Construct and return new {@link TrailingModifier} object. */
   public TrailingModifier build() {
     return new TrailingModifier(keyValue);
   }
-
 }

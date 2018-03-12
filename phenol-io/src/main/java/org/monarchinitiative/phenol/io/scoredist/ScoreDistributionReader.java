@@ -44,5 +44,4 @@ public interface ScoreDistributionReader extends Closeable {
   Map<Integer, ScoreDistribution> readAll() throws PhenolException;
 
   void close() throws IOException;
-
 }

@@ -41,10 +41,11 @@ public class Antlr4OboParserTestDbXrefList extends Antlr4OboParserTestBase {
     final DbXrefList dbXrefList = (DbXrefList) getOuterListener().getValue(ctx);
 
     assertEquals(2, dbXrefList.getDbXrefs().size());
-    assertEquals("DbXrefList [dbXrefs=[DbXref [name=name, description=description, "
-        + "trailingModifier=TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]], "
-        + "DbXref [name=name2, description=description2, trailingModifier=TrailingModifier "
-        + "[keyValue=[KeyValue [key=key2, value=value2]]]]]]", dbXrefList.toString());
+    assertEquals(
+        "DbXrefList [dbXrefs=[DbXref [name=name, description=description, "
+            + "trailingModifier=TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]], "
+            + "DbXref [name=name2, description=description2, trailingModifier=TrailingModifier "
+            + "[keyValue=[KeyValue [key=key2, value=value2]]]]]]",
+        dbXrefList.toString());
   }
-
 }

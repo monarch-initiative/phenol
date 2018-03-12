@@ -14,8 +14,8 @@ public final class StanzaEntryDisjointFrom extends StanzaEntry {
    * Constructor.
    *
    * @param id The value of the Id stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryDisjointFrom(String id, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryDisjointFrom extends StanzaEntry {
     this.id = id;
   }
 
-  /**
-   * @return The referenced term's Id value.
-   */
+  /** @return The referenced term's Id value. */
   public String getId() {
     return id;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryDisjointFrom [id=" + id + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryDisjointFrom [id="
+        + id
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

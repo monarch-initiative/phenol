@@ -26,26 +26,30 @@ public class OboParserTest {
   @Test
   public void testAllInOneParsing() {
     final OboFile oboFile = parser.parseString(MINI_OBO);
-    assertEquals("OBOFile [header=Header [entries=[StanzaEntryFormatVersion [value=1.2, "
-        + "getType()=FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]], "
-        + "entryByType={FORMAT_VERSION=[StanzaEntryFormatVersion [value=1.2, getType()="
-        + "FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]]}], stanzas="
-        + "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=ID, "
-        + "getTrailingModifier()=null, getComment()=null], StanzaEntryName [name=All, "
-        + "getType()=NAME, getTrailingModifier()=null, getComment()=null]], entryByType="
-        + "{ID=[StanzaEntryId [id=HP:0000001, getType()=ID, getTrailingModifier()=null, "
-        + "getComment()=null]], NAME=[StanzaEntryName [name=All, getType()=NAME, "
-        + "getTrailingModifier()=null, getComment()=null]]}]]]", oboFile.toString());
+    assertEquals(
+        "OBOFile [header=Header [entries=[StanzaEntryFormatVersion [value=1.2, "
+            + "getType()=FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]], "
+            + "entryByType={FORMAT_VERSION=[StanzaEntryFormatVersion [value=1.2, getType()="
+            + "FORMAT_VERSION, getTrailingModifier()=null, getComment()=null]]}], stanzas="
+            + "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=ID, "
+            + "getTrailingModifier()=null, getComment()=null], StanzaEntryName [name=All, "
+            + "getType()=NAME, getTrailingModifier()=null, getComment()=null]], entryByType="
+            + "{ID=[StanzaEntryId [id=HP:0000001, getType()=ID, getTrailingModifier()=null, "
+            + "getComment()=null]], NAME=[StanzaEntryName [name=All, getType()=NAME, "
+            + "getTrailingModifier()=null, getComment()=null]]}]]]",
+        oboFile.toString());
   }
 
   @Test
   public void testEventBasedParsing() {
     final TestListener listener = new TestListener();
     parser.parseString(MINI_OBO, listener);
-    assertEquals("Header [entries=[StanzaEntryFormatVersion [value=1.2, getType()=FORMAT_VERSION, "
-        + "getTrailingModifier()=null, getComment()=null]], entryByType={FORMAT_VERSION="
-        + "[StanzaEntryFormatVersion [value=1.2, getType()=FORMAT_VERSION, getTrailingModifier()="
-        + "null, getComment()=null]]}]", listener.getHeader().toString());
+    assertEquals(
+        "Header [entries=[StanzaEntryFormatVersion [value=1.2, getType()=FORMAT_VERSION, "
+            + "getTrailingModifier()=null, getComment()=null]], entryByType={FORMAT_VERSION="
+            + "[StanzaEntryFormatVersion [value=1.2, getType()=FORMAT_VERSION, getTrailingModifier()="
+            + "null, getComment()=null]]}]",
+        listener.getHeader().toString());
     assertEquals(
         "[Stanza [type=TERM, stanzaEntries=[StanzaEntryId [id=HP:0000001, getType()=ID, "
             + "getTrailingModifier()=null, getComment()=null], StanzaEntryName [name=All, "
@@ -56,9 +60,7 @@ public class OboParserTest {
         listener.getStanzas().toString());
   }
 
-  /**
-   * Helper class for collecting parse result; header and stanzas.
-   */
+  /** Helper class for collecting parse result; header and stanzas. */
   private final class TestListener implements OboParseResultListener {
 
     private Header header = null;
@@ -97,7 +99,5 @@ public class OboParserTest {
     public List<Stanza> getStanzas() {
       return stanzas;
     }
-
   }
-
 }

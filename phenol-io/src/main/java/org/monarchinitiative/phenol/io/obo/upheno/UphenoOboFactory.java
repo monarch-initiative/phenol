@@ -59,10 +59,8 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
   /**
    * Mapping from string representation of term Id to {@link TermId}.
    *
-   * <p>
-   * All occuring termIds must be previously registered into this map before calling any of this
+   * <p>All occuring termIds must be previously registered into this map before calling any of this
    * object's functions. This happens in {@link OboImmutableOntologyLoader}.
-   * </p>
    */
   private SortedMap<String, ImmutableTermId> termIds = null;
 
@@ -87,8 +85,11 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
     if (altEntryList == null) {
       altTermIds = Lists.newArrayList();
     } else {
-      altTermIds = altEntryList.stream().map(e -> termIds.get(((StanzaEntryAltId) e).getAltId()))
-          .collect(Collectors.toList());
+      altTermIds =
+          altEntryList
+              .stream()
+              .map(e -> termIds.get(((StanzaEntryAltId) e).getAltId()))
+              .collect(Collectors.toList());
     }
 
     final StanzaEntryDef defEntry =
@@ -104,8 +105,11 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
     if (subsetEntryList == null) {
       subsets = Lists.newArrayList();
     } else {
-      subsets = subsetEntryList.stream().map(e -> ((StanzaEntrySubset) e).getName())
-          .collect(Collectors.toList());
+      subsets =
+          subsetEntryList
+              .stream()
+              .map(e -> ((StanzaEntrySubset) e).getName())
+              .collect(Collectors.toList());
     }
 
     final List<TermSynonym> synonyms;
@@ -113,30 +117,43 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
     if (synonymEntryList == null) {
       synonyms = Lists.newArrayList();
     } else {
-      synonyms = synonymEntryList.stream().map(e -> {
-        final StanzaEntrySynonym s = (StanzaEntrySynonym) e;
+      synonyms =
+          synonymEntryList
+              .stream()
+              .map(
+                  e -> {
+                    final StanzaEntrySynonym s = (StanzaEntrySynonym) e;
 
-        final String value = s.getText();
-        final TermSynonymScope scope = s.getTermSynonymScope();
-        final String synonymTypeName = s.getSynonymTypeName();
-        final List<TermXref> termXrefs = s.getDbXrefList().getDbXrefs().stream()
-            .map(xref -> new ImmutableTermXref(termIds.get(xref.getName()), xref.getDescription()))
-            .collect(Collectors.toList());
+                    final String value = s.getText();
+                    final TermSynonymScope scope = s.getTermSynonymScope();
+                    final String synonymTypeName = s.getSynonymTypeName();
+                    final List<TermXref> termXrefs =
+                        s.getDbXrefList()
+                            .getDbXrefs()
+                            .stream()
+                            .map(
+                                xref ->
+                                    new ImmutableTermXref(
+                                        termIds.get(xref.getName()), xref.getDescription()))
+                            .collect(Collectors.toList());
 
-        return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
-      }).collect(Collectors.toList());
+                    return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
+                  })
+              .collect(Collectors.toList());
     }
 
-    final StanzaEntryIsObsolete isObsoleteEntry = this.<
-        StanzaEntryIsObsolete>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.IS_OBSOLETE);
+    final StanzaEntryIsObsolete isObsoleteEntry =
+        this.<StanzaEntryIsObsolete>getCardinalityZeroOrOneEntry(
+            stanza, StanzaEntryType.IS_OBSOLETE);
     final boolean obsolete = (isObsoleteEntry == null) ? false : isObsoleteEntry.getValue();
 
     final StanzaEntryCreatedBy createdByEntry =
         this.<StanzaEntryCreatedBy>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
     final String createdBy = (createdByEntry == null) ? null : createdByEntry.getCreator();
 
-    final StanzaEntryCreationDate creationDateEntry = this.<
-        StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATION_DATE);
+    final StanzaEntryCreationDate creationDateEntry =
+        this.<StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(
+            stanza, StanzaEntryType.CREATION_DATE);
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
@@ -166,13 +183,23 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
         } else {
           trailingModifiers = null;
         }
-        dbxrefList
-            .add(new ImmutableDbxref(dbXref.getName(), dbXref.getDescription(), trailingModifiers));
+        dbxrefList.add(
+            new ImmutableDbxref(dbXref.getName(), dbXref.getDescription(), trailingModifiers));
       }
     }
 
-    return new UphenoTerm(id, altTermIds, name, definition, comment, subsets, synonyms, obsolete,
-        createdBy, creationDate, dbxrefList);
+    return new UphenoTerm(
+        id,
+        altTermIds,
+        name,
+        definition,
+        comment,
+        subsets,
+        synonyms,
+        obsolete,
+        createdBy,
+        creationDate,
+        dbxrefList);
   }
 
   /**
@@ -189,29 +216,39 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
       throw new PhenolRuntimeException(
           type + " tag must have cardinality 1 but was null (" + stanza + ")");
     } else if (typeEntries.size() != 1) {
-      throw new PhenolRuntimeException(type + " tag must have cardinality 1 but was "
-          + typeEntries.size() + " (" + stanza + ")");
+      throw new PhenolRuntimeException(
+          type
+              + " tag must have cardinality 1 but was "
+              + typeEntries.size()
+              + " ("
+              + stanza
+              + ")");
     }
     return (E) typeEntries.get(0);
   }
 
   /**
-   * Extract cardinality zero or one entry (=tag) of type <code>type</code> from
-   * <code>stanza</code>.
+   * Extract cardinality zero or one entry (=tag) of type <code>type</code> from <code>stanza</code>
+   * .
    *
    * @param stanza {@link Stanza} to get {@link StanzaEntry} from.
    * @param type {@link StanzaEntryType} to use.
    * @return Resulting {@link StanzaEntry}, properly cast, or <code>null</code>.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(Stanza stanza,
-      StanzaEntryType type) {
+  protected <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
+      Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
       return null;
     } else if (typeEntries.size() != 1) {
-      throw new PhenolRuntimeException(type + " tag must have cardinality <= 1 but was "
-          + typeEntries.size() + " (" + stanza + ")");
+      throw new PhenolRuntimeException(
+          type
+              + " tag must have cardinality <= 1 but was "
+              + typeEntries.size()
+              + " ("
+              + stanza
+              + ")");
     } else {
       return (E) typeEntries.get(0);
     }
@@ -226,8 +263,8 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
   }
 
   @Override
-  public UphenoRelationship constructrelationship(Stanza stanza,
-      StanzaEntryDisjointFrom stanzaEntry) {
+  public UphenoRelationship constructrelationship(
+      Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
@@ -237,15 +274,14 @@ class UphenoOboFactory implements OboOntologyEntryFactory<UphenoTerm, UphenoRela
   }
 
   @Override
-  public UphenoRelationship constructrelationship(Stanza stanza,
-      StanzaEntryIntersectionOf stanzaEntry) {
+  public UphenoRelationship constructrelationship(
+      Stanza stanza, StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public UphenoRelationship constructrelationship(Stanza stanza,
-      StanzaEntryRelationship stanzaEntry) {
+  public UphenoRelationship constructrelationship(
+      Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
-
 }

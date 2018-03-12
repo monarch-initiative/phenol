@@ -40,8 +40,7 @@ public final class OntologyTerms {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?
-    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
-        (DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph();
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // Perform BFS.
     bfs.startFromReverse(
@@ -93,8 +92,7 @@ public final class OntologyTerms {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?
-    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
-        (DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph();
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // Perform BFS.
     bfs.startFromForward(

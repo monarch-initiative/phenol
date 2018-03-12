@@ -7,12 +7,11 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
- * Interface for constructing concrete {@link Term} and {@link Relationship} objects in
- * {@link OboImmutableOntologyLoader}.
+ * Interface for constructing concrete {@link Term} and {@link Relationship} objects in {@link
+ * OboImmutableOntologyLoader}.
  *
  * @param <T> The type to use for terms.
  * @param <R> The type to use for term relations.
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public interface OboOntologyEntryFactory<T extends Term, R extends Relationship> {
@@ -76,5 +75,4 @@ public interface OboOntologyEntryFactory<T extends Term, R extends Relationship>
    * @return The constructed <code>T</code>.
    */
   public R constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry);
-
 }

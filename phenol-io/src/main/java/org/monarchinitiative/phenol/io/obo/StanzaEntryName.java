@@ -14,8 +14,8 @@ public final class StanzaEntryName extends StanzaEntry {
    * Constructor.
    *
    * @param name The value of the name stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryName(String name, TrailingModifier trailingModifier, String comment) {
@@ -23,17 +23,21 @@ public final class StanzaEntryName extends StanzaEntry {
     this.name = name;
   }
 
-  /**
-   * @return The entry's name value.
-   */
+  /** @return The entry's name value. */
   public String getName() {
     return name;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryName [name=" + name + ", getType()=" + getType() + ", getTrailingModifier()="
-        + getTrailingModifier() + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryName [name="
+        + name
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

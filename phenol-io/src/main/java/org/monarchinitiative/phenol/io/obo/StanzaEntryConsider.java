@@ -14,8 +14,8 @@ public final class StanzaEntryConsider extends StanzaEntry {
    * Constructor.
    *
    * @param id The Id of the referred-to term.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryConsider(String id, TrailingModifier trailingModifier, String comment) {
@@ -23,17 +23,21 @@ public final class StanzaEntryConsider extends StanzaEntry {
     this.id = id;
   }
 
-  /**
-   * @return The entry's Id value.
-   */
+  /** @return The entry's Id value. */
   public String getId() {
     return id;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryConsider [id=" + id + ", getType()=" + getType() + ", getTrailingModifier()="
-        + getTrailingModifier() + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryConsider [id="
+        + id
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

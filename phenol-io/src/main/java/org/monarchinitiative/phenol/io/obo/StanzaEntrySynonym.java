@@ -28,12 +28,17 @@ public final class StanzaEntrySynonym extends StanzaEntry {
    * @param termSynonymScope {@link TermSynonymScope} of this synonym.
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
    * @param dbXrefList Optional {@link DbXrefList}, <code>null</code> if missing.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntrySynonym(String text, TermSynonymScope termSynonymScope, String synonymTypeName,
-      DbXrefList dbXrefList, TrailingModifier trailingModifier, String comment) {
+  public StanzaEntrySynonym(
+      String text,
+      TermSynonymScope termSynonymScope,
+      String synonymTypeName,
+      DbXrefList dbXrefList,
+      TrailingModifier trailingModifier,
+      String comment) {
     super(StanzaEntryType.SYNONYM, trailingModifier, comment);
     this.text = text;
     this.termSynonymScope = termSynonymScope;
@@ -41,40 +46,42 @@ public final class StanzaEntrySynonym extends StanzaEntry {
     this.dbXrefList = dbXrefList;
   }
 
-  /**
-   * @return The synonym text.
-   */
+  /** @return The synonym text. */
   public String getText() {
     return text;
   }
 
-  /**
-   * @return The {@link TermSynonymScope} of this synonym.
-   */
+  /** @return The {@link TermSynonymScope} of this synonym. */
   public TermSynonymScope getTermSynonymScope() {
     return termSynonymScope;
   }
 
-  /**
-   * @return Optional synonym type name, <code>null</code> if empty.
-   */
+  /** @return Optional synonym type name, <code>null</code> if empty. */
   public String getSynonymTypeName() {
     return synonymTypeName;
   }
 
-  /**
-   * @return Optional {@link DbXrefList}, <code>null</code> if empty.
-   */
+  /** @return Optional {@link DbXrefList}, <code>null</code> if empty. */
   public DbXrefList getDbXrefList() {
     return dbXrefList;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntrySynonym [text=" + text + ", termSynonymScope=" + termSynonymScope
-        + ", synonymTypeName=" + synonymTypeName + ", dbXrefList=" + dbXrefList + ", getType()="
-        + getType() + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()="
-        + getComment() + "]";
+    return "StanzaEntrySynonym [text="
+        + text
+        + ", termSynonymScope="
+        + termSynonymScope
+        + ", synonymTypeName="
+        + synonymTypeName
+        + ", dbXrefList="
+        + dbXrefList
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

@@ -20,36 +20,42 @@ public final class StanzaEntryRelationship extends StanzaEntry {
    *
    * @param relationshipType Name of the relationship type.
    * @param ids The Ids of the referenced terms.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryRelationship(String relationshipType, List<String> ids,
-      TrailingModifier trailingModifier, String comment) {
+  public StanzaEntryRelationship(
+      String relationshipType,
+      List<String> ids,
+      TrailingModifier trailingModifier,
+      String comment) {
     super(StanzaEntryType.RELATIONSHIP, trailingModifier, comment);
     this.ids = ids;
     this.relationshipType = relationshipType;
   }
 
-  /**
-   * @return The Ids of the referenced term.
-   */
+  /** @return The Ids of the referenced term. */
   public List<String> getIds() {
     return ids;
   }
 
-  /**
-   * @return The relationship type.
-   */
+  /** @return The relationship type. */
   public String getRelationshipType() {
     return relationshipType;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryRelationship [ids=" + ids + ", relationshipType=" + relationshipType
-        + ", getType()=" + getType() + ", getTrailingModifier()=" + getTrailingModifier()
-        + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryRelationship [ids="
+        + ids
+        + ", relationshipType="
+        + relationshipType
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

@@ -14,14 +14,10 @@ import java.util.TreeMap;
  */
 public class Header {
 
-  /**
-   * Wrapped {@link List} of {@link StanzaEntry} objects.
-   */
+  /** Wrapped {@link List} of {@link StanzaEntry} objects. */
   private final List<StanzaEntry> entries;
 
-  /**
-   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
-   */
+  /** Mapping from {@link StanzaEntryType} to list of objects of this stanza. */
   private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
 
   /**
@@ -51,17 +47,14 @@ public class Header {
     }
   }
 
-  /**
-   * @return List of {@link StanzaEntry} objects by occurence in header.
-   */
+  /** @return List of {@link StanzaEntry} objects by occurence in header. */
   public List<StanzaEntry> getEntries() {
     return entries;
   }
 
   /**
    * @return {@link Map} from {@link StanzaEntryType} to {@link List} of {@link StanzaEntry}. Will
-   *         contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the
-   *         type.
+   *     contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the type.
    */
   public Map<StanzaEntryType, List<StanzaEntry>> getEntryByType() {
     return entryByType;
@@ -71,5 +64,4 @@ public class Header {
   public String toString() {
     return "Header [entries=" + entries + ", entryByType=" + new TreeMap<>(entryByType) + "]";
   }
-
 }

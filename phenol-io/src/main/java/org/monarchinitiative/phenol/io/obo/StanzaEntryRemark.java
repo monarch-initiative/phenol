@@ -14,8 +14,8 @@ public final class StanzaEntryRemark extends StanzaEntry {
    * Constructor.
    *
    * @param text The remark's text.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryRemark(String text, TrailingModifier trailingModifier, String comment) {
@@ -23,17 +23,21 @@ public final class StanzaEntryRemark extends StanzaEntry {
     this.text = text;
   }
 
-  /**
-   * @return The remark's text.
-   */
+  /** @return The remark's text. */
   public String getText() {
     return text;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryRemark [id=" + text + ", getType()=" + getType() + ", getTrailingModifier()="
-        + getTrailingModifier() + ", getComment()=" + getComment() + "]";
+    return "StanzaEntryRemark [id="
+        + text
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
+        + "]";
   }
-
 }

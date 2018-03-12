@@ -50,14 +50,14 @@ public final class OntologyParserFactory {
   }
 
   /**
-   * Construct new {@link TermAnnotationParser} for the term-to-gene annotation, given an
-   * {@link OntologyType} enumeration value and path to annotation file by {@code annoFile}.
+   * Construct new {@link TermAnnotationParser} for the term-to-gene annotation, given an {@link
+   * OntologyType} enumeration value and path to annotation file by {@code annoFile}.
    *
    * @param ontology Specifies the ontology to parse.
    * @param annoFile The OBO {@link File} specification.
    * @return The constructed {@link OntologyOboParser}.
    * @throws TermAnnotationParserException When there is a problem with initializing the term
-   *         annotation parser.
+   *     annotation parser.
    * @throws IOException When there is a problem with file I/O.
    */
   public static TermAnnotationParser<? extends TermAnnotation> constructGeneAnnotationParser(
@@ -75,5 +75,4 @@ public final class OntologyParserFactory {
         throw new RuntimeException("Invalid ontology selected " + ontology);
     }
   }
-
 }

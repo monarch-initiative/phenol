@@ -17,7 +17,6 @@ import com.google.common.base.Joiner;
  *
  * @see Hdf5ScoreDistributionWriter
  * @see TextFileScoreDistributionReader
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class TextFileScoreDistributionWriter implements ScoreDistributionWriter {
@@ -76,5 +75,4 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
   public void close() throws IOException {
     this.out.close();
   }
-
 }

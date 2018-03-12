@@ -16,16 +16,15 @@ import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 
 public class UberphenoGeneAnnotationParserTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private File uberphenoGeneAnnotationHeadFile;
 
   @Before
   public void setUp() throws IOException {
     uberphenoGeneAnnotationHeadFile = tmpFolder.newFile("HSgenes_crossSpeciesPhenoAnnotation.txt");
-    ResourceUtils.copyResourceToFile("/HSgenes_crossSpeciesPhenoAnnotation.txt",
-        uberphenoGeneAnnotationHeadFile);
+    ResourceUtils.copyResourceToFile(
+        "/HSgenes_crossSpeciesPhenoAnnotation.txt", uberphenoGeneAnnotationHeadFile);
   }
 
   @Test
@@ -50,5 +49,4 @@ public class UberphenoGeneAnnotationParserTest {
 
     parser.close();
   }
-
 }

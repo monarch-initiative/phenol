@@ -14,8 +14,8 @@ public final class StanzaEntryImport extends StanzaEntry {
    * Constructor.
    *
    * @param value The URL or Id to import.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryImport(String value, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryImport extends StanzaEntry {
     this.value = value;
   }
 
-  /**
-   * @return The URL or Id to import.
-   */
+  /** @return The URL or Id to import. */
   public String getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryImport [value=" + value + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryImport [value="
+        + value
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

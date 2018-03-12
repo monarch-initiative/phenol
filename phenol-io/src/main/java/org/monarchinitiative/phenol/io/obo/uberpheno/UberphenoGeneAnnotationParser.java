@@ -14,9 +14,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 /**
  * Parser for "genes to phenotype annotation" files.
  *
- * <p>
- * <b>Usage Example</b>
- * </p>
+ * <p><b>Usage Example</b>
  *
  * <pre>
  * File inputFile = "genes_to_phenotype.txt";
@@ -36,8 +34,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class UberphenoGeneAnnotationParser
-    implements
-      TermAnnotationParser<UberphenoGeneAnnotation> {
+    implements TermAnnotationParser<UberphenoGeneAnnotation> {
 
   /** Expected header string, first line. */
   private static final String EXPECTED_HEADER1 =
@@ -53,14 +50,10 @@ public class UberphenoGeneAnnotationParser
       "# For annotations stemming from model organisms 'Evidence' contains the organism "
           + "name and the ID of the gene in the model organism";
 
-  /**
-   * The {@link File} to read from.
-   */
+  /** The {@link File} to read from. */
   private final File file;
 
-  /**
-   * The {@link BufferedReader} to use for reading line-wise.
-   */
+  /** The {@link BufferedReader} to use for reading line-wise. */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -70,7 +63,6 @@ public class UberphenoGeneAnnotationParser
    * Create new parser for Uberpheno gene annotation files.
    *
    * @param file The file to read from.
-   *
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
@@ -90,20 +82,32 @@ public class UberphenoGeneAnnotationParser
    */
   private void checkHeader() throws TermAnnotationParserException, IOException {
     if (!EXPECTED_HEADER1.equals(nextLine)) {
-      throw new TermAnnotationParserException("First line is not the expected header. \"" + nextLine
-          + "\" vs. \"" + EXPECTED_HEADER1 + "\" (expected)");
+      throw new TermAnnotationParserException(
+          "First line is not the expected header. \""
+              + nextLine
+              + "\" vs. \""
+              + EXPECTED_HEADER1
+              + "\" (expected)");
     }
     nextLine = reader.readLine();
 
     if (!EXPECTED_HEADER2.equals(nextLine)) {
-      throw new TermAnnotationParserException("Second line is not the expected header. \""
-          + nextLine + "\" vs. \"" + EXPECTED_HEADER2 + "\" (expected)");
+      throw new TermAnnotationParserException(
+          "Second line is not the expected header. \""
+              + nextLine
+              + "\" vs. \""
+              + EXPECTED_HEADER2
+              + "\" (expected)");
     }
     nextLine = reader.readLine();
 
     if (!EXPECTED_HEADER3.equals(nextLine)) {
-      throw new TermAnnotationParserException("Third line is not the expected header. \"" + nextLine
-          + "\" vs. \"" + EXPECTED_HEADER3 + "\" (expected)");
+      throw new TermAnnotationParserException(
+          "Third line is not the expected header. \""
+              + nextLine
+              + "\" vs. \""
+              + EXPECTED_HEADER3
+              + "\" (expected)");
     }
     nextLine = reader.readLine();
   }
@@ -137,8 +141,8 @@ public class UberphenoGeneAnnotationParser
 
     nextLine = reader.readLine();
 
-    return new UberphenoGeneAnnotation(geneId, geneSymbol, termDescription, termId,
-        evidenceDescription);
+    return new UberphenoGeneAnnotation(
+        geneId, geneSymbol, termDescription, termId, evidenceDescription);
   }
 
   @Override
@@ -150,5 +154,4 @@ public class UberphenoGeneAnnotationParser
   public File getFile() {
     return file;
   }
-
 }

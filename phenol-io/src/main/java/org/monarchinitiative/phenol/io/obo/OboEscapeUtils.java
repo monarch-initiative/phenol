@@ -37,10 +37,17 @@ public class OboEscapeUtils {
     builder.put("\\\n", "\n");
     MAPPING = builder.build();
 
-    PATTERN = Pattern.compile("("
-        + Joiner.on('|')
-            .join(MAPPING.keySet().stream().map(s -> Pattern.quote(s)).collect(Collectors.toList()))
-        + ")");
+    PATTERN =
+        Pattern.compile(
+            "("
+                + Joiner.on('|')
+                    .join(
+                        MAPPING
+                            .keySet()
+                            .stream()
+                            .map(s -> Pattern.quote(s))
+                            .collect(Collectors.toList()))
+                + ")");
   }
 
   /**
@@ -70,5 +77,4 @@ public class OboEscapeUtils {
 
     return sb.toString();
   }
-
 }

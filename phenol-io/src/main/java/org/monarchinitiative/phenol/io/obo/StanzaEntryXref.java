@@ -14,8 +14,8 @@ public final class StanzaEntryXref extends StanzaEntry {
    * Constructor.
    *
    * @param dbXref The value of the stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryXref(DbXref dbXref, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryXref extends StanzaEntry {
     this.dbXref = dbXref;
   }
 
-  /**
-   * @return The entry's Id value.
-   */
+  /** @return The entry's Id value. */
   public DbXref getDbXref() {
     return dbXref;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryXref [dbXref=" + dbXref + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryXref [dbXref="
+        + dbXref
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

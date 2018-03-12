@@ -11,11 +11,9 @@ import org.monarchinitiative.phenol.ontology.data.Relationship;
  * Interface for parsing OBO into {@link Ontology} objects.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
- *
  * @param <O> The {@link Ontology} to return.
  */
-public interface OntologyOboParser<
-    O extends Ontology<? extends Term, ? extends Relationship>> {
+public interface OntologyOboParser<O extends Ontology<? extends Term, ? extends Relationship>> {
 
   /**
    * Parse and build specialized {@link Ontology}.
@@ -25,9 +23,6 @@ public interface OntologyOboParser<
    */
   O parse() throws IOException;
 
-  /**
-   * @return The OBO {@link File} that is loaded.
-   */
+  /** @return The OBO {@link File} that is loaded. */
   File getOboFile();
-
 }

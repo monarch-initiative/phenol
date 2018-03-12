@@ -22,9 +22,7 @@ public final class TrailingModifier {
     this.keyValue = ImmutableList.copyOf(keyValue);
   }
 
-  /**
-   * @return The contained key/value list.
-   */
+  /** @return The contained key/value list. */
   public ImmutableList<KeyValue> getKeyValue() {
     return keyValue;
   }
@@ -53,16 +51,12 @@ public final class TrailingModifier {
       this.value = value;
     }
 
-    /**
-     * @return The key.
-     */
+    /** @return The key. */
     public String getKey() {
       return key;
     }
 
-    /**
-     * @return The value.
-     */
+    /** @return The value. */
     public String getValue() {
       return value;
     }
@@ -71,12 +65,10 @@ public final class TrailingModifier {
     public String toString() {
       return "KeyValue [key=" + key + ", value=" + value + "]";
     }
-
   }
 
   @Override
   public String toString() {
     return "TrailingModifier [keyValue=" + keyValue + "]";
   }
-
 }
