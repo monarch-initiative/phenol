@@ -56,21 +56,6 @@ public class HpoAnnotationLine {
     "Date_Created",
     "Assigned_By"};
 
-  /**
-   * @param line The header line of a V2 small file
-   * @return true iff the fields of the line exactly match {@link #headerFields}.
-   */
-  static boolean isValidHeaderLine(String line) {
-    String F[]=line.split("\t");
-    if (F.length!=headerFields.length)
-      return false;
-    for (int i=0;i<headerFields.length;i++) {
-      if (! F[i].equals(headerFields[i]))
-        return false;
-    }
-    return true;
-  }
-
   /** 1. The database portion of the diseaseId. For instance, "OMIM" for "OMIM:300200".*/
   private String database;
   /** 2. The accession number part of the disease Id. For instance, "300200" for "OMIM:300200".*/
@@ -122,12 +107,27 @@ public class HpoAnnotationLine {
     } else {
       this.NOT=false;
     }
+    this.aspect=F[ASPECT_IDX];
     this.modifierList=F[MODIFIER_IDX];
     this.publication=F[DB_REFERENCE_IDX];
     this.evidence=F[EVIDENCE_IDX];
     this.assignedBy=F[ASSIGNED_BY_IDX];
     this.dateCreated=F[DATE_CREATED_IDX];
+  }
 
+  /**
+   * @param line The header line of a V2 small file
+   * @return true iff the fields of the line exactly match {@link #headerFields}.
+   */
+  static boolean isValidHeaderLine(String line) {
+    String F[]=line.split("\t");
+    if (F.length!=headerFields.length)
+      return false;
+    for (int i=0;i<headerFields.length;i++) {
+      if (! F[i].equals(headerFields[i]))
+        return false;
+    }
+    return true;
   }
 
 
