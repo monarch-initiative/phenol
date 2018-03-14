@@ -33,7 +33,7 @@ public class HpoDiseaseAnnotationParser {
 
   // private static final TermPrefix HP_PREFIX = new ImmutableTermPrefix("HP");
 
-  private Map<String, HpoDiseaseWithMetadata> diseaseMap;
+  private Map<String, HpoDisease> diseaseMap;
 
   public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
     this.annotationFilePath = annotationFile;
@@ -44,7 +44,7 @@ public class HpoDiseaseAnnotationParser {
   }
 
   /** */
-  public Map<String, HpoDiseaseWithMetadata> parse() throws PhenolException {
+  public Map<String, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<String, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
 
@@ -54,20 +54,25 @@ public class HpoDiseaseAnnotationParser {
       if (!HpoAnnotationLine.isValidHeaderLine(line)) {
         br.close();
         throw new PhenolException(
-            String.format(
-                "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
+          String.format(
+            "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
       }
       while ((line = br.readLine()) != null) {
         //System.out.println(line);
-        HpoAnnotationLine aline = new HpoAnnotationLine(line);
-        List<HpoAnnotationLine> annots;
-        if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
-          annots = disease2AnnotLineMap.get(aline.getDiseaseId());
-        } else {
-          annots = new ArrayList<>();
-          disease2AnnotLineMap.put(aline.getDiseaseId(), annots);
+        try {
+          HpoAnnotationLine aline = new HpoAnnotationLine(line);
+          List<HpoAnnotationLine> annots;
+  //TODO TEMPORARY FIX THAT SKIPS SOME MALFORMED LINES.
+          if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
+            annots = disease2AnnotLineMap.get(aline.getDiseaseId());
+          } else {
+            annots = new ArrayList<>();
+            disease2AnnotLineMap.put(aline.getDiseaseId(), annots);
+          }
+          annots.add(aline);
+        } catch (PhenolException e) {
+          e.printStackTrace();
         }
-        annots.add(aline);
       }
       br.close();
     } catch (IOException e) {
@@ -83,29 +88,33 @@ public class HpoDiseaseAnnotationParser {
       String diseaseName = null;
       String database = null;
       for (HpoAnnotationLine line : annots) {
-        if (isInheritanceTerm(line.getPhenotypeId())) {
-          inheritanceListBuilder.add(line.getPhenotypeId());
-        } else if (line.isNOT()) {
-          negativeTermListBuilder.add(line.getPhenotypeId());
-        } else {
-          double frequency = getFrequency(line.getFrequency());
-          List<TermId> modifiers = getModifiers(line.getModifierList());
-          HpoOnset onset = getOnset(line.getOnsetId());
-          HpoTermId tidm =
+        try {
+          if (isInheritanceTerm(line.getPhenotypeId())) {
+            inheritanceListBuilder.add(line.getPhenotypeId());
+          } else if (line.isNOT()) {
+            negativeTermListBuilder.add(line.getPhenotypeId());
+          } else {
+            double frequency = getFrequency(line.getFrequency());
+            List<TermId> modifiers = getModifiers(line.getModifierList());
+            HpoOnset onset = getOnset(line.getOnsetId());
+            HpoTermId tidm =
               new ImmutableHpoTermId(line.getPhenotypeId(), frequency, onset, modifiers);
-          phenoListBuilder.add(tidm);
+            phenoListBuilder.add(tidm);
+          }
+          if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
+          if (line.getDatabase() != null) database = line.getDatabase();
+        } catch (Exception e) {
+          System.err.println("[PHENOL ERROR] could not parse annotation: "+ e.getMessage());
         }
-        if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
-        if (line.getDatabase() != null) database = line.getDatabase();
       }
-      HpoDiseaseWithMetadata hpoDisease =
-          new HpoDiseaseWithMetadata(
-              diseaseName,
-              database,
-              diseaseId,
-              phenoListBuilder.build(),
-              inheritanceListBuilder.build(),
-              negativeTermListBuilder.build());
+      HpoDisease hpoDisease =
+        new HpoDisease(
+          diseaseName,
+          database,
+          diseaseId,
+          phenoListBuilder.build(),
+          inheritanceListBuilder.build(),
+          negativeTermListBuilder.build());
       this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
     return diseaseMap;
@@ -120,7 +129,7 @@ public class HpoDiseaseAnnotationParser {
    */
   private boolean isInheritanceTerm(TermId tid) {
     return inheritancePhenotypeOntology.getAncestorTermIds(tid) != null
-        && inheritancePhenotypeOntology.getAncestorTermIds(tid).contains(INHERITANCE_ROOT);
+      && inheritancePhenotypeOntology.getAncestorTermIds(tid).contains(INHERITANCE_ROOT);
   }
 
   /**
@@ -151,9 +160,9 @@ public class HpoDiseaseAnnotationParser {
       TermId tid = ImmutableTermId.constructWithPrefix(hp);
       if (hpoPhenotypeOntology.getTermMap().containsKey(tid)) {
         return hpoPhenotypeOntology
-            .getTermMap()
-            .get(tid)
-            .getId(); // replace alt_id with current if if necessary
+          .getTermMap()
+          .get(tid)
+          .getId(); // replace alt_id with current if if necessary
       } else if (inheritancePhenotypeOntology.getTermMap().containsKey(tid)) {
         return inheritancePhenotypeOntology.getTermMap().get(tid).getId();
       } else {
@@ -168,9 +177,9 @@ public class HpoDiseaseAnnotationParser {
    * frequency (obligate, 100%).
    *
    * @param freq The representation of the frequency, if any, in the {@code
-   *     phenotype_annotation.tab} file
+   *             phenotype_annotation.tab} file
    * @return the corresponding {@link HpoFrequency} object or the default {@link HpoFrequency}
-   *     object (100%).
+   * object (100%).
    */
   private double getFrequency(String freq) {
     if (freq == null || freq.isEmpty()) HpoFrequency.ALWAYS_PRESENT.mean();
