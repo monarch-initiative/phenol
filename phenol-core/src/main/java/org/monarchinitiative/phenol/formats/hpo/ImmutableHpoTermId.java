@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import com.google.common.collect.ImmutableList;
+import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import com.google.common.collect.ComparisonChain;
@@ -54,6 +55,15 @@ public class ImmutableHpoTermId implements HpoTermId {
     this.onset = DEFAULT_HPO_ONSET;
     this.modifierList = (new ImmutableList.Builder<TermId>()).build();
   }
+
+  public ImmutableHpoTermId(String id) {
+    this.termId = ImmutableTermId.constructWithPrefix(id);
+    this.frequency = DEFAULT_HPO_FREQUENCY.mean();
+    this.onset = DEFAULT_HPO_ONSET;
+    this.modifierList = (new ImmutableList.Builder<TermId>()).build();
+  }
+
+
 
   /** @return The annotated {@link TermId}. */
   public TermId getTermId() {
