@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.hpo.HpoDiseaseWithMetadata;
+import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -9,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
  * (phenotype.hpoa). It is intended to be use as part of the processing of the big file. A
  * convenience class that will allow us to collect the annotation lines for each disease that we
- * want to parse; from these data, we will construct the {@link HpoDiseaseWithMetadata}. Note that
+ * want to parse; from these data, we will construct the {@link HpoDisease}. Note that
  * this class performs only the first part of the parse. The class {@link
  * HpoDiseaseAnnotationParser} will complete the input of the lines once all of the lines for some
  * disease have been input into individual {@link HpoAnnotationLine} objects. The reason for this is

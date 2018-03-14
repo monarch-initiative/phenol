@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.2.1 (2017-11-16)
  */
-public final class HpoDiseaseWithMetadata {
+public final class HpoDisease {
   /** Name of the disease from annotation. */
   private final String name;
   /** Name of the database, e.g., OMIM, DECIPHER, ORPHANET */
@@ -46,7 +46,7 @@ public final class HpoDiseaseWithMetadata {
    * @param phenotypicAbnormalities {@link List} of phenotypic abnormalities with their frequencies.
    * @param modesOfInheritance {@link List} of modes of inheritance with their frequencies.
    */
-  public HpoDiseaseWithMetadata(
+  public HpoDisease(
       String name,
       String dbase,
       String databaseId,
@@ -91,7 +91,7 @@ public final class HpoDiseaseWithMetadata {
    * @param id id of the plain {@link TermId} for which we want to have the {@link HpoTermId}.
    * @return corresponding {@link HpoTermId} or null if not present.
    */
-  public HpoTermId getTermIdWithMetadata(TermId id) {
+  public HpoTermId getHpoTermId(TermId id) {
     return phenotypicAbnormalities
         .stream()
         .filter(timd -> timd.getTermId().equals(id))
