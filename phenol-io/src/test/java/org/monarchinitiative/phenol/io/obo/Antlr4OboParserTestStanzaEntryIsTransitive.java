@@ -48,7 +48,8 @@ public class Antlr4OboParserTestStanzaEntryIsTransitive extends Antlr4OboParserT
 
     assertEquals(StanzaEntryType.IS_TRANSITIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -77,9 +78,9 @@ public class Antlr4OboParserTestStanzaEntryIsTransitive extends Antlr4OboParserT
 
     assertEquals(StanzaEntryType.IS_TRANSITIVE, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

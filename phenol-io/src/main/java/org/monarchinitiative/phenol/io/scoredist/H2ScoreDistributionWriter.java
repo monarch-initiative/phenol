@@ -17,25 +17,19 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 /**
  * Write score distribution to a table in an H2 database.
  *
- * <p>
- * The database will be automatically created. If it exists, the table has to be re-created or
+ * <p>The database will be automatically created. If it exists, the table has to be re-created or
  * object initialization will fail.
- * </p>
  *
  * <h4>H2 Dependency Notes</h4>
  *
- * <p>
- * The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
+ * <p>The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
  * your calling code has to depend on H2.
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class H2ScoreDistributionWriter implements ScoreDistributionWriter {
 
-  /**
-   * {@link Logger} object to use.
-   */
+  /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(H2ScoreDistributionWriter.class);
 
   /** Path to database. */
@@ -48,15 +42,18 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   private final Connection conn;
 
   /** H2 statement for dropping table. */
-  private final static String H2_DROP_TABLE_STATEMENT = "DROP TABLE %s";
+  private static final String H2_DROP_TABLE_STATEMENT = "DROP TABLE %s";
 
   /** H2 statement for creating table. */
-  private final static String[] H2_CREATE_TABLE_STATEMENTS = new String[] {
-      "CREATE TABLE %s (num_terms INT, entrez_id INT, sample_size INT, scores OTHER, p_values OTHER)",
-      "CREATE INDEX ON %s (num_terms)", "CREATE UNIQUE INDEX ON %s (num_terms, entrez_id)"};
+  private static final String[] H2_CREATE_TABLE_STATEMENTS =
+      new String[] {
+        "CREATE TABLE %s (num_terms INT, entrez_id INT, sample_size INT, scores OTHER, p_values OTHER)",
+        "CREATE INDEX ON %s (num_terms)",
+        "CREATE UNIQUE INDEX ON %s (num_terms, entrez_id)"
+      };
 
   /** H2 statement for insterting into table. */
-  private final static String H2_INSERT_STATEMENT =
+  private static final String H2_INSERT_STATEMENT =
       "INSERT INTO %s (num_terms, entrez_id, sample_size, scores, p_values) VALUES (?, ?, ?, ?, ?)";
 
   /**
@@ -65,7 +62,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @param pathDb Path to the database to use.
    * @param dataTableName Name of the table to use.
    * @param resetTableIfExists Whether or not to reset the table if it already exists. Otherwise,
-   *        {@link PhenolException} will be thrown.
+   *     {@link PhenolException} will be thrown.
    */
   public H2ScoreDistributionWriter(String pathDb, String dataTableName, boolean resetTableIfExists)
       throws PhenolException {
@@ -78,8 +75,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * Open H2 database connection and perform initialization.
    *
    * @return Initialized {@link Connection} to H2 database.
-   * @throws PhenolException if there was a problem with initialization (e.g., table existed but
-   *         not {@code resetTableIfExists}.
+   * @throws PhenolException if there was a problem with initialization (e.g., table existed but not
+   *     {@code resetTableIfExists}.
    */
   private Connection openConnection(boolean resetTableIfExists) throws PhenolException {
     LOGGER.info("Opening connection to H2 database file at {} and configuring...", pathDb);
@@ -96,8 +93,10 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
 
     // Check whether the table already exists.
     final boolean tableExists;
-    try (final ResultSet rs = resultConn.getMetaData().getTables(null, null,
-        tableName.toUpperCase(), new String[] {"TABLE"})) {
+    try (final ResultSet rs =
+        resultConn
+            .getMetaData()
+            .getTables(null, null, tableName.toUpperCase(), new String[] {"TABLE"})) {
       tableExists = rs.next();
     } catch (SQLException e) {
       throw new PhenolException("Checking for table of name " + tableName + " failed", e);
@@ -162,8 +161,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @param resolution The resolution, {@code 0} for no change.
    * @throws PhenolException In case of problems when writing to database.
    */
-  private void writeObjectScoreDistribution(int numTerms, ObjectScoreDistribution dist,
-      int resolution) throws PhenolException {
+  private void writeObjectScoreDistribution(
+      int numTerms, ObjectScoreDistribution dist, int resolution) throws PhenolException {
     final double scores[];
     final double pValues[];
 
@@ -177,8 +176,9 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
         final int left = Math.max(0, (int) Math.floor(pos));
         final int right = Math.min(observedScores.size() - 1, (int) Math.ceil(pos));
         final double dx = right - pos;
-        final double score = observedScores.get(left)
-            + (1 - dx) * (observedScores.get(right) - observedScores.get(left));
+        final double score =
+            observedScores.get(left)
+                + (1 - dx) * (observedScores.get(right) - observedScores.get(left));
         scores[i] = score;
         pValues[i] = dist.estimatePValue(score);
       }
@@ -205,5 +205,4 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
       throw new PhenolException("Problem with inserting into score distribution table", e);
     }
   }
-
 }

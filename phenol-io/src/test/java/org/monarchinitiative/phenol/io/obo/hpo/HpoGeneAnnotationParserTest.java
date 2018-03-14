@@ -16,9 +16,7 @@ import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 
 public class HpoGeneAnnotationParserTest {
 
-
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private File hpoGeneAnnotationHeadFile;
 
@@ -26,8 +24,8 @@ public class HpoGeneAnnotationParserTest {
   public void setUp() throws IOException {
     hpoGeneAnnotationHeadFile =
         tmpFolder.newFile("OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt");
-    ResourceUtils.copyResourceToFile("/OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt",
-        hpoGeneAnnotationHeadFile);
+    ResourceUtils.copyResourceToFile(
+        "/OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt", hpoGeneAnnotationHeadFile);
   }
 
   @Test
@@ -51,5 +49,4 @@ public class HpoGeneAnnotationParserTest {
 
     parser.close();
   }
-
 }

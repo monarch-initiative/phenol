@@ -50,7 +50,8 @@ public class Antlr4OboParserTestStanzaEntryDefaultRelationshipIdPrefix
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_Id_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -81,9 +82,9 @@ public class Antlr4OboParserTestStanzaEntryDefaultRelationshipIdPrefix
 
     assertEquals(StanzaEntryType.DEFAULT_RELATIONSHIP_Id_PREFIX, stanzaEntry.getType());
     assertEquals("prefix:", stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

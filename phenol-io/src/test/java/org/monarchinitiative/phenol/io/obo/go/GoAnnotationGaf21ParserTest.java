@@ -19,8 +19,7 @@ import org.junit.rules.TemporaryFolder;
  */
 public class GoAnnotationGaf21ParserTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private File goGeneAnnotationHeadFile;
 
@@ -52,5 +51,4 @@ public class GoAnnotationGaf21ParserTest {
 
     parser.close();
   }
-
 }

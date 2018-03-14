@@ -73,10 +73,8 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParserBaseListener;
 /**
  * Master <code>ParseTreeListener</code> to use for OBO parsing.
  *
- * <p>
- * This class itself uses the listener pattern for customizing behaviour of storing the header and
- * collecting all stanzas or an event-based implementation using {@link OboParseResultListener}.
- * </p>
+ * <p>This class itself uses the listener pattern for customizing behaviour of storing the header
+ * and collecting all stanzas or an event-based implementation using {@link OboParseResultListener}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -88,17 +86,13 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   /** Map nodes to Objects with Map&lt;ParseTree, Object&gt;. */
   private ParseTreeProperty<Object> values = new ParseTreeProperty<>();
 
-  /**
-   * Current {@link StanzaType}.
-   */
+  /** Current {@link StanzaType}. */
   private StanzaType stanzaType = null;
 
   /**
    * List of current stanza's {@link StanzaEntry} objects.
    *
-   * <p>
-   * This has package level visibility for testing purposes.
-   * </p>
+   * <p>This has package level visibility for testing purposes.
    */
   List<StanzaEntry> stanzaKeyValues = null;
 
@@ -124,9 +118,8 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   /**
    * Retrieve object stored for <code>node</code>.
    *
-   * <p>
-   * Note that this just has package level access such that this class can be conveniently tested.
-   * </p>
+   * <p>Note that this just has package level access such that this class can be conveniently
+   * tested.
    *
    * @param node The {@link ParseTree} node to get the value for.
    * @return The value associated with <code>node</code>.
@@ -135,25 +128,19 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     return values.get(node);
   }
 
-  /**
-   * Flush the {@link #values} mapping for allowing garbage collection.
-   */
+  /** Flush the {@link #values} mapping for allowing garbage collection. */
   void clearValues() {
     values = new ParseTreeProperty<>();
   }
 
-  /**
-   * Called on entering <code>stanza</code> rule.
-   */
+  /** Called on entering <code>stanza</code> rule. */
   @Override
   public void enterHeader(HeaderContext ctx) {
     // Create new list of key/value pairs
     stanzaKeyValues = new ArrayList<StanzaEntry>();
   }
 
-  /**
-   * Called on leaving <code>header</code>.
-   */
+  /** Called on leaving <code>header</code>. */
   @Override
   public void exitHeader(HeaderContext ctx) {
     // Notify listener about being done with the header parsing
@@ -168,9 +155,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     clearValues();
   }
 
-  /**
-   * Called on leaving <code>stanza</code> rule.
-   */
+  /** Called on leaving <code>stanza</code> rule. */
   @Override
   public void exitStanza(StanzaContext ctx) {
     // Extract and store current stanza type
@@ -195,9 +180,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     clearValues();
   }
 
-  /**
-   * Called on entering <code>stanza</code> rule.
-   */
+  /** Called on entering <code>stanza</code> rule. */
   @Override
   public void enterStanza(StanzaContext ctx) {
     // Create new list of key/value pairs
@@ -205,8 +188,8 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   }
 
   /**
-   * Called on leaving <code>termKeyValue</code>, moves child <code>keyValue*</code> to this
-   * {@link ParseTree}'s map entry.
+   * Called on leaving <code>termKeyValue</code>, moves child <code>keyValue*</code> to this {@link
+   * ParseTree}'s map entry.
    */
   @Override
   public void exitTermStanzaKeyValue(TermStanzaKeyValueContext ctx) {
@@ -326,8 +309,10 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntrySynonym(text, termSynonymScope, scopeTypeName, dbXrefList,
-        trailingModifier, comment));
+    setValue(
+        ctx,
+        new StanzaEntrySynonym(
+            text, termSynonymScope, scopeTypeName, dbXrefList, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueXref</code> rule. */
@@ -398,8 +383,12 @@ class OboParserListener extends Antlr4OboParserBaseListener {
       ids = Lists.newArrayList(OboEscapeUtils.unescape(ctx.extWord(1).getText()));
     } else {
       relationshipType = OboEscapeUtils.unescape(ctx.extWord(0).getText());
-      ids = ctx.extWord().subList(1, ctx.extWord().size()).stream()
-          .map(t -> OboEscapeUtils.unescape(t.getText())).collect(Collectors.toList());
+      ids =
+          ctx.extWord()
+              .subList(1, ctx.extWord().size())
+              .stream()
+              .map(t -> OboEscapeUtils.unescape(t.getText()))
+              .collect(Collectors.toList());
     }
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
@@ -663,8 +652,10 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntrySynonymtypedef(synonymTypeName, description, termSynonymScope,
-        trailingModifier, comment));
+    setValue(
+        ctx,
+        new StanzaEntrySynonymtypedef(
+            synonymTypeName, description, termSynonymScope, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueDefaultRelationshipIdspace</code> rule. */
@@ -681,8 +672,10 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
-    setValue(ctx, new StanzaEntryIdspace(localIdSpace, remoteIdSpace, description, trailingModifier,
-        comment));
+    setValue(
+        ctx,
+        new StanzaEntryIdspace(
+            localIdSpace, remoteIdSpace, description, trailingModifier, comment));
   }
 
   /** Called on leaving <code>keyValueDefaultRelationshipPrefix</code> rule. */
@@ -717,9 +710,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, new StanzaEntryRemark(text, trailingModifier, comment));
   }
 
-  /**
-   * Called on leaving <code>dbXrefList</code> rule, construct {@link DbXref} object.
-   */
+  /** Called on leaving <code>dbXrefList</code> rule, construct {@link DbXref} object. */
   @Override
   public void exitDbXrefList(DbXrefListContext ctx) {
     final DbXrefList dbXrefList = new DbXrefList();
@@ -730,15 +721,14 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, dbXrefList);
   }
 
-  /**
-   * Called on leaving <code>dbXref</code> rule, construct {@link DbXref} object.
-   */
+  /** Called on leaving <code>dbXref</code> rule, construct {@link DbXref} object. */
   @Override
   public void exitDbXref(DbXrefContext ctx) {
     final String name = OboEscapeUtils.unescape(ctx.dbXrefWord().getText());
-    final String description = (ctx.QuotedString() == null)
-        ? null
-        : OboEscapeUtils.unescape(ctx.QuotedString().getText().trim());
+    final String description =
+        (ctx.QuotedString() == null)
+            ? null
+            : OboEscapeUtils.unescape(ctx.QuotedString().getText().trim());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
 
     setValue(ctx, new DbXref(name, description, trailingModifier));
@@ -753,10 +743,12 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     final TrailingModifierBuilder builder = new TrailingModifierBuilder();
     for (TrailingModifierKeyValueContext kvCtx : ctx.trailingModifierKeyValue()) {
       if (kvCtx.QuotedString() != null) {
-        builder.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
+        builder.addKeyValue(
+            OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
             OboEscapeUtils.unescape(kvCtx.QuotedString().getText().trim()));
       } else {
-        builder.addKeyValue(OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
+        builder.addKeyValue(
+            OboEscapeUtils.unescape(kvCtx.Word(0).getText().trim()),
             OboEscapeUtils.unescape(kvCtx.Word(1).getText().trim()));
       }
     }
@@ -783,9 +775,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     }
   }
 
-  /**
-   * Overload of {@link #trimmedEmptyToNull(String)} that handles {@link EolComment2Context}.
-   */
+  /** Overload of {@link #trimmedEmptyToNull(String)} that handles {@link EolComment2Context}. */
   private static String trimmedEmptyToNull(EolComment2Context x) {
     if (x == null || x.Comment2() == null) {
       return null;
@@ -796,9 +786,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     }
   }
 
-  /**
-   * Overload of {@link #trimmedEmptyToNull(String)} that handles {@link ExtWordContext}.
-   */
+  /** Overload of {@link #trimmedEmptyToNull(String)} that handles {@link ExtWordContext}. */
   private static String trimmedEmptyToNull(ExtWordContext n) {
     if (n == null) {
       return null;
@@ -806,5 +794,4 @@ class OboParserListener extends Antlr4OboParserBaseListener {
       return trimmedEmptyToNull(n.getText());
     }
   }
-
 }

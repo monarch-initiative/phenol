@@ -14,8 +14,8 @@ public final class StanzaEntryInverseOf extends StanzaEntry {
    * Constructor.
    *
    * @param id The Id of the referenced term.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryInverseOf(String id, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryInverseOf extends StanzaEntry {
     this.id = id;
   }
 
-  /**
-   * @return The Id of the referenced term.
-   */
+  /** @return The Id of the referenced term. */
   public String getId() {
     return id;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryInverseOf [id=" + id + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryInverseOf [id="
+        + id
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

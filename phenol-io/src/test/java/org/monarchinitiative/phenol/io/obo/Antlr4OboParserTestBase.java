@@ -50,13 +50,20 @@ public class Antlr4OboParserTestBase {
 
     Antlr4OboParser p = new Antlr4OboParser(new CommonTokenStream(l));
 
-    p.addErrorListener(new BaseErrorListener() {
-      @Override
-      public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-          int charPositionInLine, String msg, RecognitionException e) {
-        throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
-      }
-    });
+    p.addErrorListener(
+        new BaseErrorListener() {
+          @Override
+          public void syntaxError(
+              Recognizer<?, ?> recognizer,
+              Object offendingSymbol,
+              int line,
+              int charPositionInLine,
+              String msg,
+              RecognitionException e) {
+            throw new IllegalStateException(
+                "failed to parse at line " + line + " due to " + msg, e);
+          }
+        });
 
     p.addErrorListener(new DiagnosticErrorListener());
 
@@ -69,16 +76,12 @@ public class Antlr4OboParserTestBase {
     return buildParser(text, "DEFAULT_MODE");
   }
 
-  /**
-   * @return The inner listener, used for coarser-granular access.
-   */
+  /** @return The inner listener, used for coarser-granular access. */
   public TestListener getInnerListener() {
     return innerListener;
   }
 
-  /**
-   * @return The listener, e.g., stores temporary values.
-   */
+  /** @return The listener, e.g., stores temporary values. */
   public OboParserListener getOuterListener() {
     return outerListener;
   }
@@ -115,15 +118,10 @@ public class Antlr4OboParserTestBase {
     public boolean isParsingComplete() {
       return parsingComplete;
     }
-
   }
 
-  /**
-   * Setup <code>stanzaKeyValues</code> member of <code>outerListener</code> for testing.
-   */
+  /** Setup <code>stanzaKeyValues</code> member of <code>outerListener</code> for testing. */
   protected void setupStanzaKeyValues() {
     outerListener.stanzaKeyValues = new ArrayList<>();
   }
-
 }
-

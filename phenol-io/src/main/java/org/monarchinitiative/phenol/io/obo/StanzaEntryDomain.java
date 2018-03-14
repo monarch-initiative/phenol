@@ -14,8 +14,8 @@ public final class StanzaEntryDomain extends StanzaEntry {
    * Constructor.
    *
    * @param value The value of the Id stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryDomain(String value, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryDomain extends StanzaEntry {
     this.value = value;
   }
 
-  /**
-   * @return The entry's value.
-   */
+  /** @return The entry's value. */
   public String getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryDomain [value=" + value + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryDomain [value="
+        + value
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

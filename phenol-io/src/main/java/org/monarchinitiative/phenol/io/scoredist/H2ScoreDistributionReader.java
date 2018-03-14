@@ -20,10 +20,8 @@ import java.util.TreeMap;
  *
  * <h4>H2 Dependency Notes</h4>
  *
- * <p>
- * The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
+ * <p>The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
  * your calling code has to depend on H2.
- * </p>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -39,14 +37,14 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   private final Connection conn;
 
   /** H2 query for selecting all term counts. */
-  private final static String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT (term_count) from %s";
+  private static final String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT (term_count) from %s";
 
   /** H2 query for selecting by term count. */
-  private final static String H2_SELECT_BY_TERM_COUNT_STATEMENT =
+  private static final String H2_SELECT_BY_TERM_COUNT_STATEMENT =
       "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ?)";
 
   /** H2 query for selecting by term count and object ID. */
-  private final static String H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT =
+  private static final String H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT =
       "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ? AND object_id = ?)";
 
   /**
@@ -99,8 +97,9 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   @Override
   public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
       throws PhenolException {
-    try (final PreparedStatement stmt = conn
-        .prepareStatement(String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
+    try (final PreparedStatement stmt =
+        conn.prepareStatement(
+            String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
       stmt.setInt(1, termCount);
       stmt.setInt(2, objectId);
       try (final ResultSet rs = stmt.executeQuery()) {
@@ -109,8 +108,11 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
         }
       }
     } catch (SQLException e) {
-      throw new PhenolException("Problem with getting object score distribution for termCount: "
-          + termCount + ", objectId: " + objectId);
+      throw new PhenolException(
+          "Problem with getting object score distribution for termCount: "
+              + termCount
+              + ", objectId: "
+              + objectId);
     }
 
     throw new PhenolException(
@@ -167,8 +169,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
     // Get all term counts.
     final List<Integer> termCounts = new ArrayList<>();
-    try (
-        final PreparedStatement stmt =
+    try (final PreparedStatement stmt =
             conn.prepareStatement(String.format(H2_SELECT_TERM_COUNTS, tableName));
         final ResultSet rs = stmt.executeQuery()) {
       while (rs.next()) {
@@ -194,5 +195,4 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
       throw new IOException("Problem closing connection to database", e);
     }
   }
-
 }

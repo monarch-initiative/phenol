@@ -66,7 +66,8 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXrefList());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -99,7 +100,8 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals(TermSynonymScope.EXACT, stanzaEntry.getTermSynonymScope());
     assertNull(stanzaEntry.getSynonymTypeName());
     assertNull(stanzaEntry.getDbXrefList());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
@@ -119,9 +121,9 @@ public class Antlr4OboParserTestStanzaEntrySynonym extends Antlr4OboParserTestBa
     assertEquals(
         "DbXrefList [dbXrefs=[DbXref [name=db-xref, description=null, trailingModifier=null]]]",
         stanzaEntry.getDbXrefList().toString());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

@@ -47,7 +47,8 @@ public class Antlr4OboParserTestStanzaEntryInstanceOf extends Antlr4OboParserTes
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -76,9 +77,9 @@ public class Antlr4OboParserTestStanzaEntryInstanceOf extends Antlr4OboParserTes
 
     assertEquals(StanzaEntryType.INSTANCE_OF, stanzaEntry.getType());
     assertEquals("HP:1", stanzaEntry.getId());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

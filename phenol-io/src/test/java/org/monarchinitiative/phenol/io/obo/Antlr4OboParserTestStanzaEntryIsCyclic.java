@@ -45,7 +45,8 @@ public class Antlr4OboParserTestStanzaEntryIsCyclic extends Antlr4OboParserTestB
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -72,9 +73,9 @@ public class Antlr4OboParserTestStanzaEntryIsCyclic extends Antlr4OboParserTestB
 
     assertEquals(StanzaEntryType.IS_CYCLIC, stanzaEntry.getType());
     assertEquals(true, stanzaEntry.getValue());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

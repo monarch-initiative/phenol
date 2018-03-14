@@ -18,9 +18,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Parser for GO "gene annotation file" (GAF) format.
  *
- * <p>
- * <b>Usage Example</b>
- * </p>
+ * <p><b>Usage Example</b>
  *
  * <pre>
  * File inputFile = "goa_human.gaf";
@@ -41,14 +39,10 @@ import com.google.common.collect.ImmutableList;
  */
 public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf21Annotation> {
 
-  /**
-   * The {@link File} to read from.
-   */
+  /** The {@link File} to read from. */
   private final File file;
 
-  /**
-   * The {@link BufferedReader} to use for reading line-wise.
-   */
+  /** The {@link BufferedReader} to use for reading line-wise. */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -58,7 +52,6 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
    * Create new parser for GO gene annotation file.
    *
    * @param file The file to read from.
-   *
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
@@ -82,8 +75,10 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     }
     final String[] arr = nextLine.split("\t");
     if (arr.length < 15 || arr.length > 17) {
-      throw new TermAnnotationParserException("First line of file had " + arr.length
-          + " columns, but expected between 15 and 17 entries.");
+      throw new TermAnnotationParserException(
+          "First line of file had "
+              + arr.length
+              + " columns, but expected between 15 and 17 entries.");
     }
   }
 
@@ -97,6 +92,7 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
       nextLine = reader.readLine();
     }
   }
+
   @Override
   public boolean hasNext() {
     return nextLine != null;
@@ -108,7 +104,10 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     final String[] arr = nextLine.split("\t");
     if (arr.length < 15 || arr.length > 17) {
       throw new TermAnnotationParserException(
-          "GAF line had " + arr.length + " columns, but expected between 15 and 17 entries. \n Line was:" + nextLine);
+          "GAF line had "
+              + arr.length
+              + " columns, but expected between 15 and 17 entries. \n Line was:"
+              + nextLine);
     }
     final String db = arr[0];
     final String dbObjectId = arr[1];
@@ -139,9 +138,24 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
           "There was a problem parsing the date value " + dateStr, e);
     }
 
-    return new GoGaf21Annotation(db, dbObjectId, dbObjectSymbol, qualifier, goId, dbReference,
-        evidenceCode, with, aspect, dbObjectName, dbObjectSynonym, dbObjectType, taxons, date,
-        assignedBy, annotationExtension, geneProductFormId);
+    return new GoGaf21Annotation(
+        db,
+        dbObjectId,
+        dbObjectSymbol,
+        qualifier,
+        goId,
+        dbReference,
+        evidenceCode,
+        with,
+        aspect,
+        dbObjectName,
+        dbObjectSynonym,
+        dbObjectType,
+        taxons,
+        date,
+        assignedBy,
+        annotationExtension,
+        geneProductFormId);
   }
 
   @Override
@@ -153,5 +167,4 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
   public File getFile() {
     return file;
   }
-
 }

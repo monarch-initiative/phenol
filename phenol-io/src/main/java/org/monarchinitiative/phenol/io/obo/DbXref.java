@@ -13,9 +13,7 @@ public class DbXref {
   /** The dbXref description, <code>null</code> if missing. */
   private final String description;
 
-  /**
-   * The {@link TrailingModifier}, <code>null</code> if missing.
-   */
+  /** The {@link TrailingModifier}, <code>null</code> if missing. */
   private final TrailingModifier trailingModifier;
 
   /**
@@ -60,8 +58,12 @@ public class DbXref {
 
   @Override
   public String toString() {
-    return "DbXref [name=" + name + ", description=" + description + ", trailingModifier="
-        + trailingModifier + "]";
+    return "DbXref [name="
+        + name
+        + ", description="
+        + description
+        + ", trailingModifier="
+        + trailingModifier
+        + "]";
   }
-
 }

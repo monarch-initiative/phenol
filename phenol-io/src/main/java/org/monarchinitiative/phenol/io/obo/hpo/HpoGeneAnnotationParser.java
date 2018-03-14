@@ -13,9 +13,7 @@ import java.io.IOException;
 /**
  * Parser for "genes to phenotype annotation" files.
  *
- * <p>
- * <b>Usage Example</b>
- * </p>
+ * <p><b>Usage Example</b>
  *
  * <pre>
  * File inputFile = new File("genes_to_phenotype.txt");
@@ -44,14 +42,10 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
   private static final String EXPECTED_HEADER =
       "#Format: entrez-gene-id<tab>entrez-gene-symbol<tab>HPO-Term-Name<tab>HPO-Term-ID";
 
-  /**
-   * The {@link File} to read from.
-   */
+  /** The {@link File} to read from. */
   private final File file;
 
-  /**
-   * The {@link BufferedReader} to use for reading line-wise.
-   */
+  /** The {@link BufferedReader} to use for reading line-wise. */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -61,7 +55,6 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
    * Create new parser for HPO gene annotation files.
    *
    * @param file The file to read from.
-   *
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
@@ -80,8 +73,12 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
    */
   private void checkHeader() throws TermAnnotationParserException, IOException {
     if (!EXPECTED_HEADER.equals(nextLine)) {
-      throw new TermAnnotationParserException("First line is not the expected header. \"" + nextLine
-          + "\" vs. \"" + EXPECTED_HEADER + "\" (expected)");
+      throw new TermAnnotationParserException(
+          "First line is not the expected header. \""
+              + nextLine
+              + "\" vs. \""
+              + EXPECTED_HEADER
+              + "\" (expected)");
     }
     nextLine = reader.readLine();
   }
@@ -113,5 +110,4 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
   public File getFile() {
     return file;
   }
-
 }

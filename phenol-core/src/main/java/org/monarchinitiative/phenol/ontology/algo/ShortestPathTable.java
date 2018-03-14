@@ -65,9 +65,7 @@ public final class ShortestPathTable {
     }
     // Precompute distances from topological sorting.
     new TopologicalSorting<TermId, IdLabeledEdge, DefaultDirectedGraph<TermId, IdLabeledEdge>>()
-        .startForward(
-            (DefaultDirectedGraph<TermId, IdLabeledEdge>) ontology.getGraph(),
-            new BuildDistanceTableVertexVisitor());
+        .startForward(ontology.getGraph(), new BuildDistanceTableVertexVisitor());
   }
 
   /**

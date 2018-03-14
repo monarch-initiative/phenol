@@ -12,9 +12,7 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 /**
  * Parser for Upheno gene annotation files.
  *
- * <p>
- * <b>Usage Example</b>
- * </p>
+ * <p><b>Usage Example</b>
  *
  * <pre>
  * File inputFile = "XXX.txt";
@@ -35,14 +33,10 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
  */
 public final class UphenoGeneAnnotationParser implements TermAnnotationParser<TermAnnotation> {
 
-  /**
-   * The {@link File} to read from.
-   */
+  /** The {@link File} to read from. */
   private final File file;
 
-  /**
-   * The {@link BufferedReader} to use for reading line-wise.
-   */
+  /** The {@link BufferedReader} to use for reading line-wise. */
   private final BufferedReader reader;
 
   /** The next line. */
@@ -52,7 +46,6 @@ public final class UphenoGeneAnnotationParser implements TermAnnotationParser<Te
    * Create new parser for Upheno gene annotation file.
    *
    * @param file The file to read from.
-   *
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
@@ -81,5 +74,4 @@ public final class UphenoGeneAnnotationParser implements TermAnnotationParser<Te
   public File getFile() {
     return file;
   }
-
 }

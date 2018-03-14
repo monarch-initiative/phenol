@@ -22,9 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class OboParser {
 
-  /**
-   * The {@link Logger} object to use for logging.
-   */
+  /** The {@link Logger} object to use for logging. */
   private static final Logger LOGGER = LoggerFactory.getLogger(OboParser.class);
 
   /** Flag whether debugging is enabled or not. */
@@ -49,7 +47,6 @@ public final class OboParser {
    *
    * @param file Path to OBO file.
    * @return Completely parsed OBO file.
-   *
    * @throws IOException In case of problems with file I/O. F
    */
   public OboFile parseFile(File file) throws IOException {
@@ -63,7 +60,6 @@ public final class OboParser {
    *
    * @param file Path to OBO file.
    * @param listener Listener for parsing.
-   *
    * @throws IOException In case of problems with file I/O.
    */
   public void parseFile(File file, OboParseResultListener listener) throws IOException {
@@ -77,7 +73,6 @@ public final class OboParser {
    *
    * @param oboString String with OBO file contents.
    * @return Completely parsed OBO file.
-   *
    * @throws IOException In case of problems with file I/O. F
    */
   public OboFile parseString(String oboString) {
@@ -91,7 +86,6 @@ public final class OboParser {
    *
    * @param oboString String with OBO file contents.
    * @param listener Listener for parsing.
-   *
    * @throws IOException In case of problems with file I/O.
    */
   public void parseString(String oboString, OboParseResultListener listener) {
@@ -102,13 +96,20 @@ public final class OboParser {
     final OboLexer l = new OboLexer(inputStream);
     final Antlr4OboParser p = new Antlr4OboParser(new CommonTokenStream(l));
 
-    p.addErrorListener(new BaseErrorListener() {
-      @Override
-      public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-          int charPositionInLine, String msg, RecognitionException e) {
-        throw new IllegalStateException("Failed to parse at line " + line + " due to " + msg, e);
-      }
-    });
+    p.addErrorListener(
+        new BaseErrorListener() {
+          @Override
+          public void syntaxError(
+              Recognizer<?, ?> recognizer,
+              Object offendingSymbol,
+              int line,
+              int charPositionInLine,
+              String msg,
+              RecognitionException e) {
+            throw new IllegalStateException(
+                "Failed to parse at line " + line + " due to " + msg, e);
+          }
+        });
 
     if (debug) {
       p.addErrorListener(new DiagnosticErrorListener());
@@ -119,9 +120,7 @@ public final class OboParser {
     p.oboFile();
   }
 
-  /**
-   * Helper class for collecting parse result; header and stanzas.
-   */
+  /** Helper class for collecting parse result; header and stanzas. */
   private final class HelperListener implements OboParseResultListener {
 
     private Header header = null;
@@ -143,20 +142,14 @@ public final class OboParser {
       // nop
     }
 
-    /**
-     * @return Resulting header.
-     */
+    /** @return Resulting header. */
     public Header getHeader() {
       return header;
     }
 
-    /**
-     * @return The resulting stanzas.
-     */
+    /** @return The resulting stanzas. */
     public List<Stanza> getStanzas() {
       return stanzas;
     }
-
   }
-
 }

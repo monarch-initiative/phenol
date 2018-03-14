@@ -9,8 +9,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class HpoNegativeDiseaseAnnotationParserTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private File hpoDiseaseAnnotationHeadFile;
 
@@ -19,8 +18,8 @@ public class HpoNegativeDiseaseAnnotationParserTest {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
     hpoDiseaseAnnotationHeadFile = tmpFolder.newFile("negative_phenotype_annotation_head.tab");
-    ResourceUtils.copyResourceToFile("/negative_phenotype_annotation_head.tab",
-        hpoDiseaseAnnotationHeadFile);
+    ResourceUtils.copyResourceToFile(
+        "/negative_phenotype_annotation_head.tab", hpoDiseaseAnnotationHeadFile);
   }
 
   /*

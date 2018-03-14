@@ -30,5 +30,4 @@ public class Antlr4OboLexerSmokeTest extends SmokeTestBase {
     Antlr4OboLexer l = new Antlr4OboLexer(inputStream);
     l.getAllTokens();
   }
-
 }

@@ -56,7 +56,8 @@ public class Antlr4OboParserTestStanzaEntryXref extends Antlr4OboParserTestBase 
     final StanzaEntryXref stanzaEntry = (StanzaEntryXref) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
-    assertEquals("DbXref [name=Other:Id, description=null, trailingModifier=null]",
+    assertEquals(
+        "DbXref [name=Other:Id, description=null, trailingModifier=null]",
         stanzaEntry.getDbXref().toString());
     assertNull(stanzaEntry.getTrailingModifier());
     assertNull(stanzaEntry.getComment());
@@ -70,9 +71,12 @@ public class Antlr4OboParserTestStanzaEntryXref extends Antlr4OboParserTestBase 
     final StanzaEntryXref stanzaEntry = (StanzaEntryXref) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
-    assertEquals("DbXref [name=Other:Id, description=null, trailingModifier=TrailingModifier "
-        + "[keyValue=[KeyValue [key=key, value=value]]]]", stanzaEntry.getDbXref().toString());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "DbXref [name=Other:Id, description=null, trailingModifier=TrailingModifier "
+            + "[keyValue=[KeyValue [key=key, value=value]]]]",
+        stanzaEntry.getDbXref().toString());
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -85,7 +89,8 @@ public class Antlr4OboParserTestStanzaEntryXref extends Antlr4OboParserTestBase 
     final StanzaEntryXref stanzaEntry = (StanzaEntryXref) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
-    assertEquals("DbXref [name=Other:Id, description=null, trailingModifier=null]",
+    assertEquals(
+        "DbXref [name=Other:Id, description=null, trailingModifier=null]",
         stanzaEntry.getDbXref().toString());
     assertNull(stanzaEntry.getTrailingModifier());
     assertEquals("comment", stanzaEntry.getComment().toString());
@@ -99,11 +104,13 @@ public class Antlr4OboParserTestStanzaEntryXref extends Antlr4OboParserTestBase 
     final StanzaEntryXref stanzaEntry = (StanzaEntryXref) getOuterListener().getValue(ctx);
 
     assertEquals(StanzaEntryType.XREF, stanzaEntry.getType());
-    assertEquals("DbXref [name=Other:Id, description=null, trailingModifier=TrailingModifier "
-        + "[keyValue=[KeyValue [key=key, value=value]]]]", stanzaEntry.getDbXref().toString());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "DbXref [name=Other:Id, description=null, trailingModifier=TrailingModifier "
+            + "[keyValue=[KeyValue [key=key, value=value]]]]",
+        stanzaEntry.getDbXref().toString());
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }

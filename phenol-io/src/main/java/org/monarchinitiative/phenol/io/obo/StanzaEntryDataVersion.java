@@ -14,8 +14,8 @@ public final class StanzaEntryDataVersion extends StanzaEntry {
    * Constructor.
    *
    * @param value The value of the stanza entry.
-   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry,
-   *        <code>null</code> for none.
+   * @param trailingModifier Optional {@link TrailingModifier} of the stanza entry, <code>null
+   *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
   public StanzaEntryDataVersion(String value, TrailingModifier trailingModifier, String comment) {
@@ -23,18 +23,21 @@ public final class StanzaEntryDataVersion extends StanzaEntry {
     this.value = value;
   }
 
-  /**
-   * @return The entry's value.
-   */
+  /** @return The entry's value. */
   public String getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "StanzaEntryDataVersion [value=" + value + ", getType()=" + getType()
-        + ", getTrailingModifier()=" + getTrailingModifier() + ", getComment()=" + getComment()
+    return "StanzaEntryDataVersion [value="
+        + value
+        + ", getType()="
+        + getType()
+        + ", getTrailingModifier()="
+        + getTrailingModifier()
+        + ", getComment()="
+        + getComment()
         + "]";
   }
-
 }

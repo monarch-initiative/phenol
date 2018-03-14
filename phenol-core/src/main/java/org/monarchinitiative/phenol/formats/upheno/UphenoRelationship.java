@@ -22,7 +22,8 @@ public class UphenoRelationship extends GenericRelationship {
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationshipType The relation's type.
    */
-  public UphenoRelationship(TermId source, TermId dest, int id, UphenoRelationshipType relationshipType) {
+  public UphenoRelationship(
+      TermId source, TermId dest, int id, UphenoRelationshipType relationshipType) {
     super(source, dest, id, relationshipType);
   }
 

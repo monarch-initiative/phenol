@@ -10,9 +10,7 @@ import java.util.List;
  */
 public class DbXrefList {
 
-  /**
-   * List of {@link DbXref} objects.
-   */
+  /** List of {@link DbXref} objects. */
   private final List<DbXref> dbXrefs = new ArrayList<>();
 
   /**
@@ -37,5 +35,4 @@ public class DbXrefList {
   public String toString() {
     return "DbXrefList [dbXrefs=" + dbXrefs + "]";
   }
-
 }

@@ -17,23 +17,17 @@ public final class Stanza {
   /** The type of this stanza. */
   private final StanzaType type;
 
-  /**
-   * List of {@link StanzaEntry} objects for this <code>Stanza</code>.
-   */
+  /** List of {@link StanzaEntry} objects for this <code>Stanza</code>. */
   private final List<StanzaEntry> stanzaEntries;
 
-  /**
-   * Mapping from {@link StanzaEntryType} to list of objects of this stanza.
-   */
+  /** Mapping from {@link StanzaEntryType} to list of objects of this stanza. */
   private final Map<StanzaEntryType, List<StanzaEntry>> entryByType;
 
   /**
    * Factory method for creating new {@link Stanza} object.
    *
-   * <p>
-   * This function was created for forwards compatibility in case sub classing is introduced for the
-   * different stanza types.
-   * </p>
+   * <p>This function was created for forwards compatibility in case sub classing is introduced for
+   * the different stanza types.
    *
    * @param type {@link StanzaType} of <code>Stanza</code> to created.
    * @param stanzaEntries {@link List} of {@link StanzaEntry} objects to use.
@@ -46,9 +40,7 @@ public final class Stanza {
   /**
    * Constructor.
    *
-   * <p>
-   * Private; use {@link #create(StanzaType, List)} instead for forwards compatibility.
-   * </p>
+   * <p>Private; use {@link #create(StanzaType, List)} instead for forwards compatibility.
    *
    * @param type The {@link StanzaType} of this stanza.
    * @param stanzaEntries {@link List} of {@link StanzaEntry} objects.
@@ -88,8 +80,7 @@ public final class Stanza {
    * Query for entry by type.
    *
    * @return {@link Map} from {@link StanzaEntryType} to {@link List} of {@link StanzaEntry}. Will
-   *         contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the
-   *         type.
+   *     contain no empty lists, entry is missing if there is no {@link StanzaEntry} for the type.
    */
   public Map<StanzaEntryType, List<StanzaEntry>> getEntryByType() {
     return entryByType;
@@ -97,8 +88,12 @@ public final class Stanza {
 
   @Override
   public String toString() {
-    return "Stanza [type=" + type + ", stanzaEntries=" + stanzaEntries + ", entryByType="
-        + new TreeMap<>(entryByType) + "]";
+    return "Stanza [type="
+        + type
+        + ", stanzaEntries="
+        + stanzaEntries
+        + ", entryByType="
+        + new TreeMap<>(entryByType)
+        + "]";
   }
-
 }

@@ -50,7 +50,8 @@ public class Antlr4OboParserTestStanzaEntryIdspace extends Antlr4OboParserTestBa
     assertEquals("GO", stanzaEntry.getLocalIdSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIdSpace());
     assertEquals("gene ontology terms", stanzaEntry.getDescription());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertNull(stanzaEntry.getComment());
   }
@@ -83,9 +84,9 @@ public class Antlr4OboParserTestStanzaEntryIdspace extends Antlr4OboParserTestBa
     assertEquals("GO", stanzaEntry.getLocalIdSpace());
     assertEquals("urn:lsid:bioontology.org:GO:", stanzaEntry.getGlobalIdSpace());
     assertEquals("gene ontology terms", stanzaEntry.getDescription());
-    assertEquals("TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
+    assertEquals(
+        "TrailingModifier [keyValue=[KeyValue [key=key, value=value]]]",
         stanzaEntry.getTrailingModifier().toString());
     assertEquals("comment", stanzaEntry.getComment());
   }
-
 }
