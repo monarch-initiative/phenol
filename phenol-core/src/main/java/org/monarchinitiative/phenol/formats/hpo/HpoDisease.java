@@ -91,7 +91,7 @@ public final class HpoDisease {
    * @param id id of the plain {@link TermId} for which we want to have the {@link HpoAnnotation}.
    * @return corresponding {@link HpoAnnotation} or null if not present.
    */
-  public HpoAnnotation getHpoTermId(TermId id) {
+  public HpoAnnotation getAnnotation(TermId id) {
     return phenotypicAbnormalities
         .stream()
         .filter(timd -> timd.getTermId().equals(id))
