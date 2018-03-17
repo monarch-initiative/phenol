@@ -1,32 +1,33 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 public class HpoDiseaseAnnotationParserTest {
 
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-  private File hpoDiseaseAnnotationToyFile;
+  @Rule
+  public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   @Before
   public void setUp() throws IOException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-    hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
+    File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile(
         "/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
   }
 
   /*
   @Test
-  public void testParseHpoDiseaseAnnotationHead()
-      throws IOException, TermAnnotationParserException {
+  public void testParseHpoDiseaseAnnotationHead() {
     final HpoDiseaseAnnotationParser parser =
-        new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile);
+      new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath());
+
+  }
 
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();

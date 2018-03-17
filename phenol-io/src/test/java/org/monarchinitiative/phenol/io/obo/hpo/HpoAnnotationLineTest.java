@@ -1,20 +1,13 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 
-import java.io.*;
-import java.util.ArrayList;
+import org.junit.Test;
+import org.monarchinitiative.phenol.base.PhenolException;
+
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertNull;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
