@@ -1,33 +1,36 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-public class HpoNegativeDiseaseAnnotationParserTest {
+/**
+ * TODO refactor to use the small hp file and a small annotation file.
+ */
+public class HpoDiseaseAnnotationParserTest {
 
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-  private File hpoDiseaseAnnotationHeadFile;
+  @Rule
+  public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   @Before
   public void setUp() throws IOException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-
-    hpoDiseaseAnnotationHeadFile = tmpFolder.newFile("negative_phenotype_annotation_head.tab");
+    File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile(
-        "/negative_phenotype_annotation_head.tab", hpoDiseaseAnnotationHeadFile);
+        "/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
   }
 
   /*
   @Test
-  public void testParseHpoDiseaseAnnotationHead()
-      throws IOException, TermAnnotationParserException {
+  public void testParseHpoDiseaseAnnotationHead() {
     final HpoDiseaseAnnotationParser parser =
-        new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationHeadFile);
+      new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath());
+
+  }
 
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();

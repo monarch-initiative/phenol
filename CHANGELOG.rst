@@ -2,6 +2,10 @@
 Changelog
 =========
 
+------
+v0.1.8
+------
+- refactored HpoAnnotation from HpoTermId
 
 ------
 v0.1.7

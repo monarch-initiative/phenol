@@ -28,7 +28,7 @@ public final class HpoDisease {
   private final String diseaseDatabaseId;
 
   /** {@link TermId}s with phenotypic abnormalities and their frequencies. */
-  private final List<HpoTermId> phenotypicAbnormalities;
+  private final List<HpoAnnotation> phenotypicAbnormalities;
 
   /** {@link TermId}s with mode of inheritance and their frequencies. */
   private final List<TermId> modesOfInheritance;
@@ -50,7 +50,7 @@ public final class HpoDisease {
       String name,
       String dbase,
       String databaseId,
-      List<HpoTermId> phenotypicAbnormalities,
+      List<HpoAnnotation> phenotypicAbnormalities,
       List<TermId> modesOfInheritance,
       List<TermId> notTerms) {
     this.name = name;
@@ -72,7 +72,7 @@ public final class HpoDisease {
   }
 
   /** @return The list of frequency-annotated phenotypic abnormalities. */
-  public List<HpoTermId> getPhenotypicAbnormalities() {
+  public List<HpoAnnotation> getPhenotypicAbnormalities() {
     return phenotypicAbnormalities;
   }
 
@@ -88,10 +88,10 @@ public final class HpoDisease {
   /**
    * Users can user this function to get the HpoTermId corresponding to a TermId
    *
-   * @param id id of the plain {@link TermId} for which we want to have the {@link HpoTermId}.
-   * @return corresponding {@link HpoTermId} or null if not present.
+   * @param id id of the plain {@link TermId} for which we want to have the {@link HpoAnnotation}.
+   * @return corresponding {@link HpoAnnotation} or null if not present.
    */
-  public HpoTermId getHpoTermId(TermId id) {
+  public HpoAnnotation getHpoTermId(TermId id) {
     return phenotypicAbnormalities
         .stream()
         .filter(timd -> timd.getTermId().equals(id))
@@ -105,7 +105,7 @@ public final class HpoDisease {
    *     annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedTo(TermId tid) {
-    for (HpoTermId tiwm : phenotypicAbnormalities) {
+    for (HpoAnnotation tiwm : phenotypicAbnormalities) {
       if (tiwm.getTermId().equals(tid)) return true;
     }
     return false;
@@ -116,7 +116,7 @@ public final class HpoDisease {
    *     indirect annotations from annotation propagation rule.
    */
   public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
-    for (HpoTermId tiwm : phenotypicAbnormalities) {
+    for (HpoAnnotation tiwm : phenotypicAbnormalities) {
       if (tidset.contains(tiwm.getTermId())) return true;
     }
     return false;
@@ -129,7 +129,7 @@ public final class HpoDisease {
    * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
   public double getFrequencyOfTermInDisease(TermId tid) {
-    HpoTermId tiwm =
+    HpoAnnotation tiwm =
         phenotypicAbnormalities
             .stream()
             .filter(twm -> twm.getTermId().equals(tid))
@@ -145,7 +145,7 @@ public final class HpoDisease {
     String abnormalityList =
         phenotypicAbnormalities
             .stream()
-            .map(HpoTermId::getIdWithPrefix)
+            .map(HpoAnnotation::getIdWithPrefix)
             .collect(Collectors.joining(";"));
     return String.format(
         "HpoDisease [name=%s;%s:%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
