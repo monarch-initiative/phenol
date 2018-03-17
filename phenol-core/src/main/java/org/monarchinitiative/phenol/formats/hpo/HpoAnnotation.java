@@ -3,8 +3,6 @@ package org.monarchinitiative.phenol.formats.hpo;
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
-import com.google.common.collect.ComparisonChain;
 
 import java.util.List;
 

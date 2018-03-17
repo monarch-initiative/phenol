@@ -7,8 +7,6 @@ import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static org.junit.Assert.assertNotEquals;
 
 /**
@@ -22,7 +20,7 @@ public class HpoAnnotationTest {
   private static HpoFrequency defaultFrequency = null;
 
   @BeforeClass
-  public static void setup() {
+  public static void setUp() {
     HP_PREFIX = new ImmutableTermPrefix("HP");
     String DEFAULT_FREQUENCY = "0040280";
     final TermId DEFAULT_FREQUENCY_ID = new ImmutableTermId(HP_PREFIX, DEFAULT_FREQUENCY);
