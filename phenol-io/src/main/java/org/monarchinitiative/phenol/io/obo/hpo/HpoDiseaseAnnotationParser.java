@@ -26,10 +26,10 @@ import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermI
  */
 public class HpoDiseaseAnnotationParser {
 
-  private String annotationFilePath = null;
+  private String annotationFilePath;
   private final HpoOntology ontology;
-  private Ontology<HpoTerm, HpoRelationship> hpoPhenotypeOntology = null;
-  private Ontology<HpoTerm, HpoRelationship> inheritancePhenotypeOntology = null;
+  private Ontology<HpoTerm, HpoRelationship> hpoPhenotypeOntology;
+  private Ontology<HpoTerm, HpoRelationship> inheritancePhenotypeOntology;
 
   // private static final TermPrefix HP_PREFIX = new ImmutableTermPrefix("HP");
 
@@ -82,7 +82,7 @@ public class HpoDiseaseAnnotationParser {
     // Now we want to transform them into HpoDisease objects
     for (String diseaseId : disease2AnnotLineMap.keySet()) {
       List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
-      final ImmutableList.Builder<HpoTermId> phenoListBuilder = ImmutableList.builder();
+      final ImmutableList.Builder<HpoAnnotation> phenoListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> negativeTermListBuilder = ImmutableList.builder();
       String diseaseName = null;
@@ -97,8 +97,8 @@ public class HpoDiseaseAnnotationParser {
             double frequency = getFrequency(line.getFrequency());
             List<TermId> modifiers = getModifiers(line.getModifierList());
             HpoOnset onset = getOnset(line.getOnsetId());
-            HpoTermId tidm =
-              new ImmutableHpoTermId(line.getPhenotypeId(), frequency, onset, modifiers);
+            HpoAnnotation tidm =
+              new HpoAnnotation(line.getPhenotypeId(), frequency, onset, modifiers);
             phenoListBuilder.add(tidm);
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();

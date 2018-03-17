@@ -15,7 +15,7 @@ import java.util.List;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.3 (2018-03-12)
  */
-public class ImmutableHpoTermId implements HpoTermId {
+public class HpoAnnotation {
   private static final long serialVersionUID = 2L;
 
   /** The annotated {@link TermId}. */
@@ -42,21 +42,21 @@ public class ImmutableHpoTermId implements HpoTermId {
    * @param termId Annotated {@link TermId}.
    * @param f The frequency the term is annotated with.
    */
-  public ImmutableHpoTermId(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
+  public HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
     this.frequency = f;
     this.onset = onset != null ? onset : DEFAULT_HPO_ONSET;
     this.modifierList = modifiers;
   }
 
-  public ImmutableHpoTermId(TermId t) {
+  public HpoAnnotation(TermId t) {
     this.termId = t;
     this.frequency = DEFAULT_HPO_FREQUENCY.mean();
     this.onset = DEFAULT_HPO_ONSET;
     this.modifierList = (new ImmutableList.Builder<TermId>()).build();
   }
 
-  public ImmutableHpoTermId(String id) {
+  public HpoAnnotation(String id) {
     this.termId = ImmutableTermId.constructWithPrefix(id);
     this.frequency = DEFAULT_HPO_FREQUENCY.mean();
     this.onset = DEFAULT_HPO_ONSET;
@@ -91,21 +91,10 @@ public class ImmutableHpoTermId implements HpoTermId {
   /**
    * Return the full term ID including prefix.
    *
-   * @return The full Id.
+   * @return The full HPO, id, e.g., HP:0000123.
    */
-  @Override
   public String getIdWithPrefix() {
     return this.termId.getIdWithPrefix();
-  }
-
-  @Override
-  public TermPrefix getPrefix() {
-    return this.termId.getPrefix();
-  }
-
-  @Override
-  public String getId() {
-    return this.termId.getId();
   }
 
   /**
@@ -118,12 +107,13 @@ public class ImmutableHpoTermId implements HpoTermId {
   @Override
   public boolean equals(Object that) {
     if (that == null) return false;
-    if (!(that instanceof HpoTermId)) return false;
-    HpoTermId otherTIDM = (HpoTermId) that;
+    if (!(that instanceof HpoAnnotation)) return false;
+    HpoAnnotation otherHpoAnnotation = (HpoAnnotation) that;
 
-    return termId.getId().equals(otherTIDM.getId())
-        && frequency == otherTIDM.getFrequency()
-        && onset.equals(otherTIDM.getOnset());
+    return termId.equals(otherHpoAnnotation.getTermId())
+        && frequency == otherHpoAnnotation.getFrequency()
+        && onset.equals(otherHpoAnnotation.getOnset())
+        && modifierList.equals(otherHpoAnnotation.modifierList);
   }
 
   @Override
@@ -137,26 +127,24 @@ public class ImmutableHpoTermId implements HpoTermId {
   }
 
   /**
-   * There are issues with compareTo in inheritance hierarchies. We think that the attributes of the
-   * TermId are the only essential attributes for sorting. In case of equality, we can show the
-   * ImmutableTermWithMetadata first, otherwise don't care (return 0).
-   *
-   * @param that The other TermId that we are comparing with
+   * @param that The other HpoAnnotation that we are comparing with
    * @return sort order
    */
-  @Override
-  public int compareTo(TermId that) {
-    int c =
-        ComparisonChain.start()
-            .compare(this.getPrefix(), that.getPrefix())
-            .compare(this.getId(), that.getId())
-            .result();
-    if (c != 0) return c;
-    else if (this.onset != null) {
-      return 1;
-    } else {
-      return 0;
+  public int compareTo(HpoAnnotation that) {
+    final int BEFORE = -1;
+    final int EQUAL = 0;
+    final int AFTER = 1;
+    if (this==that) return EQUAL;
+    if (! this.termId.equals(that.termId)) {
+     return this.termId.compareTo(that.termId);
     }
+    if (this.frequency<that.frequency) return BEFORE;
+    else if (that.frequency<this.frequency) return AFTER;
+    if (! this.onset.equals(that.onset)) {
+      return this.onset.compareTo(that.onset);
+    }
+    // for sorting purposes we do not care about the modifier list.
+    return EQUAL;
   }
 
   public static class Builder {
@@ -188,7 +176,7 @@ public class ImmutableHpoTermId implements HpoTermId {
       return this;
     }
 
-    public ImmutableHpoTermId build() {
+    public HpoAnnotation build() {
       if (modifierList == null) {
         this.modifierList = (new ImmutableList.Builder<TermId>()).build();
       }
@@ -198,7 +186,7 @@ public class ImmutableHpoTermId implements HpoTermId {
       if (frequency < 0) {
         frequency = HpoFrequency.ALWAYS_PRESENT.mean();
       }
-      return new ImmutableHpoTermId(termId, frequency, onset, modifierList);
+      return new HpoAnnotation(termId, frequency, onset, modifierList);
     }
   }
 }
