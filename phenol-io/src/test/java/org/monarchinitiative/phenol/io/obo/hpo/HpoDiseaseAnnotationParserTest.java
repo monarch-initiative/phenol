@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import org.junit.rules.TemporaryFolder;
 
+/**
+ * TODO refactor to use the small hp file and a small annotation file.
+ */
 public class HpoDiseaseAnnotationParserTest {
 
   @Rule

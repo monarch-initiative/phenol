@@ -13,7 +13,6 @@ import static org.junit.Assert.assertFalse;
 
 public class HpoAnnotationLineTest {
 
-  private final static double EPSILON=0.000001;
   private final static String EMPTY_STRING="";
 
   private HpoAnnotationLine makeLine(String items[]) throws PhenolException {
@@ -45,7 +44,6 @@ public class HpoAnnotationLineTest {
     assertEquals("OMIM:269150", hpoAnnot.getDiseaseId());
     assertEquals("SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME", hpoAnnot.getDbObjectName());
     assertFalse(hpoAnnot.isNOT());
-    double expectedFrequency=1.0;
     assertEquals(EMPTY_STRING,hpoAnnot.getFrequency());
 
   }
