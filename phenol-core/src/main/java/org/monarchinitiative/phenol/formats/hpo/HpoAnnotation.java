@@ -27,15 +27,6 @@ public class HpoAnnotation {
   private final HpoOnset onset;
   /** List of modifiers of this annotation. List can be empty but cannot be null */
   private final List<TermId> modifiers;
-
-  /** If no information is available, then assume that the feature is always present! */
-  private static final HpoFrequency DEFAULT_HPO_FREQUENCY = HpoFrequency.ALWAYS_PRESENT;
-  /**
-   * If no onset information is available, use the Onset term "Onset" (HP:0003674), which is the
-   * root of the subontology for onset.
-   */
-  private static final HpoOnset DEFAULT_HPO_ONSET = HpoOnset.ONSET;
-
   /**
    * Constructor.
    *
@@ -45,16 +36,17 @@ public class HpoAnnotation {
   private HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
     this.frequency = f;
-    this.onset = onset != null ? onset : DEFAULT_HPO_ONSET;
+    this.onset = onset;
     this.modifiers = modifiers;
   }
 
   public static HpoAnnotation forTerm(TermId t) {
-    return new HpoAnnotation(t,DEFAULT_HPO_FREQUENCY.mean(),DEFAULT_HPO_ONSET,ImmutableList.of());
+    return new Builder(t).build();
   }
 
   public static HpoAnnotation parseTerm(String id) {
-    return new HpoAnnotation(ImmutableTermId.constructWithPrefix(id),DEFAULT_HPO_FREQUENCY.mean(),DEFAULT_HPO_ONSET,ImmutableList.of());
+    TermId tid = ImmutableTermId.constructWithPrefix(id);
+    return forTerm(tid);
   }
 
 
@@ -146,6 +138,13 @@ public class HpoAnnotation {
   }
 
   public static class Builder {
+    /** If no information is available, then assume that the feature is always present! */
+    private static final HpoFrequency DEFAULT_HPO_FREQUENCY = HpoFrequency.ALWAYS_PRESENT;
+    /**
+     * If no onset information is available, use the Onset term "Onset" (HP:0003674), which is the
+     * root of the subontology for onset.
+     */
+    private static final HpoOnset DEFAULT_HPO_ONSET = HpoOnset.ONSET;
     private final TermId termId;
 
     /** The {@link HpoFrequency}. */
