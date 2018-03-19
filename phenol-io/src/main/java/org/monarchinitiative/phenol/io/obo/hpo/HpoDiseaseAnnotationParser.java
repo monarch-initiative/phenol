@@ -97,8 +97,11 @@ public class HpoDiseaseAnnotationParser {
             double frequency = getFrequency(line.getFrequency());
             List<TermId> modifiers = getModifiers(line.getModifierList());
             HpoOnset onset = getOnset(line.getOnsetId());
-            HpoAnnotation tidm =
-              new HpoAnnotation(line.getPhenotypeId(), frequency, onset, modifiers);
+            HpoAnnotation tidm = HpoAnnotation.builder(line.getPhenotypeId()).
+              frequency(frequency).
+              onset(onset).
+              modifiers(modifiers).
+              build();
             phenoListBuilder.add(tidm);
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();

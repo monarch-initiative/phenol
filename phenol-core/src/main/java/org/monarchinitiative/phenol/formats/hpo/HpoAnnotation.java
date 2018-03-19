@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represent an HPO Term together with a Frequency and an Onset and modifiers. This is intended to
@@ -24,41 +26,27 @@ public class HpoAnnotation {
   /** The characteristic age of onset of a feature in a certain disease. */
   private final HpoOnset onset;
   /** List of modifiers of this annotation. List can be empty but cannot be null */
-  private final List<TermId> modifierList;
-
-  /** If no information is available, then assume that the feature is always present! */
-  private static final HpoFrequency DEFAULT_HPO_FREQUENCY = HpoFrequency.ALWAYS_PRESENT;
-  /**
-   * If no onset information is available, use the Onset term "Onset" (HP:0003674), which is the
-   * root of the subontology for onset.
-   */
-  private static final HpoOnset DEFAULT_HPO_ONSET = HpoOnset.ONSET;
-
+  private final List<TermId> modifiers;
   /**
    * Constructor.
    *
    * @param termId Annotated {@link TermId}.
    * @param f The frequency the term is annotated with.
    */
-  public HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
+  private HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
     this.frequency = f;
-    this.onset = onset != null ? onset : DEFAULT_HPO_ONSET;
-    this.modifierList = modifiers;
+    this.onset = onset;
+    this.modifiers = modifiers;
   }
 
-  public HpoAnnotation(TermId t) {
-    this.termId = t;
-    this.frequency = DEFAULT_HPO_FREQUENCY.mean();
-    this.onset = DEFAULT_HPO_ONSET;
-    this.modifierList = (new ImmutableList.Builder<TermId>()).build();
+  public static HpoAnnotation forTerm(TermId t) {
+    return new Builder(t).build();
   }
 
-  public HpoAnnotation(String id) {
-    this.termId = ImmutableTermId.constructWithPrefix(id);
-    this.frequency = DEFAULT_HPO_FREQUENCY.mean();
-    this.onset = DEFAULT_HPO_ONSET;
-    this.modifierList = (new ImmutableList.Builder<TermId>()).build();
+  public static HpoAnnotation parseTerm(String id) {
+    TermId tid = ImmutableTermId.constructWithPrefix(id);
+    return forTerm(tid);
   }
 
 
@@ -78,7 +66,7 @@ public class HpoAnnotation {
   }
 
   public List<TermId> getModifiers() {
-    return modifierList;
+    return modifiers;
   }
 
   @Override
@@ -111,7 +99,7 @@ public class HpoAnnotation {
     return termId.equals(otherHpoAnnotation.getTermId())
         && frequency == otherHpoAnnotation.getFrequency()
         && onset.equals(otherHpoAnnotation.getOnset())
-        && modifierList.equals(otherHpoAnnotation.modifierList);
+        && modifiers.equals(otherHpoAnnotation.modifiers);
   }
 
   @Override
@@ -120,7 +108,7 @@ public class HpoAnnotation {
     result = 31 * result + termId.hashCode();
     result = 31 * result + Double.valueOf(frequency).hashCode();
     result = 31 * result + onset.hashCode();
-    result = 31 * result + modifierList.hashCode();
+    result = 31 * result + modifiers.hashCode();
     return result;
   }
 
@@ -145,45 +133,59 @@ public class HpoAnnotation {
     return EQUAL;
   }
 
+  public static Builder builder(TermId termId) {
+    return new Builder(termId);
+  }
+
   public static class Builder {
+    /** If no information is available, then assume that the feature is always present! */
+    private static final HpoFrequency DEFAULT_HPO_FREQUENCY = HpoFrequency.ALWAYS_PRESENT;
+    /**
+     * If no onset information is available, use the Onset term "Onset" (HP:0003674), which is the
+     * root of the subontology for onset.
+     */
+    private static final HpoOnset DEFAULT_HPO_ONSET = HpoOnset.ONSET;
     private final TermId termId;
 
     /** The {@link HpoFrequency}. */
-    private double frequency = -1.0D; // flag
+    private double frequency = DEFAULT_HPO_FREQUENCY.mean();
     /** The characteristic age of onset of a feature in a certain disease. */
-    private HpoOnset onset = null;
+    private HpoOnset onset = DEFAULT_HPO_ONSET;
     /** List of modifiers of this annotation. List can be empty but cannot be null */
-    private List<TermId> modifierList = null;
+    private List<TermId> modifierList = ImmutableList.of();
 
     public Builder(TermId tid) {
+      Objects.requireNonNull(tid,"TermId cannot be null");
       this.termId = tid;
     }
 
     public Builder onset(HpoOnset o) {
+      Objects.requireNonNull(o,"Onset cannot be null");
       this.onset = o;
       return this;
     }
 
     public Builder frequency(double f) {
+      checkBoundsWithinZeroToOne(f);
       this.frequency = f;
       return this;
     }
 
-    public Builder modifierList(List<TermId> L) {
-      this.modifierList = L;
+    private void checkBoundsWithinZeroToOne(double f) {
+      try {
+        assert f >= 0d && f <= 1d;
+      } catch (AssertionError ex) {
+        throw new IllegalArgumentException(f + " Frequency must be within range 0-1");
+      }
+    }
+
+    public Builder modifiers(Collection<TermId> modifiers) {
+      Objects.requireNonNull(modifiers,"modifiers cannot be null");
+      this.modifierList = ImmutableList.copyOf(modifiers);
       return this;
     }
 
     public HpoAnnotation build() {
-      if (modifierList == null) {
-        this.modifierList = (new ImmutableList.Builder<TermId>()).build();
-      }
-      if (onset == null) {
-        onset = DEFAULT_HPO_ONSET;
-      }
-      if (frequency < 0) {
-        frequency = HpoFrequency.ALWAYS_PRESENT.mean();
-      }
       return new HpoAnnotation(termId, frequency, onset, modifierList);
     }
   }
