@@ -45,12 +45,9 @@ public class IdLabeledEdge extends DefaultEdge {
   @Override
   public boolean equals(Object obj) {
     if (obj == null) return false;
-
     IdLabeledEdge edge = (IdLabeledEdge) obj;
     if (this.getSource() != edge.getSource()) return false;
     if (this.getTarget() != edge.getTarget()) return false;
-    if (this.id != edge.id) return false;
-
-    return true;
+    return this.id == edge.id;  
   }
 }
