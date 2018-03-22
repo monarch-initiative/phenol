@@ -4,9 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,6 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationshipType;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoTerm;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoRelationship;
-import org.monarchinitiative.phenol.io.obo.DbXref;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -37,7 +34,6 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntryType;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryUnionOf;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
@@ -46,7 +42,6 @@ import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
 import com.google.common.collect.Lists;
-import org.monarchinitiative.phenol.io.obo.*;
 
 /**
  * Factory class for constructing {@link UberphenoTerm} and {@link UberphenoRelationship} objects
@@ -173,18 +168,8 @@ class UberphenoOboFactory implements OboOntologyEntryFactory<UberphenoTerm, Uber
       final List<StanzaEntryXref> xrefs =
           entryList.stream().map(entry -> (StanzaEntryXref) entry).collect(Collectors.toList());
       for (StanzaEntryXref xref : xrefs) {
-        final DbXref dbXref = xref.getDbXref();
-        final Map<String, String> trailingModifiers;
-        if (dbXref.getTrailingModifier() != null) {
-          trailingModifiers = new HashMap<>();
-          for (TrailingModifier.KeyValue kv : dbXref.getTrailingModifier().getKeyValue()) {
-            trailingModifiers.put(kv.getKey(), kv.getValue());
-          }
-        } else {
-          trailingModifiers = null;
-        }
-        dbxrefList.add(
-            new ImmutableDbxref(dbXref.getName(), dbXref.getDescription(), trailingModifiers));
+        final Dbxref dbXref = xref.getDbXref();
+        dbxrefList.add(dbXref);
       }
     }
 

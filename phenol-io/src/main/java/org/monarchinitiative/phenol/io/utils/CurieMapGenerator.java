@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.io.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -23,8 +21,7 @@ public class CurieMapGenerator {
   @SuppressWarnings("unchecked")
   public static Map<String, String> generate() {
     try {
-      File oboJSONMappingFile = new File("src/main/resources/curie_map.yaml");
-      InputStream inputStream = new FileInputStream(oboJSONMappingFile.getAbsolutePath());
+      InputStream inputStream = CurieMapGenerator.class.getClassLoader().getResourceAsStream("curie_map.yaml");
       Yaml yaml = new Yaml();
       Map<String, String> curieMap = (Map<String, String>) yaml.load(inputStream);
       return curieMap;

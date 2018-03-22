@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.io.obo;
 
+import org.monarchinitiative.phenol.ontology.data.Dbxref;
+
 /**
  * Representation of a stanza entry starting with <code>xref</code>.
  *
@@ -8,7 +10,7 @@ package org.monarchinitiative.phenol.io.obo;
 public final class StanzaEntryXref extends StanzaEntry {
 
   /** dbXref value of stanza entry. */
-  private final DbXref dbXref;
+  private final Dbxref dbXref;
 
   /**
    * Constructor.
@@ -18,13 +20,13 @@ public final class StanzaEntryXref extends StanzaEntry {
    *     </code> for none.
    * @param comment Optional comment string of the stanza entry, <code>null</code> for none.
    */
-  public StanzaEntryXref(DbXref dbXref, TrailingModifier trailingModifier, String comment) {
+  public StanzaEntryXref(Dbxref dbXref, TrailingModifier trailingModifier, String comment) {
     super(StanzaEntryType.XREF, trailingModifier, comment);
     this.dbXref = dbXref;
   }
 
   /** @return The entry's Id value. */
-  public DbXref getDbXref() {
+  public Dbxref getDbXref() {
     return dbXref;
   }
 

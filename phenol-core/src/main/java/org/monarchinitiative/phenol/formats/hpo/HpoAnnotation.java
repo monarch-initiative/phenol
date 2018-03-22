@@ -16,8 +16,6 @@ import java.util.Objects;
  * @version 0.1.3 (2018-03-12)
  */
 public class HpoAnnotation {
-  private static final long serialVersionUID = 2L;
-
   /** The annotated {@link TermId}. */
   private final TermId termId;
 
