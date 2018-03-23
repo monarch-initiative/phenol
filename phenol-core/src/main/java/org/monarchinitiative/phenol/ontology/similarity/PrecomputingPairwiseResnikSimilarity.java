@@ -41,12 +41,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends Relationship>
     implements PairwiseSimilarity, Serializable {
 
   /** Serial UID for serialization. */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -350622665214125471L;
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER =
@@ -156,8 +157,11 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
    * Container class for storing precomputed scores efficiently.
    *
    * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+   * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
    */
-  private static final class PrecomputedScores {
+  private static final class PrecomputedScores implements Serializable {
+
+    private static final long serialVersionUID = -6390653194662991513L;
 
     /** Mapping from term ID to term index. */
     private final HashMap<TermId, Integer> termIdToIdx;
