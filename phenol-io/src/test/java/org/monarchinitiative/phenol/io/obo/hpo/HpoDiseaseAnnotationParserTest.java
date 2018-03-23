@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
