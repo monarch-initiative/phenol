@@ -101,6 +101,7 @@ public class OwlImmutableOntologyLoaderTest {
             "SCTID:92100009",
             "UMLS:C0346190");
 
+    // Check whether the example GenericTerm instance properly read all xref entries.
     for (GenericTerm gt : ontology.getTerms()) {
       for (Dbxref xref : gt.getXrefs()) {
         Boolean containFlag = false;

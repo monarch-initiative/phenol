@@ -92,6 +92,8 @@ public class GenericOwlFactory
     }
     genericTerm.setObsolete(isObsolete);
 
+    // 7. owl:equivalentClass entries?
+
     // Additional properties/annotations can be further mapped by iterating BasicPropertyValue.
     /*
     List<BasicPropertyValue> bpvs = meta.getBasicPropertyValues();
