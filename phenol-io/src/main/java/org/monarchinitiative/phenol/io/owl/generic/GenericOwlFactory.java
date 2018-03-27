@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.io.owl.generic;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
@@ -18,14 +17,10 @@ import org.monarchinitiative.phenol.formats.generic.GenericTerm;
 import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
-import org.monarchinitiative.phenol.io.owl.XrefMapper;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
 
 /**
  * Factory class for constructing {@link GenericTerm} and {@link GenericRelationship} objects from
@@ -73,7 +68,7 @@ public class GenericOwlFactory
         if (val == null) continue;
         dbxrefList.add(new ImmutableDbxref(val, null, null));
       }
-      if (dbxrefList.isEmpty() != true) genericTerm.setXrefs(dbxrefList);
+      if (!dbxrefList.isEmpty()) genericTerm.setXrefs(dbxrefList);
     }
 
     // 6. obsolete; the obsolete/deprecated field in Meta is somehow not accessible,
@@ -82,11 +77,9 @@ public class GenericOwlFactory
     try {
       Field f = Meta.class.getDeclaredField("deprecated");
       f.setAccessible(true);
-      if (meta != null) {
-        Boolean deprecated = (Boolean) f.get(meta);
-        if (deprecated == null || deprecated != true) isObsolete = false;
-        else if (deprecated) isObsolete = true;
-      }
+      Boolean deprecated = (Boolean) f.get(meta);
+      if (deprecated == null || deprecated != true) isObsolete = false;
+      else if (deprecated) isObsolete = true;
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
     }

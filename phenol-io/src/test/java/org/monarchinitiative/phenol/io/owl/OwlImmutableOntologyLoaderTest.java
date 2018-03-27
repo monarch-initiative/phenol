@@ -108,7 +108,7 @@ public class OwlImmutableOntologyLoaderTest {
         for (String xrefStr : xrefs) {
           if (xref.getName().contains(xrefStr)) containFlag = true;
         }
-        if (containFlag != true) fail("Xref " + xref.getName() + " is not available.");
+        if (!containFlag) fail("Xref " + xref.getName() + " is not available.");
       }
     }
   }
