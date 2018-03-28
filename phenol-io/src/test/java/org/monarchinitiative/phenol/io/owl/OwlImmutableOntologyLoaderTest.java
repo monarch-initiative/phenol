@@ -3,9 +3,12 @@ package org.monarchinitiative.phenol.io.owl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.monarchinitiative.phenol.formats.generic.GenericTerm;
 import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
@@ -14,7 +17,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
-
+import org.monarchinitiative.phenol.ontology.data.Dbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
@@ -78,5 +81,35 @@ public class OwlImmutableOntologyLoaderTest {
     assertNotNull(gr2);
     assertEquals(gr1.getRelationshipType(), GenericRelationshipType.IS_A);
     assertEquals(gr2.getRelationshipType(), GenericRelationshipType.IS_A);
+  }
+
+  @Test
+  public void testMONDOLoad() throws Exception {
+    final OwlImmutableOntologyLoader<GenericTerm, GenericRelationship> loader =
+        new OwlImmutableOntologyLoader<GenericTerm, GenericRelationship>(
+            new File("src/test/resources/mondo_module.owl"));
+
+    final GenericOwlFactory cof = new GenericOwlFactory();
+    final ImmutableOntology<GenericTerm, GenericRelationship> ontology = loader.load(cof);
+    final List<String> xrefs =
+        Arrays.asList(
+            "DOID:0060111",
+            "ICD10:D28.2",
+            "MedDRA:10053865",
+            "NCIT:C4517",
+            "Orphanet:180237",
+            "SCTID:92100009",
+            "UMLS:C0346190");
+
+    // Check whether the example GenericTerm instance properly read all xref entries.
+    for (GenericTerm gt : ontology.getTerms()) {
+      for (Dbxref xref : gt.getXrefs()) {
+        Boolean containFlag = false;
+        for (String xrefStr : xrefs) {
+          if (xref.getName().contains(xrefStr)) containFlag = true;
+        }
+        if (!containFlag) fail("Xref " + xref.getName() + " is not available.");
+      }
+    }
   }
 }
