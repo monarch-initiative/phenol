@@ -56,7 +56,7 @@ public class GenericRelationship implements Relationship {
   }
 
   /** @return The relation's qualifier. */
-  public RelationshipType getrelationshipType() {
+  public RelationshipType getRelationshipType() {
     return relationshipType;
   }
 

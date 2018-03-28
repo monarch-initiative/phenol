@@ -6,14 +6,19 @@ import java.util.List;
 import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
+import org.geneontology.obographs.model.meta.XrefPropertyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 import org.monarchinitiative.phenol.formats.generic.GenericRelationshipType;
 import org.monarchinitiative.phenol.formats.generic.GenericTerm;
 import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
+import org.monarchinitiative.phenol.ontology.data.Dbxref;
+import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
@@ -29,41 +34,58 @@ public class GenericOwlFactory
 
   @Override
   public GenericTerm constructTerm(Node node, TermId termId) {
-    GenericTerm commonTerm = new GenericTerm();
-    commonTerm.setId(termId);
-    commonTerm.setName(node.getLabel());
+    GenericTerm genericTerm = new GenericTerm();
+    genericTerm.setId(termId);
+    genericTerm.setName(node.getLabel());
 
     Meta meta = node.getMeta();
     if (meta == null) {
       LOGGER.warn("No meta instance exists for the node: " + node.getId());
-      return commonTerm;
+      return genericTerm;
     }
 
+    // 1. definition
     DefinitionPropertyValue definition = meta.getDefinition();
-    if (definition != null) commonTerm.setDefinition(definition.getVal());
+    if (definition != null) genericTerm.setDefinition(definition.getVal());
 
+    // 2. comments
     List<String> comments = meta.getComments();
-    if (comments != null) commonTerm.setComment(String.join(", ", comments));
+    if (comments != null) genericTerm.setComment(String.join(", ", comments));
 
-    commonTerm.setSubsets(meta.getSubsets());
+    // 3. subsets
+    genericTerm.setSubsets(meta.getSubsets());
 
+    // 4. synonyms
     List<TermSynonym> termSynonyms = SynonymMapper.mapSynonyms(meta.getSynonyms());
-    commonTerm.setSynonyms(termSynonyms);
+    genericTerm.setSynonyms(termSynonyms);
 
-    // The obsolete/deprecated field in Meta is somehow not accessible, so we use Java reflection to pull the value of that field.
+    // 5. xrefs
+    List<XrefPropertyValue> xrefPVList = meta.getXrefs();
+    List<Dbxref> dbxrefList = Lists.newArrayList();
+    if (xrefPVList != null) {
+      for (XrefPropertyValue xrefPV : xrefPVList) {
+        String val = xrefPV.getVal();
+        if (val == null) continue;
+        dbxrefList.add(new ImmutableDbxref(val, null, null));
+      }
+      if (!dbxrefList.isEmpty()) genericTerm.setXrefs(dbxrefList);
+    }
+
+    // 6. obsolete; the obsolete/deprecated field in Meta is somehow not accessible,
+    // so we use Java reflection to pull the value of that field.
     Boolean isObsolete = false;
     try {
       Field f = Meta.class.getDeclaredField("deprecated");
       f.setAccessible(true);
-      if (meta != null) {
-        Boolean deprecated = (Boolean) f.get(meta);
-        if (deprecated == null || deprecated != true) isObsolete = false;
-        else if (deprecated) isObsolete = true;
-      }
+      Boolean deprecated = (Boolean) f.get(meta);
+      if (deprecated == null || deprecated != true) isObsolete = false;
+      else if (deprecated) isObsolete = true;
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
     }
-    commonTerm.setObsolete(isObsolete);
+    genericTerm.setObsolete(isObsolete);
+
+    // 7. owl:equivalentClass entries?
 
     // Additional properties/annotations can be further mapped by iterating BasicPropertyValue.
     /*
@@ -75,7 +97,7 @@ public class GenericOwlFactory
     	}
     }
      */
-    return commonTerm;
+    return genericTerm;
   }
 
   // It seems that only actual relation used across ontologies is "IS_A" one for now.

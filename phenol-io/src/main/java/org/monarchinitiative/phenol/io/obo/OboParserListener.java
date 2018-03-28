@@ -1,12 +1,15 @@
 package org.monarchinitiative.phenol.io.obo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-
+import org.monarchinitiative.phenol.ontology.data.Dbxref;
+import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import com.google.common.collect.Lists;
 
@@ -77,6 +80,7 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboParserBaseListener;
  * and collecting all stanzas or an event-based implementation using {@link OboParseResultListener}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 class OboParserListener extends Antlr4OboParserBaseListener {
 
@@ -318,8 +322,15 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   /** Called on leaving <code>keyValueXref</code> rule. */
   @Override
   public void exitKeyValueXref(KeyValueXrefContext ctx) {
-    final DbXref dbXref = (DbXref) getValue(ctx.dbXref());
-    final TrailingModifier trailingModifier = dbXref.getTrailingModifier();
+    final Dbxref dbXref = (Dbxref) getValue(ctx.dbXref());
+    TrailingModifier trailingModifier = null;
+    final Map<String, String> trailingModifiers = dbXref.getTrailingModifiers();
+    if (trailingModifiers != null) {
+      final TrailingModifierBuilder builder = new TrailingModifierBuilder();
+      for (Map.Entry<String, String> entry : trailingModifiers.entrySet())
+        builder.addKeyValue(entry.getKey(), entry.getValue());
+      trailingModifier = builder.build();
+    }
     final String comment = trimmedEmptyToNull(ctx.eolComment2());
 
     setValue(ctx, new StanzaEntryXref(dbXref, trailingModifier, comment));
@@ -715,7 +726,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   public void exitDbXrefList(DbXrefListContext ctx) {
     final DbXrefList dbXrefList = new DbXrefList();
     for (DbXrefContext xrcCtx : ctx.dbXref()) {
-      dbXrefList.addDbXref((DbXref) getValue(xrcCtx));
+      dbXrefList.addDbXref((Dbxref) getValue(xrcCtx));
     }
 
     setValue(ctx, dbXrefList);
@@ -730,8 +741,15 @@ class OboParserListener extends Antlr4OboParserBaseListener {
             ? null
             : OboEscapeUtils.unescape(ctx.QuotedString().getText().trim());
     final TrailingModifier trailingModifier = (TrailingModifier) getValue(ctx.trailingModifier());
+    Map<String, String> trailingModifiers = null;
+    if (trailingModifier != null) {
+      trailingModifiers = new HashMap<>();
+      for (TrailingModifier.KeyValue kv : trailingModifier.getKeyValue()) {
+        trailingModifiers.put(kv.getKey(), kv.getValue());
+      }
+    }
 
-    setValue(ctx, new DbXref(name, description, trailingModifier));
+    setValue(ctx, new ImmutableDbxref(name, description, trailingModifiers));
   }
 
   /**

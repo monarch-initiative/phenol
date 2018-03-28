@@ -8,7 +8,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:obo="http://purl.obolibrary.org/obo/">
-    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/ncit.owl"/>
+    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/ncit-module.owl"/>
 
     <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000115"/>
     <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasExactSynonym"/>
@@ -65,6 +65,7 @@
     </owl:Class>
 
     <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C116977">
+        <rdfs:label>L1</rdfs:label>
     </owl:Class>
 
     <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C126659">

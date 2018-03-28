@@ -82,6 +82,13 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
       return null;
     }
 
+    // Mapping edges in obographs to termIds in phenol
+    int edgeId = 1;
+    DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
+        new DefaultDirectedGraph<>(IdLabeledEdge.class);
+    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
+        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+    
     // Mapping nodes in obographs to termIds in phenol
     for (Node node : gNodes) {
       Optional<String> nodeCurie = curieUtil.getCurie(node.getId());
@@ -92,6 +99,7 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
       if (term.isObsolete()) depreTermIdNodes.add(termId);
       else nonDepreTermIdNodes.add(termId);
 
+      phenolGraph.addVertex(termId);
       terms.put(termId, term);
     }
 
@@ -103,13 +111,6 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
       LOGGER.warn("No edges found in the loaded ontology.");
       return null;
     }
-
-    // Mapping edges in obographs to termIds in phenol
-    int edgeId = 1;
-    DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
-        new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
     for (Edge edge : gEdges) {
       Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
