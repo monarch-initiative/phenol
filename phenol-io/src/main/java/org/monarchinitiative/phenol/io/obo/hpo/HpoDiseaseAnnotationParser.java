@@ -62,7 +62,6 @@ public class HpoDiseaseAnnotationParser {
         try {
           HpoAnnotationLine aline = new HpoAnnotationLine(line);
           List<HpoAnnotationLine> annots;
-  //TODO TEMPORARY FIX THAT SKIPS SOME MALFORMED LINES.
           if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
             annots = disease2AnnotLineMap.get(aline.getDiseaseId());
           } else {
