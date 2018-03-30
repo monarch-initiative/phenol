@@ -18,8 +18,7 @@ import java.util.Objects;
 public class HpoAnnotation {
   /** The annotated {@link TermId}. */
   private final TermId termId;
-
-  /** The {@link HpoFrequency}. */
+  /** The frequency with which this phenotypic abnormality is seen in patients with this disease */
   private final double frequency;
   /** The characteristic age of onset of a feature in a certain disease. */
   private final HpoOnset onset;
@@ -157,9 +156,15 @@ public class HpoAnnotation {
       this.termId = tid;
     }
 
+    /**
+     *
+     * @param o HpoOnset term (can be null, in which case we use the default)
+     * @return reference to this Builder object
+     */
     public Builder onset(HpoOnset o) {
-      Objects.requireNonNull(o,"Onset cannot be null");
-      this.onset = o;
+      if (o != null) {
+        this.onset = o;
+      }
       return this;
     }
 
