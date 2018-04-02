@@ -14,11 +14,12 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * HpoDiseaseAnnotationParser} will complete the input of the lines once all of the lines for some
  * disease have been input into individual {@link HpoAnnotationLine} objects. The reason for this is
  * that in some cases, we may have multiple lines for some annotation and we will want to combine
- * them into one annotation for some computational disease models.
+ * them into one annotation for some computational disease models. The class checks whether the
+ * number of fields is correct, and this can be got with {@link #hasValidNumberOfFields}
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class HpoAnnotationLine {
+class HpoAnnotationLine {
 
   private static final int DB_IDX = 0;
   private static final int DB_OBJECT_ID_IDX = 1;
@@ -35,6 +36,8 @@ public class HpoAnnotationLine {
   private static final int ASSIGNED_BY_IDX = 12;
   private static final int DATE_CREATED_IDX = 13;
 
+  private boolean valid_number_of_fields=true;
+
   /**
    * Names of the header fields. Every valid small file should have a header line with exactly these
    * fields.
@@ -46,6 +49,7 @@ public class HpoAnnotationLine {
     "Qualifier",
     "HPO_ID",
     "DB_Reference",
+
     "Evidence",
     "Onset",
     "Frequency",
@@ -62,9 +66,7 @@ public class HpoAnnotationLine {
   private String DBObjectId;
   /** 3. The disease name, e.g., Marfan syndrome . */
   private String DbObjectName;
-  /**
-   * 4. true is this is a negated annotation, i.e., some phenotype is not present in some disease.
-   */
+  /** 4. true is this is a negated annotation, i.e., some phenotype is not present in some disease.*/
   private boolean NOT = false;
   /** 5. The phenotype term id */
   private TermId phenotypeId;
@@ -88,11 +90,11 @@ public class HpoAnnotationLine {
   /** 14. the biocurator */
   private String assignedBy;
 
-  HpoAnnotationLine(String line) throws PhenolException {
+  HpoAnnotationLine(String line) {
     String F[] = line.split("\t");
-    if (F.length != headerFields.length)
-      throw new PhenolException(
-          String.format("Malformed annotation line (%s) with %d fields", line, F.length));
+   if (F.length != headerFields.length) {
+     valid_number_of_fields=true;
+   }
     this.database = F[DB_IDX];
     this.DBObjectId = F[DB_OBJECT_ID_IDX];
     DbObjectName = F[DB_NAME_IDX];
@@ -105,11 +107,7 @@ public class HpoAnnotationLine {
     this.frequency = F[FREQUENCY_IDX];
     this.sex = F[SEX_IDX];
     String neg = F[QUALIFIER_IDX];
-    if (neg != null && neg.equalsIgnoreCase("NOT")) {
-      this.NOT = true;
-    } else {
-      this.NOT = false;
-    }
+    this.NOT =  (neg != null && neg.equalsIgnoreCase("NOT"));
     this.aspect = F[ASPECT_IDX];
     this.modifierList = F[MODIFIER_IDX];
     this.publication = F[DB_REFERENCE_IDX];
@@ -186,5 +184,9 @@ public class HpoAnnotationLine {
   /** @return true if this annotation is negated. */
   boolean isNOT() {
     return NOT;
+  }
+
+  boolean hasValidNumberOfFields() {
+    return valid_number_of_fields;
   }
 }
