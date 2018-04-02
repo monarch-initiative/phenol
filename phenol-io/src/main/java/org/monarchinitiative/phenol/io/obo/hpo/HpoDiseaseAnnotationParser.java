@@ -13,37 +13,41 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 /**
- * This class parses the phenotype_annotation.tab file into a collection of HpoDisease objects. Note
- * that for now this class does not correspond to the design pattern in phenol for annotation
- * parsers. It makes more sense to me to have the parser construct the desired disease models rather
- * than return a list of annotation lines. The annotation lines and their semantics are very
- * different for the various pheno-databases that it does not make much sense to try to make a
- * common data pattern--that is not what seems to be useful. THis class therefore is intended to be
- * a replacement for HpoDiseaseAnnotationParser but will almost certainly require refactoring in the
- * future.
+ * This class parses the phenotype.hpoa file into a collection of HpoDisease objects.
+ * If errors are enountered, the line is skipped and the error is added to the list
+ * {@link #errors}. Client code can ask if the parsing was error-free with the method
+ * {@link #validParse()} and can retrieve the errors (if any) with {@link #getErrors()}.
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoDiseaseAnnotationParser {
-
+  /** Path to the phenotype.hpoa annotation file. */
   private String annotationFilePath;
   private final HpoOntology ontology;
-  private Ontology<HpoTerm, HpoRelationship> hpoPhenotypeOntology;
-  private Ontology<HpoTerm, HpoRelationship> inheritancePhenotypeOntology;
 
-  // private static final TermPrefix HP_PREFIX = new ImmutableTermPrefix("HP");
 
   private Map<String, HpoDisease> diseaseMap;
+  /** List of errors encountered during parsing of the annotation file. */
+  private List<String> errors=new ArrayList<>();
 
   public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontlgy;
-    this.hpoPhenotypeOntology = this.ontology.getPhenotypicAbnormalitySubOntology();
-    this.inheritancePhenotypeOntology = this.ontology.subOntology(INHERITANCE_ROOT);
     this.diseaseMap = new HashMap<>();
   }
+  /** @return true if the entire parse was error-free */
+  public boolean validParse(){ return errors.isEmpty(); }
+  /** @return a list of Strings each of which represents one parse error.*/
+  public List<String> getErrors() { return errors; }
 
-  /** */
+
+
+  /**
+   * Parse the {@code phenotype.hpoa} file and return a map of diseases.
+   * @return a map with key: disease id, e.g., OMIM:600123, and value the corresponding HpoDisease object.
+   * */
   public Map<String, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<String, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
@@ -59,24 +63,24 @@ public class HpoDiseaseAnnotationParser {
       }
       while ((line = br.readLine()) != null) {
         //System.out.println(line);
-        try {
-          HpoAnnotationLine aline = new HpoAnnotationLine(line);
-          List<HpoAnnotationLine> annots;
-  //TODO TEMPORARY FIX THAT SKIPS SOME MALFORMED LINES.
-          if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
-            annots = disease2AnnotLineMap.get(aline.getDiseaseId());
-          } else {
-            annots = new ArrayList<>();
-            disease2AnnotLineMap.put(aline.getDiseaseId(), annots);
-          }
-          annots.add(aline);
-        } catch (PhenolException e) {
-          e.printStackTrace();
+        HpoAnnotationLine aline = new HpoAnnotationLine(line);
+        if (! aline.hasValidNumberOfFields()) {
+          errors.add(String.format("Invalid number of fields: %s",line));
+          continue;
         }
+        List<HpoAnnotationLine> annots;
+        if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
+          annots = disease2AnnotLineMap.get(aline.getDiseaseId());
+        } else {
+          annots = new ArrayList<>();
+          disease2AnnotLineMap.put(aline.getDiseaseId(), annots);
+        }
+        annots.add(aline);
+
       }
       br.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new PhenolException(String.format("Could not read annotation file: %s",e.getMessage()));
     }
     // When we get down here, we have added all of the disease annotations to the disease2AnnotLineMap
     // Now we want to transform them into HpoDisease objects
@@ -107,7 +111,7 @@ public class HpoDiseaseAnnotationParser {
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
           if (line.getDatabase() != null) database = line.getDatabase();
         } catch (Exception e) {
-          System.err.println("[PHENOL ERROR] could not parse annotation: "+ e.getMessage());
+          errors.add("[PHENOL ERROR] could not parse annotation: "+ e.getMessage());
         }
       }
       HpoDisease hpoDisease =
@@ -124,15 +128,16 @@ public class HpoDiseaseAnnotationParser {
   }
 
   /**
-   * Check whether a term is a member of the inheritance subontology. ToDo implement this with the
-   * termmap once we are using the new ontolib version
+   * Check whether a term is a member of the inheritance subontology.
+   * We check whether there is a path between the term and the root of the inheritance ontology.
+   * We also check whether the term is itself the root of the inheritance ontology because
+   * there cannot be a path between a term and itself.
    *
    * @param tid A term to be checked
    * @return true of tid is an inheritance term
    */
   private boolean isInheritanceTerm(TermId tid) {
-    return inheritancePhenotypeOntology.getAncestorTermIds(tid) != null
-      && inheritancePhenotypeOntology.getAncestorTermIds(tid).contains(INHERITANCE_ROOT);
+    return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
   }
 
   /**
@@ -161,13 +166,11 @@ public class HpoDiseaseAnnotationParser {
       return null;
     } else {
       TermId tid = ImmutableTermId.constructWithPrefix(hp);
-      if (hpoPhenotypeOntology.getTermMap().containsKey(tid)) {
-        return hpoPhenotypeOntology
+      if (ontology.getTermMap().containsKey(tid)) {
+        return ontology
           .getTermMap()
           .get(tid)
           .getId(); // replace alt_id with current if if necessary
-      } else if (inheritancePhenotypeOntology.getTermMap().containsKey(tid)) {
-        return inheritancePhenotypeOntology.getTermMap().get(tid).getId();
       } else {
         return null;
       }
@@ -176,8 +179,9 @@ public class HpoDiseaseAnnotationParser {
 
   /**
    * Extract the {@link HpoFrequency} object that corresponds to the frequency modifier in an
-   * annotation line. If we find nothing or there is some parsing error, return the default
-   * frequency (obligate, 100%).
+   * annotation line. Note that we are expecting there to be one of three kinds of frequency
+   * information (an HPO term, n/m or x%). If we find nothing or there is some parsing error,
+   * return the default frequency (obligate, 100%).
    *
    * @param freq The representation of the frequency, if any, in the {@code
    *             phenotype_annotation.tab} file
