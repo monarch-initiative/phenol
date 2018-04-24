@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 
 import org.geneontology.obographs.model.Edge;
@@ -31,7 +32,6 @@ import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
@@ -88,16 +88,23 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
         new DefaultDirectedGraph<>(IdLabeledEdge.class);
     final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
         new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
-    
+
+    Set<String> rootCandSet = Sets.newHashSet();
+    Set<String> removeMarkSet = Sets.newHashSet();
+
     // Mapping nodes in obographs to termIds in phenol
     for (Node node : gNodes) {
-      Optional<String> nodeCurie = curieUtil.getCurie(node.getId());
+      String nodeId = node.getId();
+      Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (nodeCurie.isPresent() != true) continue;
       ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
       T term = factory.constructTerm(node, termId);
 
-      if (term.isObsolete()) depreTermIdNodes.add(termId);
-      else nonDepreTermIdNodes.add(termId);
+      if (term.isObsolete()) {
+        depreTermIdNodes.add(termId);
+      } else {
+        nonDepreTermIdNodes.add(termId);
+      }
 
       phenolGraph.addVertex(termId);
       terms.put(termId, term);
@@ -113,20 +120,33 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
     }
 
     for (Edge edge : gEdges) {
-      Optional<String> subCurie = curieUtil.getCurie(edge.getSub());
+      String subId = edge.getSub();
+      String propId = edge.getPred();
+      String objId = edge.getObj();
+
+      Optional<String> subCurie = curieUtil.getCurie(subId);
       if (subCurie.isPresent() != true) {
-        LOGGER.warn("No matching curie found for edge's subject: " + edge.getSub());
+        LOGGER.error("No matching curie found for edge's subject: " + subId);
         continue;
       }
 
-      Optional<String> objCurie = curieUtil.getCurie(edge.getObj());
+      Optional<String> objCurie = curieUtil.getCurie(objId);
       if (objCurie.isPresent() != true) {
-        LOGGER.warn("No matching curie found for edge's object: " + edge.getObj());
+        LOGGER.error("No matching curie found for edge's object: " + objId);
         continue;
       }
 
-      ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurie.get());
-      ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurie.get());
+      String subCurieStr = subCurie.get();
+      String objCurieStr = objCurie.get();
+      ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurieStr);
+      ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurieStr);
+
+      // For each edge and connected nodes, 
+      // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
+      // we then remove subj nodes from rootCandSet, i.e. nodes that have outgoing edges.
+      rootCandSet.add(objId);  
+      removeMarkSet.add(propId);
+      removeMarkSet.add(subId);
 
       phenolGraph.addVertex(subTermId);
       phenolGraph.addVertex(objTermId);
@@ -140,18 +160,23 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
       edgeId += 1;
     }
 
+    rootCandSet.removeAll(removeMarkSet);
     CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
 
     // Let's not concern about the meta information of graph yet.
-    /*
-    Meta gMeta = g.getMeta();
-    */
+    // Meta gMeta = g.getMeta();
     Map<String, String> metaInfo = new HashMap<>();
 
-    // Borrowed the codes that create an artificial root from findOrCreateArtificalRoot in OboImmutableOntologyLoader
-    final TermPrefix rootPrefix = new ArrayList<TermId>(nonDepreTermIdNodes).get(0).getPrefix();
-    final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
-    final TermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
+    // A heuristic for determining root node(s).
+    // If there are multiple candidate roots, we will just put owl:Thing as the root one.
+    TermId rootId = null;  
+    if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
+      rootId = ImmutableTermId.constructWithPrefix("owl:Thing");
+    } else {
+      List<String> rootCandList = new ArrayList<String>(rootCandSet);
+      String rootCandCurie = curieUtil.getCurie(rootCandList.get(0)).get();
+      rootId = ImmutableTermId.constructWithPrefix(rootCandCurie);
+    }
 
     return new ImmutableOntology<T, R>(
         ImmutableSortedMap.copyOf(metaInfo),

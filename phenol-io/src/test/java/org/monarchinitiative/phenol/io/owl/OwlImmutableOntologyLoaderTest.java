@@ -81,6 +81,11 @@ public class OwlImmutableOntologyLoaderTest {
     assertNotNull(gr2);
     assertEquals(gr1.getRelationshipType(), GenericRelationshipType.IS_A);
     assertEquals(gr2.getRelationshipType(), GenericRelationshipType.IS_A);
+
+    // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
+    TermId rootTermId = ontology.getRootTermId();
+    assertEquals(rootTermId.getPrefix().getValue(), "owl");
+    assertEquals(rootTermId.getId(), "Thing");
   }
 
   @Test
@@ -101,7 +106,7 @@ public class OwlImmutableOntologyLoaderTest {
             "SCTID:92100009",
             "UMLS:C0346190");
 
-    // Check whether the example GenericTerm instance properly read all xref entries.
+    // 1. Check whether the example GenericTerm instance properly read all xref entries.
     for (GenericTerm gt : ontology.getTerms()) {
       for (Dbxref xref : gt.getXrefs()) {
         Boolean containFlag = false;
@@ -111,5 +116,10 @@ public class OwlImmutableOntologyLoaderTest {
         if (!containFlag) fail("Xref " + xref.getName() + " is not available.");
       }
     }
+
+    // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
+    TermId rootTermId = ontology.getRootTermId();
+    assertEquals(rootTermId.getPrefix().getValue(), "MONDO");
+    assertEquals(rootTermId.getId(), "0000624");
   }
 }
