@@ -126,13 +126,13 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
 
       Optional<String> subCurie = curieUtil.getCurie(subId);
       if (subCurie.isPresent() != true) {
-        LOGGER.error("No matching curie found for edge's subject: " + subId);
+        LOGGER.warn("No matching curie found for edge's subject: " + subId);
         continue;
       }
 
       Optional<String> objCurie = curieUtil.getCurie(objId);
       if (objCurie.isPresent() != true) {
-        LOGGER.error("No matching curie found for edge's object: " + objId);
+        LOGGER.warn("No matching curie found for edge's object: " + objId);
         continue;
       }
 
