@@ -254,6 +254,23 @@ public class OntologyAlgorithmTest {
   }
 
   @Test
+  public void testGetAncestorsFromSubOntology() {
+    // We first try with id5 as a new root term; the resulting subontology is identical to the original one. 
+    Set<TermId> expected1 = ImmutableSet.of(id1, id2, id3, id4, id5);
+    assertEquals(expected1, OntologyAlgorithm.getAncestorTerms(ontology, id5, id1, true));
+
+    Set<TermId> expected2 = ImmutableSet.of(id2, id3, id4, id5);
+    assertEquals(expected2, OntologyAlgorithm.getAncestorTerms(ontology, id5, id1, false));
+
+    // We then try with id2 as a new root term; the resulting subontology is the one with two terms: id1 and id2.
+    Set<TermId> expected3 = ImmutableSet.of(id1, id2);
+    assertEquals(expected3, OntologyAlgorithm.getAncestorTerms(ontology, id2, id1, true));
+
+    Set<TermId> expected4 = ImmutableSet.of(id2);
+    assertEquals(expected4, OntologyAlgorithm.getAncestorTerms(ontology, id2, id1, false));
+  }
+
+  @Test
   public void testRootHasNoParent() {
     // id5 is the root of our graph and does not have a parent term other than itself
     Set<TermId> expected = ImmutableSet.of(id5);
