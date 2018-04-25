@@ -153,20 +153,20 @@ public class OntologyAlgorithmTest {
   /** The example graph has id1->id2, id1->id3, id1->id4, id2->id5, id3-> id5, id4->id5 */
   @Test
   public void testPathExists() {
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id1, id2));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id2, id1));
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id1, id3));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id3, id1));
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id1, id4));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id4, id1));
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id1, id5));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id5, id1));
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id2, id5));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id5, id2));
-    assertTrue(OntologyAlgorithm.existsPath(ontology, id4, id5));
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id5, id4));
+    assertTrue(existsPath(ontology, id1, id2));
+    assertFalse(existsPath(ontology, id2, id1));
+    assertTrue(existsPath(ontology, id1, id3));
+    assertFalse(existsPath(ontology, id3, id1));
+    assertTrue(existsPath(ontology, id1, id4));
+    assertFalse(existsPath(ontology, id4, id1));
+    assertTrue(existsPath(ontology, id1, id5));
+    assertFalse(existsPath(ontology, id5, id1));
+    assertTrue(existsPath(ontology, id2, id5));
+    assertFalse(existsPath(ontology, id5, id2));
+    assertTrue(existsPath(ontology, id4, id5));
+    assertFalse(existsPath(ontology, id5, id4));
     // test that a term cannot have a path to itself.
-    assertFalse(OntologyAlgorithm.existsPath(ontology, id5, id5));
+    assertFalse(existsPath(ontology, id5, id5));
   }
 
   /** Test the default function, which includes the term itself in the set of returned terms */
@@ -193,7 +193,7 @@ public class OntologyAlgorithmTest {
     // the child of both id2 and id3 is id1
     Set<TermId> queryTerms = ImmutableSet.of(id2, id3);
     Set<TermId> expected = ImmutableSet.of(id1, id2, id3);
-    assertEquals(expected, OntologyAlgorithm.getChildTerms(ontology, queryTerms));
+    assertEquals(expected, getChildTerms(ontology, queryTerms));
   }
 
   /**
@@ -204,7 +204,7 @@ public class OntologyAlgorithmTest {
   public void testReturnChildrenWithoutOriginalTerm() {
     // id5 has 3 children: id2->id5, id3-> id5, id4->id5
     Set<TermId> expected = ImmutableSet.of(id2, id3, id4);
-    assertEquals(expected, OntologyAlgorithm.getChildTerms(ontology, id5, false));
+    assertEquals(expected, getChildTerms(ontology, id5, false));
   }
 
   /**
@@ -214,7 +214,7 @@ public class OntologyAlgorithmTest {
   @Test
   public void testGetDescendents() {
     Set<TermId> expected = ImmutableSet.of(id1, id2, id3, id4, id5);
-    assertEquals(expected, OntologyAlgorithm.getDescendents(ontology, id5));
+    assertEquals(expected, getDescendents(ontology, id5));
   }
 
   @Test
@@ -243,31 +243,31 @@ public class OntologyAlgorithmTest {
     //id3-> id5, id4->id5
     Set<TermId> queryTerms = ImmutableSet.of(id3, id4);
     Set<TermId> expected = ImmutableSet.of(id3, id4, id5);
-    assertEquals(expected, OntologyAlgorithm.getParentTerms(ontology, queryTerms));
+    assertEquals(expected, getParentTerms(ontology, queryTerms));
   }
 
   @Test
   public void testGetAncestorsId1() {
     // id1 has id2, id3, id4m and id5 as ancestors
     Set<TermId> expected = ImmutableSet.of(id1, id2, id3, id4, id5);
-    assertEquals(expected, OntologyAlgorithm.getAncestorTerms(ontology, id1));
+    assertEquals(expected, getAncestorTerms(ontology, id1));
   }
 
   @Test
   public void testGetAncestorsFromSubOntology() {
     // We first try with id5 as a new root term; the resulting subontology is identical to the original one. 
     Set<TermId> expected1 = ImmutableSet.of(id1, id2, id3, id4, id5);
-    assertEquals(expected1, OntologyAlgorithm.getAncestorTerms(ontology, id5, id1, true));
+    assertEquals(expected1, getAncestorTerms(ontology, id5, id1, true));
 
     Set<TermId> expected2 = ImmutableSet.of(id2, id3, id4, id5);
-    assertEquals(expected2, OntologyAlgorithm.getAncestorTerms(ontology, id5, id1, false));
+    assertEquals(expected2, getAncestorTerms(ontology, id5, id1, false));
 
     // We then try with id2 as a new root term; the resulting subontology is the one with two terms: id1 and id2.
     Set<TermId> expected3 = ImmutableSet.of(id1, id2);
-    assertEquals(expected3, OntologyAlgorithm.getAncestorTerms(ontology, id2, id1, true));
+    assertEquals(expected3, getAncestorTerms(ontology, id2, id1, true));
 
     Set<TermId> expected4 = ImmutableSet.of(id2);
-    assertEquals(expected4, OntologyAlgorithm.getAncestorTerms(ontology, id2, id1, false));
+    assertEquals(expected4, getAncestorTerms(ontology, id2, id1, false));
   }
 
   @Test
