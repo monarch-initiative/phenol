@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -93,7 +92,8 @@ class HpoAnnotationLine {
   HpoAnnotationLine(String line) {
     String F[] = line.split("\t");
    if (F.length != headerFields.length) {
-     valid_number_of_fields=true;
+     valid_number_of_fields=false;
+     System.err.println("[phenol:ERROR] Annotation line with " + F.length + "fields: \""+line+"\"");
    }
     this.database = F[DB_IDX];
     this.DBObjectId = F[DB_OBJECT_ID_IDX];

@@ -17,16 +17,6 @@
      xmlns:dc="http://purl.org/dc/elements/1.1/">
     <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/mondo-module.owl">
         <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/mondo/releases/2018-03-16/mondo.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/ncbitaxon_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/cl_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/go_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/uberon_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/mf_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/ro_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/pato_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/axioms.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/chebi_import.owl"/>
-        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/envo_import.owl"/>
         <terms:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
         <foaf:homepage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">obofoundry.org/ontology/mondo.html</foaf:homepage>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Includes Ontology(OntologyID(OntologyIRI(&lt;http://purl.obolibrary.org/obo/mondo/imports/equivalencies.owl&gt;) VersionIRI(&lt;null&gt;))) [Axioms: 142991 Logical Axioms: 61249]</rdfs:comment>
@@ -34,8 +24,6 @@
         <oboInOwl:hasOBOFormatVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.2</oboInOwl:hasOBOFormatVersion>
         <terms:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology.</terms:description>
     </owl:Ontology>
-
-    <!-- http://purl.obolibrary.org/obo/MONDO_0000645 -->
 
     <owl:Class rdf:about="http://purl.obolibrary.org/obo/MONDO_0000645">
         <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/NCIT_C4517"/>
@@ -53,14 +41,6 @@
             </owl:Class>
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0000624"/>
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0015861"/>
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0021092"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0004026"/>
-                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/UBERON_0003889"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
         <obo1:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A non-metastasizing neoplasm that arises from the fallopian tube. Representative examples include papilloma, adenofibroma, and leiomyoma.</obo1:IAO_0000115>
         <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOID:0060111</oboInOwl:hasDbXref>
         <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICD10:D28.2</oboInOwl:hasDbXref>
