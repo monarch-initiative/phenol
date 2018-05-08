@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.formats.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -26,6 +27,7 @@ import java.util.*;
  * @see HpoModeOfInheritanceTermIds
  * @see HpoSubOntologyRootTermIds
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:HyeongSikKIm@lbl.gov">HyeongSik Kim</a> 
  */
 public class OntologyAlgorithm {
 
@@ -176,6 +178,28 @@ public class OntologyAlgorithm {
       anccset.add(destId);
     }
     return anccset.build();
+  }
+
+  // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm. 
+  // All nodes above that root node in the original ontology will be ignored.
+  public static Set<TermId> getAncestorTerms(
+      Ontology<? extends Term, ? extends Relationship> ontology, 
+      TermId rootTerm,
+      Set<TermId> children,
+      boolean includeOriginalTerm) {
+    ImmutableOntology<? extends Term, ? extends Relationship> subontology =
+        (ImmutableOntology<? extends Term, ? extends Relationship>) ontology.subOntology(rootTerm);
+    return getAncestorTerms(subontology, children, includeOriginalTerm);
+  }
+
+  public static Set<TermId> getAncestorTerms(
+      Ontology<? extends Term, ? extends Relationship> ontology, 
+      TermId rootTerm,
+      TermId child,
+      boolean includeOriginalTerm) {
+    ImmutableOntology<? extends Term, ? extends Relationship> subontology =
+        (ImmutableOntology<? extends Term, ? extends Relationship>) ontology.subOntology(rootTerm);
+    return getAncestorTerms(subontology, child, includeOriginalTerm);
   }
 
   public static Set<TermId> getAncestorTerms(
