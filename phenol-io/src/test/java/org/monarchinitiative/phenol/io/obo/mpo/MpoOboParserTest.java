@@ -5,15 +5,19 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import com.google.common.collect.ImmutableSortedMap;
@@ -38,8 +42,21 @@ public class MpoOboParserTest {
   }
 
   @Test
+  public void testNewParser() {
+    MpOboParser parser = new MpOboParser(mpoHeadFile);
+    Ontology<Term,Relationship> ontology = parser.parse();
+    for (Term t : ontology.getTerms()) {
+      System.out.println(t.toString());
+    }
+    assertEquals(4,ontology.countAllTerms());
+  }
+
+
+
+
+  @Test
   public void testParseHpoHead() throws IOException {
-    final MpoOboParser parser = new MpoOboParser(mpoHeadFile, true);
+    final MpoOboParserOLD parser = new MpoOboParserOLD(mpoHeadFile, true);
     final MpoOntology ontology = parser.parse();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 

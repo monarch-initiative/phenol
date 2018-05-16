@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship> {
+class MpoOboFactoryOLD implements OboOntologyEntryFactory<MpoTerm, MpoRelationship> {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.

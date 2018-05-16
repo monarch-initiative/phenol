@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSortedMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
+public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -45,7 +45,7 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public MpoOboParser(File oboFile, boolean debug) {
+  public MpoOboParserOLD(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -55,7 +55,7 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    *
    * @param oboFile The OBO file to read.
    */
-  public MpoOboParser(File oboFile) {
+  public MpoOboParserOLD(File oboFile) {
     this(oboFile, false);
   }
 
@@ -68,7 +68,7 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
   public MpoOntology parse() throws IOException {
     final OboImmutableOntologyLoader<MpoTerm, MpoRelationship> loader =
         new OboImmutableOntologyLoader<>(oboFile, debug);
-    final MpoOboFactory factory = new MpoOboFactory();
+    final MpoOboFactoryOLD factory = new MpoOboFactoryOLD();
     final ImmutableOntology<MpoTerm, MpoRelationship> o = loader.load(factory);
 
     // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
