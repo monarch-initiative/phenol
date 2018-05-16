@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.MersenneTwister;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 // TODO: The interface here assumes numeric world object ids but annotation is string label based.
@@ -38,11 +38,11 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * <p>The resulting precomputed {@link ScoreDistribution} can be used for empirical estimation of p
  * values.
  *
- * @param <T> {@link Term} sub class this <code>Ontology</code> uses.
- * @param <R> {@link Relationship} sub class this <code>Ontology</code> uses.
+ * @param <T> {@link TermI} sub class this <code>Ontology</code> uses.
+ * @param <R> {@link RelationshipI} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T extends Term, R extends Relationship> {
+public final class SimilarityScoreSampling<T extends TermI, R extends RelationshipI> {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
@@ -232,7 +232,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends Relationshi
             .boxed()
             .map(
                 i -> {
-                  // Sample numTerms Term objects from ontology.
+                  // Sample numTerms TermI objects from ontology.
                   final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
                   final double score = similarity.computeScore(randomTerms, terms);
                   // Round to four decimal places.

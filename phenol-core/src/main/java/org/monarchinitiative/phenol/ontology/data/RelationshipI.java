@@ -11,19 +11,19 @@ import java.io.Serializable;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public interface Relationship extends Serializable {
+public interface RelationshipI extends Serializable {
 
   /**
    * Query for relation's source (from).
    *
-   * @return {@link TermId} of source {@link Term}
+   * @return {@link TermId} of source {@link TermI}
    */
   TermId getSource();
 
   /**
    * Query for relation's destination (to).
    *
-   * @return {@link TermId} of destination{@link Term}
+   * @return {@link TermId} of destination{@link TermI}
    */
   TermId getTarget();
 

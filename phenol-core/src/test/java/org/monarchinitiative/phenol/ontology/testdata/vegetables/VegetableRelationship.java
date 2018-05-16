@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 
-public class VegetableRelationship implements Relationship {
+public class VegetableRelationship implements RelationshipI {
 
   private static final long serialVersionUID = 1L;
 

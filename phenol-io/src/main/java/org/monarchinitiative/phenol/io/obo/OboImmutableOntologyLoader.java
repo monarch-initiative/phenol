@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
@@ -18,14 +19,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
@@ -50,7 +44,7 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class OboImmutableOntologyLoader<T extends Term, R extends Relationship> {
+public final class OboImmutableOntologyLoader<T extends TermI, R extends RelationshipI> {
 
   /** The {@link Logger} object to use for logging. */
   private static final Logger LOGGER = LoggerFactory.getLogger(OboParser.class);
@@ -223,17 +217,17 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
    */
   private class HelperListener implements OboParseResultListener {
 
-    /** Term prefix value to {@link ImmutableTermPrefix}. */
+    /** TermI prefix value to {@link ImmutableTermPrefix}. */
     private final Map<String, ImmutableTermPrefix> prefixes = new HashMap<>();
 
     /** First seen term Id, we will construct the artificial root term if necessary. */
     private ImmutableTermId firstTermId = null;
 
-    /** All TermId objects constructed from Term stanzas (only!), including obsolete terms. */
+    /** All TermId objects constructed from TermI stanzas (only!), including obsolete terms. */
     private final List<TermId> allTermIds = new ArrayList<>();
 
     // TODO: At the moment, HP:1 and HP:01 would be mapped to different objects :(
-    /** Term strings to terms. */
+    /** TermI strings to terms. */
     private final SortedMap<String, ImmutableTermId> termIds = new TreeMap<>();
 
     /** Non-obsolete terms constructed from parsing. */
@@ -242,7 +236,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
     /** Obsolete terms constructed from parsing. */
     private final SortedMap<ImmutableTermId, T> obsoleteTerms = new TreeMap<>();
 
-    /** Term relations constructed from parsing "is_a" relations. */
+    /** TermI relations constructed from parsing "is_a" relations. */
     private final SortedMap<ImmutableTermId, List<BundledIsARelation>> isATermIdPairs =
         new TreeMap<>();
 
@@ -397,7 +391,7 @@ public final class OboImmutableOntologyLoader<T extends Term, R extends Relation
 
       final int pos = termIdStr.lastIndexOf(':');
       if (pos == -1) {
-        throw new PhenolRuntimeException("Term Id does not contain colon! " + termIdStr);
+        throw new PhenolRuntimeException("TermI Id does not contain colon! " + termIdStr);
       }
 
       final String prefixStr = termIdStr.substring(0, pos);

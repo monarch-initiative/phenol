@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
  * Implementation of pairwise Resnik similarity without precomputation.
@@ -19,7 +19,7 @@ import org.monarchinitiative.phenol.ontology.data.Relationship;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @see PrecomputingPairwiseResnikSimilarity
  */
-public final class PairwiseResnikSimilarity<T extends Term, R extends Relationship>
+public final class PairwiseResnikSimilarity<T extends TermI, R extends RelationshipI>
     implements PairwiseSimilarity {
 
   /** {@link Ontology} to base computations on. */

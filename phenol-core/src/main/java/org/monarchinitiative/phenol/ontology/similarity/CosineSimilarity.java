@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
@@ -14,12 +14,12 @@ import java.util.Set;
 /**
  * Implementation of cosine similarity.
  *
- * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link Relationship} sub class to use in the contained classes
+ * @param <T> {@link TermI} sub class to use in the contained classes
+ * @param <R> {@link RelationshipI} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class CosineSimilarity<T extends Term, R extends Relationship> implements Similarity {
+public final class CosineSimilarity<T extends TermI, R extends RelationshipI> implements Similarity {
 
   /** The {@link Ontology} to compute the similarity for. */
   private final Ontology<T, R> ontology;

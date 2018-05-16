@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.formats.hpo;
 import java.util.Date;
 import java.util.List;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
@@ -13,7 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.TermSynonym;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public class HpoTerm implements Term {
+public class HpoTerm implements TermI {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -57,8 +57,8 @@ public class HpoTerm implements Term {
    * @param id The term's Id.
    * @param altTermIds Alternative term Ids.
    * @param name Human-readable term name.
-   * @param definition Term definition.
-   * @param comment Term comment.
+   * @param definition TermI definition.
+   * @param comment TermI comment.
    * @param subsets The names of the subsets that the term is in, empty if none.
    * @param synonyms The synonyms for the term.
    * @param obsolete Whether or not the term is obsolete.

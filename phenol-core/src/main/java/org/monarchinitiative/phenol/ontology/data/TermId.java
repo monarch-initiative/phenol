@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.ontology.data;
 import java.io.Serializable;
 
 /**
- * Identifier of a {@link Term}, consisting of a {@link TermPrefix} and a local numeric ID.
+ * Identifier of a {@link TermI}, consisting of a {@link TermPrefix} and a local numeric ID.
  *
  * <p>By convention, the longest prefix up to the last colon {@code ":"} will be used for the
  * prefix.

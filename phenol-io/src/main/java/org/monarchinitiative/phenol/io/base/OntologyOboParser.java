@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.TermI;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 
 /**
  * Interface for parsing OBO into {@link Ontology} objects.
@@ -13,7 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.Relationship;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @param <O> The {@link Ontology} to return.
  */
-public interface OntologyOboParser<O extends Ontology<? extends Term, ? extends Relationship>> {
+public interface OntologyOboParser<O extends Ontology<? extends TermI, ? extends RelationshipI>> {
 
   /**
    * Parse and build specialized {@link Ontology}.

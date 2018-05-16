@@ -1,14 +1,12 @@
 package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
+import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.ontology.data.TermI;
+
 import java.util.Date;
 import java.util.List;
 
-public class VegetableTerm implements Term {
+public class VegetableTerm implements TermI {
 
   private static final long serialVersionUID = 1L;
 

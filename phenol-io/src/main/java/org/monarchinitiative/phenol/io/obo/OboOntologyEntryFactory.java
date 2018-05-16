@@ -3,21 +3,21 @@ package org.monarchinitiative.phenol.io.obo;
 import java.util.SortedMap;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.TermI;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 
 /**
- * Interface for constructing concrete {@link Term} and {@link Relationship} objects in {@link
+ * Interface for constructing concrete {@link TermI} and {@link RelationshipI} objects in {@link
  * OboImmutableOntologyLoader}.
  *
  * @param <T> The type to use for terms.
  * @param <R> The type to use for term relations.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface OboOntologyEntryFactory<T extends Term, R extends Relationship> {
+public interface OboOntologyEntryFactory<T extends TermI, R extends RelationshipI> {
 
   /**
-   * Set map from Term Id string to {@link ImmutableTermId} into factory.
+   * Set map from TermI Id string to {@link ImmutableTermId} into factory.
    *
    * @param termIds The term Id mapping to use.
    */

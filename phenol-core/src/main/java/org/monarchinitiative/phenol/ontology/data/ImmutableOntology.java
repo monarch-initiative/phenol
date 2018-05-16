@@ -20,7 +20,7 @@ import com.google.common.collect.Sets;
  * @param <R> Type to use for term relations.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class ImmutableOntology<T extends Term, R extends Relationship> implements Ontology<T, R> {
+public class ImmutableOntology<T extends TermI, R extends RelationshipI> implements Ontology<T, R> {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class ImmutableOntology<T extends Term, R extends Relationship> implement
   /** Id of the root term. */
   private final TermId rootTermId;
 
-  /** The mapping from TermId to Term for all terms. */
+  /** The mapping from TermId to TermI for all terms. */
   private final ImmutableMap<TermId, T> termMap;
 
   /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
@@ -193,7 +193,7 @@ public class ImmutableOntology<T extends Term, R extends Relationship> implement
     final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph =
         GraphUtil.subGraph(graph, childTermIds);
     Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds, childTermIds);
-    // make sure the Term map contains only terms from the subontology
+    // make sure the TermI map contains only terms from the subontology
     final ImmutableMap.Builder<TermId, T> termBuilder = ImmutableMap.builder();
 
     for (final TermId tid : intersectingTerms) {
@@ -204,7 +204,7 @@ public class ImmutableOntology<T extends Term, R extends Relationship> implement
     final ImmutableMap.Builder<Integer, R> relationBuilder = ImmutableMap.builder();
     for (Iterator<Map.Entry<Integer, R>> it = relationMap.entrySet().iterator(); it.hasNext(); ) {
       Map.Entry<Integer, R> entry = it.next();
-      Relationship tr = entry.getValue();
+      RelationshipI tr = entry.getValue();
       if (subsetTermMap.containsKey(tr.getSource()) && subsetTermMap.containsKey(tr.getTarget())) {
         relationBuilder.put(entry.getKey(), entry.getValue());
       }

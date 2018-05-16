@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.go;
 
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.RelationshipTypeI;
 
 /**
  * Enumeration for describing relation qualifiers in the GO.
@@ -9,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.RelationshipType;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public enum GoRelationshipType implements RelationshipType {
+public enum GoRelationshipType implements RelationshipTypeI {
   /** "Is-a" relation. */
   IS_A,
   /** "Intersection-of" relation. */
@@ -19,5 +19,5 @@ public enum GoRelationshipType implements RelationshipType {
   /** "DISJOINT_FROM" relation. */
   DISJOINT_FROM,
   /** Unknown, used for any other relation. */
-  UNKNOWN;
+  UNKNOWN
 }

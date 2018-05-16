@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-public class TestRelationship implements Relationship {
+public class TestRelationship implements RelationshipI {
 
   private static final long serialVersionUID = 1L;
 

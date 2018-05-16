@@ -1,18 +1,18 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipTypeI;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 
 /**
- * {@link Relationship} to use for the HPO.
+ * {@link RelationshipI} to use for the HPO.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class HpoRelationship extends GenericRelationship {
+public class HpoRelationship extends Relationship {
   private static final long serialVersionUID = 1792288507510989462L;
 
   /**
@@ -23,7 +23,7 @@ public class HpoRelationship extends GenericRelationship {
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationshipType The relation's type.
    */
-  public HpoRelationship(TermId source, TermId dest, int id, RelationshipType relationshipType) {
+  public HpoRelationship(TermId source, TermId dest, int id, RelationshipTypeI relationshipType) {
     super(source, dest, id, relationshipType);
   }
 

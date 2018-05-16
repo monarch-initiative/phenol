@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends Relationship>
+public final class PrecomputingPairwiseResnikSimilarity<T extends TermI, R extends RelationshipI>
     implements PairwiseSimilarity, Serializable {
 
   /** Serial UID for serialization. */

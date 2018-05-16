@@ -30,7 +30,7 @@ public final class ImmutableTermId implements TermId {
     final int pos = termIdString.lastIndexOf(':');
     if (pos == -1) {
       throw new PhenolRuntimeException(
-          "Term ID string \"" + termIdString + "\" does not have a prefix!");
+          "TermI ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new ImmutableTermId(
           new ImmutableTermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));

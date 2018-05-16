@@ -62,7 +62,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
   }
 
   /**
-   * The subontology defined by Term with id4 should consist of only the terms id4 and id1. The
+   * The subontology defined by TermI with id4 should consist of only the terms id4 and id1. The
    * termmap should thus contain only two terms. The subontology does not contain the original root
    * of the ontology, id5.
    */

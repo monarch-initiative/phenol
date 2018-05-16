@@ -13,12 +13,12 @@ import org.monarchinitiative.phenol.graph.util.GraphUtil;
  *
  * <p>This interface adds functions for easy access to ancestors to {@link MinimalOntology}.
  *
- * @param <T> {@link Term} sub class this <code>Ontology</code> uses
- * @param <R> {@link Relationship} sub class this <code>Ontology</code> uses.
+ * @param <T> {@link TermI} sub class this <code>Ontology</code> uses
+ * @param <R> {@link RelationshipI} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public interface Ontology<T extends Term, R extends Relationship>
+public interface Ontology<T extends TermI, R extends RelationshipI>
     extends MinimalOntology<T, R>, Serializable {
 
   /**
@@ -29,7 +29,7 @@ public interface Ontology<T extends Term, R extends Relationship>
    *     none could be found.
    */
   default TermId getPrimaryTermId(TermId termId) {
-    final Term term = getTermMap().get(termId);
+    final TermI term = getTermMap().get(termId);
     if (term == null) {
       return null;
     } else {

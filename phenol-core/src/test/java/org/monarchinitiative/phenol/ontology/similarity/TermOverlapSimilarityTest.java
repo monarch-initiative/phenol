@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
 
-  TermOverlapSimilarity<VegetableTerm, VegetableRelationship> similarity;
+  private TermOverlapSimilarity<VegetableTerm, VegetableRelationship> similarity;
 
   @Before
   public void setUp() {
@@ -22,7 +22,7 @@ public class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
 
   @Test
   public void testQueries() {
-    assertEquals("Term overlap similarity", similarity.getName());
+    assertEquals("TermI overlap similarity", similarity.getName());
     assertEquals(true, similarity.isSymmetric());
     assertEquals("{normalized: true}", similarity.getParameters());
   }

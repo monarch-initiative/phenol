@@ -30,9 +30,9 @@ import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
@@ -43,7 +43,7 @@ import com.google.common.collect.Sets;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class OwlImmutableOntologyLoader<T extends Term, R extends Relationship> {
+public final class OwlImmutableOntologyLoader<T extends TermI, R extends RelationshipI> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
   private static CurieUtil curieUtil;
@@ -141,10 +141,10 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
       ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurieStr);
       ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurieStr);
 
-      // For each edge and connected nodes, 
+      // For each edge and connected nodes,
       // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
       // we then remove subj nodes from rootCandSet, i.e. nodes that have outgoing edges.
-      rootCandSet.add(objId);  
+      rootCandSet.add(objId);
       removeMarkSet.add(propId);
       removeMarkSet.add(subId);
 
@@ -169,7 +169,7 @@ public final class OwlImmutableOntologyLoader<T extends Term, R extends Relation
 
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
-    TermId rootId = null;  
+    TermId rootId = null;
     if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
       rootId = ImmutableTermId.constructWithPrefix("owl:Thing");
     } else {

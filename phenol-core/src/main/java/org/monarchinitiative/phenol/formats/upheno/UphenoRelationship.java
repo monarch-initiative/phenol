@@ -1,17 +1,17 @@
 package org.monarchinitiative.phenol.formats.upheno;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 
 /**
- * {@link Relationship} to use for uPheno.
+ * {@link RelationshipI} to use for uPheno.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class UphenoRelationship extends GenericRelationship {
+public class UphenoRelationship extends Relationship {
   private static final long serialVersionUID = 1608853879879201094L;
 
   /**

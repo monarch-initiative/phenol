@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.ontology.data;
 import java.util.Date;
 import java.util.List;
 
-public class TestTerm implements Term {
+public class TestTerm implements TermI {
 
   private static final long serialVersionUID = 1L;
 

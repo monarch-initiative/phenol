@@ -100,7 +100,7 @@ public final class HpoDisease {
   }
 
   /**
-   * @param tid ID of an HPO Term
+   * @param tid ID of an HPO TermI
    * @return true if there is a direct annotation to tid. Does not include indirect annotations from
    *     annotation propagation rule.
    */
