@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obo.go;
 import java.io.File;
 import java.io.IOException;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
-import org.monarchinitiative.phenol.formats.go.GoTerm;
-import org.monarchinitiative.phenol.formats.go.GoRelationship;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
@@ -33,7 +33,7 @@ import com.google.common.collect.ImmutableSortedMap;
  * <h5>Multiple Root Terms</h5>
  *
  * <p>The Gene Ontology has multiple root terms. As documented in {@link
- * OboImmutableOntologyLoader}, an artificial root term with id {@link GO:0000000} will be inserted.
+ * OboImmutableOntologyLoader}, an artificial root term with id {@code GO:0000000} will be inserted.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -72,10 +72,10 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
    * @throws IOException In case of problems with file I/O.
    */
   public GoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<GoTerm, GoRelationship> loader =
-        new OboImmutableOntologyLoader<>(oboFile, debug);
+    final OboImmutableOntologyLoader loader =
+        new OboImmutableOntologyLoader(oboFile, debug);
     final GoOboFactory factory = new GoOboFactory();
-    final ImmutableOntology<GoTerm, GoRelationship> o = loader.load(factory);
+    final ImmutableOntology o = loader.load(factory);
 
     // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -85,8 +85,8 @@ public final class GoOboParser implements OntologyOboParser<GoOntology> {
         o.getRootTermId(),
         o.getNonObsoleteTermIds(),
         o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, GoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, GoRelationship>) o.getRelationMap());
+        (ImmutableMap<TermId, Term>) o.getTermMap(),
+        (ImmutableMap<Integer, Relationship>) o.getRelationMap());
   }
 
   /** @return The OBO file to parse. */

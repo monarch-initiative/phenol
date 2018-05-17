@@ -1,15 +1,13 @@
 package org.monarchinitiative.phenol.formats.generic;
 
-import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.RelationshipTypeI;
 
 /**
- * {@link RelationshipI} to use for general ontologies.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class Relationship implements RelationshipI {
+public class Relationship {
   private static final long serialVersionUID = -2833503015330486640L;
 
   /** Source {@link TermId}. */
@@ -22,7 +20,7 @@ public class Relationship implements RelationshipI {
   protected final int id;
 
   /** {@link RelationshipTypeI} for this term relation. */
-  protected final RelationshipTypeI relationshipType;
+  private final RelationshipType relationshipType;
 
   /**
    * Constructor.
@@ -33,30 +31,27 @@ public class Relationship implements RelationshipI {
    * @param relationshipType The relation's type.
    */
   public Relationship(
-      TermId source, TermId dest, int id, RelationshipTypeI relationshipType) {
+      TermId source, TermId dest, int id, RelationshipType relationshipType) {
     this.source = source;
     this.target = dest;
     this.id = id;
     this.relationshipType = relationshipType;
   }
 
-  @Override
   public TermId getSource() {
     return source;
   }
 
-  @Override
   public TermId getTarget() {
     return target;
   }
 
-  @Override
   public int getId() {
     return id;
   }
 
   /** @return The relation's qualifier. */
-  public RelationshipTypeI getRelationshipType() {
+  public RelationshipType getRelationshipType() {
     return relationshipType;
   }
 

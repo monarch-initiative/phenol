@@ -18,6 +18,8 @@ import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -30,9 +32,7 @@ import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
@@ -43,7 +43,7 @@ import com.google.common.collect.Sets;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class OwlImmutableOntologyLoader<T extends TermI, R extends RelationshipI> {
+public final class OwlImmutableOntologyLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
   private static CurieUtil curieUtil;
@@ -51,16 +51,16 @@ public final class OwlImmutableOntologyLoader<T extends TermI, R extends Relatio
 
   private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
   private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
-  private SortedMap<TermId, T> terms = Maps.newTreeMap();
+  private SortedMap<TermId, Term> terms = Maps.newTreeMap();
   private Collection<TermId> termIdNodes = Sets.newHashSet();
-  private Map<Integer, R> relationMap = Maps.newHashMap();
+  private Map<Integer, Relationship> relationMap = Maps.newHashMap();
 
   public OwlImmutableOntologyLoader(File file) {
     this.file = file;
     curieUtil = new CurieUtil(CurieMapGenerator.generate());
   }
 
-  public ImmutableOntology<T, R> load(OwlOntologyEntryFactory<T, R> factory)
+  public ImmutableOntology load(OwlOntologyEntryFactory factory)
       throws IOException, OWLOntologyCreationException {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
@@ -98,7 +98,7 @@ public final class OwlImmutableOntologyLoader<T extends TermI, R extends Relatio
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (nodeCurie.isPresent() != true) continue;
       ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
-      T term = factory.constructTerm(node, termId);
+      Term term = factory.constructTerm(node, termId);
 
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
@@ -154,7 +154,7 @@ public final class OwlImmutableOntologyLoader<T extends TermI, R extends Relatio
       e.setId(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
 
-      R ctr = factory.constructRelationship(subTermId, objTermId, edgeId);
+      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId);
       relationMap.put(edgeId, ctr);
 
       edgeId += 1;
@@ -169,7 +169,7 @@ public final class OwlImmutableOntologyLoader<T extends TermI, R extends Relatio
 
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
-    TermId rootId = null;
+    TermId rootId;
     if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
       rootId = ImmutableTermId.constructWithPrefix("owl:Thing");
     } else {
@@ -178,7 +178,7 @@ public final class OwlImmutableOntologyLoader<T extends TermI, R extends Relatio
       rootId = ImmutableTermId.constructWithPrefix(rootCandCurie);
     }
 
-    return new ImmutableOntology<T, R>(
+    return new ImmutableOntology(
         ImmutableSortedMap.copyOf(metaInfo),
         phenolGraph,
         rootId,

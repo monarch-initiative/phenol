@@ -21,20 +21,20 @@ import org.monarchinitiative.phenol.ontology.data.TermI;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class InformationContentComputation<T extends TermI, R extends RelationshipI> {
+public final class InformationContentComputation {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(InformationContentComputation.class);
 
   /** {@link Ontology} to work on for computations. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /**
    * Constructor.
    *
    * @param ontology {@link Ontology} to use for the computations.
    */
-  public InformationContentComputation(Ontology<T, R> ontology) {
+  public InformationContentComputation(Ontology ontology) {
     this.ontology = ontology;
   }
 

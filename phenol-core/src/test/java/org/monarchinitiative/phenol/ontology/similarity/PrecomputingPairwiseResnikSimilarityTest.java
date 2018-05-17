@@ -11,24 +11,23 @@ import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
+
 
 public class PrecomputingPairwiseResnikSimilarityTest extends VegetableOntologyTestBase {
 
-  PrecomputingPairwiseResnikSimilarity<VegetableTerm, VegetableRelationship> similarity;
+  private PrecomputingPairwiseResnikSimilarity similarity;
 
   @Before
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation<VegetableTerm, VegetableRelationship> computation =
-        new InformationContentComputation<>(ontology);
+    InformationContentComputation computation =
+        new InformationContentComputation(ontology);
     Map<TermId, Collection<String>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
 
-    similarity = new PrecomputingPairwiseResnikSimilarity<>(ontology, informationContent);
+    similarity = new PrecomputingPairwiseResnikSimilarity(ontology, informationContent);
   }
 
   @Test

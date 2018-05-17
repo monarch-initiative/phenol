@@ -1,9 +1,10 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.formats.go.GoRelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.go.GoTerm;
-import org.monarchinitiative.phenol.formats.go.GoRelationship;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -45,12 +46,12 @@ import java.util.stream.Collectors;
 // TODO: flesh out, then consolidate with HpoOboFactory and similar classes
 
 /**
- * Factory class for constructing {@link GoTerm} and {@link GoRelationship} objects from {@link
+ * Factory class for constructing {@link GoTerm} and {@link Relationship} objects from {@link
  * Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoRelationship> {
+class GoOboFactory implements OboOntologyEntryFactory {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -69,7 +70,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoRelationship> {
   }
 
   @Override
-  public GoTerm constructTerm(Stanza stanza) {
+  public Term constructTerm(Stanza stanza) {
     final TermId id =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
 
@@ -174,7 +175,7 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoRelationship> {
       }
     }
 
-    return new GoTerm(
+    return new Term(
         id,
         altTermIds,
         name,
@@ -241,31 +242,31 @@ class GoOboFactory implements OboOntologyEntryFactory<GoTerm, GoRelationship> {
   }
 
   @Override
-  public GoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new GoRelationship(sourceId, destId, nextRelationId++, GoRelationshipType.IS_A);
+    return new Relationship(sourceId, destId, nextRelationId++, RelationshipType.IS_A);
   }
 
   @Override
-  public GoRelationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public GoRelationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public GoRelationship constructrelationship(
+  public Relationship constructrelationship(
       Stanza stanza, StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public GoRelationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 }

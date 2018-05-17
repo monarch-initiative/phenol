@@ -13,13 +13,14 @@ import org.monarchinitiative.phenol.graph.util.GraphUtil;
  *
  * <p>This interface adds functions for easy access to ancestors to {@link MinimalOntology}.
  *
- * @param <T> {@link TermI} sub class this <code>Ontology</code> uses
- * @param <R> {@link RelationshipI} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public interface Ontology<T extends TermI, R extends RelationshipI>
-    extends MinimalOntology<T, R>, Serializable {
+public interface Ontology
+    extends MinimalOntology, Serializable {
+
+  static long serialVersionUID = 2l;
 
   /**
    * Translate {@link TermId} to primary one (in case of alternative or deprecated term IDs).
@@ -110,5 +111,5 @@ public interface Ontology<T extends TermI, R extends RelationshipI>
    * @param subOntologyRoot {@link TermId} to use as root of sub ontology.
    * @return Freshly created sub ontology.
    */
-  Ontology<T, R> subOntology(TermId subOntologyRoot);
+  Ontology subOntology(TermId subOntologyRoot);
 }

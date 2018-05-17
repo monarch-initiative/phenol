@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.RelationshipI;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -19,11 +17,11 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @see PrecomputingPairwiseResnikSimilarity
  */
-public final class PairwiseResnikSimilarity<T extends TermI, R extends RelationshipI>
+public final class PairwiseResnikSimilarity
     implements PairwiseSimilarity {
 
   /** {@link Ontology} to base computations on. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /** {@link Map} from {@link TermId} to its information content. */
   private final Map<TermId, Double> termToIc;
@@ -40,7 +38,7 @@ public final class PairwiseResnikSimilarity<T extends TermI, R extends Relations
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
-  public PairwiseResnikSimilarity(Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
+  public PairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc) {
     this.ontology = ontology;
     this.termToIc = termToIc;
   }
@@ -58,7 +56,7 @@ public final class PairwiseResnikSimilarity<T extends TermI, R extends Relations
    * @param target Target {@link TermId}.
    * @return Precomputed pairwise Resnik similarity score.
    */
-  public double computeScoreImpl(TermId query, TermId target) {
+  private double computeScoreImpl(TermId query, TermId target) {
     final Set<TermId> queryTerms = getOntology().getAncestorTermIds(query, true);
     final Set<TermId> targetTerms = getOntology().getAncestorTermIds(target, true);
 
@@ -77,7 +75,7 @@ public final class PairwiseResnikSimilarity<T extends TermI, R extends Relations
   }
 
   /** @return Underlying {@link Ontology}. */
-  public Ontology<T, R> getOntology() {
+  public Ontology getOntology() {
     return ontology;
   }
 

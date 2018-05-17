@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.RelationshipI;
 import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.MersenneTwister;
@@ -38,17 +37,15 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * <p>The resulting precomputed {@link ScoreDistribution} can be used for empirical estimation of p
  * values.
  *
- * @param <T> {@link TermI} sub class this <code>Ontology</code> uses.
- * @param <R> {@link RelationshipI} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T extends TermI, R extends RelationshipI> {
+public final class SimilarityScoreSampling {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
 
   /** {@link Ontology} to use for computation. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /** {@link Similarity} to use for the precomputation. */
   private final Similarity similarity;
@@ -63,7 +60,7 @@ public final class SimilarityScoreSampling<T extends TermI, R extends Relationsh
    * @param options Configuration for score sampling.
    */
   public SimilarityScoreSampling(
-      Ontology<T, R> ontology, Similarity similarity, ScoreSamplingOptions options) {
+      Ontology ontology, Similarity similarity, ScoreSamplingOptions options) {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.

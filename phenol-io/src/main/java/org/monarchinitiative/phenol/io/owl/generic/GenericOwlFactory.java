@@ -29,7 +29,7 @@ import org.monarchinitiative.phenol.ontology.data.TermSynonym;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public class GenericOwlFactory
-    implements OwlOntologyEntryFactory<Term, Relationship> {
+    implements OwlOntologyEntryFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericOwlFactory.class);
 
   @Override

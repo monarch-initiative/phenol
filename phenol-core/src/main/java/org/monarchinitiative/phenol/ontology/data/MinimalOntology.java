@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 /**
@@ -60,13 +62,12 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
  *   <li>The underlying graph is acyclic and simple (no two equal directed s-t edges).
  * </ul>
  *
- * @param <T> {@link TermI} sub class this <code>Ontology</code> uses
- * @param <R> {@link RelationshipI} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public interface MinimalOntology<T extends TermI, R extends RelationshipI> extends Serializable {
-
+public interface MinimalOntology extends Serializable {
+  long serialVersionUID = 2L;
   /** @return {@link Map} with ontology meta information, e.g., as loaded from file. */
   Map<String, String> getMetaInfo();
 
@@ -79,13 +80,13 @@ public interface MinimalOntology<T extends TermI, R extends RelationshipI> exten
    * @return {@link Map} from {@link TermId} to corresponding value of {@link TermI} sub class <code>
    *     T</code>.
    */
-  Map<TermId, T> getTermMap();
+  Map<TermId, Term> getTermMap();
 
   /**
    * @return {@link Map} from <code>Integer</code> edge Id to corresponding value of {@link
-   *     RelationshipI} sub class <code>R</code>.
+   *     Relationship} sub class <code>R</code>.
    */
-  Map<Integer, R> getRelationMap();
+  Map<Integer, Relationship> getRelationMap();
 
   /**
    * Convenience method to query whether {@code termId} is the root term.
@@ -110,7 +111,7 @@ public interface MinimalOntology<T extends TermI, R extends RelationshipI> exten
   Set<TermId> getObsoleteTermIds();
 
   /** @return {@link Collection} of all term ({@code T}) objects, including the obsolete ones. */
-  Collection<T> getTerms();
+  Collection<Term> getTerms();
 
   /** @return The number of all terms in the ontology. */
   default int countAllTerms() {

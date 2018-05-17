@@ -33,7 +33,7 @@ public final class OntologyParserFactory {
    * @param oboFile The OBO {@link File} specification.
    * @return The constructed {@link OntologyOboParser}.
    */
-  public static OntologyOboParser<? extends Ontology<?, ?>> constructOboParser(
+  public static OntologyOboParser<? extends Ontology> constructOboParser(
       OntologyType ontology, File oboFile) {
     switch (ontology) {
       case GO:

@@ -3,21 +3,17 @@ package org.monarchinitiative.phenol.ontology.similarity;
 import java.util.Map;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.RelationshipI;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
  * Implementation of Resnik similarity.
  *
- * @param <T> {@link TermI} sub class to use in the contained classes
- * @param <R> {@link RelationshipI} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class ResnikSimilarity<T extends TermI, R extends RelationshipI>
-    extends AbstractCommonAncestorSimilarity<T, R> {
-
+public final class ResnikSimilarity
+    extends AbstractCommonAncestorSimilarity {
+  static long serialVersionUID = 2L;
   /**
    * Constructor.
    *
@@ -31,8 +27,8 @@ public final class ResnikSimilarity<T extends TermI, R extends RelationshipI>
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public ResnikSimilarity(
-      Ontology<T, R> ontology, Map<TermId, Double> termToIc, boolean symmetric) {
-    super(new PrecomputingPairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
+      Ontology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
+    super(new PrecomputingPairwiseResnikSimilarity(ontology, termToIc), symmetric);
   }
 
   /**

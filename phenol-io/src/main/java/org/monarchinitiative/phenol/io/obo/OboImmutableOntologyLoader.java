@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
@@ -44,7 +45,7 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class OboImmutableOntologyLoader<T extends TermI, R extends RelationshipI> {
+public final class OboImmutableOntologyLoader {
 
   /** The {@link Logger} object to use for logging. */
   private static final Logger LOGGER = LoggerFactory.getLogger(OboParser.class);
@@ -81,7 +82,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
    * @return Freshly loaded and constructed {@link ImmutableOntology}.
    * @throws IOException In the case of problems with I/O.
    */
-  public ImmutableOntology<T, R> load(OboOntologyEntryFactory<T, R> factory) throws IOException {
+  public ImmutableOntology load(OboOntologyEntryFactory factory) throws IOException {
     // Construct helper, set the term Id mapping into factory, and trigger parsing.
     final HelperListener helper = new HelperListener(factory);
     factory.setTermIds(helper.getTermIds());
@@ -111,7 +112,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
         new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
     // Construct edge list and relation map.
-    final Map<Integer, R> relationMap = new HashMap<>();
+    final Map<Integer, Relationship> relationMap = new HashMap<>();
     for (Entry<ImmutableTermId, List<BundledIsARelation>> e :
         helper.getIsATermIdPairs().entrySet()) {
       for (BundledIsARelation b : e.getValue()) {
@@ -128,7 +129,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
 
     CompatibilityChecker.check(graph.vertexSet(), graph.edgeSet());
 
-    return new ImmutableOntology<T, R>(
+    return new ImmutableOntology(
         ImmutableSortedMap.copyOf(helper.getMetaInfo()),
         graph,
         rootTermId,
@@ -148,8 +149,8 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
    * @return The one root's {@link ImmutableTermId}, might be artificially created.
    */
   private ImmutableTermId findOrCreateArtificalRoot(
-      OboImmutableOntologyLoader<T, R>.HelperListener helper,
-      OboOntologyEntryFactory<T, R> factory) {
+      OboImmutableOntologyLoader.HelperListener helper,
+      OboOntologyEntryFactory factory) {
     // Find root candidates (no outgoing is-a edges).
     final List<ImmutableTermId> rootCandidates =
         new ArrayList<>(helper.getRootCandidateStanzas().keySet());
@@ -192,7 +193,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
 
       // Register outgoing edges for root candidates. Here, we create fake "is_a" relations.
       for (ImmutableTermId termId : rootCandidates) {
-        final R artificialIsARelation =
+        final Relationship artificialIsARelation =
             factory.constructrelationship(
                 helper.getRootCandidateStanzas().get(termId),
                 new StanzaEntryIsA(rootIdString, null, null));
@@ -231,17 +232,17 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
     private final SortedMap<String, ImmutableTermId> termIds = new TreeMap<>();
 
     /** Non-obsolete terms constructed from parsing. */
-    private final SortedMap<ImmutableTermId, T> terms = new TreeMap<>();
+    private final SortedMap<ImmutableTermId, Term> terms = new TreeMap<>();
 
     /** Obsolete terms constructed from parsing. */
-    private final SortedMap<ImmutableTermId, T> obsoleteTerms = new TreeMap<>();
+    private final SortedMap<ImmutableTermId, Term> obsoleteTerms = new TreeMap<>();
 
     /** TermI relations constructed from parsing "is_a" relations. */
     private final SortedMap<ImmutableTermId, List<BundledIsARelation>> isATermIdPairs =
         new TreeMap<>();
 
     /** Factory for creating concrete term and term relation objects, injected into helper. */
-    private final OboOntologyEntryFactory<T, R> ontologyEntryFactory;
+    private final OboOntologyEntryFactory ontologyEntryFactory;
 
     /** We store the {@link Stanza} objects for the root candidates (no outgoing is_a relation). */
     private final Map<ImmutableTermId, Stanza> rootCandidateStanzas = new HashMap<>();
@@ -254,7 +255,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
      *
      * @param ontologyEntryFactory Factory for creating concrete term and term relation objects.
      */
-    public HelperListener(OboOntologyEntryFactory<T, R> ontologyEntryFactory) {
+    public HelperListener(OboOntologyEntryFactory ontologyEntryFactory) {
       this.ontologyEntryFactory = ontologyEntryFactory;
     }
 
@@ -314,7 +315,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
             StanzaEntryIsObsolete entry = (StanzaEntryIsObsolete) e;
             if (entry.getValue()) {
               // Special handling for obsolete terms.
-              final T newTerm = ontologyEntryFactory.constructTerm(stanza);
+              final Term newTerm = ontologyEntryFactory.constructTerm(stanza);
               obsoleteTerms.put(sourceId, newTerm);
 
               // Construct TermId objects for all alternative ids.
@@ -367,7 +368,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
         }
 
         // Construct the term through the factory.
-        final T term = ontologyEntryFactory.constructTerm(stanza);
+        final Term term = ontologyEntryFactory.constructTerm(stanza);
         terms.put(sourceId, term);
 
         // Put into map from alternative IDs as well.
@@ -445,12 +446,12 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
     }
 
     /** @return Mapping from immutable term Id to term with non-obsolete terms. */
-    public Map<ImmutableTermId, T> getTerms() {
+    public Map<ImmutableTermId, Term> getTerms() {
       return terms;
     }
 
     /** @return Mapping from immutable term Id to term with obsolete terms. */
-    public Map<ImmutableTermId, T> getObsoleteTerms() {
+    public Map<ImmutableTermId, Term> getObsoleteTerms() {
       return obsoleteTerms;
     }
 
@@ -467,7 +468,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
     private final ImmutableTermId dest;
 
     /** The bundled relation. */
-    private final R relation;
+    private final Relationship relation;
 
     /**
      * Constructor.
@@ -475,7 +476,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
      * @param dest Destination term Id.
      * @param relation Relation.
      */
-    public BundledIsARelation(ImmutableTermId dest, R relation) {
+    public BundledIsARelation(ImmutableTermId dest, Relationship relation) {
       this.dest = dest;
       this.relation = relation;
     }
@@ -486,7 +487,7 @@ public final class OboImmutableOntologyLoader<T extends TermI, R extends Relatio
     }
 
     /** @return The bundled relation. */
-    public R getRelation() {
+    public Relationship getRelation() {
       return relation;
     }
   }

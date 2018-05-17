@@ -32,12 +32,12 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
-    final OwlImmutableOntologyLoader<Term, Relationship> loader =
-        new OwlImmutableOntologyLoader<Term, Relationship>(
+    final OwlImmutableOntologyLoader loader =
+        new OwlImmutableOntologyLoader(
             new File("src/test/resources/ncit_module.owl"));
 
     final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology<Term, Relationship> ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load(cof);
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
@@ -90,12 +90,12 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testMONDOLoad() throws Exception {
-    final OwlImmutableOntologyLoader<Term, Relationship> loader =
-        new OwlImmutableOntologyLoader<Term, Relationship>(
+    final OwlImmutableOntologyLoader loader =
+        new OwlImmutableOntologyLoader(
             new File("src/test/resources/mondo_module.owl"));
 
     final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology<Term, Relationship> ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load(cof);
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",

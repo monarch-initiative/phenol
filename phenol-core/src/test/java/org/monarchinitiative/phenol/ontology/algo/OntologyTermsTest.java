@@ -11,8 +11,7 @@ import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermVisitor;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
+
 
 public class OntologyTermsTest extends VegetableOntologyTestBase {
 
@@ -23,10 +22,10 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
     OntologyTerms.visitChildrenOf(
         idRootVegetable,
         ontology,
-        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableRelationship>>() {
+        new TermVisitor<ImmutableOntology>() {
           @Override
           public boolean visit(
-              ImmutableOntology<VegetableTerm, VegetableRelationship> ontology, TermId termId) {
+              ImmutableOntology ontology, TermId termId) {
             children.add(termId);
             return true;
           }
@@ -51,10 +50,10 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
     OntologyTerms.visitParentsOf(
         idBlueCarrot,
         ontology,
-        new TermVisitor<ImmutableOntology<VegetableTerm, VegetableRelationship>>() {
+        new TermVisitor<ImmutableOntology>() {
           @Override
           public boolean visit(
-              ImmutableOntology<VegetableTerm, VegetableRelationship> ontology, TermId termId) {
+              ImmutableOntology ontology, TermId termId) {
             parents.add(termId);
             return true;
           }
