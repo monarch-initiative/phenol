@@ -17,9 +17,7 @@
  * build an {@link org.monarchinitiative.phenol.ontology.data.ImmutableOntology} from the stream of
  * {@link org.monarchinitiative.phenol.io.obo.Stanza} events. For each ontology to load (e.g., GO,
  * HPO etc.), there is a {@link org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory}
- * implementation that has to be passed into the loader for construction of the concrete {@link
- * org.monarchinitiative.phenol.ontology.data.TermI} and {@link
- * org.monarchinitiative.phenol.ontology.data.RelationshipI} implementations.
+ * implementation that has to be passed into the loader.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

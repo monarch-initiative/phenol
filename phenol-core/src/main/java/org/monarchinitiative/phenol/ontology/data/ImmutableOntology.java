@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
 public class ImmutableOntology implements Ontology {
 
   /** Serial UId for serialization. */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** Meta information, as loaded from file. */
   private final ImmutableSortedMap<String, String> metaInfo;
@@ -203,8 +203,7 @@ public class ImmutableOntology implements Ontology {
     ImmutableMap<TermId, Term> subsetTermMap = termBuilder.build();
     // Only retain relations where both source and destination are terms in the subontology
     final ImmutableMap.Builder<Integer, Relationship> relationBuilder = ImmutableMap.builder();
-    for (Iterator<Map.Entry<Integer, Relationship>> it = relationMap.entrySet().iterator(); it.hasNext(); ) {
-      Map.Entry<Integer, Relationship> entry = it.next();
+    for (Map.Entry<Integer, Relationship> entry :  relationMap.entrySet() ) {
       Relationship tr = entry.getValue();
       if (subsetTermMap.containsKey(tr.getSource()) && subsetTermMap.containsKey(tr.getTarget())) {
         relationBuilder.put(entry.getKey(), entry.getValue());

@@ -13,12 +13,6 @@
  * utilities and helpers.
  * </p>
  *
- * <p>
- * You can use {@link org.monarchinitiative.phenol.io.obo.upheno.UphenoOboParser} for parsing
- * OBO-formatted files and <code>String</codes>s into
- * {@link org.monarchinitiative.phenol.formats.upheno.UphenoOntology} objects.
- * </p>
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */

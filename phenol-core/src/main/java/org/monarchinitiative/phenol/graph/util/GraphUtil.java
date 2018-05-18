@@ -78,10 +78,7 @@ public class GraphUtil<V> {
         new DefaultDirectedGraph<V, IdLabeledEdge>(IdLabeledEdge.class);
     ClassBasedEdgeFactory<V, IdLabeledEdge> edgeFactory =
         new ClassBasedEdgeFactory<V, IdLabeledEdge>(IdLabeledEdge.class);
-
-    Iterator<? extends IdLabeledEdge> edgeIt = g.edgeSet().iterator();
-    while (edgeIt.hasNext()) {
-      IdLabeledEdge e = edgeIt.next();
+    for (IdLabeledEdge e : g.edgeSet() ) {
       if (vertices.contains(e.getSource()) && vertices.contains(e.getTarget())) {
         IdLabeledEdge termIdEdge = edgeFactory.createEdge((V) e.getSource(), (V) e.getTarget());
         termIdEdge.setId(e.getId());

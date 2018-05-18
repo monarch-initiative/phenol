@@ -42,10 +42,7 @@ public final class TopologicalSorting<
 
     // Collect unmarked vertices
     final Set<V> unmarked = new HashSet<V>();
-    final Iterator<V> vertexIterator = g.vertexSet().iterator();
-    while (vertexIterator.hasNext()) {
-      unmarked.add(vertexIterator.next());
-    }
+    unmarked.addAll(g.vertexSet());
 
     // Perform visiting
     while (!unmarked.isEmpty()) {

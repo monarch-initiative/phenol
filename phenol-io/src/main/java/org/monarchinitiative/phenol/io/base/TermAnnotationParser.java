@@ -30,5 +30,5 @@ public interface TermAnnotationParser<A extends TermAnnotation> extends Closeabl
   A next() throws IOException, TermAnnotationParserException;
 
   /** @return The {@link File} used for reading. */
-  public File getFile();
+  File getFile();
 }

@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 /**
  * Interface for implementation of the <b>visitor pattern</b> for ontology terms (identified by
  * their {@link TermId}).

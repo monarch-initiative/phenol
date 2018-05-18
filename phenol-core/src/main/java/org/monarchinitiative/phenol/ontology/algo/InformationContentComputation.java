@@ -10,8 +10,6 @@ import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.monarchinitiative.phenol.ontology.data.TermI;
-
 // TODO: separate resulting precomputation DS and algorithm to equalize with graph.algo
 
 /**

@@ -721,7 +721,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, new StanzaEntryRemark(text, trailingModifier, comment));
   }
 
-  /** Called on leaving <code>dbXrefList</code> rule, construct {@link DbXref} object. */
+  /** Called on leaving <code>dbXrefList</code> rule, construct {@link Dbxref} object. */
   @Override
   public void exitDbXrefList(DbXrefListContext ctx) {
     final DbXrefList dbXrefList = new DbXrefList();
@@ -732,7 +732,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, dbXrefList);
   }
 
-  /** Called on leaving <code>dbXref</code> rule, construct {@link DbXref} object. */
+  /** Called on leaving <code>dbXref</code> rule, construct {@link Dbxref} object. */
   @Override
   public void exitDbXref(DbXrefContext ctx) {
     final String name = OboEscapeUtils.unescape(ctx.dbXrefWord().getText());

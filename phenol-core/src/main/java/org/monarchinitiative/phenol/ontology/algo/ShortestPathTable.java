@@ -43,7 +43,7 @@ public final class ShortestPathTable {
    *
    * <p>The shortest path table will be computed upon construction.
    *
-   * @param ontology
+   * @param ontology reference to Ontology object
    */
   public ShortestPathTable(Ontology ontology) {
     termIdCount = ontology.getNonObsoleteTermIds().size();

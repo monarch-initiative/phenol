@@ -8,7 +8,6 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;

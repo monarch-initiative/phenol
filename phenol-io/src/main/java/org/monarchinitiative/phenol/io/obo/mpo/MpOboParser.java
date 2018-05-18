@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.io.owl.OwlImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

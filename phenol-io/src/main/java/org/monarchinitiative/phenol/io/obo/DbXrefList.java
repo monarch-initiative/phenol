@@ -12,13 +12,13 @@ import org.monarchinitiative.phenol.ontology.data.Dbxref;
  */
 public class DbXrefList {
 
-  /** List of {@link DbXref} objects. */
+  /** List of {@link Dbxref} objects. */
   private final List<Dbxref> dbXrefs = new ArrayList<>();
 
   /**
-   * Add new {@link DbXref} to the list.
+   * Add new {@link Dbxref} to the list.
    *
-   * @param dbXref The {@link DbXref} to add.
+   * @param dbXref The {@link Dbxref} to add.
    */
   public void addDbXref(Dbxref dbXref) {
     dbXrefs.add(dbXref);

@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.ontology.similarity;
 
 import java.util.Collection;
 
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 

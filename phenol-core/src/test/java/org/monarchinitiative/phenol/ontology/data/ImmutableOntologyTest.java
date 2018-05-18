@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
 import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 import java.util.Map;

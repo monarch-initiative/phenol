@@ -1,10 +1,8 @@
 package org.monarchinitiative.phenol.cli;
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
@@ -64,7 +62,7 @@ public class PrecomputeScoresCommand {
    * <p>The output is a mapping from term count to {@link ScoreDistribution} which maps Entrez gene
    * ID to empirical p value distribution.
    */
-  Map<Integer, ScoreDistribution> scoreDistribution;
+  private Map<Integer, ScoreDistribution> scoreDistribution;
 
   /** Constructor. */
   public PrecomputeScoresCommand(PrecomputeScoresOptions options) {

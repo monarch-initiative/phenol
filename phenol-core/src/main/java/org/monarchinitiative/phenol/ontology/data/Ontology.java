@@ -20,7 +20,7 @@ import org.monarchinitiative.phenol.graph.util.GraphUtil;
 public interface Ontology
     extends MinimalOntology, Serializable {
 
-  static long serialVersionUID = 2l;
+  long serialVersionUID = 2l;
 
   /**
    * Translate {@link TermId} to primary one (in case of alternative or deprecated term IDs).

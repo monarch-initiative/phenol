@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.Sets;
 
