@@ -141,7 +141,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   @Override
   public void enterHeader(HeaderContext ctx) {
     // Create new list of key/value pairs
-    stanzaKeyValues = new ArrayList<StanzaEntry>();
+    stanzaKeyValues = new ArrayList<>();
   }
 
   /** Called on leaving <code>header</code>. */
@@ -188,7 +188,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   @Override
   public void enterStanza(StanzaContext ctx) {
     // Create new list of key/value pairs
-    stanzaKeyValues = new ArrayList<StanzaEntry>();
+    stanzaKeyValues = new ArrayList<>();
   }
 
   /**

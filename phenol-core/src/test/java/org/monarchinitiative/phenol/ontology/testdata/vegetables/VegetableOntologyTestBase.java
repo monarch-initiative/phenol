@@ -74,7 +74,7 @@ public class VegetableOntologyTestBase {
             idBlueCarrot);
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
-        new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+      new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, idRootVegetable, idVegetable, 1);
     GraphUtil.addEdgeToGraph(graph, idLeafVegetable, idVegetable, 2);
     GraphUtil.addEdgeToGraph(graph, idCarrot, idRootVegetable, 3);

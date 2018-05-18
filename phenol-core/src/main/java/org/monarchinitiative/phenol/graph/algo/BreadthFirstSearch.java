@@ -33,8 +33,8 @@ public final class BreadthFirstSearch<V extends Comparable<V>, E extends IdLabel
       V v,
       VertexVisitor<V, E> visitor,
       NeighborSelector<V, E> selector) {
-    final Set<V> seen = new HashSet<V>();
-    final ArrayDeque<V> dequeue = new ArrayDeque<V>();
+    final Set<V> seen = new HashSet<>();
+    final ArrayDeque<V> dequeue = new ArrayDeque<>();
     dequeue.addLast(v);
     while (!dequeue.isEmpty()) {
       final V vertex = dequeue.pollFirst();

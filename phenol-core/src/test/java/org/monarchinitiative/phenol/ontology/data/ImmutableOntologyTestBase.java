@@ -53,7 +53,7 @@ public class ImmutableOntologyTestBase {
     vertices = ImmutableList.of(id1, id2, id3, id4, id5);
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
-        new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+      new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
     GraphUtil.addEdgeToGraph(graph, id1, id3, 2);
     GraphUtil.addEdgeToGraph(graph, id1, id4, 3);

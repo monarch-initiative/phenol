@@ -186,7 +186,7 @@ public class Term implements TermI {
 
   @Override
   public String toString() {
-    return "CommonTerm [id="
+    return "Term [id="
         + id
         + ", altTermIds="
         + altTermIds

@@ -138,7 +138,7 @@ public final class SimilarityScoreSampling {
     final int numThreads = options.getNumThreads();
     ThreadPoolExecutor threadPoolExecutor =
         new ThreadPoolExecutor(
-            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Submit all chunks into the executor.
     final Iterator<Integer> objectIdIter =
         labels.keySet().stream().filter(this::selectObject).iterator();
@@ -219,7 +219,7 @@ public final class SimilarityScoreSampling {
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
       int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
-    final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getNonObsoleteTermIds());
+    final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency

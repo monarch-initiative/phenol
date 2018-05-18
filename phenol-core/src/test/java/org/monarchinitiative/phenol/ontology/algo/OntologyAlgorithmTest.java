@@ -48,7 +48,7 @@ public class OntologyAlgorithmTest {
     id4 = ImmutableTermId.constructWithPrefix("HP:0000004");
     id5 = ImmutableTermId.constructWithPrefix("HP:0000005");
 
-    graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
     GraphUtil.addEdgeToGraph(graph, id1, id3, 2);
     GraphUtil.addEdgeToGraph(graph, id1, id4, 3);

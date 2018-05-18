@@ -20,6 +20,7 @@ import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.formats.generic.Relationship;
 import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -30,9 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
@@ -99,6 +97,9 @@ public final class OwlImmutableOntologyLoader {
       if (nodeCurie.isPresent() != true) continue;
       ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
+      TermPrefix oioPrefix = new ImmutableTermPrefix("OIO");
+      TermPrefix iaoPrefix = new ImmutableTermPrefix("IAO");
+      if (term.getId().getPrefix().equals(oioPrefix) || term.getId().getPrefix().equals(iaoPrefix)) continue;
 
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
@@ -173,7 +174,7 @@ public final class OwlImmutableOntologyLoader {
     if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
       rootId = ImmutableTermId.constructWithPrefix("owl:Thing");
     } else {
-      List<String> rootCandList = new ArrayList<String>(rootCandSet);
+      List<String> rootCandList = new ArrayList<>(rootCandSet);
       String rootCandCurie = curieUtil.getCurie(rootCandList.get(0)).get();
       rootId = ImmutableTermId.constructWithPrefix(rootCandCurie);
     }
