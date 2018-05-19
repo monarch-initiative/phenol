@@ -31,6 +31,9 @@ public class MpOboParser {
     final GenericOwlFactory cof = new GenericOwlFactory();
     try {
       ontology= loader.load(cof);
+      if (debug) {
+        System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
+      }
     } catch (OWLOntologyCreationException | IOException e) {
        e.printStackTrace();
     }

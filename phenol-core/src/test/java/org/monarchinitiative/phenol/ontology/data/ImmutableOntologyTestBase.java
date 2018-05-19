@@ -22,24 +22,24 @@ import com.google.common.collect.ImmutableSortedMap;
  */
 public class ImmutableOntologyTestBase {
 
-  ImmutableSortedMap<String, String> metaInfo;
+  private ImmutableSortedMap<String, String> metaInfo;
 
-  ImmutableList<TermId> vertices;
-  ImmutableList<IdLabeledEdge> edges;
-  DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
+  private ImmutableList<TermId> vertices;
+  private ImmutableList<IdLabeledEdge> edges;
+  private DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
-  TermId rootTermId;
-  ImmutableMap<TermId, Term> termMap;
-  ImmutableMap<TermId, Term> obsoleteTermMap;
-  ImmutableMap<Integer, Relationship> relationMap;
+  private TermId rootTermId;
+  private ImmutableMap<TermId, Term> termMap;
+  private ImmutableMap<TermId, Term> obsoleteTermMap;
+  private ImmutableMap<Integer, Relationship> relationMap;
 
-  ImmutableOntology ontology;
+  protected ImmutableOntology ontology;
 
-  ImmutableTermId id1;
-  ImmutableTermId id2;
-  ImmutableTermId id3;
-  ImmutableTermId id4;
-  ImmutableTermId id5;
+  protected ImmutableTermId id1;
+  protected ImmutableTermId id2;
+  protected ImmutableTermId id3;
+  protected ImmutableTermId id4;
+  protected ImmutableTermId id5;
 
   @Before
   public void setUp() {

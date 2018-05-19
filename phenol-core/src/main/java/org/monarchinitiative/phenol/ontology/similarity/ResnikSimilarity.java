@@ -13,7 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public final class ResnikSimilarity
     extends AbstractCommonAncestorSimilarity {
-  static long serialVersionUID = 2L;
+  static final long serialVersionUID = 2L;
   /**
    * Constructor.
    *

@@ -1,10 +1,14 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
@@ -16,6 +20,7 @@ import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
+import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -52,11 +57,26 @@ public class MpoOboParserTest {
     assertTrue(true);
   }
 
-
+  /**
+   * Test that we get all four terms from {@code mp_head.obo}.
+   */
+  @Test
+  public void testGetAllFourTerms() {
+    MpOboParser parser = new MpOboParser(mpoHeadFile);
+    Ontology ontology = parser.parse();
+    Collection<Term> terms = ontology.getTerms();
+    Set<TermId> tids = terms.stream().map(Term::getId).collect(Collectors.toSet());
+    assertTrue(tids.contains(ImmutableTermId.constructWithPrefix("MP:0000001")));
+    assertTrue(tids.contains(ImmutableTermId.constructWithPrefix("MP:0001186")));
+    assertTrue(tids.contains(ImmutableTermId.constructWithPrefix("MP:0001188")));
+    assertTrue(tids.contains(ImmutableTermId.constructWithPrefix("MP:0002075")));
+    TermId fakeTerm = ImmutableTermId.constructWithPrefix("MP:1234567");
+    assertFalse(tids.contains(fakeTerm));
+  }
 
 
   @Test
-  public void testParseHpoHead() throws IOException {
+  public void testParseMpoHead() throws IOException {
     final MpoOboParserOLD parser = new MpoOboParserOLD(mpoHeadFile, true);
     final MpoOntology ontology = parser.parse();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();

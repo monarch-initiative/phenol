@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
 import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
 import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
@@ -241,12 +242,8 @@ public class OntologyAlgorithmRelationshipTest {
     obsoleteTermMap = ImmutableMap.of();
 
     ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-    //    relationMapBuilder.put(1, new TestRelationship(id1, id2, 1));
-    //    relationMapBuilder.put(2, new TestRelationship(id1, id3, 2));
-    //    relationMapBuilder.put(3, new TestRelationship(id1, id4, 3));
-    //    relationMapBuilder.put(4, new TestRelationship(id2, id5, 4));
-    //    relationMapBuilder.put(5, new TestRelationship(id3, id5, 5));
-    //    relationMapBuilder.put(6, new TestRelationship(id4, id5, 6));
+        relationMapBuilder.put(1, new Relationship(t1, t2, 1, RelationshipType.IS_A));
+        relationMapBuilder.put(2, new Relationship(t1, t3, 2, RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
 
     ontology =
