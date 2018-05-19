@@ -6,8 +6,8 @@
 # Phenol: Ontology Library for Phenomics and Genomics
 
 A Java library for working with OBO or OWL phenotype ontologies including especially
-the (Human Phenotype Ontology)[https://www.human-phenotype-ontology.org] and the
-(Mammalian Phenotype Ontology)[http://www.informatics.jax.org/vocab/mp_ontology] and
+the [Human Phenotype Ontology](https://www.human-phenotype-ontology.org) and the
+[Mammalian Phenotype Ontology](http://www.informatics.jax.org/vocab/mp_ontology) and
 associate phenotype annotation files.
 
 
@@ -56,5 +56,5 @@ how to exclude the slf4j version from the application code (which can help to av
 Add analogous stanzas for other phenol modules.
 
 ## History
-Phenol was initially forked from (ontolib)[https://github.com/Phenomics/ontolib] in February 2018, but was
+Phenol was initially forked from [ontolib]([https://github.com/Phenomics/ontolib) in February 2018, but was
 extensively refactored and extended. The API of phenol and ontolib are not compatible with each other.

@@ -34,7 +34,7 @@ public class MpOboParser {
       if (debug) {
         System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
       }
-    } catch (OWLOntologyCreationException | IOException e) {
+    } catch (OWLOntologyCreationException e) {
        e.printStackTrace();
     }
     return ontology;

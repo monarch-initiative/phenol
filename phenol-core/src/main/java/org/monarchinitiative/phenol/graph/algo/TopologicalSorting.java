@@ -37,12 +37,11 @@ public final class TopologicalSorting<
    * @param visitor {@link VertexVisitor} to use for notifying about reaching a vertex
    * @param selector {@link NeighborSelector} to use for selecting the next neighbor
    */
-  public void startImpl(G g, VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
+  private void startImpl(G g, VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
     final Set<V> tmpMarked = new HashSet<>();
 
     // Collect unmarked vertices
-    final Set<V> unmarked = new HashSet<>();
-    unmarked.addAll(g.vertexSet());
+    final Set<V> unmarked = new HashSet<>(g.vertexSet());
 
     // Perform visiting
     while (!unmarked.isEmpty()) {

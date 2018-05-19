@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.RelationshipType;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -29,15 +29,15 @@ import com.google.common.collect.Lists;
  */
 public class VegetableOntologyTestBase {
 
-  protected ImmutableSortedMap<String, String> metaInfo;
+  private ImmutableSortedMap<String, String> metaInfo;
 
   protected ImmutableList<TermId> vertices;
   protected ImmutableList<IdLabeledEdge> edges;
   protected DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
-  protected TermId rootTermId;
-  protected ImmutableMap<TermId, Term> termMap;
-  protected ImmutableMap<Integer, Relationship> relationMap;
+  private TermId rootTermId;
+  private ImmutableMap<TermId, Term> termMap;
+  private ImmutableMap<Integer, Relationship> relationMap;
 
   protected ImmutableOntology ontology;
 

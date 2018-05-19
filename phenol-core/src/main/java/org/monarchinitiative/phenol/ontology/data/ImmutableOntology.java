@@ -2,8 +2,6 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import java.util.*;
 
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;

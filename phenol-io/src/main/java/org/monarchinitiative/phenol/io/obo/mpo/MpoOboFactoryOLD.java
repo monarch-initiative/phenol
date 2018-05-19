@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.RelationshipType;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -194,7 +194,7 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
+  private  <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
       throw new PhenolRuntimeException(
@@ -220,7 +220,7 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast, or <code>null</code>.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
+  private  <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
       Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {

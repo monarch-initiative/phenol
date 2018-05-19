@@ -15,7 +15,7 @@ public class HpoAnnotationLineTest {
 
   private final static String EMPTY_STRING="";
 
-  private HpoAnnotationLine makeLine(String items[]) throws PhenolException {
+  private HpoAnnotationLine makeLine(String items[]) {
     String line = Arrays.stream(items).collect(Collectors.joining("\t"));
     return new HpoAnnotationLine(line);
   }
@@ -23,7 +23,7 @@ public class HpoAnnotationLineTest {
 
 
   @Test
-  public void test1() throws PhenolException{
+  public void test1(){
     String items[]={"OMIM",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",

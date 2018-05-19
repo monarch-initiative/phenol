@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 // TODO: separate resulting precomputation DS and algorithm to equalize with graph.algo
 
 /**
- * Utility class for computing information content of {@link TermI} (identified by their {@link
+ * Utility class for computing information content of {@link Term} (identified by their {@link
  * TermId}s) in an {@link Ontology}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
@@ -46,7 +46,7 @@ public final class InformationContentComputation {
    * @param <LabelT> Labels for objects from "the real world". This could, e.g., be <code>String
    *     </code>s with gene names. This type has to properly implement <code>equals(Object)</code>
    *     and <code>hashValue()</code> as it is to be used as keys in a {@link HashMap}.
-   * @param termLabels Labels for each {@link TermI}, identified by {@link TermId}
+   * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
   public <LabelT> Map<TermId, Double> computeInformationContent(
@@ -76,7 +76,7 @@ public final class InformationContentComputation {
     int countIcZero = 0;
     final double dummyIc = -Math.log(1 / (double) maxFreq);
 
-    for (TermI t : ontology.getTerms()) {
+    for (Term t : ontology.getTerms()) {
       if (t.isObsolete()) {
         continue;
       }

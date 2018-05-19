@@ -10,7 +10,7 @@
  *       depending on the user's requirements.
  *   <li>The API deals with {@link org.monarchinitiative.phenol.ontology.data.TermId}s on the graph
  *       level. These are then linked to more richly attributed {@link
- *       org.monarchinitiative.phenol.ontology.data.TermI}s through {@link java.util.Map}s.
+ *       org.monarchinitiative.phenol.ontology.data.Term}s through {@link java.util.Map}s.
  *   <li>The central classes offer relatively minimal interfaces, decorator classes are used for
  *       providing more extended behaviour.
  *   <li>Even more complex behaviour is available in the <code>
