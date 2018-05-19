@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.formats.mpo.MpoRelationshipType;
-import org.monarchinitiative.phenol.formats.mpo.MpoTerm;
-import org.monarchinitiative.phenol.formats.mpo.MpoRelationship;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -43,12 +43,12 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link MpoTerm} and {@link MpoRelationship} objects from {@link
+ * Factory class for constructing {@link Term} and {@link Relationship} objects from {@link
  * Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship> {
+class MpoOboFactoryOLD implements OboOntologyEntryFactory {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -67,7 +67,7 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship>
   }
 
   @Override
-  public MpoTerm constructTerm(Stanza stanza) {
+  public Term constructTerm(Stanza stanza) {
     final TermId id =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
 
@@ -87,11 +87,11 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship>
     }
 
     final StanzaEntryDef defEntry =
-        this.<StanzaEntryDef>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
     final String definition = (defEntry == null) ? null : defEntry.getText();
 
     final StanzaEntryComment commentEntry =
-        this.<StanzaEntryComment>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
     final String comment = (commentEntry == null) ? null : commentEntry.getText();
 
     final List<String> subsets;
@@ -137,16 +137,16 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship>
     }
 
     final StanzaEntryIsObsolete isObsoleteEntry =
-        this.<StanzaEntryIsObsolete>getCardinalityZeroOrOneEntry(
+        this.getCardinalityZeroOrOneEntry(
             stanza, StanzaEntryType.IS_OBSOLETE);
     final boolean obsolete = (isObsoleteEntry == null) ? false : isObsoleteEntry.getValue();
 
     final StanzaEntryCreatedBy createdByEntry =
-        this.<StanzaEntryCreatedBy>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
     final String createdBy = (createdByEntry == null) ? null : createdByEntry.getCreator();
 
     final StanzaEntryCreationDate creationDateEntry =
-        this.<StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(
+        this.getCardinalityZeroOrOneEntry(
             stanza, StanzaEntryType.CREATION_DATE);
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
@@ -172,7 +172,7 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship>
       }
     }
 
-    return new MpoTerm(
+    return new Term(
         id,
         altTermIds,
         name,
@@ -239,31 +239,31 @@ class MpoOboFactory implements OboOntologyEntryFactory<MpoTerm, MpoRelationship>
   }
 
   @Override
-  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryIsA stanzaEntry) {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new MpoRelationship(sourceId, destId, nextRelationId++, MpoRelationshipType.IS_A);
+    return new Relationship(sourceId, destId, nextRelationId++, RelationshipType.IS_A);
   }
 
   @Override
-  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoRelationship constructrelationship(
+  public Relationship constructrelationship(
       Stanza stanza, StanzaEntryIntersectionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public MpoRelationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public Relationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 }

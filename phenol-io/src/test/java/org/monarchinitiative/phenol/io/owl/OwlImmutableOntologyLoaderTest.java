@@ -10,9 +10,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.monarchinitiative.phenol.formats.generic.GenericTerm;
-import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
-import org.monarchinitiative.phenol.formats.generic.GenericRelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -32,12 +32,12 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
-    final OwlImmutableOntologyLoader<GenericTerm, GenericRelationship> loader =
-        new OwlImmutableOntologyLoader<GenericTerm, GenericRelationship>(
+    final OwlImmutableOntologyLoader loader =
+        new OwlImmutableOntologyLoader(
             new File("src/test/resources/ncit_module.owl"));
 
     final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology<GenericTerm, GenericRelationship> ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load(cof);
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
@@ -75,12 +75,12 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 4. Checking RelationMap
     // All meta-information on edges are available in RelationMap instance.
-    GenericRelationship gr1 = ontology.getRelationMap().get(graph.getEdge(t1, t2).getId());
-    GenericRelationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
+    Relationship gr1 = ontology.getRelationMap().get(graph.getEdge(t1, t2).getId());
+    Relationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
     assertNotNull(gr1);
     assertNotNull(gr2);
-    assertEquals(gr1.getRelationshipType(), GenericRelationshipType.IS_A);
-    assertEquals(gr2.getRelationshipType(), GenericRelationshipType.IS_A);
+    assertEquals(gr1.getRelationshipType(), RelationshipType.IS_A);
+    assertEquals(gr2.getRelationshipType(), RelationshipType.IS_A);
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
@@ -90,12 +90,12 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testMONDOLoad() throws Exception {
-    final OwlImmutableOntologyLoader<GenericTerm, GenericRelationship> loader =
-        new OwlImmutableOntologyLoader<GenericTerm, GenericRelationship>(
+    final OwlImmutableOntologyLoader loader =
+        new OwlImmutableOntologyLoader(
             new File("src/test/resources/mondo_module.owl"));
 
     final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology<GenericTerm, GenericRelationship> ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load(cof);
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",
@@ -106,8 +106,8 @@ public class OwlImmutableOntologyLoaderTest {
             "SCTID:92100009",
             "UMLS:C0346190");
 
-    // 1. Check whether the example GenericTerm instance properly read all xref entries.
-    for (GenericTerm gt : ontology.getTerms()) {
+    // 1. Check whether the example Term instance properly read all xref entries.
+    for (Term gt : ontology.getTerms()) {
       for (Dbxref xref : gt.getXrefs()) {
         Boolean containFlag = false;
         for (String xrefStr : xrefs) {

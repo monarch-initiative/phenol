@@ -21,5 +21,5 @@ interface NeighborSelector<V extends Comparable<V>, E extends IdLabeledEdge> {
    * @param v Vertex to iterate neighbors of
    * @return {@link Iterator} of vertices to go to next from <code>v</code>.
    */
-  public Iterator<V> nextFrom(DefaultDirectedGraph<V, E> g, V v);
+  Iterator<V> nextFrom(DefaultDirectedGraph<V, E> g, V v);
 }

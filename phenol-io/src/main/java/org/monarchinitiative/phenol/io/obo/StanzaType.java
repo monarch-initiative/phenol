@@ -8,7 +8,7 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public enum StanzaType {
-  /** <code>[Term]</code> stanza. */
+  /** <code>[TermI]</code> stanza. */
   TERM,
   /** <code>[Instance]</code> stanza. */
   INSTANCE,
@@ -19,7 +19,7 @@ public enum StanzaType {
   public String getHeader() {
     switch (this) {
       case TERM:
-        return "[Term]";
+        return "[TermI]";
       case INSTANCE:
         return "[Instance]";
       case TYPEDEF:

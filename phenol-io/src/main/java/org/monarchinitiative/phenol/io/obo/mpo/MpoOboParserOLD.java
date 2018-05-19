@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 import java.io.File;
 import java.io.IOException;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
-import org.monarchinitiative.phenol.formats.mpo.MpoTerm;
-import org.monarchinitiative.phenol.formats.mpo.MpoRelationship;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSortedMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
+public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -45,7 +45,7 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public MpoOboParser(File oboFile, boolean debug) {
+  public MpoOboParserOLD(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -55,7 +55,7 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    *
    * @param oboFile The OBO file to read.
    */
-  public MpoOboParser(File oboFile) {
+  public MpoOboParserOLD(File oboFile) {
     this(oboFile, false);
   }
 
@@ -66,10 +66,10 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
    * @throws IOException In case of problems with file I/O.
    */
   public MpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<MpoTerm, MpoRelationship> loader =
-        new OboImmutableOntologyLoader<>(oboFile, debug);
-    final MpoOboFactory factory = new MpoOboFactory();
-    final ImmutableOntology<MpoTerm, MpoRelationship> o = loader.load(factory);
+    final OboImmutableOntologyLoader loader =
+        new OboImmutableOntologyLoader(oboFile, debug);
+    final MpoOboFactoryOLD factory = new MpoOboFactoryOLD();
+    final ImmutableOntology o = loader.load(factory);
 
     // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -79,8 +79,8 @@ public final class MpoOboParser implements OntologyOboParser<MpoOntology> {
         o.getRootTermId(),
         o.getNonObsoleteTermIds(),
         o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, MpoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, MpoRelationship>) o.getRelationMap());
+        (ImmutableMap<TermId, Term>) o.getTermMap(),
+        (ImmutableMap<Integer, Relationship>) o.getRelationMap());
   }
 
   /** @return The OBO file to parse. */

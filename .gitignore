@@ -1,13 +1,10 @@
 # Virtualenv and Sphinx for documentation -----------------------------------
 
-.venv
 manual/build/
 
 # Text Editor Cruft ---------------------------------------------------------
 
 *~
-.*.sw?
-
 # Eclipse .gitignore --------------------------------------------------------
 
 .classpath
@@ -17,8 +14,6 @@ manual/build/
 # Java .gitignore -----------------------------------------------------------
 
 # Compiled class file
-*.class
-
 # Log file
 *.log
 
@@ -29,10 +24,8 @@ manual/build/
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
-*.zip
 *.tar.gz
 *.rar
 

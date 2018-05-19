@@ -2,9 +2,8 @@ package org.monarchinitiative.phenol.ontology.similarity;
 
 import java.util.Collection;
 
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+
 
 /**
  * Abstract base class for similarity measures computed based on information content of common
@@ -13,12 +12,11 @@ import org.monarchinitiative.phenol.ontology.data.Relationship;
  * <p>Note that the common ancestor computation is not performed here explicitely but instead
  * implicitly deferred to a {@link PairwiseSimilarity}.
  *
- * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link Relationship} sub class to use in the contained classes
+
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-abstract class AbstractCommonAncestorSimilarity<T extends Term, R extends Relationship>
+abstract class AbstractCommonAncestorSimilarity
     implements Similarity {
 
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */

@@ -15,7 +15,6 @@ import com.google.common.base.Joiner;
 /**
  * Class for writing out {@link ScoreDistribution} objects to text files.
  *
- * @see Hdf5ScoreDistributionWriter
  * @see TextFileScoreDistributionReader
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -24,7 +23,7 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
   /** Path to the file to write to. */
   private final File outputFile;
 
-  /** The {@link FilePrinter} to use. */
+  /** The FilePrinter to use. */
   private final PrintStream out;
 
   /**

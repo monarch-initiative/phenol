@@ -13,5 +13,5 @@ public enum TermSynonymScope {
   /** Synonym value is narrower than annoated term. */
   NARROW,
   /** None of the others (<code>EXACT</code>, <code>BROAD</code>, <code>NARROW</code>). */
-  RELATED;
+  RELATED
 }

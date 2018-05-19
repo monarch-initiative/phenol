@@ -63,7 +63,7 @@ public class GoOboParserTest {
         endsWith("description=null, trailingModifiers=null]]]}"));
 
     assertEquals(
-        "{1=GoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=1, relationshipType=IS_A], 2=GoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=2, relationshipType=IS_A], 3=GoRelationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=3, relationshipType=IS_A]}",
+        "{1=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=1, relationshipType=IS_A], 2=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=2, relationshipType=IS_A], 3=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=3, relationshipType=IS_A]}",
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
 
     assertEquals(

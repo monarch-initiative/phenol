@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableSortedSet;
 public final class ShortestPathTable {
 
   /** Integer used for "no path". */
-  public static final int DISTANCE_INFINITY = -1;
+  private static final int DISTANCE_INFINITY = -1;
 
   /** Number of terms. */
   private final int termIdCount;
@@ -43,9 +43,9 @@ public final class ShortestPathTable {
    *
    * <p>The shortest path table will be computed upon construction.
    *
-   * @param ontology
+   * @param ontology reference to Ontology object
    */
-  public ShortestPathTable(Ontology<?, ?> ontology) {
+  public ShortestPathTable(Ontology ontology) {
     termIdCount = ontology.getNonObsoleteTermIds().size();
     distances = new int[termIdCount * termIdCount];
     termIdToIdx = new HashMap<>(termIdCount);
@@ -58,7 +58,7 @@ public final class ShortestPathTable {
     precomputeDistances(ontology);
   }
 
-  private void precomputeDistances(Ontology<?, ?> ontology) {
+  private void precomputeDistances(Ontology ontology) {
     // Initialize with values "infinity".
     for (int i = 0; i < distances.length; ++i) {
       distances[i] = DISTANCE_INFINITY;
@@ -73,7 +73,7 @@ public final class ShortestPathTable {
    *
    * @param source Starting term.
    * @param dest Destination term.
-   * @param dist Distance value.
+   * @param distance Distance value.
    */
   private void setDistance(TermId source, TermId dest, int distance) {
     final Integer idxSource = termIdToIdx.get(source);
@@ -101,7 +101,7 @@ public final class ShortestPathTable {
     if (idxSource == null || idxDest == null) {
       return DISTANCE_INFINITY;
     } else {
-      return distances[idxSource.intValue() * termIdCount + idxDest.intValue()];
+      return distances[idxSource * termIdCount + idxDest];
     }
   }
 

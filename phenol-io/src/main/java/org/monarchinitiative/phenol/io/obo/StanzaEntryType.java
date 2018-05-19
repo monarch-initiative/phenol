@@ -91,5 +91,5 @@ public enum StanzaEntryType {
   /** Stanza entry starting with <code>union_of</code>. */
   UNION_OF,
   /** Stanza entry starting with <code>xref</code>. */
-  XREF;
+  XREF
 }

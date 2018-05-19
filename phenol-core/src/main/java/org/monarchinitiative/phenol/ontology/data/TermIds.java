@@ -18,7 +18,7 @@ public final class TermIds {
    * @return Augmented version of {@code termIds} (not a copy) with ancestors of all elements.
    */
   public static Set<TermId> augmentWithAncestors(
-      ImmutableOntology<?, ?> ontology, Set<TermId> termIds, boolean includeRoot) {
+      ImmutableOntology ontology, Set<TermId> termIds, boolean includeRoot) {
     termIds.addAll(ontology.getAllAncestorTermIds(termIds, includeRoot));
     return termIds;
   }

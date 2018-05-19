@@ -31,7 +31,7 @@ public final class TermAnnotations {
    *     labels.
    */
   public static Map<TermId, Collection<String>> constructTermAnnotationToLabelsMap(
-      Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
+      Ontology ontology, Collection<? extends TermAnnotation> annotations) {
     final Map<TermId, Collection<String>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
@@ -62,7 +62,7 @@ public final class TermAnnotations {
    *     labels.
    */
   public static Map<String, Collection<TermId>> constructTermLabelToAnnotationsMap(
-      Ontology<?, ?> ontology, Collection<? extends TermAnnotation> annotations) {
+      Ontology ontology, Collection<? extends TermAnnotation> annotations) {
     final Map<String, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {

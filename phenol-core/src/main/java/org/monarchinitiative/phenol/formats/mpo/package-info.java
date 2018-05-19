@@ -8,12 +8,6 @@
  * various shortcuts and utilities.
  * </p>
  *
- * <p>
- * You can use {@link de.charite.compbio.ontolib.io.obo.mpo.MpoOboParser} for parsing OBO-formatted
- * files and <code>String</codes>s into {@link org.monarchinitiative.phenol.formats.mpo.MpoOntology}
- * objects.
- * </p>
- *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */

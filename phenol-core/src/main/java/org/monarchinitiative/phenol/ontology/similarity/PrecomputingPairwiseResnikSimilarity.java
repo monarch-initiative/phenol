@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
@@ -43,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extends Relationship>
+public final class PrecomputingPairwiseResnikSimilarity
     implements PairwiseSimilarity, Serializable {
 
   /** Serial UID for serialization. */
@@ -70,7 +68,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
    * @param numThreads Number of threads to use for precomputation.
    */
   public PrecomputingPairwiseResnikSimilarity(
-      Ontology<T, R> ontology, Map<TermId, Double> termToIc, int numThreads) {
+      Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
     this.precomputedScores = new PrecomputedScores(ontology.getAllTermIds());
     this.numThreads = numThreads;
     precomputeScores(ontology, termToIc);
@@ -83,18 +81,18 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
   public PrecomputingPairwiseResnikSimilarity(
-      Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
+      Ontology ontology, Map<TermId, Double> termToIc) {
     this(ontology, termToIc, 1);
   }
 
   /** Precompute similarity scores. */
-  private void precomputeScores(Ontology<T, R> ontology, Map<TermId, Double> termToIc) {
+  private void precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
     LOGGER.info(
         "Precomputing pairwise scores for {} terms...", new Object[] {ontology.countAllTerms()});
 
     // Setup PairwiseResnikSimilarity to use for computing scores.
-    final PairwiseResnikSimilarity<T, R> pairwiseSimilarity =
-        new PairwiseResnikSimilarity<>(ontology, termToIc);
+    final PairwiseResnikSimilarity pairwiseSimilarity =
+        new PairwiseResnikSimilarity(ontology, termToIc);
 
     // Setup progress reporting.
     final ProgressReporter progressReport =
@@ -128,7 +126,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
     // Setup thread pool executor and enforce that precicsely numThreads threads are present.
     ThreadPoolExecutor threadPoolExecutor =
         new ThreadPoolExecutor(
-            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Split the input into chunks to reduce task startup overhead
     final List<List<TermId>> chunks =
         Lists.partition(Lists.newArrayList(ontology.getNonObsoleteTermIds()), chunkSize);
@@ -203,7 +201,7 @@ public final class PrecomputingPairwiseResnikSimilarity<T extends Term, R extend
       if (idxLhs == null || idxRhs == null) {
         return 0.0f;
       } else {
-        return data[idxLhs.intValue() * termIdCount + idxRhs.intValue()];
+        return data[idxLhs * termIdCount + idxRhs];
       }
     }
   }
