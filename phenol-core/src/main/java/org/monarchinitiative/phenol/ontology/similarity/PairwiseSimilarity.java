@@ -20,5 +20,5 @@ interface PairwiseSimilarity {
    * @param t2 second {@link TermId}
    * @return Similarity score between the two terms
    */
-  public double computeScore(TermId t1, TermId t2);
+  double computeScore(TermId t1, TermId t2);
 }

@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 import java.io.File;
 import java.io.IOException;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
-import org.monarchinitiative.phenol.formats.hpo.HpoRelationship;
 
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
@@ -67,10 +67,10 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
    * @throws IOException In case of problems with file I/O.
    */
   public HpoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<HpoTerm, HpoRelationship> loader =
-        new OboImmutableOntologyLoader<>(oboFile, debug);
+    final OboImmutableOntologyLoader loader =
+        new OboImmutableOntologyLoader(oboFile, debug);
     final HpoOboFactory factory = new HpoOboFactory();
-    final ImmutableOntology<HpoTerm, HpoRelationship> o = loader.load(factory);
+    final ImmutableOntology o = loader.load(factory);
 
     // Convert ImmutableOntology into HPOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -80,8 +80,8 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
         o.getRootTermId(),
         o.getNonObsoleteTermIds(),
         o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, HpoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, HpoRelationship>) o.getRelationMap());
+        (ImmutableMap<TermId, Term>) o.getTermMap(),
+        (ImmutableMap<Integer, Relationship>) o.getRelationMap());
   }
 
   /** @return The OBO file to parse. */

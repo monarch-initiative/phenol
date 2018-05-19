@@ -73,7 +73,7 @@
 'PCO': 'http://purl.obolibrary.org/obo/PCO_'  # PCO: Population and Community Ontology [y]
 'PR': 'http://purl.obolibrary.org/obo/PR_'  # PRO: protein ontology
 'PW' : 'http://purl.obolibrary.org/obo/PW_'  # PW: pathway ontology
-'RO': 'http://purl.obolibrary.org/obo/RO_'  # RO: Relationship Ontology [y]
+'RO': 'http://purl.obolibrary.org/obo/RO_'  # RO: RelationshipI Ontology [y]
 'SIO' : 'http://semanticscience.org/resource/SIO_'  # SIO: SemanticScience Integrated Ontology (information artifacts)
 'SNOMED' : 'http://purl.obolibrary.org/obo/SNOMED_'  # SNOMED:diseases and phenotypes
 'SO' : 'http://purl.obolibrary.org/obo/SO_'  # SO: Sequence Ontology [y]

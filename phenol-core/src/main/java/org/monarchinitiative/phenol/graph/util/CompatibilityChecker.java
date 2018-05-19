@@ -19,7 +19,7 @@ public class CompatibilityChecker {
    * Check compatibility of <code>vertices</code> and <code>edges</code>, i.e., there must not be a
    * vertex in <code>edges</code> that is not present in <code>vertices</code>.
    *
-   * @raises VerticesAndEdgesIncompatibleException in case of incompatibilities.
+   * @throws  VerticesAndEdgesIncompatibleException in case of incompatibilities.
    */
   @SuppressWarnings("unchecked")
   public static <V extends Comparable<V>> void check(

@@ -73,7 +73,6 @@ public final class OboParser {
    *
    * @param oboString String with OBO file contents.
    * @return Completely parsed OBO file.
-   * @throws IOException In case of problems with file I/O. F
    */
   public OboFile parseString(String oboString) {
     final HelperListener helper = new HelperListener();
@@ -86,7 +85,6 @@ public final class OboParser {
    *
    * @param oboString String with OBO file contents.
    * @param listener Listener for parsing.
-   * @throws IOException In case of problems with file I/O.
    */
   public void parseString(String oboString, OboParseResultListener listener) {
     parseInputStream(CharStreams.fromString(oboString), listener);

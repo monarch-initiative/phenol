@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.formats.upheno;
 import java.util.Collection;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -15,7 +17,7 @@ import com.google.common.collect.ImmutableSortedMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class UphenoOntology extends ImmutableOntology<UphenoTerm, UphenoRelationship> {
+public final class UphenoOntology extends ImmutableOntology {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -23,13 +25,13 @@ public final class UphenoOntology extends ImmutableOntology<UphenoTerm, UphenoRe
   /**
    * Constructor.
    *
-   * @param metaInfo {@link ImmutableSortedFMap} with meta information.
+   //* @param metaInfo  ImmutableSortedFMapwith meta information.
    * @param graph Graph with the ontology's topology.
    * @param rootTermId {@link TermId} of the root term.
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to Uberpheno term.
-   * @param relationMap Mapping from numeric edge identifier to {@link UphenoRelationship}.
+   * @param relationMap Mapping from numeric edge identifier to {@link Relationship}.
    */
   public UphenoOntology(
       ImmutableSortedMap<String, String> metaInfo,
@@ -37,8 +39,8 @@ public final class UphenoOntology extends ImmutableOntology<UphenoTerm, UphenoRe
       TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds,
       Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, UphenoTerm> termMap,
-      ImmutableMap<Integer, UphenoRelationship> relationMap) {
+      ImmutableMap<TermId, Term> termMap,
+      ImmutableMap<Integer, Relationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 

@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.8</version>
+  <version>1.0.0</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
 

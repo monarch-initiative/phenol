@@ -20,13 +20,13 @@ public final class TopologicalSorting<
 
   @Override
   public void startForward(G g, VertexVisitor<V, E> visitor) {
-    final NeighborSelector<V, E> neighborSelector = new ForwardNeighborSelector<V, E>();
+    final NeighborSelector<V, E> neighborSelector = new ForwardNeighborSelector<>();
     startImpl(g, visitor, neighborSelector);
   }
 
   @Override
   public void startReverse(G g, VertexVisitor<V, E> visitor) {
-    final NeighborSelector<V, E> neighborSelector = new ReverseNeighborSelector<V, E>();
+    final NeighborSelector<V, E> neighborSelector = new ReverseNeighborSelector<>();
     startImpl(g, visitor, neighborSelector);
   }
 
@@ -38,14 +38,11 @@ public final class TopologicalSorting<
    * @param selector {@link NeighborSelector} to use for selecting the next neighbor
    */
   public void startImpl(G g, VertexVisitor<V, E> visitor, NeighborSelector<V, E> selector) {
-    final Set<V> tmpMarked = new HashSet<V>();
+    final Set<V> tmpMarked = new HashSet<>();
 
     // Collect unmarked vertices
-    final Set<V> unmarked = new HashSet<V>();
-    final Iterator<V> vertexIterator = g.vertexSet().iterator();
-    while (vertexIterator.hasNext()) {
-      unmarked.add(vertexIterator.next());
-    }
+    final Set<V> unmarked = new HashSet<>();
+    unmarked.addAll(g.vertexSet());
 
     // Perform visiting
     while (!unmarked.isEmpty()) {

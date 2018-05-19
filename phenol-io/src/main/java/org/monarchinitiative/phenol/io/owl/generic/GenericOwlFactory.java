@@ -7,14 +7,14 @@ import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.model.meta.XrefPropertyValue;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import org.monarchinitiative.phenol.formats.generic.GenericRelationshipType;
-import org.monarchinitiative.phenol.formats.generic.GenericTerm;
-import org.monarchinitiative.phenol.formats.generic.GenericRelationship;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
@@ -23,18 +23,18 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
 /**
- * Factory class for constructing {@link GenericTerm} and {@link GenericRelationship} objects from
+ * Factory class for constructing {@link Term} and {@link Relationship} objects from
  * Obographs's Nodes.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public class GenericOwlFactory
-    implements OwlOntologyEntryFactory<GenericTerm, GenericRelationship> {
+    implements OwlOntologyEntryFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericOwlFactory.class);
 
   @Override
-  public GenericTerm constructTerm(Node node, TermId termId) {
-    GenericTerm genericTerm = new GenericTerm();
+  public Term constructTerm(Node node, TermId termId) {
+    Term genericTerm = new Term();
     genericTerm.setId(termId);
     genericTerm.setName(node.getLabel());
 
@@ -102,7 +102,7 @@ public class GenericOwlFactory
 
   // It seems that only actual relation used across ontologies is "IS_A" one for now.
   @Override
-  public GenericRelationship constructRelationship(TermId source, TermId dest, int id) {
-    return new GenericRelationship(source, dest, id, GenericRelationshipType.IS_A);
+  public Relationship constructRelationship(TermId source, TermId dest, int id) {
+    return new Relationship(source, dest, id, RelationshipType.IS_A);
   }
 }

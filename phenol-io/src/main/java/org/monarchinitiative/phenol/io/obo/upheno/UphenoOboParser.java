@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obo.upheno;
 import java.io.File;
 import java.io.IOException;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.formats.upheno.UphenoOntology;
-import org.monarchinitiative.phenol.formats.upheno.UphenoTerm;
-import org.monarchinitiative.phenol.formats.upheno.UphenoRelationship;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -66,10 +66,10 @@ public final class UphenoOboParser implements OntologyOboParser<UphenoOntology> 
    * @throws IOException In case of problems with file I/O.
    */
   public UphenoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader<UphenoTerm, UphenoRelationship> loader =
-        new OboImmutableOntologyLoader<>(oboFile, debug);
+    final OboImmutableOntologyLoader loader =
+        new OboImmutableOntologyLoader(oboFile, debug);
     final UphenoOboFactory factory = new UphenoOboFactory();
-    final ImmutableOntology<UphenoTerm, UphenoRelationship> o = loader.load(factory);
+    final ImmutableOntology o = loader.load(factory);
 
     // Convert ImmutableOntology into UberphenoOntology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
@@ -79,8 +79,8 @@ public final class UphenoOboParser implements OntologyOboParser<UphenoOntology> 
         o.getRootTermId(),
         o.getNonObsoleteTermIds(),
         o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, UphenoTerm>) o.getTermMap(),
-        (ImmutableMap<Integer, UphenoRelationship>) o.getRelationMap());
+        (ImmutableMap<TermId, Term>) o.getTermMap(),
+        (ImmutableMap<Integer, Relationship>) o.getRelationMap());
   }
 
   /** @return The OBO file to parse. */

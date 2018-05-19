@@ -18,7 +18,7 @@ import java.util.Optional;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public interface TermAnnotation extends Serializable, Comparable<TermAnnotation> {
-
+   long serialVersionUID = 2L;
   /**
    * Query for annotated term's ID.
    *

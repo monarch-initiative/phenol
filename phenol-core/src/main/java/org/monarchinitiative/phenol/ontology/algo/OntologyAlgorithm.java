@@ -7,10 +7,7 @@ import org.monarchinitiative.phenol.formats.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.*;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -26,11 +23,12 @@ import java.util.*;
  * @see HpoModeOfInheritanceTermIds
  * @see HpoSubOntologyRootTermIds
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:HyeongSikKIm@lbl.gov">HyeongSik Kim</a>
  */
 public class OntologyAlgorithm {
 
   public static boolean existsPath(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
       final TermId sourceID,
       TermId destID) {
     // special case -- a term cannot have a path to itself in an ontology (DAG)
@@ -57,7 +55,7 @@ public class OntologyAlgorithm {
    * @return A set of all child terms of parentTermId (including parentTermId itself)
    */
   public static Set<TermId> getChildTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId parentTermId) {
+    Ontology ontology, TermId parentTermId) {
     return getChildTerms(ontology, parentTermId, true);
   }
 
@@ -72,7 +70,7 @@ public class OntologyAlgorithm {
    * @return A set of all child terms of parentTermId
    */
   public static Set<TermId> getChildTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
       TermId parentTermId,
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> kids = new ImmutableSet.Builder<>();
@@ -95,7 +93,7 @@ public class OntologyAlgorithm {
    * @return set of children of parentTermIdSet
    */
   public static Set<TermId> getChildTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology, Set<TermId> parentTermIdSet) {
+    Ontology ontology, Set<TermId> parentTermIdSet) {
     ImmutableSet.Builder<TermId> kids = new ImmutableSet.Builder<>();
     for (TermId tid : parentTermIdSet) {
       kids.addAll(getChildTerms(ontology, tid));
@@ -111,7 +109,7 @@ public class OntologyAlgorithm {
    * @return set of parents of childTermIdSet
    */
   public static Set<TermId> getParentTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology, Set<TermId> childTermIdSet) {
+    Ontology ontology, Set<TermId> childTermIdSet) {
     ImmutableSet.Builder<TermId> parents = new ImmutableSet.Builder<>();
     for (TermId tid : childTermIdSet) {
       parents.addAll(getParentTerms(ontology, tid));
@@ -120,7 +118,7 @@ public class OntologyAlgorithm {
   }
 
   public static Set<TermId> getParentTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
       Set<TermId> childTermIdSet,
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> parents = new ImmutableSet.Builder<>();
@@ -139,7 +137,7 @@ public class OntologyAlgorithm {
    * @return A set of all descendents of parentTermId (including the parentTermId itself)
    */
   public static Set<TermId> getDescendents(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId parentTermId) {
+    Ontology ontology, TermId parentTermId) {
     ImmutableSet.Builder<TermId> descset = new ImmutableSet.Builder<>();
     Stack<TermId> stack = new Stack<>();
     stack.push(parentTermId);
@@ -163,7 +161,7 @@ public class OntologyAlgorithm {
    * @return A set of all parent terms of childTermId
    */
   public static Set<TermId> getParentTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
       TermId childTermId,
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> anccset = new ImmutableSet.Builder<>();
@@ -171,15 +169,37 @@ public class OntologyAlgorithm {
     Iterator<? extends IdLabeledEdge> it =
         ontology.getGraph().outgoingEdgesOf(childTermId).iterator();
     while (it.hasNext()) {
-      IdLabeledEdge edge = (IdLabeledEdge) it.next();
+      IdLabeledEdge edge =  it.next();
       TermId destId = (TermId) edge.getTarget();
       anccset.add(destId);
     }
     return anccset.build();
   }
 
+  // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm.
+  // All nodes above that root node in the original ontology will be ignored.
   public static Set<TermId> getAncestorTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
+      TermId rootTerm,
+      Set<TermId> children,
+      boolean includeOriginalTerm) {
+    ImmutableOntology subontology =
+        (ImmutableOntology) ontology.subOntology(rootTerm);
+    return getAncestorTerms(subontology, children, includeOriginalTerm);
+  }
+
+  public static Set<TermId> getAncestorTerms(
+      Ontology ontology,
+      TermId rootTerm,
+      TermId child,
+      boolean includeOriginalTerm) {
+    ImmutableOntology subontology =
+        (ImmutableOntology) ontology.subOntology(rootTerm);
+    return getAncestorTerms(subontology, child, includeOriginalTerm);
+  }
+
+  public static Set<TermId> getAncestorTerms(
+      Ontology ontology,
       Set<TermId> children,
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
@@ -197,7 +217,7 @@ public class OntologyAlgorithm {
   }
 
   public static Set<TermId> getAncestorTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology,
+      Ontology ontology,
       TermId child,
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
@@ -223,7 +243,7 @@ public class OntologyAlgorithm {
    * @return A set of all parent terms of childTermId including childTermId itself
    */
   public static Set<TermId> getParentTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId childTermId) {
+    Ontology ontology, TermId childTermId) {
     return getParentTerms(ontology, childTermId, true);
   }
 
@@ -237,17 +257,17 @@ public class OntologyAlgorithm {
    * @return A set of all ancestors of childTermId
    */
   public static Set<TermId> getAncestorTerms(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId childTermId) {
+    Ontology ontology, TermId childTermId) {
     return ontology.getAncestorTermIds(childTermId);
   }
 
   public static boolean isSubclass(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId source, TermId dest) {
+    Ontology ontology, TermId source, TermId dest) {
     return ontology.getAncestorTermIds(source).contains(dest);
   }
 
   public static boolean termsAreSiblings(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId t1, TermId t2) {
+    Ontology ontology, TermId t1, TermId t2) {
     Set<TermId> parents1 = getParentTerms(ontology, t1, false); // false=do not include t1 itself
     Set<TermId> parents2 = getParentTerms(ontology, t2, false); // ditto
     return (!Sets.intersection(parents1, parents2).isEmpty());
@@ -260,7 +280,7 @@ public class OntologyAlgorithm {
    * @return true iff t1 and t2 have a common ancestor that is not the root of the ontology
    */
   public static boolean termsAreRelated(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId t1, TermId t2) {
+    Ontology ontology, TermId t1, TermId t2) {
     Set<TermId> ancs1 = getAncestorTerms(ontology, t1, false);
     Set<TermId> ancs2 = getAncestorTerms(ontology, t2, false);
     Set<TermId> isect = Sets.intersection(ancs1, ancs2);
@@ -273,7 +293,7 @@ public class OntologyAlgorithm {
   }
 
   public static boolean termsAreUnrelated(
-      Ontology<? extends Term, ? extends Relationship> ontology, TermId t1, TermId t2) {
+    Ontology ontology, TermId t1, TermId t2) {
     return (!termsAreRelated(ontology, t1, t2));
   }
 }

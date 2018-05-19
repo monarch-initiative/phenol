@@ -141,7 +141,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   @Override
   public void enterHeader(HeaderContext ctx) {
     // Create new list of key/value pairs
-    stanzaKeyValues = new ArrayList<StanzaEntry>();
+    stanzaKeyValues = new ArrayList<>();
   }
 
   /** Called on leaving <code>header</code>. */
@@ -188,7 +188,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
   @Override
   public void enterStanza(StanzaContext ctx) {
     // Create new list of key/value pairs
-    stanzaKeyValues = new ArrayList<StanzaEntry>();
+    stanzaKeyValues = new ArrayList<>();
   }
 
   /**
@@ -721,7 +721,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, new StanzaEntryRemark(text, trailingModifier, comment));
   }
 
-  /** Called on leaving <code>dbXrefList</code> rule, construct {@link DbXref} object. */
+  /** Called on leaving <code>dbXrefList</code> rule, construct {@link Dbxref} object. */
   @Override
   public void exitDbXrefList(DbXrefListContext ctx) {
     final DbXrefList dbXrefList = new DbXrefList();
@@ -732,7 +732,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
     setValue(ctx, dbXrefList);
   }
 
-  /** Called on leaving <code>dbXref</code> rule, construct {@link DbXref} object. */
+  /** Called on leaving <code>dbXref</code> rule, construct {@link Dbxref} object. */
   @Override
   public void exitDbXref(DbXrefContext ctx) {
     final String name = OboEscapeUtils.unescape(ctx.dbXrefWord().getText());

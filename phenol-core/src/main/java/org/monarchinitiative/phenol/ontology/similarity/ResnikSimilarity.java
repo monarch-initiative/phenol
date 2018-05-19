@@ -3,36 +3,32 @@ package org.monarchinitiative.phenol.ontology.similarity;
 import java.util.Map;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 
 /**
  * Implementation of Resnik similarity.
  *
- * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link Relationship} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class ResnikSimilarity<T extends Term, R extends Relationship>
-    extends AbstractCommonAncestorSimilarity<T, R> {
-
+public final class ResnikSimilarity
+    extends AbstractCommonAncestorSimilarity {
+  static final long serialVersionUID = 2L;
   /**
    * Constructor.
    *
    * <p>The internally used {@link PrecomputingPairwiseResnikSimilarity} is constructed from the
    * given information content mapping using {@link PairwiseResnikSimilarity}. In case that you want
-   * to use perform this precomputation explicitely, use {@link #ResnikSimilarity(Ontology,
-   * PairwiseSimilarity, boolean)} with {@link PrecomputingPairwiseResnikSimilarity}.
+   * to use perform this precomputation explicitely, use ResnikSimilarity(Ontology,
+   * PairwiseSimilarity, boolean) with {@link PrecomputingPairwiseResnikSimilarity}.
    *
    * @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from {@link TermId} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public ResnikSimilarity(
-      Ontology<T, R> ontology, Map<TermId, Double> termToIc, boolean symmetric) {
-    super(new PrecomputingPairwiseResnikSimilarity<T, R>(ontology, termToIc), symmetric);
+      Ontology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
+    super(new PrecomputingPairwiseResnikSimilarity(ontology, termToIc), symmetric);
   }
 
   /**

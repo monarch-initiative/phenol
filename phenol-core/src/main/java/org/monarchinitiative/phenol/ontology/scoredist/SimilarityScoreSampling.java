@@ -19,14 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.MersenneTwister;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 // TODO: The interface here assumes numeric world object ids but annotation is string label based.
@@ -38,17 +36,15 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * <p>The resulting precomputed {@link ScoreDistribution} can be used for empirical estimation of p
  * values.
  *
- * @param <T> {@link Term} sub class this <code>Ontology</code> uses.
- * @param <R> {@link Relationship} sub class this <code>Ontology</code> uses.
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T extends Term, R extends Relationship> {
+public final class SimilarityScoreSampling {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
 
   /** {@link Ontology} to use for computation. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /** {@link Similarity} to use for the precomputation. */
   private final Similarity similarity;
@@ -63,7 +59,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends Relationshi
    * @param options Configuration for score sampling.
    */
   public SimilarityScoreSampling(
-      Ontology<T, R> ontology, Similarity similarity, ScoreSamplingOptions options) {
+      Ontology ontology, Similarity similarity, ScoreSamplingOptions options) {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
@@ -142,7 +138,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends Relationshi
     final int numThreads = options.getNumThreads();
     ThreadPoolExecutor threadPoolExecutor =
         new ThreadPoolExecutor(
-            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<Runnable>());
+            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Submit all chunks into the executor.
     final Iterator<Integer> objectIdIter =
         labels.keySet().stream().filter(this::selectObject).iterator();
@@ -223,7 +219,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends Relationshi
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
       int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
-    final List<TermId> allTermIds = new ArrayList<TermId>(ontology.getNonObsoleteTermIds());
+    final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency
@@ -232,7 +228,7 @@ public final class SimilarityScoreSampling<T extends Term, R extends Relationshi
             .boxed()
             .map(
                 i -> {
-                  // Sample numTerms Term objects from ontology.
+                  // Sample numTerms TermI objects from ontology.
                   final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
                   final double score = similarity.computeScore(randomTerms, terms);
                   // Round to four decimal places.

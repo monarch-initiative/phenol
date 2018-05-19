@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.formats.hpo;
 import java.util.Collection;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -22,13 +24,13 @@ import com.google.common.collect.ImmutableSortedMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class HpoOntology extends ImmutableOntology<HpoTerm, HpoRelationship> {
+public final class HpoOntology extends ImmutableOntology {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** "Phenotypic abnormality" sub ontology. */
-  private final ImmutableOntology<HpoTerm, HpoRelationship> phenotypicAbnormalitySubOntology;
+  private final ImmutableOntology phenotypicAbnormalitySubOntology;
 
   /**
    * Constructor.
@@ -39,7 +41,7 @@ public final class HpoOntology extends ImmutableOntology<HpoTerm, HpoRelationshi
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to HPO term.
-   * @param relationMap Mapping from numeric edge identifier to {@link HpoRelationship}.
+   * @param relationMap Mapping from numeric edge identifier to {@link Relationship}.
    */
   public HpoOntology(
       ImmutableSortedMap<String, String> metaInfo,
@@ -47,17 +49,17 @@ public final class HpoOntology extends ImmutableOntology<HpoTerm, HpoRelationshi
       TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds,
       Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, HpoTerm> termMap,
-      ImmutableMap<Integer, HpoRelationship> relationMap) {
+      ImmutableMap<TermId, Term> termMap,
+      ImmutableMap<Integer, Relationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
     // Construct "phenotypic abnormality sub ontology" on construction.
     this.phenotypicAbnormalitySubOntology =
-        (ImmutableOntology<HpoTerm, HpoRelationship>)
+        (ImmutableOntology)
             super.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
   }
 
   /** @return "Phenotypic abnormality" sub ontology. */
-  public ImmutableOntology<HpoTerm, HpoRelationship> getPhenotypicAbnormalitySubOntology() {
+  public ImmutableOntology getPhenotypicAbnormalitySubOntology() {
     return phenotypicAbnormalitySubOntology;
   }
 

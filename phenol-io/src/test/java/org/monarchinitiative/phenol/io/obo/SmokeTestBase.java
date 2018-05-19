@@ -8,7 +8,7 @@ import com.google.common.base.Joiner;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public class SmokeTestBase {
-  public static final String MINIMAL_FILE = "format-version: 1.2\n\n[Term]\nid: HP:0000001\n";
+  public static final String MINIMAL_FILE = "format-version: 1.2\n\n[TermI]\nid: HP:0000001\n";
 
   public static final String HEAD_HPO =
       Joiner.on("\n")
@@ -66,13 +66,13 @@ public class SmokeTestBase {
                         + "xsd:string)\\n)",
                     "logical-definition-view-relation: has_part",
                     "",
-                    "[Term]",
+                    "[TermI]",
                     "id: HP:0000001",
                     "name: All",
                     "comment: Root of all terms in the Human Phenotype Ontology.",
                     "xref: UMLS:C0444868",
                     "",
-                    "[Term]",
+                    "[TermI]",
                     "id: HP:0000002",
                     "name: Abnormality of body height",
                     "def: \"Deviation from the norm of height with respect to that which is expected "

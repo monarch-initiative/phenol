@@ -60,7 +60,7 @@ public final class DataSerializer {
   /**
    * Serialize a data object to a file.
    *
-   * @param data the {@link JannovarData} object to serialize
+   * @param data the object to serialize
    * @throws SerializationException on problems with the serialization
    */
   public void save(Object data) throws SerializationException {

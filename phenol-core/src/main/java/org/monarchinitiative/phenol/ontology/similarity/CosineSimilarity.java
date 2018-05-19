@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
@@ -14,15 +12,13 @@ import java.util.Set;
 /**
  * Implementation of cosine similarity.
  *
- * @param <T> {@link Term} sub class to use in the contained classes
- * @param <R> {@link Relationship} sub class to use in the contained classes
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class CosineSimilarity<T extends Term, R extends Relationship> implements Similarity {
+public final class CosineSimilarity implements Similarity {
 
   /** The {@link Ontology} to compute the similarity for. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /** Whether or not to compute in an opposite-aware fashion. */
   private final boolean oppositeAware;
@@ -34,7 +30,7 @@ public final class CosineSimilarity<T extends Term, R extends Relationship> impl
    *
    * @param ontology {@link Ontology} to base the computation on.
    */
-  public CosineSimilarity(Ontology<T, R> ontology) {
+  public CosineSimilarity(Ontology ontology) {
     this(ontology, false);
   }
 
@@ -44,7 +40,7 @@ public final class CosineSimilarity<T extends Term, R extends Relationship> impl
    * @param ontology {@link Ontology} to base the computation on.
    * @param oppositeAware Whether or not to be opposite aware.
    */
-  public CosineSimilarity(Ontology<T, R> ontology, boolean oppositeAware) {
+  public CosineSimilarity(Ontology ontology, boolean oppositeAware) {
     this.ontology = ontology;
     this.oppositeAware = oppositeAware;
   }

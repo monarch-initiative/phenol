@@ -3,8 +3,6 @@ package org.monarchinitiative.phenol.cli;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.formats.hpo.HpoTerm;
-import org.monarchinitiative.phenol.formats.hpo.HpoRelationship;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
@@ -47,7 +45,7 @@ public class PrecomputeScoresCommand {
   private HpoOntology ontology;
 
   /** The phenotypic abnormality sub ontology. */
-  private ImmutableOntology<HpoTerm, HpoRelationship> phenotypicAbnormalitySubOntology;
+  private ImmutableOntology phenotypicAbnormalitySubOntology;
 
   /** The object ID to TermId mapping. */
   private TreeMap<Integer, Collection<TermId>> objectIdToTermId = new TreeMap<>();
@@ -56,7 +54,7 @@ public class PrecomputeScoresCommand {
   private HashMap<TermId, Collection<Integer>> termIdToObjectId = new HashMap<>();
 
   /** The Resnik similarity. */
-  private ResnikSimilarity<HpoTerm, HpoRelationship> resnikSimilarity;
+  private ResnikSimilarity resnikSimilarity;
 
   /**
    * The resulting score distribution; will be written out.
@@ -64,7 +62,7 @@ public class PrecomputeScoresCommand {
    * <p>The output is a mapping from term count to {@link ScoreDistribution} which maps Entrez gene
    * ID to empirical p value distribution.
    */
-  Map<Integer, ScoreDistribution> scoreDistribution;
+  private Map<Integer, ScoreDistribution> scoreDistribution;
 
   /** Constructor. */
   public PrecomputeScoresCommand(PrecomputeScoresOptions options) {
@@ -143,15 +141,15 @@ public class PrecomputeScoresCommand {
 
   private void precomputePairwiseResnik() {
     LOGGER.info("Performing information content precomputation...");
-    final InformationContentComputation<HpoTerm, HpoRelationship> icPrecomputation =
-        new InformationContentComputation<>(phenotypicAbnormalitySubOntology);
+    final InformationContentComputation icPrecomputation =
+        new InformationContentComputation(phenotypicAbnormalitySubOntology);
     final Map<TermId, Double> termToIc =
         icPrecomputation.computeInformationContent(termIdToObjectId);
     LOGGER.info("Done with precomputing information content.");
 
     LOGGER.info("Performing pairwise Resnik similarity precomputation...");
     resnikSimilarity =
-        new ResnikSimilarity<HpoTerm, HpoRelationship>(
+        new ResnikSimilarity(
             phenotypicAbnormalitySubOntology, termToIc, /* symmetric= */ false);
     LOGGER.info("Done with precomputing pairwise Resnik similarity.");
   }
@@ -169,8 +167,8 @@ public class PrecomputeScoresCommand {
             options.getSeed(),
             options.getNumIterations());
 
-    final SimilarityScoreSampling<HpoTerm, HpoRelationship> sampling =
-        new SimilarityScoreSampling<>(
+    final SimilarityScoreSampling sampling =
+        new SimilarityScoreSampling(
             phenotypicAbnormalitySubOntology, resnikSimilarity, samplingOptions);
     scoreDistribution = sampling.performSampling(objectIdToTermId);
 

@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.formats.mpo;
 import java.util.Collection;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -15,7 +17,7 @@ import com.google.common.collect.ImmutableSortedMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoRelationship> {
+public final class MpoOntology extends ImmutableOntology {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -29,7 +31,7 @@ public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoRelationshi
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
    * @param termMap Mapping from {@link TermId} to MPO term.
-   * @param relationMap Mapping from numeric edge identifier to {@link MpoRelationship}.
+   * @param relationMap Mapping from numeric edge identifier to {@link Relationship}.
    */
   public MpoOntology(
       ImmutableSortedMap<String, String> metaInfo,
@@ -37,8 +39,8 @@ public final class MpoOntology extends ImmutableOntology<MpoTerm, MpoRelationshi
       TermId rootTermId,
       Collection<TermId> nonObsoleteTermIds,
       Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, MpoTerm> termMap,
-      ImmutableMap<Integer, MpoRelationship> relationMap) {
+      ImmutableMap<TermId, Term> termMap,
+      ImmutableMap<Integer, Relationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
