@@ -10,9 +10,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
-import org.monarchinitiative.phenol.formats.generic.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -61,8 +61,8 @@ public class OwlImmutableOntologyLoaderTest {
     // 2. Checking edges
     // Two subclasses are translated into two edges. Other axioms are not yet captured.
     assertEquals(graph.edgeSet().size(), 2);
-    assertTrue(graph.getEdge(t1, t2) != null);
-    assertTrue(graph.getEdge(t1, t3) != null);
+    assertNotNull(graph.getEdge(t1, t2));
+    assertNotNull(graph.getEdge(t1, t3));
 
     // 3. Checking TermIds
     // This is essentially the same as checking vertices.

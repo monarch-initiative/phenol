@@ -1,14 +1,13 @@
-package org.monarchinitiative.phenol.formats.generic;
+package org.monarchinitiative.phenol.ontology.data;
 
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.TermI;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import java.util.Date;
 import java.util.List;
 
 /** Representation of a term in common (forked from GoTerm) */
-public class Term implements TermI {
+public class Term  {
   private static final long serialVersionUID = 8382263493662721530L;
 
   /** The Common term's Id. */
@@ -85,57 +84,46 @@ public class Term implements TermI {
 
   public Term() {}
 
-  @Override
   public TermId getId() {
     return id;
   }
 
-  @Override
   public List<TermId> getAltTermIds() {
     return altTermIds;
   }
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public String getDefinition() {
     return definition;
   }
 
-  @Override
   public String getComment() {
     return comment;
   }
 
-  @Override
   public List<String> getSubsets() {
     return subsets;
   }
 
-  @Override
   public List<TermSynonym> getSynonyms() {
     return synonyms;
   }
 
-  @Override
   public boolean isObsolete() {
     return obsolete;
   }
 
-  @Override
   public String getCreatedBy() {
     return createdBy;
   }
 
-  @Override
   public Date getCreationDate() {
     return creationDate;
   }
 
-  @Override
   public List<Dbxref> getXrefs() {
     return xrefs;
   }

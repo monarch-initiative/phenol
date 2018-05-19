@@ -7,14 +7,14 @@ import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.model.meta.XrefPropertyValue;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import org.monarchinitiative.phenol.formats.generic.RelationshipType;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
@@ -78,7 +78,7 @@ public class GenericOwlFactory
       Field f = Meta.class.getDeclaredField("deprecated");
       f.setAccessible(true);
       Boolean deprecated = (Boolean) f.get(meta);
-      if (deprecated == null || deprecated != true) isObsolete = false;
+      if (deprecated == null || ! deprecated ) isObsolete = false;
       else if (deprecated) isObsolete = true;
     } catch (Exception e) {
       LOGGER.error(e.getMessage());

@@ -1,7 +1,5 @@
-package org.monarchinitiative.phenol.formats.generic;
+package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.RelationshipTypeI;
 
 /**
  *
@@ -19,7 +17,7 @@ public class Relationship {
   /** Id for this term relation, corresponds to Id of edge in graph. */
   protected final int id;
 
-  /** {@link RelationshipTypeI} for this term relation. */
+  /** {@link RelationshipType} for this term relation. */
   private final RelationshipType relationshipType;
 
   /**

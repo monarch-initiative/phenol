@@ -26,8 +26,7 @@ public class HpoGeneAnnotationParserTest {
   }
 
   @Test
-  public void testParseHpoDiseaseAnnotationHead()
-      throws IOException, TermAnnotationParserException {
+  public void testParseHpoDiseaseAnnotationHead() {
 //    final HpoGeneAnnotationParser parser = new HpoGeneAnnotationParser(hpoGeneAnnotationHeadFile);
 //
 //    // Read and check first record.

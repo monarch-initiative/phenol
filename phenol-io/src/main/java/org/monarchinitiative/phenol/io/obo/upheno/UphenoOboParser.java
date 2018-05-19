@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.io.obo.upheno;
 import java.io.File;
 import java.io.IOException;
 
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.formats.upheno.UphenoOntology;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;

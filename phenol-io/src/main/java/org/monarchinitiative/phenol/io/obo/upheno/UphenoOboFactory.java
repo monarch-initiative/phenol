@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.upheno;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.RelationshipType;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -87,11 +87,11 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
     }
 
     final StanzaEntryDef defEntry =
-        this.<StanzaEntryDef>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
     final String definition = (defEntry == null) ? null : defEntry.getText();
 
     final StanzaEntryComment commentEntry =
-        this.<StanzaEntryComment>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
     final String comment = (commentEntry == null) ? null : commentEntry.getText();
 
     final List<String> subsets;
@@ -137,16 +137,16 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
     }
 
     final StanzaEntryIsObsolete isObsoleteEntry =
-        this.<StanzaEntryIsObsolete>getCardinalityZeroOrOneEntry(
+        this.getCardinalityZeroOrOneEntry(
             stanza, StanzaEntryType.IS_OBSOLETE);
     final boolean obsolete = (isObsoleteEntry == null) ? false : isObsoleteEntry.getValue();
 
     final StanzaEntryCreatedBy createdByEntry =
-        this.<StanzaEntryCreatedBy>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.CREATED_BY);
     final String createdBy = (createdByEntry == null) ? null : createdByEntry.getCreator();
 
     final StanzaEntryCreationDate creationDateEntry =
-        this.<StanzaEntryCreationDate>getCardinalityZeroOrOneEntry(
+        this.getCardinalityZeroOrOneEntry(
             stanza, StanzaEntryType.CREATION_DATE);
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
@@ -195,7 +195,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
+  private  <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
       throw new PhenolRuntimeException(
@@ -221,7 +221,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast, or <code>null</code>.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
+  private  <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
       Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {

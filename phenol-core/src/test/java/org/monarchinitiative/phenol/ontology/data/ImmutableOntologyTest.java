@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 import java.util.Map;
@@ -73,8 +72,8 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
         (ImmutableOntology) ontology.subOntology(id4);
     assertTrue(subontology.getTermMap().containsKey(id4));
     assertTrue(subontology.getTermMap().containsKey(id1));
-    assertTrue(ontology.getTermMap().size() == 5);
-    assertTrue(subontology.getTermMap().size() == 2);
+    assertEquals(ontology.getTermMap().size() , 5);
+    assertEquals(subontology.getTermMap().size() , 2);
     assertFalse(subontology.getTermMap().containsKey(id5));
   }
 

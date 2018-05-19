@@ -71,7 +71,7 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     this.out.close();
   }
 }

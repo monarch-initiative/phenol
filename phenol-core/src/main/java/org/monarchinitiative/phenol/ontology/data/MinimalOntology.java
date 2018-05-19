@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 /**
@@ -77,8 +75,7 @@ public interface MinimalOntology extends Serializable {
   /**
    * Return term id to term map for all primary term IDs.
    *
-   * @return {@link Map} from {@link TermId} to corresponding value of {@link TermI} sub class <code>
-   *     T</code>.
+   * @return {@link Map} from {@link TermId} to corresponding value of {@link Term}.
    */
   Map<TermId, Term> getTermMap();
 

@@ -18,8 +18,6 @@ import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -59,7 +57,7 @@ public final class OwlImmutableOntologyLoader {
   }
 
   public ImmutableOntology load(OwlOntologyEntryFactory factory)
-      throws IOException, OWLOntologyCreationException {
+      throws OWLOntologyCreationException {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();

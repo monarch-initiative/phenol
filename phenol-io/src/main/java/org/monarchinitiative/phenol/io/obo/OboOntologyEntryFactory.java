@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.io.obo;
 
 import java.util.SortedMap;
 
-import org.monarchinitiative.phenol.formats.generic.Relationship;
-import org.monarchinitiative.phenol.formats.generic.Term;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 
 

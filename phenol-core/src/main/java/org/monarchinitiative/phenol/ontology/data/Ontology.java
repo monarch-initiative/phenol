@@ -30,7 +30,7 @@ public interface Ontology
    *     none could be found.
    */
   default TermId getPrimaryTermId(TermId termId) {
-    final TermI term = getTermMap().get(termId);
+    final Term term = getTermMap().get(termId);
     if (term == null) {
       return null;
     } else {
