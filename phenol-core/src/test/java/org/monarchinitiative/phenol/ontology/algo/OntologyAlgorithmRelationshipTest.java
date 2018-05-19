@@ -1,5 +1,8 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
+import org.monarchinitiative.phenol.formats.generic.Relationship;
+import org.monarchinitiative.phenol.formats.generic.RelationshipType;
+import org.monarchinitiative.phenol.formats.generic.Term;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
@@ -27,10 +30,10 @@ public class OntologyAlgorithmRelationshipTest {
   private DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
 
   private TermId rootTermId;
-  private ImmutableMap<TermId, TestTerm> termMap;
-  private ImmutableMap<TermId, TestTerm> obsoleteTermMap;
-  private ImmutableMap<Integer, TestRelationship> relationMap;
-  private ImmutableOntology<TestTerm, TestRelationship> ontology;
+  private ImmutableMap<TermId, Term> termMap;
+  private ImmutableMap<TermId, Term> obsoleteTermMap;
+  private ImmutableMap<Integer, Relationship> relationMap;
+  private ImmutableOntology ontology;
 
   private ImmutableTermId root;
   private ImmutableTermId t1;
@@ -62,7 +65,7 @@ public class OntologyAlgorithmRelationshipTest {
     t3_1 = ImmutableTermId.constructWithPrefix("HP:0000011");
     t3_2 = ImmutableTermId.constructWithPrefix("HP:0000012");
 
-    graph = new DefaultDirectedGraph<TermId, IdLabeledEdge>(IdLabeledEdge.class);
+    graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, t1, root, 1);
     GraphUtil.addEdgeToGraph(graph, t2, root, 2);
     GraphUtil.addEdgeToGraph(graph, t3, root, 11);
@@ -77,10 +80,10 @@ public class OntologyAlgorithmRelationshipTest {
 
     rootTermId = root;
 
-    ImmutableMap.Builder<TermId, TestTerm> termMapBuilder = ImmutableMap.builder();
+    ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
     termMapBuilder.put(
         t1,
-        new TestTerm(
+        new Term(
             t1,
             new ArrayList<>(),
             "term1",
@@ -94,7 +97,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t2,
-        new TestTerm(
+        new Term(
             t2,
             new ArrayList<>(),
             "term2",
@@ -108,7 +111,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t3,
-        new TestTerm(
+        new Term(
             t3,
             new ArrayList<>(),
             "term3",
@@ -122,7 +125,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t1_1,
-        new TestTerm(
+        new Term(
             t1_1,
             new ArrayList<>(),
             "term1_1",
@@ -136,7 +139,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t1_2,
-        new TestTerm(
+        new Term(
             t1_2,
             new ArrayList<>(),
             "term1_2",
@@ -151,7 +154,7 @@ public class OntologyAlgorithmRelationshipTest {
 
     termMapBuilder.put(
         t1_1_1,
-        new TestTerm(
+        new Term(
             t1_1_1,
             new ArrayList<>(),
             "term1_1_1",
@@ -165,7 +168,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t1_1_2,
-        new TestTerm(
+        new Term(
             t1_1_2,
             new ArrayList<>(),
             "term1_1_2",
@@ -179,7 +182,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t2_1,
-        new TestTerm(
+        new Term(
             t2_1,
             new ArrayList<>(),
             "term2_1",
@@ -193,7 +196,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t2_2,
-        new TestTerm(
+        new Term(
             t2_2,
             new ArrayList<>(),
             "term2_2",
@@ -207,7 +210,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t3_1,
-        new TestTerm(
+        new Term(
             t3_1,
             new ArrayList<>(),
             "term3_1",
@@ -221,7 +224,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>()));
     termMapBuilder.put(
         t3_2,
-        new TestTerm(
+        new Term(
             t3_2,
             new ArrayList<>(),
             "term3_2",
@@ -238,17 +241,13 @@ public class OntologyAlgorithmRelationshipTest {
 
     obsoleteTermMap = ImmutableMap.of();
 
-    ImmutableMap.Builder<Integer, TestRelationship> relationMapBuilder = ImmutableMap.builder();
-    //    relationMapBuilder.put(1, new TestRelationship(id1, id2, 1));
-    //    relationMapBuilder.put(2, new TestRelationship(id1, id3, 2));
-    //    relationMapBuilder.put(3, new TestRelationship(id1, id4, 3));
-    //    relationMapBuilder.put(4, new TestRelationship(id2, id5, 4));
-    //    relationMapBuilder.put(5, new TestRelationship(id3, id5, 5));
-    //    relationMapBuilder.put(6, new TestRelationship(id4, id5, 6));
+    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
+        relationMapBuilder.put(1, new Relationship(t1, t2, 1, RelationshipType.IS_A));
+        relationMapBuilder.put(2, new Relationship(t1, t3, 2, RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
 
     ontology =
-        new ImmutableOntology<>(
+        new ImmutableOntology(
             metaInfo,
             graph,
             rootTermId,

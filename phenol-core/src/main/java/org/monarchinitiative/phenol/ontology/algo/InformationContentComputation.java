@@ -6,39 +6,33 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermIds;
 
 // TODO: separate resulting precomputation DS and algorithm to equalize with graph.algo
 
 /**
- * Utility class for computing information content of {@link Term} (identified by their {@link
+ * Utility class for computing information content of {@link TermI} (identified by their {@link
  * TermId}s) in an {@link Ontology}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class InformationContentComputation<T extends Term, R extends Relationship> {
+public final class InformationContentComputation {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(InformationContentComputation.class);
 
   /** {@link Ontology} to work on for computations. */
-  private final Ontology<T, R> ontology;
+  private final Ontology ontology;
 
   /**
    * Constructor.
    *
    * @param ontology {@link Ontology} to use for the computations.
    */
-  public InformationContentComputation(Ontology<T, R> ontology) {
+  public InformationContentComputation(Ontology ontology) {
     this.ontology = ontology;
   }
 
@@ -52,7 +46,7 @@ public final class InformationContentComputation<T extends Term, R extends Relat
    * @param <LabelT> Labels for objects from "the real world". This could, e.g., be <code>String
    *     </code>s with gene names. This type has to properly implement <code>equals(Object)</code>
    *     and <code>hashValue()</code> as it is to be used as keys in a {@link HashMap}.
-   * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
+   * @param termLabels Labels for each {@link TermI}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
   public <LabelT> Map<TermId, Double> computeInformationContent(
@@ -82,7 +76,7 @@ public final class InformationContentComputation<T extends Term, R extends Relat
     int countIcZero = 0;
     final double dummyIc = -Math.log(1 / (double) maxFreq);
 
-    for (Term t : ontology.getTerms()) {
+    for (TermI t : ontology.getTerms()) {
       if (t.isObsolete()) {
         continue;
       }

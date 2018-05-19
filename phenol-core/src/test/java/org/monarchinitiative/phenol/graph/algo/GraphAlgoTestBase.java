@@ -18,13 +18,13 @@ public class GraphAlgoTestBase {
 
   @Before
   public void setUp() {
-    simpleDag = new DefaultDirectedGraph<Integer, IdLabeledEdge>(IdLabeledEdge.class);
+    simpleDag = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(simpleDag, 1, 2, 1);
     GraphUtil.addEdgeToGraph(simpleDag, 1, 3, 2);
     GraphUtil.addEdgeToGraph(simpleDag, 2, 4, 3);
     GraphUtil.addEdgeToGraph(simpleDag, 3, 4, 4);
 
-    simpleLine = new DefaultDirectedGraph<Integer, IdLabeledEdge>(IdLabeledEdge.class);
+    simpleLine = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(simpleLine, 1, 2, 1);
     GraphUtil.addEdgeToGraph(simpleLine, 2, 3, 2);
     GraphUtil.addEdgeToGraph(simpleLine, 3, 4, 3);

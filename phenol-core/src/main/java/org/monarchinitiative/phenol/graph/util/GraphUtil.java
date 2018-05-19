@@ -17,7 +17,7 @@ public class GraphUtil<V> {
   public static <V> void addEdgeToGraph(
       DefaultDirectedGraph<V, IdLabeledEdge> g, V t1, V t2, int id) {
     final ClassBasedEdgeFactory<V, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<V, IdLabeledEdge>(IdLabeledEdge.class);
+      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
     g.addVertex(t1);
     g.addVertex(t2);
     IdLabeledEdge e = edgeFactory.createEdge(t1, t2);
@@ -75,13 +75,10 @@ public class GraphUtil<V> {
   public static <V> DefaultDirectedGraph<V, IdLabeledEdge> subGraph(
       DefaultDirectedGraph<V, IdLabeledEdge> g, Collection<V> vertices) {
     DefaultDirectedGraph<V, IdLabeledEdge> newSubgraph =
-        new DefaultDirectedGraph<V, IdLabeledEdge>(IdLabeledEdge.class);
+      new DefaultDirectedGraph<>(IdLabeledEdge.class);
     ClassBasedEdgeFactory<V, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<V, IdLabeledEdge>(IdLabeledEdge.class);
-
-    Iterator<? extends IdLabeledEdge> edgeIt = g.edgeSet().iterator();
-    while (edgeIt.hasNext()) {
-      IdLabeledEdge e = edgeIt.next();
+      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+    for (IdLabeledEdge e : g.edgeSet() ) {
       if (vertices.contains(e.getSource()) && vertices.contains(e.getTarget())) {
         IdLabeledEdge termIdEdge = edgeFactory.createEdge((V) e.getSource(), (V) e.getTarget());
         termIdEdge.setId(e.getId());

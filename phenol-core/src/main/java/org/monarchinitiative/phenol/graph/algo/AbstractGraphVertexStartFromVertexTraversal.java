@@ -22,7 +22,7 @@ abstract class AbstractGraphVertexStartFromVertexTraversal<
    * @param visitor {@link VertexVisitor} to use.
    */
   public void startFromForward(G g, V v, VertexVisitor<V, E> visitor) {
-    final NeighborSelector<V, E> neighborSelector = new ForwardNeighborSelector<V, E>();
+    final NeighborSelector<V, E> neighborSelector = new ForwardNeighborSelector<>();
     startFromImpl(g, v, visitor, neighborSelector);
   }
 
@@ -35,7 +35,7 @@ abstract class AbstractGraphVertexStartFromVertexTraversal<
    * @param visitor {@link VertexVisitor} to use.
    */
   public void startFromReverse(G g, V v, VertexVisitor<V, E> visitor) {
-    final NeighborSelector<V, E> neighborSelector = new ReverseNeighborSelector<V, E>();
+    final NeighborSelector<V, E> neighborSelector = new ReverseNeighborSelector<>();
     startFromImpl(g, v, visitor, neighborSelector);
   }
 

@@ -3,6 +3,12 @@ Changelog
 =========
 
 ------
+v0.1.9
+------
+- refactored to use just a single Term and Relationship instead of having separate types for each ontology. Simplified
+classes that were templated to allow e.g., MpoTerm, MpoRelationship by hardcoding Term,Relationship and removing template.
+
+------
 v0.1.8
 ------
 - refactored HpoAnnotation from HpoTermId

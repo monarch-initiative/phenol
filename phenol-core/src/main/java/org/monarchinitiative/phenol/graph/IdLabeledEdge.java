@@ -5,7 +5,7 @@ import org.jgrapht.graph.DefaultEdge;
 /**
  * A class that represents an edge with a labeled numeric Id. Id is maintained to support
  * compatibilities with old codes from Ontolib, i.e. this Id is used as a link/key to a
- * relevant {@link Relationship} instance.
+ * relevant Relationship instance.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
@@ -48,6 +48,6 @@ public class IdLabeledEdge extends DefaultEdge {
     IdLabeledEdge edge = (IdLabeledEdge) obj;
     if (this.getSource() != edge.getSource()) return false;
     if (this.getTarget() != edge.getTarget()) return false;
-    return this.id == edge.id;  
+    return this.id == edge.id;
   }
 }

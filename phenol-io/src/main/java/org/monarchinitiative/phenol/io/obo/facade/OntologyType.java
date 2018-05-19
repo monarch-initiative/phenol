@@ -15,5 +15,5 @@ public enum OntologyType {
   /** Uberpheno Ontology. */
   UBERPHENO,
   /** Upheno Ontology. */
-  UPHENO;
+  UPHENO
 }

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Interface for richly annotated information about a {@link Term}'s synonymous description.
+ * Interface for richly annotated information about a {@link TermI}'s synonymous description.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

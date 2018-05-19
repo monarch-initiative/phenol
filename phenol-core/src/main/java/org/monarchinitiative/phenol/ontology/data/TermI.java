@@ -9,30 +9,30 @@ import java.util.List;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface Term extends Serializable {
+public interface TermI extends Serializable {
 
-  /** @return {@link TermId} for this <code>Term</code>. */
+  /** @return {@link TermId} for this <code>TermI</code>. */
   TermId getId();
 
-  /** @return {@link List} of this <code>Term</code>'s alternative {@link TermId}s. */
+  /** @return {@link List} of this <code>TermI</code>'s alternative {@link TermId}s. */
   List<TermId> getAltTermIds();
 
-  /** = * @return <code>String</code> value for this <code>Term</code>'s name. */
+  /** = * @return <code>String</code> value for this <code>TermI</code>'s name. */
   String getName();
 
-  /** @return <code>definition</code> for this <code>Term</code>. */
+  /** @return <code>definition</code> for this <code>TermI</code>. */
   String getDefinition();
 
-  /** @return <code>comment</code> value for this <code>Term</code>. */
+  /** @return <code>comment</code> value for this <code>TermI</code>. */
   String getComment();
 
   /**
-   * @return {@link List} of <code>String</code> with this <code>Term</code>'s subset names, empty
+   * @return {@link List} of <code>String</code> with this <code>TermI</code>'s subset names, empty
    *     if part of no subset.
    */
   List<String> getSubsets();
 
-  /** @return {@link List} of {@link TermSynonym}s describing this <code>Term</code>'s synonyms. */
+  /** @return {@link List} of {@link TermSynonym}s describing this <code>TermI</code>'s synonyms. */
   List<TermSynonym> getSynonyms();
 
   /** @return <code>true</code> if "obsolete" flag is set, <code>false</code> if not. */

@@ -17,30 +17,29 @@ import org.monarchinitiative.phenol.ontology.similarity.PairwiseResnikSimilarity
 import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRecipeAnnotation;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableTerm;
-import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableRelationship;
+
 
 public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
 
-  SimilarityScoreSampling<VegetableTerm, VegetableRelationship> scoreSampling;
-  ResnikSimilarity<VegetableTerm, VegetableRelationship> resnikSimilarity;
+  private SimilarityScoreSampling scoreSampling;
+  private ResnikSimilarity resnikSimilarity;
 
   @Before
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation<VegetableTerm, VegetableRelationship> computation =
-        new InformationContentComputation<>(ontology);
+    InformationContentComputation computation =
+        new InformationContentComputation(ontology);
     Map<TermId, Collection<String>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
-    PairwiseResnikSimilarity<VegetableTerm, VegetableRelationship> pairwise =
-        new PairwiseResnikSimilarity<>(ontology, informationContent);
-    resnikSimilarity = new ResnikSimilarity<>(pairwise, true);
+    PairwiseResnikSimilarity pairwise =
+        new PairwiseResnikSimilarity(ontology, informationContent);
+    resnikSimilarity = new ResnikSimilarity(pairwise, true);
 
     ScoreSamplingOptions options = new ScoreSamplingOptions(1, null, null, 2, 2, 10_000, 42);
     scoreSampling =
-        new SimilarityScoreSampling<VegetableTerm, VegetableRelationship>(
+        new SimilarityScoreSampling(
             ontology, resnikSimilarity, options);
   }
 

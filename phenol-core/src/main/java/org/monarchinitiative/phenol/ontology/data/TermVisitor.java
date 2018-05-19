@@ -1,16 +1,12 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 /**
  * Interface for implementation of the <b>visitor pattern</b> for ontology terms (identified by
  * their {@link TermId}).
  *
- * @param <V> vertex type of graph, see {@link DefaultDirectedGraph} for requirements on vertex type
- * @param <E> edge type to use in the graph, also see {@link DefaultDirectedGraph} for details
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermVisitor<O extends Ontology<?, ?>> {
+public interface TermVisitor<O extends Ontology> {
 
   /**
    * Algorithms using <code>TermVisitor</code> will call this function for each visited term.

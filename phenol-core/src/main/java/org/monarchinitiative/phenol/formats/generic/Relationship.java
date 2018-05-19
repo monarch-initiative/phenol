@@ -1,15 +1,13 @@
 package org.monarchinitiative.phenol.formats.generic;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipTypeI;
 
 /**
- * {@link Relationship} to use for general ontologies.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class GenericRelationship implements Relationship {
+public class Relationship {
   private static final long serialVersionUID = -2833503015330486640L;
 
   /** Source {@link TermId}. */
@@ -21,8 +19,8 @@ public class GenericRelationship implements Relationship {
   /** Id for this term relation, corresponds to Id of edge in graph. */
   protected final int id;
 
-  /** {@link RelationshipType} for this term relation. */
-  protected final RelationshipType relationshipType;
+  /** {@link RelationshipTypeI} for this term relation. */
+  private final RelationshipType relationshipType;
 
   /**
    * Constructor.
@@ -32,7 +30,7 @@ public class GenericRelationship implements Relationship {
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationshipType The relation's type.
    */
-  public GenericRelationship(
+  public Relationship(
       TermId source, TermId dest, int id, RelationshipType relationshipType) {
     this.source = source;
     this.target = dest;
@@ -40,17 +38,14 @@ public class GenericRelationship implements Relationship {
     this.relationshipType = relationshipType;
   }
 
-  @Override
   public TermId getSource() {
     return source;
   }
 
-  @Override
   public TermId getTarget() {
     return target;
   }
 
-  @Override
   public int getId() {
     return id;
   }
@@ -62,7 +57,7 @@ public class GenericRelationship implements Relationship {
 
   @Override
   public String toString() {
-    return "GenericRelationship [source="
+    return "Relationship [source="
         + source
         + ", dest="
         + target
