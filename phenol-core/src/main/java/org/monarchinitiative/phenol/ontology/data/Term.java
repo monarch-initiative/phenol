@@ -1,8 +1,5 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import java.util.Date;
 import java.util.List;
 

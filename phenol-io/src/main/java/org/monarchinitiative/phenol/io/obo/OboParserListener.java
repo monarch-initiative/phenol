@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import com.google.common.collect.Lists;
 
@@ -749,7 +748,7 @@ class OboParserListener extends Antlr4OboParserBaseListener {
       }
     }
 
-    setValue(ctx, new ImmutableDbxref(name, description, trailingModifiers));
+    setValue(ctx, new Dbxref(name, description, trailingModifiers));
   }
 
   /**

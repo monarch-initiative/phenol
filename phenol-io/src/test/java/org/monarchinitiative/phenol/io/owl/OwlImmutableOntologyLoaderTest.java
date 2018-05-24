@@ -10,18 +10,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
  * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.

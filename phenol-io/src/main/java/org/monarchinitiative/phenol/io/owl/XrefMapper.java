@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.io.owl;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
-import org.monarchinitiative.phenol.ontology.data.TermXrefI;
 
 /**
  * Map the representation of Cross-references

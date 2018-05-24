@@ -9,9 +9,7 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -33,14 +31,6 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntrySynonym;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryType;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryUnionOf;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
-import org.monarchinitiative.phenol.ontology.data.TermXrefI;
 import com.google.common.collect.Lists;
 
 /**

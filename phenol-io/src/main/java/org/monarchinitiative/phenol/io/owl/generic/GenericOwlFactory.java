@@ -18,7 +18,6 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
@@ -66,7 +65,7 @@ public class GenericOwlFactory
       for (XrefPropertyValue xrefPV : xrefPVList) {
         String val = xrefPV.getVal();
         if (val == null) continue;
-        dbxrefList.add(new ImmutableDbxref(val, null, null));
+        dbxrefList.add(new Dbxref(val, null, null));
       }
       if (!dbxrefList.isEmpty()) genericTerm.setXrefs(dbxrefList);
     }
