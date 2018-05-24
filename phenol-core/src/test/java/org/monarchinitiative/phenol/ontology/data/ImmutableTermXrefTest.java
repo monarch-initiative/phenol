@@ -8,12 +8,12 @@ import org.junit.Test;
 public class ImmutableTermXrefTest {
 
   private ImmutableTermId termId;
-  private ImmutableTermXref termXref;
+  private TermXref termXref;
 
   @Before
   public void setUp() {
     termId = ImmutableTermId.constructWithPrefix("HP:0000001");
-    termXref = new ImmutableTermXref(termId, "Some description");
+    termXref = new TermXref(termId, "Some description");
   }
 
   @Test

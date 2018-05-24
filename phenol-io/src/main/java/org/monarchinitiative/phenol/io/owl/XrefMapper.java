@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.io.owl;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
+import org.monarchinitiative.phenol.ontology.data.TermXrefI;
 
 /**
  * Map the representation of Cross-references
@@ -12,7 +12,6 @@ import org.monarchinitiative.phenol.ontology.data.TermXref;
 public class XrefMapper {
   public static TermXref mapXref(String xref) {
     ImmutableTermId xrefTermId = ImmutableTermId.constructWithPrefix(xref);
-    TermXref termXref = new ImmutableTermXref(xrefTermId, null);
-    return termXref;
+    return new TermXref(xrefTermId, null);
   }
 }

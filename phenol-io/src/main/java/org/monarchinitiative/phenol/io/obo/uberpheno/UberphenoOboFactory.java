@@ -36,11 +36,11 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
+import org.monarchinitiative.phenol.ontology.data.TermXref;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
+import org.monarchinitiative.phenol.ontology.data.TermXrefI;
 import com.google.common.collect.Lists;
 
 /**
@@ -128,7 +128,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
                             .stream()
                             .map(
                                 xref ->
-                                    new ImmutableTermXref(
+                                    new TermXref(
                                         termIds.get(xref.getName()), xref.getDescription()))
                             .collect(Collectors.toList());
 
@@ -195,7 +195,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
+  private  <E extends StanzaEntry> E getCardinalityOneEntry(Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {
       throw new PhenolRuntimeException(
@@ -221,7 +221,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
    * @return Resulting {@link StanzaEntry}, properly cast, or <code>null</code>.
    */
   @SuppressWarnings("unchecked")
-  protected <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
+  private  <E extends StanzaEntry> E getCardinalityZeroOrOneEntry(
       Stanza stanza, StanzaEntryType type) {
     final List<StanzaEntry> typeEntries = stanza.getEntryByType().get(type);
     if (typeEntries == null) {

@@ -1,25 +1,42 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import java.io.Serializable;
-
 /**
- * Richly annotated cross-reference to another term.
+ * Immutable implementation of {@link TermXrefI}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermXref extends Serializable {
+public class TermXref {
+
+  /** Serial UID for serialization. */
+  private static final long serialVersionUID = 1L;
+
+  /** Referenced term Id. */
+  private final TermId id;
+
+  /** Referenced description. */
+  private final String description;
 
   /**
-   * Query for cross-referenced term's ID.
+   * Constructor.
    *
-   * @return Cross-referenced term's ID
+   * @param id The term's Id.
+   * @param description The cross reference description.
    */
-  TermId getId();
+  public TermXref(TermId id, String description) {
+    this.id = id;
+    this.description = description;
+  }
 
-  /**
-   * Query for cross reference's description.
-   *
-   * @return Description text
-   */
-  String getDescription();
+  public TermId getId() {
+    return id;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public String toString() {
+    return "ImmutableTermXref [id=" + id + ", description=" + description + "]";
+  }
 }

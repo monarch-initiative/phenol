@@ -19,7 +19,7 @@ public class ImmutableTermSynonymTest {
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
             Lists.newArrayList(
-                new ImmutableTermXref(
+                new TermXref(
                     new ImmutableTermId(new TermPrefix("HP"), "0000001"),
                     "term description")));
   }

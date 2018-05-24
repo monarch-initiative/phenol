@@ -28,11 +28,11 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
+import org.monarchinitiative.phenol.ontology.data.TermXref;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
+import org.monarchinitiative.phenol.ontology.data.TermXrefI;
 import com.google.common.collect.Lists;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,7 +127,7 @@ class HpoOboFactory implements OboOntologyEntryFactory {
                             .stream()
                             .map(
                                 xref ->
-                                    new ImmutableTermXref(
+                                    new TermXref(
                                         termIds.get(xref.getName()), xref.getDescription()))
                             .collect(Collectors.toList());
 
