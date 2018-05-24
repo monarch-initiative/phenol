@@ -33,7 +33,7 @@ public final class ImmutableTermId implements TermId {
           "TermI ID string \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new ImmutableTermId(
-          new ImmutableTermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
+          new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
     }
   }
 

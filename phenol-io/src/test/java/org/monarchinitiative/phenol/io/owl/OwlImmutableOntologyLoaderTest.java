@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
+import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -42,7 +42,7 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
-    ImmutableTermPrefix termPrefix = new ImmutableTermPrefix("NCIT");
+    TermPrefix termPrefix = new TermPrefix("NCIT");
     ImmutableTermId t1 = new ImmutableTermId(termPrefix, "C2919");
     ImmutableTermId t2 = new ImmutableTermId(termPrefix, "C2852");
     ImmutableTermId t3 = new ImmutableTermId(termPrefix, "C48596");

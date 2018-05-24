@@ -216,8 +216,8 @@ public final class OboImmutableOntologyLoader {
    */
   private class HelperListener implements OboParseResultListener {
 
-    /** TermI prefix value to {@link ImmutableTermPrefix}. */
-    private final Map<String, ImmutableTermPrefix> prefixes = new HashMap<>();
+    /** TermI prefix value to {@link TermPrefix}. */
+    private final Map<String, TermPrefix> prefixes = new HashMap<>();
 
     /** First seen term Id, we will construct the artificial root term if necessary. */
     private ImmutableTermId firstTermId = null;
@@ -395,10 +395,10 @@ public final class OboImmutableOntologyLoader {
 
       final String prefixStr = termIdStr.substring(0, pos);
       final String localIdStr = termIdStr.substring(pos + 1);
-      ImmutableTermPrefix tmpPrefix = prefixes.get(prefixStr);
+      TermPrefix tmpPrefix = prefixes.get(prefixStr);
 
       if (tmpPrefix == null || prefixes.containsKey(tmpPrefix.getValue()) != true) {
-        tmpPrefix = new ImmutableTermPrefix(prefixStr);
+        tmpPrefix = new TermPrefix(prefixStr);
         prefixes.put(prefixStr, tmpPrefix);
       }
 

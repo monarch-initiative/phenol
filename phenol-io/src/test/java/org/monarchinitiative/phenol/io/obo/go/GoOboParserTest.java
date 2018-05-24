@@ -45,13 +45,13 @@ public class GoOboParserTest {
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     assertEquals(
-        "([ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150]], [(ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674] : ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674],ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000]), (ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575] : ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575],ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000]), (ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150] : ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150],ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000])])",
+        "([ImmutableTermId [prefix=TermPrefix [value=GO], id=0003674], ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000], ImmutableTermId [prefix=TermPrefix [value=GO], id=0005575], ImmutableTermId [prefix=TermPrefix [value=GO], id=0008150]], [(ImmutableTermId [prefix=TermPrefix [value=GO], id=0003674] : ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=TermPrefix [value=GO], id=0003674],ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000]), (ImmutableTermId [prefix=TermPrefix [value=GO], id=0005575] : ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=TermPrefix [value=GO], id=0005575],ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000]), (ImmutableTermId [prefix=TermPrefix [value=GO], id=0008150] : ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000])=(ImmutableTermId [prefix=TermPrefix [value=GO], id=0008150],ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000])])",
         graph.toString());
 
     assertEquals(graph.edgeSet().size(), 3);
 
     assertEquals(
-        "[ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005554], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0007582], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150], ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008372]]",
+        "[ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000], ImmutableTermId [prefix=TermPrefix [value=GO], id=0000004], ImmutableTermId [prefix=TermPrefix [value=GO], id=0003674], ImmutableTermId [prefix=TermPrefix [value=GO], id=0005554], ImmutableTermId [prefix=TermPrefix [value=GO], id=0005575], ImmutableTermId [prefix=TermPrefix [value=GO], id=0007582], ImmutableTermId [prefix=TermPrefix [value=GO], id=0008150], ImmutableTermId [prefix=TermPrefix [value=GO], id=0008372]]",
         ImmutableSortedSet.copyOf(ontology.getAllTermIds()).toString());
 
     assertThat(
@@ -63,11 +63,11 @@ public class GoOboParserTest {
         endsWith("description=null, trailingModifiers=null]]]}"));
 
     assertEquals(
-        "{1=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0003674], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=1, relationshipType=IS_A], 2=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0005575], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=2, relationshipType=IS_A], 3=Relationship [source=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0008150], dest=ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000], id=3, relationshipType=IS_A]}",
+        "{1=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=GO], id=0003674], dest=ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000], id=1, relationshipType=IS_A], 2=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=GO], id=0005575], dest=ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000], id=2, relationshipType=IS_A], 3=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=GO], id=0008150], dest=ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000], id=3, relationshipType=IS_A]}",
         ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
 
     assertEquals(
-        "ImmutableTermId [prefix=ImmutableTermPrefix [value=GO], id=0000000]",
+        "ImmutableTermId [prefix=TermPrefix [value=GO], id=0000000]",
         ontology.getRootTermId().toString());
 
     assertEquals(

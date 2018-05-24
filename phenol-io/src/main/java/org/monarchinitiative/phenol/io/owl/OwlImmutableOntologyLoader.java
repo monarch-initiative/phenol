@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.io.owl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -95,8 +94,8 @@ public final class OwlImmutableOntologyLoader {
       if (nodeCurie.isPresent() != true) continue;
       ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
-      TermPrefix oioPrefix = new ImmutableTermPrefix("OIO");
-      TermPrefix iaoPrefix = new ImmutableTermPrefix("IAO");
+      TermPrefix oioPrefix = new TermPrefix("OIO");
+      TermPrefix iaoPrefix = new TermPrefix("IAO");
       if (term.getId().getPrefix().equals(oioPrefix) || term.getId().getPrefix().equals(iaoPrefix)) continue;
 
       if (term.isObsolete()) {

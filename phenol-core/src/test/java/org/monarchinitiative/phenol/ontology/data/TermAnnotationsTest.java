@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 
 public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
-  List<TestTermAnnotation> annotations;
+  private List<TestTermAnnotation> annotations;
 
   @Before
   public void setUp() {
@@ -33,7 +33,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
     assertEquals(
-        "{ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002]=[two, three, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004]=[two, one], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]=[two, three, one]}",
+        "{ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]=[two, one], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002]=[two, three, one], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003]=[two, one], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004]=[two, one], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]=[two, three, one]}",
         map.toString());
   }
 
@@ -43,7 +43,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
     assertEquals(
-        "{one=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]], three=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]], two=[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]]}",
+        "{one=[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]], three=[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]], two=[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]]}",
         map.toString());
   }
 }

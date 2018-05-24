@@ -1,9 +1,8 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class HpoAnnotationTest {
 
   @BeforeClass
   public static void setUp() {
-    HP_PREFIX = new ImmutableTermPrefix("HP");
+    HP_PREFIX = new TermPrefix("HP");
     String DEFAULT_FREQUENCY = "0040280";
     final TermId DEFAULT_FREQUENCY_ID = new ImmutableTermId(HP_PREFIX, DEFAULT_FREQUENCY);
     defaultFrequency = HpoFrequency.fromTermId(DEFAULT_FREQUENCY_ID);

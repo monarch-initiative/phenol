@@ -7,8 +7,8 @@ import org.junit.Test;
 
 public class ImmutableTermXrefTest {
 
-  ImmutableTermId termId;
-  ImmutableTermXref termXref;
+  private ImmutableTermId termId;
+  private ImmutableTermXref termXref;
 
   @Before
   public void setUp() {
@@ -19,11 +19,11 @@ public class ImmutableTermXrefTest {
   @Test
   public void test() {
     assertEquals(
-        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]",
+        "ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]",
         termXref.getId().toString());
     assertEquals("Some description", termXref.getDescription());
     assertEquals(
-        "ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=Some description]",
+        "ImmutableTermXref [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], description=Some description]",
         termXref.toString());
   }
 }
