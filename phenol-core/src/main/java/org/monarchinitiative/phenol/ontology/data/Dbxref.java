@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /**
- * Implementation of immutable {@link DbxrefI}s.
+ * Implementation of immutable {@link Dbxref}s.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

@@ -19,13 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.MersenneTwister;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 // TODO: The interface here assumes numeric world object ids but annotation is string label based.
 // We need to homogonize.
@@ -104,7 +103,7 @@ public final class SimilarityScoreSampling {
    * @return Resulting {@link ScoreDistribution}.
    */
   public ScoreDistribution performSamplingForTermCount(
-      Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
+    Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
     LOGGER.info(
         "Running precomputation for {} world objects using {} query terms...",
         new Object[] {labels.size(), numTerms});
@@ -186,7 +185,7 @@ public final class SimilarityScoreSampling {
    * @return Resulting {@link ObjectScoreDistribution}.
    */
   private ObjectScoreDistribution performComputation(
-      int objectId, Collection<TermId> terms, int numTerms) {
+    int objectId, Collection<TermId> terms, int numTerms) {
     LOGGER.info("Running precomputation for world object {}.", new Object[] {objectId});
 
     // Create and seed MersenneTwister
@@ -218,7 +217,7 @@ public final class SimilarityScoreSampling {
    *     computation).
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
-      int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
+    int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
     final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute

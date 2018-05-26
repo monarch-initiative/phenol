@@ -7,23 +7,23 @@ import org.junit.Test;
 
 public class ImmutableTermXrefTest {
 
-  private ImmutableTermId termId;
+  private TermId termId;
   private TermXref termXref;
 
   @Before
   public void setUp() {
-    termId = ImmutableTermId.constructWithPrefix("HP:0000001");
+    termId = TermId.constructWithPrefix("HP:0000001");
     termXref = new TermXref(termId, "Some description");
   }
 
   @Test
   public void test() {
     assertEquals(
-        "ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]",
+        "TermId [prefix=TermPrefix [value=HP], id=0000001]",
         termXref.getId().toString());
     assertEquals("Some description", termXref.getDescription());
     assertEquals(
-        "ImmutableTermXref [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], description=Some description]",
+        "ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=Some description]",
         termXref.toString());
   }
 }

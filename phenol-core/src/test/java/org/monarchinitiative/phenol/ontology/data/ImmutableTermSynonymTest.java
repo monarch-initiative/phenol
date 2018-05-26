@@ -20,7 +20,7 @@ public class ImmutableTermSynonymTest {
             "BRITISH_ENGLISH",
             Lists.newArrayList(
                 new TermXref(
-                    new ImmutableTermId(new TermPrefix("HP"), "0000001"),
+                    new TermId(new TermPrefix("HP"), "0000001"),
                     "term description")));
   }
 
@@ -30,10 +30,10 @@ public class ImmutableTermSynonymTest {
     assertEquals(TermSynonymScope.EXACT, termSynonym.getScope());
     assertEquals("BRITISH_ENGLISH", termSynonym.getSynonymTypeName());
     assertEquals(
-        "[ImmutableTermXref [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]",
+        "[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]",
         termSynonym.getTermXrefs().toString());
     assertEquals(
-        "ImmutableTermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]]",
+        "ImmutableTermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]]",
         termSynonym.toString());
   }
 }

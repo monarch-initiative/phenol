@@ -1,8 +1,9 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.Lists;
 
 import org.junit.Before;
@@ -20,7 +21,7 @@ public class SimpleFeatureVectorSimilarityTest {
   @Test
   public void testQueries() {
     assertEquals("Simple feature vector similarity", similarity.getName());
-    assertEquals(true, similarity.isSymmetric());
+    assertTrue(similarity.isSymmetric());
     assertEquals("{}", similarity.getParameters());
   }
 
@@ -30,27 +31,27 @@ public class SimpleFeatureVectorSimilarityTest {
         1.0,
         similarity.computeScore(
             Lists.newArrayList(
-                ImmutableTermId.constructWithPrefix("HP:0000008"),
-                ImmutableTermId.constructWithPrefix("HP:0000009")),
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000008"))),
+                TermId.constructWithPrefix("HP:0000008"),
+                TermId.constructWithPrefix("HP:0000009")),
+            Lists.newArrayList(TermId.constructWithPrefix("HP:0000008"))),
         0.01);
     assertEquals(
         1.0,
         similarity.computeScore(
             Lists.newArrayList(
-                ImmutableTermId.constructWithPrefix("HP:0000008"),
-                ImmutableTermId.constructWithPrefix("HP:0000009")),
+                TermId.constructWithPrefix("HP:0000008"),
+                TermId.constructWithPrefix("HP:0000009")),
             Lists.newArrayList(
-                ImmutableTermId.constructWithPrefix("HP:0000008"),
-                ImmutableTermId.constructWithPrefix("HP:0000010"))),
+                TermId.constructWithPrefix("HP:0000008"),
+                TermId.constructWithPrefix("HP:0000010"))),
         0.01);
     assertEquals(
         0.0,
         similarity.computeScore(
-            Lists.newArrayList(ImmutableTermId.constructWithPrefix("HP:0000009")),
+            Lists.newArrayList(TermId.constructWithPrefix("HP:0000009")),
             Lists.newArrayList(
-                ImmutableTermId.constructWithPrefix("HP:0000008"),
-                ImmutableTermId.constructWithPrefix("HP:0000010"))),
+                TermId.constructWithPrefix("HP:0000008"),
+                TermId.constructWithPrefix("HP:0000010"))),
         0.01);
   }
 }

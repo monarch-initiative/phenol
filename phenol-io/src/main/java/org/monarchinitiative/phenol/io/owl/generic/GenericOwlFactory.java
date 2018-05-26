@@ -7,19 +7,14 @@ import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.model.meta.XrefPropertyValue;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from

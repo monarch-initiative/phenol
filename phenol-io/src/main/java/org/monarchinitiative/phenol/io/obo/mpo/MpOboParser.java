@@ -7,7 +7,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import java.io.File;
-import java.io.IOException;
 
 public class MpOboParser {
 

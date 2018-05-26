@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.BufferedReader;
 import java.io.File;
@@ -94,7 +93,7 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
     final int geneId = Integer.parseInt(arr[0]);
     final String geneSymbol = arr[1];
     final String hpoTermName = arr[2];
-    final TermId hpoTermId = ImmutableTermId.constructWithPrefix(arr[3]);
+    final TermId hpoTermId = TermId.constructWithPrefix(arr[3]);
 
     nextLine = reader.readLine();
 

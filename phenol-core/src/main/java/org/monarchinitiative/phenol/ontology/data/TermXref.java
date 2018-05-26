@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 /**
- * Immutable implementation of {@link TermXrefI}.
+ * Immutable implementation of {@link TermXref}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

@@ -25,39 +25,39 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     assertEquals("{}", ontology.getMetaInfo().toString());
 
     assertEquals(
-        "([ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]], [(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002]), (ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003]), (ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004]), (ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]), (ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]), (ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004] : ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005])=(ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004],ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005])])",
+        "([TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]], [(TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000002])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000002]), (TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000003])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000003]), (TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000004])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000004]), (TermId [prefix=TermPrefix [value=HP], id=0000002] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000002],TermId [prefix=TermPrefix [value=HP], id=0000005]), (TermId [prefix=TermPrefix [value=HP], id=0000003] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000003],TermId [prefix=TermPrefix [value=HP], id=0000005]), (TermId [prefix=TermPrefix [value=HP], id=0000004] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000004],TermId [prefix=TermPrefix [value=HP], id=0000005])])",
         graph.toString());
 
     assertEquals(graph.edgeSet().size(), 6);
 
 //    assertEquals(
-//        "{ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001]=CommonTerm [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002]=CommonTerm [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003]=Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004]=Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]=Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]}",
+//        "{TermId [prefix=TermPrefix [value=HP], id=0000001]=CommonTerm [id=TermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000002]=CommonTerm [termId=TermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000003]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000004]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000005]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]}",
 //        ontology.getTermMap().toString());
 
 //    assertEquals(
-//        "{1=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], id=1], 2=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], id=2], 3=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], id=3], 4=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=4], 5=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=5], 6=Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=6]}",
+//        "{1=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000002], id=1], 2=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000003], id=2], 3=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3], 4=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000002], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=4], 5=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000003], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=5], 6=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000004], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=6]}",
 //        ontology.getRelationMap().toString());
 
     assertTrue(ontology.isRootTerm(id5));
 
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]]",
+        "[TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]]",
         ontology.getAllTermIds().toString());
 
 //    assertEquals(
-//        "[CommonTerm [id=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]]",
+//        "[CommonTerm [id=TermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]]",
 //        ontology.getTerms().toString());
 
     assertEquals(5, ontology.countAllTerms());
 
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005]]",
+        "[TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]]",
         ontology.getNonObsoleteTermIds().toString());
 
     assertEquals("[]", ontology.getObsoleteTermIds().toString());
 
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004]]",
+        "[TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004]]",
         ontology.getParentTermIds(id1).toString());
   }
 
@@ -78,22 +78,22 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
   }
 
   /**
-   * The parent ontology has six relations 1 Relationship [source=ImmutableTermId
-   * [prefix=TermPrefix [value=HP], id=0000001], dest=ImmutableTermId
+   * The parent ontology has six relations 1 Relationship [source=TermId
+   * [prefix=TermPrefix [value=HP], id=0000001], dest=TermId
    * [prefix=TermPrefix [value=HP], id=0000002], id=1] 2 Relationship
-   * [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003], id=2] 3
-   * Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], id=3] 4
-   * Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000002],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=4] 5
-   * Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000003],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=5] 6
-   * Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000005], id=6] The subontology
+   * [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000003], id=2] 3
+   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3] 4
+   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000002],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=4] 5
+   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000003],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=5] 6
+   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000004],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=6] The subontology
    * has just the terms id1 and id4, and thus should just have only one relation./subontology 3
-   * Relationship [source=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=ImmutableTermId [prefix=TermPrefix [value=HP], id=0000004], id=3]
+   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
+   * dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3]
    */
   @Test
   public void testSubontologyRelations() {

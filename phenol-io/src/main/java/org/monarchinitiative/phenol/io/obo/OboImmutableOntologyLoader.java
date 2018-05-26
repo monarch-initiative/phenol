@@ -102,7 +102,7 @@ public final class OboImmutableOntologyLoader {
      */
 
     // Get term Id (of possibly artificial) root.
-    final ImmutableTermId rootTermId = findOrCreateArtificalRoot(helper, factory);
+    final TermId rootTermId = findOrCreateArtificalRoot(helper, factory);
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
         new DefaultDirectedGraph<>(IdLabeledEdge.class);
@@ -111,11 +111,11 @@ public final class OboImmutableOntologyLoader {
 
     // Construct edge list and relation map.
     final Map<Integer, Relationship> relationMap = new HashMap<>();
-    for (Entry<ImmutableTermId, List<BundledIsARelation>> e :
+    for (Entry<TermId, List<BundledIsARelation>> e :
         helper.getIsATermIdPairs().entrySet()) {
       for (BundledIsARelation b : e.getValue()) {
-        ImmutableTermId sourceTermId = e.getKey();
-        ImmutableTermId targetTermId = b.getDest();
+        TermId sourceTermId = e.getKey();
+        TermId targetTermId = b.getDest();
         graph.addVertex(e.getKey());
         graph.addVertex(b.getDest());
         IdLabeledEdge edge = edgeFactory.createEdge(sourceTermId, targetTermId);
@@ -144,13 +144,13 @@ public final class OboImmutableOntologyLoader {
    *
    * @param helper Helper to use in loading ontology.
    * @param factory Factory to use for loading ontology.
-   * @return The one root's {@link ImmutableTermId}, might be artificially created.
+   * @return The one root's {@link TermId}, might be artificially created.
    */
-  private ImmutableTermId findOrCreateArtificalRoot(
+  private TermId findOrCreateArtificalRoot(
       OboImmutableOntologyLoader.HelperListener helper,
       OboOntologyEntryFactory factory) {
     // Find root candidates (no outgoing is-a edges).
-    final List<ImmutableTermId> rootCandidates =
+    final List<TermId> rootCandidates =
         new ArrayList<>(helper.getRootCandidateStanzas().keySet());
     Collections.sort(rootCandidates);
 
@@ -162,7 +162,7 @@ public final class OboImmutableOntologyLoader {
     } else {
       final TermPrefix rootPrefix = helper.getFirstTermId().getPrefix();
       final String rootLocalId = "0000000"; // assumption: no term ID value "0"*7
-      final ImmutableTermId rootId = new ImmutableTermId(rootPrefix, rootLocalId);
+      final TermId rootId = new TermId(rootPrefix, rootLocalId);
       if (helper.getAllTermIds().contains(rootId)) {
         throw new PhenolRuntimeException(
             "Tried to guess artificial root as " + rootId + " but is already taken.");
@@ -190,7 +190,7 @@ public final class OboImmutableOntologyLoader {
       helper.parsedStanza(Stanza.create(StanzaType.TERM, rootStanzaEntries));
 
       // Register outgoing edges for root candidates. Here, we create fake "is_a" relations.
-      for (ImmutableTermId termId : rootCandidates) {
+      for (TermId termId : rootCandidates) {
         final Relationship artificialIsARelation =
             factory.constructrelationship(
                 helper.getRootCandidateStanzas().get(termId),
@@ -220,30 +220,30 @@ public final class OboImmutableOntologyLoader {
     private final Map<String, TermPrefix> prefixes = new HashMap<>();
 
     /** First seen term Id, we will construct the artificial root term if necessary. */
-    private ImmutableTermId firstTermId = null;
+    private TermId firstTermId = null;
 
     /** All TermId objects constructed from TermI stanzas (only!), including obsolete terms. */
     private final List<TermId> allTermIds = new ArrayList<>();
 
     // TODO: At the moment, HP:1 and HP:01 would be mapped to different objects :(
     /** TermI strings to terms. */
-    private final SortedMap<String, ImmutableTermId> termIds = new TreeMap<>();
+    private final SortedMap<String, TermId> termIds = new TreeMap<>();
 
     /** Non-obsolete terms constructed from parsing. */
-    private final SortedMap<ImmutableTermId, Term> terms = new TreeMap<>();
+    private final SortedMap<TermId, Term> terms = new TreeMap<>();
 
     /** Obsolete terms constructed from parsing. */
-    private final SortedMap<ImmutableTermId, Term> obsoleteTerms = new TreeMap<>();
+    private final SortedMap<TermId, Term> obsoleteTerms = new TreeMap<>();
 
     /** TermI relations constructed from parsing "is_a" relations. */
-    private final SortedMap<ImmutableTermId, List<BundledIsARelation>> isATermIdPairs =
+    private final SortedMap<TermId, List<BundledIsARelation>> isATermIdPairs =
         new TreeMap<>();
 
     /** Factory for creating concrete term and term relation objects, injected into helper. */
     private final OboOntologyEntryFactory ontologyEntryFactory;
 
     /** We store the {@link Stanza} objects for the root candidates (no outgoing is_a relation). */
-    private final Map<ImmutableTermId, Stanza> rootCandidateStanzas = new HashMap<>();
+    private final Map<TermId, Stanza> rootCandidateStanzas = new HashMap<>();
 
     /** Mapping from string to string with file-wide meta information. */
     private final Map<String, String> metaInfo = new HashMap<>();
@@ -295,14 +295,14 @@ public final class OboImmutableOntologyLoader {
     @Override
     public void parsedStanza(Stanza stanza) {
       if (stanza.getType() == StanzaType.TERM) { // ignore all but the terms
-        // Obtain ImmutableTermId for the source term.
+        // Obtain TermId for the source term.
         final List<StanzaEntry> idEntries = stanza.getEntryByType().get(StanzaEntryType.ID);
         if (idEntries.size() != 1) {
           throw new RuntimeException(
               "Cardinality of 'id' must be 1 but is " + idEntries.size() + "(" + stanza + ")");
         }
         final StanzaEntryId idEntry = (StanzaEntryId) idEntries.get(0);
-        final ImmutableTermId sourceId = registeredTermId(idEntry.getId());
+        final TermId sourceId = registeredTermId(idEntry.getId());
 
         // Register term ID regardless of being obsolete.
         allTermIds.add(sourceId);
@@ -321,7 +321,7 @@ public final class OboImmutableOntologyLoader {
                   stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
               if (altIdEntries != null) {
                 for (StanzaEntry altIdEntry : altIdEntries) {
-                  final ImmutableTermId termId =
+                  final TermId termId =
                       registeredTermId(((StanzaEntryAltId) altIdEntry).getAltId());
                   obsoleteTerms.put(termId, newTerm);
                 }
@@ -334,7 +334,7 @@ public final class OboImmutableOntologyLoader {
 
         // Construct TermId objects for all alternative ids.
         final List<StanzaEntry> altIdEntries = stanza.getEntryByType().get(StanzaEntryType.ALT_ID);
-        final List<ImmutableTermId> altTermIds = new ArrayList<>();
+        final List<TermId> altTermIds = new ArrayList<>();
         if (altIdEntries != null) {
           for (StanzaEntry e : altIdEntries) {
             altTermIds.add(registeredTermId(((StanzaEntryAltId) e).getAltId()));
@@ -347,7 +347,7 @@ public final class OboImmutableOntologyLoader {
         if (entries != null) {
           for (StanzaEntry e : entries) {
             StanzaEntryIsA isA = (StanzaEntryIsA) e;
-            final ImmutableTermId destId = registeredTermId(isA.getId());
+            final TermId destId = registeredTermId(isA.getId());
             final BundledIsARelation bundledRelation =
                 new BundledIsARelation(
                     destId, ontologyEntryFactory.constructrelationship(stanza, isA));
@@ -370,7 +370,7 @@ public final class OboImmutableOntologyLoader {
         terms.put(sourceId, term);
 
         // Put into map from alternative IDs as well.
-        for (ImmutableTermId altTermId : altTermIds) {
+        for (TermId altTermId : altTermIds) {
           terms.put(altTermId, term);
         }
       }
@@ -382,8 +382,8 @@ public final class OboImmutableOntologyLoader {
      * @param termIdStr String representation of term Id.
      * @return {@link TermId} present in {@link #termIds}.
      */
-    private ImmutableTermId registeredTermId(String termIdStr) {
-      ImmutableTermId tmpId = termIds.get(termIdStr);
+    private TermId registeredTermId(String termIdStr) {
+      TermId tmpId = termIds.get(termIdStr);
       if (tmpId != null) {
         return tmpId;
       }
@@ -402,7 +402,7 @@ public final class OboImmutableOntologyLoader {
         prefixes.put(prefixStr, tmpPrefix);
       }
 
-      tmpId = new ImmutableTermId(tmpPrefix, localIdStr);
+      tmpId = new TermId(tmpPrefix, localIdStr);
       termIds.put(termIdStr, tmpId);
 
       // Make sure to record the first term Id.
@@ -424,7 +424,7 @@ public final class OboImmutableOntologyLoader {
     }
 
     /** @return Multimap-like encoding of directed terms. */
-    public Map<ImmutableTermId, List<BundledIsARelation>> getIsATermIdPairs() {
+    public Map<TermId, List<BundledIsARelation>> getIsATermIdPairs() {
       return isATermIdPairs;
     }
 
@@ -439,31 +439,31 @@ public final class OboImmutableOntologyLoader {
     }
 
     /** @return Mapping from string term Id to term Id. */
-    public SortedMap<String, ImmutableTermId> getTermIds() {
+    public SortedMap<String, TermId> getTermIds() {
       return termIds;
     }
 
     /** @return Mapping from immutable term Id to term with non-obsolete terms. */
-    public Map<ImmutableTermId, Term> getTerms() {
+    public Map<TermId, Term> getTerms() {
       return terms;
     }
 
     /** @return Mapping from immutable term Id to term with obsolete terms. */
-    public Map<ImmutableTermId, Term> getObsoleteTerms() {
+    public Map<TermId, Term> getObsoleteTerms() {
       return obsoleteTerms;
     }
 
     /** @return The root candidate stanza mapping. */
-    public Map<ImmutableTermId, Stanza> getRootCandidateStanzas() {
+    public Map<TermId, Stanza> getRootCandidateStanzas() {
       return rootCandidateStanzas;
     }
   }
 
-  /** Bundle an ImmutableTermId and a term relation for the is-a term pairs. */
+  /** Bundle an TermId and a term relation for the is-a term pairs. */
   public class BundledIsARelation {
 
     /** Destination of is-a relation. */
-    private final ImmutableTermId dest;
+    private final TermId dest;
 
     /** The bundled relation. */
     private final Relationship relation;
@@ -474,13 +474,13 @@ public final class OboImmutableOntologyLoader {
      * @param dest Destination term Id.
      * @param relation Relation.
      */
-    public BundledIsARelation(ImmutableTermId dest, Relationship relation) {
+    public BundledIsARelation(TermId dest, Relationship relation) {
       this.dest = dest;
       this.relation = relation;
     }
 
     /** @return The destination term Id. */
-    public ImmutableTermId getDest() {
+    public TermId getDest() {
       return dest;
     }
 

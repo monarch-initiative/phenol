@@ -32,14 +32,14 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
         });
 
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=VO], id=0000002], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000004], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000005], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000006], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000007]]",
+        "[TermId [prefix=TermPrefix [value=VO], id=0000002], TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000005], TermId [prefix=TermPrefix [value=VO], id=0000006], TermId [prefix=TermPrefix [value=VO], id=0000007]]",
         children.toString());
   }
 
   @Test
   public void testChildrenOf() {
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=VO], id=0000004], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000005], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000006], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000007], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000002]]",
+        "[TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000005], TermId [prefix=TermPrefix [value=VO], id=0000006], TermId [prefix=TermPrefix [value=VO], id=0000007], TermId [prefix=TermPrefix [value=VO], id=0000002]]",
         OntologyTerms.childrenOf(idRootVegetable, ontology).toString());
   }
 
@@ -60,14 +60,14 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
         });
 
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=VO], id=0000001], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000002], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000004], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000007]]",
+        "[TermId [prefix=TermPrefix [value=VO], id=0000001], TermId [prefix=TermPrefix [value=VO], id=0000002], TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000007]]",
         parents.toString());
   }
 
   @Test
   public void testParentsOf() {
     assertEquals(
-        "[ImmutableTermId [prefix=TermPrefix [value=VO], id=0000004], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000007], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000001], ImmutableTermId [prefix=TermPrefix [value=VO], id=0000002]]",
+        "[TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000007], TermId [prefix=TermPrefix [value=VO], id=0000001], TermId [prefix=TermPrefix [value=VO], id=0000002]]",
         OntologyTerms.parentsOf(idBlueCarrot, ontology).toString());
   }
 }

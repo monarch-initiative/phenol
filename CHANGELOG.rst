@@ -2,6 +2,12 @@
 Changelog
 =========
 
+
+------
+v1.0.0
+------
+- refactored TermId to remove superfluous interface and renamed ImmutableTermId to TermId
+
 ------
 v1.0.0
 ------

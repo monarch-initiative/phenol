@@ -36,12 +36,12 @@ public class OwlImmutableOntologyLoaderTest {
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
     TermPrefix termPrefix = new TermPrefix("NCIT");
-    ImmutableTermId t1 = new ImmutableTermId(termPrefix, "C2919");
-    ImmutableTermId t2 = new ImmutableTermId(termPrefix, "C2852");
-    ImmutableTermId t3 = new ImmutableTermId(termPrefix, "C48596");
-    ImmutableTermId t4 = new ImmutableTermId(termPrefix, "C60312");
-    ImmutableTermId t5 = new ImmutableTermId(termPrefix, "C116977");
-    ImmutableTermId t6 = new ImmutableTermId(termPrefix, "C126659");
+    TermId t1 = new TermId(termPrefix, "C2919");
+    TermId t2 = new TermId(termPrefix, "C2852");
+    TermId t3 = new TermId(termPrefix, "C48596");
+    TermId t4 = new TermId(termPrefix, "C60312");
+    TermId t5 = new TermId(termPrefix, "C116977");
+    TermId t6 = new TermId(termPrefix, "C126659");
 
     assertTrue(graph.vertexSet().contains(t1));
     assertTrue(graph.vertexSet().contains(t2));

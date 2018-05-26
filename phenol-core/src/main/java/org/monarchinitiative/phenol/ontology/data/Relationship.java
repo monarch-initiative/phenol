@@ -29,7 +29,7 @@ public class Relationship {
    * @param relationshipType The relation's type.
    */
   public Relationship(
-      TermId source, TermId dest, int id, RelationshipType relationshipType) {
+    TermId source, TermId dest, int id, RelationshipType relationshipType) {
     this.source = source;
     this.target = dest;
     this.id = id;

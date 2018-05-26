@@ -92,7 +92,7 @@ public final class OwlImmutableOntologyLoader {
       String nodeId = node.getId();
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (nodeCurie.isPresent() != true) continue;
-      ImmutableTermId termId = ImmutableTermId.constructWithPrefix(nodeCurie.get());
+      TermId termId = TermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
       TermPrefix oioPrefix = new TermPrefix("OIO");
       TermPrefix iaoPrefix = new TermPrefix("IAO");
@@ -136,8 +136,8 @@ public final class OwlImmutableOntologyLoader {
 
       String subCurieStr = subCurie.get();
       String objCurieStr = objCurie.get();
-      ImmutableTermId subTermId = ImmutableTermId.constructWithPrefix(subCurieStr);
-      ImmutableTermId objTermId = ImmutableTermId.constructWithPrefix(objCurieStr);
+      TermId subTermId = TermId.constructWithPrefix(subCurieStr);
+      TermId objTermId = TermId.constructWithPrefix(objCurieStr);
 
       // For each edge and connected nodes,
       // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
@@ -169,11 +169,11 @@ public final class OwlImmutableOntologyLoader {
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
     TermId rootId;
     if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
-      rootId = ImmutableTermId.constructWithPrefix("owl:Thing");
+      rootId = TermId.constructWithPrefix("owl:Thing");
     } else {
       List<String> rootCandList = new ArrayList<>(rootCandSet);
       String rootCandCurie = curieUtil.getCurie(rootCandList.get(0)).get();
-      rootId = ImmutableTermId.constructWithPrefix(rootCandCurie);
+      rootId = TermId.constructWithPrefix(rootCandCurie);
     }
 
     return new ImmutableOntology(

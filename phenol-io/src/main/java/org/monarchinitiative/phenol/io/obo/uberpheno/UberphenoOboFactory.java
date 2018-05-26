@@ -47,13 +47,13 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
    * <p>All occuring termIds must be previously registered into this map before calling any of this
    * object's functions. This happens in {@link OboImmutableOntologyLoader}.
    */
-  private SortedMap<String, ImmutableTermId> termIds = null;
+  private SortedMap<String, TermId> termIds = null;
 
   /** Id of next relation. */
   private int nextRelationId = 1;
 
   @Override
-  public void setTermIds(SortedMap<String, ImmutableTermId> termIds) {
+  public void setTermIds(SortedMap<String, TermId> termIds) {
     this.termIds = termIds;
   }
 
