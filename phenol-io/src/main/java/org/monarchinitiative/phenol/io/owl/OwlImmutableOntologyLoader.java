@@ -102,13 +102,15 @@ public final class OwlImmutableOntologyLoader {
         depreTermIdNodes.add(termId);
       } else {
         nonDepreTermIdNodes.add(termId);
+        phenolGraph.addVertex(termId);
+        terms.put(termId, term);
       }
 
-      phenolGraph.addVertex(termId);
-      terms.put(termId, term);
+
+
     }
 
-    termIdNodes.addAll(depreTermIdNodes);
+    //termIdNodes.addAll(depreTermIdNodes);
     termIdNodes.addAll(nonDepreTermIdNodes);
 
     List<Edge> gEdges = obograph.getEdges();

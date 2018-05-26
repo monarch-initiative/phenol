@@ -53,7 +53,7 @@ public class MpoOboParserTest {
       System.out.println(t.toString());
     }
     // TODO should be 4 but we are getting extraneous terms!!!!!
-   // assertEquals(4,ontology.countAllTerms());
+   //assertEquals(4,ontology.countAllTerms());
     assertTrue(true);
   }
 
