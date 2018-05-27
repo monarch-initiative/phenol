@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,8 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
+
+import javax.swing.text.html.Option;
 
 /**
  * Testcases that verify whether obo-formatted MPO ontology is properly parsed and loaded.
@@ -77,6 +80,28 @@ public class MpoOboParserTest {
     assertTrue(sxref.isPmid());
     assertEquals("PMID:9778510",sxref.getCurie());
 
+    List<SimpleXref> allXrefs = term.getDatabaseXrefs();
+    assertEquals(2,allXrefs.size());
+    Optional<SimpleXref> isbn = allXrefs.stream().filter(SimpleXref::isIsbn).findAny();
+    assertTrue(isbn.isPresent());
+    sxref=isbn.get();
+    assertEquals("0-683-40008-8",sxref.getId());
+  }
+
+  @Test
+  public void testMgiXref() {
+    //id: MP:0002075
+    //name: abnormal coat/hair pigmentation
+    //alt_id: MP:0000368
+    //def: "irregular or unusual pigmentation of the hair" [MGI:csmith]
+    TermId tid = TermId.constructWithPrefix("MP:0002075");
+    Term term = ontology.getTermMap().get(tid);
+    List<SimpleXref> allXrefs = term.getDatabaseXrefs();
+    assertEquals(1,allXrefs.size());
+    SimpleXref sxref = allXrefs.get(0);
+    assertTrue(sxref.isMgi());
+    assertEquals("MGI:csmith",sxref.getCurie());
+    assertEquals("csmith",sxref.getId());
   }
 
 

@@ -47,8 +47,16 @@ public class SimpleXref {
     return prefix.equals(Prefix.PMID);
   }
 
+  public boolean isIsbn() {
+    return prefix.equals(Prefix.ISBN);
+  }
+
   public boolean isHpo() {
     return prefix.equals(Prefix.HPO);
+  }
+
+  public boolean isMgi() {
+    return prefix.equals(Prefix.MGI);
   }
 
   public boolean isValid() {
@@ -59,6 +67,8 @@ public class SimpleXref {
     switch (prefix) {
       case HPO: return "HPO:"+id;
       case PMID: return "PMID:"+id;
+      case ISBN: return "ISBN:"+id;
+      case MGI: return "MGI:"+id;
       case UNKNOWN:
       default:
         return "?:"+id;

@@ -163,10 +163,7 @@ public class OntologyAlgorithm {
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> anccset = new ImmutableSet.Builder<>();
     if (includeOriginalTerm) anccset.add(childTermId);
-    Iterator<? extends IdLabeledEdge> it =
-        ontology.getGraph().outgoingEdgesOf(childTermId).iterator();
-    while (it.hasNext()) {
-      IdLabeledEdge edge =  it.next();
+    for (IdLabeledEdge edge : ontology.getGraph().outgoingEdgesOf(childTermId)) {
       TermId destId = (TermId) edge.getTarget();
       anccset.add(destId);
     }

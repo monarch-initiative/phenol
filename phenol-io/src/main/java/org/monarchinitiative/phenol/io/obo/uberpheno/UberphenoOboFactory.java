@@ -79,11 +79,11 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
     }
 
     final StanzaEntryDef defEntry =
-        this.<StanzaEntryDef>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.DEF);
     final String definition = (defEntry == null) ? null : defEntry.getText();
 
     final StanzaEntryComment commentEntry =
-        this.<StanzaEntryComment>getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
+        this.getCardinalityZeroOrOneEntry(stanza, StanzaEntryType.COMMENT);
     final String comment = (commentEntry == null) ? null : commentEntry.getText();
 
     final List<String> subsets;

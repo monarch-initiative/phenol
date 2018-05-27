@@ -7,10 +7,7 @@ manual/build/
 *~
 # Eclipse .gitignore --------------------------------------------------------
 
-.classpath
 .project
-.settings/
-
 # Java .gitignore -----------------------------------------------------------
 
 # Compiled class file
@@ -18,28 +15,18 @@ manual/build/
 *.log
 
 # BlueJ files
-*.ctxt
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
-*.war
 *.ear
-*.tar.gz
 *.rar
 
 # Javadoc-files
-ontolib-*/*.*/**/*.html
-ontolib-*/*.*/**/*.js
-ontolib-*/*.*/**/*.css
-ontolib-*/*.*/**/package-list
-
 # Maven .gitignore ----------------------------------------------------------
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -51,9 +38,7 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
-/ontolib-io/ontolib-io.iml
 /phenol-core/ontolib-core.iml
-/ontolib-cli/ontolib-cli.iml
 .idea/
 BLA
 /phenol-io/phenol-io.iml
@@ -62,4 +47,3 @@ phenol-core/src/test/java/com/
 
 *.checkstyle
 /phenol-core/phenol-core.iml
-/phenol-cli/ontolib-cli.iml

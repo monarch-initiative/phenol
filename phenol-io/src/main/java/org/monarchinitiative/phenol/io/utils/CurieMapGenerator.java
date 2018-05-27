@@ -23,7 +23,7 @@ public class CurieMapGenerator {
     try {
       InputStream inputStream = CurieMapGenerator.class.getClassLoader().getResourceAsStream("curie_map.yaml");
       Yaml yaml = new Yaml();
-      Map<String, String> curieMap = (Map<String, String>) yaml.load(inputStream);
+      Map<String, String> curieMap = yaml.load(inputStream);
       return curieMap;
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);

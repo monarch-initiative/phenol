@@ -11,7 +11,6 @@ public interface OntologyOwlParser<O extends Ontology> {
    * Parse and build specialized {@link Ontology}.
    *
    * @return The loaded {@link Ontology}.
-   * @throws IOException In case of problem with reading from the file.
    */
   O parse();
 
