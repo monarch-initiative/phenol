@@ -39,7 +39,7 @@ import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 public final class OboOntologyLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboOntologyLoader.class);
-  private static CurieUtil curieUtil;
+  private final CurieUtil curieUtil;
   private final File file;
   /** Term ids of non-obsolete Terms. */
   private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();

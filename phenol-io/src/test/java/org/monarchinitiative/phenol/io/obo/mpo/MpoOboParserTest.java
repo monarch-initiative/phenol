@@ -29,7 +29,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 
-import javax.swing.text.html.Option;
 
 /**
  * Testcases that verify whether obo-formatted MPO ontology is properly parsed and loaded.
