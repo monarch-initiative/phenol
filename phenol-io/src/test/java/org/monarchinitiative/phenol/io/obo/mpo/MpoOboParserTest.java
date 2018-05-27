@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import org.monarchinitiative.phenol.ontology.data.SimpleXref;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -38,29 +40,42 @@ public class MpoOboParserTest {
 
   private File mpoHeadFile;
 
+  private Ontology ontology;
+
   @Before
   public void setUp() throws IOException {
     mpoHeadFile = tmpFolder.newFile("mp_head.obo");
     ResourceUtils.copyResourceToFile("/mp_head.obo", mpoHeadFile);
+    MpOboParser parser = new MpOboParser(mpoHeadFile);
+    this.ontology = parser.parse();
   }
 
   @Test
-  public void testNewParser() {
-    MpOboParser parser = new MpOboParser(mpoHeadFile);
-    Ontology ontology = parser.parse();
-    for (Term t : ontology.getTerms()) {
-      System.out.println(t.toString());
-    }
+  public void testNumberOfTermsParsed() {
+    // mp_head.obo has four valid MP terms
    assertEquals(4,ontology.countNonObsoleteTerms());
   }
 
   @Test
   public void testFindPrimaryId() {
+    // MP:0000368 is an alt_id of MP:0002075
     TermId altId = TermId.constructWithPrefix("MP:0000368");
     TermId primaryId = TermId.constructWithPrefix("MP:0002075");
-    MpOboParser parser = new MpOboParser(mpoHeadFile);
-    Ontology ontology = parser.parse();
     assertEquals(primaryId,ontology.getPrimaryTermId(altId));
+  }
+
+  @Test
+  public void testPmidDatabaseXref() {
+    //id: MP:0001188
+    //name: hyperpigmentation
+    //def: "excess of pigment in any or all tissues or a part of a tissue" [ISBN:0-683-40008-8, PMID:9778510]
+    TermId tid = TermId.constructWithPrefix("MP:0001188");
+    Term term = ontology.getTermMap().get(tid);
+    List<SimpleXref> pmidXrefs = term.getPmidXrefs();
+    assertEquals(1,pmidXrefs.size());
+    SimpleXref sxref = pmidXrefs.get(0);
+    assertTrue(sxref.isPmid());
+    assertEquals("PMID:9778510",sxref.getCurie());
 
   }
 

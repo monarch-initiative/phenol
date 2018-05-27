@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
@@ -168,6 +169,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
         altTermIds,
         name,
         definition,
+      ImmutableList.of(),
         comment,
         subsets,
         synonyms,

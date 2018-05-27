@@ -44,9 +44,22 @@ public class Owl2OboTermFactory
 
     // 1. definition
     DefinitionPropertyValue definition = meta.getDefinition();
+    List<SimpleXref> database_cross_ref_list=new ArrayList<>();
     if (definition != null) {
       genericTerm.setDefinition(definition.getVal());
       List<String> xrefs = definition.getXrefs();
+      for (String x : xrefs) {
+        SimpleXref sxref = new SimpleXref(x);
+        if (sxref.isValid()) {
+          database_cross_ref_list.add(sxref);
+        } else {
+          System.err.println("[ERROR] invalid database cross ref: " + x);
+        }
+      }
+      genericTerm.setDatabaseXrefs(database_cross_ref_list);
+    } else {
+      genericTerm.setDefinition("");
+      genericTerm.setDatabaseXrefs(ImmutableList.of());
     }
 
 

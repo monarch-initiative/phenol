@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
@@ -169,6 +170,7 @@ class GoOboFactory implements OboOntologyEntryFactory {
         altTermIds,
         name,
         definition,
+      ImmutableList.of(),
         comment,
         subsets,
         synonyms,

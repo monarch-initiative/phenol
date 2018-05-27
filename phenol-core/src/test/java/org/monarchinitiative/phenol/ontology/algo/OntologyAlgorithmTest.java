@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
@@ -63,6 +64,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term1",
             "some definition 1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -77,6 +79,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term2",
             "some definition 2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -91,6 +94,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term3",
             "some definition 3",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -105,6 +109,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term4",
             "some definition 4",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -119,6 +124,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term5",
             "some definition 5",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),

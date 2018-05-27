@@ -2,12 +2,14 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/** Representation of a term in common (forked from GoTerm) */
+/** Representation of an OBO term (forked and modified from GoTerm)
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ */
 public class Term  {
-  private static final long serialVersionUID = 8382263493662721530L;
-
-  /** The Common term's Id. */
+  private static final long serialVersionUID = 2L;
+  /** The term's Id. */
   private TermId id;
 
   /** Alternative term Ids. */
@@ -19,7 +21,7 @@ public class Term  {
   /** The term's definition. */
   private String definition;
 
-  //private
+  private List<SimpleXref> databaseXrefs;
 
   /** The term's comment string. */
   private String comment;
@@ -61,6 +63,7 @@ public class Term  {
       List<TermId> altTermIds,
       String name,
       String definition,
+      List<SimpleXref> databasexrefs,
       String comment,
       List<String> subsets,
       List<TermSynonym> synonyms,
@@ -72,6 +75,7 @@ public class Term  {
     this.altTermIds = altTermIds;
     this.name = name;
     this.definition = definition;
+    this.databaseXrefs=databasexrefs;
     this.comment = comment;
     this.subsets = subsets;
     this.synonyms = synonyms;
@@ -97,6 +101,12 @@ public class Term  {
 
   public String getDefinition() {
     return definition;
+  }
+
+  public List<SimpleXref> getDatabaseXrefs() { return this.databaseXrefs; }
+  /** Get all of the pub med references attached to the definition of this term */
+  public List<SimpleXref> getPmidXrefs() {
+    return databaseXrefs.stream().filter(SimpleXref::isPmid).collect(Collectors.toList());
   }
 
   public String getComment() {
@@ -170,6 +180,13 @@ public class Term  {
   public void setXrefs(List<Dbxref> xrefs) {
     this.xrefs = xrefs;
   }
+  /** Set the PMID and HP database cross refs for the definition of the term. */
+  public void setDatabaseXrefs(List<SimpleXref> databaseXrefs) {
+    this.databaseXrefs = databaseXrefs;
+  }
+
+
+
 
   @Override
   public String toString() {
