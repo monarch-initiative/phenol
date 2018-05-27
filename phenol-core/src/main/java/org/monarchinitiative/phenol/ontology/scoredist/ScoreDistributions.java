@@ -27,7 +27,7 @@ public final class ScoreDistributions {
     if (distributions.isEmpty()) {
       throw new CannotMergeScoreDistributions("Cannot merge zero ScoreDistributions objects.");
     }
-    if (distributions.stream().map(d -> d.getNumTerms()).collect(Collectors.toSet()).size() != 1) {
+    if (distributions.stream().map(ScoreDistribution::getNumTerms).collect(Collectors.toSet()).size() != 1) {
       throw new CannotMergeScoreDistributions("Different numbers of terms used for precomputation");
     }
 

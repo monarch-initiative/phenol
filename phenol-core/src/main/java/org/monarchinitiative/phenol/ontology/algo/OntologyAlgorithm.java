@@ -75,10 +75,7 @@ public class OntologyAlgorithm {
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> kids = new ImmutableSet.Builder<>();
     if (includeOriginalTerm) kids.add(parentTermId);
-    Iterator<? extends IdLabeledEdge> it =
-        ontology.getGraph().incomingEdgesOf(parentTermId).iterator();
-    while (it.hasNext()) {
-      IdLabeledEdge edge = it.next();
+    for (IdLabeledEdge edge : ontology.getGraph().incomingEdgesOf(parentTermId)) {
       TermId sourceId = (TermId) edge.getSource();
       kids.add(sourceId);
     }
@@ -145,7 +142,7 @@ public class OntologyAlgorithm {
       TermId tid = stack.pop();
       descset.add(tid);
       Set<TermId> directChildrenSet = getChildTerms(ontology, tid, false);
-      directChildrenSet.forEach(t -> stack.push(t));
+      directChildrenSet.forEach(stack::push);
     }
     return descset.build();
   }

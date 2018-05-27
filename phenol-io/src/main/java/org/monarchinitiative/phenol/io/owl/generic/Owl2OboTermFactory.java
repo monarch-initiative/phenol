@@ -1,10 +1,12 @@
 package org.monarchinitiative.phenol.io.owl.generic;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
+import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.model.meta.XrefPropertyValue;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -21,10 +23,11 @@ import org.monarchinitiative.phenol.io.owl.SynonymMapper;
  * Obographs's Nodes.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class GenericOwlFactory
+public class Owl2OboTermFactory
     implements OwlOntologyEntryFactory {
-  private static final Logger LOGGER = LoggerFactory.getLogger(GenericOwlFactory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Owl2OboTermFactory.class);
 
   @Override
   public Term constructTerm(Node node, TermId termId) {
@@ -78,6 +81,18 @@ public class GenericOwlFactory
       LOGGER.error(e.getMessage());
     }
     genericTerm.setObsolete(isObsolete);
+
+    // 7. altIds
+    List<TermId> altIdList=new ArrayList<>();
+    for (BasicPropertyValue bpv: meta.getBasicPropertyValues() ) {
+     // System.err.println("bpv : " + bpv.getPred() +"--"+bpv.getVal());
+      if ("http://www.geneontology.org/formats/oboInOwl#hasAlternativeId".equals(bpv.getPred())){
+        String altId = bpv.getVal();
+        //System.err.println("bpv ALT ID : " + altId);
+        altIdList.add(TermId.constructWithPrefix(altId));
+      }
+    }
+    genericTerm.setAltTermIds(altIdList);
 
     // 7. owl:equivalentClass entries?
 

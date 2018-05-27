@@ -13,7 +13,7 @@ public interface OntologyOwlParser<O extends Ontology> {
    * @return The loaded {@link Ontology}.
    * @throws IOException In case of problem with reading from the file.
    */
-  O parse() throws IOException;
+  O parse();
 
   /** @return The OWL {@link File} that is loaded. */
   File getOwlFile();

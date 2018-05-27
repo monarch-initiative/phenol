@@ -88,7 +88,7 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
   }
 
   @Override
-  public HpoGeneAnnotation next() throws IOException, TermAnnotationParserException {
+  public HpoGeneAnnotation next() throws IOException {
     final String[] arr = nextLine.split("\t");
     final int geneId = Integer.parseInt(arr[0]);
     final String geneSymbol = arr[1];

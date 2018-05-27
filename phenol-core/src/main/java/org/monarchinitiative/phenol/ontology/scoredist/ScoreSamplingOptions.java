@@ -186,7 +186,7 @@ public final class ScoreSamplingOptions implements Serializable, Cloneable {
   }
 
   @Override
-  public Object clone() throws CloneNotSupportedException {
+  public Object clone() {
     return new ScoreSamplingOptions(
         numThreads, minObjectId, maxObjectId, minNumTerms, maxNumTerms, seed, numIterations);
   }

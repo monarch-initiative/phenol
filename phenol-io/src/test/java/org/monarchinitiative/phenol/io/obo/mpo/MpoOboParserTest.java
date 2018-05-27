@@ -22,7 +22,6 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -52,10 +51,20 @@ public class MpoOboParserTest {
     for (Term t : ontology.getTerms()) {
       System.out.println(t.toString());
     }
-    // TODO should be 4 but we are getting extraneous terms!!!!!
-   //assertEquals(4,ontology.countAllTerms());
-    assertTrue(true);
+   assertEquals(4,ontology.countNonObsoleteTerms());
   }
+
+  @Test
+  public void testFindPrimaryId() {
+    TermId altId = TermId.constructWithPrefix("MP:0000368");
+    TermId primaryId = TermId.constructWithPrefix("MP:0002075");
+    MpOboParser parser = new MpOboParser(mpoHeadFile);
+    Ontology ontology = parser.parse();
+    assertEquals(primaryId,ontology.getPrimaryTermId(altId));
+
+  }
+
+
 
   /**
    * Test that we get all four terms from {@code mp_head.obo}.

@@ -4,9 +4,10 @@ Changelog
 
 
 ------
-v1.0.0
+v1.0.2
 ------
 - refactored TermId to remove superfluous interface and renamed ImmutableTermId to TermId
+- adding support for alt term ids to Owl2OboTermFactory (class renamed from GenericOwlFactory)
 
 ------
 v1.0.0

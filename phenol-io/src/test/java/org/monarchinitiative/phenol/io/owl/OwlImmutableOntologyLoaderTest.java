@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
 
@@ -28,9 +27,7 @@ public class OwlImmutableOntologyLoaderTest {
     final OwlImmutableOntologyLoader loader =
         new OwlImmutableOntologyLoader(
             new File("src/test/resources/ncit_module.owl"));
-
-    final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
@@ -87,8 +84,7 @@ public class OwlImmutableOntologyLoaderTest {
         new OwlImmutableOntologyLoader(
             new File("src/test/resources/mondo_module.owl"));
 
-    final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology ontology = loader.load(cof);
+    final ImmutableOntology ontology = loader.load();
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",

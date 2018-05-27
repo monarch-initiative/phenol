@@ -397,7 +397,7 @@ public final class OboImmutableOntologyLoader {
       final String localIdStr = termIdStr.substring(pos + 1);
       TermPrefix tmpPrefix = prefixes.get(prefixStr);
 
-      if (tmpPrefix == null || prefixes.containsKey(tmpPrefix.getValue()) != true) {
+      if (tmpPrefix == null || ! prefixes.containsKey(tmpPrefix.getValue()) ) {
         tmpPrefix = new TermPrefix(prefixStr);
         prefixes.put(prefixStr, tmpPrefix);
       }
