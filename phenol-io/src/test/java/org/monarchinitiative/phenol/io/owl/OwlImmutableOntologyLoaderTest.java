@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,9 +26,9 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
+    Path ncitPath = Paths.get("src","test","resources","ncit_module.owl");
     final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(
-            new File("src/test/resources/ncit_module.owl"));
+        new OwlImmutableOntologyLoader(ncitPath.toFile());
     final ImmutableOntology ontology = loader.load();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
@@ -80,10 +82,9 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testMONDOLoad() throws Exception {
+    Path mondoPath = Paths.get("src","test","resources","mondo_module.owl");
     final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(
-            new File("src/test/resources/mondo_module.owl"));
-
+        new OwlImmutableOntologyLoader(mondoPath.toFile());
     final ImmutableOntology ontology = loader.load();
     final List<String> xrefs =
         Arrays.asList(

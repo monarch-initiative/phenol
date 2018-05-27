@@ -62,11 +62,8 @@ public final class SimilarityScoreSampling {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
-    try {
-      this.options = (ScoreSamplingOptions) options.clone();
-    } catch (CloneNotSupportedException e) {
-      throw new RuntimeException("This cannot happen.");
-    }
+    this.options = (ScoreSamplingOptions) options.clone();
+
   }
 
   /**

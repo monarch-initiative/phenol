@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
@@ -43,7 +44,11 @@ public class Owl2OboTermFactory
 
     // 1. definition
     DefinitionPropertyValue definition = meta.getDefinition();
-    if (definition != null) genericTerm.setDefinition(definition.getVal());
+    if (definition != null) {
+      genericTerm.setDefinition(definition.getVal());
+      List<String> xrefs = definition.getXrefs();
+    }
+
 
     // 2. comments
     List<String> comments = meta.getComments();
@@ -84,28 +89,19 @@ public class Owl2OboTermFactory
 
     // 7. altIds
     List<TermId> altIdList=new ArrayList<>();
-    for (BasicPropertyValue bpv: meta.getBasicPropertyValues() ) {
-     // System.err.println("bpv : " + bpv.getPred() +"--"+bpv.getVal());
-      if ("http://www.geneontology.org/formats/oboInOwl#hasAlternativeId".equals(bpv.getPred())){
-        String altId = bpv.getVal();
-        //System.err.println("bpv ALT ID : " + altId);
-        altIdList.add(TermId.constructWithPrefix(altId));
-      }
-    }
-    genericTerm.setAltTermIds(altIdList);
-
-    // 7. owl:equivalentClass entries?
-
-    // Additional properties/annotations can be further mapped by iterating BasicPropertyValue.
-    /*
     List<BasicPropertyValue> bpvs = meta.getBasicPropertyValues();
-    if (bpvs != null) {
-    	for (BasicPropertyValue bpv: bpvs) {
-    		System.out.println("Pred: " + bpv.getPred());
-    		System.out.println("Val: " + bpv.getVal());
-    	}
+    if (bpvs!=null) {
+      for (BasicPropertyValue bpv : bpvs) {
+        if ("http://www.geneontology.org/formats/oboInOwl#hasAlternativeId".equals(bpv.getPred())) {
+          String altId = bpv.getVal();
+          altIdList.add(TermId.constructWithPrefix(altId));
+        }
+      }
+      genericTerm.setAltTermIds(altIdList);
+    } else {
+      genericTerm.setAltTermIds(ImmutableList.of());
     }
-     */
+
     return genericTerm;
   }
 

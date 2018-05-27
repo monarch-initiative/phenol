@@ -9,12 +9,12 @@ import com.google.common.collect.Lists;
 
 public class ImmutableTermSynonymTest {
 
-  private ImmutableTermSynonym termSynonym;
+  private TermSynonym termSynonym;
 
   @Before
   public void setUp() {
     termSynonym =
-        new ImmutableTermSynonym(
+        new TermSynonym(
             "synonym",
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
@@ -33,7 +33,7 @@ public class ImmutableTermSynonymTest {
         "[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]",
         termSynonym.getTermXrefs().toString());
     assertEquals(
-        "ImmutableTermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]]",
+        "TermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]]",
         termSynonym.toString());
   }
 }

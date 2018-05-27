@@ -122,7 +122,7 @@ class UberphenoOboFactory implements OboOntologyEntryFactory {
                                         termIds.get(xref.getName()), xref.getDescription()))
                             .collect(Collectors.toList());
 
-                    return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
+                    return new TermSynonym(value, scope, synonymTypeName, termXrefs);
                   })
               .collect(Collectors.toList());
     }

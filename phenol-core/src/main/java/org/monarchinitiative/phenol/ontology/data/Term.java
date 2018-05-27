@@ -19,6 +19,8 @@ public class Term  {
   /** The term's definition. */
   private String definition;
 
+  //private
+
   /** The term's comment string. */
   private String comment;
 

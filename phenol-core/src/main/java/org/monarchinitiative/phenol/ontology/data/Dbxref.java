@@ -50,7 +50,7 @@ public class Dbxref {
 
   @Override
   public String toString() {
-    return "ImmutableDbxref [name="
+    return "Dbxref [name="
         + name
         + ", description="
         + description
