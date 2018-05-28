@@ -12,7 +12,7 @@ import org.monarchinitiative.phenol.io.obo.go.GoOboParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
 import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoOboParser;
+import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoOboParserOLD;
 import org.monarchinitiative.phenol.io.obo.upheno.UphenoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.upheno.UphenoOboParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -41,7 +41,7 @@ public final class OntologyParserFactory {
       case HPO:
         return new HpoOboParser(oboFile);
       case UBERPHENO:
-        return new UberphenoOboParser(oboFile);
+        return new UberphenoOboParserOLD(oboFile);
       case UPHENO:
         return new UphenoOboParser(oboFile);
       default:

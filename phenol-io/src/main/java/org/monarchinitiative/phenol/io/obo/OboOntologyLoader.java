@@ -12,6 +12,7 @@ import java.util.SortedMap;
 
 import com.google.common.collect.*;
 import org.geneontology.obographs.model.*;
+import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -110,15 +111,14 @@ public final class OboOntologyLoader {
 
     // Mapping nodes in obographs to termIds in phenol
     for (Node node : gNodes) {
+      if (! node.getType().equals(Node.RDFTYPES.CLASS)) {
+        continue; // only take classes-- otherwise, we nay get some OIO and IAO entities
+      }
       String nodeId = node.getId();
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (! nodeCurie.isPresent() ) continue;
       TermId termId = TermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
-      TermPrefix oioPrefix = new TermPrefix("OIO");
-      TermPrefix iaoPrefix = new TermPrefix("IAO");
-      if (term.getId().getPrefix().equals(oioPrefix) || term.getId().getPrefix().equals(iaoPrefix)) continue;
-
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
       } else {
@@ -187,7 +187,17 @@ public final class OboOntologyLoader {
     // Metadata about the ontology
     Meta gMeta = obograph.getMeta();
     Map<String, String> metaInfo = new HashMap<>();
-    metaInfo.put("version", gMeta.getVersion());
+    String version = gMeta.getVersion()!=null ? gMeta.getVersion() : "";
+    metaInfo.put("data-version", version);
+    String date = "";
+    if (gMeta.getBasicPropertyValues()!=null) {
+      for (BasicPropertyValue bpv: gMeta.getBasicPropertyValues()) {
+        if (bpv.getPred().equalsIgnoreCase("date")) {
+          date=bpv.getVal().trim();
+          metaInfo.put("date",date);
+        }
+      }
+    }
 
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.

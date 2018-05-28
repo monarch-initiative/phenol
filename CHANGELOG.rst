@@ -2,6 +2,11 @@
 Changelog
 =========
 
+------
+v1.0.3
+------
+- refactored MP parsing to use new OWLAPI-based parser
+- upgraded to obographs v0.1.1
 
 ------
 v1.0.2

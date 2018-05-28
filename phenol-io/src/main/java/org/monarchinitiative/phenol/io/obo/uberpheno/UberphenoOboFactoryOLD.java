@@ -1,4 +1,12 @@
-package org.monarchinitiative.phenol.io.obo.mpo;
+package org.monarchinitiative.phenol.io.obo.uberpheno;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -25,21 +33,14 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntryType;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryUnionOf;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
 import com.google.common.collect.Lists;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link Term} and {@link Relationship} objects from {@link
- * Stanza} objects for usage in {@link OboOntologyEntryFactory}.
+ * Factory class for constructing {@link Term} and {@link Relationship} objects
+ * from {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class MpoOboFactoryOLD implements OboOntologyEntryFactory {
+class UberphenoOboFactoryOLD implements OboOntologyEntryFactory {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -142,7 +143,7 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
-    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     Date creationDate = null;
     if (creationDateStr != null) {
       try {
@@ -235,16 +236,19 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new Relationship(sourceId, destId, nextRelationId++, RelationshipType.IS_A);
+    return new Relationship(
+        sourceId, destId, nextRelationId++, RelationshipType.IS_A);
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
@@ -255,7 +259,8 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 }
