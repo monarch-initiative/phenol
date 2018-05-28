@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
@@ -29,21 +30,21 @@ public class OntologyAlgorithmTest {
   private ImmutableMap<Integer, Relationship> relationMap;
   private ImmutableOntology ontology;
 
-  private ImmutableTermId id1;
-  private ImmutableTermId id2;
-  private ImmutableTermId id3;
-  private ImmutableTermId id4;
-  private ImmutableTermId id5;
+  private TermId id1;
+  private TermId id2;
+  private TermId id3;
+  private TermId id4;
+  private TermId id5;
 
   @Before
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    id1 = ImmutableTermId.constructWithPrefix("HP:0000001");
-    id2 = ImmutableTermId.constructWithPrefix("HP:0000002");
-    id3 = ImmutableTermId.constructWithPrefix("HP:0000003");
-    id4 = ImmutableTermId.constructWithPrefix("HP:0000004");
-    id5 = ImmutableTermId.constructWithPrefix("HP:0000005");
+    id1 = TermId.constructWithPrefix("HP:0000001");
+    id2 = TermId.constructWithPrefix("HP:0000002");
+    id3 = TermId.constructWithPrefix("HP:0000003");
+    id4 = TermId.constructWithPrefix("HP:0000004");
+    id5 = TermId.constructWithPrefix("HP:0000005");
 
     graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
@@ -63,6 +64,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term1",
             "some definition 1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -77,6 +79,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term2",
             "some definition 2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -91,6 +94,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term3",
             "some definition 3",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -105,6 +109,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term4",
             "some definition 4",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -119,6 +124,7 @@ public class OntologyAlgorithmTest {
             new ArrayList<>(),
             "term5",
             "some definition 5",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),

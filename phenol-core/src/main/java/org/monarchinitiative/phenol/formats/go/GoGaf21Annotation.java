@@ -228,11 +228,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
 
   @Override
   public String getLabel() {
-    final StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(db);
-    stringBuilder.append(":");
-    stringBuilder.append(dbObjectId);
-    return stringBuilder.toString();
+    return db + ":" + dbObjectId;
   }
 
   @Override

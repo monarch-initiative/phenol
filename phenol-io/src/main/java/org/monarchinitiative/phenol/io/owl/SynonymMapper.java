@@ -5,7 +5,6 @@ import java.util.List;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue.PREDS;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
@@ -45,7 +44,7 @@ public class SynonymMapper {
         termXrefs.add(XrefMapper.mapXref(xref));
       }
 
-      TermSynonym its = new ImmutableTermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
+      TermSynonym its = new TermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
       termSynonymList.add(its);
     }
 

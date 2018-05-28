@@ -10,7 +10,7 @@ import org.jgrapht.graph.DefaultEdge;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 public class IdLabeledEdge extends DefaultEdge {
-  private static final long serialVersionUID = -7062460276552763271L;
+  private static final long serialVersionUID = 1L;
   private int id;
 
   public int getId() {
@@ -45,6 +45,7 @@ public class IdLabeledEdge extends DefaultEdge {
   @Override
   public boolean equals(Object obj) {
     if (obj == null) return false;
+    if (! ( obj instanceof IdLabeledEdge) ) return false;
     IdLabeledEdge edge = (IdLabeledEdge) obj;
     if (this.getSource() != edge.getSource()) return false;
     if (this.getTarget() != edge.getTarget()) return false;

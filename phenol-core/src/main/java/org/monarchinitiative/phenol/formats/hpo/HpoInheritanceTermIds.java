@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -9,5 +8,5 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public class HpoInheritanceTermIds {
 
-  public static final TermId INHERITANCE_ROOT = ImmutableTermId.constructWithPrefix("HP:0000005");
+  public static final TermId INHERITANCE_ROOT = TermId.constructWithPrefix("HP:0000005");
 }

@@ -32,7 +32,7 @@ public class HpoPositiveDiseaseAnnotationParserTest {
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();
     assertEquals(
-        "HPODiseaseAnnotation [db=DECIPHER, dbObjectId=1, dbName=Wolf-Hirschhorn Syndrome, qualifier=, hpoId=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000252], dbReference=DECIPHER:1, evidenceDescription=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=WOLF-HIRSCHHORN SYNDROME, date=Wed May 29 00:00:00 UTC 2013, assignedBy=HPO:skoehler]",
+        "HPODiseaseAnnotation [db=DECIPHER, dbObjectId=1, dbName=Wolf-Hirschhorn Syndrome, qualifier=, hpoId=TermId [prefix=ImmutableTermPrefix [value=HP], id=0000252], dbReference=DECIPHER:1, evidenceDescription=IEA, onsetModifier=, frequencyModifier=, with=, aspect=O, synonym=WOLF-HIRSCHHORN SYNDROME, date=Wed May 29 00:00:00 UTC 2013, assignedBy=HPO:skoehler]",
         firstRecord.toString());
 
     // Read remaining records and check count.

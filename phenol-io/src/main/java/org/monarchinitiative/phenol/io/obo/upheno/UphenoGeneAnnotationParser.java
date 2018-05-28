@@ -47,9 +47,8 @@ public final class UphenoGeneAnnotationParser implements TermAnnotationParser<Te
    *
    * @param file The file to read from.
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
-   * @throws TermAnnotationParserException If there are problems with the file's header.
    */
-  public UphenoGeneAnnotationParser(File file) throws IOException, TermAnnotationParserException {
+  public UphenoGeneAnnotationParser(File file) throws IOException {
     this.file = file;
     this.reader = new BufferedReader(new FileReader(file));
     this.nextLine = reader.readLine();
@@ -61,7 +60,7 @@ public final class UphenoGeneAnnotationParser implements TermAnnotationParser<Te
   }
 
   @Override
-  public TermAnnotation next() throws IOException, TermAnnotationParserException {
+  public TermAnnotation next() {
     throw new UnsupportedOperationException();
   }
 

@@ -52,7 +52,7 @@ public final class PrecomputingPairwiseResnikSimilarity
       LoggerFactory.getLogger(PrecomputingPairwiseResnikSimilarity.class);
 
   /** Precomputed data. */
-  PrecomputedScores precomputedScores;
+  private PrecomputedScores precomputedScores;
 
   /** Number of threads to use for precomputation. */
   private final int numThreads;
@@ -68,7 +68,7 @@ public final class PrecomputingPairwiseResnikSimilarity
    * @param numThreads Number of threads to use for precomputation.
    */
   public PrecomputingPairwiseResnikSimilarity(
-      Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
+    Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
     this.precomputedScores = new PrecomputedScores(ontology.getAllTermIds());
     this.numThreads = numThreads;
     precomputeScores(ontology, termToIc);

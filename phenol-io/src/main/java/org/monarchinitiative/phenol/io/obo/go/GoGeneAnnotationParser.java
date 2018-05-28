@@ -12,7 +12,7 @@ import java.util.List;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -113,7 +113,7 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     final String dbObjectId = arr[1];
     final String dbObjectSymbol = arr[2];
     final String qualifier = arr[3];
-    final ImmutableTermId goId = ImmutableTermId.constructWithPrefix(arr[4]);
+    final TermId goId = TermId.constructWithPrefix(arr[4]);
     final String dbReference = arr[5];
     final String evidenceCode = arr[6];
     final String with = arr[7];

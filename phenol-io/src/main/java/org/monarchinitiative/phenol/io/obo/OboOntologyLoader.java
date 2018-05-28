@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.io.owl;
+package org.monarchinitiative.phenol.io.obo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,13 +11,12 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.common.collect.*;
-import org.geneontology.obographs.model.Edge;
-import org.geneontology.obographs.model.Graph;
-import org.geneontology.obographs.model.GraphDocument;
-import org.geneontology.obographs.model.Node;
+import org.geneontology.obographs.model.*;
+import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.generic.Owl2OboTermFactory;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
@@ -32,15 +31,16 @@ import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 
 /**
+ * This class loads an OBO ontology using the OWLAPI.
  * Load OWL into an {@link ImmutableOntology}.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public final class OwlImmutableOntologyLoader {
+public final class OboOntologyLoader {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
-  private static CurieUtil curieUtil;
+  private static final Logger LOGGER = LoggerFactory.getLogger(OboOntologyLoader.class);
+  private final CurieUtil curieUtil;
   private final File file;
   /** Term ids of non-obsolete Terms. */
   private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
@@ -58,18 +58,25 @@ public final class OwlImmutableOntologyLoader {
    * Construct an OWL loader that can load an OBO ontology.
    * @param file Path to the OBO file
    */
-  public OwlImmutableOntologyLoader(File file) {
+  public OboOntologyLoader(File file) {
     this.file = file;
     curieUtil = new CurieUtil(CurieMapGenerator.generate());
     this.factory = new Owl2OboTermFactory();
   }
 
-  public ImmutableOntology load()
-      throws OWLOntologyCreationException {
+  public Optional<Ontology> load() {
+    Optional<Ontology> emptyOntology = Optional.empty();
+    Map<TermId,TermId> old2newTermIdMap = new HashMap<>();
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-    OWLOntology ontology = m.loadOntologyFromOntologyDocument(file);
+    OWLOntology ontology;
+    try {
+      ontology = m.loadOntologyFromOntologyDocument(file);
+    } catch (OWLOntologyCreationException e) {
+      e.printStackTrace();
+      return emptyOntology;
+    }
     FromOwl fromOwl = new FromOwl();
     GraphDocument gd = fromOwl.generateGraphDocument(ontology);
 
@@ -77,52 +84,58 @@ public final class OwlImmutableOntologyLoader {
     Graph obograph = gd.getGraphs().get(0);
     if (obograph == null) {
       LOGGER.warn("No graph in the loaded ontology.");
-      return null;
+      return emptyOntology;
     }
 
     List<Node> gNodes = obograph.getNodes();
     if (gNodes == null) {
       LOGGER.warn("No nodes found in the loaded ontology.");
-      return null;
+      return emptyOntology;
     }
 
     List<Edge> gEdges = obograph.getEdges();
     if (gEdges == null) {
       LOGGER.warn("No edges found in the loaded ontology.");
-      return null;
+      return emptyOntology;
     }
 
     // Mapping edges in obographs to termIds in phenol
     int edgeId = 1;
     DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
-        new DefaultDirectedGraph<>(IdLabeledEdge.class);
+      new DefaultDirectedGraph<>(IdLabeledEdge.class);
     final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
     Set<String> rootCandSet = Sets.newHashSet();
     Set<String> removeMarkSet = Sets.newHashSet();
 
     // Mapping nodes in obographs to termIds in phenol
     for (Node node : gNodes) {
+      if (! node.getType().equals(Node.RDFTYPES.CLASS)) {
+        continue; // only take classes-- otherwise, we nay get some OIO and IAO entities
+      }
       String nodeId = node.getId();
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (! nodeCurie.isPresent() ) continue;
       TermId termId = TermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
-      TermPrefix oioPrefix = new TermPrefix("OIO");
-      TermPrefix iaoPrefix = new TermPrefix("IAO");
-      if (term.getId().getPrefix().equals(oioPrefix) || term.getId().getPrefix().equals(iaoPrefix)) continue;
-
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
       } else {
         nonDepreTermIdNodes.add(termId);
         phenolGraph.addVertex(termId);
         terms.put(termId, term);
+        for (TermId alternateId : term.getAltTermIds()) {
+          terms.put(alternateId,term);
+        }
       }
-
-
-
+    }
+    // add the alt_ids to the map if possible
+    for (Map.Entry<TermId, TermId> entry : old2newTermIdMap.entrySet()) {
+      Term term = terms.get(entry.getValue());
+      if (term != null) {
+        terms.put(entry.getKey(),term);
+      }
     }
 
 
@@ -139,7 +152,7 @@ public final class OwlImmutableOntologyLoader {
       }
 
       Optional<String> objCurie = curieUtil.getCurie(objId);
-      if (!objCurie.isPresent()) {
+      if (! objCurie.isPresent()) {
         LOGGER.warn("No matching curie found for edge's object: " + objId);
         continue;
       }
@@ -171,9 +184,20 @@ public final class OwlImmutableOntologyLoader {
     rootCandSet.removeAll(removeMarkSet);
     CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
 
-    // Let's not concern about the meta information of graph yet.
-    // Meta gMeta = g.getMeta();
+    // Metadata about the ontology
+    Meta gMeta = obograph.getMeta();
     Map<String, String> metaInfo = new HashMap<>();
+    String version = gMeta.getVersion()!=null ? gMeta.getVersion() : "";
+    metaInfo.put("data-version", version);
+    String date = "";
+    if (gMeta.getBasicPropertyValues()!=null) {
+      for (BasicPropertyValue bpv: gMeta.getBasicPropertyValues()) {
+        if (bpv.getPred().equalsIgnoreCase("date")) {
+          date=bpv.getVal().trim();
+          metaInfo.put("date",date);
+        }
+      }
+    }
 
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
@@ -186,14 +210,15 @@ public final class OwlImmutableOntologyLoader {
       rootId = TermId.constructWithPrefix(rootCandCurie);
     }
 
-    return new ImmutableOntology(
-        ImmutableSortedMap.copyOf(metaInfo),
-        phenolGraph,
-        rootId,
-        nonDepreTermIdNodes,
-        depreTermIdNodes,
-        ImmutableMap.copyOf(terms),
-        ImmutableMap.copyOf(relationMap));
+    ImmutableOntology ont=  new ImmutableOntology(
+      ImmutableSortedMap.copyOf(metaInfo),
+      phenolGraph,
+      rootId,
+      nonDepreTermIdNodes,
+      depreTermIdNodes,
+      ImmutableMap.copyOf(terms),
+      ImmutableMap.copyOf(relationMap));
+    return Optional.of(ont);
   }
 
 

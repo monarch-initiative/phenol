@@ -27,7 +27,7 @@ public final class ResnikSimilarity
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
   public ResnikSimilarity(
-      Ontology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
+    Ontology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
     super(new PrecomputingPairwiseResnikSimilarity(ontology, termToIc), symmetric);
   }
 

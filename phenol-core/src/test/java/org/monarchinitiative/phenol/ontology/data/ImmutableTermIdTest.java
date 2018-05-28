@@ -13,22 +13,22 @@ import org.junit.Test;
 
 public class ImmutableTermIdTest {
 
-  ImmutableTermPrefix termPrefix;
-  ImmutableTermId termId;
-  ImmutableTermId termId2;
+  private TermPrefix termPrefix;
+  private TermId termId;
+  private TermId termId2;
 
   @Before
   public void setUp() {
-    termPrefix = new ImmutableTermPrefix("HP");
-    termId = new ImmutableTermId(termPrefix, "0000001");
-    termId2 = new ImmutableTermId(termPrefix, "0000002");
+    termPrefix = new TermPrefix("HP");
+    termId = new TermId(termPrefix, "0000001");
+    termId2 = new TermId(termPrefix, "0000002");
   }
 
   @Test
   public void testStaticConstructMethod() {
-    ImmutableTermId otherId = ImmutableTermId.constructWithPrefix("HP:0000001");
+    TermId otherId = TermId.constructWithPrefix("HP:0000001");
     assertEquals(
-        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]", otherId.toString());
+        "TermId [prefix=TermPrefix [value=HP], id=0000001]", otherId.toString());
     assertEquals(termId, otherId);
   }
 
@@ -55,6 +55,6 @@ public class ImmutableTermIdTest {
   @Test
   public void testToString() {
     assertEquals(
-        "ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001]", termId.toString());
+        "TermId [prefix=TermPrefix [value=HP], id=0000001]", termId.toString());
   }
 }

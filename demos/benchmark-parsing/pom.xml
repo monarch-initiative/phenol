@@ -55,15 +55,12 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <!-- set useUniqueVersions=false in order that the classpath 
+              <!-- set useUniqueVersions=false in order that the classpath
                 has the SNAPSHOT instead of the build number prefixed to the dependency -->
               <useUniqueVersions>false</useUniqueVersions>
               <mainClass>com.github.phenomics.ontolib.demos.benchmark_parsing.App</mainClass>
             </manifest>
           </archive>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
         </configuration>
       </plugin>
 

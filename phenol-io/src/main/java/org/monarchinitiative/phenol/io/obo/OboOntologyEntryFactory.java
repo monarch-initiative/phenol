@@ -4,7 +4,7 @@ import java.util.SortedMap;
 
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 /**
@@ -16,11 +16,11 @@ import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 public interface OboOntologyEntryFactory {
 
   /**
-   * Set map from TermI Id string to {@link ImmutableTermId} into factory.
+   * Set map from TermI Id string to {@link TermId} into factory.
    *
    * @param termIds The term Id mapping to use.
    */
-  void setTermIds(SortedMap<String, ImmutableTermId> termIds);
+  void setTermIds(SortedMap<String, TermId> termIds);
 
   /**
    * Construct term from {@link Stanza}.

@@ -6,22 +6,15 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
  * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.
@@ -32,23 +25,21 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
+    Path ncitPath = Paths.get("src","test","resources","ncit_module.owl");
     final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(
-            new File("src/test/resources/ncit_module.owl"));
-
-    final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology ontology = loader.load(cof);
+        new OwlImmutableOntologyLoader(ncitPath.toFile());
+    final ImmutableOntology ontology = loader.load();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
-    ImmutableTermPrefix termPrefix = new ImmutableTermPrefix("NCIT");
-    ImmutableTermId t1 = new ImmutableTermId(termPrefix, "C2919");
-    ImmutableTermId t2 = new ImmutableTermId(termPrefix, "C2852");
-    ImmutableTermId t3 = new ImmutableTermId(termPrefix, "C48596");
-    ImmutableTermId t4 = new ImmutableTermId(termPrefix, "C60312");
-    ImmutableTermId t5 = new ImmutableTermId(termPrefix, "C116977");
-    ImmutableTermId t6 = new ImmutableTermId(termPrefix, "C126659");
+    TermPrefix termPrefix = new TermPrefix("NCIT");
+    TermId t1 = new TermId(termPrefix, "C2919");
+    TermId t2 = new TermId(termPrefix, "C2852");
+    TermId t3 = new TermId(termPrefix, "C48596");
+    TermId t4 = new TermId(termPrefix, "C60312");
+    TermId t5 = new TermId(termPrefix, "C116977");
+    TermId t6 = new TermId(termPrefix, "C126659");
 
     assertTrue(graph.vertexSet().contains(t1));
     assertTrue(graph.vertexSet().contains(t2));
@@ -90,12 +81,10 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testMONDOLoad() throws Exception {
+    Path mondoPath = Paths.get("src","test","resources","mondo_module.owl");
     final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(
-            new File("src/test/resources/mondo_module.owl"));
-
-    final GenericOwlFactory cof = new GenericOwlFactory();
-    final ImmutableOntology ontology = loader.load(cof);
+        new OwlImmutableOntologyLoader(mondoPath.toFile());
+    final ImmutableOntology ontology = loader.load();
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",

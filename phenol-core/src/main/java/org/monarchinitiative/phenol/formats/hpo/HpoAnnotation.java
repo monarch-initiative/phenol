@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -42,7 +41,7 @@ public class HpoAnnotation {
   }
 
   public static HpoAnnotation parseTerm(String id) {
-    TermId tid = ImmutableTermId.constructWithPrefix(id);
+    TermId tid = TermId.constructWithPrefix(id);
     return forTerm(tid);
   }
 

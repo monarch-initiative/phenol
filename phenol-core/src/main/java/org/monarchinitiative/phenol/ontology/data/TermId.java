@@ -1,42 +1,100 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import com.google.common.collect.ComparisonChain;
+
 import java.io.Serializable;
 
 /**
- * Identifier of a {@link Term}, consisting of a {@link TermPrefix} and a local numeric ID.
- *
- * <p>By convention, the longest prefix up to the last colon {@code ":"} will be used for the
- * prefix.
- *
- * <h5>Design Notes</h5>
- *
- * <p>The whole point of this interface and the implementing classes is optimization. This type
- * hierarchy is designed such that when loading a file with an ontology, one {@link TermPrefix}
- * instance is generated for each occuring term prefix value. While an implementation that assumes
- * numeric IDs after a prefix might be faster, this does not resolve many important cases such as
- * NCIT and also cases such as {@code DO:00012} vs. {@code DO:12}.
- *
- * <p>Thus, good care has to be taken that in the case of inner loops over terms to first map them
- * to integers and then use these integers.
+ * Immutable  TermId.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public interface TermId extends Comparable<TermId>, Serializable {
+public final class TermId implements Comparable<TermId>, Serializable {
+
+  /** Serial UId for serialization. */
+  private static final long serialVersionUID = 2L;
+
+  /** Prefix of the TermIdI. */
+  private final TermPrefix prefix;
+
+  /** Identifier behind the prefix. */
+  private final String id;
 
   /**
-   * Query for term ID's prefix.
+   * Construct from term ID including prefix.
    *
-   * @return {@link TermPrefix} of the identifier
+   * @param termIdString String with term Id to construct with.
+   * @return Resulting {@link TermId}.
+   * @throws PhenolRuntimeException if the string does not have a prefix
    */
-  TermPrefix getPrefix();
-
-  /** Query for term ID. */
-  String getId();
+  public static TermId constructWithPrefix(String termIdString) {
+    final int pos = termIdString.lastIndexOf(':');
+    if (pos == -1) {
+      throw new PhenolRuntimeException(
+          "TermI ID string \"" + termIdString + "\" does not have a prefix!");
+    } else {
+      return new TermId(
+          new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
+    }
+  }
 
   /**
-   * Return the full term ID including prefix.
+   * Constructor.
    *
-   * @return The full Id.
+   * @param prefix Prefix to use.
+   * @param id Identifier after the prefix.
    */
-  String getIdWithPrefix();
+  public TermId(TermPrefix prefix, String id) {
+    this.prefix = prefix;
+    this.id = id;
+  }
+
+  @Override
+  public int compareTo(TermId that) {
+    return ComparisonChain.start()
+        .compare(this.getPrefix(), that.getPrefix())
+        .compare(this.getId(), that.getId())
+        .result();
+  }
+
+  public TermPrefix getPrefix() {
+    return prefix;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getIdWithPrefix() {
+    return prefix.getValue() + ":" + id;
+  }
+
+  @Override
+  public String toString() {
+    return "TermId [prefix=" + prefix + ", id=" + id + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    // Manual short-cuts for the important special cases.
+    if (this == obj) {
+      return true;
+    } else if (obj instanceof TermId) {
+      final TermId that = (TermId) obj;
+      return this.prefix.equals(that.getPrefix()) && (this.id.equals(that.getId()));
+    } else {
+      return false;
+    }
+  }
 }

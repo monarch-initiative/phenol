@@ -1,41 +1,71 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * Interface for richly annotated information about a {@link Term}'s synonymous description.
+ * Immutable implementation.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermSynonym extends Serializable {
+public final class TermSynonym {
+
+  /** Serial UId for serialization. */
+  private static final long serialVersionUID = 2L;
+
+  /** The synonym value. */
+  private final String value;
+
+  /** The synonym scope. */
+  private final TermSynonymScope scope;
+
+  /** Optional synonym type name, <code>null</code> if missing. */
+  private final String synonymTypeName;
+
+  /** List of term xRefs, <code>null</code> if missing. */
+  private final List<TermXref> termXrefs;
 
   /**
-   * Query for synonym's label.
+   * Constructor.
    *
-   * @return The synonym's label/value
+   * @param value Synonym value.
+   * @param scope Synonym scope.
+   * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
+   * @param termXrefs Optional dbxref list, <code>null</code> if missing.
    */
-  String getValue();
+  public TermSynonym(
+      String value, TermSynonymScope scope, String synonymTypeName, List<TermXref> termXrefs) {
+    this.value = value;
+    this.scope = scope;
+    this.synonymTypeName = synonymTypeName;
+    this.termXrefs = termXrefs;
+  }
 
-  /**
-   * Query for synonym's scope.
-   *
-   * @return The synonym scope.
-   */
-  TermSynonymScope getScope();
+  public String getValue() {
+    return value;
+  }
 
-  /**
-   * Query for synonym type name.
-   *
-   * @return Optional, further qualification of the synonym's type name, <code>null</code> if
-   *     missing.
-   */
-  String getSynonymTypeName();
+  public TermSynonymScope getScope() {
+    return scope;
+  }
 
-  /**
-   * Query for synonym's cross-references.
-   *
-   * @return {@link List} of term cross-references, <code>null</code> if missing.
-   */
-  List<TermXref> getTermXrefs();
+  public String getSynonymTypeName() {
+    return synonymTypeName;
+  }
+  
+  public List<TermXref> getTermXrefs() {
+    return termXrefs;
+  }
+
+  @Override
+  public String toString() {
+    return "TermSynonym [value="
+        + value
+        + ", scope="
+        + scope
+        + ", synonymTypeName="
+        + synonymTypeName
+        + ", termXrefs="
+        + termXrefs
+        + "]";
+  }
 }

@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.io.owl;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
 
 /**
@@ -9,10 +8,9 @@ import org.monarchinitiative.phenol.ontology.data.TermXref;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class XrefMapper {
-  public static TermXref mapXref(String xref) {
-    ImmutableTermId xrefTermId = ImmutableTermId.constructWithPrefix(xref);
-    TermXref termXref = new ImmutableTermXref(xrefTermId, null);
-    return termXref;
+class XrefMapper {
+  static TermXref mapXref(String xref) {
+    TermId xrefTermId = TermId.constructWithPrefix(xref);
+    return new TermXref(xrefTermId, null);
   }
 }

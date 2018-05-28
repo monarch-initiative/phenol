@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
   </parent>
 
   <properties>
@@ -74,7 +74,7 @@
     <dependency>
        <groupId>org.geneontology</groupId>
        <artifactId>obographs</artifactId>
-       <version>0.1.0</version>
+       <version>0.1.1</version>
        <exclusions>
           <exclusion>
               <groupId>com.fasterxml.jackson.core</groupId>

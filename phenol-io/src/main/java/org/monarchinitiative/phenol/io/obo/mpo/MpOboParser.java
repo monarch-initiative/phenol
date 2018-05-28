@@ -1,13 +1,11 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 
-import org.monarchinitiative.phenol.io.owl.OwlImmutableOntologyLoader;
-import org.monarchinitiative.phenol.io.owl.generic.GenericOwlFactory;
+import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Optional;
 
 public class MpOboParser {
 
@@ -25,17 +23,17 @@ public class MpOboParser {
 
 
   public Ontology parse() {
-    Ontology ontology=null;
-    final OwlImmutableOntologyLoader loader =
-      new OwlImmutableOntologyLoader(oboFile);
-    final GenericOwlFactory cof = new GenericOwlFactory();
-    try {
-      ontology= loader.load(cof);
-      if (debug) {
+    Ontology ontology;
+    final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
+    Optional<Ontology> optOnto = loader.load();
+    if (! optOnto.isPresent()) {
+      System.err.println("[ERROR] Failed to load ontology");
+      return null; // TODO return optional.
+    } else {
+      ontology = optOnto.get();
+    }
+    if (debug) {
         System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
-      }
-    } catch (OWLOntologyCreationException e) {
-       e.printStackTrace();
     }
     return ontology;
   }
