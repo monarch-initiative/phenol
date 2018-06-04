@@ -51,6 +51,15 @@ synonym: "physiological process" EXACT []
 xref: Wikipedia:Biological_process
 
 [Term]
+id: GO:0006791
+name: sulfur utilization
+namespace: biological_process
+def: "A series of processes that forms an integrated mechanism by which a cell or an organism detects the depletion of primary sulfur sources and then activates genes to scavenge the last traces of the primary sulfur source and to transport and metabolize alternate sulfur sources. The utilization process begins when the cell or organism detects sulfur levels, includes the activation of genes whose products detect, transport or metabolize sulfur-containing compounds, and ends when the sulfur is incorporated into the cell or organism's metabolism." [GOC:mah, GOC:mlg]
+subset: gosubset_prok
+synonym: "sulphur utilization" EXACT []
+is_a: GO:0008150 ! biological_process
+
+[Term]
 id: GO:0005575
 name: cellular_component
 namespace: cellular_component
@@ -73,6 +82,27 @@ xref: NIF_Subcellular:sao-1337158144
 xref: NIF_Subcellular:sao1337158144
 
 [Term]
+id: GO:0005576
+name: extracellular region
+namespace: cellular_component
+def: "The space external to the outermost structure of a cell. For cells without external protective or external encapsulating structures this refers to space outside of the plasma membrane. This term covers the host cell environment outside an intracellular parasite." [GOC:go_curators]
+comment: Note that this term is intended to annotate gene products that are not attached to the cell surface. For gene products from multicellular organisms which are secreted from a cell but retained within the organism (i.e. released into the interstitial fluid or blood), consider the cellular component term 'extracellular space ; GO:0005615'.
+subset: goslim_agr
+subset: goslim_aspergillus
+subset: goslim_candida
+subset: goslim_chembl
+subset: goslim_generic
+subset: goslim_metagenomics
+subset: goslim_mouse
+subset: goslim_pir
+subset: goslim_plant
+subset: goslim_yeast
+subset: gosubset_prok
+synonym: "extracellular" EXACT []
+xref: Wikipedia:Extracellular
+is_a: GO:0005575 ! cellular_component
+
+[Term]
 id: GO:0003674
 name: molecular_function
 namespace: molecular_function
@@ -88,3 +118,16 @@ subset: goslim_pir
 subset: goslim_plant
 subset: goslim_yeast
 subset: gosubset_prok
+
+[Term]
+id: GO:0031386
+name: protein tag
+namespace: molecular_function
+def: "A molecular function exhibited by a protein that is covalently attached (AKA tagged or conjugated) to another protein where it acts as a marker, recognized by the cellular apparatus to target the tagged protein for some cellular process such as modification, sequestration, transport or degradation." [GOC:dos, GOC:go_curators, PMID:19028679, PMID:20054389, PMID:6305978]
+comment: Use this term to annotate conjugated tags, not for conjugating enzymes. At the time of writing, all known gene products with this activity are ubiquitin-like, either based on overall sequence similarity or the presence of common motifs and structures.
+subset: goslim_pir
+synonym: "covalent modifier" RELATED [GOC:vw]
+synonym: "protein tagging activity" RELATED []
+synonym: "ubiquitin" RELATED []
+synonym: "ubiquitin-like protein modifier" EXACT []
+is_a: GO:0003674 ! molecular_function

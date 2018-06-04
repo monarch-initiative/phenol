@@ -1,96 +1,58 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
-import java.io.File;
-import java.io.IOException;
 
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.formats.go.GoOntology;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.io.base.OntologyOboParser;
-import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import org.monarchinitiative.phenol.formats.go.GoOntology;
+import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
-/**
- * Facade class for parsing the HPO from an OBO file.
- *
- * <h5>Usage Example</h5>
- *
- * <pre>
- * String fileName = "go.obo";
- * GoOboParser parser = new GoOboParser(new File(fileName));
- * GoOntology go;
- * try {
- *   go = parser.parse();
- * } catch (IOException e) {
- *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
- * }
- * </pre>
- *
- * <h5>Multiple Root Terms</h5>
- *
- * <p>The Gene Ontology has multiple root terms. As documented in {@link
- * OboImmutableOntologyLoader}, an artificial root term with id {@code GO:0000000} will be inserted.
- *
- * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
- */
-public final class GoOboParser implements OntologyOboParser<GoOntology> {
+import java.io.File;
+import java.util.Map;
+import java.util.Optional;
 
-  /** Path to the OBO file to parse. */
+public class GoOboParser {
+
   private final File oboFile;
 
-  /** Whether debugging is enabled or not. */
   private final boolean debug;
 
-  /**
-   * Constructor.
-   *
-   * @param oboFile The OBO file to read.
-   * @param debug Whether or not to enable debugging.
-   */
   public GoOboParser(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
-
-  /**
-   * Constructor, disabled debugging.
-   *
-   * @param oboFile The OBO file to read.
-   */
   public GoOboParser(File oboFile) {
-    this(oboFile, false);
+    this(oboFile,false);
   }
 
-  /**
-   * Parse OBO file into {@link HpoOntology} object.
-   *
-   * @return {@link HpoOntology} from parsing OBO file.
-   * @throws IOException In case of problems with file I/O.
-   */
-  public GoOntology parse() throws IOException {
-    final OboImmutableOntologyLoader loader =
-        new OboImmutableOntologyLoader(oboFile, debug);
-    final GoOboFactory factory = new GoOboFactory();
-    final ImmutableOntology o = loader.load(factory);
 
-    // Convert ImmutableOntology into GoOntology. The casts here are ugly and require the
-    // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new GoOntology(
-        (ImmutableSortedMap<String, String>) o.getMetaInfo(),
-        o.getGraph(),
-        o.getRootTermId(),
-        o.getNonObsoleteTermIds(),
-        o.getObsoleteTermIds(),
-        (ImmutableMap<TermId, Term>) o.getTermMap(),
-        (ImmutableMap<Integer, Relationship>) o.getRelationMap());
+  public Optional<GoOntology> parse() {
+    Ontology ontology;
+    final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
+    Optional<Ontology> optOnto = loader.load();
+    if (! optOnto.isPresent()) {
+      System.err.println("[ERROR] Failed to load GO ontology");
+      return Optional.empty();
+    } else {
+      ontology = optOnto.get();
+    }
+    if (debug) {
+      System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
+    }
+
+
+    GoOntology onto =  new GoOntology(
+      (ImmutableSortedMap<String, String>) ontology.getMetaInfo(),
+      ontology.getGraph(),
+      ontology.getRootTermId(),
+      ontology.getNonObsoleteTermIds(),
+      ontology.getObsoleteTermIds(),
+      (ImmutableMap<TermId, Term>) ontology.getTermMap(),
+      (ImmutableMap<Integer, Relationship>) ontology.getRelationMap());
+    return Optional.of(onto);
   }
 
-  /** @return The OBO file to parse. */
-  public File getOboFile() {
-    return oboFile;
-  }
 }

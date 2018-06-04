@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+@Deprecated
 public final class OboParser {
 
   /** The {@link Logger} object to use for logging. */

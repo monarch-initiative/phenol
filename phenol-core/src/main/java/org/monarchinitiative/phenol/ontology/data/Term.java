@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +74,7 @@ public class Term  {
       Date creationDate,
       List<Dbxref> xrefs) {
     this.id = id;
-    this.altTermIds = altTermIds;
+    this.altTermIds = altTermIds==null? ImmutableList.of():altTermIds;
     this.name = name;
     this.definition = definition;
     this.databaseXrefs=databasexrefs;

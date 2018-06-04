@@ -14,7 +14,6 @@ import java.util.TreeMap;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -43,6 +42,7 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
+@Deprecated
 public final class OboImmutableOntologyLoader {
 
   /** The {@link Logger} object to use for logging. */
@@ -106,8 +106,6 @@ public final class OboImmutableOntologyLoader {
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
         new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
     // Construct edge list and relation map.
     final Map<Integer, Relationship> relationMap = new HashMap<>();
@@ -118,7 +116,7 @@ public final class OboImmutableOntologyLoader {
         TermId targetTermId = b.getDest();
         graph.addVertex(e.getKey());
         graph.addVertex(b.getDest());
-        IdLabeledEdge edge = edgeFactory.createEdge(sourceTermId, targetTermId);
+        IdLabeledEdge edge = new IdLabeledEdge();
         edge.setId(b.getRelation().getId());
         graph.addEdge(sourceTermId, targetTermId, edge);
         relationMap.put(b.getRelation().getId(), b.getRelation());

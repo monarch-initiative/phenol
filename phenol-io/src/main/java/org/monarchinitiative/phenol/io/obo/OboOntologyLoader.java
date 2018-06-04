@@ -30,6 +30,8 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
 
+import javax.swing.text.html.Option;
+
 /**
  * This class loads an OBO ontology using the OWLAPI.
  * Load OWL into an {@link ImmutableOntology}.
@@ -46,6 +48,8 @@ public final class OboOntologyLoader {
   private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
   /** Term ids of obsolete Terms. */
   private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
+
+
   /** Key: a TermId; value: corresponding Term object. */
   private SortedMap<TermId, Term> terms = Maps.newTreeMap();
   //private Collection<TermId> termIdNodes = Sets.newHashSet();
@@ -103,16 +107,12 @@ public final class OboOntologyLoader {
     int edgeId = 1;
     DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
       new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
-    Set<String> rootCandSet = Sets.newHashSet();
-    Set<String> removeMarkSet = Sets.newHashSet();
 
     // Mapping nodes in obographs to termIds in phenol
     for (Node node : gNodes) {
-      if (! node.getType().equals(Node.RDFTYPES.CLASS)) {
-        continue; // only take classes-- otherwise, we nay get some OIO and IAO entities
+      if (node.getType()==null || ! node.getType().equals(Node.RDFTYPES.CLASS)) {
+        continue; // only take classes-- otherwise, we may get some OIO and IAO entities
       }
       String nodeId = node.getId();
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
@@ -138,11 +138,12 @@ public final class OboOntologyLoader {
       }
     }
 
+    Set<TermId> rootCandSet = Sets.newHashSet();
+    Set<TermId> removeMarkSet = Sets.newHashSet();
 
 
     for (Edge edge : gEdges) {
       String subId = edge.getSub();
-      String propId = edge.getPred();
       String objId = edge.getObj();
 
       Optional<String> subCurie = curieUtil.getCurie(subId);
@@ -165,13 +166,12 @@ public final class OboOntologyLoader {
       // For each edge and connected nodes,
       // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
       // we then remove subj nodes from rootCandSet, i.e. nodes that have outgoing edges.
-      rootCandSet.add(objId);
-      removeMarkSet.add(propId);
-      removeMarkSet.add(subId);
+      rootCandSet.add(objTermId);
+      removeMarkSet.add(subTermId);
 
       phenolGraph.addVertex(subTermId);
       phenolGraph.addVertex(objTermId);
-      IdLabeledEdge e = edgeFactory.createEdge(subTermId, objTermId);
+      IdLabeledEdge e = new IdLabeledEdge();
       e.setId(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
 
@@ -189,11 +189,10 @@ public final class OboOntologyLoader {
     Map<String, String> metaInfo = new HashMap<>();
     String version = gMeta.getVersion()!=null ? gMeta.getVersion() : "";
     metaInfo.put("data-version", version);
-    String date = "";
     if (gMeta.getBasicPropertyValues()!=null) {
       for (BasicPropertyValue bpv: gMeta.getBasicPropertyValues()) {
         if (bpv.getPred().equalsIgnoreCase("date")) {
-          date=bpv.getVal().trim();
+          String date=bpv.getVal().trim();
           metaInfo.put("date",date);
         }
       }
@@ -202,12 +201,37 @@ public final class OboOntologyLoader {
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
     TermId rootId;
-    if (rootCandSet.size() > 1 || rootCandSet.isEmpty()) {
+    if (rootCandSet.isEmpty()) {
       rootId = TermId.constructWithPrefix("owl:Thing");
-    } else {
-      List<String> rootCandList = new ArrayList<>(rootCandSet);
-      String rootCandCurie = curieUtil.getCurie(rootCandList.get(0)).get();
-      rootId = TermId.constructWithPrefix(rootCandCurie);
+      // TODO Exception/Optional.isEmpty()
+
+    } if (rootCandSet.size() > 1 ) {
+      TermPrefix prefix;
+      Optional<TermId> firstId = rootCandSet.stream().findFirst();
+      if (firstId.isPresent()) {
+        prefix = firstId.get().getPrefix();
+      } else { // this should never happen, but if we cannot find a term, use Owl as the prefix
+        prefix = new TermPrefix("Owl");
+      }
+      // Assumption: "0000000" is not used for actual terms in any OBO ontology
+      rootId = new TermId(prefix,"0000000");
+      Term rootTerm = new Term();
+      rootTerm.setId(rootId);
+      phenolGraph.addVertex(rootId);
+      nonDepreTermIdNodes.add(rootId);
+      terms.put(rootId, rootTerm);
+
+      for (TermId childOfNewRootTermId : rootCandSet) {
+        IdLabeledEdge e = new IdLabeledEdge();
+        e.setId(edgeId);
+        edgeId++;
+        phenolGraph.addEdge(childOfNewRootTermId, rootId, e);
+        Relationship ctr = factory.constructRelationship(childOfNewRootTermId, rootId, edgeId);
+        relationMap.put(edgeId, ctr);
+      }
+    } else { // if we get here, there is exactly one root candidate
+      List<TermId> rootCandList = new ArrayList<>(rootCandSet);
+      rootId = rootCandList.get(0);
     }
 
     ImmutableOntology ont=  new ImmutableOntology(

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+@Deprecated
 public class OboEscapeUtils {
 
   /** Escape characters mapped to their unescaped ones. */
