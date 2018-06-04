@@ -14,7 +14,6 @@ import java.util.TreeMap;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -106,8 +105,6 @@ public final class OboImmutableOntologyLoader {
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
         new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
 
     // Construct edge list and relation map.
     final Map<Integer, Relationship> relationMap = new HashMap<>();
@@ -118,7 +115,7 @@ public final class OboImmutableOntologyLoader {
         ImmutableTermId targetTermId = b.getDest();
         graph.addVertex(e.getKey());
         graph.addVertex(b.getDest());
-        IdLabeledEdge edge = edgeFactory.createEdge(sourceTermId, targetTermId);
+        IdLabeledEdge edge = new IdLabeledEdge();
         edge.setId(b.getRelation().getId());
         graph.addEdge(sourceTermId, targetTermId, edge);
         relationMap.put(b.getRelation().getId(), b.getRelation());
@@ -397,7 +394,7 @@ public final class OboImmutableOntologyLoader {
       final String localIdStr = termIdStr.substring(pos + 1);
       ImmutableTermPrefix tmpPrefix = prefixes.get(prefixStr);
 
-      if (tmpPrefix == null || prefixes.containsKey(tmpPrefix.getValue()) != true) {
+      if (tmpPrefix == null || ! prefixes.containsKey(tmpPrefix.getValue()) ) {
         tmpPrefix = new ImmutableTermPrefix(prefixStr);
         prefixes.put(prefixStr, tmpPrefix);
       }
