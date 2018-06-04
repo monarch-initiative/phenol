@@ -8,15 +8,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ImmutableTermPrefixTest {
+public class TermPrefixTest {
 
-  ImmutableTermPrefix termPrefix;
-  ImmutableTermPrefix termPrefix2;
+  private TermPrefix termPrefix;
+  private TermPrefix termPrefix2;
 
   @Before
   public void setUp() {
-    termPrefix = new ImmutableTermPrefix("HP");
-    termPrefix2 = new ImmutableTermPrefix("GO");
+    termPrefix = new TermPrefix("HP");
+    termPrefix2 = new TermPrefix("GO");
   }
 
   @Test
@@ -33,6 +33,6 @@ public class ImmutableTermPrefixTest {
 
   @Test
   public void testToString() {
-    assertEquals("ImmutableTermPrefix [value=HP]", termPrefix.toString());
+    assertEquals("TermPrefix [value=HP]", termPrefix.toString());
   }
 }

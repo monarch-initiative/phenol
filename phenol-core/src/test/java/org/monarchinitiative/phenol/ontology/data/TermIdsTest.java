@@ -17,7 +17,7 @@ public class TermIdsTest extends ImmutableOntologyTestBase {
     Set<TermId> outputIds =
         ImmutableSortedSet.copyOf(TermIds.augmentWithAncestors(ontology, inputIds, true));
     assertEquals(
-        "[ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000002], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000003], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000004], ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000005]]",
+        "[TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]]",
         outputIds.toString());
   }
 }

@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermPrefix;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.junit.BeforeClass;
@@ -21,16 +20,16 @@ public class HpoAnnotationTest {
 
   @BeforeClass
   public static void setUp() {
-    HP_PREFIX = new ImmutableTermPrefix("HP");
+    HP_PREFIX = new TermPrefix("HP");
     String DEFAULT_FREQUENCY = "0040280";
-    final TermId DEFAULT_FREQUENCY_ID = new ImmutableTermId(HP_PREFIX, DEFAULT_FREQUENCY);
+    final TermId DEFAULT_FREQUENCY_ID = new TermId(HP_PREFIX, DEFAULT_FREQUENCY);
     defaultFrequency = HpoFrequency.fromTermId(DEFAULT_FREQUENCY_ID);
   }
 
   /** Different onset means the terms are not equal */
   @Test
   public void testEqualityOfTerms2() {
-    TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
+    TermId oxycephalyId = new TermId(HP_PREFIX, "0000263");
     HpoAnnotation oxycephaly1 =
         new HpoAnnotation.Builder(oxycephalyId).onset(HpoOnset.ADULT_ONSET).build();
     HpoAnnotation oxycephaly2 = new HpoAnnotation.Builder(oxycephalyId).build();
@@ -40,7 +39,7 @@ public class HpoAnnotationTest {
   /** Different onset means the terms are not equal */
   @Test
   public void testEqualityOfTerms3() {
-    TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
+    TermId oxycephalyId = new TermId(HP_PREFIX, "0000263");
     HpoAnnotation oxycephaly1 =
         new HpoAnnotation.Builder(oxycephalyId).onset(HpoOnset.ADULT_ONSET).build();
     HpoAnnotation oxycephaly2 =
@@ -50,7 +49,7 @@ public class HpoAnnotationTest {
 
   @Test
   public void testEqualityOfTerms4() {
-    TermId oxycephalyId = new ImmutableTermId(HP_PREFIX, "0000263");
+    TermId oxycephalyId = new TermId(HP_PREFIX, "0000263");
     HpoAnnotation oxycephaly1 =
         new HpoAnnotation.Builder(oxycephalyId)
             .onset(HpoOnset.ADULT_ONSET)

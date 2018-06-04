@@ -5,13 +5,9 @@ import java.util.List;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -41,13 +37,13 @@ public class VegetableOntologyTestBase {
 
   protected ImmutableOntology ontology;
 
-  protected ImmutableTermId idVegetable;
-  protected ImmutableTermId idRootVegetable;
-  protected ImmutableTermId idLeafVegetable;
-  protected ImmutableTermId idCarrot;
-  protected ImmutableTermId idBeet;
-  protected ImmutableTermId idPumpkin;
-  protected ImmutableTermId idBlueCarrot;
+  protected TermId idVegetable;
+  protected TermId idRootVegetable;
+  protected TermId idLeafVegetable;
+  protected TermId idCarrot;
+  protected TermId idBeet;
+  protected TermId idPumpkin;
+  protected TermId idBlueCarrot;
 
   protected List<VegetableRecipeAnnotation> recipeAnnotations;
 
@@ -55,13 +51,13 @@ public class VegetableOntologyTestBase {
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    idVegetable = ImmutableTermId.constructWithPrefix("VO:0000001");
-    idRootVegetable = ImmutableTermId.constructWithPrefix("VO:0000002");
-    idLeafVegetable = ImmutableTermId.constructWithPrefix("VO:0000003");
-    idCarrot = ImmutableTermId.constructWithPrefix("VO:0000004");
-    idBeet = ImmutableTermId.constructWithPrefix("VO:0000005");
-    idPumpkin = ImmutableTermId.constructWithPrefix("VO:0000006");
-    idBlueCarrot = ImmutableTermId.constructWithPrefix("VO:0000007");
+    idVegetable = TermId.constructWithPrefix("VO:0000001");
+    idRootVegetable = TermId.constructWithPrefix("VO:0000002");
+    idLeafVegetable = TermId.constructWithPrefix("VO:0000003");
+    idCarrot = TermId.constructWithPrefix("VO:0000004");
+    idBeet = TermId.constructWithPrefix("VO:0000005");
+    idPumpkin = TermId.constructWithPrefix("VO:0000006");
+    idBlueCarrot = TermId.constructWithPrefix("VO:0000007");
 
     vertices =
         ImmutableList.of(
@@ -93,6 +89,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "vegetable",
             "part of a plant that is consumed",
+            ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -107,6 +104,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "root vegetable",
             "consumed root part of plant",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -121,6 +119,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "leaf vegetable",
             "consumed leaf part of plant",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -135,6 +134,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "carrot",
             "carrots are very tasty root vegetables",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -149,6 +149,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "blue carrot",
             "blue ones are even better",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -163,6 +164,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "beet root",
             "beets are tasty and can be used for coloring",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -177,6 +179,7 @@ public class VegetableOntologyTestBase {
             new ArrayList<>(),
             "pumpkin",
             "pumpkins are great for soup and pickling",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),

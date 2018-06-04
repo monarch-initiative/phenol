@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
@@ -32,35 +33,35 @@ public class OntologyAlgorithmRelationshipTest {
   private ImmutableMap<Integer, Relationship> relationMap;
   private ImmutableOntology ontology;
 
-  private ImmutableTermId root;
-  private ImmutableTermId t1;
-  private ImmutableTermId t2;
-  private ImmutableTermId t3;
-  private ImmutableTermId t1_1;
-  private ImmutableTermId t1_2;
-  private ImmutableTermId t1_1_1;
-  private ImmutableTermId t1_1_2;
-  private ImmutableTermId t2_1;
-  private ImmutableTermId t2_2;
-  private ImmutableTermId t3_1;
-  private ImmutableTermId t3_2;
+  private TermId root;
+  private TermId t1;
+  private TermId t2;
+  private TermId t3;
+  private TermId t1_1;
+  private TermId t1_2;
+  private TermId t1_1_1;
+  private TermId t1_1_2;
+  private TermId t2_1;
+  private TermId t2_2;
+  private TermId t3_1;
+  private TermId t3_2;
 
   @Before
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    root = ImmutableTermId.constructWithPrefix("HP:0000001");
-    t1 = ImmutableTermId.constructWithPrefix("HP:0000002");
-    t2 = ImmutableTermId.constructWithPrefix("HP:0000003");
-    t3 = ImmutableTermId.constructWithPrefix("HP:0000004");
-    t1_1 = ImmutableTermId.constructWithPrefix("HP:0000005");
-    t1_2 = ImmutableTermId.constructWithPrefix("HP:0000006");
-    t1_1_1 = ImmutableTermId.constructWithPrefix("HP:0000007");
-    t1_1_2 = ImmutableTermId.constructWithPrefix("HP:0000008");
-    t2_1 = ImmutableTermId.constructWithPrefix("HP:0000009");
-    t2_2 = ImmutableTermId.constructWithPrefix("HP:0000010");
-    t3_1 = ImmutableTermId.constructWithPrefix("HP:0000011");
-    t3_2 = ImmutableTermId.constructWithPrefix("HP:0000012");
+    root = TermId.constructWithPrefix("HP:0000001");
+    t1 = TermId.constructWithPrefix("HP:0000002");
+    t2 = TermId.constructWithPrefix("HP:0000003");
+    t3 = TermId.constructWithPrefix("HP:0000004");
+    t1_1 = TermId.constructWithPrefix("HP:0000005");
+    t1_2 = TermId.constructWithPrefix("HP:0000006");
+    t1_1_1 = TermId.constructWithPrefix("HP:0000007");
+    t1_1_2 = TermId.constructWithPrefix("HP:0000008");
+    t2_1 = TermId.constructWithPrefix("HP:0000009");
+    t2_2 = TermId.constructWithPrefix("HP:0000010");
+    t3_1 = TermId.constructWithPrefix("HP:0000011");
+    t3_2 = TermId.constructWithPrefix("HP:0000012");
 
     graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, t1, root, 1);
@@ -85,6 +86,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>(),
             "term1",
             "some definition 1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -99,6 +101,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>(),
             "term2",
             "some definition 2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -113,6 +116,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>(),
             "term3",
             "some definition 3",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -127,6 +131,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>(),
             "term1_1",
             "some definition 4",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -141,6 +146,7 @@ public class OntologyAlgorithmRelationshipTest {
             new ArrayList<>(),
             "term1_2",
             "some definition 5",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -155,7 +161,8 @@ public class OntologyAlgorithmRelationshipTest {
             t1_1_1,
             new ArrayList<>(),
             "term1_1_1",
-            "some definition 5",
+            "some definition 1_1_1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -169,7 +176,8 @@ public class OntologyAlgorithmRelationshipTest {
             t1_1_2,
             new ArrayList<>(),
             "term1_1_2",
-            "some definition 5",
+            "some definition 1_1_2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -183,7 +191,8 @@ public class OntologyAlgorithmRelationshipTest {
             t2_1,
             new ArrayList<>(),
             "term2_1",
-            "some definition 5",
+            "some definition 2_1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -197,7 +206,8 @@ public class OntologyAlgorithmRelationshipTest {
             t2_2,
             new ArrayList<>(),
             "term2_2",
-            "some definition 5",
+            "some definition 2_2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -211,7 +221,8 @@ public class OntologyAlgorithmRelationshipTest {
             t3_1,
             new ArrayList<>(),
             "term3_1",
-            "some definition 5",
+            "some definition 3_1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -225,7 +236,8 @@ public class OntologyAlgorithmRelationshipTest {
             t3_2,
             new ArrayList<>(),
             "term3_2",
-            "some definition 5",
+            "some definition 3_2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),

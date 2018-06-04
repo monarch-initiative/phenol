@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -99,10 +98,10 @@ class HpoAnnotationLine {
     this.DBObjectId = F[DB_OBJECT_ID_IDX];
     DbObjectName = F[DB_NAME_IDX];
     String phenoId = F[PHENOTYPE_ID_IDX];
-    this.phenotypeId = ImmutableTermId.constructWithPrefix(phenoId);
+    this.phenotypeId = TermId.constructWithPrefix(phenoId);
     String onset = F[ONSET_ID_IDX];
     if (onset != null && onset.startsWith("HP:")) {
-      onsetId = ImmutableTermId.constructWithPrefix(onset);
+      onsetId = TermId.constructWithPrefix(onset);
     }
     this.frequency = F[FREQUENCY_IDX];
     this.sex = F[SEX_IDX];

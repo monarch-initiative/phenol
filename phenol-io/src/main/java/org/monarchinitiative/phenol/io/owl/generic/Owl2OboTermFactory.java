@@ -1,36 +1,34 @@
 package org.monarchinitiative.phenol.io.owl.generic;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.geneontology.obographs.model.Meta;
 import org.geneontology.obographs.model.Node;
+import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.model.meta.XrefPropertyValue;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.SynonymMapper;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableDbxref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
  * Obographs's Nodes.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class GenericOwlFactory
+public class Owl2OboTermFactory
     implements OwlOntologyEntryFactory {
-  private static final Logger LOGGER = LoggerFactory.getLogger(GenericOwlFactory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Owl2OboTermFactory.class);
 
   @Override
   public Term constructTerm(Node node, TermId termId) {
@@ -46,7 +44,24 @@ public class GenericOwlFactory
 
     // 1. definition
     DefinitionPropertyValue definition = meta.getDefinition();
-    if (definition != null) genericTerm.setDefinition(definition.getVal());
+    List<SimpleXref> database_cross_ref_list=new ArrayList<>();
+    if (definition != null) {
+      genericTerm.setDefinition(definition.getVal());
+      List<String> xrefs = definition.getXrefs();
+      for (String x : xrefs) {
+        SimpleXref sxref = new SimpleXref(x);
+        if (sxref.isValid()) {
+          database_cross_ref_list.add(sxref);
+        } else {
+          System.err.println("[ERROR] invalid database cross ref: " + x);
+        }
+      }
+      genericTerm.setDatabaseXrefs(database_cross_ref_list);
+    } else {
+      genericTerm.setDefinition("");
+      genericTerm.setDatabaseXrefs(ImmutableList.of());
+    }
+
 
     // 2. comments
     List<String> comments = meta.getComments();
@@ -66,7 +81,7 @@ public class GenericOwlFactory
       for (XrefPropertyValue xrefPV : xrefPVList) {
         String val = xrefPV.getVal();
         if (val == null) continue;
-        dbxrefList.add(new ImmutableDbxref(val, null, null));
+        dbxrefList.add(new Dbxref(val, null, null));
       }
       if (!dbxrefList.isEmpty()) genericTerm.setXrefs(dbxrefList);
     }
@@ -85,18 +100,21 @@ public class GenericOwlFactory
     }
     genericTerm.setObsolete(isObsolete);
 
-    // 7. owl:equivalentClass entries?
-
-    // Additional properties/annotations can be further mapped by iterating BasicPropertyValue.
-    /*
+    // 7. altIds
+    List<TermId> altIdList=new ArrayList<>();
     List<BasicPropertyValue> bpvs = meta.getBasicPropertyValues();
-    if (bpvs != null) {
-    	for (BasicPropertyValue bpv: bpvs) {
-    		System.out.println("Pred: " + bpv.getPred());
-    		System.out.println("Val: " + bpv.getVal());
-    	}
+    if (bpvs!=null) {
+      for (BasicPropertyValue bpv : bpvs) {
+        if ("http://www.geneontology.org/formats/oboInOwl#hasAlternativeId".equals(bpv.getPred())) {
+          String altId = bpv.getVal();
+          altIdList.add(TermId.constructWithPrefix(altId));
+        }
+      }
+      genericTerm.setAltTermIds(altIdList);
+    } else {
+      genericTerm.setAltTermIds(ImmutableList.of());
     }
-     */
+
     return genericTerm;
   }
 

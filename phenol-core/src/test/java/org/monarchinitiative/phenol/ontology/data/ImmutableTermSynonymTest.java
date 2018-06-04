@@ -9,18 +9,18 @@ import com.google.common.collect.Lists;
 
 public class ImmutableTermSynonymTest {
 
-  ImmutableTermSynonym termSynonym;
+  private TermSynonym termSynonym;
 
   @Before
   public void setUp() {
     termSynonym =
-        new ImmutableTermSynonym(
+        new TermSynonym(
             "synonym",
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
             Lists.newArrayList(
-                new ImmutableTermXref(
-                    new ImmutableTermId(new ImmutableTermPrefix("HP"), "0000001"),
+                new TermXref(
+                    new TermId(new TermPrefix("HP"), "0000001"),
                     "term description")));
   }
 
@@ -30,10 +30,10 @@ public class ImmutableTermSynonymTest {
     assertEquals(TermSynonymScope.EXACT, termSynonym.getScope());
     assertEquals("BRITISH_ENGLISH", termSynonym.getSynonymTypeName());
     assertEquals(
-        "[ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=term description]]",
+        "[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]",
         termSynonym.getTermXrefs().toString());
     assertEquals(
-        "ImmutableTermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=ImmutableTermId [prefix=ImmutableTermPrefix [value=HP], id=0000001], description=term description]]]",
+        "TermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=TermId [prefix=TermPrefix [value=HP], id=0000001], description=term description]]]",
         termSynonym.toString());
   }
 }

@@ -45,7 +45,7 @@ public class OboEscapeUtils {
                         MAPPING
                             .keySet()
                             .stream()
-                            .map(s -> Pattern.quote(s))
+                            .map(Pattern::quote)
                             .collect(Collectors.toList()))
                 + ")");
   }

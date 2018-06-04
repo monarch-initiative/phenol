@@ -1,9 +1,16 @@
-package org.monarchinitiative.phenol.io.obo.mpo;
+package org.monarchinitiative.phenol.io.obo.uberpheno;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -25,30 +32,15 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntrySynonym;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryType;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryUnionOf;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
 import com.google.common.collect.Lists;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
 
 /**
- * Factory class for constructing {@link Term} and {@link Relationship} objects from {@link
- * Stanza} objects for usage in {@link OboOntologyEntryFactory}.
+ * Factory class for constructing {@link Term} and {@link Relationship} objects
+ * from {@link Stanza} objects for usage in {@link OboOntologyEntryFactory}.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-class MpoOboFactoryOLD implements OboOntologyEntryFactory {
+class UberphenoOboFactoryOLD implements OboOntologyEntryFactory {
 
   /**
    * Mapping from string representation of term Id to {@link TermId}.
@@ -56,13 +48,13 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
    * <p>All occuring termIds must be previously registered into this map before calling any of this
    * object's functions. This happens in {@link OboImmutableOntologyLoader}.
    */
-  private SortedMap<String, ImmutableTermId> termIds = null;
+  private SortedMap<String, TermId> termIds = null;
 
   /** Id of next relation. */
   private int nextRelationId = 1;
 
   @Override
-  public void setTermIds(SortedMap<String, ImmutableTermId> termIds) {
+  public void setTermIds(SortedMap<String, TermId> termIds) {
     this.termIds = termIds;
   }
 
@@ -127,11 +119,11 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
                             .stream()
                             .map(
                                 xref ->
-                                    new ImmutableTermXref(
+                                    new TermXref(
                                         termIds.get(xref.getName()), xref.getDescription()))
                             .collect(Collectors.toList());
 
-                    return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
+                    return new TermSynonym(value, scope, synonymTypeName, termXrefs);
                   })
               .collect(Collectors.toList());
     }
@@ -151,7 +143,7 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
     final String creationDateStr =
         (creationDateEntry == null) ? null : creationDateEntry.getValue();
 
-    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     Date creationDate = null;
     if (creationDateStr != null) {
       try {
@@ -177,6 +169,7 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
         altTermIds,
         name,
         definition,
+      ImmutableList.of(),
         comment,
         subsets,
         synonyms,
@@ -243,16 +236,19 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
     final TermId sourceId =
         termIds.get(this.<StanzaEntryId>getCardinalityOneEntry(stanza, StanzaEntryType.ID).getId());
     final TermId destId = termIds.get(stanzaEntry.getId());
-    return new Relationship(sourceId, destId, nextRelationId++, RelationshipType.IS_A);
+    return new Relationship(
+        sourceId, destId, nextRelationId++, RelationshipType.IS_A);
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryDisjointFrom stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryUnionOf stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 
@@ -263,7 +259,8 @@ class MpoOboFactoryOLD implements OboOntologyEntryFactory {
   }
 
   @Override
-  public Relationship constructrelationship(Stanza stanza, StanzaEntryRelationship stanzaEntry) {
+  public Relationship constructrelationship(
+      Stanza stanza, StanzaEntryRelationship stanzaEntry) {
     throw new UnsupportedOperationException();
   }
 }

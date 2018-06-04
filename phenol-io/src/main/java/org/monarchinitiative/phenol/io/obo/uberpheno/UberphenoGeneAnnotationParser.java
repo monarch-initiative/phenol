@@ -8,8 +8,8 @@ import java.io.IOException;
 import org.monarchinitiative.phenol.formats.uberpheno.UberphenoGeneAnnotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+
 
 /**
  * Parser for "genes to phenotype annotation" files.
@@ -137,7 +137,7 @@ public class UberphenoGeneAnnotationParser
     }
     final String termDescription = pair[0];
     final TermId termId =
-        ImmutableTermId.constructWithPrefix(pair[1].substring(0, pair[1].length() - 1));
+        TermId.constructWithPrefix(pair[1].substring(0, pair[1].length() - 1));
 
     nextLine = reader.readLine();
 

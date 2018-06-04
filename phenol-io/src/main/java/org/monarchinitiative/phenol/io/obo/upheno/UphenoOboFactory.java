@@ -1,9 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.upheno;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Relationship;
-import org.monarchinitiative.phenol.ontology.data.RelationshipType;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.io.obo.OboOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.obo.Stanza;
@@ -25,14 +24,6 @@ import org.monarchinitiative.phenol.io.obo.StanzaEntrySynonym;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryType;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryUnionOf;
 import org.monarchinitiative.phenol.io.obo.StanzaEntryXref;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermId;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermSynonym;
-import org.monarchinitiative.phenol.ontology.data.ImmutableTermXref;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
-import org.monarchinitiative.phenol.ontology.data.TermXref;
 import com.google.common.collect.Lists;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,13 +47,13 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
    * <p>All occuring termIds must be previously registered into this map before calling any of this
    * object's functions. This happens in {@link OboImmutableOntologyLoader}.
    */
-  private SortedMap<String, ImmutableTermId> termIds = null;
+  private SortedMap<String, TermId> termIds = null;
 
   /** Id of next relation. */
   private int nextRelationId = 1;
 
   @Override
-  public void setTermIds(SortedMap<String, ImmutableTermId> termIds) {
+  public void setTermIds(SortedMap<String, TermId> termIds) {
     this.termIds = termIds;
   }
 
@@ -127,11 +118,11 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
                             .stream()
                             .map(
                                 xref ->
-                                    new ImmutableTermXref(
+                                    new TermXref(
                                         termIds.get(xref.getName()), xref.getDescription()))
                             .collect(Collectors.toList());
 
-                    return new ImmutableTermSynonym(value, scope, synonymTypeName, termXrefs);
+                    return new TermSynonym(value, scope, synonymTypeName, termXrefs);
                   })
               .collect(Collectors.toList());
     }
@@ -178,6 +169,7 @@ class UphenoOboFactory implements OboOntologyEntryFactory {
         altTermIds,
         name,
         definition,
+      ImmutableList.of(),
         comment,
         subsets,
         synonyms,

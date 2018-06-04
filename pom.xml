@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0</version>
+  <version>1.0.3</version>
 
   <name>${project.groupId}:${project.artifactId}</name>
 
@@ -26,7 +26,7 @@
     <jcommander.version>1.72</jcommander.version>
     <jackson.version>2.9.4</jackson.version>
     <h2.version>1.4.196</h2.version>
-    <jgrapht.version>1.1.0</jgrapht.version>
+    <jgrapht.version>1.2.0</jgrapht.version>
   </properties>
 
   <modules>
@@ -123,11 +123,17 @@
       <version>${slf4j.version}</version>
     </dependency>
 
-    <dependency>
+  <!--
+   Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
+   but only depend on slf4j-api. When a library declares a compile-time dependency on a SLF4J binding,
+   it imposes that binding on the end-user, thus negating SLF4J's purpose.
+
+   <dependency>
        <groupId>org.slf4j</groupId>
        <artifactId>slf4j-jdk14</artifactId>
        <version>${slf4j.version}</version>
      </dependency>
+     -->
 
     <!-- Google Guava -->
     <dependency>

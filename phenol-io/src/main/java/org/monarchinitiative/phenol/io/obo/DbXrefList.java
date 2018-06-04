@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.obo;
 
+import org.monarchinitiative.phenol.ontology.data.Dbxref;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
 
 /**
  * Representation of the <code>dbXrefList</code> from the OBO file.

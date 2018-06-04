@@ -149,7 +149,7 @@ public class HpoDiseaseAnnotationParser {
     if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
     String modifierTermStrings[] = lst.split(";");
     for (String mt : modifierTermStrings) {
-      TermId mtid = ImmutableTermId.constructWithPrefix(mt.trim());
+      TermId mtid = TermId.constructWithPrefix(mt.trim());
       builder.add(mtid);
     }
     return builder.build();
@@ -165,7 +165,7 @@ public class HpoDiseaseAnnotationParser {
     if (!hp.startsWith("HP:")) {
       return null;
     } else {
-      TermId tid = ImmutableTermId.constructWithPrefix(hp);
+      TermId tid = TermId.constructWithPrefix(hp);
       if (ontology.getTermMap().containsKey(tid)) {
         return ontology
           .getTermMap()

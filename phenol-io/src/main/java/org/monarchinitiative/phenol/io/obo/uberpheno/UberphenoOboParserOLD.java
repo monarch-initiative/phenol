@@ -1,29 +1,32 @@
-package org.monarchinitiative.phenol.io.obo.mpo;
+package org.monarchinitiative.phenol.io.obo.uberpheno;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.formats.mpo.MpoOntology;
+import org.monarchinitiative.phenol.formats.uberpheno.UberphenoOntology;
+
+
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.obo.OboImmutableOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
 /**
- * Facade class for parsing the Mpo from an OBO file.
+ * Facade class for parsing the Uberpheno from an OBO file.
  *
  * <h5>Usage Example</h5>
  *
  * <pre>
- * String fileName = "mp.obo";
- * MpoOBOParser parser = new MpoOBOParser(new File(fileName));
- * Mpontology Mpo;
+ * String fileName = "crossSpeciesOntology.obo";
+ * UberphenoOBOParser parser = new UberphenoOBOParser(new File(fileName));
+ * Uberphenontology Uberpheno;
  * try {
- *   Mpo = parser.parse();
+ *   Uberpheno = parser.parse();
  * } catch (IOException e) {
  *   System.err.println("Problem reading file " + fileName + ": " + e.getMessage());
  * }
@@ -31,7 +34,7 @@ import com.google.common.collect.ImmutableSortedMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
+public final class UberphenoOboParserOLD implements OntologyOboParser<UberphenoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -45,7 +48,7 @@ public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public MpoOboParserOLD(File oboFile, boolean debug) {
+  public UberphenoOboParserOLD(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -55,25 +58,26 @@ public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
    *
    * @param oboFile The OBO file to read.
    */
-  public MpoOboParserOLD(File oboFile) {
+  public UberphenoOboParserOLD(File oboFile) {
     this(oboFile, false);
   }
 
   /**
-   * Parse OBO file into {@link MpoOntology} object.
+   * Parse OBO file into {@link UberphenoOntology} object.
    *
-   * @return {@link MpoOntology} from parsing OBO file.
+   * @return {@link UberphenoOntology} from parsing OBO file.
    * @throws IOException In case of problems with file I/O.
    */
-  public MpoOntology parse() throws IOException {
+  @Override
+  public UberphenoOntology parse() throws IOException {
     final OboImmutableOntologyLoader loader =
         new OboImmutableOntologyLoader(oboFile, debug);
-    final MpoOboFactoryOLD factory = new MpoOboFactoryOLD();
+    final UberphenoOboFactoryOLD factory = new UberphenoOboFactoryOLD();
     final ImmutableOntology o = loader.load(factory);
 
-    // Convert ImmutableOntology into Mpontology. The casts here are ugly and require the
+    // Convert ImmutableOntology into Uberphenontology. The casts here are ugly and require the
     // @SuppressWarnings above but this saves us one factory layer of indirection.
-    return new MpoOntology(
+    return new UberphenoOntology(
         (ImmutableSortedMap<String, String>) o.getMetaInfo(),
         o.getGraph(),
         o.getRootTermId(),
@@ -84,6 +88,7 @@ public final class MpoOboParserOLD implements OntologyOboParser<MpoOntology> {
   }
 
   /** @return The OBO file to parse. */
+  @Override
   public File getOboFile() {
     return oboFile;
   }

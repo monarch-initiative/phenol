@@ -36,7 +36,7 @@ public final class OntologyTerms {
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology> void visitChildrenOf(
-      TermId termId, O ontology, TermVisitor<O> termVisitor) {
+    TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?
@@ -88,7 +88,7 @@ public final class OntologyTerms {
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology> void visitParentsOf(
-      TermId termId, O ontology, TermVisitor<O> termVisitor) {
+    TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     // TODO: Is there a more elegant solution to this problem?

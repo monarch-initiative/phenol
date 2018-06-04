@@ -32,21 +32,21 @@ public class ImmutableOntologyTestBase {
 
   protected ImmutableOntology ontology;
 
-  protected ImmutableTermId id1;
-  protected ImmutableTermId id2;
-  protected ImmutableTermId id3;
-  protected ImmutableTermId id4;
-  protected ImmutableTermId id5;
+  protected TermId id1;
+  protected TermId id2;
+  protected TermId id3;
+  protected TermId id4;
+  protected TermId id5;
 
   @Before
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    id1 = ImmutableTermId.constructWithPrefix("HP:0000001");
-    id2 = ImmutableTermId.constructWithPrefix("HP:0000002");
-    id3 = ImmutableTermId.constructWithPrefix("HP:0000003");
-    id4 = ImmutableTermId.constructWithPrefix("HP:0000004");
-    id5 = ImmutableTermId.constructWithPrefix("HP:0000005");
+    id1 = TermId.constructWithPrefix("HP:0000001");
+    id2 = TermId.constructWithPrefix("HP:0000002");
+    id3 = TermId.constructWithPrefix("HP:0000003");
+    id4 = TermId.constructWithPrefix("HP:0000004");
+    id5 = TermId.constructWithPrefix("HP:0000005");
     vertices = ImmutableList.of(id1, id2, id3, id4, id5);
 
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
@@ -68,6 +68,7 @@ public class ImmutableOntologyTestBase {
             new ArrayList<>(),
             "term1",
             "some definition 1",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -82,6 +83,7 @@ public class ImmutableOntologyTestBase {
             new ArrayList<>(),
             "term2",
             "some definition 2",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -96,6 +98,7 @@ public class ImmutableOntologyTestBase {
             new ArrayList<>(),
             "term3",
             "some definition 3",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -110,6 +113,7 @@ public class ImmutableOntologyTestBase {
             new ArrayList<>(),
             "term4",
             "some definition 4",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
@@ -124,6 +128,7 @@ public class ImmutableOntologyTestBase {
             new ArrayList<>(),
             "term5",
             "some definition 5",
+          ImmutableList.of(),
             null,
             new ArrayList<>(),
             new ArrayList<>(),
