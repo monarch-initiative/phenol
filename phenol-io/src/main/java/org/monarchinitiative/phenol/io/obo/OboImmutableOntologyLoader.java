@@ -42,6 +42,7 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
+@Deprecated
 public final class OboImmutableOntologyLoader {
 
   /** The {@link Logger} object to use for logging. */

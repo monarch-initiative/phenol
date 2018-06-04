@@ -8,7 +8,7 @@ import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.obo.go.GoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.obo.go.GoOboParser;
+import org.monarchinitiative.phenol.io.obo.go.GoOboParserOLD;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
 import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoGeneAnnotationParser;
@@ -37,7 +37,7 @@ public final class OntologyParserFactory {
       OntologyType ontology, File oboFile) {
     switch (ontology) {
       case GO:
-        return new GoOboParser(oboFile);
+        return new GoOboParserOLD(oboFile);
       case HPO:
         return new HpoOboParser(oboFile);
       case UBERPHENO:

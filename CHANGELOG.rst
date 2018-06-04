@@ -5,7 +5,8 @@ Changelog
 ------
 v1.0.3
 ------
-- refactored MP parsing to use new OWLAPI-based parser
+- refactored MP and GO parsing to use new OWLAPI-based parser
+- adding support for adding artificial root to ontologies such as GO with multiple root terms.
 - upgraded to obographs v0.1.1
 
 ------

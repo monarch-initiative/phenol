@@ -12,6 +12,7 @@ import java.util.TreeMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+@Deprecated
 public class Header {
 
   /** Wrapped {@link List} of {@link StanzaEntry} objects. */

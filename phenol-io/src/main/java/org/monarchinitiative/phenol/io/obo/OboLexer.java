@@ -12,6 +12,7 @@ import de.charite.compbio.ontolib.io.obo.parser.Antlr4OboLexer;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+@Deprecated
 public class OboLexer extends Antlr4OboLexer {
 
   public OboLexer(CharStream input) {
