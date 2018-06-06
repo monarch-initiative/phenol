@@ -26,8 +26,7 @@ public class HpoDiseaseAnnotationParser {
   /** Path to the phenotype.hpoa annotation file. */
   private String annotationFilePath;
   private final HpoOntology ontology;
-
-
+  /** Key: hpoDisease.getDiseaseDatabaseId(); Value: corresponding {@HpoDisease} object. */
   private Map<String, HpoDisease> diseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
   private List<String> errors=new ArrayList<>();
