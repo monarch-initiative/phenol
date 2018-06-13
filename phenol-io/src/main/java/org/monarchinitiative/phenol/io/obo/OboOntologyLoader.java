@@ -208,11 +208,8 @@ public final class OboOntologyLoader {
     } if (rootCandSet.size() > 1 ) {
       TermPrefix prefix;
       Optional<TermId> firstId = rootCandSet.stream().findFirst();
-      if (firstId.isPresent()) {
-        prefix = firstId.get().getPrefix();
-      } else { // this should never happen, but if we cannot find a term, use Owl as the prefix
-        prefix = new TermPrefix("Owl");
-      }
+      // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
+      prefix = firstId.map(TermId::getPrefix).orElseGet(() -> new TermPrefix("Owl"));
       // Assumption: "0000000" is not used for actual terms in any OBO ontology
       rootId = new TermId(prefix,"0000000");
       Term rootTerm = new Term();
