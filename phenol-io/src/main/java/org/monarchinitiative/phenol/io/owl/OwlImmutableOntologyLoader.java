@@ -96,9 +96,6 @@ public final class OwlImmutableOntologyLoader {
     int edgeId = 1;
     DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
         new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    final ClassBasedEdgeFactory<TermId, IdLabeledEdge> edgeFactory =
-        new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
-
     Set<String> rootCandSet = Sets.newHashSet();
     Set<String> removeMarkSet = Sets.newHashSet();
 
@@ -158,7 +155,7 @@ public final class OwlImmutableOntologyLoader {
 
       phenolGraph.addVertex(subTermId);
       phenolGraph.addVertex(objTermId);
-      IdLabeledEdge e = edgeFactory.createEdge(subTermId, objTermId);
+      IdLabeledEdge e = new IdLabeledEdge();//edgeFactory.createEdge(subTermId, objTermId);
       e.setId(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
 

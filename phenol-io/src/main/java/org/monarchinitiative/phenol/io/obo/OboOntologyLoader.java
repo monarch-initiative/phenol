@@ -14,7 +14,6 @@ import com.google.common.collect.*;
 import org.geneontology.obographs.model.*;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.generic.Owl2OboTermFactory;

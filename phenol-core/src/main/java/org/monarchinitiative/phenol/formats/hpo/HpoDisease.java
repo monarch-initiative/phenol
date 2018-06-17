@@ -22,10 +22,8 @@ import java.util.stream.Collectors;
 public final class HpoDisease {
   /** Name of the disease from annotation. */
   private final String name;
-  /** Name of the database, e.g., OMIM, DECIPHER, ORPHANET */
-  private final String database;
-
-  private final String diseaseDatabaseId;
+  /** The disease identifier as a CURIE, e.g., OMIM:600100. */
+  private final TermId diseaseDatabaseId;
 
   /** {@link TermId}s with phenotypic abnormalities and their frequencies. */
   private final List<HpoAnnotation> phenotypicAbnormalities;
@@ -35,7 +33,7 @@ public final class HpoDisease {
 
   private final List<TermId> negativeAnnotations;
 
-  public String getDiseaseDatabaseId() {
+  public TermId getDiseaseDatabaseId() {
     return diseaseDatabaseId;
   }
 
@@ -48,13 +46,11 @@ public final class HpoDisease {
    */
   public HpoDisease(
       String name,
-      String dbase,
-      String databaseId,
+      TermId databaseId,
       List<HpoAnnotation> phenotypicAbnormalities,
       List<TermId> modesOfInheritance,
       List<TermId> notTerms) {
     this.name = name;
-    this.database = dbase;
     this.diseaseDatabaseId = databaseId;
     this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
     this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
@@ -148,12 +144,12 @@ public final class HpoDisease {
             .map(HpoAnnotation::getIdWithPrefix)
             .collect(Collectors.joining(";"));
     return String.format(
-        "HpoDisease [name=%s;%s:%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
-        name, database, diseaseDatabaseId, abnormalityList, modesOfInheritance);
+        "HpoDisease [name=%s;%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
+        name, diseaseDatabaseId.getIdWithPrefix(), abnormalityList, modesOfInheritance);
   }
 
-  /** @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER */
+  /** @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER (prefix of the diseaseId) */
   public String getDatabase() {
-    return database;
+    return diseaseDatabaseId.getPrefix().getValue();
   }
 }

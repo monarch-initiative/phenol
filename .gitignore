@@ -16,12 +16,8 @@ manual/build/
 
 # BlueJ files
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.ear
-*.rar
-
 # Javadoc-files
 # Maven .gitignore ----------------------------------------------------------
 
@@ -37,13 +33,13 @@ buildNumber.properties
 .mvn/timing.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
-/phenol-core/ontolib-core.iml
 .idea/
-BLA
 /phenol-io/phenol-io.iml
 /phenol-cli/phenol-cli.iml
-phenol-core/src/test/java/com/
-
 *.checkstyle
 /phenol-core/phenol-core.iml
+phenol-cli/target/
+phenol-core/target/
+phenol-io/src/test/resources/Homo_sapiens.gene_info.excerpt.gz
+phenol-io/src/test/resources/mim2gene_medgen.excerpt
+phenol-io/target/

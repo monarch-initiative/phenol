@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.graph.util;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
@@ -16,11 +15,9 @@ public class GraphUtil<V> {
   // This method should be used only for testing codes, not for loading graph data in loaders.
   public static <V> void addEdgeToGraph(
       DefaultDirectedGraph<V, IdLabeledEdge> g, V t1, V t2, int id) {
-    final ClassBasedEdgeFactory<V, IdLabeledEdge> edgeFactory =
-      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
     g.addVertex(t1);
     g.addVertex(t2);
-    IdLabeledEdge e = edgeFactory.createEdge(t1, t2);
+    IdLabeledEdge e = new IdLabeledEdge();//edgeFactory.createEdge(t1, t2);
     e.setId(id);
     g.addEdge(t1, t2, e);
   }
@@ -76,11 +73,10 @@ public class GraphUtil<V> {
       DefaultDirectedGraph<V, IdLabeledEdge> g, Collection<V> vertices) {
     DefaultDirectedGraph<V, IdLabeledEdge> newSubgraph =
       new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    ClassBasedEdgeFactory<V, IdLabeledEdge> edgeFactory =
-      new ClassBasedEdgeFactory<>(IdLabeledEdge.class);
+
     for (IdLabeledEdge e : g.edgeSet() ) {
       if (vertices.contains(e.getSource()) && vertices.contains(e.getTarget())) {
-        IdLabeledEdge termIdEdge = edgeFactory.createEdge((V) e.getSource(), (V) e.getTarget());
+        IdLabeledEdge termIdEdge = new IdLabeledEdge();
         termIdEdge.setId(e.getId());
         newSubgraph.addVertex((V) e.getSource());
         newSubgraph.addVertex((V) e.getTarget());
