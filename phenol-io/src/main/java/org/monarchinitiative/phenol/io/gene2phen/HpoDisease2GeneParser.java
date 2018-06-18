@@ -57,8 +57,22 @@ public class HpoDisease2GeneParser {
     return builder.build();
   }
 
+  public Multimap<TermId,TermId> getDiseaseId2GeneIdMap() {
+    List<Disease2GeneAssociation> lst = parse();
+    ImmutableMultimap.Builder<TermId,TermId> builder = new ImmutableMultimap.Builder<>();
+    for (Disease2GeneAssociation g2p : lst) {
+      TermId diseaseId = g2p.getDiseaseId();
+      List<Gene> geneList = g2p.getGeneList();
+      for (Gene g: geneList) {
+        TermId geneId = g.getId();
+        builder.put(diseaseId,geneId);
+      }
+    }
+    return builder.build();
+  }
 
-  public Multimap<TermId,TermId> getGene2DiseaseIdMap() {
+
+  public Multimap<TermId,TermId> getGeneId2DiseaseIdMap() {
     List<Disease2GeneAssociation> lst = parse();
     ImmutableMultimap.Builder<TermId,TermId> builder = new ImmutableMultimap.Builder<>();
     for (Disease2GeneAssociation g2p : lst) {

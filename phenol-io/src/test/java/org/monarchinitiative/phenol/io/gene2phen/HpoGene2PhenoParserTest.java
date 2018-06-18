@@ -100,7 +100,7 @@ public class HpoGene2PhenoParserTest {
    */
   @Test
   public void testFbn1() {
-    Multimap<TermId,TermId> mmap = parser.getGene2DiseaseIdMap();
+    Multimap<TermId,TermId> mmap = parser.getGeneId2DiseaseIdMap();
     TermId Fbn1Id = TermId.constructWithPrefix("NCBIGene:2200");
     assertTrue(mmap.containsKey(Fbn1Id));
     Collection<TermId> diseaseIdCollection = mmap.get(Fbn1Id);
