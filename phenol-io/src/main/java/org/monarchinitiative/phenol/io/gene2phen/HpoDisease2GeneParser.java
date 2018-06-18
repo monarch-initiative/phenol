@@ -19,8 +19,8 @@ import java.util.zip.GZIPInputStream;
  * <p>This class parses the files {@code mim2gene_medgen}, available from
  * <a href="ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen">ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen</a>
  * as well as the file {@code Homo_sapiens_gene_info.gz}, available from
- * <a href="ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz">
- *     ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz</a>.
+ * <a href="ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz">
+ *     ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz</a>.
  * mim2gene_medgen contains the MIM number of diseases and EntrezGene number of genes associated with the disease;
  * The relevant lines of the file are marked with "phenotype". The Homo_sapiens_gene_info.gz file contains the  entrez gene
  * number of genes as well as their gene symbol. </p>
@@ -28,7 +28,7 @@ import java.util.zip.GZIPInputStream;
  * representing the gene-to-disease links in OMIM.</p>
  * <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class HpoGene2PhenoParser {
+public class HpoDisease2GeneParser {
 
   private final String homoSapiensGeneInfoPath;
 
@@ -41,7 +41,7 @@ public class HpoGene2PhenoParser {
   private static final TermPrefix ENTREZ_GENE_PREFIX=new TermPrefix("NCBIGene");
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
-  public HpoGene2PhenoParser(String geneInfoPath, String mim2gene_medgenPath){
+  public HpoDisease2GeneParser(String geneInfoPath, String mim2gene_medgenPath){
     this.homoSapiensGeneInfoPath =geneInfoPath;
     this.mim2gene_medgenPath=mim2gene_medgenPath;
   }
