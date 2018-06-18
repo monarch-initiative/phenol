@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 public class HpoGene2PhenoParserTest {
-  private static HpoGene2PhenoParser parser;
+  private static HpoDisease2GeneParser parser;
 
   @ClassRule
   public static TemporaryFolder tmpFolder = new TemporaryFolder();
@@ -33,7 +33,7 @@ public class HpoGene2PhenoParserTest {
     ResourceUtils.copyResourceToFile("/mim2gene_medgen.excerpt", mim2gene);
     File geneInfo=tmpFolder.newFile("Homo_sapiens.gene_info.gz");
     ResourceUtils.copyResourceToFile("/Homo_sapiens.gene_info.excerpt.gz",geneInfo);
-    parser = new HpoGene2PhenoParser(geneInfo.getAbsolutePath(),mim2gene.getAbsolutePath());
+    parser = new HpoDisease2GeneParser(geneInfo.getAbsolutePath(),mim2gene.getAbsolutePath());
   }
 
   @Test
