@@ -22,7 +22,8 @@ public class Term  {
 
   /** The term's definition. */
   private String definition;
-
+  /** These are the cross-references that go along with the definition. In the case of the HPO, these
+   * are often PubMed ids.   */
   private List<SimpleXref> databaseXrefs;
 
   /** The term's comment string. */

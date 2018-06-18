@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v1.1.0
+------
+- HPO Annotation parser now indexes diseases as a TermId representing the disease CURIE, e.g., MONDO:0000042.
+
+------
 v1.0.3
 ------
 - refactored MP and GO parsing to use new OWLAPI-based parser

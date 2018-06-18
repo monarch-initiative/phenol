@@ -1,7 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 /**
  * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
@@ -34,6 +36,11 @@ class HpoAnnotationLine {
   private static final int ASSIGNED_BY_IDX = 12;
   private static final int DATE_CREATED_IDX = 13;
 
+  private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
+  private static final TermPrefix ORPHANET_PREFIX = new TermPrefix("ORPHA");
+  private static final TermPrefix DECIPHER_PREFIX = new TermPrefix("DECIPHER");
+
+
   private boolean valid_number_of_fields=true;
 
   /**
@@ -47,7 +54,6 @@ class HpoAnnotationLine {
     "Qualifier",
     "HPO_ID",
     "DB_Reference",
-
     "Evidence",
     "Onset",
     "Frequency",
@@ -130,6 +136,24 @@ class HpoAnnotationLine {
 
   final String getDiseaseId() {
     return String.format("%s:%s", database, DBObjectId);
+  }
+
+  /**
+   * This function combines the data in {@link #database} and {@link #DBObjectId} to
+   * create a Curie-type identifier for the disease, e.g., OMIM:600100.
+   * @return The TermId representing this disease.
+   * @throws PhenolException if the {@link #database} field is invalid (not OMIM, ORPHA, or DECIPHER)
+   */
+  TermId getDiseaseTermId() throws PhenolException {
+    switch (database) {
+      case "OMIM":
+        return new TermId(OMIM_PREFIX,DBObjectId);
+      case "ORPHA":
+        return new TermId(ORPHANET_PREFIX,DBObjectId);
+      case "DECIPHER":
+        return new TermId(DECIPHER_PREFIX,DBObjectId);
+    }
+    throw new PhenolException("Invalid disease prefix: "+database);
   }
 
   TermId getPhenotypeId() {

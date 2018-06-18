@@ -25,9 +25,10 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
 public class HpoDiseaseAnnotationParser {
   /** Path to the phenotype.hpoa annotation file. */
   private String annotationFilePath;
+  /** Reference to the HPO Ontology object. */
   private final HpoOntology ontology;
-  /** Key: hpoDisease.getDiseaseDatabaseId(); Value: corresponding {@HpoDisease} object. */
-  private Map<String, HpoDisease> diseaseMap;
+  /** Key: disease CURIE, e.g., OMIM:600100; Value: corresponding {@link HpoDisease} object. */
+  private Map<TermId, HpoDisease> diseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
   private List<String> errors=new ArrayList<>();
 
@@ -47,9 +48,9 @@ public class HpoDiseaseAnnotationParser {
    * Parse the {@code phenotype.hpoa} file and return a map of diseases.
    * @return a map with key: disease id, e.g., OMIM:600123, and value the corresponding HpoDisease object.
    * */
-  public Map<String, HpoDisease> parse() throws PhenolException {
+  public Map<TermId, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
-    Map<String, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
+    Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
@@ -68,11 +69,11 @@ public class HpoDiseaseAnnotationParser {
           continue;
         }
         List<HpoAnnotationLine> annots;
-        if (disease2AnnotLineMap.containsKey(aline.getDiseaseId())) {
-          annots = disease2AnnotLineMap.get(aline.getDiseaseId());
+        if (disease2AnnotLineMap.containsKey(aline.getDiseaseTermId())) {
+          annots = disease2AnnotLineMap.get(aline.getDiseaseTermId());
         } else {
           annots = new ArrayList<>();
-          disease2AnnotLineMap.put(aline.getDiseaseId(), annots);
+          disease2AnnotLineMap.put(aline.getDiseaseTermId(), annots);
         }
         annots.add(aline);
 
@@ -83,13 +84,12 @@ public class HpoDiseaseAnnotationParser {
     }
     // When we get down here, we have added all of the disease annotations to the disease2AnnotLineMap
     // Now we want to transform them into HpoDisease objects
-    for (String diseaseId : disease2AnnotLineMap.keySet()) {
+    for (TermId diseaseId : disease2AnnotLineMap.keySet()) {
       List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
       final ImmutableList.Builder<HpoAnnotation> phenoListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> negativeTermListBuilder = ImmutableList.builder();
       String diseaseName = null;
-      String database = null;
       for (HpoAnnotationLine line : annots) {
         try {
           if (isInheritanceTerm(line.getPhenotypeId())) {
@@ -108,7 +108,6 @@ public class HpoDiseaseAnnotationParser {
             phenoListBuilder.add(tidm);
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
-          if (line.getDatabase() != null) database = line.getDatabase();
         } catch (Exception e) {
           errors.add("[PHENOL ERROR] could not parse annotation: "+ e.getMessage());
         }
@@ -116,7 +115,6 @@ public class HpoDiseaseAnnotationParser {
       HpoDisease hpoDisease =
         new HpoDisease(
           diseaseName,
-          database,
           diseaseId,
           phenoListBuilder.build(),
           inheritanceListBuilder.build(),
@@ -188,7 +186,9 @@ public class HpoDiseaseAnnotationParser {
    * object (100%).
    */
   private double getFrequency(String freq) {
-    if (freq == null || freq.isEmpty()) HpoFrequency.ALWAYS_PRESENT.mean();
+    if (freq == null || freq.isEmpty()) {
+      return HpoFrequency.ALWAYS_PRESENT.mean();
+    }
     int i = freq.indexOf("%");
     if (i > 0) {
       return 0.01 * Double.parseDouble(freq.substring(0, i));
