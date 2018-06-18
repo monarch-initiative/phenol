@@ -40,6 +40,4 @@ buildNumber.properties
 /phenol-core/phenol-core.iml
 phenol-cli/target/
 phenol-core/target/
-phenol-io/src/test/resources/Homo_sapiens.gene_info.excerpt.gz
-phenol-io/src/test/resources/mim2gene_medgen.excerpt
 phenol-io/target/
