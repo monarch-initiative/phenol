@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import org.junit.rules.TemporaryFolder;
  */
 public class HpoDiseaseAnnotationParserTest {
 
+  private HpoDiseaseAnnotationParser parser;
+
   @Rule
   public TemporaryFolder tmpFolder = new TemporaryFolder();
 
@@ -21,15 +24,17 @@ public class HpoDiseaseAnnotationParserTest {
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile(
         "/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
+//    parser =
+//      new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath());
   }
 
   /*
   @Test
   public void testParseHpoDiseaseAnnotationHead() {
-    final HpoDiseaseAnnotationParser parser =
-      new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath());
+    final HpoDiseaseAnnotationParser
 
   }
+
 
     // Read and check first record.
     final HpoDiseaseAnnotation firstRecord = parser.next();

@@ -27,7 +27,7 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <!--Use filtering so that maven will replace placeholders with values 
+        <!--Use filtering so that maven will replace placeholders with values
           from the pom e.g. ${project.version} -->
         <filtering>true</filtering>
       </resource>
@@ -35,7 +35,7 @@
 
     <plugins>
 
-      <!-- Specify the resources which need to be made accessible to the 
+      <!-- Specify the resources which need to be made accessible to the
         user -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -52,7 +52,7 @@
               <resources>
                 <resource>
                   <directory>src/main/resources</directory>
-                  <!--Use filtering so that maven will replace placeholders 
+                  <!--Use filtering so that maven will replace placeholders
                     with values from the pom e.g. ${project.version} -->
                   <filtering>true</filtering>
                   <includes>
@@ -78,17 +78,19 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <!-- set useUniqueVersions=false in order that the classpath 
+              <!-- set useUniqueVersions=false in order that the classpath
                 has the SNAPSHOT instead of the build number prefixed to the dependency -->
               <useUniqueVersions>false</useUniqueVersions>
               <mainClass>org.bihealth.cubi.vsift.app.VariantSiftApp</mainClass>
             </manifest>
           </archive>
-          <compilerArgument>-Xlint:all</compilerArgument>
+         <!-- <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
+          <showDeprecation>true</showDeprecation> -->
         </configuration>
       </plugin>
+
+
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -107,29 +109,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-
-      <!-- Make an executable jar and specify the main class and classpath -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
-              <!-- set useUniqueVersions=false in order that the classpath 
-                has the SNAPSHOT instead of the build number prefixed to the dependency -->
-              <useUniqueVersions>false</useUniqueVersions>
-              <mainClass>com.github.phenomics.ontolib.demos.compute_similarities.App</mainClass>
-            </manifest>
-          </archive>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
-        </configuration>
       </plugin>
 
       <!-- More JAR building -->
@@ -154,18 +133,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Main class in JAR -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.github.phenomics.ontolib.demos.compute_similarities.App</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
+
 
       <!-- Compilation -->
       <plugin>
