@@ -78,7 +78,8 @@ public final class HpoModeOfInheritanceTermIds {
 
   /** {@link TermId} for "Y-linked inheritance. */
   public static final TermId Y_LINKED = TermId.constructWithPrefix("HP:0001450");
-
+  /** {@link TermId} for "autosomal recessive inheritance. */
+  public static final TermId AUTOSOMAL_RECESSIVE = TermId.constructWithPrefix("HP:0000007");
   /** {@link TermId} for "autosomal dominant inheritance. */
   public static final TermId AUTOSOMAL_DOMINANT = TermId.constructWithPrefix("HP:0000006");
 
