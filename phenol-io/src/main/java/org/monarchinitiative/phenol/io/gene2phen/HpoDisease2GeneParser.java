@@ -34,7 +34,7 @@ public class HpoDisease2GeneParser {
 
   private final String mim2gene_medgenPath;
   /** Key--an EntrezGene id; value--the corresponding symbol. */
-  private Map<String,String> geneInfoMap;
+  private Map<TermId,String> geneInfoMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding Gene2Association object). */
   private ImmutableMultimap<TermId,Gene2Association> associationMap;
 
@@ -57,6 +57,8 @@ public class HpoDisease2GeneParser {
     return builder.build();
   }
 
+  public Map<TermId,String> getGeneId2SymbolMap() { return this.geneInfoMap;}
+
   public Multimap<TermId,TermId> getDiseaseId2GeneIdMap() {
     List<Disease2GeneAssociation> lst = parse();
     ImmutableMultimap.Builder<TermId,TermId> builder = new ImmutableMultimap.Builder<>();
@@ -70,6 +72,8 @@ public class HpoDisease2GeneParser {
     }
     return builder.build();
   }
+
+
 
 
   public Multimap<TermId,TermId> getGeneId2DiseaseIdMap() {
@@ -128,7 +132,8 @@ public class HpoDisease2GeneParser {
         String mimid=a[0];
         TermId omimCurie = new TermId(OMIM_PREFIX, mimid);
         String entrezGeneNumber=a[1];
-        String symbol = this.geneInfoMap.get(entrezGeneNumber);
+        TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
+        String symbol = this.geneInfoMap.get(entrezId);
         if (symbol==null) {
           symbol="-";
         }
@@ -149,7 +154,7 @@ public class HpoDisease2GeneParser {
 
 
   private void parseGeneInfo() throws IOException {
-    Map<String,String> genmap=new HashMap<>();
+    ImmutableMap.Builder<TermId,String> builder=new ImmutableMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoPath);
     InputStream gzipStream = new GZIPInputStream(fileStream);
     Reader decoder = new InputStreamReader(gzipStream);
@@ -161,10 +166,11 @@ public class HpoDisease2GeneParser {
       if (! taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
       String geneId=a[1];
       String symbol=a[2];
-      genmap.put(geneId,symbol);
+      TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
+      builder.put(tid,symbol);
       //System.out.println(geneId + ": "+symbol);
     }
-    this.geneInfoMap = genmap;
+    this.geneInfoMap = builder.build();
   }
 
 
