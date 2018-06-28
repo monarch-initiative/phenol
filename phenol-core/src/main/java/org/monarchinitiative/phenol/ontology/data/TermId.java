@@ -16,7 +16,7 @@ public final class TermId implements Comparable<TermId>, Serializable {
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 2L;
 
-  /** Prefix of the TermIdI. */
+  /** Prefix of the TermId. */
   private final TermPrefix prefix;
 
   /** Identifier behind the prefix. */
