@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represent an HPO TermI together with a Frequency and an Onset and modifiers. This is intended to
+ * Represent an HPO Term together with a Frequency and an Onset and modifiers. This is intended to
  * be used to represent a disease annotation.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
