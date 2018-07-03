@@ -34,7 +34,7 @@ public class HpoDiseaseToGeneParser {
 
   private final String mim2gene_medgenPath;
   /** Key--an EntrezGene id; value--the corresponding symbol. */
-  private Map<TermId,String> geneInfoMap;
+  private Map<TermId,String> geneIdToSymbolMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). */
   private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
   /** Key: a disease Id; Value: a geneId */
@@ -58,7 +58,7 @@ public class HpoDiseaseToGeneParser {
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
-  public Map<TermId,String> getGeneToSymbolMap() { return this.geneInfoMap;}
+  public Map<TermId,String> getGeneToSymbolMap() { return this.geneIdToSymbolMap;}
 
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
 
@@ -122,7 +122,7 @@ public class HpoDiseaseToGeneParser {
         TermId omimCurie = new TermId(OMIM_PREFIX, mimid);
         String entrezGeneNumber=a[1];
         TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
-        String symbol = this.geneInfoMap.get(entrezId);
+        String symbol = this.geneIdToSymbolMap.get(entrezId);
         if (symbol==null) {
           symbol="-";
         }
@@ -158,7 +158,7 @@ public class HpoDiseaseToGeneParser {
       TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
       builder.put(tid,symbol);
     }
-    this.geneInfoMap = builder.build();
+    this.geneIdToSymbolMap = builder.build();
   }
 
 
