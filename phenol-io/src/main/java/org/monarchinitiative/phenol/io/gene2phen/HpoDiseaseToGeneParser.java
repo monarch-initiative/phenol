@@ -46,9 +46,10 @@ public class HpoDiseaseToGeneParser {
   /** List of all associations */
   private List<DiseaseToGeneAssociation> associationList;
 
-
   private static final TermPrefix ENTREZ_GENE_PREFIX=new TermPrefix("NCBIGene");
+
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
+
 
   public HpoDiseaseToGeneParser(String geneInfoPath, String mim2gene_medgenPath){
     this.homoSapiensGeneInfoPath = geneInfoPath;
@@ -58,11 +59,15 @@ public class HpoDiseaseToGeneParser {
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
+
   public Map<TermId,String> getGeneToSymbolMap() { return this.geneIdToSymbolMap;}
+
 
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
 
+
   public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
+
 
   private void setAssociationMaps(){
     ImmutableMultimap.Builder<TermId,TermId> builderGeneToDisease = new ImmutableMultimap.Builder<>();
@@ -82,6 +87,7 @@ public class HpoDiseaseToGeneParser {
     this.diseaseToGeneMap = builderDiseaseToGene.build();
     this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
   }
+
 
   public void parse() {
 
@@ -141,7 +147,6 @@ public class HpoDiseaseToGeneParser {
   }
 
 
-
   private void parseGeneInfo() throws IOException {
     ImmutableMap.Builder<TermId,String> builder=new ImmutableMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoPath);
@@ -160,11 +165,5 @@ public class HpoDiseaseToGeneParser {
     }
     this.geneIdToSymbolMap = builder.build();
   }
-
-
-
-
-
-
 
 }
