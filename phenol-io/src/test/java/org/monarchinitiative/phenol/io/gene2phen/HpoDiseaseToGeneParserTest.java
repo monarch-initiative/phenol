@@ -7,7 +7,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.formats.Gene;
-import org.monarchinitiative.phenol.formats.hpo.Disease2GeneAssociation;
+import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -21,8 +21,8 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
-public class HpoGene2PhenoParserTest {
-  private static HpoDisease2GeneParser parser;
+public class HpoDiseaseToGeneParserTest {
+  private static HpoDiseaseToGeneParser parser;
 
   @ClassRule
   public static TemporaryFolder tmpFolder = new TemporaryFolder();
@@ -33,7 +33,7 @@ public class HpoGene2PhenoParserTest {
     ResourceUtils.copyResourceToFile("/mim2gene_medgen.excerpt", mim2gene);
     File geneInfo=tmpFolder.newFile("Homo_sapiens.gene_info.gz");
     ResourceUtils.copyResourceToFile("/Homo_sapiens.gene_info.excerpt.gz",geneInfo);
-    parser = new HpoDisease2GeneParser(geneInfo.getAbsolutePath(),mim2gene.getAbsolutePath());
+    parser = new HpoDiseaseToGeneParser(geneInfo.getAbsolutePath(),mim2gene.getAbsolutePath());
   }
 
   @Test
@@ -41,24 +41,15 @@ public class HpoGene2PhenoParserTest {
     assertNotNull(parser);
   }
 
-  /*
-  @Test
-  public void testIt(){
-    List<Disease2GeneAssociation> g2p_list = parser.parse();
-    for (Disease2GeneAssociation g2p : g2p_list) {
-      System.out.println(g2p);
-    }
-  }*/
-
   /** TBX5 is the only gene involved with Holt-Oram syndrome (OMIM:142900), and
    * TBX5 is not associated with other diseases. TBX5 has the EntrezGene id 6910
     */
   @Test
   public void testHoltOram() {
-    Map<TermId,Disease2GeneAssociation> diseasemap= parser.getDiseaseId2AssociationMap();
+    Map<TermId,DiseaseToGeneAssociation> diseasemap= parser.getDiseaseToAssociationsMap();
     TermId holtOramId = TermId.constructWithPrefix("OMIM:142900");
     assertTrue(diseasemap.containsKey(holtOramId));
-    Disease2GeneAssociation holtOramAssociation = diseasemap.get(holtOramId);
+    DiseaseToGeneAssociation holtOramAssociation = diseasemap.get(holtOramId);
     List<Gene> geneList = holtOramAssociation.getGeneList();
     assertEquals(1,geneList.size());
     Gene gene = geneList.get(0);
@@ -74,10 +65,10 @@ public class HpoGene2PhenoParserTest {
    */
   @Test
   public void testAdamsOliver() {
-    Map<TermId,Disease2GeneAssociation> diseasemap= parser.getDiseaseId2AssociationMap();
+    Map<TermId,DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
     TermId adamsOliver1Id = TermId.constructWithPrefix("OMIM:100300");
     assertTrue(diseasemap.containsKey(adamsOliver1Id));
-    Disease2GeneAssociation holtOramAssociation = diseasemap.get(adamsOliver1Id);
+    DiseaseToGeneAssociation holtOramAssociation = diseasemap.get(adamsOliver1Id);
     List<Gene> geneList = holtOramAssociation.getGeneList();
     assertEquals(1,geneList.size());
     Gene gene = geneList.get(0);
@@ -100,7 +91,7 @@ public class HpoGene2PhenoParserTest {
    */
   @Test
   public void testFbn1() {
-    Multimap<TermId,TermId> mmap = parser.getGeneId2DiseaseIdMap();
+    Multimap<TermId,TermId> mmap = parser.getGeneToDiseaseIdMap();
     TermId Fbn1Id = TermId.constructWithPrefix("NCBIGene:2200");
     assertTrue(mmap.containsKey(Fbn1Id));
     Collection<TermId> diseaseIdCollection = mmap.get(Fbn1Id);
@@ -149,10 +140,10 @@ public class HpoGene2PhenoParserTest {
    */
   @Test
   public void testSusceptibilityGenes() {
-    Map<TermId,Disease2GeneAssociation> diseasemap= parser.getDiseaseId2AssociationMap();
+    Map<TermId,DiseaseToGeneAssociation> diseasemap= parser.getDiseaseToAssociationsMap();
     TermId familialHypercholesterolemia = TermId.constructWithPrefix("OMIM:143890");
     assertTrue(diseasemap.containsKey(familialHypercholesterolemia));
-    Disease2GeneAssociation hypercholesterolemiaAssociation = diseasemap.get(familialHypercholesterolemia);
+    DiseaseToGeneAssociation hypercholesterolemiaAssociation = diseasemap.get(familialHypercholesterolemia);
     List<Gene> geneList = hypercholesterolemiaAssociation.getGeneList();
     assertEquals(7,geneList.size());
     Gene APOA2 = new Gene(TermId.constructWithPrefix("NCBIGene:336"),"APOA2");

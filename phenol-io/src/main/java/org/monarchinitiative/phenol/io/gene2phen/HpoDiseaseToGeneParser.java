@@ -6,8 +6,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.AssociationType;
-import org.monarchinitiative.phenol.formats.hpo.Gene2Association;
-import org.monarchinitiative.phenol.formats.hpo.Disease2GeneAssociation;
+import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
+import org.monarchinitiative.phenol.formats.hpo.GeneToAssociation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
@@ -24,94 +24,84 @@ import java.util.zip.GZIPInputStream;
  * mim2gene_medgen contains the MIM number of diseases and EntrezGene number of genes associated with the disease;
  * The relevant lines of the file are marked with "phenotype". The Homo_sapiens_gene_info.gz file contains the  entrez gene
  * number of genes as well as their gene symbol. </p>
- * <p>The goal of this class is to return a list of {@link Disease2GeneAssociation} objects
+ * <p>The goal of this class is to return a list of {@link DiseaseToGeneAssociation} objects
  * representing the gene-to-disease links in OMIM.</p>
  * <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class HpoDisease2GeneParser {
+public class HpoDiseaseToGeneParser {
 
   private final String homoSapiensGeneInfoPath;
 
   private final String mim2gene_medgenPath;
   /** Key--an EntrezGene id; value--the corresponding symbol. */
   private Map<TermId,String> geneInfoMap;
-  /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding Gene2Association object). */
-  private ImmutableMultimap<TermId,Gene2Association> associationMap;
+  /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). */
+  private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
+  /** Key: a disease Id; Value: a geneId */
+  private ImmutableMultimap<TermId,TermId> diseaseToGeneMap;
+  /** Key: a gene Id; Value: a diseaseId */
+  private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
+  /** Key: a disease Id; Value:  disease obj, all gene associations */
+  private ImmutableMap<TermId,DiseaseToGeneAssociation> diseaseToAssociationsMap;
+  /** List of all associations */
+  private List<DiseaseToGeneAssociation> associationList;
+
 
   private static final TermPrefix ENTREZ_GENE_PREFIX=new TermPrefix("NCBIGene");
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
-  public HpoDisease2GeneParser(String geneInfoPath, String mim2gene_medgenPath){
-    this.homoSapiensGeneInfoPath =geneInfoPath;
-    this.mim2gene_medgenPath=mim2gene_medgenPath;
+  public HpoDiseaseToGeneParser(String geneInfoPath, String mim2gene_medgenPath){
+    this.homoSapiensGeneInfoPath = geneInfoPath;
+    this.mim2gene_medgenPath = mim2gene_medgenPath;
+    this.parse();
   }
 
 
-  public Map<TermId,Disease2GeneAssociation> getDiseaseId2AssociationMap() {
-    List<Disease2GeneAssociation> lst = parse();
-    ImmutableMap.Builder<TermId,Disease2GeneAssociation> builder = new ImmutableMap.Builder<>();
-    for (Disease2GeneAssociation g2p : lst) {
-      TermId diseaseId = g2p.getDiseaseId();
-      builder.put(diseaseId,g2p);
-    }
-    return builder.build();
-  }
+  public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
-  public Map<TermId,String> getGeneId2SymbolMap() { return this.geneInfoMap;}
+  public Map<TermId,String> getGeneToSymbolMap() { return this.geneInfoMap;}
 
-  public Multimap<TermId,TermId> getDiseaseId2GeneIdMap() {
-    List<Disease2GeneAssociation> lst = parse();
-    ImmutableMultimap.Builder<TermId,TermId> builder = new ImmutableMultimap.Builder<>();
-    for (Disease2GeneAssociation g2p : lst) {
+  public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
+
+  public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
+
+  private void setAssociationMaps(){
+    ImmutableMultimap.Builder<TermId,TermId> builderGeneToDisease = new ImmutableMultimap.Builder<>();
+    ImmutableMultimap.Builder<TermId,TermId> builderDiseaseToGene = new ImmutableMultimap.Builder<>();
+    ImmutableMap.Builder<TermId,DiseaseToGeneAssociation> builderDiseasetoAssociation = new ImmutableMap.Builder<>();
+    for (DiseaseToGeneAssociation g2p : associationList) {
       TermId diseaseId = g2p.getDiseaseId();
       List<Gene> geneList = g2p.getGeneList();
+      builderDiseasetoAssociation.put(diseaseId, g2p);
       for (Gene g: geneList) {
         TermId geneId = g.getId();
-        builder.put(diseaseId,geneId);
+        builderGeneToDisease.put(geneId, diseaseId);
+        builderDiseaseToGene.put(diseaseId, geneId);
       }
     }
-    return builder.build();
+    this.geneToDiseaseMap = builderGeneToDisease.build();
+    this.diseaseToGeneMap = builderDiseaseToGene.build();
+    this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
   }
 
+  private void parse() {
 
-
-
-  public Multimap<TermId,TermId> getGeneId2DiseaseIdMap() {
-    List<Disease2GeneAssociation> lst = parse();
-    ImmutableMultimap.Builder<TermId,TermId> builder = new ImmutableMultimap.Builder<>();
-    for (Disease2GeneAssociation g2p : lst) {
-      TermId diseaseId = g2p.getDiseaseId();
-      List<Gene> geneList = g2p.getGeneList();
-      for (Gene g: geneList) {
-        TermId geneId = g.getId();
-        builder.put(geneId,diseaseId);
-      }
-    }
-    return builder.build();
-  }
-
-
-
-
-
-  public List<Disease2GeneAssociation> parse() {
-
-    ImmutableList.Builder<Disease2GeneAssociation> builder = new ImmutableList.Builder<>();
-
+    ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
 
     try {
       parseGeneInfo();
       parseMim2GeneMedgen();
       for (TermId omimCurie : associationMap.keySet()) {
-        Collection<Gene2Association> g2aList = associationMap.get(omimCurie);
-        Disease2GeneAssociation g2p = new Disease2GeneAssociation(omimCurie, ImmutableList.copyOf(g2aList));
+        Collection<GeneToAssociation> g2aList = associationMap.get(omimCurie);
+        DiseaseToGeneAssociation g2p = new DiseaseToGeneAssociation(omimCurie, ImmutableList.copyOf(g2aList));
         builder.add(g2p);
       }
 
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return builder.build();
+    this.associationList = builder.build();
+    this.setAssociationMaps();
   }
 
 
@@ -122,7 +112,7 @@ public class HpoDisease2GeneParser {
    * @throws IOException if the mim2gene_medgen file cannot be read
    */
   private void parseMim2GeneMedgen() throws IOException {
-    ImmutableMultimap.Builder<TermId,Gene2Association> associationBuilder = new ImmutableMultimap.Builder<>();
+    ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
     BufferedReader br = new BufferedReader(new FileReader(mim2gene_medgenPath));
     String line;
     while ((line=br.readLine())!=null) {
@@ -140,10 +130,10 @@ public class HpoDisease2GeneParser {
         TermId geneId=new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
         Gene gene = new Gene(geneId,symbol);
         if (a[5].contains("susceptibility")) {
-          Gene2Association g2a = new Gene2Association(gene,AssociationType.POLYGENIC);
+          GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.POLYGENIC);
           associationBuilder.put(omimCurie,g2a);
         } else {
-          Gene2Association g2a = new Gene2Association(gene,AssociationType.MENDELIAN);
+          GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.MENDELIAN);
           associationBuilder.put(omimCurie, g2a);
         }
       }
@@ -168,7 +158,6 @@ public class HpoDisease2GeneParser {
       String symbol=a[2];
       TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
       builder.put(tid,symbol);
-      //System.out.println(geneId + ": "+symbol);
     }
     this.geneInfoMap = builder.build();
   }
