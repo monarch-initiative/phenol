@@ -34,6 +34,7 @@ public class HpoDiseaseToGeneParserTest {
     File geneInfo=tmpFolder.newFile("Homo_sapiens.gene_info.gz");
     ResourceUtils.copyResourceToFile("/Homo_sapiens.gene_info.excerpt.gz",geneInfo);
     parser = new HpoDiseaseToGeneParser(geneInfo.getAbsolutePath(),mim2gene.getAbsolutePath());
+    parser.parse();
   }
 
   @Test

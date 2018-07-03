@@ -53,7 +53,6 @@ public class HpoDiseaseToGeneParser {
   public HpoDiseaseToGeneParser(String geneInfoPath, String mim2gene_medgenPath){
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2gene_medgenPath = mim2gene_medgenPath;
-    this.parse();
   }
 
 
@@ -84,7 +83,7 @@ public class HpoDiseaseToGeneParser {
     this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
   }
 
-  private void parse() {
+  public void parse() {
 
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
 
