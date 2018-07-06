@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import com.google.common.collect.ImmutableMultimap;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.*;
 
@@ -29,6 +30,8 @@ public class HpoDiseaseAnnotationParser {
   private final HpoOntology ontology;
   /** Key: disease CURIE, e.g., OMIM:600100; Value: corresponding {@link HpoDisease} object. */
   private Map<TermId, HpoDisease> diseaseMap;
+  /** Key: HpoPhenotypeId; Value: corresponding {@link HpoDisease} object. */
+  private ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
   private List<String> errors=new ArrayList<>();
 
@@ -42,7 +45,9 @@ public class HpoDiseaseAnnotationParser {
   /** @return a list of Strings each of which represents one parse error.*/
   public List<String> getErrors() { return errors; }
 
-
+  public ImmutableMultimap<TermId, TermId> getTermToDiseaseMap(){
+    return this.phenotypeToDiseaseMap;
+  }
 
   /**
    * Parse the {@code phenotype.hpoa} file and return a map of diseases.
@@ -51,6 +56,7 @@ public class HpoDiseaseAnnotationParser {
   public Map<TermId, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
+    ImmutableMultimap.Builder<TermId,TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
@@ -62,12 +68,12 @@ public class HpoDiseaseAnnotationParser {
             "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
       }
       while ((line = br.readLine()) != null) {
-        //System.out.println(line);
         HpoAnnotationLine aline = new HpoAnnotationLine(line);
         if (! aline.hasValidNumberOfFields()) {
           errors.add(String.format("Invalid number of fields: %s",line));
           continue;
         }
+        builderTermToDisease.put(aline.getPhenotypeId(),aline.getDiseaseTermId());
         List<HpoAnnotationLine> annots;
         if (disease2AnnotLineMap.containsKey(aline.getDiseaseTermId())) {
           annots = disease2AnnotLineMap.get(aline.getDiseaseTermId());
@@ -78,6 +84,7 @@ public class HpoDiseaseAnnotationParser {
         annots.add(aline);
 
       }
+      this.phenotypeToDiseaseMap = builderTermToDisease.build();
       br.close();
     } catch (IOException e) {
       throw new PhenolException(String.format("Could not read annotation file: %s",e.getMessage()));

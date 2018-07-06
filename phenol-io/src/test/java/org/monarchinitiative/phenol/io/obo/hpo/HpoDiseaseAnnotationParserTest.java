@@ -1,5 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMultimap;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,12 +24,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class HpoDiseaseAnnotationParserTest {
   private HpoDiseaseAnnotationParser parser;
+  private Map<TermId, HpoDisease> parsedFile;
 
   @Rule
   public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() throws IOException, PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
     File hpoHeadFile;
 
@@ -39,14 +43,22 @@ public class HpoDiseaseAnnotationParserTest {
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile("/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
     parser = new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath(), ontology);
+    parsedFile = parser.parse();
   }
 
   @Test
   public void testParseHpoDiseaseAnnotation() throws PhenolException {
     // Test that the parser correctly parses an hpoa file, and returns a map.
-    Map<TermId, HpoDisease> parsedFile = parser.parse();
     HpoDisease testDisease = parsedFile.get(TermId.constructWithPrefix("OMIM:147421"));
     assertEquals(testDisease.getDiseaseDatabaseId(), TermId.constructWithPrefix("OMIM:147421"));
   }
+
+  @Test
+  public void testTermToDiseaseMap() {
+    ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap = parser.getTermToDiseaseMap();
+    ImmutableCollection<TermId> diseases = phenotypeToDiseaseMap.get(TermId.constructWithPrefix("HP:0000006"));
+    assertEquals(diseases.size(), 8);
+  }
+
 
 }

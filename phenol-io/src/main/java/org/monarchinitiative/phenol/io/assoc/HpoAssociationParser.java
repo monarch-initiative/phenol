@@ -1,18 +1,15 @@
-package org.monarchinitiative.phenol.io.gene2phen;
+package org.monarchinitiative.phenol.io.assoc;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
-import org.monarchinitiative.phenol.formats.hpo.AssociationType;
-import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
-import org.monarchinitiative.phenol.formats.hpo.GeneToAssociation;
+import org.monarchinitiative.phenol.formats.hpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -28,7 +25,7 @@ import java.util.zip.GZIPInputStream;
  * representing the gene-to-disease links in OMIM.</p>
  * <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class HpoDiseaseToGeneParser {
+public class HpoAssociationParser {
 
   private final String homoSapiensGeneInfoPath;
 
@@ -43,6 +40,8 @@ public class HpoDiseaseToGeneParser {
   private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
   /** Key: a disease Id; Value:  disease obj, all gene associations */
   private ImmutableMap<TermId,DiseaseToGeneAssociation> diseaseToAssociationsMap;
+  /** Key: a phenotype Id; Value: geneId */
+  private ImmutableMultimap<TermId, TermId> phenotypeToGeneMap;
   /** List of all associations */
   private List<DiseaseToGeneAssociation> associationList;
 
@@ -51,7 +50,7 @@ public class HpoDiseaseToGeneParser {
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
 
-  public HpoDiseaseToGeneParser(String geneInfoPath, String mim2gene_medgenPath){
+  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath){
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2gene_medgenPath = mim2gene_medgenPath;
   }
@@ -65,13 +64,37 @@ public class HpoDiseaseToGeneParser {
 
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
 
-
   public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
 
+  public Multimap<TermId,TermId> getPhenotypeToGeneMap() { return this.phenotypeToGeneMap; }
 
+  /*
+      @Parameter: Map of PhenotypeID's to DiseaseID's
+   */
+  public void setTermToGene(Multimap<TermId, TermId> phenotypeToDisease) throws PhenolException{
+
+    if(this.diseaseToGeneMap.isEmpty()){
+      throw new PhenolException("Error: Associations not parsed. Please call parse then set the term to gene mapping.");
+    }
+
+    ImmutableMultimap.Builder<TermId, TermId> builderTermToGene = new ImmutableMultimap.Builder<>();
+
+    for(TermId phenotype : phenotypeToDisease.keySet()){
+      List<TermId> geneList = phenotypeToDisease.get(phenotype).stream()
+        .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList());
+      builderTermToGene.putAll(phenotype, geneList);
+    }
+    this.phenotypeToGeneMap = builderTermToGene.build();
+  }
+
+  /*
+      Generate and set all the association maps
+      Disease -> Gene Entire Object
+      Multimap DiseaseId to GeneId
+      Multimap GeneId -> DiseaseID
+   */
   private void setAssociationMaps(){
     ImmutableMultimap.Builder<TermId,TermId> builderGeneToDisease = new ImmutableMultimap.Builder<>();
-    ImmutableMultimap.Builder<TermId,TermId> builderDiseaseToGene = new ImmutableMultimap.Builder<>();
     ImmutableMap.Builder<TermId,DiseaseToGeneAssociation> builderDiseasetoAssociation = new ImmutableMap.Builder<>();
     for (DiseaseToGeneAssociation g2p : associationList) {
       TermId diseaseId = g2p.getDiseaseId();
@@ -80,11 +103,10 @@ public class HpoDiseaseToGeneParser {
       for (Gene g: geneList) {
         TermId geneId = g.getId();
         builderGeneToDisease.put(geneId, diseaseId);
-        builderDiseaseToGene.put(diseaseId, geneId);
       }
     }
     this.geneToDiseaseMap = builderGeneToDisease.build();
-    this.diseaseToGeneMap = builderDiseaseToGene.build();
+    this.diseaseToGeneMap = builderGeneToDisease.build().inverse();
     this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
   }
 
