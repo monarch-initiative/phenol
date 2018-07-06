@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMultimap;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
