@@ -27,6 +27,8 @@ import java.util.zip.GZIPInputStream;
  */
 public class HpoAssociationParser {
 
+  private final HpoOntology hpoOntology;
+
   private final String homoSapiensGeneInfoPath;
 
   private final String mim2gene_medgenPath;
@@ -41,7 +43,7 @@ public class HpoAssociationParser {
   /** Key: a disease Id; Value:  disease obj, all gene associations */
   private ImmutableMap<TermId,DiseaseToGeneAssociation> diseaseToAssociationsMap;
   /** Key: a phenotype Id; Value: geneId */
-  private ImmutableMultimap<TermId, TermId> phenotypeToGeneMap;
+  private ImmutableList<HpoGeneAnnotation> phenotypeToGeneList;
   /** List of all associations */
   private List<DiseaseToGeneAssociation> associationList;
 
@@ -50,7 +52,8 @@ public class HpoAssociationParser {
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
 
-  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath){
+  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, HpoOntology ontology){
+    this.hpoOntology = ontology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2gene_medgenPath = mim2gene_medgenPath;
   }
@@ -61,14 +64,16 @@ public class HpoAssociationParser {
 
   public Map<TermId,String> getGeneToSymbolMap() { return this.geneIdToSymbolMap;}
 
-
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
 
   public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
 
-  public Multimap<TermId,TermId> getPhenotypeToGeneMap() { return this.phenotypeToGeneMap; }
+  public List<HpoGeneAnnotation> getPhenotypeToGene() { return this.phenotypeToGeneList; }
 
   /*
+      Builds a list of HpoGeneAnnotations, which are just an object that represents a relationship
+      from Gene to HP Term.
+
       @Parameter: Map of PhenotypeID's to DiseaseID's
    */
   public void setTermToGene(Multimap<TermId, TermId> phenotypeToDisease) throws PhenolException{
@@ -77,14 +82,20 @@ public class HpoAssociationParser {
       throw new PhenolException("Error: Associations not parsed. Please call parse then set the term to gene mapping.");
     }
 
-    ImmutableMultimap.Builder<TermId, TermId> builderTermToGene = new ImmutableMultimap.Builder<>();
+    ImmutableList.Builder<HpoGeneAnnotation> builderGeneAnnotationList = new ImmutableList.Builder<>();
 
     for(TermId phenotype : phenotypeToDisease.keySet()){
-      List<TermId> geneList = phenotypeToDisease.get(phenotype).stream()
-        .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList());
-      builderTermToGene.putAll(phenotype, geneList);
+     phenotypeToDisease.get(phenotype).stream()
+        .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList()).forEach((gene) -> {
+          Integer entrezId = Integer.parseInt(gene.getId());
+          String  entrezGeneSymbol = this.geneIdToSymbolMap.get(gene);
+          String  hpoTermName = hpoOntology.getTermMap().get(phenotype).getName();
+          this.geneIdToSymbolMap.get(gene);
+          HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, hpoTermName, phenotype);
+          builderGeneAnnotationList.add(geneAnnotation);
+        });
     }
-    this.phenotypeToGeneMap = builderTermToGene.build();
+    this.phenotypeToGeneList = builderGeneAnnotationList.build();
   }
 
   /*

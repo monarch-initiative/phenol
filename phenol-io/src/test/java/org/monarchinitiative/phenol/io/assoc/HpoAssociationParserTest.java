@@ -10,6 +10,8 @@ import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
+import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -32,11 +34,19 @@ public class HpoAssociationParserTest {
   @BeforeClass
   public static void init() throws IOException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
+
     File mim2gene = tmpFolder.newFile("mim2gene_medgen");
     ResourceUtils.copyResourceToFile("/mim2gene_medgen.excerpt", mim2gene);
+
     File geneInfo = tmpFolder.newFile("Homo_sapiens.gene_info.gz");
     ResourceUtils.copyResourceToFile("/Homo_sapiens.gene_info.excerpt.gz", geneInfo);
-    parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath());
+
+    File hpoHeadFile = tmpFolder.newFile("hp_head.obo");
+    ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
+    final HpoOboParser oboParser = new HpoOboParser(hpoHeadFile, true);
+    final HpoOntology ontology = oboParser.parse();
+
+    parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath(), ontology);
     parser.parse();
   }
 
@@ -168,11 +178,11 @@ public class HpoAssociationParserTest {
   public void testTermToGene() throws PhenolException {
     // This test map should come from {@link HpoDiseaseAnnotationParser}
     TermId familialHypercholesterolemia = TermId.constructWithPrefix("OMIM:143890");
-    TermId fakePhenotype = TermId.constructWithPrefix("HPO:000000");
+    TermId fakePhenotype = TermId.constructWithPrefix("HP:0000118");
     Multimap<TermId, TermId> testMap = ArrayListMultimap.create();
     testMap.put(fakePhenotype, familialHypercholesterolemia);
     parser.setTermToGene(testMap);
-    assertEquals(parser.getPhenotypeToGeneMap().values().size(), 7);
+    assertEquals(parser.getPhenotypeToGene().size(), 7);
   }
 
   @Test
@@ -180,5 +190,13 @@ public class HpoAssociationParserTest {
     Multimap<TermId, TermId> diseaseMap = parser.getDiseaseToGeneIdMap();
     Collection<TermId> genes = diseaseMap.get(TermId.constructWithPrefix("OMIM:143890"));
     assertEquals(genes.size(), 7);
+  }
+
+
+  @Test
+  public void testGeneIdToGeneSymbol(){
+    Map<TermId, String> geneMap = parser.getGeneToSymbolMap();
+    assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2690")),"GHR");
+    assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2200")),"FBN1");
   }
 }

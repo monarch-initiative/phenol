@@ -18,9 +18,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * TODO refactor to use the small hp file and a small annotation file.
- */
 public class HpoDiseaseAnnotationParserTest {
   private HpoDiseaseAnnotationParser parser;
   private Map<TermId, HpoDisease> parsedFile;
