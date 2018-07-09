@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableSortedSet;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class HpoOboParserTest {
+public class HpoOboParserOLDTest {
   @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private File hpoHeadFile;
@@ -38,7 +38,7 @@ public class HpoOboParserTest {
 
   @Test
   public void testParseHpoHead() throws IOException {
-    final HpoOboParser parser = new HpoOboParser(hpoHeadFile, true);
+    final HpoOboParserOLD parser = new HpoOboParserOLD(hpoHeadFile, true);
     final HpoOntology ontology = parser.parse();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 

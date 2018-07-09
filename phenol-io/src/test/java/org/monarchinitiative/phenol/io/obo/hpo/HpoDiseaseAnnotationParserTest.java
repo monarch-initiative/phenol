@@ -36,7 +36,7 @@ public class HpoDiseaseAnnotationParserTest {
 
     hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpoOboParser oboParser = new HpoOboParser(hpoHeadFile, true);
+    final HpoOboParserOLD oboParser = new HpoOboParserOLD(hpoHeadFile, true);
     final HpoOntology ontology = oboParser.parse();
 
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");

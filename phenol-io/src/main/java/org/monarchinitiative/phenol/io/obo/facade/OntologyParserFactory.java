@@ -7,16 +7,11 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.base.OntologyOboParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.io.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.go.GoOboParserOLD;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
-import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoGeneAnnotationParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParserOLD;
 import org.monarchinitiative.phenol.io.obo.uberpheno.UberphenoOboParserOLD;
-import org.monarchinitiative.phenol.io.obo.upheno.UphenoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.obo.upheno.UphenoOboParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 
 /**
  * Class with helper method for creating parsers for OBO and related files.
@@ -39,7 +34,7 @@ public final class OntologyParserFactory {
       case GO:
         return new GoOboParserOLD(oboFile);
       case HPO:
-        return new HpoOboParser(oboFile);
+        return new HpoOboParserOLD(oboFile);
       case UBERPHENO:
         return new UberphenoOboParserOLD(oboFile);
       case UPHENO:
@@ -59,7 +54,7 @@ public final class OntologyParserFactory {
    * @throws TermAnnotationParserException When there is a problem with initializing the term
    *     annotation parser.
    * @throws IOException When there is a problem with file I/O.
-   */
+
   public static TermAnnotationParser<? extends TermAnnotation> constructGeneAnnotationParser(
       OntologyType ontology, File annoFile) throws IOException, TermAnnotationParserException {
     switch (ontology) {
@@ -74,5 +69,5 @@ public final class OntologyParserFactory {
       default:
         throw new RuntimeException("Invalid ontology selected " + ontology);
     }
-  }
+  } */
 }

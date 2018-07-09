@@ -5,6 +5,7 @@ import java.util.List;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue.PREDS;
 
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
@@ -39,10 +40,7 @@ public class SynonymMapper {
 
       // Map the synonym's cross-references.
       List<String> xrefs = spv.getXrefs();
-      List<TermXref> termXrefs = Lists.newArrayList();
-      for (String xref : xrefs) {
-        termXrefs.add(XrefMapper.mapXref(xref));
-      }
+      List<TermXref> termXrefs = mapXref(xrefs);
 
       TermSynonym its = new TermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
       termSynonymList.add(its);
@@ -50,4 +48,24 @@ public class SynonymMapper {
 
     return termSynonymList;
   }
+
+
+  static List<TermXref> mapXref(List<String>  xrefs) {
+    List<TermXref> termXrefs = Lists.newArrayList();
+    for (String xref : xrefs) {
+      try {
+        TermId xrefTermId = TermId.constructWithPrefix(xref);
+        TermXref trf = new TermXref(xrefTermId,"");
+        termXrefs.add(trf);
+      } catch (Exception e) {
+        // ignore
+      }
+    }
+
+    return termXrefs;
+  }
+
+
+
+
 }

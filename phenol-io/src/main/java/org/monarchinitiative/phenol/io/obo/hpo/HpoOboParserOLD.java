@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableSortedMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
+public final class HpoOboParserOLD implements OntologyOboParser<HpoOntology> {
 
   /** Path to the OBO file to parse. */
   private final File oboFile;
@@ -46,7 +46,7 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
    * @param oboFile The OBO file to read.
    * @param debug Whether or not to enable debugging.
    */
-  public HpoOboParser(File oboFile, boolean debug) {
+  public HpoOboParserOLD(File oboFile, boolean debug) {
     this.oboFile = oboFile;
     this.debug = debug;
   }
@@ -56,7 +56,7 @@ public final class HpoOboParser implements OntologyOboParser<HpoOntology> {
    *
    * @param oboFile The OBO file to read.
    */
-  public HpoOboParser(File oboFile) {
+  public HpoOboParserOLD(File oboFile) {
     this(oboFile, false);
   }
 

@@ -5,7 +5,7 @@ import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParserOLD;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
@@ -90,7 +90,7 @@ public class PrecomputeScoresCommand {
 
   private void loadOntology() {
     LOGGER.info("Loading ontology from OBO...");
-    HpoOboParser hpoOboParser = new HpoOboParser(new File(options.getOboFile()));
+    HpoOboParserOLD hpoOboParser = new HpoOboParserOLD(new File(options.getOboFile()));
     try {
       ontology = hpoOboParser.parse();
       phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
