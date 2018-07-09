@@ -59,7 +59,7 @@ public class HpoAssociationParser {
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
 
-  public Map<TermId,String> getGeneToSymbolMap() { return this.geneIdToSymbolMap;}
+  public Map<TermId,String> getGeneIdToSymbolMap() { return this.geneIdToSymbolMap;}
 
 
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
