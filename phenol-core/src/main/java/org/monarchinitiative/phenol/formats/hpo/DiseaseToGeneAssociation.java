@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * This class represents an assertion that a gene or genes is(are) causally involved with a disease.
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class Disease2GeneAssociation {
+public class DiseaseToGeneAssociation {
 
 
 
@@ -18,9 +18,9 @@ public class Disease2GeneAssociation {
   private final TermId disease;
 
 
-  private final List<Gene2Association> gene2assoc;
+  private final List<GeneToAssociation> gene2assoc;
 
-  public Disease2GeneAssociation(TermId id, List<Gene2Association> genes) {
+  public DiseaseToGeneAssociation(TermId id, List<GeneToAssociation> genes) {
     this.gene2assoc=genes;
     this.disease=id;
 
@@ -33,10 +33,10 @@ public class Disease2GeneAssociation {
 
   /** @return a list of all genes (regardless of association type). */
   public List<Gene> getGeneList() {
-    return gene2assoc.stream().map(Gene2Association::getGene).collect(Collectors.toList());
+    return gene2assoc.stream().map(GeneToAssociation::getGene).collect(Collectors.toList());
   }
 
-  public List<Gene2Association> getAssociations() {
+  public List<GeneToAssociation> getAssociations() {
     return gene2assoc;
   }
 
@@ -45,7 +45,7 @@ public class Disease2GeneAssociation {
     return String.format("%s: %s",
       disease.getIdWithPrefix(),
       gene2assoc.stream().
-        map(Gene2Association::getGene).
+        map(GeneToAssociation::getGene).
         map(Gene::toString).
         collect(Collectors.joining(";"))
       );

@@ -2,11 +2,11 @@ package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.formats.Gene;
 
-public class Gene2Association {
+public class GeneToAssociation {
   private final Gene gene;
   private final AssociationType association;
 
-  public Gene2Association(Gene g, AssociationType at) {
+  public GeneToAssociation(Gene g, AssociationType at) {
     gene=g;
     association=at;
   }
