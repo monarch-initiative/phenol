@@ -4,6 +4,7 @@ import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
@@ -41,7 +42,9 @@ public class HpoAssociationParser {
   /** Key: a gene Id; Value: a diseaseId */
   private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
   /** Key: a disease Id; Value:  disease obj, all gene associations */
-  private ImmutableMap<TermId,DiseaseToGeneAssociation> diseaseToAssociationsMap;
+  private ImmutableMap<TermId, DiseaseToGeneAssociation> diseaseToAssociationsMap;
+  /** Key: an phenotype Idl Value: disease obj, HpoDisease, Immutable. */
+  private Map<TermId, HpoDisease> termToDisease;
   /** Key: a phenotype Id; Value: geneId */
   private ImmutableList<HpoGeneAnnotation> phenotypeToGeneList;
   /** List of all associations */
@@ -61,7 +64,6 @@ public class HpoAssociationParser {
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
-
   public Map<TermId,String> getGeneToSymbolMap() { return this.geneIdToSymbolMap;}
 
   public Multimap<TermId,TermId> getDiseaseToGeneIdMap() { return this.diseaseToGeneMap; }
@@ -69,6 +71,8 @@ public class HpoAssociationParser {
   public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
 
   public List<HpoGeneAnnotation> getPhenotypeToGene() { return this.phenotypeToGeneList; }
+
+  public Map<TermId, HpoDisease> getTermToDisease() { return this.termToDisease; }
 
   /*
       Builds a list of HpoGeneAnnotations, which are just an object that represents a relationship
@@ -96,6 +100,11 @@ public class HpoAssociationParser {
         });
     }
     this.phenotypeToGeneList = builderGeneAnnotationList.build();
+  }
+
+  public void setTermToDisease(Map<TermId, HpoDisease> termToDisease){
+
+    this.termToDisease = termToDisease;
   }
 
   /*
