@@ -195,7 +195,7 @@ public class HpoAssociationParserTest {
 
   @Test
   public void testGeneIdToGeneSymbol(){
-    Map<TermId, String> geneMap = parser.getGeneToSymbolMap();
+    Map<TermId, String> geneMap = parser.getGeneIdToSymbolMap();
     assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2690")),"GHR");
     assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2200")),"FBN1");
   }
