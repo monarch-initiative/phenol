@@ -110,9 +110,9 @@ public interface MinimalOntology extends Serializable {
   /** @return {@link Collection} of all term ({@code T}) objects, including the obsolete ones. */
   Collection<Term> getTerms();
 
-  /** @return The number of all terms in the ontology. */
+  /** @return The number of all non-obsolete terms in the ontology. */
   default int countAllTerms() {
-    return getAllTermIds().size();
+    return getNonObsoleteTermIds().size();
   }
 
   /** @return The number of all terms in the ontology. */

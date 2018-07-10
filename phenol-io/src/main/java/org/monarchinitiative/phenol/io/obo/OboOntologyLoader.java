@@ -16,7 +16,7 @@ import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
-import org.monarchinitiative.phenol.io.owl.generic.Owl2OboTermFactory;
+import org.monarchinitiative.phenol.io.owl.Owl2OboTermFactory;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
-
-import javax.swing.text.html.Option;
 
 /**
  * This class loads an OBO ontology using the OWLAPI.
