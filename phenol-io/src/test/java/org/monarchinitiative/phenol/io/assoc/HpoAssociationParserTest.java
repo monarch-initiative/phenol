@@ -11,7 +11,7 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -32,7 +32,7 @@ public class HpoAssociationParserTest {
   public static TemporaryFolder tmpFolder = new TemporaryFolder();
 
   @BeforeClass
-  public static void init() throws IOException {
+  public static void init() throws IOException, PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
     File mim2gene = tmpFolder.newFile("mim2gene_medgen");
@@ -43,7 +43,7 @@ public class HpoAssociationParserTest {
 
     File hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpoOboParser oboParser = new HpoOboParser(hpoHeadFile, true);
+    final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
     final HpoOntology ontology = oboParser.parse();
 
     parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath(), ontology);
