@@ -12,6 +12,7 @@ import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -36,8 +37,14 @@ public class HpoDiseaseAnnotationParserTest {
 
     hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpoOboParserOLD oboParser = new HpoOboParserOLD(hpoHeadFile, true);
-    final HpoOntology ontology = oboParser.parse();
+    final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
+    HpoOntology ontology;
+    final Optional<HpoOntology> ontologyOpt = oboParser.parse();
+    if(ontologyOpt.isPresent()){
+      ontology = ontologyOpt.get();
+    }else{
+      throw new PhenolException("No ontology found.");
+    }
 
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile("/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);
