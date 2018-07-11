@@ -66,7 +66,7 @@ public class PrecomputeScoresCommand {
   }
 
   /** Execute the command. */
-  public void run() {
+  public void run() throws PhenolException {
     printHeader();
     loadOntology();
     precomputePairwiseResnik();
@@ -84,20 +84,11 @@ public class PrecomputeScoresCommand {
     LOGGER.info(options.toString());
   }
 
-  private void loadOntology() {
+  private void loadOntology() throws PhenolException {
     LOGGER.info("Loading ontology from OBO...");
     HpOboParser hpOboParser = new HpOboParser(new File(options.getOboFile()));
-    try {
-      Optional<HpoOntology> ontologyOpt = hpOboParser.parse();
-      if(ontologyOpt.isPresent()){
-        ontology = ontologyOpt.get();
-      }else{
-        throw new IOException("Failed to parse obo");
-      }
-      phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    HpoOntology ontology = hpOboParser.parse();
+    phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
     LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");

@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
@@ -17,26 +18,19 @@ public class MpOboParser {
     this.oboFile = oboFile;
     this.debug = debug;
   }
+
+
   public MpOboParser(File oboFile) {
     this(oboFile,false);
   }
 
 
-  public Ontology parse() {
-    Ontology ontology;
+  public Ontology parse() throws PhenolException {
     final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
-    Optional<Ontology> optOnto = loader.load();
-    if (! optOnto.isPresent()) {
-      System.err.println("[ERROR] Failed to load ontology");
-      return null; // TODO return optional.
-    } else {
-      ontology = optOnto.get();
-    }
+    Ontology ontology = loader.load();
     if (debug) {
         System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
     }
     return ontology;
   }
-
-
 }

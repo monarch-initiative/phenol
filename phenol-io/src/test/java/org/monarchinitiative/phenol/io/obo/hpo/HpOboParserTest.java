@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
@@ -26,13 +27,11 @@ public class HpOboParserTest {
   private static HpoOntology ontology;
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, PhenolException {
     File hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
     final HpOboParser parser = new HpOboParser(hpoHeadFile, true);
-    final Optional<HpoOntology> ontologyOpt = parser.parse();
-    assertTrue(ontologyOpt.isPresent());
-    ontology = ontologyOpt.get();
+    ontology = parser.parse();
   }
 
   @Test

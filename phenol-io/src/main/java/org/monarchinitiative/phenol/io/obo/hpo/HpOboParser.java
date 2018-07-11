@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -27,24 +28,16 @@ public class HpOboParser {
   }
 
 
-  public Optional<HpoOntology> parse() {
+  public HpoOntology parse() throws PhenolException {
     Ontology ontology;
 
-
     final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
-    Optional<Ontology> optOnto = loader.load();
-    if (! optOnto.isPresent()) {
-      System.err.println("[ERROR] Failed to load HPO ontology");
-      return Optional.empty();
-    } else {
-      ontology = optOnto.get();
-    }
+    ontology = loader.load();
     if (debug) {
       System.err.println(String.format("Parsed a total of %d HP terms",ontology.countAllTerms()));
     }
 
-
-    HpoOntology onto =  new HpoOntology(
+    return new HpoOntology(
       (ImmutableSortedMap<String, String>) ontology.getMetaInfo(),
       ontology.getGraph(),
       ontology.getRootTermId(),
@@ -52,7 +45,6 @@ public class HpOboParser {
       ontology.getObsoleteTermIds(),
       (ImmutableMap<TermId, Term>) ontology.getTermMap(),
       (ImmutableMap<Integer, Relationship>) ontology.getRelationMap());
-    return Optional.of(onto);
   }
 
 

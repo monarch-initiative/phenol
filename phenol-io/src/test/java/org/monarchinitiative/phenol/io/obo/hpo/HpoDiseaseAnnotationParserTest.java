@@ -38,13 +38,7 @@ public class HpoDiseaseAnnotationParserTest {
     hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
     final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
-    HpoOntology ontology;
-    final Optional<HpoOntology> ontologyOpt = oboParser.parse();
-    if(ontologyOpt.isPresent()){
-      ontology = ontologyOpt.get();
-    }else{
-      throw new PhenolException("No ontology found.");
-    }
+    final HpoOntology ontology = oboParser.parse();
 
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
     ResourceUtils.copyResourceToFile("/phenotype.100lines.hpoa", hpoDiseaseAnnotationToyFile);

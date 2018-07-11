@@ -15,6 +15,7 @@ import org.geneontology.obographs.model.*;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.Owl2OboTermFactory;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -65,7 +66,7 @@ public final class OboOntologyLoader {
     this.factory = new Owl2OboTermFactory();
   }
 
-  public Optional<Ontology> load() {
+  public Ontology load() throws PhenolException {
     Optional<Ontology> emptyOntology = Optional.empty();
     Map<TermId,TermId> old2newTermIdMap = new HashMap<>();
 
@@ -75,8 +76,7 @@ public final class OboOntologyLoader {
     try {
       ontology = m.loadOntologyFromOntologyDocument(file);
     } catch (OWLOntologyCreationException e) {
-      e.printStackTrace();
-      return emptyOntology;
+      throw new PhenolException(e.toString());
     }
     FromOwl fromOwl = new FromOwl();
     GraphDocument gd = fromOwl.generateGraphDocument(ontology);
@@ -85,19 +85,19 @@ public final class OboOntologyLoader {
     Graph obograph = gd.getGraphs().get(0);
     if (obograph == null) {
       LOGGER.warn("No graph in the loaded ontology.");
-      return emptyOntology;
+      throw new PhenolException("PhenolException[ERROR]: No graph in the loaded ontology.");
     }
 
     List<Node> gNodes = obograph.getNodes();
     if (gNodes == null) {
       LOGGER.warn("No nodes found in the loaded ontology.");
-      return emptyOntology;
+      throw new PhenolException("PhenolException[ERROR]: No nodes found in the loaded ontology.");
     }
 
     List<Edge> gEdges = obograph.getEdges();
     if (gEdges == null) {
       LOGGER.warn("No edges found in the loaded ontology.");
-      return emptyOntology;
+      throw new PhenolException("PhenolException[ERROR]: No edges found in the loaded ontology.");
     }
 
     // Mapping edges in obographs to termIds in phenol
@@ -228,7 +228,8 @@ public final class OboOntologyLoader {
       rootId = rootCandList.get(0);
     }
 
-    ImmutableOntology ont=  new ImmutableOntology(
+
+    return  new ImmutableOntology(
       ImmutableSortedMap.copyOf(metaInfo),
       phenolGraph,
       rootId,
@@ -236,7 +237,6 @@ public final class OboOntologyLoader {
       depreTermIdNodes,
       ImmutableMap.copyOf(terms),
       ImmutableMap.copyOf(relationMap));
-    return Optional.of(ont);
   }
 
 

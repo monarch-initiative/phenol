@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.obo.go;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -29,22 +30,14 @@ public class GoOboParser {
   }
 
 
-  public Optional<GoOntology> parse() {
-    Ontology ontology;
+  public GoOntology parse() throws PhenolException {
     final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
-    Optional<Ontology> optOnto = loader.load();
-    if (! optOnto.isPresent()) {
-      System.err.println("[ERROR] Failed to load GO ontology");
-      return Optional.empty();
-    } else {
-      ontology = optOnto.get();
-    }
+    Ontology ontology = loader.load();
     if (debug) {
       System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
     }
 
-
-    GoOntology onto =  new GoOntology(
+    return new GoOntology(
       (ImmutableSortedMap<String, String>) ontology.getMetaInfo(),
       ontology.getGraph(),
       ontology.getRootTermId(),
@@ -52,7 +45,6 @@ public class GoOboParser {
       ontology.getObsoleteTermIds(),
       (ImmutableMap<TermId, Term>) ontology.getTermMap(),
       (ImmutableMap<Integer, Relationship>) ontology.getRelationMap());
-    return Optional.of(onto);
   }
 
 }
