@@ -9,6 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.BufferedReader;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -21,7 +22,9 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  * If errors are enountered, the line is skipped and the error is added to the list
  * {@link #errors}. Client code can ask if the parsing was error-free with the method
  * {@link #validParse()} and can retrieve the errors (if any) with {@link #getErrors()}.
+ *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:michael.gargano@jax.org">Michael Gargano</a>
  */
 public class HpoDiseaseAnnotationParser {
   /** Path to the phenotype.hpoa annotation file. */
@@ -37,6 +40,12 @@ public class HpoDiseaseAnnotationParser {
 
   public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
     this.annotationFilePath = annotationFile;
+    this.ontology = ontlgy;
+    this.diseaseMap = new HashMap<>();
+  }
+
+  public HpoDiseaseAnnotationParser(File annotationFile, HpoOntology ontlgy){
+    this.annotationFilePath = annotationFile.getAbsolutePath();
     this.ontology = ontlgy;
     this.diseaseMap = new HashMap<>();
   }
