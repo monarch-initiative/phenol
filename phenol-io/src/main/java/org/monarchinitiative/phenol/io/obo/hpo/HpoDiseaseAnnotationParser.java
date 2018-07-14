@@ -70,6 +70,9 @@ public class HpoDiseaseAnnotationParser {
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
       String line = br.readLine();
+      while (line.startsWith("#")) {
+        line=br.readLine();
+      } // this skips the comments. The next line has the definition of the header
       if (!HpoAnnotationLine.isValidHeaderLine(line)) {
         br.close();
         throw new PhenolException(
@@ -77,19 +80,16 @@ public class HpoDiseaseAnnotationParser {
             "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
       }
       while ((line = br.readLine()) != null) {
-        HpoAnnotationLine aline = new HpoAnnotationLine(line);
+        HpoAnnotationLine aline =  HpoAnnotationLine.constructFromString(line);
         if (! aline.hasValidNumberOfFields()) {
           errors.add(String.format("Invalid number of fields: %s",line));
           continue;
         }
         builderTermToDisease.put(aline.getPhenotypeId(),aline.getDiseaseTermId());
-        List<HpoAnnotationLine> annots;
-        if (disease2AnnotLineMap.containsKey(aline.getDiseaseTermId())) {
-          annots = disease2AnnotLineMap.get(aline.getDiseaseTermId());
-        } else {
-          annots = new ArrayList<>();
-          disease2AnnotLineMap.put(aline.getDiseaseTermId(), annots);
-        }
+
+        TermId diseaseId = aline.getDiseaseTermId();
+        disease2AnnotLineMap.putIfAbsent(diseaseId,new ArrayList<>());
+        List<HpoAnnotationLine> annots=disease2AnnotLineMap.get(diseaseId);
         annots.add(aline);
 
       }
