@@ -42,7 +42,7 @@ public class HpOboParserTest {
 
   @Test
   public void testGetRightNumberOfTerms() {
-    int expectedTermCount=5;
+    int expectedTermCount=15; // there are 15 non-obsolete terms in hp_head.obo
     assertEquals(expectedTermCount,ontology.countAllTerms());
   }
 
