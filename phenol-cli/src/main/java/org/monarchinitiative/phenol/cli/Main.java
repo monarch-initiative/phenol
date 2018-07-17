@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ public class Main {
   private static final String PRECOMPUTE_SCORES = "precompute-scores";
   private static final String MERGE_SCORES = "merge-scores";
 
-  public static void main(String[] argv) {
+  public static void main(String[] argv) throws PhenolException {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final JCommander jc =

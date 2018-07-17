@@ -29,7 +29,7 @@ public class HpoAnnotation {
    * @param termId Annotated {@link TermId}.
    * @param f The frequency the term is annotated with.
    */
-  private HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
+  public HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
     this.frequency = f;
     this.onset = onset;

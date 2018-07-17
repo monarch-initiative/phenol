@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.io.owl.generic;
+package org.monarchinitiative.phenol.io.owl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-
-import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
-import org.monarchinitiative.phenol.io.owl.SynonymMapper;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
@@ -53,7 +50,7 @@ public class Owl2OboTermFactory
         if (sxref.isValid()) {
           database_cross_ref_list.add(sxref);
         } else {
-          System.err.println("[ERROR] invalid database cross ref: " + x);
+          LOGGER.warn("[ERROR] invalid database cross ref: " + x);
         }
       }
       genericTerm.setDatabaseXrefs(database_cross_ref_list);

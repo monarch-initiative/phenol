@@ -4,8 +4,8 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
+import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoOboParser;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
@@ -18,12 +18,8 @@ import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
 import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +66,7 @@ public class PrecomputeScoresCommand {
   }
 
   /** Execute the command. */
-  public void run() {
+  public void run() throws PhenolException {
     printHeader();
     loadOntology();
     precomputePairwiseResnik();
@@ -88,15 +84,11 @@ public class PrecomputeScoresCommand {
     LOGGER.info(options.toString());
   }
 
-  private void loadOntology() {
+  private void loadOntology() throws PhenolException {
     LOGGER.info("Loading ontology from OBO...");
-    HpoOboParser hpoOboParser = new HpoOboParser(new File(options.getOboFile()));
-    try {
-      ontology = hpoOboParser.parse();
-      phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    HpOboParser hpOboParser = new HpOboParser(new File(options.getOboFile()));
+    HpoOntology ontology = hpOboParser.parse();
+    phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
     LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");

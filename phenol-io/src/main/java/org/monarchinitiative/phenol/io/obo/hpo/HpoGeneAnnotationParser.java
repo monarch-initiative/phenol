@@ -35,6 +35,7 @@ import java.io.IOException;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+//@Deprecated
 public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnnotation> {
 
   /** Expected header string. */

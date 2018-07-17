@@ -23,6 +23,8 @@ associate phenotype annotation files.
     - Max Schubach
     - Manuel Holtgrewe
     - HyeongSik Kim
+    - Michael Gargano
+    
 - **Availability:**
     - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
     - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
@@ -54,6 +56,9 @@ stanza to the pom.xml file.
 The above stanza shows the code that is needed for the phenol-io component, and also shows
 how to exclude the slf4j version from the application code (which can help to avoid maven enforcer errors).
 Add analogous stanzas for other phenol modules.
+
+## Input files
+
 
 ## History
 Phenol was initially forked from [ontolib]([https://github.com/Phenomics/ontolib) in February 2018, but was

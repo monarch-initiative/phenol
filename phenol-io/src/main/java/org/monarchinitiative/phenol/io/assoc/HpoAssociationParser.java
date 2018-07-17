@@ -4,9 +4,9 @@ import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 
 import java.io.*;
 import java.util.*;
@@ -22,8 +22,19 @@ import java.util.zip.GZIPInputStream;
  * mim2gene_medgen contains the MIM number of diseases and EntrezGene number of genes associated with the disease;
  * The relevant lines of the file are marked with "phenotype". The Homo_sapiens_gene_info.gz file contains the  entrez gene
  * number of genes as well as their gene symbol. </p>
- * <p>The goal of this class is to return a list of {@link DiseaseToGeneAssociation} objects
- * representing the gene-to-disease links in OMIM.</p>
+ * <p>The goal of this class it to provide associations <br><br>
+ *
+ *   geneIdToSymbol - Key: EntrezGeneId [{@link TermId}] , Value: EntrezGeneSymbol-String <br>
+ *   associationMap - Key: DiseaseId [{@link TermId}] , Value: GeneToAssociation [{@link GeneToAssociation}]<br>
+ *   diseaseToGeneMap - Key: DiseaseId [{@link TermId}] , Value: GeneId [{@link TermId}]<br>
+ *   geneToDiseaseMap - Key: GeneId [{@link TermId}] , Value: Disease [{@link TermId}]<br>
+ *   diseaseToAssociations - Key: DiseaseId [{@link TermId}] , Value: List of genes [{@link DiseaseToGeneAssociation}],<br>
+ *   termToDisease - Key: phenotypeId {@link TermId} , Value: Disease [{@link HpoDisease}]  FROM {@link HpoDiseaseAnnotationParser}<br>
+ *   phenotypeToGeneList - List of {@link HpoGeneAnnotation} generated from linking termToDisease, diseaseToGene<br>
+ *   associationList - List of all {@link DiseaseToGeneAssociation}<br>
+ *
+ * </p>
+ * <a href="mailto:michael.gargano@jax.org">Michael Gargano</a>
  * <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoAssociationParser {
@@ -43,7 +54,7 @@ public class HpoAssociationParser {
   private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
   /** Key: a disease Id; Value:  disease obj, all gene associations */
   private ImmutableMap<TermId, DiseaseToGeneAssociation> diseaseToAssociationsMap;
-  /** Key: an phenotype Idl Value: disease obj, HpoDisease, Immutable. */
+  /** Key: an phenotype Id Value: disease obj, HpoDisease, Immutable. */
   private Map<TermId, HpoDisease> termToDisease;
   /** Key: a phenotype Id; Value: geneId */
   private ImmutableList<HpoGeneAnnotation> phenotypeToGeneList;
@@ -59,6 +70,12 @@ public class HpoAssociationParser {
     this.hpoOntology = ontology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2gene_medgenPath = mim2gene_medgenPath;
+  }
+
+  public HpoAssociationParser(File geneInfoPath, File mim2gene_medgenPath, HpoOntology ontology){
+    this.hpoOntology = ontology;
+    this.homoSapiensGeneInfoPath = geneInfoPath.getAbsolutePath();
+    this.mim2gene_medgenPath = mim2gene_medgenPath.getAbsolutePath();
   }
 
 
@@ -89,14 +106,25 @@ public class HpoAssociationParser {
     ImmutableList.Builder<HpoGeneAnnotation> builderGeneAnnotationList = new ImmutableList.Builder<>();
 
     for(TermId phenotype : phenotypeToDisease.keySet()){
+     Map<Integer, Boolean> mappedGenes = new HashMap<>();
      phenotypeToDisease.get(phenotype).stream()
         .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList()).forEach((gene) -> {
-          Integer entrezId = Integer.parseInt(gene.getId());
-          String  entrezGeneSymbol = this.geneIdToSymbolMap.get(gene);
-          String  hpoTermName = hpoOntology.getTermMap().get(phenotype).getName();
-          this.geneIdToSymbolMap.get(gene);
-          HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, hpoTermName, phenotype);
-          builderGeneAnnotationList.add(geneAnnotation);
+          try {
+            Integer entrezId = Integer.parseInt(gene.getId());
+            if(!mappedGenes.containsKey(entrezId)){
+              String entrezGeneSymbol = this.geneIdToSymbolMap.get(gene);
+              if(entrezGeneSymbol == null){
+                entrezGeneSymbol = "-";
+              }
+              String hpoTermName = hpoOntology.getTermMap().get(phenotype).getName();
+              this.geneIdToSymbolMap.get(gene);
+              HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, hpoTermName, phenotype);
+              builderGeneAnnotationList.add(geneAnnotation);
+              mappedGenes.put(entrezId, true);
+            }
+          }catch(Exception e){
+            return;
+          }
         });
     }
     this.phenotypeToGeneList = builderGeneAnnotationList.build();

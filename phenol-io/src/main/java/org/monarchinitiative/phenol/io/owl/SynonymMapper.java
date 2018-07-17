@@ -5,6 +5,7 @@ import java.util.List;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue.PREDS;
 
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import org.monarchinitiative.phenol.ontology.data.TermSynonymScope;
 import org.monarchinitiative.phenol.ontology.data.TermXref;
@@ -15,8 +16,8 @@ import com.google.common.collect.Lists;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class SynonymMapper {
-  public static List<TermSynonym> mapSynonyms(List<SynonymPropertyValue> spvs) {
+class SynonymMapper {
+  static List<TermSynonym> mapSynonyms(List<SynonymPropertyValue> spvs) {
     if (spvs == null) return null;
     List<TermSynonym> termSynonymList = Lists.newArrayList();
     for (SynonymPropertyValue spv : spvs) {
@@ -39,10 +40,7 @@ public class SynonymMapper {
 
       // Map the synonym's cross-references.
       List<String> xrefs = spv.getXrefs();
-      List<TermXref> termXrefs = Lists.newArrayList();
-      for (String xref : xrefs) {
-        termXrefs.add(XrefMapper.mapXref(xref));
-      }
+      List<TermXref> termXrefs = mapXref(xrefs);
 
       TermSynonym its = new TermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
       termSynonymList.add(its);
@@ -50,4 +48,30 @@ public class SynonymMapper {
 
     return termSynonymList;
   }
+
+  /**
+   * We try to map the cross references to Curies, e.g., ORCID:0000-0000-0000-0123.
+   * If a cross-reference is not in CURIE for, we just ignore it. For now we
+   * use an empty string for the Description field of the cross-reference.
+   * @param xrefs list of cross references as Strings
+   * @return list of cross references as {@link TermXref} objects. Can be empty but not null.
+   */
+  private static List<TermXref> mapXref(List<String>  xrefs) {
+    List<TermXref> termXrefs = Lists.newArrayList();
+    for (String xref : xrefs) {
+      try {
+        TermId xrefTermId = TermId.constructWithPrefix(xref);
+        TermXref trf = new TermXref(xrefTermId,"");
+        termXrefs.add(trf);
+      } catch (Exception e) {
+        // ignore
+      }
+    }
+
+    return termXrefs;
+  }
+
+
+
+
 }
