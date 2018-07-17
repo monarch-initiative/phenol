@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -11,7 +12,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public class MpGene {
   private final String geneSymbol;
-  private final String markerType; //todo enum
+
+  private final MpMarkerType markerType; //todo enum
   private final TermId mgiId;
 
   /**
@@ -20,7 +22,7 @@ public class MpGene {
    * @param geneSymbol   MGI gene symbol, e.g., Rb1
    * @param markerType   MGI marker type, one of those listed below
    */
-  private MpGene(TermId mgiId, String geneSymbol, String markerType) {
+  private MpGene(TermId mgiId, String geneSymbol, MpMarkerType markerType) {
     this.mgiId = mgiId;
     this.geneSymbol = geneSymbol;
     this.markerType = markerType;
@@ -35,8 +37,9 @@ public class MpGene {
    *                     Gene; Other Genome Feature; Pseudogene; QTL; Transgene
    * @return             MpGene object
    */
-  public static MpGene makeImmutableGene(TermId mgiId, String geneSymbol, String markerType) {
-    return new MpGene(mgiId, geneSymbol, markerType);
+  public static MpGene createMpGene(TermId mgiId, String geneSymbol, String markerType) throws PhenolException {
+    MpMarkerType marker = MpMarkerType.string2enum(markerType);
+    return new MpGene(mgiId, geneSymbol, marker);
   }
 
   /**
@@ -51,7 +54,7 @@ public class MpGene {
    * Getter method for marker type.
    * @return   String one of the 9 marker types listed above
    */
-  public String getMarkerType() {
+  public MpMarkerType getMarkerType() {
     return markerType;
   }
 
@@ -61,14 +64,6 @@ public class MpGene {
    */
   public TermId getMgiGeneId() {
     return mgiId;
-  }
-
-  /**
-   * Predicate to test whether this MpGene has marker type Transgene.
-   * @return boolean true if marker type is Transgene, false otherwise
-   */
-  public boolean isTransgene() {
-    return markerType.equals("Transgene");
   }
 
   /**
