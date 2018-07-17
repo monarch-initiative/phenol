@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.owl;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.model.meta.SynonymPropertyValue.PREDS;
 
@@ -17,8 +18,9 @@ import com.google.common.collect.Lists;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 class SynonymMapper {
+  /** @return list of synoynms (can be an empty list but cannot be null). */
   static List<TermSynonym> mapSynonyms(List<SynonymPropertyValue> spvs) {
-    if (spvs == null) return null;
+    if (spvs == null) return ImmutableList.of();
     List<TermSynonym> termSynonymList = Lists.newArrayList();
     for (SynonymPropertyValue spv : spvs) {
 
