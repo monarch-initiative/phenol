@@ -46,7 +46,7 @@ public class OwlImmutableOntologyLoaderTest {
     assertTrue(graph.vertexSet().contains(t3));
     assertTrue(graph.vertexSet().contains(t4));
     assertTrue(graph.vertexSet().contains(t5));
-    // This one is not recognized as a node due to the lack of rdfs:label.
+    // This one is not recognized MRK_List2.rpt.excerpt a node due to the lack of rdfs:label.
     assertFalse(graph.vertexSet().contains(t6));
 
     // 2. Checking edges
@@ -56,7 +56,7 @@ public class OwlImmutableOntologyLoaderTest {
     assertNotNull(graph.getEdge(t1, t3));
 
     // 3. Checking TermIds
-    // This is essentially the same as checking vertices.
+    // This is essentially the same MRK_List2.rpt.excerpt checking vertices.
     assertTrue(ontology.getAllTermIds().contains(t1));
     assertTrue(ontology.getAllTermIds().contains(t2));
     assertTrue(ontology.getAllTermIds().contains(t3));
@@ -73,7 +73,7 @@ public class OwlImmutableOntologyLoaderTest {
     assertEquals(gr1.getRelationshipType(), RelationshipType.IS_A);
     assertEquals(gr2.getRelationshipType(), RelationshipType.IS_A);
 
-    // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
+    // 5. The example file contains multiple roots; thus we just put owl:Thing MRK_List2.rpt.excerpt the root.
     TermId rootTermId = ontology.getRootTermId();
     assertEquals(rootTermId.getPrefix().getValue(), "owl");
     assertEquals(rootTermId.getId(), "Thing");
@@ -106,7 +106,7 @@ public class OwlImmutableOntologyLoaderTest {
       }
     }
 
-    // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
+    // 2. This sample ontology file contains a single root labeled MRK_List2.rpt.excerpt MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
     assertEquals(rootTermId.getPrefix().getValue(), "MONDO");
     assertEquals(rootTermId.getId(), "0000624");

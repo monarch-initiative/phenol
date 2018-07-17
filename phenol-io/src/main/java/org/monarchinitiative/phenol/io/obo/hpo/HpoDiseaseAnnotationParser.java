@@ -109,7 +109,8 @@ public class HpoDiseaseAnnotationParser {
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
         } catch (Exception e) {
-          errors.add("[PHENOL ERROR] could not parse annotation: "+ e.getMessage());
+          errors.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: ",
+            line.toString(), e.getMessage()));
         }
       }
       HpoDisease hpoDisease =

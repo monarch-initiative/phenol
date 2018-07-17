@@ -212,4 +212,21 @@ class HpoAnnotationLine {
   boolean hasValidNumberOfFields() {
     return valid_number_of_fields;
   }
+
+  @Override
+  public String toString() {
+    return this.database + "\t" +
+      this.DBObjectId + "\t" +
+      this.DbObjectName + "\t" +
+      this.phenotypeId.getIdWithPrefix() + "\t" +
+      this.onsetId+ "\t" +
+      this.frequency + "\t" +
+      this.sex + "\t" +
+      this.NOT + "\t" +
+      this.aspect + "\t" +
+      this.modifierList + "\t" +
+      this.publication + "\t" +
+      this.evidence + "\t" +
+      this.assignedBy;
+  }
 }

@@ -16,7 +16,7 @@ public final class TermId implements Comparable<TermId>, Serializable {
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 2L;
 
-  /** Prefix of the TermIdI. */
+  /** Prefix of the TermId. */
   private final TermPrefix prefix;
 
   /** Identifier behind the prefix. */
@@ -33,7 +33,7 @@ public final class TermId implements Comparable<TermId>, Serializable {
     final int pos = termIdString.lastIndexOf(':');
     if (pos == -1) {
       throw new PhenolRuntimeException(
-          "TermI ID string \"" + termIdString + "\" does not have a prefix!");
+          "TermId construction error: \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new TermId(
           new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
