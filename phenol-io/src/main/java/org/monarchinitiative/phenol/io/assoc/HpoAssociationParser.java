@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.*;
+import com.sun.xml.internal.xsom.impl.Ref;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
@@ -44,8 +45,9 @@ public class HpoAssociationParser {
   private final String homoSapiensGeneInfoPath;
 
   private final String mim2gene_medgenPath;
-  /** Key--an EntrezGene id; value--the corresponding symbol. */
-  private Map<TermId,String> geneIdToSymbolMap;
+  /** Key--an EntrezGene id; value--the corresponding symbol. all */
+  private Map<TermId,String> allGeneIdToSymbolMap;
+  private ImmutableMap<TermId, String> geneIdToSymbolMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). */
   private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
   /** Key: a disease Id; Value: a geneId */
@@ -188,6 +190,7 @@ public class HpoAssociationParser {
    */
   private void parseMim2GeneMedgen() throws IOException {
     ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
+    Map<TermId, String> geneMap = new HashMap<>();
     BufferedReader br = new BufferedReader(new FileReader(mim2gene_medgenPath));
     String line;
     while ((line=br.readLine())!=null) {
@@ -198,9 +201,13 @@ public class HpoAssociationParser {
         TermId omimCurie = new TermId(OMIM_PREFIX, mimid);
         String entrezGeneNumber=a[1];
         TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
-        String symbol = this.geneIdToSymbolMap.get(entrezId);
+        String symbol = this.allGeneIdToSymbolMap.get(entrezId);
         if (symbol==null) {
           symbol="-";
+        }
+        else{
+          if(!geneMap.containsKey(entrezId))
+            geneMap.put(entrezId, symbol);
         }
         TermId geneId=new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
         Gene gene = new Gene(geneId,symbol);
@@ -213,7 +220,11 @@ public class HpoAssociationParser {
         }
       }
     }
+    this.allGeneIdToSymbolMap = null;
     associationMap = associationBuilder.build();
+    ImmutableMap.Builder<TermId, String> geneBuilder = new ImmutableMap.Builder<>();
+    geneBuilder.putAll(geneMap);
+    geneIdToSymbolMap = geneBuilder.build();
   }
 
 
@@ -233,7 +244,7 @@ public class HpoAssociationParser {
       TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
       builder.put(tid,symbol);
     }
-    this.geneIdToSymbolMap = builder.build();
+    this.allGeneIdToSymbolMap = builder.build();
   }
 
 }
