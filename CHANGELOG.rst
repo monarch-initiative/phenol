@@ -3,9 +3,10 @@ Changelog
 =========
 
 ------
-v1.1.0
+v1.1.1
 ------
 - HPO Annotation parser now indexes diseases as a TermId representing the disease CURIE, e.g., MONDO:0000042.
+- HPO Annotation parser now uses new 'big-file' format (with updated treatment of biocuration field)
 
 ------
 v1.0.3

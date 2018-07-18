@@ -35,11 +35,12 @@ import java.io.IOException;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+//@Deprecated
 public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnnotation> {
 
   /** Expected header string. */
   private static final String EXPECTED_HEADER =
-      "#Format: entrez-gene-id<tab>entrez-gene-symbol<tab>HPO-TermI-Name<tab>HPO-TermI-ID";
+      "#Format: entrez-gene-id<tab>entrez-gene-symbol<tab>HPO-Term-Name<tab>HPO-Term-ID";
 
   /** The {@link File} to read from. */
   private final File file;

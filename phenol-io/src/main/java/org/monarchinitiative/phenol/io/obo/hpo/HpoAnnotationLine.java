@@ -21,20 +21,18 @@ import org.monarchinitiative.phenol.ontology.data.TermPrefix;
  */
 class HpoAnnotationLine {
 
-  private static final int DB_IDX = 0;
-  private static final int DB_OBJECT_ID_IDX = 1;
-  private static final int DB_NAME_IDX = 2;
-  private static final int QUALIFIER_IDX = 3;
-  private static final int PHENOTYPE_ID_IDX = 4;
-  private static final int DB_REFERENCE_IDX = 5;
-  private static final int EVIDENCE_IDX = 6;
-  private static final int ONSET_ID_IDX = 7;
-  private static final int FREQUENCY_IDX = 8;
-  private static final int SEX_IDX = 9;
-  private static final int MODIFIER_IDX = 10;
-  private static final int ASPECT_IDX = 11;
-  private static final int ASSIGNED_BY_IDX = 12;
-  private static final int DATE_CREATED_IDX = 13;
+  private static final int DatabaseId_IDX = 0;
+  private static final int DB_NAME_IDX = 1;
+  private static final int QUALIFIER_IDX = 2;
+  private static final int PHENOTYPE_ID_IDX = 3;
+  private static final int DB_REFERENCE_IDX = 4;
+  private static final int EVIDENCE_IDX = 5;
+  private static final int ONSET_ID_IDX = 6;
+  private static final int FREQUENCY_IDX = 7;
+  private static final int SEX_IDX = 8;
+  private static final int MODIFIER_IDX = 9;
+  private static final int ASPECT_IDX = 10;
+  private static final int BIOCURATION_IDX = 11;
 
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
   private static final TermPrefix ORPHANET_PREFIX = new TermPrefix("ORPHA");
@@ -48,26 +46,22 @@ class HpoAnnotationLine {
    * fields.
    */
   private static final String[] headerFields = {
-    "#DB",
-    "DB_Object_ID",
-    "DB_Name",
+    "DatabaseID",
+    "DiseaseName",
     "Qualifier",
     "HPO_ID",
-    "DB_Reference",
+    "Reference",
     "Evidence",
     "Onset",
     "Frequency",
     "Sex",
     "Modifier",
     "Aspect",
-    "Date_Created",
-    "Assigned_By"
+    "Biocuration"
   };
 
-  /** 1. The database portion of the diseaseId. For instance, "OMIM" for "OMIM:300200". */
-  private String database;
-  /** 2. The accession number part of the disease Id. For instance, "300200" for "OMIM:300200". */
-  private String DBObjectId;
+  /** 1. The diseaseId. For instance, "OMIM:300200". */
+  private String databaseId;
   /** 3. The disease name, e.g., Marfan syndrome . */
   private String DbObjectName;
   /** 4. true is this is a negated annotation, i.e., some phenotype is not present in some disease.*/
@@ -89,20 +83,17 @@ class HpoAnnotationLine {
   /** 12. aspect */
   @SuppressWarnings("unused")
   private String aspect;
-  /** 13. the date */
-  private String dateCreated;
-  /** 14. the biocurator */
-  private String assignedBy;
+  /** 13. the biocurator/date, e.g., HPO:skoehler[2018-02-17] */
+  private String biocuration;
 
-  HpoAnnotationLine(String line) {
+  private HpoAnnotationLine(String line) throws PhenolException {
     String F[] = line.split("\t");
    if (F.length != headerFields.length) {
      valid_number_of_fields=false;
-     System.err.println("[phenol:ERROR] Annotation line with " + F.length + "fields: \""+line+"\"");
+     throw new PhenolException("[phenol:ERROR] Annotation line with " + F.length + "fields: \""+line+"\"");
    }
-    this.database = F[DB_IDX];
-    this.DBObjectId = F[DB_OBJECT_ID_IDX];
-    DbObjectName = F[DB_NAME_IDX];
+    this.databaseId = F[DatabaseId_IDX];
+    this.DbObjectName = F[DB_NAME_IDX];
     String phenoId = F[PHENOTYPE_ID_IDX];
     this.phenotypeId = TermId.constructWithPrefix(phenoId);
     String onset = F[ONSET_ID_IDX];
@@ -117,43 +108,55 @@ class HpoAnnotationLine {
     this.modifierList = F[MODIFIER_IDX];
     this.publication = F[DB_REFERENCE_IDX];
     this.evidence = F[EVIDENCE_IDX];
-    this.assignedBy = F[ASSIGNED_BY_IDX];
-    this.dateCreated = F[DATE_CREATED_IDX];
+    this.biocuration = F[BIOCURATION_IDX];
   }
+
+  public static HpoAnnotationLine constructFromString(String line) throws PhenolException {
+    try {
+      return new HpoAnnotationLine(line);
+    } catch (PhenolException e) {
+      throw new PhenolException(String.format("Exception [%s] parsing line: %s",e.getMessage(),line));
+    }
+  }
+
+
 
   /**
    * @param line The header line of a V2 small file
    * @return true iff the fields of the line exactly match {@link #headerFields}.
    */
-  static boolean isValidHeaderLine(String line) {
+  static boolean isValidHeaderLine(String line) throws PhenolException {
     String F[] = line.split("\t");
-    if (F.length != headerFields.length) return false;
+    if (F.length != headerFields.length) {
+      String msg = String.format("Expected %d fields in header line but got %d",headerFields.length,F.length);
+      throw new PhenolException(msg);
+    }
     for (int i = 0; i < headerFields.length; i++) {
-      if (!F[i].equals(headerFields[i])) return false;
+      if (!F[i].equals(headerFields[i])) {
+        String msg = String.format("Expected header field %d to be %s but got %s",i,headerFields[i],F[i]);
+        throw new PhenolException(msg);
+      }
     }
     return true;
   }
 
   final String getDiseaseId() {
-    return String.format("%s:%s", database, DBObjectId);
+    return databaseId;
   }
 
   /**
-   * This function combines the data in {@link #database} and {@link #DBObjectId} to
-   * create a Curie-type identifier for the disease, e.g., OMIM:600100.
+   * This function creates a TermId form the Curie-type identifier for the disease, e.g., OMIM:600100.
    * @return The TermId representing this disease.
-   * @throws PhenolException if the {@link #database} field is invalid (not OMIM, ORPHA, or DECIPHER)
+   * @throws PhenolException if the {@link #databaseId} field is invalid (not OMIM, ORPHA, or DECIPHER)
    */
   TermId getDiseaseTermId() throws PhenolException {
-    switch (database) {
-      case "OMIM":
-        return new TermId(OMIM_PREFIX,DBObjectId);
-      case "ORPHA":
-        return new TermId(ORPHANET_PREFIX,DBObjectId);
-      case "DECIPHER":
-        return new TermId(DECIPHER_PREFIX,DBObjectId);
-    }
-    throw new PhenolException("Invalid disease prefix: "+database);
+    if (databaseId.startsWith("OMIM") ||
+      databaseId.startsWith("ORPHA") ||
+      databaseId.startsWith("DECIPHER")
+      )
+        return TermId.constructWithPrefix(databaseId);
+    // we should never get here
+    throw new PhenolException("Invalid disease id (not OMIM/ORPHA/DECIPHER: "+databaseId);
   }
 
   TermId getPhenotypeId() {
@@ -184,25 +187,15 @@ class HpoAnnotationLine {
     return evidence;
   }
 
-  String getAssignedBy() {
-    return assignedBy;
-  }
-
-  String getDateCreated() {
-    return dateCreated;
-  }
-
-  String getDatabase() {
-    return database;
-  }
-
-  String getDBObjectId() {
-    return DBObjectId;
+  String getBiocuration() {
+    return biocuration;
   }
 
   String getDbObjectName() {
     return DbObjectName;
   }
+
+  String getAspect() { return this.aspect;}
 
   /** @return true if this annotation is negated. */
   boolean isNOT() {
@@ -211,5 +204,21 @@ class HpoAnnotationLine {
 
   boolean hasValidNumberOfFields() {
     return valid_number_of_fields;
+  }
+
+  @Override
+  public String toString() {
+    return this.databaseId + "\t" +
+      this.DbObjectName + "\t" +
+      this.phenotypeId.getIdWithPrefix() + "\t" +
+      this.onsetId+ "\t" +
+      this.frequency + "\t" +
+      this.sex + "\t" +
+      this.NOT + "\t" +
+      this.aspect + "\t" +
+      this.modifierList + "\t" +
+      this.publication + "\t" +
+      this.evidence + "\t" +
+      this.biocuration;
   }
 }

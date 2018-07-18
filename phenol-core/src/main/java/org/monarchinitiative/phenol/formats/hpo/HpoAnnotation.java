@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represent an HPO TermI together with a Frequency and an Onset and modifiers. This is intended to
+ * Represent an HPO Term together with a Frequency and an Onset and modifiers. This is intended to
  * be used to represent a disease annotation.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
@@ -29,7 +29,7 @@ public class HpoAnnotation {
    * @param termId Annotated {@link TermId}.
    * @param f The frequency the term is annotated with.
    */
-  private HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
+  public HpoAnnotation(TermId termId, double f, HpoOnset onset, List<TermId> modifiers) {
     this.termId = termId;
     this.frequency = f;
     this.onset = onset;

@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
@@ -39,21 +40,12 @@ public class GoOboParserTest {
   private GoOntology ontology;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() throws IOException, PhenolException {
     goHeadFile = tmpFolder.newFile("go_head.obo");
     ResourceUtils.copyResourceToFile("/go_head.obo", goHeadFile);
     GoOboParser parser = new GoOboParser(goHeadFile);
-    Optional<GoOntology> optOnto = parser.parse();
-    this.ontology=optOnto.get();
+    this.ontology = parser.parse();
   }
-
-  @Test
-  public void testCanParseGo() {
-    GoOboParser parser = new GoOboParser(goHeadFile);
-    Optional<GoOntology> optOnto = parser.parse();
-    assertTrue(optOnto.isPresent());
-  }
-
 
   /** The obo file has the three top-level GO terms and one child each (i.e., three asserted is_a links).
    * The input of the GO file should create a new artificial root and should attach each of the top level terms,

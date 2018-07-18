@@ -18,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.SimpleXref;
 import org.monarchinitiative.phenol.ontology.data.Term;
 
@@ -43,7 +44,7 @@ public class MpoOboParserTest {
   private Ontology ontology;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() throws IOException, PhenolException {
     mpoHeadFile = tmpFolder.newFile("mp_head.obo");
     ResourceUtils.copyResourceToFile("/mp_head.obo", mpoHeadFile);
     MpOboParser parser = new MpOboParser(mpoHeadFile);
@@ -107,7 +108,7 @@ public class MpoOboParserTest {
    * Test that we get all four terms from {@code mp_head.obo}.
    */
   @Test
-  public void testGetAllFourTerms() {
+  public void testGetAllFourTerms() throws PhenolException {
     MpOboParser parser = new MpOboParser(mpoHeadFile);
     Ontology ontology = parser.parse();
     Collection<Term> terms = ontology.getTerms();
