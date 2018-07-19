@@ -1,11 +1,9 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.*;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
@@ -69,8 +67,6 @@ public class HpoAssociationParser {
   private static final TermPrefix ENTREZ_GENE_PREFIX=new TermPrefix("NCBIGene");
 
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(HpoAssociationParser.class);
 
 
   public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, HpoOntology ontology){
@@ -212,7 +208,7 @@ public class HpoAssociationParser {
         String entrezGeneNumber=a[1];
         TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
         String symbol = this.allGeneIdToSymbolMap.get(entrezId);
-        if(!entrezGeneNumber.equals("-")){
+        if(!"-".equals(entrezGeneNumber)){
           if (symbol==null) {
             symbol="-";
           }
