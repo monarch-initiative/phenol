@@ -1,13 +1,16 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.*;
-import com.sun.xml.internal.xsom.impl.Ref;
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -67,6 +70,8 @@ public class HpoAssociationParser {
 
   private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(HpoAssociationParser.class);
+
 
   public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, HpoOntology ontology){
     this.hpoOntology = ontology;
@@ -92,6 +97,8 @@ public class HpoAssociationParser {
   public List<HpoGeneAnnotation> getPhenotypeToGene() { return this.phenotypeToGeneList; }
 
   public Map<TermId, HpoDisease> getTermToDisease() { return this.termToDisease; }
+
+  public Multimap<TermId, GeneToAssociation> getDiseasetoGeneAssociation(){ return this.associationMap; }
 
   /*
       Builds a list of HpoGeneAnnotations, which are just an object that represents a relationship
@@ -119,7 +126,6 @@ public class HpoAssociationParser {
                 entrezGeneSymbol = "-";
               }
               String hpoTermName = hpoOntology.getTermMap().get(phenotype).getName();
-              this.geneIdToSymbolMap.get(gene);
               HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, hpoTermName, phenotype);
               builderGeneAnnotationList.add(geneAnnotation);
               mappedGenes.put(entrezId, true);
@@ -144,7 +150,7 @@ public class HpoAssociationParser {
       Multimap GeneId -> DiseaseID
    */
   private void setAssociationMaps(){
-    ImmutableMultimap.Builder<TermId,TermId> builderGeneToDisease = new ImmutableMultimap.Builder<>();
+    Multimap<TermId, TermId> geneToDisease = ArrayListMultimap.create();
     ImmutableMap.Builder<TermId,DiseaseToGeneAssociation> builderDiseasetoAssociation = new ImmutableMap.Builder<>();
     for (DiseaseToGeneAssociation g2p : associationList) {
       TermId diseaseId = g2p.getDiseaseId();
@@ -152,9 +158,13 @@ public class HpoAssociationParser {
       builderDiseasetoAssociation.put(diseaseId, g2p);
       for (Gene g: geneList) {
         TermId geneId = g.getId();
-        builderGeneToDisease.put(geneId, diseaseId);
+        if(!geneToDisease.containsEntry(geneId, diseaseId)){
+          geneToDisease.put(geneId, diseaseId);
+        }
       }
     }
+    ImmutableMultimap.Builder<TermId,TermId> builderGeneToDisease = new ImmutableMultimap.Builder<>();
+    builderGeneToDisease.putAll(geneToDisease);
     this.geneToDiseaseMap = builderGeneToDisease.build();
     this.diseaseToGeneMap = builderGeneToDisease.build().inverse();
     this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
@@ -189,7 +199,7 @@ public class HpoAssociationParser {
    * @throws IOException if the mim2gene_medgen file cannot be read
    */
   private void parseMim2GeneMedgen() throws IOException {
-    ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
+    Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
     Map<TermId, String> geneMap = new HashMap<>();
     BufferedReader br = new BufferedReader(new FileReader(mim2gene_medgenPath));
     String line;
@@ -202,29 +212,41 @@ public class HpoAssociationParser {
         String entrezGeneNumber=a[1];
         TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
         String symbol = this.allGeneIdToSymbolMap.get(entrezId);
-        if (symbol==null) {
-          symbol="-";
-        }
-        else{
-          if(!geneMap.containsKey(entrezId))
-            geneMap.put(entrezId, symbol);
-        }
-        TermId geneId=new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
-        Gene gene = new Gene(geneId,symbol);
-        if (a[5].contains("susceptibility")) {
-          GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.POLYGENIC);
-          associationBuilder.put(omimCurie,g2a);
-        } else {
-          GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.MENDELIAN);
-          associationBuilder.put(omimCurie, g2a);
+        if(!entrezGeneNumber.equals("-")){
+          if (symbol==null) {
+            symbol="-";
+          }
+          else{
+            if(!geneMap.containsKey(entrezId)){
+              geneMap.put(entrezId, symbol);
+            }
+          }
+          TermId geneId=new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
+          Gene gene = new Gene(geneId,symbol);
+          if (a[5].contains("susceptibility")) {
+            GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.POLYGENIC);
+            if(!associationMap.containsEntry(omimCurie, g2a)){
+              associationMap.put(omimCurie,g2a);
+            }
+          } else {
+            GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.MENDELIAN);
+            if(!associationMap.containsEntry(omimCurie, g2a)){
+              associationMap.put(omimCurie,g2a);
+            }
+          }
         }
       }
     }
-    this.allGeneIdToSymbolMap = null;
-    associationMap = associationBuilder.build();
+
+    ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
+    associationBuilder.putAll(associationMap);
+    this.associationMap = associationBuilder.build();
+
     ImmutableMap.Builder<TermId, String> geneBuilder = new ImmutableMap.Builder<>();
     geneBuilder.putAll(geneMap);
     geneIdToSymbolMap = geneBuilder.build();
+
+    this.allGeneIdToSymbolMap = null;
   }
 
 
