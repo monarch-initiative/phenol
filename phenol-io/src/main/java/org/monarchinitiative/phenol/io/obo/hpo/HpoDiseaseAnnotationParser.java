@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.*;
 
@@ -65,7 +67,7 @@ public class HpoDiseaseAnnotationParser {
   public Map<TermId, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
-    ImmutableMultimap.Builder<TermId,TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
+    Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
@@ -85,7 +87,9 @@ public class HpoDiseaseAnnotationParser {
           errors.add(String.format("Invalid number of fields: %s",line));
           continue;
         }
-        builderTermToDisease.put(aline.getPhenotypeId(),aline.getDiseaseTermId());
+        if(!termToDisease.containsEntry(aline.getPhenotypeId(),aline.getDiseaseTermId())){
+          termToDisease.put(aline.getPhenotypeId(),aline.getDiseaseTermId());
+        }
 
         TermId diseaseId = aline.getDiseaseTermId();
         disease2AnnotLineMap.putIfAbsent(diseaseId,new ArrayList<>());
@@ -93,6 +97,8 @@ public class HpoDiseaseAnnotationParser {
         annots.add(aline);
 
       }
+      ImmutableMultimap.Builder<TermId,TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
+      builderTermToDisease.putAll(termToDisease);
       this.phenotypeToDiseaseMap = builderTermToDisease.build();
       br.close();
     } catch (IOException e) {

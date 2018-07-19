@@ -6,7 +6,6 @@ import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.io.File;
-import java.util.Optional;
 
 public class MpOboParser {
 

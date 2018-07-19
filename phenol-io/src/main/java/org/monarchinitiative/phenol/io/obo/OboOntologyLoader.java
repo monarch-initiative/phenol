@@ -67,7 +67,6 @@ public final class OboOntologyLoader {
   }
 
   public Ontology load() throws PhenolException {
-    Optional<Ontology> emptyOntology = Optional.empty();
     Map<TermId,TermId> old2newTermIdMap = new HashMap<>();
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
@@ -200,7 +199,7 @@ public final class OboOntologyLoader {
     TermId rootId;
     if (rootCandSet.isEmpty()) {
       rootId = TermId.constructWithPrefix("owl:Thing");
-      // TODO Exception/Optional.isEmpty()
+      throw new PhenolException("No root candidate found.");
 
     } if (rootCandSet.size() > 1 ) {
       TermPrefix prefix;

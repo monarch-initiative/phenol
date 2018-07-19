@@ -12,8 +12,6 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Optional;
 
 public class GoOboParser {
 
