@@ -47,7 +47,7 @@ public class HpoAssociationParser {
   private final File orpha_to_genePath;
 
   /** Key--an EntrezGene id; value--the corresponding symbol. all */
-  private Map<TermId,String> allGeneIdToSymbolMap;
+  private BiMap<TermId,String> allGeneIdToSymbolMap;
   private ImmutableMap<TermId, String> geneIdToSymbolMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). */
   private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
@@ -242,9 +242,7 @@ public class HpoAssociationParser {
     }
 
     if(this.orpha_to_genePath != null){
-      Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.entrySet()
-        .stream()
-        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+      Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
       try{
         OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orpha_to_genePath);
         orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
@@ -277,7 +275,7 @@ public class HpoAssociationParser {
 
 
   private void parseGeneInfo() throws IOException {
-    ImmutableMap.Builder<TermId,String> builder=new ImmutableMap.Builder<>();
+    ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoPath);
     InputStream gzipStream = new GZIPInputStream(fileStream);
     Reader decoder = new InputStreamReader(gzipStream);
@@ -287,10 +285,12 @@ public class HpoAssociationParser {
       String a[] = line.split("\t");
       String taxon=a[0];
       if (! taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
-      String geneId=a[1];
-      String symbol=a[2];
-      TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
-      builder.put(tid,symbol);
+      if(!("unknown".equals(a[9]) | "tRNA".equals(a[9]) | "rRNA".equals(a[9]) | "pseudo".equals(a[9]))){
+        String geneId=a[1];
+        String symbol=a[2];
+        TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
+        builder.put(tid,symbol);
+      }
     }
     this.allGeneIdToSymbolMap = builder.build();
   }
