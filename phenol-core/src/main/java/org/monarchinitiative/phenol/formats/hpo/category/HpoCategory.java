@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.formats.hpo.category;
 
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
@@ -24,33 +23,16 @@ public class HpoCategory {
   private final TermId tid;
   /** The display label for this category (e.g., "Voice"--see {@link #tid}). */
   private final String label;
-  /** List of the HPO terms from the disease we want to display that are children of this category. Note that we
-   * try to put the TermIds in the {@link #subcatlist} if possible, and then they do not appear here.*/
+  /** List of the HPO terms from the disease we want to display that are children of this category. */
   private final List<TermId> annotatedTerms;
-  /** This can be used for second (or higher) level categories that function as subcategories in a Browser display. */
-  private List<HpoCategory> subcatlist=new ArrayList<>();
 
 
-  private HpoCategory(TermId id, String labl) {
+  HpoCategory(TermId id, String labl) {
     tid=id;
     label=labl;
     annotatedTerms=new ArrayList<>();
   }
 
-  @Deprecated
-  String getAnnotationString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append(label).append("\n");
-      for (TermId tid : annotatedTerms) {
-          sb.append("\t"+tid.getIdWithPrefix() + "\n");
-      }
-      return sb.toString();
-  }
-
-
-  private void setSubcategoryList(List<HpoCategory> sublist) {
-    this.subcatlist=sublist;
-  }
   /** @return true if at least one annotated term belongs to this category. */
   boolean hasAnnotation() { return annotatedTerms.size()>0;}
   /** @return Term ID of the current category. */
@@ -84,33 +66,5 @@ public class HpoCategory {
         result = 31 * result + tid.hashCode();
         return result;
     }
-
-
-    public static class Builder {
-
-    private final TermId tid;
-    private String label;
-    private ImmutableList.Builder<HpoCategory> builder=new ImmutableList.Builder<>();
-
-
-    Builder(TermId id, String labl) {
-      this.tid=id;
-      this.label=labl;
-    }
-
-    Builder subcategory(TermId id , String label) {
-      HpoCategory subcat=new HpoCategory(id,label);
-      builder.add(subcat);
-      return this;
-    }
-
-    public HpoCategory build() {
-      HpoCategory cat = new HpoCategory(this.tid,this.label);
-      cat.setSubcategoryList(builder.build());
-      return cat;
-
-    }
-  }
-
 
 }

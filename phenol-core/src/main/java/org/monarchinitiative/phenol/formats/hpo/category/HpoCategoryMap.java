@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.formats.hpo.category;
 
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
@@ -19,19 +20,20 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getPa
  * <p>
  * <p>
  * The main function takes a list of HPO terms and returns a compatible list but sorted according to the
- * categories
+ * categories. Client code should use {@link #addAnnotatedTerms(List, HpoOntology)}  to initialize the
+ * Category map. The function {@link #getActiveCategoryList()} returns an immutable list of categories
+ * that include at least one HPO term used for annotation.
  * </p>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
- * @version 0.1.5
+ * @version 0.1.7
  */
 public class HpoCategoryMap {
-
-    /**
-     * Key: the HPO TermId, value: HpoCategory for this term. For instance, the HPO TermId HP:0001626
+  /** An array containing all of the {@link TermId} objects that correspond to the categories.*/
+  private final TermId[] termIdList;
+    /** Key: the HPO TermId, value: HpoCategory for this term. For instance, the HPO TermId HP:0001626
      * (Abnormality of the cardiovascular system) would correspond to the category Cardiovascular and
-     * several subcategories.
-     */
-    private ImmutableMap<TermId, HpoCategory> categorymap;
+     * several subcategories.*/
+    private final ImmutableMap<TermId, HpoCategory> categorymap;
 
     private static final TermId INHERITANCE_ID = TermId.constructWithPrefix("HP:0000005");
     private static final TermId ABNORMAL_CELLULAR_ID = TermId.constructWithPrefix("HP:0025354");
@@ -61,117 +63,102 @@ public class HpoCategoryMap {
     private static final TermId NEOPLASM_ID = TermId.constructWithPrefix("HP:0002664");
 
     public HpoCategoryMap() {
-        initializeMap();
-        initializeOrderedArray();
-    }
-
-    private TermId[] termIdList;
-
-
-    private void initializeOrderedArray() {
-        termIdList = new TermId[]{INHERITANCE_ID,ABNORMAL_CELLULAR_ID,BLOOD_ID,CONNECTIVE_TISSUE_ID,HEAD_AND_NECK_ID,
-                LIMBS_ID,METABOLISM_ID,PRENATAL_ID,BREAST_ID,CARDIOVASCULAR_ID,DIGESTIVE_ID,
-                EAR_ID,ENDOCRINE_ID,EYE_ID,GENITOURINARY_ID,IMMUNOLOGY_ID,INTEGUMENT_ID,
-                MUSCLE_ID,NERVOUS_SYSTEM_ID,RESPIRATORY_ID,SKELETAL_ID,THORACIC_CAVITY_ID,
-                VOICE_ID,GROWTH_ID,CONSTITUTIONAL_ID,NEOPLASM_ID};
-    }
-
-
-
-
-    private void initializeMap() {
+      termIdList = new TermId[]{INHERITANCE_ID,ABNORMAL_CELLULAR_ID,BLOOD_ID,CONNECTIVE_TISSUE_ID,HEAD_AND_NECK_ID,
+        LIMBS_ID,METABOLISM_ID,PRENATAL_ID,BREAST_ID,CARDIOVASCULAR_ID,DIGESTIVE_ID,
+        EAR_ID,ENDOCRINE_ID,EYE_ID,GENITOURINARY_ID,IMMUNOLOGY_ID,INTEGUMENT_ID,
+        MUSCLE_ID,NERVOUS_SYSTEM_ID,RESPIRATORY_ID,SKELETAL_ID,THORACIC_CAVITY_ID,
+        VOICE_ID,GROWTH_ID,CONSTITUTIONAL_ID,NEOPLASM_ID};
         ImmutableMap.Builder<TermId, HpoCategory> mapbuilder = new ImmutableMap.Builder<>();
         // Inheritance
-        HpoCategory inheritanceCategory = new HpoCategory.Builder(INHERITANCE_ID,"Inheritance").build();
+        HpoCategory inheritanceCategory = new HpoCategory(INHERITANCE_ID,"Inheritance");
         mapbuilder.put(INHERITANCE_ID,inheritanceCategory);
         // Abn cellular phenotype
-        HpoCategory abnCellCategory = new HpoCategory.Builder(ABNORMAL_CELLULAR_ID, "Cellular phenotype").build();
+        HpoCategory abnCellCategory = new HpoCategory(ABNORMAL_CELLULAR_ID, "Cellular phenotype");
         mapbuilder.put(ABNORMAL_CELLULAR_ID, abnCellCategory);
         // Blood
-        HpoCategory abnBlood = new HpoCategory.Builder(BLOOD_ID, "Blood and blood-forming tissues").build();
+        HpoCategory abnBlood = new HpoCategory(BLOOD_ID, "Blood and blood-forming tissues");
         mapbuilder.put(abnBlood.getTid(), abnBlood);
         // Connective tissue
-        HpoCategory abnConnTiss = new HpoCategory.Builder(CONNECTIVE_TISSUE_ID,"Connective tissue").build();
+        HpoCategory abnConnTiss = new HpoCategory(CONNECTIVE_TISSUE_ID,"Connective tissue");
         mapbuilder.put(abnConnTiss.getTid(), abnConnTiss);
         // head or neck
-        HpoCategory headNeckCat = new HpoCategory.Builder(HEAD_AND_NECK_ID, "Head and neck").
-                subcategory(TermId.constructWithPrefix("HP:0000234"), "Head").
-                subcategory(TermId.constructWithPrefix("HP:0000464"), "Neck").build();
+        HpoCategory headNeckCat = new HpoCategory(HEAD_AND_NECK_ID, "Head and neck");
         mapbuilder.put(HEAD_AND_NECK_ID, headNeckCat);
         // limbs
-        HpoCategory limbCat = new HpoCategory.Builder(LIMBS_ID, "Limbs").build();
+        HpoCategory limbCat = new HpoCategory(LIMBS_ID, "Limbs");
         mapbuilder.put(LIMBS_ID,limbCat);
         // metabolism
-        HpoCategory metabolismCat = new HpoCategory.Builder(METABOLISM_ID, "Metabolism/Laboratory abnormality").build();
+        HpoCategory metabolismCat = new HpoCategory(METABOLISM_ID, "Metabolism/Laboratory abnormality");
         mapbuilder.put(METABOLISM_ID, metabolismCat);
         //prenatal
-        HpoCategory prenatalCat = new HpoCategory.Builder(PRENATAL_ID, "Prenatal and Birth").build();
+        HpoCategory prenatalCat = new HpoCategory(PRENATAL_ID, "Prenatal and Birth");
         mapbuilder.put(PRENATAL_ID, prenatalCat);
         //breast
-        HpoCategory breastCat = new HpoCategory.Builder(BREAST_ID, "Breast").build();
+        HpoCategory breastCat = new HpoCategory(BREAST_ID, "Breast");
         mapbuilder.put(BREAST_ID, breastCat);
         //cardiovascular
-        HpoCategory cardiovascularCat = new HpoCategory.Builder(CARDIOVASCULAR_ID, "Cardiovascular").
-                subcategory(TermId.constructWithPrefix("HP:0002597"), "Vascular").
-                subcategory(TermId.constructWithPrefix("HP:0010948"), "fetal cardiovascular").
-                build(); // ToDo extend!!!
+        HpoCategory cardiovascularCat = new HpoCategory(CARDIOVASCULAR_ID, "Cardiovascular");
         mapbuilder.put(CARDIOVASCULAR_ID, cardiovascularCat);
         //digestive
-        HpoCategory digestiveCat = new HpoCategory.Builder(DIGESTIVE_ID, "Digestive System").build();
+        HpoCategory digestiveCat = new HpoCategory(DIGESTIVE_ID, "Digestive System");
         mapbuilder.put(DIGESTIVE_ID, digestiveCat);
         // ear
-        HpoCategory earCat = new HpoCategory.Builder(EAR_ID, "Ear").build();
+        HpoCategory earCat = new HpoCategory(EAR_ID, "Ear");
         mapbuilder.put(EAR_ID, earCat);
         //endocrine
-        HpoCategory endocrineCat = new HpoCategory.Builder(ENDOCRINE_ID, "Endocrine").build();
+        HpoCategory endocrineCat = new HpoCategory(ENDOCRINE_ID, "Endocrine");
         mapbuilder.put(ENDOCRINE_ID, endocrineCat);
         // eye
-        HpoCategory eyeCat = new HpoCategory.Builder(EYE_ID, "Eye").build();
+        HpoCategory eyeCat = new HpoCategory(EYE_ID, "Eye");
         mapbuilder.put(EYE_ID, eyeCat);
         //genitourinary
-        HpoCategory guCat = new HpoCategory.Builder(GENITOURINARY_ID, "Genitourinary system").
-                subcategory(TermId.constructWithPrefix("HP:0000078"), "Genital system").
-                subcategory(TermId.constructWithPrefix("HP:0000079"), "Urinary system").
-                build();
+        HpoCategory guCat = new HpoCategory(GENITOURINARY_ID, "Genitourinary system");
         mapbuilder.put(GENITOURINARY_ID, guCat);
         // Immune
-        HpoCategory immuneCat = new HpoCategory.Builder(IMMUNOLOGY_ID, "Immunology").build();
+        HpoCategory immuneCat = new HpoCategory(IMMUNOLOGY_ID, "Immunology");
         mapbuilder.put(IMMUNOLOGY_ID, immuneCat);
         //integument
-        HpoCategory integumentCat = new HpoCategory.Builder(INTEGUMENT_ID, "Skin, Hair, and Nails").build();
+        HpoCategory integumentCat = new HpoCategory(INTEGUMENT_ID, "Skin, Hair, and Nails");
         mapbuilder.put(INTEGUMENT_ID, integumentCat);
         //muscle
-        HpoCategory muscleCat = new HpoCategory.Builder(MUSCLE_ID, "Musculature").build();
+        HpoCategory muscleCat = new HpoCategory(MUSCLE_ID, "Musculature");
         mapbuilder.put(MUSCLE_ID, muscleCat);
         //Nervous system
-        HpoCategory nervousCat = new HpoCategory.Builder(NERVOUS_SYSTEM_ID, "Nervous System").build();
+        HpoCategory nervousCat = new HpoCategory(NERVOUS_SYSTEM_ID, "Nervous System");
         mapbuilder.put(NERVOUS_SYSTEM_ID, nervousCat);
         //respiratory system
-        HpoCategory respiratoryCat = new HpoCategory.Builder(RESPIRATORY_ID, "Repiratory System").build();
+        HpoCategory respiratoryCat = new HpoCategory(RESPIRATORY_ID, "Repiratory System");
         mapbuilder.put(RESPIRATORY_ID, respiratoryCat);
         // skeletal
-        HpoCategory skeletalCat = new HpoCategory.Builder(SKELETAL_ID, "Skeletal system").build();
+        HpoCategory skeletalCat = new HpoCategory(SKELETAL_ID, "Skeletal system");
         mapbuilder.put(SKELETAL_ID, skeletalCat);
         //thoracic cavity
-        HpoCategory thoracicCat = new HpoCategory.Builder(THORACIC_CAVITY_ID, "Thoracic cavity").build();
+        HpoCategory thoracicCat = new HpoCategory(THORACIC_CAVITY_ID, "Thoracic cavity");
         mapbuilder.put(THORACIC_CAVITY_ID, thoracicCat);
         //voice
-        HpoCategory voiceCat = new HpoCategory.Builder(VOICE_ID, "Voice").build();
+        HpoCategory voiceCat = new HpoCategory(VOICE_ID, "Voice");
         mapbuilder.put(VOICE_ID, voiceCat);
         //consistutiotnal symtpom
-        HpoCategory constitutionalCat = new HpoCategory.Builder(CONSTITUTIONAL_ID, "Constitutional Symptom").build();
+        HpoCategory constitutionalCat = new HpoCategory(CONSTITUTIONAL_ID, "Constitutional Symptom");
         mapbuilder.put(CONSTITUTIONAL_ID, constitutionalCat);
         // growth
-        HpoCategory growthCat = new HpoCategory.Builder(GROWTH_ID, "Growth").build();
+        HpoCategory growthCat = new HpoCategory(GROWTH_ID, "Growth");
         mapbuilder.put(GROWTH_ID, growthCat);
         // neoplasm
-        HpoCategory neoplasmCat = new HpoCategory.Builder(NEOPLASM_ID, "Neoplasm").build();
+        HpoCategory neoplasmCat = new HpoCategory(NEOPLASM_ID, "Neoplasm");
         mapbuilder.put(NEOPLASM_ID, neoplasmCat);
         // Finally, build the map!
         categorymap = mapbuilder.build();
     }
 
-
+  /**
+   * Client code uses this method to add a specific term to the corresponding {@link HpoCategory} object (i.e., the
+   * term is a subclass of the TermId corresponding to the HpoCategory). For instance, client code might want to
+   * add all of the terms that annotate a disease or a patient so that these terms can be displayed according to the
+   * categories.
+   * @param tid HPO term to be added
+   * @param ontology reference to HPO ontology object
+   */
     public void addAnnotatedTerm(TermId tid, HpoOntology ontology) {
         try {
             HpoCategory cat = getCategory(tid, ontology);
@@ -180,21 +167,29 @@ public class HpoCategoryMap {
                 return;
             }
             cat.addAnnotatedTerm(tid);
-        } catch (Exception e) {
+        } catch (Exception e) { // should never happen
           System.err.println(String.format("Exception trying to find category for %s",ontology.getTermMap().get(tid).getName()));
             e.printStackTrace();
         }
     }
-
+  /**
+   * Add a list of {@link TermId} objects using the method {@link #addAnnotatedTerm(TermId, HpoOntology)}
+   * @param tidlist list of HPO terms to be added
+   * @param ontology reference to HPO ontology object
+   */
     public void addAnnotatedTerms(List<TermId> tidlist, HpoOntology ontology) {
         for (TermId tid : tidlist) {
             addAnnotatedTerm(tid,ontology);
         }
     }
 
-
+  /** Calculate all the categories of which this term (childTermId) is a descendent.
+   * @param ontology reference to HPO Ontology
+   * @param childTermId TermId for which we will find the category or categories
+   * @return an immutable Set of all category ids for childTermId
+   */
     private Set<TermId> getAncestorCategories(HpoOntology ontology, TermId childTermId) {
-        ImmutableSet.Builder<TermId> anccset = new ImmutableSet.Builder<>();
+        ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
         Stack<TermId> stack = new Stack<>();
         stack.push(childTermId);
         while (! stack.empty()) {
@@ -202,17 +197,17 @@ public class HpoCategoryMap {
             Set<TermId> parents = getParentTerms(ontology,tid,false);
             for (TermId p : parents) {
                 if (this.categorymap.containsKey(p)) {
-                    anccset.add(p);
+                    builder.add(p);
                 } else {
                     stack.add(p);
                 }
             }
         }
-        return anccset.build();
+        return builder.build();
     }
 
 
-    /** Identify the category that best matches the term id (usually just fine the category that represents a parent term. */
+    /** Identify the category that best matches the term id (usually just fine the category that represents a parent term). */
     private HpoCategory getCategory(TermId tid, HpoOntology ontology) {
         //logger.trace(String.format("GetCategory for %s[%s]",ontology.getTermMap().get(tid).getName(),tid.getIdWithPrefix()));
         List<HpoCategory> activeCategoryList = new ArrayList<>();
@@ -240,9 +235,9 @@ public class HpoCategoryMap {
 
 
     /**
-     * Return neoplasm with higher priority than the other categories. ToDO Anything else?
+     * Return neoplasm with higher priority than the other categories.
      *
-     * @return the primariy termId if we have more than one.
+     * @return the primary termId if we have more than one.
      */
     private TermId getPrioritizedTid(Set<TermId> ancestors) {
         for (TermId id : ancestors) {
@@ -254,26 +249,18 @@ public class HpoCategoryMap {
     }
 
 
-    public void outputCategories() {
-        for (HpoCategory cat : categorymap.values()) {
-            if (cat.hasAnnotation()) {
-                System.out.println(cat.getAnnotationString());
-            }
-        }
-    }
-
     /**
-     *
+     * For some purposes, we just want to display categories that have at least one HPO term.
      * @return List of all categories that have at least one HPO Term annotated
      */
     public List<HpoCategory> getActiveCategoryList() {
-        List<HpoCategory> lst = new ArrayList<>();
+        ImmutableList.Builder<HpoCategory> builder = new ImmutableList.Builder<>();
         for (HpoCategory cat : categorymap.values()) {
             if (cat.hasAnnotation()) {
-                lst.add(cat);
+                builder.add(cat);
             }
         }
-        return lst;
+        return builder.build();
     }
 
 
