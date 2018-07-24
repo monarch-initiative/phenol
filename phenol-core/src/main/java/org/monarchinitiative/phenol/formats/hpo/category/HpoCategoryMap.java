@@ -250,15 +250,17 @@ public class HpoCategoryMap {
 
 
     /**
-     * For some purposes, we just want to display categories that have at least one HPO term.
+     * For some purposes, we just want to display categories that have at least one HPO term. This method returns
+     * a list of active categories in the order defined by {@link #termIdList}.
      * @return List of all categories that have at least one HPO Term annotated
      */
     public List<HpoCategory> getActiveCategoryList() {
         ImmutableList.Builder<HpoCategory> builder = new ImmutableList.Builder<>();
-        for (HpoCategory cat : categorymap.values()) {
-            if (cat.hasAnnotation()) {
-                builder.add(cat);
-            }
+        for (TermId tid : termIdList) {
+          HpoCategory cat = categorymap.get(tid);
+          if (cat.hasAnnotation()) {
+            builder.add(cat);
+          }
         }
         return builder.build();
     }
