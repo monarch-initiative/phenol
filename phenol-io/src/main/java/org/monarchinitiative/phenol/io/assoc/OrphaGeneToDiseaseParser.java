@@ -20,7 +20,6 @@ import java.io.*;
  */
 public class OrphaGeneToDiseaseParser {
 
-  private static final String DISORDER_LIST = "DisorderList";
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaNumber";
   private static final String GENE_LIST = "GeneList";
@@ -44,7 +43,7 @@ public class OrphaGeneToDiseaseParser {
    * leukodystrophy-Waardenburg syndrome-Hirschsprung disease). Value, corresponding gene symbol(s),
    * e.g., SOX10
    */
-  Multimap<TermId, String> orphaDiseaseToGeneSymbol;
+  private final Multimap<TermId, String> orphaDiseaseToGeneSymbol;
 
   public OrphaGeneToDiseaseParser(File file) {
     orphaDiseaseToGeneSymbol = ArrayListMultimap.create();
