@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JDBOR date="2018-07-01 04:09:15" version="1.2.11 / 4.1.6 [2018-04-12] (orientdb version)" copyright="Orphanet (c) 2018">
+  <DisorderList count="3730">
+    <Disorder id="17601">
+      <OrphaNumber>166024</OrphaNumber>
+      <Name lang="en">Multiple epiphyseal dysplasia, Al-Gazali type</Name>
+      <GeneList count="1">
+        <Gene id="20160">
+          <SynonymList count="1">
+            <Synonym lang="en">JBTS12</Synonym>
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="1">
+            <Locus id="16859">
+              <GeneLocus>15q26.1</GeneLocus>
+              <LocusKey>1</LocusKey>
+            </Locus>
+          </LocusList>
+        </Gene>
+      </GeneList>
+      <DisorderGeneAssociationList count="1">
+        <DisorderGeneAssociation>
+          <Gene id="20160">
+            <OrphaNumber>268061</OrphaNumber>
+            <Name lang="en">kinesin family member 7</Name>
+            <Symbol>KIF7</Symbol>
+            <SynonymList count="1">
+              <Synonym lang="en">JBTS12</Synonym>
+            </SynonymList>
+            <ExternalReferenceList count="6">
+              <ExternalReference id="57240">
+                <Source>Ensembl</Source>
+                <Reference>ENSG00000166813</Reference>
+              </ExternalReference>
+              <ExternalReference id="51758">
+                <Source>Genatlas</Source>
+                <Reference>KIF7</Reference>
+              </ExternalReference>
+              <ExternalReference id="51756">
+                <Source>HGNC</Source>
+                <Reference>30497</Reference>
+              </ExternalReference>
+              <ExternalReference id="51757">
+                <Source>OMIM</Source>
+                <Reference>611254</Reference>
+              </ExternalReference>
+              <ExternalReference id="97306">
+                <Source>Reactome</Source>
+                <Reference>Q2M1P5</Reference>
+              </ExternalReference>
+              <ExternalReference id="51759">
+                <Source>SwissProt</Source>
+                <Reference>Q2M1P5</Reference>
+              </ExternalReference>
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17949">
+            <Name lang="en">Disease-causing germline mutation(s) in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+      </DisorderGeneAssociationList>
+    </Disorder>
+    <Disorder id="17604">
+      <OrphaNumber>166035</OrphaNumber>
+      <Name lang="en">Brachydactyly-short stature-retinitis pigmentosa syndrome</Name>
+      <GeneList count="1">
+        <Gene id="26792">
+          <SynonymList count="2">
+            <Synonym lang="en">NY-CO-10</Synonym>
+            <Synonym lang="en">SDCCAG-10</Synonym>
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="0">
+          </LocusList>
+        </Gene>
+      </GeneList>
+      <DisorderGeneAssociationList count="1">
+        <DisorderGeneAssociation>
+          <Gene id="26792">
+            <OrphaNumber>510666</OrphaNumber>
+            <Name lang="en">CWC27 spliceosome associated protein homolog</Name>
+            <Symbol>CWC27</Symbol>
+            <SynonymList count="2">
+              <Synonym lang="en">NY-CO-10</Synonym>
+              <Synonym lang="en">SDCCAG-10</Synonym>
+            </SynonymList>
+            <ExternalReferenceList count="0">
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17949">
+            <Name lang="en">Disease-causing germline mutation(s) in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+      </DisorderGeneAssociationList>
+    </Disorder>
+    <Disorder id="5">
+      <OrphaNumber>93</OrphaNumber>
+      <Name lang="en">Aspartylglucosaminuria</Name>
+      <GeneList count="1">
+        <Gene id="15470">
+          <SynonymList count="3">
+            <Synonym lang="en">ASRG</Synonym>
+            <Synonym lang="en">N(4)-(beta-N-acetylglucosaminyl)-L-asparaginase</Synonym>
+            <Synonym lang="en">glycosylasparaginase</Synonym>
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="1">
+            <Locus id="26631">
+              <GeneLocus>4q34.3</GeneLocus>
+              <LocusKey>1</LocusKey>
+            </Locus>
+          </LocusList>
+        </Gene>
+      </GeneList>
+      <DisorderGeneAssociationList count="1">
+        <DisorderGeneAssociation>
+          <Gene id="15470">
+            <OrphaNumber>119513</OrphaNumber>
+            <Name lang="en">aspartylglucosaminidase</Name>
+            <Symbol>AGA</Symbol>
+            <SynonymList count="3">
+              <Synonym lang="en">ASRG</Synonym>
+              <Synonym lang="en">N(4)-(beta-N-acetylglucosaminyl)-L-asparaginase</Synonym>
+              <Synonym lang="en">glycosylasparaginase</Synonym>
+            </SynonymList>
+            <ExternalReferenceList count="6">
+              <ExternalReference id="126323">
+                <Source>Reactome</Source>
+                <Reference>P20933</Reference>
+              </ExternalReference>
+              <ExternalReference id="56681">
+                <Source>Ensembl</Source>
+                <Reference>ENSG00000038002</Reference>
+              </ExternalReference>
+              <ExternalReference id="26679">
+                <Source>Genatlas</Source>
+                <Reference>AGA</Reference>
+              </ExternalReference>
+              <ExternalReference id="26681">
+                <Source>HGNC</Source>
+                <Reference>318</Reference>
+              </ExternalReference>
+              <ExternalReference id="44364">
+                <Source>OMIM</Source>
+                <Reference>613228</Reference>
+              </ExternalReference>
+              <ExternalReference id="32441">
+                <Source>SwissProt</Source>
+                <Reference>P20933</Reference>
+              </ExternalReference>
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17949">
+            <Name lang="en">Disease-causing germline mutation(s) in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+      </DisorderGeneAssociationList>
+    </Disorder>
+    <Disorder id="17628">
+      <OrphaNumber>166282</OrphaNumber>
+      <Name lang="en">Familial sick sinus syndrome</Name>
+      <GeneList count="3">
+        <Gene id="15254">
+          <SynonymList count="13">
+            <Synonym lang="en">CDCD2</Synonym>
+            <Synonym lang="en">CMPD2</Synonym>
+            <Synonym lang="en">HB1</Synonym>
+            <Synonym lang="en">HB2</Synonym>
+            <Synonym lang="en">HBBD</Synonym>
+            <Synonym lang="en">HH1</Synonym>
+            <Synonym lang="en">ICCD</Synonym>
+            <Synonym lang="en">IVF</Synonym>
+            <Synonym lang="en">LQT3</Synonym>
+            <Synonym lang="en">Nav1.5</Synonym>
+            <Synonym lang="en">PFHB1</Synonym>
+            <Synonym lang="en">SSS1</Synonym>
+            <Synonym lang="en">long QT syndrome 3</Synonym>
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="1">
+            <Locus id="23605">
+              <GeneLocus>3p22.2</GeneLocus>
+              <LocusKey>1</LocusKey>
+            </Locus>
+          </LocusList>
+        </Gene>
+        <Gene id="16188">
+          <SynonymList count="0">
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="1">
+            <Locus id="8809">
+              <GeneLocus>15q24.1</GeneLocus>
+              <LocusKey>1</LocusKey>
+            </Locus>
+          </LocusList>
+        </Gene>
+        <Gene id="16500">
+          <SynonymList count="1">
+            <Synonym lang="en">cardiomyopathy, hypertrophic 1</Synonym>
+          </SynonymList>
+          <GeneType id="25993">
+            <OrphaNumber>410298</OrphaNumber>
+            <Name lang="en">gene with protein product</Name>
+          </GeneType>
+          <LocusList count="1">
+            <Locus id="26071">
+              <GeneLocus>14q11.2</GeneLocus>
+              <LocusKey>1</LocusKey>
+            </Locus>
+          </LocusList>
+        </Gene>
+      </GeneList>
+      <DisorderGeneAssociationList count="3">
+        <DisorderGeneAssociation>
+          <Gene id="15254">
+            <OrphaNumber>118513</OrphaNumber>
+            <Name lang="en">sodium voltage-gated channel alpha subunit 5</Name>
+            <Symbol>SCN5A</Symbol>
+            <SynonymList count="13">
+              <Synonym lang="en">CDCD2</Synonym>
+              <Synonym lang="en">CMPD2</Synonym>
+              <Synonym lang="en">HB1</Synonym>
+              <Synonym lang="en">HB2</Synonym>
+              <Synonym lang="en">HBBD</Synonym>
+              <Synonym lang="en">HH1</Synonym>
+              <Synonym lang="en">ICCD</Synonym>
+              <Synonym lang="en">IVF</Synonym>
+              <Synonym lang="en">LQT3</Synonym>
+              <Synonym lang="en">Nav1.5</Synonym>
+              <Synonym lang="en">PFHB1</Synonym>
+              <Synonym lang="en">SSS1</Synonym>
+              <Synonym lang="en">long QT syndrome 3</Synonym>
+            </SynonymList>
+            <ExternalReferenceList count="7">
+              <ExternalReference id="57472">
+                <Source>Ensembl</Source>
+                <Reference>ENSG00000183873</Reference>
+              </ExternalReference>
+              <ExternalReference id="25635">
+                <Source>Genatlas</Source>
+                <Reference>SCN5A</Reference>
+              </ExternalReference>
+              <ExternalReference id="25637">
+                <Source>HGNC</Source>
+                <Reference>10593</Reference>
+              </ExternalReference>
+              <ExternalReference id="82772">
+                <Source>IUPHAR</Source>
+                <Reference>582</Reference>
+              </ExternalReference>
+              <ExternalReference id="25636">
+                <Source>OMIM</Source>
+                <Reference>600163</Reference>
+              </ExternalReference>
+              <ExternalReference id="57473">
+                <Source>Reactome</Source>
+                <Reference>Q14524</Reference>
+              </ExternalReference>
+              <ExternalReference id="33812">
+                <Source>SwissProt</Source>
+                <Reference>Q14524</Reference>
+              </ExternalReference>
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17949">
+            <Name lang="en">Disease-causing germline mutation(s) in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+        <DisorderGeneAssociation>
+          <Gene id="16188">
+            <OrphaNumber>122381</OrphaNumber>
+            <Name lang="en">hyperpolarization activated cyclic nucleotide gated potassium channel 4</Name>
+            <Symbol>HCN4</Symbol>
+            <SynonymList count="0">
+            </SynonymList>
+            <ExternalReferenceList count="7">
+              <ExternalReference id="58776">
+                <Source>Ensembl</Source>
+                <Reference>ENSG00000138622</Reference>
+              </ExternalReference>
+              <ExternalReference id="30133">
+                <Source>Genatlas</Source>
+                <Reference>HCN4</Reference>
+              </ExternalReference>
+              <ExternalReference id="30131">
+                <Source>HGNC</Source>
+                <Reference>16882</Reference>
+              </ExternalReference>
+              <ExternalReference id="82949">
+                <Source>IUPHAR</Source>
+                <Reference>403</Reference>
+              </ExternalReference>
+              <ExternalReference id="30130">
+                <Source>OMIM</Source>
+                <Reference>605206</Reference>
+              </ExternalReference>
+              <ExternalReference id="58777">
+                <Source>Reactome</Source>
+                <Reference>Q9Y3Q4</Reference>
+              </ExternalReference>
+              <ExternalReference id="33207">
+                <Source>SwissProt</Source>
+                <Reference>Q9Y3Q4</Reference>
+              </ExternalReference>
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17949">
+            <Name lang="en">Disease-causing germline mutation(s) in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+        <DisorderGeneAssociation>
+          <Gene id="16500">
+            <OrphaNumber>123619</OrphaNumber>
+            <Name lang="en">myosin heavy chain 6</Name>
+            <Symbol>MYH6</Symbol>
+            <SynonymList count="1">
+              <Synonym lang="en">cardiomyopathy, hypertrophic 1</Synonym>
+            </SynonymList>
+            <ExternalReferenceList count="6">
+              <ExternalReference id="57464">
+                <Source>Ensembl</Source>
+                <Reference>ENSG00000197616</Reference>
+              </ExternalReference>
+              <ExternalReference id="31586">
+                <Source>Genatlas</Source>
+                <Reference>MYH6</Reference>
+              </ExternalReference>
+              <ExternalReference id="31588">
+                <Source>HGNC</Source>
+                <Reference>7576</Reference>
+              </ExternalReference>
+              <ExternalReference id="31587">
+                <Source>OMIM</Source>
+                <Reference>160710</Reference>
+              </ExternalReference>
+              <ExternalReference id="57465">
+                <Source>Reactome</Source>
+                <Reference>P13533</Reference>
+              </ExternalReference>
+              <ExternalReference id="33565">
+                <Source>SwissProt</Source>
+                <Reference>P13533</Reference>
+              </ExternalReference>
+            </ExternalReferenceList>
+          </Gene>
+          <DisorderGeneAssociationType id="17961">
+            <Name lang="en">Major susceptibility factor in</Name>
+          </DisorderGeneAssociationType>
+          <DisorderGeneAssociationStatus id="17991">
+            <Name lang="en">Assessed</Name>
+          </DisorderGeneAssociationStatus>
+        </DisorderGeneAssociation>
+      </DisorderGeneAssociationList>
+    </Disorder>
+  </DisorderList>
+</JDBOR>
