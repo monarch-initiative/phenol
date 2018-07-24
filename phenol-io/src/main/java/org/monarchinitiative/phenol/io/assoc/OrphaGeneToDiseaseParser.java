@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
@@ -45,7 +46,7 @@ public class OrphaGeneToDiseaseParser {
    */
   private final Multimap<TermId, String> orphaDiseaseToGeneSymbol;
 
-  public OrphaGeneToDiseaseParser(File file) {
+  public OrphaGeneToDiseaseParser(File file) throws PhenolException {
     orphaDiseaseToGeneSymbol = ArrayListMultimap.create();
     parse(file);
   }
@@ -55,7 +56,7 @@ public class OrphaGeneToDiseaseParser {
   }
 
 
-  private void parse(File file) {
+  private void parse(File file) throws PhenolException {
     try {
 
       XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -136,7 +137,7 @@ public class OrphaGeneToDiseaseParser {
         }
       }
     } catch (IOException | XMLStreamException e) {
-      e.printStackTrace();
+      throw new PhenolException("Could not parse orpha disease to gene xml.");
     }
   }
 

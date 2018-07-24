@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
@@ -57,8 +58,13 @@ public class OrphaGeneToDiseaseParserTest {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
     File orphaProduct6 = tmpFolder.newFile("orphaProduct6");
     ResourceUtils.copyResourceToFile("/orphanet_disease2gene_en_product6_head.xml", orphaProduct6);
-    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaProduct6);
-    orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
+    try{
+      OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaProduct6);
+      orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
+    }catch(PhenolException e){
+      System.err.println(e.toString());
+    }
+
     }
 
 
