@@ -46,7 +46,7 @@ public class HpoAssociationParserTest {
     final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
     final HpoOntology ontology = oboParser.parse();
 
-    parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath(), ontology);
+    parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath(), null, ontology);
     parser.parse();
   }
 
