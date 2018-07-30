@@ -13,7 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public class MpGene {
   private final String geneSymbol;
 
-  private final MpMarkerType markerType; //todo enum
+  private final MpMarkerType markerType;
   private final TermId mgiId;
 
   /**
