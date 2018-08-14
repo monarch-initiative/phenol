@@ -12,26 +12,40 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Optional;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class GoOboParser {
 
-  private final File oboFile;
+  private final InputStream obo;
 
   private final boolean debug;
 
   public GoOboParser(File oboFile, boolean debug) {
-    this.oboFile = oboFile;
-    this.debug = debug;
+    try {
+  	  this.obo = new FileInputStream(oboFile);
+	  this.debug = debug;
+	} catch (FileNotFoundException e) {
+	  throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
+	}
   }
+  
   public GoOboParser(File oboFile) {
     this(oboFile,false);
   }
-
+  
+  public GoOboParser(InputStream obo, boolean debug) {
+	this.obo = obo;
+	this.debug = debug;
+  }
+  
+  public GoOboParser(InputStream obo) {
+	this(obo,false);
+  }
 
   public GoOntology parse() throws PhenolException {
-    final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
+    final OboOntologyLoader loader = new OboOntologyLoader(obo);
     Ontology ontology = loader.load();
     if (debug) {
       System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
