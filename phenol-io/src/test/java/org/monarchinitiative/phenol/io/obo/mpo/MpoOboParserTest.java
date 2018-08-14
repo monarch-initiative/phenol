@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -14,18 +13,13 @@ import java.util.stream.Collectors;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.SimpleXref;
 import org.monarchinitiative.phenol.ontology.data.Term;
-
-import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 
 
@@ -37,17 +31,12 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
  */
 public class MpoOboParserTest {
 
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-  private File mpoHeadFile;
-
   private Ontology ontology;
 
   @Before
   public void setUp() throws IOException, PhenolException {
-    mpoHeadFile = tmpFolder.newFile("mp_head.obo");
-    ResourceUtils.copyResourceToFile("/mp_head.obo", mpoHeadFile);
-    MpOboParser parser = new MpOboParser(mpoHeadFile);
+	ClassLoader classLoader = this.getClass().getClassLoader();
+    final MpOboParser parser = new MpOboParser(classLoader.getResourceAsStream("mp_head.obo"));
     this.ontology = parser.parse();
   }
 
@@ -109,8 +98,6 @@ public class MpoOboParserTest {
    */
   @Test
   public void testGetAllFourTerms() throws PhenolException {
-    MpOboParser parser = new MpOboParser(mpoHeadFile);
-    Ontology ontology = parser.parse();
     Collection<Term> terms = ontology.getTerms();
     Set<TermId> tids = terms.stream().map(Term::getId).collect(Collectors.toSet());
     assertTrue(tids.contains(TermId.constructWithPrefix("MP:0000001")));
