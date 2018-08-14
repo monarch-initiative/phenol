@@ -18,11 +18,11 @@ public class MpOboParser {
 
   public MpOboParser(File oboFile, boolean debug) {
     try {
-  	  this.obo = new FileInputStream(oboFile);
-	  this.debug = debug;
-	} catch (FileNotFoundException e) {
-	  throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
-	}
+      this.obo = new FileInputStream(oboFile);
+      this.debug = debug;
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
+    }
   }
   
   public MpOboParser(File oboFile) {
@@ -30,12 +30,12 @@ public class MpOboParser {
   }
   
   public MpOboParser(InputStream obo, boolean debug) {
-	this.obo = obo;
-	this.debug = debug;
+    this.obo = obo;
+    this.debug = debug;
   }
   
   public MpOboParser(InputStream obo) {
-	this(obo,false);
+    this(obo,false);
   }
 
   public Ontology parse() throws PhenolException {

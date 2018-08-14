@@ -24,11 +24,11 @@ public class GoOboParser {
 
   public GoOboParser(File oboFile, boolean debug) {
     try {
-  	  this.obo = new FileInputStream(oboFile);
-	  this.debug = debug;
-	} catch (FileNotFoundException e) {
-	  throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
-	}
+      this.obo = new FileInputStream(oboFile);
+      this.debug = debug;
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
+    }
   }
   
   public GoOboParser(File oboFile) {
@@ -36,12 +36,12 @@ public class GoOboParser {
   }
   
   public GoOboParser(InputStream obo, boolean debug) {
-	this.obo = obo;
-	this.debug = debug;
+    this.obo = obo;
+    this.debug = debug;
   }
   
   public GoOboParser(InputStream obo) {
-	this(obo,false);
+    this(obo,false);
   }
 
   public GoOntology parse() throws PhenolException {

@@ -63,20 +63,20 @@ public final class OboOntologyLoader {
    * Construct an OWL loader that can load an OBO ontology.
    * @param file Path to the OBO file
    */
-	public OboOntologyLoader(File file) {
-	  try {
-		this.obo = new FileInputStream(file);
-		curieUtil = new CurieUtil(CurieMapGenerator.generate());
-		this.factory = new Owl2OboTermFactory();
-	  } catch (FileNotFoundException e) {
-		throw new RuntimeException("Cannot find file " + file.getName(), e);
-	  }
+  public OboOntologyLoader(File file) {
+    try {
+      this.obo = new FileInputStream(file);
+      curieUtil = new CurieUtil(CurieMapGenerator.generate());
+      this.factory = new Owl2OboTermFactory();
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Cannot find file " + file.getName(), e);
+    }
   }
   
   public OboOntologyLoader(InputStream obo) {
-	this.obo = obo;
-	curieUtil = new CurieUtil(CurieMapGenerator.generate());
-	this.factory = new Owl2OboTermFactory();
+    this.obo = obo;
+    curieUtil = new CurieUtil(CurieMapGenerator.generate());
+    this.factory = new Owl2OboTermFactory();
   }
 
   public Ontology load() throws PhenolException {

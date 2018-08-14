@@ -35,7 +35,7 @@ public class MpoOboParserTest {
 
   @Before
   public void setUp() throws IOException, PhenolException {
-	ClassLoader classLoader = this.getClass().getClassLoader();
+    ClassLoader classLoader = this.getClass().getClassLoader();
     final MpOboParser parser = new MpOboParser(classLoader.getResourceAsStream("mp_head.obo"));
     this.ontology = parser.parse();
   }

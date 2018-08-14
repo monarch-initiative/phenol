@@ -22,8 +22,8 @@ public class HpOboParserTest {
 
   @Before
   public void setUp() throws IOException, PhenolException {
-	ClassLoader classLoader = this.getClass().getClassLoader();
-	final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
     ontology = parser.parse();
   }
 

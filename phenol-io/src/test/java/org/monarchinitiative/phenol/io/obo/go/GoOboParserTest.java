@@ -25,7 +25,7 @@ public class GoOboParserTest {
 
   @Before
   public void setUp() throws IOException, PhenolException {
-	ClassLoader classLoader = this.getClass().getClassLoader();
+    ClassLoader classLoader = this.getClass().getClassLoader();
     GoOboParser parser = new GoOboParser(classLoader.getResourceAsStream("go_head.obo"));
     this.ontology = parser.parse();
   }
