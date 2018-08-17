@@ -19,16 +19,6 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
    */
   private MpAllelicComposition(String allelicComp) {
     allelicCompStr = allelicComp;
-/*
-        alleleSymbolString = alleleSymbols;
-        String[] mgiIds = mgiAccessions.split(",");
-        genes = new ArrayList<>();
-        for (String id : mgiIds) {
-            genes.add(findGene(id));
-        }
-                    Set<String> alleleSymbols = new TreeSet<>(
-                            Arrays.asList(alleleSymbolString.split("\\|")));
-*/
   }
 
   /**
@@ -36,7 +26,7 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
    * @param allelicComp           string read from input data file
    * @return ImmutableAllelicComp object constructed from the string
    */
-  public static MpAllelicComposition makeImmutableAllelicComp(String allelicComp) {
+  public static MpAllelicComposition fromString(String allelicComp) {
     return new MpAllelicComposition(allelicComp);
   }
 

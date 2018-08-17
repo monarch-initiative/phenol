@@ -25,9 +25,9 @@ public class MpStrain implements Comparable<MpStrain> {
   /**
    * Factory method to construct an ImmutableStrain object.
    * @param strain           string read from input data file
-   * @return ImmutableStrain object constructed from the string
+   * @return MpStrain object constructed from the string
    */
-  public static MpStrain makeMpStrain(String strain) {
+  public static MpStrain fromString(String strain) {
     return new MpStrain(strain);
   }
 
