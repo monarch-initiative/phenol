@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
 
-import java.util.Objects;
-
 /**
  * This class represents the Genetic Background field of the {@code MGI_PhenoGenoMP.rpt} file as a string (without breaking
  * down its subparts).
@@ -36,8 +34,8 @@ public class MpStrain implements Comparable<MpStrain> {
    * @param s     ImmutableStrain object to which this object is compared
    * @return int  outcome of comparing the two strainStr fields
    */
+  @Override
   public int compareTo(MpStrain s) {
-    Objects.requireNonNull(s, "Cannot compare to null ImmutableStrain object");
     return strainStr.compareTo(s.strainStr);
   }
 
@@ -79,6 +77,6 @@ public class MpStrain implements Comparable<MpStrain> {
    */
   @Override
   public String toString() {
-    return "ImmutableStrain{strainStr: " + strainStr + "}";
+    return  strainStr;
   }
 }

@@ -1,10 +1,9 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
-import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 public class MpModel {
 
@@ -39,6 +38,32 @@ public class MpModel {
     this.alleleSymbol=alleleSymbol;
     this.markerId=markerId;
 
+  }
+
+
+  public boolean hasMaleSpecificAnnotation() {
+    return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::maleSpecific);
+  }
+
+  public boolean hasFemaleSpecificAnnotation() {
+    return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::femaleSpecific);
+  }
+
+  public boolean hasSexSpecificAnnotation() {
+    return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::sexSpecific);
+  }
+
+  public int getTotalAnnotationCount() {
+    int neg = (int)phenotypicAbnormalities.stream().filter(MpAnnotation::isNegated).count();
+    return phenotypicAbnormalities.size()-neg;
+  }
+
+  @Override
+  public String toString() {
+    String abn=phenotypicAbnormalities.stream().map(MpAnnotation::toString).collect(Collectors.joining("\n"));
+    return String.format("[MpModel: %s] %s %s(%s): %s / %s \n%s", this.genotypeId.getIdWithPrefix(),
+      this.markerId.getIdWithPrefix(),this.alleleSymbol,this.alleleId.getIdWithPrefix() ,
+      this.allelicComposition,this.strain, abn);
   }
 
 

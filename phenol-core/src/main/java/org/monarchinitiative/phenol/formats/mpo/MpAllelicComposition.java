@@ -35,7 +35,8 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
    * @param ac    ImmutableAllelicComp object to which this object is compared
    * @return int  outcome of comparing the two allelicCompStr fields
    */
-  public int compareTo(MpAllelicComposition ac) {
+  @Override
+  public int compareTo( MpAllelicComposition ac) {
     Objects.requireNonNull(ac, "Cannot compare to null ImmutableAllelicComp object");
     return allelicCompStr.compareTo(ac.allelicCompStr);
   }
@@ -78,7 +79,7 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
    */
   @Override
   public String toString() {
-    return "ImmutableAllelicComp{allelicCompStr: " + allelicCompStr + "}";
+    return allelicCompStr;
   }
 }
 
