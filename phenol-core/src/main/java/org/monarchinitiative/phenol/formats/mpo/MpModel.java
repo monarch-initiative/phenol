@@ -40,17 +40,65 @@ public class MpModel {
 
   }
 
+  public MpAllelicComposition getAllelicComposition() {
+    return allelicComposition;
+  }
+
+  public MpStrain getStrain() {
+    return strain;
+  }
+
+  public TermId getGenotypeId() {
+    return genotypeId;
+  }
+
+  public List<MpAnnotation> getPhenotypicAbnormalities() {
+    return phenotypicAbnormalities;
+  }
+
+  public TermId getAlleleId() {
+    return alleleId;
+  }
+
+  public String getAlleleSymbol() {
+    return alleleSymbol;
+  }
+
+  public TermId getMarkerId() {
+    return markerId;
+  }
 
   public boolean hasMaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::maleSpecific);
+  }
+
+  public List<TermId> getMaleSpecificMpTermIds() {
+    return phenotypicAbnormalities.stream()
+      .filter(MpAnnotation::maleSpecific)
+      .map(MpAnnotation::getTermId)
+      .collect(Collectors.toList());
   }
 
   public boolean hasFemaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::femaleSpecific);
   }
 
+  public List<TermId> getFemaleSpecificMpTermIds() {
+    return phenotypicAbnormalities.stream()
+      .filter(MpAnnotation::femaleSpecific)
+      .map(MpAnnotation::getTermId)
+      .collect(Collectors.toList());
+  }
+
   public boolean hasSexSpecificAnnotation() {
     return phenotypicAbnormalities.stream().anyMatch(MpAnnotation::sexSpecific);
+  }
+
+  public List<TermId> getSexSpecificMpTermIds() {
+    return phenotypicAbnormalities.stream()
+      .filter(MpAnnotation::sexSpecific)
+      .map(MpAnnotation::getTermId)
+      .collect(Collectors.toList());
   }
 
   public int getTotalAnnotationCount() {
@@ -60,7 +108,9 @@ public class MpModel {
 
   @Override
   public String toString() {
-    String abn=phenotypicAbnormalities.stream().map(MpAnnotation::toString).collect(Collectors.joining("\n"));
+    String abn=phenotypicAbnormalities.stream().
+      map(MpAnnotation::toString).
+      collect(Collectors.joining("\n"));
     return String.format("[MpModel: %s] %s %s(%s): %s / %s \n%s", this.genotypeId.getIdWithPrefix(),
       this.markerId.getIdWithPrefix(),this.alleleSymbol,this.alleleId.getIdWithPrefix() ,
       this.allelicComposition,this.strain, abn);

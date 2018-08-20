@@ -9,8 +9,10 @@ public enum MpSex {
   public static MpSex fromString(String s) throws PhenolException {
     switch (s) {
       case "M":
+      case "m":
         return MALE;
       case "F":
+      case "f":
         return FEMALE;
       default:
         throw new PhenolException("Did not recognize sex symbol: \""+s+"\"");

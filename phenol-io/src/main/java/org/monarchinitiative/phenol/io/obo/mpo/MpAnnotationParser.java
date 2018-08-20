@@ -30,7 +30,7 @@ public class MpAnnotationParser {
   /** Input stream corresponding to MGI_GenePhenot.rpt */
   private final InputStream phenoSexInputstream;
   /** Used to store sex-specific phenotype annotations. */
-  private Multimap<TermId,MpAnnotation> sexSpecificAnnotationMap=ImmutableMultimap.of();
+  private Map<TermId,Map<TermId,MpAnnotation>> geno2ssannotMap = ImmutableMap.of();
 
   public Map<TermId, MpModel> getGenotypeAccessionToMpModelMap() {
     return genotypeAccessionToMpModelMap;
@@ -40,6 +40,8 @@ public class MpAnnotationParser {
    * Value: the corresponding MpModel object
    */
   private Map<TermId,MpModel> genotypeAccessionToMpModelMap;
+
+  private boolean verbose = true;
 
 
 
@@ -97,11 +99,17 @@ public class MpAnnotationParser {
   }
 
 
-
+  /**
+   * Parse data from MGI_Pheno_Sex.rpt.
+   * Note that there may be multiple lines that suuport the same assertion that differ only in PMID
+   * @throws IOException
+   * @throws PhenolException
+   */
   private void parsePhenoSexData() throws IOException, PhenolException {
     int EXPECTED_NUMBER_SEXSPECIFIC_FIELDS=7;
     BufferedReader br = new BufferedReader(new InputStreamReader(this.phenoSexInputstream));
-    this.sexSpecificAnnotationMap = ArrayListMultimap.create();
+    //this.sexSpecificAnnotationMap = ArrayListMultimap.create();
+    this.geno2ssannotMap=new HashMap<>();
     String line;
     line=br.readLine(); // the header
     if (! line.startsWith("Genotype ID")) {
@@ -111,13 +119,29 @@ public class MpAnnotationParser {
       //System.out.println(line);
       String A[] = line.split("\t");
       if (A.length < EXPECTED_NUMBER_SEXSPECIFIC_FIELDS) {
-        throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
+        if (verbose) {
+          //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
+        System.err.println("[Phenol-ERROR] Unexpected number of fields in MGI_Pheno_Sex.rpt(" + A.length + ") in line " + line);
+        }
+        continue;
       }
       SexSpecificAnnotationLine ssaline = new SexSpecificAnnotationLine(A);
       TermId genotypeId=ssaline.genotypeID;
       MpAnnotation annot = ssaline.toMpAnnotation();
-      this.sexSpecificAnnotationMap.put(genotypeId,annot);
+      geno2ssannotMap.putIfAbsent(genotypeId,new HashMap<>());
+      Map<TermId,MpAnnotation> annotset = geno2ssannotMap.get(genotypeId);
+      if (annotset.containsKey(annot.getTermId())) {
+        // there is a previous annotation for this MP term --
+        // the current annotation is from a separate PMID
+        MpAnnotation previousannot=annotset.get(annot.getTermId());
+        previousannot=previousannot.merge(annot);
+      } else {
+        annotset.put(annot.getTermId(),annot);
+      }
     }
+//    for (TermId t : geno2ssannotMap.keySet()) {
+//      System.out.println("tt="+t.getIdWithPrefix() + ":" + geno2ssannotMap.get(t));
+//    }
   }
 
   /** Parse the data in MGI_GenePheno.rpt. Interpolate the sex-specific data if available. */
@@ -134,7 +158,11 @@ public class MpAnnotationParser {
        * appears to be a stray tab  between the penultimate and last column)
        */int EXPECTED_NUMBER_OF_FIELDS = 9;
       if (A.length < EXPECTED_NUMBER_OF_FIELDS) {
-        throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
+        if (verbose) {
+          //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
+          System.err.println("[Phenol-ERROR] Unexpected number of fields in MGI_GenePheno.rpt (" + A.length + ") in line " + line);
+        }
+        continue;
       }
       try {
         AnnotationLine annot = new AnnotationLine(A);
@@ -159,13 +187,17 @@ public class MpAnnotationParser {
       TermId markerId=null;
       // get the sex-specific annotations for this genotypeId, if any
       Map<TermId,MpAnnotation> sexSpecific = ImmutableMap.of(); // default, empty set
-      if (this.sexSpecificAnnotationMap.containsKey(genoId)) {
-        ImmutableMap.Builder<TermId,MpAnnotation> setbuilder = new ImmutableMap.Builder<>();
-        Collection<MpAnnotation> annots = this.sexSpecificAnnotationMap.get(genoId);
-        for (MpAnnotation mpann : annots) {
-          setbuilder.put(mpann.getTermId(), mpann);
+      if (this.geno2ssannotMap.containsKey(genoId)) {
+        ImmutableMap.Builder<TermId,MpAnnotation> imapbuilder = new ImmutableMap.Builder<>();
+        Map<TermId,MpAnnotation> annots = this.geno2ssannotMap.get(genoId);
+        for (MpAnnotation mpann : annots.values()) {
+          imapbuilder.put(mpann.getTermId(), mpann);
         }
-        sexSpecific = setbuilder.build();
+        try {
+          sexSpecific = imapbuilder.build();
+        } catch (Exception e) {
+          System.err.println("Error building map of sex-specific annotations for " + genoId.getIdWithPrefix() +": " + e.getMessage());
+        }
       }
       while (it.hasNext()) {
         AnnotationLine aline = it.next();
