@@ -1,6 +1,10 @@
 =========
 Changelog
 =========
+------
+v1.2.2
+------
+- Adding MP annotation parser for MGI_GenePheno.rst and MGI_Pheno_Sex.rst
 
 ------
 v1.1.1

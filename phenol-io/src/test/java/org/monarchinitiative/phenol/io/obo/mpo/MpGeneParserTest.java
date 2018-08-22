@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MpGeneParserTest {
 
@@ -25,7 +23,7 @@ public class MpGeneParserTest {
   @BeforeClass
   public static void setup() throws IOException,PhenolException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
-    URL url = classLoader.getResource("MRK_List2.rpt.excerpt");
+    URL url = classLoader.getResource("mgi/MRK_List2.rpt.excerpt");
     if (url == null) {
       throw new IOException("Cannot find MRK_List2.rpt.excerpt ");
     }
@@ -46,7 +44,7 @@ public class MpGeneParserTest {
     MpGene g = mpgenemap.get(tid);
     assertNotNull(g);
     assertEquals("03B03F", g.getGeneSymbol());
-    assertTrue(MpMarkerType.BAC_YAC_END == g.getMarkerType());
+    assertSame(MpMarkerType.BAC_YAC_END, g.getMarkerType());
     assertEquals(tid,g.getMgiGeneId());
 //    for (MpGene mg : mpgenemap.values()) {
 //      System.out.println(mg.toString());

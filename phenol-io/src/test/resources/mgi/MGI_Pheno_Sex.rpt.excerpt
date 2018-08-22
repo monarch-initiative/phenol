@@ -1,0 +1,9 @@
+Genotype ID	Sex	MP ID	MP Term	Allelic Composition	Background Strain	Sex-specific Normal Y/N	Citation (PubMed/MGI)
+MGI:2167486	F	MP:0008871	abnormal ovarian follicle number	Kit<W-42J>/Kit<+>	C57BL/6J-Kit<W-42J>/J	N	7274658
+MGI:2167486	M	MP:0001147	small testis	Kit<W-42J>/Kit<+>	C57BL/6J-Kit<W-42J>/J	N	7274658
+MGI:2168183	M	MP:0001379	abnormal penile erection	Ada<tm1Mw>/Ada<tm1Mw>	involves: 129S7/SvEvBrd * C57BL/6 * FVB/N	N	18340377
+MGI:2168183	M	MP:0003415	priapism	Ada<tm1Mw>/Ada<tm1Mw>	involves: 129S7/SvEvBrd * C57BL/6 * FVB/N	N	18340377
+MGI:2169746	M	MP:0001922	reduced male fertility	Mafb<kr>/Mafb<kr>	Not Specified	N	MGI:63176
+MGI:2169746	F	MP:0001923	reduced female fertility	Mafb<kr>/Mafb<kr>	Not Specified	N	MGI:63176
+MGI:3513298	M	MP:0005169	abnormal male meiosis	Rec8<mei8>/Rec8<mei8>	involves: 129S4/SvJae * C57BL/6J	N	24589552
+MGI:3513298	M	MP:0005169	abnormal male meiosis	Rec8<mei8>/Rec8<mei8>	involves: 129S4/SvJae * C57BL/6J	N	15515002

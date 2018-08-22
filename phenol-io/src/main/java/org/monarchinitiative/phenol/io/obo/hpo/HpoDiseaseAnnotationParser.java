@@ -38,7 +38,7 @@ public class HpoDiseaseAnnotationParser {
   /** Key: HpoPhenotypeId; Value: corresponding {@link HpoDisease} object. */
   private ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
-  private List<String> errors=new ArrayList<>();
+  private List<String> errors;
 
   public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
     this.annotationFilePath = annotationFile;
@@ -68,6 +68,7 @@ public class HpoDiseaseAnnotationParser {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
     Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
+    ImmutableList.Builder errorbuilder=new ImmutableList.Builder();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
@@ -84,7 +85,7 @@ public class HpoDiseaseAnnotationParser {
       while ((line = br.readLine()) != null) {
         HpoAnnotationLine aline =  HpoAnnotationLine.constructFromString(line);
         if (! aline.hasValidNumberOfFields()) {
-          errors.add(String.format("Invalid number of fields: %s",line));
+          errorbuilder.add(String.format("Invalid number of fields: %s",line));
           continue;
         }
         if(!termToDisease.containsEntry(aline.getPhenotypeId(),aline.getDiseaseTermId())){
@@ -131,7 +132,7 @@ public class HpoDiseaseAnnotationParser {
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
         } catch (Exception e) {
-          errors.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: %s ",
+          errorbuilder.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: %s ",
             line.toString(), e.getMessage()));
         }
       }
@@ -144,6 +145,7 @@ public class HpoDiseaseAnnotationParser {
           negativeTermListBuilder.build());
       this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
+    this.errors=errorbuilder.build();
     return diseaseMap;
   }
 
