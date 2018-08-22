@@ -21,7 +21,7 @@ public class MpAnnotationParserTest {
   private static String phenoSexPath;
 
   @BeforeClass
-  public static void setUp() throws IOException,PhenolException {
+  public static void setUp() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");
     if (url == null) {
@@ -38,14 +38,13 @@ public class MpAnnotationParserTest {
 
   /**
    * We have the following models in the MGI_GenePheno.rpt.excerpt file.
-   * MGI:2166359; MGI:2167486; MGI:5306347, thus we expect to se three models
-   * @throws PhenolException
+   * MGI:2166359; MGI:2167486; MGI:5306347,MGI:5433360 thus we expect to see four models
    */
   @Test
   public void testRetrieveCorrectNumberOfModels() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    int expected_number_of_models=3;
+    int expected_number_of_models=4;
     assertEquals(expected_number_of_models,modelmap.size());
   }
 
@@ -71,6 +70,25 @@ public class MpAnnotationParserTest {
     int expected_number_of_MP_terms=5;
     assertEquals(expected_number_of_MP_terms,annots.size());
     assertFalse(model.hasSexSpecificAnnotation());
+  }
+
+  /** 	MGI:5433360 has here two annotation with two PMIDs each. */
+  @Test
+  public void getMultiplePmid() throws PhenolException{
+    MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
+    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    TermId kit = TermId.constructWithPrefix("MGI:5433360");
+    MpModel model = modelmap.get(kit);
+    assertNotNull(model);
+    List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
+    int expected_number_of_MP_terms=2;
+    assertEquals(expected_number_of_MP_terms,annots.size());
+    assertFalse(model.hasSexSpecificAnnotation());
+    // The following annotation should have two PMIDs: 2383655|22773809
+    MpAnnotation annot = annots.get(0);
+    List<String> pmids = annot.getPmidList();
+    assertEquals(2,pmids.size());
+
   }
 
 
