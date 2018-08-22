@@ -32,18 +32,13 @@ public class MpAnnotationParser {
   /** Used to store sex-specific phenotype annotations. */
   private Map<TermId,Map<TermId,MpAnnotation>> geno2ssannotMap = ImmutableMap.of();
 
-  public Map<TermId, MpModel> getGenotypeAccessionToMpModelMap() {
-    return genotypeAccessionToMpModelMap;
-  }
 
   /** Key: A term id representing the genotype accession id of an MPO model
    * Value: the corresponding MpModel object
    */
   private Map<TermId,MpModel> genotypeAccessionToMpModelMap;
-
+  /** Show verbose debugging information. */
   private boolean verbose = true;
-
-
 
   /**
    * @param path Path of MGI_GenePheno.rpt file.
@@ -95,7 +90,10 @@ public class MpAnnotationParser {
     } catch (IOException e) {
       throw new PhenolException("Could not parse MGI_GenePheno.rpt: " + e.getMessage());
     }
+  }
 
+  public Map<TermId, MpModel> getGenotypeAccessionToMpModelMap() {
+    return genotypeAccessionToMpModelMap;
   }
 
 
@@ -228,6 +226,48 @@ public class MpAnnotationParser {
    private static class AnnotationLine {
     /** [0] Index of Allelic Composition	Allele Symbol(s) field */
     private final int ALLELIC_COMPOSITION_IDX=0;
+    /** [1] Index of Allele Symbol(s) field. */
+    private final int ALLELE_SYMBOL_IDX =1;
+    /** [1] Index of Allele ID(s) field. */
+    private final int ALLELE_ID_IDX=2;
+    /** [2] Index of Genetic Background field */
+    private final int GENETIC_BACKGROUND_IDX=3;
+    /** [3] Index of Mammalian Phenotype ID */
+    private final int MPO_IDX=4;
+    /** Index of PubMed ID (pipe-delimited) */
+    private final int PUBMED_IDX=5;
+    /** Index of MGI Marker Accession ID (pipe-delimited). For example, for a model with
+     * a mutation of the RB1 gene, this would be the id for that gene (MGI:97874). */
+    private final int MGI_MARKER_IDX=6;
+    /** Index of MGI Genotype Accession ID (pipe-delimited) (Note: there appears to be a stray tab in front of this
+     * field in the current MGI file version. */
+    private final int GENOTYPE_ACCESSION_IDX=8;
+
+    private final MpAllelicComposition allelicComp;
+    private final String alleleSymbol;
+    private final TermId alleleId;
+    private final MpStrain geneticBackground;
+    private final TermId mpId;
+    private final List<String> pmidList;
+    private final TermId markerAccessionId;
+    private final TermId genotypeAccessionId;
+
+    AnnotationLine(String[] A) throws PhenolException {
+      this.allelicComp = MpAllelicComposition.fromString(A[ALLELIC_COMPOSITION_IDX]);
+      this.alleleSymbol = A[ALLELE_SYMBOL_IDX];
+      this.alleleId=TermId.constructWithPrefix(A[ALLELE_ID_IDX]);
+      this.geneticBackground=MpStrain.fromString(A[GENETIC_BACKGROUND_IDX]);
+      this.mpId = TermId.constructWithPrefix(A[MPO_IDX]);
+      String pmids=A[PUBMED_IDX];
+      ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+      String B[]=pmids.split(Pattern.quote("|"));
+      for (String b: B) {
+        builder.add(b);
+      }
+      this.pmidList=builder.build();
+      this.markerAccessionId=TermId.constructWithPrefix(A[MGI_MARKER_IDX]);
+      this.genotypeAccessionId=TermId.constructWithPrefix(A[GENOTYPE_ACCESSION_IDX]);
+    }
 
     public MpAllelicComposition getAllelicComp() {
       return allelicComp;
@@ -261,50 +301,9 @@ public class MpAnnotationParser {
       return genotypeAccessionId;
     }
 
-    /** [1] Index of Allele Symbol(s) field. */
-    private final int ALLELE_SYMBOL_IDX =1;
-    /** [1] Index of Allele ID(s) field. */
-    private final int ALLELE_ID_IDX=2;
-    /** [2] Index of Genetic Background field */
-    private final int GENETIC_BACKGROUND_IDX=3;
-    /** [3] Index of Mammalian Phenotype ID */
-    private final int MPO_IDX=4;
-    /** Index of PubMed ID (pipe-delimited) */
-    private final int PUBMED_IDX=5;
-    /** Index of MGI Marker Accession ID (pipe-delimited). For example, for a model with
-     * a mutation of the RB1 gene, this would be the id for that gene (MGI:97874). */
-    private final int MGI_MARKER_IDX=6;
-    /** Index of MGI Genotype Accession ID (pipe-delimited) */
-    private final int GENOTYPE_ACCESSION_IDX=8;
-    final MpAllelicComposition allelicComp;
-    final String alleleSymbol;
-    final TermId alleleId;
-    final MpStrain geneticBackground;
-    final TermId mpId;
-    final List<String> pmidList;
-    final TermId markerAccessionId;
-    final TermId genotypeAccessionId;
-
-    AnnotationLine(String[] A) throws PhenolException {
-      this.allelicComp = MpAllelicComposition.fromString(A[ALLELIC_COMPOSITION_IDX]);
-      this.alleleSymbol = A[ALLELE_SYMBOL_IDX];
-      this.alleleId=TermId.constructWithPrefix(A[ALLELE_ID_IDX]);
-      this.geneticBackground=MpStrain.fromString(A[GENETIC_BACKGROUND_IDX]);
-      this.mpId = TermId.constructWithPrefix(A[MPO_IDX]);
-      String pmids=A[PUBMED_IDX];
-      ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-      String B[]=pmids.split(Pattern.quote("|"));
-      for (String b: B) {
-        builder.add(b);
-      }
-      this.pmidList=builder.build();
-      this.markerAccessionId=TermId.constructWithPrefix(A[MGI_MARKER_IDX]);
-      this.genotypeAccessionId=TermId.constructWithPrefix(A[GENOTYPE_ACCESSION_IDX]);
-    }
 
     /**
-     * TODO -- do we need anything more here?
-     * @return
+     * @return THe {@link MpAnnotation} object corresponding to this {@link AnnotationLine}.
      */
     public MpAnnotation toMpAnnotation() {
       return new MpAnnotation(this.mpId,this.pmidList);

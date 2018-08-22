@@ -16,6 +16,12 @@ public class MpModifier {
     payload=data;
   }
 
+  /**
+   * @return The "payload", an optional bit of additional information for some modifier types formated as a String.
+   */
+  public String getPayload() {
+    return payload;
+  }
   public ModifierType getType() { return this.type; }
   @Override
   public String toString() { return this.type.toString(); }

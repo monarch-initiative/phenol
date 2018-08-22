@@ -21,7 +21,7 @@ public class MpAnnotationParserTest {
   private static String phenoSexPath;
 
   @BeforeClass
-  public static void setup() throws IOException,PhenolException {
+  public static void setUp() throws IOException,PhenolException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");
     if (url == null) {
