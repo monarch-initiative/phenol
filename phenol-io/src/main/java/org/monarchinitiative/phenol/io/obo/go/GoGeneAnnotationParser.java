@@ -62,6 +62,10 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     skipHeaderAndCheckFirst();
   }
 
+  public GoGeneAnnotationParser(String absolutepath)throws IOException, TermAnnotationParserException {
+    this(new File(absolutepath));
+  }
+
   /**
    * Skip all header lines and check next data line.
    *

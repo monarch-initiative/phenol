@@ -12,10 +12,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -28,13 +27,13 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public class GoOboParserTest {
   @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
-  private GoOntology ontology;
+  private Ontology ontology;
 
   @Before
   public void setUp() throws IOException, PhenolException {
     File goHeadFile;
     goHeadFile = tmpFolder.newFile("go_head.obo");
-    ResourceUtils.copyResourceToFile("/go_head.obo", goHeadFile);
+    ResourceUtils.copyResourceToFile("/go/go_head.obo", goHeadFile);
     GoOboParser parser = new GoOboParser(goHeadFile);
     this.ontology = parser.parse();
   }
@@ -47,49 +46,16 @@ public class GoOboParserTest {
   public void testEdgeSetSize() {
     int expected=6;
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
-    System.err.println(graph.toString());
     assertEquals(expected, graph.edgeSet().size());
   }
 
   @Test
   public void testArtificialRootTerm() {
     TermId tid = ontology.getRootTermId();
-    Term root = ontology.getTermMap().get(tid);
     TermId expected = TermId.constructWithPrefix("GO:0000000");
     assertEquals(expected,tid);
   }
 
 
 
-  @Test
-  public void testParseHpoHead() throws IOException {
-//    final GoOboParserOLD parser = new GoOboParserOLD(goHeadFile, true);
-//    final GoOntology ontology = parser.parse();
-    final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
-
-
-
-//
-//    assertEquals(
-//        "[TermId [prefix=TermPrefix [value=GO], id=0000000], TermId [prefix=TermPrefix [value=GO], id=0000004], TermId [prefix=TermPrefix [value=GO], id=0003674], TermId [prefix=TermPrefix [value=GO], id=0005554], TermId [prefix=TermPrefix [value=GO], id=0005575], TermId [prefix=TermPrefix [value=GO], id=0007582], TermId [prefix=TermPrefix [value=GO], id=0008150], TermId [prefix=TermPrefix [value=GO], id=0008372]]",
-//        ImmutableSortedSet.copyOf(ontology.getAllTermIds()).toString());
-//
-//    assertThat(
-//        ImmutableSortedMap.copyOf(ontology.getTermMap()).toString(),
-//        startsWith("{TermId"));
-//
-//    assertThat(
-//        ImmutableSortedMap.copyOf(ontology.getTermMap()).toString(),
-//        endsWith("description=null, trailingModifiers=null]]]}"));
-//
-//    assertEquals(
-//        "{1=Relationship [source=TermId [prefix=TermPrefix [value=GO], id=0003674], dest=TermId [prefix=TermPrefix [value=GO], id=0000000], id=1, relationshipType=IS_A], 2=Relationship [source=TermId [prefix=TermPrefix [value=GO], id=0005575], dest=TermId [prefix=TermPrefix [value=GO], id=0000000], id=2, relationshipType=IS_A], 3=Relationship [source=TermId [prefix=TermPrefix [value=GO], id=0008150], dest=TermId [prefix=TermPrefix [value=GO], id=0000000], id=3, relationshipType=IS_A]}",
-//        ImmutableSortedMap.copyOf(ontology.getRelationMap()).toString());
-//
-//
-//
-//    assertEquals(
-//        "{data-version=releases/2017-06-16, remark=Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/go/never_in_taxon.owl>))) [Axioms: 18 Logical Axioms: 0]}",
-//        ontology.getMetaInfo().toString());
-  }
 }
