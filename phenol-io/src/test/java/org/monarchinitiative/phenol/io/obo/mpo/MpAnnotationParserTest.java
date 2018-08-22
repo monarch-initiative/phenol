@@ -3,16 +3,16 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.mpo.MpAnnotation;
 import org.monarchinitiative.phenol.formats.mpo.MpModel;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MpAnnotationParserTest {
 
@@ -36,12 +36,17 @@ public class MpAnnotationParserTest {
   }
 
 
-
+  /**
+   * We have the following models in the MGI_GenePheno.rpt.excerpt file.
+   * MGI:2166359; MGI:2167486; MGI:5306347, thus we expect to se three models
+   * @throws PhenolException
+   */
   @Test
-  public void testCtr() throws PhenolException{
+  public void testRetrieveCorrectNumberOfModels() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    assertEquals(2,modelmap.size());
+    int expected_number_of_models=3;
+    assertEquals(expected_number_of_models,modelmap.size());
   }
 
   @Test
@@ -51,8 +56,21 @@ public class MpAnnotationParserTest {
     TermId kit = TermId.constructWithPrefix("MGI:2167486");
     MpModel model = modelmap.get(kit);
     assertNotNull(model);
-    System.out.println(model);
     assertTrue(model.hasSexSpecificAnnotation());
+  }
+
+  /* This model should have 5 abnormalities. In the excerpt, none of them are listed as sex specific. */
+  @Test
+  public void testParseModelMgi5306347() throws PhenolException{
+    MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
+    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    TermId kit = TermId.constructWithPrefix("MGI:5306347");
+    MpModel model = modelmap.get(kit);
+    assertNotNull(model);
+    List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
+    int expected_number_of_MP_terms=5;
+    assertEquals(expected_number_of_MP_terms,annots.size());
+    assertFalse(model.hasSexSpecificAnnotation());
   }
 
 

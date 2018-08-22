@@ -150,13 +150,11 @@ public class MpAnnotationParser {
     Multimap<TermId,AnnotationLine> annotationCollector = ArrayListMultimap.create();
     String line;
     while ((line=br.readLine())!=null) {
-      System.out.println(line);
+      //System.out.println(line);
       String A[] = line.split("\t");
       /* Expected number of fields of the MGI_GenePheno.rpt file (note -- there
-    appears to be a stray tab  between the penultimate and last column)
-   */ /** Expected number of fields of the MGI_GenePheno.rpt file (note -- there
-       * appears to be a stray tab  between the penultimate and last column)
-       */int EXPECTED_NUMBER_OF_FIELDS = 9;
+         appears to be a stray tab  between the penultimate and last column) */
+      int EXPECTED_NUMBER_OF_FIELDS = 9;
       if (A.length < EXPECTED_NUMBER_OF_FIELDS) {
         if (verbose) {
           //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
