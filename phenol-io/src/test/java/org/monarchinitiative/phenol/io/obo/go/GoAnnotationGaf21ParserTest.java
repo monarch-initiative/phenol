@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.obo.go;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
@@ -39,11 +40,11 @@ public class GoAnnotationGaf21ParserTest {
 
    */
   @Test
-  public void testParseGoDiseaseAnnotationHead() throws IOException, TermAnnotationParserException {
+  public void testParseGoDiseaseAnnotationHead() throws PhenolException {
     final GoGeneAnnotationParser parser = new GoGeneAnnotationParser(goGeneAnnotationHeadFile);
 
     // Read and check first record.
-    final GoGaf21Annotation firstRecord = parser.next();
+    final GoGaf21Annotation firstRecord = parser.getAnnotations().get(0);
     assertEquals("UniProtKB",firstRecord.getDb());
     assertEquals("A0A024R161",firstRecord.getDbObjectId());
     assertEquals("DNAJC25-GNG10",firstRecord.getDbObjectSymbol());
@@ -51,18 +52,12 @@ public class GoAnnotationGaf21ParserTest {
     assertEquals(expectedId,firstRecord.getGoId());
     assertNotNull(firstRecord.getEvidenceCode().get());
     assertEquals("IEA",firstRecord.getEvidenceCode().get());
-    assertEquals(
-        "GoGaf21Annotation [db=UniProtKB, dbObjectId=A0A024R161, dbObjectSymbol=DNAJC25-GNG10, qualifier=, goId=TermId [prefix=TermPrefix [value=GO], id=0004871], dbReference=GO_REF:0000038, evidenceCode=IEA, with=UniProtKB-KW:KW-0807, aspect=F, dbObjectName=Guanine nucleotide-binding protein subunit gamma, dbObjectSynonym=A0A024R161_HUMAN|DNAJC25-GNG10|hCG_1994888, dbObjectType=protein, taxons=[taxon:9606], date=Sat Jun 03 00:00:00 UTC 2017, assignedBy=UniProt, annotationExtension=null, geneProductFormId=null]",
-        firstRecord.toString());
+
 
     // Read remaining records and check count.
-    int count = 1;
-    while (parser.hasNext()) {
-      parser.next();
-      count += 1;
-    }
-    assertEquals(6, count);
 
-    parser.close();
+    assertEquals(6, parser.getAnnotations().size());
+
+
   }
 }

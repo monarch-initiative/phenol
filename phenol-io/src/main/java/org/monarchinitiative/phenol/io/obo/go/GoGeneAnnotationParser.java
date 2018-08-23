@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
-import org.monarchinitiative.phenol.io.base.TermAnnotationParser;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
@@ -24,20 +24,18 @@ import com.google.common.collect.ImmutableList;
  * File inputFile = "goa_human.gaf";
  * try {
  *   GoGeneAnnotationFileParser parser = new GoGeneAnnotationFileParser(inputFile);
- *   while (parser.hasNext()) {
- *     GoAnnotation anno = parser.next();
- *     // ...
+ *   List<GoGaf21Annotation> = parser.getAnnotations();
+ *   ...
  *   }
- * } except (IOException e) {
+ * } except (PhenolException e) {
  *   System.err.println("Problem reading from file.");
- * } except (TermAnnotationException e) {
- *   System.err.println("Problem parsing file.");
  * }
  * </pre>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf21Annotation> {
+public final class GoGeneAnnotationParser  {
 
   /** The {@link File} to read from. */
   private final File file;
@@ -48,6 +46,8 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
   /** The next line. */
   private String nextLine;
 
+  private final List<GoGaf21Annotation> annotations;
+
   /**
    * Create new parser for GO gene annotation file.
    *
@@ -55,14 +55,26 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
    * @throws IOException In case of problems with opening and reading from <code>file</code>.
    * @throws TermAnnotationParserException If there are problems with the file's header.
    */
-  public GoGeneAnnotationParser(File file) throws IOException, TermAnnotationParserException {
+  public GoGeneAnnotationParser(File file) throws PhenolException {
     this.file = file;
-    this.reader = new BufferedReader(new FileReader(file));
-    this.nextLine = reader.readLine();
-    skipHeaderAndCheckFirst();
+    try {
+      this.reader = new BufferedReader(new FileReader(file));
+      this.nextLine = reader.readLine();
+      skipHeaderAndCheckFirst();
+      ImmutableList.Builder<GoGaf21Annotation> builder = new ImmutableList.Builder<>();
+      while (hasNext()) {
+        GoGaf21Annotation annot = next();
+        builder.add(annot);
+      }
+      reader.close();
+      annotations=builder.build();
+    } catch (IOException | TermAnnotationParserException e) {
+      String msg=String.format("Could not parse GO annotation file: %s",e.getMessage());
+      throw new PhenolException(msg);
+    }
   }
 
-  public GoGeneAnnotationParser(String absolutepath)throws IOException, TermAnnotationParserException {
+  public GoGeneAnnotationParser(String absolutepath)throws PhenolException {
     this(new File(absolutepath));
   }
 
@@ -97,13 +109,18 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
     }
   }
 
-  @Override
-  public boolean hasNext() {
+  public  List<GoGaf21Annotation> getAnnotations() {
+    return this.annotations;
+
+  }
+
+  /** Use an iterator paradigm internally to parse the file. */
+  private boolean hasNext() {
     return nextLine != null;
   }
 
-  @Override
-  public GoGaf21Annotation next() throws IOException, TermAnnotationParserException {
+  /** Use an iterator paradigm internally to parse the file. */
+  private GoGaf21Annotation next() throws IOException, TermAnnotationParserException {
     skipUntilData();
     final String[] arr = nextLine.split("\t");
     if (arr.length < 15 || arr.length > 17) {
@@ -162,12 +179,7 @@ public final class GoGeneAnnotationParser implements TermAnnotationParser<GoGaf2
         geneProductFormId);
   }
 
-  @Override
-  public void close() throws IOException {
-    reader.close();
-  }
 
-  @Override
   public File getFile() {
     return file;
   }
