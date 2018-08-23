@@ -9,28 +9,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * A class that encapsulates the annotation of a MGI model with MP terms, including
+ * PubMed references modifiers, and negation options.
+ */
 public final class MpAnnotation {
-  /**
-   * The annotated {@link TermId}.
-   */
+  /** The annotated {@link TermId}. */
   private final TermId termId;
-
+  /** List of PubMed ids for this phenotype annotation. */
   private final List<String> pmidList;
-
+  /** List of modifiers for the current phenotype annotation */
   private final List<MpModifier> modifers;
-
+  /** If this is true, then the model is NOT characterized by this phenotype. */
   private final boolean negated;
 
 
-  public MpAnnotation(TermId tid) {
-    this(tid, ImmutableList.of(), ImmutableList.of(), false);
-  }
-
-  public MpAnnotation(TermId tid, List<String> pmids) {
-    this(tid, pmids, ImmutableList.of(), false);
-  }
-
-  public MpAnnotation(TermId tid, List<String> pmids, List<MpModifier> mods, boolean neg) {
+  /**
+   * Constructor is intended to be used with the Builder, which ensures that the Lists
+   * are immutable.
+   * @param tid TermId of the MP term in this anotation
+   * @param pmids List of pubmed ids supporting this annotation
+   * @param mods Modifiers (e.g., sex-specific) for this annotation
+   * @param neg this is true is the annotated is negated (e.g., NOT inflammed).
+   */
+  private MpAnnotation(TermId tid, List<String> pmids, List<MpModifier> mods, boolean neg) {
     this.termId = tid;
     this.pmidList = pmids;
     modifers = mods;
@@ -66,34 +68,39 @@ public final class MpAnnotation {
     return negated;
   }
 
-  public MpAnnotation merge(MpAnnotation other) throws PhenolException {
-    if (! this.termId.equals(other.termId))
+  /**
+   * Merge the contents of two annotation to the same MP term with differnet metadata
+   * @param annot1 The first MP annotation
+   * @param annot2 The second MP annotation
+   * @return The merged MP annotation
+   * @throws PhenolException if annot1 and annot2 are incompatible
+   */
+  public static MpAnnotation merge(MpAnnotation annot1, MpAnnotation annot2) throws PhenolException {
+    if (! annot1.termId.equals(annot2.termId))
       throw new PhenolException(String.format("Attempt to merge annotations with distinct MP ids [%s/%s]",
-        this.termId.getIdWithPrefix(),other.termId.getIdWithPrefix()));
-    if (! this.negated == other.negated)
-      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+termId.getIdWithPrefix());
+        annot1.termId.getIdWithPrefix(),annot2.termId.getIdWithPrefix()));
+    if (! annot1.negated == annot2.negated)
+      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getIdWithPrefix());
     // merge list of modifiers
-    List<MpModifier> modlist = new ArrayList<>();
-    modlist.addAll(getModifers());
-    for (MpModifier mod: other.getModifers()) {
+    List<MpModifier> modlist = new ArrayList<>(annot1.getModifers());
+    for (MpModifier mod: annot2.getModifers()) {
       if (!modlist.contains(mod)) {
         modlist.add(mod);
       }
     }
     // merge PMIDs
-    List<String> pmidList=new ArrayList<>();
-    pmidList.addAll(getPmidList());
-    for (String pmid: other.getPmidList()) {
+    List<String> pmidList=new ArrayList<>(annot1.getPmidList());
+    for (String pmid: annot2.getPmidList()) {
       if (! pmidList.contains(pmid)) {
         pmidList.add(pmid);
       }
     }
-    return new MpAnnotation(this.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist),negated);
+    return new MpAnnotation(annot1.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist),annot1.negated);
   }
 
   @Override
   public String toString() {
-    return negated ? "NOT" : "" +
+    return negated ? "NOT " : "" +
       termId.getIdWithPrefix() +
       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
   }
@@ -131,7 +138,10 @@ public final class MpAnnotation {
 
 
     public MpAnnotation build() {
-      return new MpAnnotation(this.termId,this.pmidList,this.modifers,this.negated);
+      return new MpAnnotation(this.termId,
+        ImmutableList.copyOf(this.pmidList),
+        ImmutableList.copyOf(this.modifers),
+        this.negated);
     }
   }
 
