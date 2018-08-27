@@ -1,35 +1,29 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.junit.Before;
+import org.junit.Test;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 public class HpOboParserTest {
 
-  @ClassRule
-  public static TemporaryFolder tmpFolder = new TemporaryFolder();
+  private HpoOntology ontology;
 
-  private static HpoOntology ontology;
-
-  @BeforeClass
-  public static void setUp() throws IOException, PhenolException {
-    File hpoHeadFile = tmpFolder.newFile("hp_head.obo");
-    ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpOboParser parser = new HpOboParser(hpoHeadFile, true);
+  @Before
+  public void setUp() throws IOException, PhenolException {
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
     ontology = parser.parse();
   }
 

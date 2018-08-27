@@ -1,31 +1,17 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringEndsWith.endsWith;
-import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * Testcases that verify whether obo-formatted Go ontology is properly parsed and loaded.
@@ -34,16 +20,13 @@ import com.google.common.collect.ImmutableSortedSet;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class GoOboParserTest {
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-  private File goHeadFile;
 
   private GoOntology ontology;
 
   @Before
   public void setUp() throws IOException, PhenolException {
-    goHeadFile = tmpFolder.newFile("go_head.obo");
-    ResourceUtils.copyResourceToFile("/go_head.obo", goHeadFile);
-    GoOboParser parser = new GoOboParser(goHeadFile);
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    GoOboParser parser = new GoOboParser(classLoader.getResourceAsStream("go_head.obo"));
     this.ontology = parser.parse();
   }
 
