@@ -17,6 +17,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
 import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
 import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -86,9 +87,16 @@ public class PrecomputeScoresCommand {
 
   private void loadOntology() throws PhenolException {
     LOGGER.info("Loading ontology from OBO...");
-    HpOboParser hpOboParser = new HpOboParser(new File(options.getOboFile()));
-    HpoOntology ontology = hpOboParser.parse();
-    phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
+    HpOboParser hpOboParser;
+	try {
+		hpOboParser = new HpOboParser(new File(options.getOboFile()));
+	    HpoOntology ontology = hpOboParser.parse();
+	    phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
+	} catch (FileNotFoundException e) {
+		LOGGER.error(e.getMessage(), e);
+	    LOGGER.error("Problem reading from obo file.");
+	    return;
+	}
     LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");

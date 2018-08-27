@@ -22,16 +22,12 @@ public class HpOboParser {
 
   private final boolean debug;
 
-  public HpOboParser(File oboFile, boolean debug) {
-	try {
-      this.obo = new FileInputStream(oboFile);
-      this.debug = debug;
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
-    }
+  public HpOboParser(File oboFile, boolean debug) throws FileNotFoundException {
+    this.obo = new FileInputStream(oboFile);
+    this.debug = debug;
   }
   
-  public HpOboParser(File oboFile) throws PhenolException {
+  public HpOboParser(File oboFile) throws FileNotFoundException {
     this(oboFile,false);
   }
   

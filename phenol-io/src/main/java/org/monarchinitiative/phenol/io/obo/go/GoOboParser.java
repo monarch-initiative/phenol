@@ -22,16 +22,12 @@ public class GoOboParser {
 
   private final boolean debug;
 
-  public GoOboParser(File oboFile, boolean debug) {
-    try {
-      this.obo = new FileInputStream(oboFile);
-      this.debug = debug;
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
-    }
+  public GoOboParser(File oboFile, boolean debug) throws FileNotFoundException {
+    this.obo = new FileInputStream(oboFile);
+    this.debug = debug;
   }
   
-  public GoOboParser(File oboFile) {
+  public GoOboParser(File oboFile) throws FileNotFoundException {
     this(oboFile,false);
   }
   

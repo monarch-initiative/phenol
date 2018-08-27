@@ -16,16 +16,12 @@ public class MpOboParser {
 
   private final boolean debug;
 
-  public MpOboParser(File oboFile, boolean debug) {
-    try {
+  public MpOboParser(File oboFile, boolean debug) throws FileNotFoundException {
       this.obo = new FileInputStream(oboFile);
       this.debug = debug;
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Cannot find file " + oboFile.getName(), e);
-    }
   }
   
-  public MpOboParser(File oboFile) {
+  public MpOboParser(File oboFile) throws FileNotFoundException {
     this(oboFile,false);
   }
   
