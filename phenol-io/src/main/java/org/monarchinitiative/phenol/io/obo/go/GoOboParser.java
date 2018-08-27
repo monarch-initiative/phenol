@@ -32,7 +32,7 @@ public class GoOboParser {
     final OboOntologyLoader loader = new OboOntologyLoader(oboFile);
     Ontology ontology = loader.load();
     if (debug) {
-      System.err.println(String.format("Parsed a total of %d MP terms",ontology.countAllTerms()));
+      System.err.println(String.format("Parsed a total of %d GO terms",ontology.countAllTerms()));
     }
 
     return new GoOntology(

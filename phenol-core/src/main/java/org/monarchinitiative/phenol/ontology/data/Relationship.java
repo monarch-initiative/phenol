@@ -2,11 +2,12 @@ package org.monarchinitiative.phenol.ontology.data;
 
 
 /**
- *
+ * A class that encapsulates the edge type in the ontology graph.
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class Relationship {
-  private static final long serialVersionUID = -2833503015330486640L;
+  private static final long serialVersionUID = 2L;
 
   /** Source {@link TermId}. */
   protected final TermId source;

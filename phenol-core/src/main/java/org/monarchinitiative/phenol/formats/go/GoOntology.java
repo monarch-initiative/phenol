@@ -33,36 +33,36 @@ public final class GoOntology extends ImmutableOntology {
    * @param relationMap Mapping from numeric edge identifier to {@link Relationship}.
    */
   public GoOntology(
-      ImmutableSortedMap<String, String> metaInfo,
-      DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
-      TermId rootTermId,
-      Collection<TermId> nonObsoleteTermIds,
-      Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, Term> termMap,
-      ImmutableMap<Integer, Relationship> relationMap) {
+    ImmutableSortedMap<String, String> metaInfo,
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
+    TermId rootTermId,
+    Collection<TermId> nonObsoleteTermIds,
+    Collection<TermId> obsoleteTermIds,
+    ImmutableMap<TermId, Term> termMap,
+    ImmutableMap<Integer, Relationship> relationMap) {
     super(metaInfo, graph, rootTermId, nonObsoleteTermIds, obsoleteTermIds, termMap, relationMap);
   }
 
   @Override
   public String toString() {
     return "GoOntology [getMetaInfo()="
-        + getMetaInfo()
-        + ", getGraph()="
-        + getGraph()
-        + ", getTermMap()="
-        + getTermMap()
-        + ", getRelationMap()="
-        + getRelationMap()
-        + ", getRootTermId()="
-        + getRootTermId()
-        + ", getAllTermIds()="
-        + getAllTermIds()
-        + ", getTerms()="
-        + getTerms()
-        + ", getNonObsoleteTermIds()="
-        + getNonObsoleteTermIds()
-        + ", getObsoleteTermIds()="
-        + getObsoleteTermIds()
-        + "]";
+      + getMetaInfo()
+      + ", getGraph()="
+      + getGraph()
+      + ", getTermMap()="
+      + getTermMap()
+      + ", getRelationMap()="
+      + getRelationMap()
+      + ", getRootTermId()="
+      + getRootTermId()
+      + ", getAllTermIds()="
+      + getAllTermIds()
+      + ", getTerms()="
+      + getTerms()
+      + ", getNonObsoleteTermIds()="
+      + getNonObsoleteTermIds()
+      + ", getObsoleteTermIds()="
+      + getObsoleteTermIds()
+      + "]";
   }
 }
