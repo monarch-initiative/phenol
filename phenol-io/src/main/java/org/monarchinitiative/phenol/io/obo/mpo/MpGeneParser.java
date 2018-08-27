@@ -15,11 +15,12 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
 
 
 /**
- * Parses the MP_GENETIC_MARKERS_FILENAME file downloaded by {@code DownloadCommand}, creates an ImmutableGenes
- * object with the file contents.
+ * Parses the MRK_List2.rpt file.
+ * The file is List of Mouse Genetic Markers (sorted alphabetically by marker symbol, tab-delimited)
+ * The List2 version excludes withdrawn symbols
  * @author Hannah Blau (blauh)
- * @version 0.0.1
- * @since 27 Dec 2017
+ * @version 0.0.2
+ * @since 27 Aug 2018
  */
 public class MpGeneParser {
   //private static final Logger logger = LogManager.getLogger();

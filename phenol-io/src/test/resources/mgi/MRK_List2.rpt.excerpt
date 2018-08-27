@@ -1,4 +1,5 @@
 MGI Accession ID	Chr	cM Position	genome coordinate start	genome coordinate end	strand	Marker Symbol	Status	Marker Name	Marker Type	Feature Type	Marker Synonyms (pipe-separated)
+MGI:97487	1	  39.79	78101267	78197134	-	Pax3	O	paired box 3	Gene	protein coding gene	Splchl2|Pax-3
 MGI:1341858	5	  syntenic				03B03F	O	DNA segment, 03B03F (Research Genetics)	BAC/YAC end	BAC/YAC end
 MGI:1341869	5	  syntenic				03B03R	O	DNA segment, 03B03R (Research Genetics)	BAC/YAC end	BAC/YAC end
 MGI:1337005	11	  syntenic				03.MMHAP34FRA.seq	O	DNA segment, 03.MMHAP34FRA.seq	DNA Segment	DNA segment

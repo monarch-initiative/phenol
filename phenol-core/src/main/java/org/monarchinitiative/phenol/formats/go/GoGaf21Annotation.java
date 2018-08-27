@@ -5,6 +5,7 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
+import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import java.util.Date;
 import java.util.List;
@@ -144,6 +145,17 @@ public final class GoGaf21Annotation implements TermAnnotation {
   /** @return The object's ID in the database. */
   public String getDbObjectId() {
     return dbObjectId;
+  }
+
+  /** @return dbObjectId as phenol {@link TermId}. Note that in some cases, the GO
+   * annotation files use a prefix with this field, e.g., MGI:123, and in other cases, they
+   * do not, e.g., Uniprot. In the latter case, we can combine the Database field (UniProtKB)
+   * and the dbObjectId field (e.g., Q14469) to create a TermId.
+   */
+  public TermId getDbObjectIdAsTermId() {
+    return dbObjectId.contains(":") ?
+      TermId.constructWithPrefix(dbObjectId) :
+      new TermId(new TermPrefix(db),dbObjectId);
   }
 
   /** @return The object's symbol in the database. */

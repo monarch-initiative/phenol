@@ -208,7 +208,7 @@ public final class OboOntologyLoader {
     TermId rootId;
     if (rootCandSet.isEmpty()) {
       rootId = TermId.constructWithPrefix("owl:Thing");
-      // TODO Exception/Optional.isEmpty()
+      throw new PhenolException("No root candidate found.");
 
     } if (rootCandSet.size() > 1 ) {
       TermPrefix prefix;

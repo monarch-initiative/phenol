@@ -34,9 +34,9 @@ class HpoAnnotationLine {
   private static final int ASPECT_IDX = 10;
   private static final int BIOCURATION_IDX = 11;
 
-  private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
-  private static final TermPrefix ORPHANET_PREFIX = new TermPrefix("ORPHA");
-  private static final TermPrefix DECIPHER_PREFIX = new TermPrefix("DECIPHER");
+//  private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
+//  private static final TermPrefix ORPHANET_PREFIX = new TermPrefix("ORPHA");
+//  private static final TermPrefix DECIPHER_PREFIX = new TermPrefix("DECIPHER");
 
 
   private boolean valid_number_of_fields=true;
