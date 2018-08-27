@@ -3,7 +3,8 @@ package org.monarchinitiative.phenol.formats.mpo;
 import java.util.Objects;
 
 /**
- * This class represents the Allelic Composition field of the MGI_PhenoGenoMP.rpt file as a string (without breaking
+ * This class represents the Allelic Composition field of the MGI_GenePheno.rpt and
+ * MGI_PhenoGenoMP.rpt file as a string (without breaking
  * down its subparts).
  *
  * @author Hannah Blau (blauh)
@@ -24,7 +25,7 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
   /**
    * Factory method to construct an ImmutableAllelicComp object.
    * @param allelicComp           string read from input data file
-   * @return ImmutableAllelicComp object constructed from the string
+   * @return MpAllelicComposition object constructed from the string
    */
   public static MpAllelicComposition fromString(String allelicComp) {
     return new MpAllelicComposition(allelicComp);
@@ -32,7 +33,7 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
 
   /**
    * Method to compare two ImmutableAllelicComp objects relies on compareTo method of class String.
-   * @param ac    ImmutableAllelicComp object to which this object is compared
+   * @param ac    {@link MpAllelicComposition} object to which this object is compared
    * @return int  outcome of comparing the two allelicCompStr fields
    */
   @Override
@@ -57,7 +58,7 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
   }
 
   /**
-   * Getter method for allelicCompStr field.
+   * Getter method for {@link #allelicCompStr}.
    * @return   String the allelicCompStr
    */
   public String getAllelicCompStr() {
@@ -65,8 +66,8 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
   }
 
   /**
-   * hashCode method for ImmutableAllelicComp relies on hashCode method of class String.
-   * @return int    hash code for this ImmutableAllelicComp object
+   * hashCode method for MpAllelicComposition relies on hashCode method of class String.
+   * @return int    hash code for this MpAllelicComposition object
    */
   @Override
   public int hashCode() {
@@ -74,8 +75,8 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
   }
 
   /**
-   * toString method of ImmutableAllelicComp.
-   * @return String     printable representation of this ImmutableGene object
+   * toString method of MpAllelicComposition.
+   * @return String     printable representation of this MpAllelicComposition object
    */
   @Override
   public String toString() {

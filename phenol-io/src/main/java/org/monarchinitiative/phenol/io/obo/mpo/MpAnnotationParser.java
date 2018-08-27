@@ -100,7 +100,7 @@ public class MpAnnotationParser {
   /**
    * Parse data from MGI_Pheno_Sex.rpt.
    * Note that there may be multiple lines that suuport the same assertion that differ only in PMID
-   * @throws IOException
+   * @throws IOException if MGI_Pheno_Sex.rpt cannot be successfully parsed
    * @throws PhenolException
    */
   private void parsePhenoSexData() throws IOException, PhenolException {
@@ -132,18 +132,16 @@ public class MpAnnotationParser {
         // there is a previous annotation for this MP term --
         // the current annotation is from a separate PMID
         MpAnnotation previousannot=annotset.get(annot.getTermId());
-        previousannot=previousannot.merge(annot);
+        MpAnnotation mergedannot=MpAnnotation.merge(previousannot,annot);
+        annotset.put(mergedannot.getTermId(),mergedannot);
       } else {
         annotset.put(annot.getTermId(),annot);
       }
     }
-//    for (TermId t : geno2ssannotMap.keySet()) {
-//      System.out.println("tt="+t.getIdWithPrefix() + ":" + geno2ssannotMap.get(t));
-//    }
   }
 
   /** Parse the data in MGI_GenePheno.rpt. Interpolate the sex-specific data if available. */
-  private void parse() throws IOException, PhenolException {
+  private void parse() throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(this.genePhenoInputstream));
     Multimap<TermId,AnnotationLine> annotationCollector = ArrayListMultimap.create();
     String line;
@@ -306,7 +304,7 @@ public class MpAnnotationParser {
      * @return THe {@link MpAnnotation} object corresponding to this {@link AnnotationLine}.
      */
     public MpAnnotation toMpAnnotation() {
-      return new MpAnnotation(this.mpId,this.pmidList);
+      return new MpAnnotation.Builder(this.mpId,this.pmidList).build();
     }
 
   }
@@ -316,13 +314,13 @@ public class MpAnnotationParser {
    * to a given model (genotype accession id).
    */
   private static class SexSpecificAnnotationLine {
-    TermId genotypeID;
-    MpSex sex;
-    TermId mpId;
-    MpAllelicComposition allelicComposition;
-    MpStrain strain;
-    boolean negated;
-    final List<String> pmidList;
+    private final TermId genotypeID;
+    private final MpSex sex;
+    private final TermId mpId;
+    private final MpAllelicComposition allelicComposition;
+    private final MpStrain strain;
+    private final boolean negated;
+    private final List<String> pmidList;
 
     SexSpecificAnnotationLine(String[] A) throws PhenolException {
       this.genotypeID=TermId.constructWithPrefix(A[0]);
