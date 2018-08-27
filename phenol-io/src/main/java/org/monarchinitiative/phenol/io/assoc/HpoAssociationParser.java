@@ -84,6 +84,14 @@ public class HpoAssociationParser {
     this.orpha_to_genePath = orphaToGenePath;
   }
 
+  /** Parse everything except the Orphanet data!.*/
+  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, HpoOntology ontology){
+    this.hpoOntology = ontology;
+    this.homoSapiensGeneInfoPath = geneInfoPath;
+    this.mim2gene_medgenPath = mim2gene_medgenPath;
+    this.orpha_to_genePath = null;
+  }
+
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
 
