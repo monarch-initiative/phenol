@@ -2,21 +2,19 @@ package org.monarchinitiative.phenol.io.obo.go;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
  * Testcases that verify whether obo-formatted Go ontology is properly parsed and loaded.
@@ -25,16 +23,19 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class GoOboParserTest {
+
   @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private Ontology ontology;
 
   @Before
   public void setUp() throws IOException, PhenolException {
+
     File goHeadFile;
     goHeadFile = tmpFolder.newFile("go_head.obo");
     ResourceUtils.copyResourceToFile("/go/go_head.obo", goHeadFile);
-    GoOboParser parser = new GoOboParser(goHeadFile);
+    GoOboParser parser = new GoOboParser(goHeadFile)
+
     this.ontology = parser.parse();
   }
 

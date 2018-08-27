@@ -1,52 +1,44 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 public class HpoAssociationParserTest {
-  private static HpoAssociationParser parser;
+  private HpoAssociationParser parser;
 
-  @ClassRule
-  public static TemporaryFolder tmpFolder = new TemporaryFolder();
-
-  @BeforeClass
-  public static void init() throws IOException, PhenolException {
+  @Before
+  public void init() throws IOException, PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
-    File mim2gene = tmpFolder.newFile("mim2gene_medgen");
-    ResourceUtils.copyResourceToFile("/mim2gene_medgen.excerpt", mim2gene);
+	ClassLoader classLoader = this.getClass().getClassLoader();
 
-    File geneInfo = tmpFolder.newFile("Homo_sapiens.gene_info.gz");
-    ResourceUtils.copyResourceToFile("/Homo_sapiens.gene_info.excerpt.gz", geneInfo);
-
-    File hpoHeadFile = tmpFolder.newFile("hp_head.obo");
-    ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
+    URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
+    URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
+ 
+    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"), true);
     final HpoOntology ontology = oboParser.parse();
 
-    parser = new HpoAssociationParser(geneInfo.getAbsolutePath(), mim2gene.getAbsolutePath(), null, ontology);
+    parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
     parser.parse();
   }
 

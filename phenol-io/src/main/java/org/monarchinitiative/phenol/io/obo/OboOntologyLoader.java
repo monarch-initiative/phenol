@@ -1,6 +1,9 @@
 package org.monarchinitiative.phenol.io.obo;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +44,7 @@ public final class OboOntologyLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboOntologyLoader.class);
   private final CurieUtil curieUtil;
-  private final File file;
+  private final InputStream obo;
   /** Term ids of non-obsolete Terms. */
   private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
   /** Term ids of obsolete Terms. */
@@ -60,8 +63,14 @@ public final class OboOntologyLoader {
    * Construct an OWL loader that can load an OBO ontology.
    * @param file Path to the OBO file
    */
-  public OboOntologyLoader(File file) {
-    this.file = file;
+  public OboOntologyLoader(File file) throws FileNotFoundException {
+    this.obo = new FileInputStream(file);
+    curieUtil = new CurieUtil(CurieMapGenerator.generate());
+    this.factory = new Owl2OboTermFactory();
+  }
+  
+  public OboOntologyLoader(InputStream obo) {
+    this.obo = obo;
     curieUtil = new CurieUtil(CurieMapGenerator.generate());
     this.factory = new Owl2OboTermFactory();
   }
@@ -73,7 +82,7 @@ public final class OboOntologyLoader {
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
     OWLOntology ontology;
     try {
-      ontology = m.loadOntologyFromOntologyDocument(file);
+      ontology = m.loadOntologyFromOntologyDocument(obo);
     } catch (OWLOntologyCreationException e) {
       throw new PhenolException(e.toString());
     }
