@@ -68,16 +68,16 @@ public class GoOboParserTest {
 
 
   @Test public void testReal() throws FileNotFoundException, PhenolException {
-    String localpath="/home/peter/data/mgi/go.obo";
+    String localpath="/home/robinp/data/go/go.obo";
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
     Map<TermId,Term> termmap =  gontology.getTermMap();
     for (TermId tid : termmap.keySet()) {
       String name = termmap.get(tid).getName();
       tid=termmap.get(tid).getId();
-      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
-      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
-      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
+//      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
+//      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
+//      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
     }
   }
 

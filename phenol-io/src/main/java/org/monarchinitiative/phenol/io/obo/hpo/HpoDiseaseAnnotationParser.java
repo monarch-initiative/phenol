@@ -68,7 +68,7 @@ public class HpoDiseaseAnnotationParser {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
     Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
-    ImmutableList.Builder errorbuilder=new ImmutableList.Builder();
+    ImmutableList.Builder<String> errorbuilder=new ImmutableList.Builder<>();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));

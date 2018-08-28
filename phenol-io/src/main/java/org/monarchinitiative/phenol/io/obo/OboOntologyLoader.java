@@ -4,14 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 
 import com.google.common.collect.*;
 import org.geneontology.obographs.model.*;
@@ -46,16 +39,16 @@ public final class OboOntologyLoader {
   private final CurieUtil curieUtil;
   private final InputStream obo;
   /** Term ids of non-obsolete Terms. */
-  private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
+  private final Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
   /** Term ids of obsolete Terms. */
-  private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
+  private final Collection<TermId> depreTermIdNodes = Sets.newHashSet();
 
 
   /** Key: a TermId; value: corresponding Term object. */
-  private SortedMap<TermId, Term> terms = Maps.newTreeMap();
+  private final SortedMap<TermId, Term> terms = Maps.newTreeMap();
   //private Collection<TermId> termIdNodes = Sets.newHashSet();
   /** The relations are numbered incrementally--this is the key, and the value is the corresponding relation.*/
-  private Map<Integer, Relationship> relationMap = Maps.newHashMap();
+  private final Map<Integer, Relationship> relationMap = Maps.newHashMap();
   /** Factory object that adds OBO-typical data to each term. */
   private final OwlOntologyEntryFactory factory;
 
@@ -77,7 +70,6 @@ public final class OboOntologyLoader {
 
   public Ontology load() throws PhenolException {
     Map<TermId,TermId> old2newTermIdMap = new HashMap<>();
-
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
     OWLOntology ontology;
@@ -147,10 +139,10 @@ public final class OboOntologyLoader {
     Set<TermId> removeMarkSet = Sets.newHashSet();
 
 
+
     for (Edge edge : gEdges) {
       String subId = edge.getSub();
       String objId = edge.getObj();
-
       Optional<String> subCurie = curieUtil.getCurie(subId);
       if (! subCurie.isPresent() ) {
         LOGGER.warn("No matching curie found for edge's subject: " + subId);
@@ -179,12 +171,15 @@ public final class OboOntologyLoader {
       IdLabeledEdge e = new IdLabeledEdge();
       e.setId(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
-
-      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId);
+      RelationshipType reltype = RelationshipType.fromString(edge.getPred());
+      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId, reltype);
       relationMap.put(edgeId, ctr);
 
       edgeId += 1;
     }
+
+
+
 
     rootCandSet.removeAll(removeMarkSet);
     CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
@@ -207,10 +202,8 @@ public final class OboOntologyLoader {
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
     TermId rootId;
     if (rootCandSet.isEmpty()) {
-      rootId = TermId.constructWithPrefix("owl:Thing");
       throw new PhenolException("No root candidate found.");
-
-    } if (rootCandSet.size() > 1 ) {
+    } else if (rootCandSet.size() > 1 ) {
       TermPrefix prefix;
       Optional<TermId> firstId = rootCandSet.stream().findFirst();
       // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
@@ -219,6 +212,7 @@ public final class OboOntologyLoader {
       rootId = new TermId(prefix,"0000000");
       Term rootTerm = new Term();
       rootTerm.setId(rootId);
+      rootTerm.setName("artificial root term");
       phenolGraph.addVertex(rootId);
       nonDepreTermIdNodes.add(rootId);
       terms.put(rootId, rootTerm);
@@ -228,14 +222,15 @@ public final class OboOntologyLoader {
         e.setId(edgeId);
         edgeId++;
         phenolGraph.addEdge(childOfNewRootTermId, rootId, e);
-        Relationship ctr = factory.constructRelationship(childOfNewRootTermId, rootId, edgeId);
+        //Note-for the "artificial root term, we use the IS_A relation
+        Relationship ctr = factory.constructRelationship(childOfNewRootTermId, rootId, edgeId, RelationshipType.IS_A);
         relationMap.put(edgeId, ctr);
+        System.err.println("Putting rel for new root from term " + childOfNewRootTermId.getIdWithPrefix());
       }
     } else { // if we get here, there is exactly one root candidate
       List<TermId> rootCandList = new ArrayList<>(rootCandSet);
       rootId = rootCandList.get(0);
     }
-
 
     return  new ImmutableOntology(
       ImmutableSortedMap.copyOf(metaInfo),
