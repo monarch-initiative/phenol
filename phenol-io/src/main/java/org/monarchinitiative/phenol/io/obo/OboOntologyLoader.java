@@ -114,6 +114,7 @@ public final class OboOntologyLoader {
       String nodeId = node.getId();
       Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
       if (! nodeCurie.isPresent() ) continue;
+
       TermId termId = TermId.constructWithPrefix(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
       if (term.isObsolete()) {
@@ -174,12 +175,8 @@ public final class OboOntologyLoader {
       RelationshipType reltype = RelationshipType.fromString(edge.getPred());
       Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId, reltype);
       relationMap.put(edgeId, ctr);
-
       edgeId += 1;
     }
-
-
-
 
     rootCandSet.removeAll(removeMarkSet);
     CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
@@ -220,17 +217,18 @@ public final class OboOntologyLoader {
       for (TermId childOfNewRootTermId : rootCandSet) {
         IdLabeledEdge e = new IdLabeledEdge();
         e.setId(edgeId);
-        edgeId++;
         phenolGraph.addEdge(childOfNewRootTermId, rootId, e);
         //Note-for the "artificial root term, we use the IS_A relation
         Relationship ctr = factory.constructRelationship(childOfNewRootTermId, rootId, edgeId, RelationshipType.IS_A);
         relationMap.put(edgeId, ctr);
-        System.err.println("Putting rel for new root from term " + childOfNewRootTermId.getIdWithPrefix());
+        edgeId++;
       }
     } else { // if we get here, there is exactly one root candidate
       List<TermId> rootCandList = new ArrayList<>(rootCandSet);
       rootId = rootCandList.get(0);
     }
+
+
 
     return  new ImmutableOntology(
       ImmutableSortedMap.copyOf(metaInfo),

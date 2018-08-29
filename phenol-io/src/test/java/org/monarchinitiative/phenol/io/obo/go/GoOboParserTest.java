@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -67,7 +68,7 @@ public class GoOboParserTest {
   }
 
 
-  @Test public void testReal() throws FileNotFoundException, PhenolException {
+  @Test @Ignore public void testReal() throws FileNotFoundException, PhenolException {
     String localpath="/home/robinp/data/go/go.obo";
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
@@ -75,9 +76,10 @@ public class GoOboParserTest {
     for (TermId tid : termmap.keySet()) {
       String name = termmap.get(tid).getName();
       tid=termmap.get(tid).getId();
-//      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
-//      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
-//      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
+      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
+      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
+      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
+      break;
     }
   }
 
