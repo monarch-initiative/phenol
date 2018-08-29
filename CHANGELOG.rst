@@ -2,9 +2,15 @@
 Changelog
 =========
 ------
+v1.2.3
+------
+- Adding parsing of relations other than IS_A for Gene Ontology
+
+------
 v1.2.2
 ------
 - Adding MP annotation parser for MGI_GenePheno.rst and MGI_Pheno_Sex.rst
+
 
 ------
 v1.1.1
