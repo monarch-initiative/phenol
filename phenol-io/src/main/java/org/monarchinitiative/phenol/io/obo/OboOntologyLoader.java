@@ -52,6 +52,9 @@ public final class OboOntologyLoader {
   /** Factory object that adds OBO-typical data to each term. */
   private final OwlOntologyEntryFactory factory;
 
+  private final TermPrefix BFO_PREFIX=new TermPrefix("BFO");
+  private final TermPrefix RO_PREFIX=new TermPrefix("RO");
+
   /**
    * Construct an OWL loader that can load an OBO ontology.
    * @param file Path to the OBO file
@@ -116,6 +119,10 @@ public final class OboOntologyLoader {
       if (! nodeCurie.isPresent() ) continue;
 
       TermId termId = TermId.constructWithPrefix(nodeCurie.get());
+      if (termId.getPrefix().equals(BFO_PREFIX) | termId.getPrefix().equals(RO_PREFIX)){
+        continue;
+      }
+
       Term term = factory.constructTerm(node, termId);
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
@@ -160,6 +167,10 @@ public final class OboOntologyLoader {
       String objCurieStr = objCurie.get();
       TermId subTermId = TermId.constructWithPrefix(subCurieStr);
       TermId objTermId = TermId.constructWithPrefix(objCurieStr);
+      // Note that GO has some Terms/Relations with RO and BFO that we want to skip
+      if (subTermId.getPrefix().equals(BFO_PREFIX) || subTermId.getPrefix().equals(RO_PREFIX)) {
+        continue; // for GO, these relations have RO or BFO in both subject and object, no need to check both
+      }
 
       // For each edge and connected nodes,
       // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
