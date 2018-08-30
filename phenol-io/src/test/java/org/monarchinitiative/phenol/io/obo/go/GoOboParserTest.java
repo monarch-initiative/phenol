@@ -20,9 +20,7 @@ import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.*;
 
 
 /**
@@ -67,19 +65,32 @@ public class GoOboParserTest {
     assertEquals(expected,tid);
   }
 
-
+  /**
+   * For local testing with the full Gene Ontology file. This does not need to run in a normal build
+   * @throws FileNotFoundException
+   * @throws PhenolException
+   */
   @Test @Ignore public void testReal() throws FileNotFoundException, PhenolException {
     String localpath="/home/robinp/data/go/go.obo";
+    TermPrefix RO_PREFIX=new TermPrefix("RO");
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
     Map<TermId,Term> termmap =  gontology.getTermMap();
     for (TermId tid : termmap.keySet()) {
       String name = termmap.get(tid).getName();
       tid=termmap.get(tid).getId();
-      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
-      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
-      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
-      break;
+      if (tid.getPrefix().equals(RO_PREFIX)) {
+        System.err.println("FOUND " + tid.getPrefix());
+      }
+//      System.out.println("Retrieving ancestors for " + name +"[" + tid.getIdWithPrefix() +"]");
+//      Set<TermId> ancs = getAncestorTerms(gontology,tid,true);
+//      System.out.println(String.format("%s: ancestors-n=%s",tid,ancs.size()));
+    }
+    Map<Integer, Relationship> relmap = ontology.getRelationMap();
+    for (Relationship r : relmap.values()) {
+      if (r.getSource().getPrefix().equals(RO_PREFIX)){
+        System.err.println("FOUND2 " + r);
+      }
     }
   }
 
