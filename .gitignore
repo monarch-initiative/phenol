@@ -40,3 +40,5 @@ phenol-cli/target/
 phenol-core/target/
 phenol-io/target/
 phenol-io/src/test/resources/catalog-v001.xml
+!/phenol-analysis/phenol-analysis.iml
+phenol-analysis/target/
