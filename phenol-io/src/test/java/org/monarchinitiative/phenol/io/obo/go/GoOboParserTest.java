@@ -1,13 +1,12 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
 import static org.junit.Assert.assertEquals;
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
@@ -76,8 +75,9 @@ public class GoOboParserTest {
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
     Map<TermId,Term> termmap =  gontology.getTermMap();
+    assertNotNull(gontology);
     for (TermId tid : termmap.keySet()) {
-      String name = termmap.get(tid).getName();
+     // String name = termmap.get(tid).getName();
       tid=termmap.get(tid).getId();
       if (tid.getPrefix().equals(RO_PREFIX)) {
         System.err.println("FOUND " + tid.getPrefix());
