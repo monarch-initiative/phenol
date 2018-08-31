@@ -85,7 +85,7 @@ public class Owl2OboTermFactory
 
     // 6. obsolete; the obsolete/deprecated field in Meta is somehow not accessible,
     // so we use Java reflection to pull the value of that field.
-    Boolean isObsolete = false;
+    boolean isObsolete = false;
     try {
       Field f = Meta.class.getDeclaredField("deprecated");
       f.setAccessible(true);
@@ -117,7 +117,7 @@ public class Owl2OboTermFactory
 
   // It seems that only actual relation used across ontologies is "IS_A" one for now.
   @Override
-  public Relationship constructRelationship(TermId source, TermId dest, int id) {
-    return new Relationship(source, dest, id, RelationshipType.IS_A);
+  public Relationship constructRelationship(TermId source, TermId dest, int id,  RelationshipType reltype) {
+    return new Relationship(source, dest, id, reltype);
   }
 }

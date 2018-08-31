@@ -17,6 +17,7 @@ import org.geneontology.obographs.model.GraphDocument;
 import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -41,14 +42,14 @@ public final class OwlImmutableOntologyLoader {
   private static CurieUtil curieUtil;
   private final File file;
   /** Term ids of non-obsolete Terms. */
-  private Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
+  private final Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
   /** Term ids of obsolete Terms. */
-  private Collection<TermId> depreTermIdNodes = Sets.newHashSet();
+  private final Collection<TermId> depreTermIdNodes = Sets.newHashSet();
   /** Key: a TermId; value: corresponding Term object. */
-  private SortedMap<TermId, Term> terms = Maps.newTreeMap();
+  private final SortedMap<TermId, Term> terms = Maps.newTreeMap();
   //private Collection<TermId> termIdNodes = Sets.newHashSet();
   /** The relations are numbered incrementally--this is the key, and the value is the corresponding relation.*/
-  private Map<Integer, Relationship> relationMap = Maps.newHashMap();
+  private final Map<Integer, Relationship> relationMap = Maps.newHashMap();
   /** Factory object that adds OBO-typical data to each term. */
   private final OwlOntologyEntryFactory factory;
 
@@ -63,11 +64,16 @@ public final class OwlImmutableOntologyLoader {
   }
 
   public ImmutableOntology load()
-      throws OWLOntologyCreationException {
+      throws PhenolException {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-    OWLOntology ontology = m.loadOntologyFromOntologyDocument(file);
+    OWLOntology ontology;
+    try {
+      ontology = m.loadOntologyFromOntologyDocument(file);
+    } catch (OWLOntologyCreationException e) {
+      throw new PhenolException("Could not create OWL ontology: "+e.getMessage());
+    }
     FromOwl fromOwl = new FromOwl();
     GraphDocument gd = fromOwl.generateGraphDocument(ontology);
 
@@ -156,8 +162,8 @@ public final class OwlImmutableOntologyLoader {
       IdLabeledEdge e = new IdLabeledEdge();//edgeFactory.createEdge(subTermId, objTermId);
       e.setId(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
-
-      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId);
+      RelationshipType reltype = RelationshipType.fromString(edge.getPred());
+      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId,reltype);
       relationMap.put(edgeId, ctr);
 
       edgeId += 1;

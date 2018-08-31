@@ -34,13 +34,10 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 .idea/
-*.iml
 *.checkstyle
+*.iml
 phenol-cli/target/
 phenol-core/target/
 phenol-io/target/
+phenol-core/src/test/java/com/
 phenol-io/src/test/resources/catalog-v001.xml
-!/phenol-analysis/phenol-analysis.iml
-phenol-analysis/target/
-/phenol-analysis/phenol-analysis.iml
-phenol-analysis/phenol-analysis.iml
