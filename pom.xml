@@ -134,14 +134,21 @@
        <artifactId>slf4j-jdk14</artifactId>
        <version>${slf4j.version}</version>
      </dependency>
-     -->
+
 
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-enforcer-plugin</artifactId>
       <version>3.0.0-M2</version>
       <type>maven-plugin</type>
-    </dependency>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+
+        </exclusion>
+      </exclusions>
+    </dependency> -->
 
     <!-- Google Guava -->
     <dependency>
@@ -185,8 +192,22 @@
             <id>enforce</id>
             <configuration>
               <rules>
-                <DependencyConvergence />
-              </rules>
+               <!-- <DependencyConvergence /> -->
+                  <bannedPlugins>
+                    <!-- will only display a warning but does not fail the build. -->
+                    <level>ERROR</level>
+                    <excludes>
+                      <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
+                    </excludes>
+                    <message>Please consider using the maven-invoker-plugin (http://maven.apache.org/plugins/maven-invoker-plugin/)!</message>
+                  </bannedPlugins>
+                  <requireMavenVersion>
+                    <version>3.0</version>
+                  </requireMavenVersion>
+                  <requireJavaVersion>
+                    <version>1.8</version>
+                  </requireJavaVersion>
+                </rules>
             </configuration>
             <goals>
               <goal>enforce</goal>
@@ -206,7 +227,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
+        <version>3.0.1</version>
         <configuration>
           <defaultVersion>${project.version}</defaultVersion>
           <additionalparam>-Xdoclint:none</additionalparam>
@@ -251,7 +272,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.2.201409121644</version>
+        <version>0.8.2</version>
         <executions>
           <!-- Prepares the property pointing to the JaCoCo runtime agent
             which is passed as VM argument when Maven the Surefire plugin is executed. -->
@@ -277,7 +298,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.8.0</version>
         <configuration>
           <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
@@ -291,7 +312,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.1.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -306,7 +327,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
+        <version>3.0.0</version>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
