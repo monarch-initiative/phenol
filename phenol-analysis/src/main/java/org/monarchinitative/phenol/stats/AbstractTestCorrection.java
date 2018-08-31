@@ -72,7 +72,8 @@ public abstract class AbstractTestCorrection
 	 */
 	protected PValue [] getRelevantRawPValues(PValue [] p)
 	{
-		int i,j;
+		int i;
+		int j;
 		int pvalsCount = 0;
 
 		/* Count number of p values which shouldn't be ignored */

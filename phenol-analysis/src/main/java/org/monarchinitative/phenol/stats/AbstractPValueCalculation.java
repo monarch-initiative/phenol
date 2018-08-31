@@ -114,7 +114,6 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
                                                             Ontology ontology,
                                                             StudySet studySet) {
         Map<TermId, TermAnnotations> studyMap = new HashMap<>();
-        int c = 0;
         for (TermId geneId : studySet.getAllGeneIds()) {
             try {
                 System.err.println("createAnnotationMap gene=" + geneId.getIdWithPrefix());

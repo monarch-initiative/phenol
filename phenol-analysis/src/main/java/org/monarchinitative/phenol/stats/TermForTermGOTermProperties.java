@@ -37,8 +37,8 @@ public class TermForTermGOTermProperties extends AbstractGOTermProperties
 			case	5: return Double.toString(p);
 			case	6: return Double.toString(p_adjusted);
 			case	7: return Double.toString(p_min);
+      default: return "TermForTermGOTermProperties-did not recognize propNumber " + propNumber;
 		}
-		return null;
 	}
 
 	@Override

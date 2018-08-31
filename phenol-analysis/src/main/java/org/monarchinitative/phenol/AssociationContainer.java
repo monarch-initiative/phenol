@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 
-;
-
-
 /**
  * After AssociationParser was used to parse the gene_association.XXX file, this
  * class is used to store and process the information about Associations.

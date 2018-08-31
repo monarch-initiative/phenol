@@ -38,11 +38,6 @@ public class StudySet {
     /** The name of the study set */
     private final String name;
 
-
-
-    /** The current random ID. Used for unique study set names */
-    private int randomID = 0;
-
     /**
      */
     public StudySet(Set<TermId> genes, String name, AssociationContainer associationContainer, Ontology ontology)
