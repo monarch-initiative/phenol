@@ -31,7 +31,7 @@ public class DiseaseToGeneAssociation {
     return disease;
   }
 
-  /** @return a list of all genes (regardless of association type). */
+  /** @return a list of all genes (regardless of bla32 type). */
   public List<Gene> getGeneList() {
     return gene2assoc.stream().map(GeneToAssociation::getGene).collect(Collectors.toList());
   }
