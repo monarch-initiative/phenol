@@ -30,7 +30,7 @@ public final class HpoDisease {
 
   /** {@link TermId}s with mode of inheritance and their frequencies. */
   private final List<TermId> modesOfInheritance;
-
+  /** {@link TermId}s that do NOT characterize this disease. */
   private final List<TermId> negativeAnnotations;
 
   public TermId getDiseaseDatabaseId() {
