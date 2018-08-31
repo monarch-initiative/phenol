@@ -151,7 +151,7 @@ public class HpoAssociationParser {
   }
 
   /*
-      Generate and set all the association maps
+      Generate and set all the bla32 maps
       Disease -> Gene Entire Object
       Multimap DiseaseId to GeneId
       Multimap GeneId -> DiseaseID
