@@ -27,6 +27,8 @@ public enum RelationshipType {
   ENDS_DURING("ends_during"),
   SUBPROPERTY_OF("subpropertyOf"),
   INVERSE_OF("inverseOf"),
+  DISEASE_HAS_FEATURE("disease_has_feature"),
+  HAS_MODIFIER("hasModifier"),
   /** Unknown, used for any other relation. */
   UNKNOWN("unknown");
 
@@ -71,6 +73,12 @@ public enum RelationshipType {
         return SUBPROPERTY_OF;
       case "inverseOf":
         return INVERSE_OF;
+      case "http://purl.obolibrary.org/obo/RO_0004029":
+      case "disease has feature":
+        return DISEASE_HAS_FEATURE;
+      case "http://purl.obolibrary.org/obo/RO_0002573":
+      case "has modifier":
+        return HAS_MODIFIER;
       default:
         throw new PhenolException("Did not recognize RelationshipType: " + reltype);
     }
