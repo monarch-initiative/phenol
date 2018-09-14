@@ -28,6 +28,8 @@ public enum RelationshipType {
   SUBPROPERTY_OF("subpropertyOf"),
   INVERSE_OF("inverseOf"),
   DISEASE_HAS_FEATURE("disease_has_feature"),
+  DISEASE_SHARES_FEATURES_OF("disease_shares_features_of"),
+  DISEASE_HAS_BASIS_IN_FEATURE("disease_has_basis_in_feature"),
   HAS_MODIFIER("hasModifier"),
   /** Unknown, used for any other relation. */
   UNKNOWN("unknown");
@@ -76,6 +78,12 @@ public enum RelationshipType {
       case "http://purl.obolibrary.org/obo/RO_0004029":
       case "disease has feature":
         return DISEASE_HAS_FEATURE;
+      case "http://purl.obolibrary.org/obo/mondo#disease_shares_features_of":
+      case "disease shares features of":
+        return DISEASE_SHARES_FEATURES_OF;
+      case "http://purl.obolibrary.org/obo/RO_0004022":
+      case "disease has basis in feature":
+        return DISEASE_HAS_BASIS_IN_FEATURE;
       case "http://purl.obolibrary.org/obo/RO_0002573":
       case "has modifier":
         return HAS_MODIFIER;
