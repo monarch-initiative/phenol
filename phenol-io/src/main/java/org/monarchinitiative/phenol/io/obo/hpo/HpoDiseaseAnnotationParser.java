@@ -122,11 +122,13 @@ public class HpoDiseaseAnnotationParser {
           } else {
             double frequency = getFrequency(line.getFrequency());
             List<TermId> modifiers = getModifiers(line.getModifierList());
+            List<String> pmidList = line.getPublication();
             HpoOnset onset = getOnset(line.getOnsetId());
             HpoAnnotation tidm = HpoAnnotation.builder(line.getPhenotypeId()).
-              frequency(frequency).
+              frequency(frequency,line.getFrequency()).
               onset(onset).
               modifiers(modifiers).
+              citations(pmidList).
               build();
             phenoListBuilder.add(tidm);
           }

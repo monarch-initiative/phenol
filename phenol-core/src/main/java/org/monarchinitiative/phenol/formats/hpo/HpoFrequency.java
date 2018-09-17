@@ -16,17 +16,23 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public enum HpoFrequency {
 
   /** Always present (100% of the cases). */
-  ALWAYS_PRESENT,
+  ALWAYS_PRESENT("Always present (HP:??)"),
   /** Very frequent (80-99% of the cases). */
-  VERY_FREQUENT,
+  VERY_FREQUENT("Very frequent (HP:??"),
   /** Frequent (30-79% of the cases). */
-  FREQUENT,
+  FREQUENT("Frequent (HP:??"),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL,
+  OCCASIONAL("Occasional (HP:??)"),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE,
+  VERY_RARE("Very rare (HP:??)"),
   /** Excluded (0% of the cases). */
-  EXCLUDED;
+  EXCLUDED("Excluded (HP:??)");
+
+  private final String name;
+
+  HpoFrequency(String n) {
+    this.name=n;
+  }
 
   /**
    * @return Lower (inclusive) bound of {@code this} frequency category. Our default value for terms
@@ -172,4 +178,11 @@ public enum HpoFrequency {
       return ALWAYS_PRESENT;
     }
   }
+
+  @Override
+  public String toString() {
+    return name;
+  }
+
+
 }

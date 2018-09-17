@@ -1,9 +1,12 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
+
+import java.util.List;
 
 /**
  * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
@@ -179,8 +182,14 @@ class HpoAnnotationLine {
     return modifierList;
   }
 
-  String getPublication() {
-    return publication;
+  List<String> getPublication() {
+    ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+    if (publication==null || publication.isEmpty()) return builder.build();
+    String A[] = publication.split(";") ;
+    for (String a : A ){
+      builder.add(a.trim());
+    }
+    return builder.build();
   }
 
   String getEvidence() {
