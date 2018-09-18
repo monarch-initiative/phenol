@@ -36,11 +36,15 @@ public class HpoAnnotation {
    *
    * @param termId Annotated {@link TermId}.
    * @param f The frequency the term is annotated with.
+   * @param freqString the original String in the annotation file (for display). If empty, substitute with {@link #DEFAULT_FREQUENCY_STRING}
+   * @param onset The onset of the feature in the disease
+   * @param modifiers list of modifiers (list can be empty but not null)
+   * @param cites List of publications (e.g., PMID or OMIM) that support this annotation
    */
   public HpoAnnotation(TermId termId, double f, String freqString,HpoOnset onset, List<TermId> modifiers, List<String> cites) {
     this.termId = termId;
     this.frequency = f;
-    frequencyString=freqString;
+    frequencyString=freqString.isEmpty()?DEFAULT_FREQUENCY_STRING:freqString;
     this.onset = onset;
     this.modifiers = modifiers;
     this.citations=cites;
