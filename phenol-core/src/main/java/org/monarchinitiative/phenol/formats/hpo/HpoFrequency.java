@@ -70,13 +70,13 @@ public enum HpoFrequency {
       case EXCLUDED:
         return 0D;
       case FREQUENT:
-        return 0.5 * (0.05D + 0.29D);
-      case OCCASIONAL:
-        return 0.5 * (0.01D + 0.04D);
-      case VERY_FREQUENT:
         return 0.5 * (0.30D + 0.79D);
+      case OCCASIONAL:
+        return 0.5 * (0.05D + 0.29D);
+      case VERY_FREQUENT:
+        return 0.5 * (0.80D + 0.99D);
       case VERY_RARE:
-        return (0.01D + 0.04D);
+        return 0.5*(0.01D + 0.04D);
       default:
         return ALWAYS_PRESENT.mean();
     }

@@ -21,7 +21,7 @@ public class HpOboParserTest {
   private HpoOntology ontology;
 
   @Before
-  public void setUp() throws IOException, PhenolException {
+  public void setUp() throws PhenolException {
     ClassLoader classLoader = this.getClass().getClassLoader();
     final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
     ontology = parser.parse();
@@ -35,7 +35,7 @@ public class HpOboParserTest {
 
   @Test
   public void testGetRightNumberOfTerms() {
-    int expectedTermCount=15; // there are 15 non-obsolete terms in hp_head.obo
+    int expectedTermCount=22; // there are 22 non-obsolete terms in hp_head.obo
     assertEquals(expectedTermCount,ontology.countAllTerms());
   }
 

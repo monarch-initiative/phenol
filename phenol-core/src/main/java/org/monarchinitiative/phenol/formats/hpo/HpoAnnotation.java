@@ -50,6 +50,10 @@ public class HpoAnnotation {
     this.citations=cites;
   }
 
+//  public HpoAnnotation(HpoAnnotationLine line){
+//
+//  }
+
   public static HpoAnnotation forTerm(TermId t) {
     return new Builder(t).build();
   }
