@@ -42,7 +42,7 @@ public final class App {
 
       Set<TermId> populationGenes = getPopulationSet(goAnnots);
       StudySet populationSet = new StudySet(populationGenes,"population",associationContainer,gontology);
-      TermId focusTerm = TermId.constructWithPrefix("GO:0008219"); // cell death
+      TermId focusTerm = TermId.constructWithPrefix("GO:0070997"); // neuron death
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,focusTerm);
       StudySet studySet = new StudySet(studyGenes,"cell death",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
@@ -85,7 +85,30 @@ public final class App {
       }
     }
 
-    return ImmutableSet.copyOf(genes);
+    int N=genes.size();
+    System.out.println(String.format("[INFO] Total genes annotated to %s is %d",focus.getIdWithPrefix(),N));
+    int M=N;
+    if (N>20) {
+      M=N/3;
+    }
+    Set<TermId> finalGenes=new HashSet<TermId>();
+    int i=0;
+    for (TermId tid: genes) {
+      if (i++>M) break;
+      finalGenes.add(tid);
+    }
+    i=0;
+    M *= 3;
+    for (GoGaf21Annotation ann : annots) {
+      TermId gene = ann.getDbObjectIdAsTermId();
+      if (! genes.contains(gene)) {
+        finalGenes.add(gene);
+        i++;
+      }
+      if (i>M) break;
+    }
+
+    return ImmutableSet.copyOf(finalGenes);
   }
 
 
