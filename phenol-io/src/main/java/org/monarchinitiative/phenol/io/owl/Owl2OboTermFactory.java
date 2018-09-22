@@ -47,10 +47,9 @@ public class Owl2OboTermFactory
       List<String> xrefs = definition.getXrefs();
       for (String x : xrefs) {
         SimpleXref sxref = new SimpleXref(x);
-        if (sxref.isValid()) {
+        if (sxref.isValid()) { // Add Xrefs that we might want to reference later on
+          // this includes PMIDs and OMIMs
           database_cross_ref_list.add(sxref);
-        } else {
-          LOGGER.warn("[ERROR] invalid database cross ref: " + x);
         }
       }
       genericTerm.setDatabaseXrefs(database_cross_ref_list);

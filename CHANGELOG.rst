@@ -1,13 +1,22 @@
 =========
 Changelog
 =========
-------
-v1.2.3
-------
-- Adding parsing of relations other than IS_A for Gene Ontology
 
 ------
-v1.2.2
+v1.1.4
+------
+- Adding parsing of onset, modifier, PMID/source to HpoAnnotation class
+- Adding all relation types relevant to MONDO
+
+------
+v1.1.3
+------
+- Adding parsing of relations other than IS_A for Gene Ontology
+- Fixing calculation of frequency (double) from frequency category
+- allowing any valid curie as cross-ref
+
+------
+v1.1.2
 ------
 - Adding MP annotation parser for MGI_GenePheno.rst and MGI_Pheno_Sex.rst
 

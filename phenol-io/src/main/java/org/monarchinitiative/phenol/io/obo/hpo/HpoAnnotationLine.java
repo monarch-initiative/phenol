@@ -1,9 +1,11 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.formats.hpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
+
+import java.util.List;
 
 /**
  * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
@@ -34,9 +36,7 @@ class HpoAnnotationLine {
   private static final int ASPECT_IDX = 10;
   private static final int BIOCURATION_IDX = 11;
 
-//  private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
-//  private static final TermPrefix ORPHANET_PREFIX = new TermPrefix("ORPHA");
-//  private static final TermPrefix DECIPHER_PREFIX = new TermPrefix("DECIPHER");
+  private static final String DEFAULT_FREQUENCY_STRING="n/a";
 
 
   private boolean valid_number_of_fields=true;
@@ -65,7 +65,7 @@ class HpoAnnotationLine {
   /** 3. The disease name, e.g., Marfan syndrome . */
   private String DbObjectName;
   /** 4. true is this is a negated annotation, i.e., some phenotype is not present in some disease.*/
-  private boolean NOT = false;
+  private boolean NOT;
   /** 5. The phenotype term id */
   private TermId phenotypeId;
   /** 6. Publication */
@@ -111,7 +111,7 @@ class HpoAnnotationLine {
     this.biocuration = F[BIOCURATION_IDX];
   }
 
-  public static HpoAnnotationLine constructFromString(String line) throws PhenolException {
+  static HpoAnnotationLine constructFromString(String line) throws PhenolException {
     try {
       return new HpoAnnotationLine(line);
     } catch (PhenolException e) {
@@ -175,12 +175,18 @@ class HpoAnnotationLine {
     return sex;
   }
 
-  String getModifierList() {
+  private String getModifierList() {
     return modifierList;
   }
 
-  String getPublication() {
-    return publication;
+  List<String> getPublication() {
+    ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+    if (publication==null || publication.isEmpty()) return builder.build();
+    String A[] = publication.split(";") ;
+    for (String a : A ){
+      builder.add(a.trim());
+    }
+    return builder.build();
   }
 
   String getEvidence() {
@@ -205,6 +211,125 @@ class HpoAnnotationLine {
   boolean hasValidNumberOfFields() {
     return valid_number_of_fields;
   }
+
+  /**
+   * This method can be used to create a full HpoAnnotation object. Note that it is not
+   * intended to be used to parse annotation lines that represent models of inheritance or
+   * negative annotations. For this reason, the method is package-private and should only be
+   * called by {@link org.monarchinitiative.phenol.io.assoc.HpoAssociationParser}.
+   * @param line AN HpoAnnotationLinbe object representing opne phenotype annotation
+   * @param ontology refernece to Hpo Ontology object
+   * @return corresponding HpoAnnotation object
+   */
+   static HpoAnnotation toHpoAnnotation(HpoAnnotationLine line, HpoOntology ontology) {
+    TermId phenoId = line.getPhenotypeId();
+    double frequency = getFrequency(line.getFrequency(),ontology);
+    String frequencyString=line.frequency.isEmpty()?DEFAULT_FREQUENCY_STRING : line.frequency;
+    HpoOnset onset = getOnset(line.onsetId);
+    return new HpoAnnotation(phenoId,
+      frequency,
+      frequencyString,
+      onset,
+      getModifiers(line.getModifierList()),
+      line.getPublication());
+  }
+
+  /**
+   * @param lst List of semicolon separated HPO term ids from the modifier subontology
+   * @return Immutable List of {@link TermId} objects
+   */
+  private static List<TermId> getModifiers(String lst) {
+    ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
+    if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
+    String modifierTermStrings[] = lst.split(";");
+    for (String mt : modifierTermStrings) {
+      TermId mtid = TermId.constructWithPrefix(mt.trim());
+      builder.add(mtid);
+    }
+    return builder.build();
+  }
+  /*
+  public HpoAnnotation(TermId termId, double f, String freqString,HpoOnset onset, List<TermId> modifiers, List<String> cites) {
+    this.termId = termId;
+    this.frequency = f;
+    frequencyString=freqString.isEmpty()?DEFAULT_FREQUENCY_STRING:freqString;
+    this.onset = onset;
+    this.modifiers = modifiers;
+    this.citations=cites;
+  }
+   */
+
+  /**
+   * Extract the {@link HpoFrequency} object that corresponds to the frequency modifier in an
+   * annotation line. Note that we are expecting there to be one of three kinds of frequency
+   * information (an HPO term, n/m or x%). If we find nothing or there is some parsing error,
+   * return the default frequency (obligate, 100%).
+   *
+   * @param freq The representation of the frequency, if any, in the {@code
+   *             phenotype_annotation.tab} file
+   * @return the corresponding {@link HpoFrequency} object or the default {@link HpoFrequency}
+   * object (100%).
+   */
+  private static double getFrequency(String freq, HpoOntology ontology) {
+    if (freq == null || freq.isEmpty()) {
+      return HpoFrequency.ALWAYS_PRESENT.mean();
+    }
+    int i = freq.indexOf("%");
+    if (i > 0) {
+      return 0.01 * Double.parseDouble(freq.substring(0, i));
+    }
+    i = freq.indexOf("/");
+    if (i > 0 && freq.length() > (i + 1)) {
+      int n = Integer.parseInt(freq.substring(0, i));
+      int m = Integer.parseInt(freq.substring(i + 1));
+      return (double) n / (double) m;
+    }
+    try {
+      TermId tid = string2TermId(freq,ontology);
+      if (tid != null) return HpoFrequency.fromTermId(tid).mean();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    // if we get here we could not parse the Frequency, return the default 100%
+    return HpoFrequency.ALWAYS_PRESENT.mean();
+  }
+
+  /**
+   * Go from HP:0000123 to the corresponding TermId
+   *
+   * @param hp String version of an HPO term id
+   * @return corresponding {@link TermId} object
+   */
+  private static TermId string2TermId(String hp, HpoOntology ontology) {
+    if (!hp.startsWith("HP:")) {
+      return null;
+    } else {
+      TermId tid = TermId.constructWithPrefix(hp);
+      if (ontology.getTermMap().containsKey(tid)) {
+        return ontology
+          .getTermMap()
+          .get(tid)
+          .getId(); // replace alt_id with current if if necessary
+      } else {
+        return null;
+      }
+    }
+  }
+
+  /**
+   * This fucnction transforms a {@link TermId} into an {@link HpoOnset} object. If the argument is
+   * null, it means that no annotation for the onset was provided in the annotation line, and
+   * then this function returns null.
+   * @param ons The {@link TermId} of an HPO Onset
+   * @return The {@link HpoOnset} object corresponding to the {@link TermId} in the argument
+   */
+  private static HpoOnset getOnset(TermId ons) {
+    if (ons == null) return HpoOnset.UNKNOWN;
+    return HpoOnset.fromTermId(ons);
+  }
+
+
+
 
   @Override
   public String toString() {

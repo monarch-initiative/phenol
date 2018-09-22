@@ -30,11 +30,11 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  */
 public class HpoDiseaseAnnotationParser {
   /** Path to the phenotype.hpoa annotation file. */
-  private String annotationFilePath;
+  private final String annotationFilePath;
   /** Reference to the HPO Ontology object. */
   private final HpoOntology ontology;
   /** Key: disease CURIE, e.g., OMIM:600100; Value: corresponding {@link HpoDisease} object. */
-  private Map<TermId, HpoDisease> diseaseMap;
+  private final Map<TermId, HpoDisease> diseaseMap;
   /** Key: HpoPhenotypeId; Value: corresponding {@link HpoDisease} object. */
   private ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
@@ -120,14 +120,7 @@ public class HpoDiseaseAnnotationParser {
           } else if (line.isNOT()) {
             negativeTermListBuilder.add(line.getPhenotypeId());
           } else {
-            double frequency = getFrequency(line.getFrequency());
-            List<TermId> modifiers = getModifiers(line.getModifierList());
-            HpoOnset onset = getOnset(line.getOnsetId());
-            HpoAnnotation tidm = HpoAnnotation.builder(line.getPhenotypeId()).
-              frequency(frequency).
-              onset(onset).
-              modifiers(modifiers).
-              build();
+            HpoAnnotation tidm = HpoAnnotationLine.toHpoAnnotation(line,ontology);
             phenoListBuilder.add(tidm);
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
@@ -162,80 +155,8 @@ public class HpoDiseaseAnnotationParser {
     return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
   }
 
-  /**
-   * @param lst List of semicolon separated HPO term ids from the modifier subontology
-   * @return Immutable List of {@link TermId} objects
-   */
-  private List<TermId> getModifiers(String lst) {
-    ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
-    if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
-    String modifierTermStrings[] = lst.split(";");
-    for (String mt : modifierTermStrings) {
-      TermId mtid = TermId.constructWithPrefix(mt.trim());
-      builder.add(mtid);
-    }
-    return builder.build();
-  }
 
-  /**
-   * Go from HP:0000123 to the corresponding TermId
-   *
-   * @param hp String version of an HPO term id
-   * @return corresponding {@link TermId} object
-   */
-  private TermId string2TermId(String hp) {
-    if (!hp.startsWith("HP:")) {
-      return null;
-    } else {
-      TermId tid = TermId.constructWithPrefix(hp);
-      if (ontology.getTermMap().containsKey(tid)) {
-        return ontology
-          .getTermMap()
-          .get(tid)
-          .getId(); // replace alt_id with current if if necessary
-      } else {
-        return null;
-      }
-    }
-  }
 
-  /**
-   * Extract the {@link HpoFrequency} object that corresponds to the frequency modifier in an
-   * annotation line. Note that we are expecting there to be one of three kinds of frequency
-   * information (an HPO term, n/m or x%). If we find nothing or there is some parsing error,
-   * return the default frequency (obligate, 100%).
-   *
-   * @param freq The representation of the frequency, if any, in the {@code
-   *             phenotype_annotation.tab} file
-   * @return the corresponding {@link HpoFrequency} object or the default {@link HpoFrequency}
-   * object (100%).
-   */
-  private double getFrequency(String freq) {
-    if (freq == null || freq.isEmpty()) {
-      return HpoFrequency.ALWAYS_PRESENT.mean();
-    }
-    int i = freq.indexOf("%");
-    if (i > 0) {
-      return 0.01 * Double.parseDouble(freq.substring(0, i));
-    }
-    i = freq.indexOf("/");
-    if (i > 0 && freq.length() > (i + 1)) {
-      int n = Integer.parseInt(freq.substring(0, i));
-      int m = Integer.parseInt(freq.substring(i + 1));
-      return (double) n / (double) m;
-    }
-    try {
-      TermId tid = string2TermId(freq);
-      if (tid != null) return HpoFrequency.fromTermId(tid).mean();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    // if we get here we could not parse the Frequency, return the default 100%
-    return HpoFrequency.ALWAYS_PRESENT.mean();
-  }
 
-  private HpoOnset getOnset(TermId ons) {
-    if (ons == null) return null;
-    return HpoOnset.fromTermId(ons);
-  }
+
 }
