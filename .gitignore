@@ -41,3 +41,6 @@ phenol-core/target/
 phenol-io/target/
 phenol-core/src/test/java/com/
 phenol-io/src/test/resources/catalog-v001.xml
+demos/compute-similarities/target/
+demos/go-enrichment/target/
+phenol-analysis/target/
