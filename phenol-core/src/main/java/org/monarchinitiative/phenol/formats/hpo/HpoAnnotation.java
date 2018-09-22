@@ -80,7 +80,7 @@ public class HpoAnnotation {
   public double getFrequency() {
     return frequency;
   }
-
+  /** @return the {@link HpoOnset} object representing the age of onset of the feature (or null if not onset is available) */
   public HpoOnset getOnset() {
     return onset;
   }

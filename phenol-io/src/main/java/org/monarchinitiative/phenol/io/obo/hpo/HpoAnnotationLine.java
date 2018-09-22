@@ -316,9 +316,15 @@ class HpoAnnotationLine {
     }
   }
 
-
+  /**
+   * This fucnction transforms a {@link TermId} into an {@link HpoOnset} object. If the argument is
+   * null, it means that no annotation for the onset was provided in the annotation line, and
+   * then this function returns null.
+   * @param ons The {@link TermId} of an HPO Onset
+   * @return The {@link HpoOnset} object corresponding to the {@link TermId} in the argument
+   */
   private static HpoOnset getOnset(TermId ons) {
-    if (ons == null) return null;
+    if (ons == null) return HpoOnset.UNKNOWN;
     return HpoOnset.fromTermId(ons);
   }
 

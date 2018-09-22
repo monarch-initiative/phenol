@@ -57,7 +57,7 @@ public class SimpleXref {
           prefix = Prefix.MESH;
           break;
         case "DOID":
-          prefix=Prefix.MESH.DOID;
+          prefix=Prefix.DOID;
           break;
         case "ORPHANET":
           prefix=Prefix.ORPHANET;

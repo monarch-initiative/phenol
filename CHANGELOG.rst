@@ -1,6 +1,13 @@
 =========
 Changelog
 =========
+
+------
+v1.1.4
+------
+- Adding parsing of onset, modifier, PMID/source to HpoAnnotation class
+- Adding all relation types relevant to MONDO
+
 ------
 v1.1.3
 ------

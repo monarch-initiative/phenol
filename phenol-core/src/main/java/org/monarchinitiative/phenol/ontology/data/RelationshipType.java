@@ -27,6 +27,14 @@ public enum RelationshipType {
   ENDS_DURING("ends_during"),
   SUBPROPERTY_OF("subpropertyOf"),
   INVERSE_OF("inverseOf"),
+  HAS_MODIFIER("hasModifier"),
+  DISEASE_HAS_BASIS_IN_FEATURE("disease_has_basis_in_feature"),
+  DISEASE_SHARES_FEATURES_OF("disease_shares_features_of"),
+  DISEASE_HAS_FEATURE("disease_has_feature"),
+  DISEASE_HAS_MAJOR_FEATURE("disease_has_major_feature"),
+  DISEASE_CAUSES_FEATURE("disease_causes_feature"),
+  DISEASE_HAS_LOCATION("disease_has_location"),
+  PART_OF_PROGRESSION_OF_DISEASE("part_of_progression_of_disease"),
   /** Unknown, used for any other relation. */
   UNKNOWN("unknown");
 
@@ -71,6 +79,23 @@ public enum RelationshipType {
         return SUBPROPERTY_OF;
       case "inverseOf":
         return INVERSE_OF;
+      case "http://purl.obolibrary.org/obo/RO_0002573":
+      case "has modifier":
+        return HAS_MODIFIER;
+      case "http://purl.obolibrary.org/obo/RO_0004022":
+        return DISEASE_HAS_BASIS_IN_FEATURE;
+      case "http://purl.obolibrary.org/obo/mondo#disease_shares_features_of":
+        return DISEASE_SHARES_FEATURES_OF;
+      case "http://purl.obolibrary.org/obo/RO_0004029":
+        return DISEASE_HAS_FEATURE;
+      case "http://purl.obolibrary.org/obo/mondo#disease_has_major_feature":
+        return DISEASE_HAS_MAJOR_FEATURE;
+      case "http://purl.obolibrary.org/obo/RO_0004026":
+        return DISEASE_HAS_LOCATION;
+      case "http://purl.obolibrary.org/obo/mondo#disease_causes_feature":
+        return DISEASE_CAUSES_FEATURE;
+      case "http://purl.obolibrary.org/obo/mondo#part_of_progression_of_disease":
+        return PART_OF_PROGRESSION_OF_DISEASE;
       default:
         throw new PhenolException("Did not recognize RelationshipType: " + reltype);
     }
