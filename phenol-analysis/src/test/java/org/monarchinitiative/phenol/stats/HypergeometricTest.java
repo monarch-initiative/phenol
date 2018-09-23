@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.stats;
 
 import org.junit.Test;
-import org.monarchinitative.phenol.stats.Hypergeometric;
-import org.monarchinitative.phenol.stats.TermForTermGOTermProperties;
 
 import static junit.framework.TestCase.assertTrue;
 

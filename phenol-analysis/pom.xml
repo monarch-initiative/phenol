@@ -6,13 +6,13 @@
 
   <name>${project.groupId}:${project.artifactId}</name>
 
-  <description>phenol-cli gives command line access to phenol</description>
+  <description>phenol-analysis implements some algorithms for working with ontology data</description>
   <url>https://github.com/monarchinitiative/phenol</url>
 
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
   </parent>
 
   <properties>
@@ -24,6 +24,12 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>phenol-io</artifactId>
       <version>${project.version}</version>
     </dependency>
 
