@@ -91,10 +91,10 @@ public class App {
   private void parseObo() {
     System.err.println("Parsing OBO...");
     final long startTime = System.nanoTime();
-
+    Ontology ontology;
     try {
       final OboOntologyLoader loader = new OboOntologyLoader(inputFile);
-      Ontology ontology = loader.load();
+      ontology = loader.load();
 
     } catch (IOException | PhenolException e) {
       e.printStackTrace();

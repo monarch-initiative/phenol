@@ -15,10 +15,15 @@ import org.monarchinitiative.phenol.stats.*;
 
 
 public final class App {
-
+  /** Path to the go.obo file */
   private String pathGoObo;
+  /** Path to the GoGaf file. */
   private String pathGoGaf;
-  private String pathInputFile;
+  /** We will create a study set that has 1/3 of the genes associated with this term
+   * and three times as many other terms. GO:0070997 is 'neuron death'.*/
+  private final static TermId DEFAULT_GO_ID = TermId.constructWithPrefix("GO:0070997");
+  /** Term Id of a GO term we will investigate */
+  private TermId targetGoTerm=DEFAULT_GO_ID;
 
 
   public App(String [] args) {
@@ -42,9 +47,8 @@ public final class App {
 
       Set<TermId> populationGenes = getPopulationSet(goAnnots);
       StudySet populationSet = new StudySet(populationGenes,"population",associationContainer,gontology);
-      TermId focusTerm = TermId.constructWithPrefix("GO:0070997"); // neuron death
-      Set<TermId> studyGenes = getFocusedStudySet(goAnnots,focusTerm);
-      StudySet studySet = new StudySet(studyGenes,"cell death",associationContainer,gontology);
+      Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
+      StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
 
       IPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
@@ -55,6 +59,8 @@ public final class App {
       AbstractTestCorrection bonf = new Bonferroni();
       Map<TermId, PValue> pvalmap = bonf.adjustPValues(tftpvalcal);
       System.err.println("Total number of retrieved p values: " + pvalmap.size());
+      int n_sig=0;
+      double ALPHA=0.00005;
       for (TermId tid : pvalmap.keySet()) {
         PValue pval = pvalmap.get(tid);
         Term term = gontology.getTermMap().get(tid);
@@ -63,12 +69,14 @@ public final class App {
           continue;
         }
         String label = term.getName();
-        if (pval.p_adjusted > 0.00005) {
+        if (pval.p_adjusted > ALPHA) {
           continue;
         }
-        System.err.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getIdWithPrefix(), pval.p, pval.p_adjusted));
+        n_sig++;
+        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getIdWithPrefix(), pval.p, pval.p_adjusted));
       }
-
+      System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
+        n_sig,pvalmap.size(),ALPHA));
     } catch (Exception e) {
       e.printStackTrace(); // just wimp out, we cannot recover here.
     }
@@ -127,13 +135,15 @@ public final class App {
    * Parse command line arguments.
    */
   private void parseArgs(String [] args) {
-    if (args.length != 3) {
+    if (args.length <2) {
       printUsageError("Invalid argument count!");
     }
 
     pathGoObo = args[0];
     pathGoGaf = args[1];
-    pathInputFile = args[2];
+    if (args.length==3) {
+      targetGoTerm = TermId.constructWithPrefix(args[2]);
+    }
   }
 
   /**
