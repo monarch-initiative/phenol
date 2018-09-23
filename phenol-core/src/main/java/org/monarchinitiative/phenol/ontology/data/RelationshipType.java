@@ -35,6 +35,7 @@ public enum RelationshipType {
   DISEASE_CAUSES_FEATURE("disease_causes_feature"),
   DISEASE_HAS_LOCATION("disease_has_location"),
   PART_OF_PROGRESSION_OF_DISEASE("part_of_progression_of_disease"),
+  REALIZED_IN_RESPONSE_TO_STIMULUS("realized_in_response_to_stimulus"),
   /** Unknown, used for any other relation. */
   UNKNOWN("unknown");
 
@@ -96,6 +97,8 @@ public enum RelationshipType {
         return DISEASE_CAUSES_FEATURE;
       case "http://purl.obolibrary.org/obo/mondo#part_of_progression_of_disease":
         return PART_OF_PROGRESSION_OF_DISEASE;
+      case "http://purl.obolibrary.org/obo/RO_0004028":
+        return REALIZED_IN_RESPONSE_TO_STIMULUS;
       default:
         throw new PhenolException("Did not recognize RelationshipType: " + reltype);
     }
