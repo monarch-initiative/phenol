@@ -22,17 +22,16 @@ public enum HpoOnset {
   CHILDHOOD_ONSET,
   /** Onset between 5 and 15 years */
   JUVENILE_ONSET,
-
-  /**
-   * Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.
-   */
+  /** Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.*/
   ADULT_ONSET,
   /** Onset of disease at the age of between 16 and 40 years */
   YOUNG_ADULT_ONSET,
   /** Onset of symptoms at the age of 40 to 60 years. */
   MIDDLE_AGE_ONSET,
   /** Onset of symptoms after 60 years */
-  LATE_ONSET;
+  LATE_ONSET,
+  /** Age of onset not known or not available (should be used if there is no data in the annotation file).*/
+  UNKNOWN;
 
   static final double ADULT_ONSET_UPPERBOUND = 100.0;
 
@@ -92,6 +91,11 @@ public enum HpoOnset {
     }
   }
 
+  /**@return true if information is available (i.e., if not UNKNOWN).*/
+  public boolean available() {
+    return (this != UNKNOWN && this != ONSET);
+  }
+
   /** @return Corresponding {@link TermId} in the HPO of {@code this} frequency category. */
   public TermId toTermId() {
     switch (this) {
@@ -124,9 +128,7 @@ public enum HpoOnset {
    * Convert HPO {@link TermId} in the HPO to {@link HpoFrequency}.
    *
    * @param termId The {@link TermId} to convert.
-   * @return Corresponding {@link HpoFrequency}.
-   * @throws PhenolRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
-   *     TermId}.
+   * @return Corresponding {@link HpoFrequency} (if not available, return {@link #UNKNOWN}).
    */
   public static HpoOnset fromTermId(TermId termId) {
     switch (termId.getIdWithPrefix()) {
@@ -157,8 +159,7 @@ public enum HpoOnset {
       case "HP:0011463":
         return CHILDHOOD_ONSET;
       default:
-        throw new PhenolRuntimeException(
-            "TermId " + termId + " is not a valid onset sub ontology term ID");
+        return UNKNOWN;
     }
   }
 
@@ -205,26 +206,32 @@ public enum HpoOnset {
   }
 
   /**
-   * Convert integer year value to {@link HpoOnset}. TODO -- ALSO PROVIDE FROM MONTHS AND FROM DAYS
-   * AND FROM ANTENATAL DAYS
+   * Convert integer year. month, day values to {@link HpoOnset}.
    *
    * @param years number of completed years of age
+   * @param months number of completed months of age
+   * @param days number of completed days of age
    * @return Corresponding {@link HpoOnset}.
    */
-  public static HpoOnset fromYears(int years) {
-    //        if (percent < 1) {
-    //            return EXCLUDED;
-    //        } else if (percent < 5) {
-    //            return VERY_RARE;
-    //        } else if (percent < 30) {
-    //            return OCCASIONAL;
-    //        } else if (percent < 80) {
-    //            return FREQUENT;
-    //        } else if (percent < 100) {
-    //            return VERY_FREQUENT;
-    //        } else {
-    //            return ALWAYS_PRESENT;
-    //        }
-    return ONSET;
+  public static HpoOnset fromAge(int years, int months, int days) {
+    if (years >= 1 && years<5) {
+      return CHILDHOOD_ONSET;
+    } else if (years>=5 && years <=15) {
+      return JUVENILE_ONSET;
+    } else if (years >=16 && years <40) {
+      return YOUNG_ADULT_ONSET;
+    } else if (years >=40 && years < 60) {
+      return MIDDLE_AGE_ONSET;
+    } else if (years >= 60) {
+      return LATE_ONSET;
+    } else if (years<1 && months > 1) {
+      return INFANTILE_ONSET;
+    } else if (years < 1 && months <=1) {
+      return NEONATAL_ONSET;
+    } else if (years < 1 && months <1 && days <=1) {
+      return CONGENITAL_ONSET;
+    } else {
+      return ONSET; // younger than
+    }
   }
 }

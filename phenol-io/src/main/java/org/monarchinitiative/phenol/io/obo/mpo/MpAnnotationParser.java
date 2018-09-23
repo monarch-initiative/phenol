@@ -31,14 +31,14 @@ public class MpAnnotationParser {
   private final InputStream phenoSexInputstream;
   /** Used to store sex-specific phenotype annotations. */
   private Map<TermId,Map<TermId,MpAnnotation>> geno2ssannotMap = ImmutableMap.of();
-
-
   /** Key: A term id representing the genotype accession id of an MPO model
    * Value: the corresponding MpModel object
    */
   private Map<TermId,MpModel> genotypeAccessionToMpModelMap;
   /** Show verbose debugging information. */
   private boolean verbose = true;
+
+  private List<String> parseErrors;
 
   /**
    * @param path Path of MGI_GenePheno.rpt file.
@@ -47,6 +47,7 @@ public class MpAnnotationParser {
     this.genePhenoPath=path;
     this.phenoSexPath=null;//do not use sex spcific phenotypes
     this.phenoSexInputstream=null; // not needed
+    parseErrors=new ArrayList<>();
     try {
       this.genePhenoInputstream = new FileInputStream(this.genePhenoPath);
       parse();
@@ -65,6 +66,7 @@ public class MpAnnotationParser {
     this.phenoSexPath="n/a"; // not needed
     this.genePhenoInputstream =is;
     this.phenoSexInputstream=null; // not needed
+    parseErrors=new ArrayList<>();
     try {
       parse();
     } catch (IOException e) {
@@ -82,6 +84,7 @@ public class MpAnnotationParser {
   public MpAnnotationParser(String genePhenoPath,String phenoSexPath) throws PhenolException {
     this.genePhenoPath=genePhenoPath;
     this.phenoSexPath=phenoSexPath;
+    parseErrors=new ArrayList<>();
     try {
       this.genePhenoInputstream = new FileInputStream(this.genePhenoPath);
       this.phenoSexInputstream=new FileInputStream((this.phenoSexPath));
@@ -150,7 +153,7 @@ public class MpAnnotationParser {
       String A[] = line.split("\t");
       /* Expected number of fields of the MGI_GenePheno.rpt file (note -- there
          appears to be a stray tab  between the penultimate and last column) */
-      int EXPECTED_NUMBER_OF_FIELDS = 9;
+      int EXPECTED_NUMBER_OF_FIELDS = 8;
       if (A.length < EXPECTED_NUMBER_OF_FIELDS) {
         if (verbose) {
           //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
@@ -163,7 +166,8 @@ public class MpAnnotationParser {
         TermId modelId = annot.getGenotypeAccessionId();
         annotationCollector.put(modelId,annot);
       } catch (PhenolException e) {
-        e.printStackTrace();
+        String err=String.format("[PARSE ERROR] %s (%s)",e.getMessage(),line );
+        this.parseErrors.add(err);
       }
     }
     // When we get here, we have parsed all of the MGI_GenePheno.rpt file.
@@ -216,6 +220,9 @@ public class MpAnnotationParser {
     genotypeAccessionToMpModelMap=builder.build();
   }
 
+  public boolean hasParseError(){ return this.parseErrors.size()>0;}
+  public List<String> getParseErrors() { return this.parseErrors; }
+
 
   /**
    * A convenience class that allows us to collect all of the annotations that belong
@@ -237,9 +244,8 @@ public class MpAnnotationParser {
     /** Index of MGI Marker Accession ID (pipe-delimited). For example, for a model with
      * a mutation of the RB1 gene, this would be the id for that gene (MGI:97874). */
     private final int MGI_MARKER_IDX=6;
-    /** Index of MGI Genotype Accession ID (pipe-delimited) (Note: there appears to be a stray tab in front of this
-     * field in the current MGI file version. */
-    private final int GENOTYPE_ACCESSION_IDX=8;
+    /** Index of MGI Genotype Accession ID (pipe-delimited). */
+    private final int GENOTYPE_ACCESSION_IDX=7;
 
     private final MpAllelicComposition allelicComp;
     private final String alleleSymbol;
@@ -253,9 +259,9 @@ public class MpAnnotationParser {
     AnnotationLine(String[] A) throws PhenolException {
       this.allelicComp = MpAllelicComposition.fromString(A[ALLELIC_COMPOSITION_IDX]);
       this.alleleSymbol = A[ALLELE_SYMBOL_IDX];
-      this.alleleId=TermId.constructWithPrefix(A[ALLELE_ID_IDX]);
+      this.alleleId=TermId.constructWithPrefixInternal(A[ALLELE_ID_IDX]);
       this.geneticBackground=MpStrain.fromString(A[GENETIC_BACKGROUND_IDX]);
-      this.mpId = TermId.constructWithPrefix(A[MPO_IDX]);
+      this.mpId = TermId.constructWithPrefixInternal(A[MPO_IDX]);
       String pmids=A[PUBMED_IDX];
       ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
       String B[]=pmids.split(Pattern.quote("|"));
@@ -263,8 +269,8 @@ public class MpAnnotationParser {
         builder.add(b);
       }
       this.pmidList=builder.build();
-      this.markerAccessionId=TermId.constructWithPrefix(A[MGI_MARKER_IDX]);
-      this.genotypeAccessionId=TermId.constructWithPrefix(A[GENOTYPE_ACCESSION_IDX]);
+      this.markerAccessionId=TermId.constructWithPrefixInternal(A[MGI_MARKER_IDX]);
+      this.genotypeAccessionId=TermId.constructWithPrefixInternal(A[GENOTYPE_ACCESSION_IDX]);
     }
 
     public MpAllelicComposition getAllelicComp() {

@@ -7,7 +7,14 @@ package org.monarchinitiative.phenol.ontology.data;
  */
 public class SimpleXref {
 
-  enum Prefix {HPO, MGI, PMID,ISBN, UNKNOWN}
+  enum Prefix {
+    HPO("HPO"), MGI("MGI"), PMID("PMID"),ISBN("ISBN"),
+    MONDO("MONDO"),NCIT("NCIT"),ORCID("ORCID"),MESH("MESH"),
+    DOID("DOID"),ORPHANET("Orphanet"),EFO("EFO"), UNKNOWN("?");
+    private final String name;
+    Prefix(String n){this.name=n;}
+   @Override public String toString(){return name;}
+  }
 
 
   private final Prefix prefix;
@@ -37,6 +44,27 @@ public class SimpleXref {
         case "ISBN":
           prefix=Prefix.ISBN;
           break;
+        case "MONDO":
+          prefix=Prefix.MONDO;
+          break;
+        case "NCIT":
+          prefix=Prefix.NCIT;
+          break;
+        case "ORCID":
+          prefix =Prefix.ORCID;
+          break;
+        case "MESH":
+          prefix = Prefix.MESH;
+          break;
+        case "DOID":
+          prefix=Prefix.DOID;
+          break;
+        case "ORPHANET":
+          prefix=Prefix.ORPHANET;
+          break;
+        case "EFO":
+          prefix=Prefix.EFO;
+          break;
         default:
           prefix=Prefix.UNKNOWN;
       }
@@ -64,15 +92,7 @@ public class SimpleXref {
   }
 
   public String getCurie() {
-    switch (prefix) {
-      case HPO: return "HPO:"+id;
-      case PMID: return "PMID:"+id;
-      case ISBN: return "ISBN:"+id;
-      case MGI: return "MGI:"+id;
-      case UNKNOWN:
-      default:
-        return "?:"+id;
-    }
+    return this.prefix.name+":"+id;
   }
 
   /**

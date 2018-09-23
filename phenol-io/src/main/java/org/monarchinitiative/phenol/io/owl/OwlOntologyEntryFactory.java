@@ -4,6 +4,7 @@ import org.geneontology.obographs.model.Node;
 
 
 import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -16,5 +17,5 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public interface OwlOntologyEntryFactory {
   Term constructTerm(Node node, TermId termId);
 
-  Relationship constructRelationship(TermId source, TermId dest, int id);
+  Relationship constructRelationship(TermId source, TermId dest, int id, RelationshipType reltype);
 }

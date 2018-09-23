@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
@@ -30,13 +31,33 @@ public final class TermId implements Comparable<TermId>, Serializable {
    * @throws PhenolRuntimeException if the string does not have a prefix
    */
   public static TermId constructWithPrefix(String termIdString) {
-    final int pos = termIdString.lastIndexOf(':');
+    final int pos = termIdString.indexOf(':');
     if (pos == -1) {
       throw new PhenolRuntimeException(
           "TermId construction error: \"" + termIdString + "\" does not have a prefix!");
     } else {
       return new TermId(
           new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
+    }
+  }
+
+
+  /**
+   * Construct from term ID including prefix. This function has a checked exception which makes it easier for
+   * chains of errors to be propagated.
+   *
+   * @param termIdString String with term Id to construct with.
+   * @return Resulting {@link TermId}.
+   * @throws PhenolException if the string does not have a prefix
+   */
+  public static TermId constructWithPrefixInternal(String termIdString) throws PhenolException {
+    final int pos = termIdString.indexOf(':');
+    if (pos == -1) {
+      throw new PhenolException(
+        "TermId construction error: \"" + termIdString + "\" does not have a prefix!");
+    } else {
+      return new TermId(
+        new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
     }
   }
 

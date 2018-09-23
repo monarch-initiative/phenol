@@ -221,3 +221,66 @@ xref: MSH:D011681
 xref: SNOMEDCT_US:72124005
 xref: UMLS:C0917967
 is_a: HP:0012373 ! Abnormal eye physiology
+
+[Term]
+id: HP:0040279
+name: Frequency
+def: "Class to represent frequency of phenotypic abnormalities within a patient cohort." []
+comment: Aligned with Orphanet
+is_a: HP:0000001 ! All
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040280
+name: Obligate
+def: "Always present, i.e. in 100% of the cases." []
+synonym: "Obligate (100%)" EXACT []
+xref: ORPHA:453310
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040281
+name: Very frequent
+def: "Present in 80% to 99% of the cases." []
+synonym: "Very frequent (99-80%)" EXACT []
+xref: ORPHA:453311
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040282
+name: Frequent
+def: "Present in 30% to 79% of the cases." []
+synonym: "Frequent (79-30%)" EXACT []
+xref: ORPHA:453312
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040283
+name: Occasional
+def: "Present in 5% to 29% of the cases." []
+synonym: "Occasional (29-5%)" EXACT []
+xref: ORPHA:453313
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040284
+name: Very rare
+def: "Present in 1% to 4% of the cases." []
+synonym: "Very rare (&lt;4-1%)" EXACT []
+synonym: "Very rare (<4-1%)" EXACT []
+xref: ORPHA:453314
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler
+
+[Term]
+id: HP:0040285
+name: Excluded
+def: "Present in 0% of the cases." []
+synonym: "Excluded (0%)" EXACT []
+xref: ORPHA:453315
+is_a: HP:0040279 ! Frequency
+created_by: HPO:skoehler

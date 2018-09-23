@@ -26,16 +26,20 @@ public class GoOboParser {
     this.obo = new FileInputStream(oboFile);
     this.debug = debug;
   }
-  
+
   public GoOboParser(File oboFile) throws FileNotFoundException {
     this(oboFile,false);
   }
-  
+
   public GoOboParser(InputStream obo, boolean debug) {
     this.obo = obo;
     this.debug = debug;
   }
-  
+
+  public GoOboParser(String path) throws FileNotFoundException {
+    this(new File(path),false);
+  }
+
   public GoOboParser(InputStream obo) {
     this(obo,false);
   }

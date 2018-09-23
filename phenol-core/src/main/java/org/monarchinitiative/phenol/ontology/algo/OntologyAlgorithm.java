@@ -164,6 +164,17 @@ public class OntologyAlgorithm {
     ImmutableSet.Builder<TermId> anccset = new ImmutableSet.Builder<>();
     if (includeOriginalTerm) anccset.add(childTermId);
     for (IdLabeledEdge edge : ontology.getGraph().outgoingEdgesOf(childTermId)) {
+      int edgeId = edge.getId();
+      Relationship rel = ontology.getRelationMap().get(edgeId);
+      if (rel==null) {
+        System.err.println("Could not retrieve relation for id="+
+          edgeId+" [child term=" + ontology.getTermMap().get(childTermId).getName()+"]");
+        continue;
+      }
+      RelationshipType reltyp = rel.getRelationshipType();
+      if (! reltyp.propagates()) {
+        continue; // this is a relationship that does not follow the annotation-propagation rule (aka true path rule)
+      }
       TermId destId = (TermId) edge.getTarget();
       anccset.add(destId);
     }

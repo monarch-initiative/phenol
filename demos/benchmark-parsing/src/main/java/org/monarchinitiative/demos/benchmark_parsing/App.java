@@ -1,4 +1,13 @@
-package com.github.phenomics.ontolib.demos.benchmark_parsing;
+package org.monarchinitiative.demos.benchmark_parsing;
+
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.go.GoOntology;
+import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.io.obo.OboOntologyLoader;
+import org.monarchinitiative.phenol.io.obo.go.GoOboParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
+import org.monarchinitiative.phenol.io.obo.mpo.MpOboParser;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,18 +16,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import com.github.phenomics.ontolib.formats.go.GoOntology;
-import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
-import com.github.phenomics.ontolib.formats.mpo.MpoOntology;
-import com.github.phenomics.ontolib.io.obo.OboParser;
-import com.github.phenomics.ontolib.io.obo.go.GoOboParser;
-import com.github.phenomics.ontolib.io.obo.hpo.HpoOboParser;
-import com.github.phenomics.ontolib.io.obo.mpo.MpoOboParser;
 
 /**
  * App for benchmarking parsing of ontology files.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class App {
 
@@ -88,11 +91,12 @@ public class App {
   private void parseObo() {
     System.err.println("Parsing OBO...");
     final long startTime = System.nanoTime();
-
-    final OboParser parser = new OboParser();
+    Ontology ontology;
     try {
-      parser.parseFile(inputFile);
-    } catch (IOException e) {
+      final OboOntologyLoader loader = new OboOntologyLoader(inputFile);
+      ontology = loader.load();
+
+    } catch (IOException | PhenolException e) {
       e.printStackTrace();
       System.exit(1);
     }
@@ -105,12 +109,13 @@ public class App {
   private void parseHpoObo() {
     System.err.println("Parsing HPO OBO...");
     long startTime = System.nanoTime();
-
-    HpoOboParser parser = new HpoOboParser(inputFile);
     HpoOntology hpo;
+
     try {
+      HpOboParser parser = new HpOboParser(inputFile);
+
       hpo = parser.parse();
-    } catch (IOException e) {
+    } catch (IOException | PhenolException e) {
       e.printStackTrace();
       System.exit(1);
       return; // javac does not understand this is unreachable
@@ -128,12 +133,13 @@ public class App {
   private void parseMpoObo() {
     System.err.println("Parsing MPO OBO...");
     long startTime = System.nanoTime();
+    Ontology mpo;
 
-    MpoOboParser parser = new MpoOboParser(inputFile);
-    MpoOntology mpo;
     try {
+      MpOboParser parser = new MpOboParser(inputFile);
+
       mpo = parser.parse();
-    } catch (IOException e) {
+    } catch (IOException | PhenolException e) {
       e.printStackTrace();
       System.exit(1);
       return; // javac does not understand this is unreachable
@@ -152,11 +158,12 @@ public class App {
     System.err.println("Parsing GO OBO...");
     long startTime = System.nanoTime();
 
-    GoOboParser parser = new GoOboParser(inputFile);
+
     GoOntology go;
     try {
+      GoOboParser parser = new GoOboParser(inputFile);
       go = parser.parse();
-    } catch (IOException e) {
+    } catch (IOException | PhenolException e) {
       e.printStackTrace();
       System.exit(1);
       return; // javac does not understand this is unreachable
@@ -189,7 +196,7 @@ public class App {
     System.out.println("Loading .ser file " + outputSerFile + "...");
     startTime = System.nanoTime();
     try (FileInputStream fin = new FileInputStream(outputSerFile);
-        ObjectInputStream ois = new ObjectInputStream(fin);) {
+        ObjectInputStream ois = new ObjectInputStream(fin)) {
       ois.readObject();
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
@@ -250,7 +257,7 @@ public class App {
     /** Parse HPO OBO file */
     PARSE_HPO_OBO,
     /** Parse MPO OBO file */
-    PARSE_MPO_OBO;
+    PARSE_MPO_OBO
   }
 
   /**

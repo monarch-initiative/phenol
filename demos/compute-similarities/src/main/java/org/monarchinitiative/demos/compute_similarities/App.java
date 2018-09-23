@@ -1,4 +1,4 @@
-package com.github.phenomics.ontolib.demos.compute_similarities;
+package org.monarchinitiative.demos.compute_similarities;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,32 +18,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
+import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
+import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
+import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
+import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
+import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistributions;
+import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
+import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
+import org.monarchinitiative.phenol.ontology.similarity.PrecomputingPairwiseResnikSimilarity;
+import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 
-import com.github.phenomics.ontolib.formats.hpo.HpoGeneAnnotation;
-import com.github.phenomics.ontolib.formats.hpo.HpoOntology;
-import com.github.phenomics.ontolib.formats.hpo.HpoTerm;
-import com.github.phenomics.ontolib.formats.hpo.Hporelationship;
-import com.github.phenomics.ontolib.io.base.TermAnnotationParserException;
-import com.github.phenomics.ontolib.io.obo.hpo.HpoGeneAnnotationParser;
-import com.github.phenomics.ontolib.io.obo.hpo.HpoOboParser;
-import com.github.phenomics.ontolib.ontology.algo.InformationContentComputation;
-import com.github.phenomics.ontolib.ontology.data.ImmutableTermId;
-import com.github.phenomics.ontolib.ontology.data.TermAnnotations;
-import com.github.phenomics.ontolib.ontology.data.TermId;
-import com.github.phenomics.ontolib.ontology.data.TermIds;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistribution;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreDistributions;
-import com.github.phenomics.ontolib.ontology.scoredist.ScoreSamplingOptions;
-import com.github.phenomics.ontolib.ontology.scoredist.SimilarityScoreSampling;
-import com.github.phenomics.ontolib.ontology.similarity.PrecomputingPairwiseResnikSimilarity;
-import com.github.phenomics.ontolib.ontology.similarity.ResnikSimilarity;
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+
 
 // TODO: This needs some refactorization love
 
@@ -54,10 +51,6 @@ import com.github.phenomics.ontolib.ontology.similarity.ResnikSimilarity;
  */
 public class App {
 
-  /**
-   * {@link Logger} object to use.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
   /** Number of threads to use. */
   private final int numThreads = 4;
@@ -89,11 +82,10 @@ public class App {
   public void run() {
     this.parseArgs();
 
-    LOGGER.info("Loading HPO...");
     final HpoOntology hpo;
     try {
-      hpo = new HpoOboParser(new File(pathHpObo)).parse();
-    } catch (IOException e) {
+      hpo = new HpOboParser(new File(pathHpObo)).parse();
+    } catch (IOException | PhenolException e) {
       e.printStackTrace();
       System.exit(1);
       return; // javac complains otherwise
@@ -146,7 +138,7 @@ public class App {
     // Compute information content of HPO terms, given the term-to-gene annotation.
     LOGGER.info("Performing IC precomputation...");
     final Map<TermId, Double> icMap =
-        new InformationContentComputation<HpoTerm, Hporelationship>(hpo)
+        new InformationContentComputation(hpo)
             .computeInformationContent(termIdToEntrezGeneIds);
     LOGGER.info("DONE: Performing IC precomputation");
 
@@ -157,15 +149,15 @@ public class App {
             .collect(Collectors.toMap(e -> {
               final String[] tokens = e.getKey().split(":");
               return (Integer) Integer.parseInt(tokens[1]);
-            }, e -> e.getValue()));
+            }, Map.Entry::getValue));
 
     // Initialize Resnik similarity precomputation
     LOGGER.info("Performing Resnik precomputation...");
-    final PrecomputingPairwiseResnikSimilarity<HpoTerm, Hporelationship> pairwiseResnikSimilarity =
-        new PrecomputingPairwiseResnikSimilarity<HpoTerm, Hporelationship>(hpo, icMap, numThreads);
+    final PrecomputingPairwiseResnikSimilarity pairwiseResnikSimilarity =
+        new PrecomputingPairwiseResnikSimilarity(hpo, icMap, numThreads);
     LOGGER.info("DONE: Performing Resnik precomputation");
-    final ResnikSimilarity<HpoTerm, Hporelationship> resnikSimilarity =
-        new ResnikSimilarity<HpoTerm, Hporelationship>(pairwiseResnikSimilarity, false);
+    final ResnikSimilarity resnikSimilarity =
+        new ResnikSimilarity(pairwiseResnikSimilarity, false);
 
     // Temporary storage of term count to score distributions.
     final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();
@@ -175,7 +167,7 @@ public class App {
     String line;
     try (InputStream fis = new FileInputStream(pathTsvFile);
         InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-        BufferedReader br = new BufferedReader(isr);) {
+        BufferedReader br = new BufferedReader(isr)) {
       while ((line = br.readLine()) != null) {
         line = line.trim();
         if (nameToCol == null) {
@@ -203,11 +195,10 @@ public class App {
           // TODO: add convenience routines for converting from term strings, filtering out obsolete
           // ones, possibly falling back to replaced_by
           final List<TermId> unfilteredHpoTermIds = rawHpoTermIds.stream()
-              .map(s -> ImmutableTermId.constructWithPrefix(s)).collect(Collectors.toList());
+              .map(s -> TermId.constructWithPrefix(s)).collect(Collectors.toList());
           final List<TermId> hpoTermIds = unfilteredHpoTermIds.stream().filter(termId -> {
             if (hpo.getObsoleteTermIds().contains(termId)) {
-              LOGGER.warn("File contained term {} which is marked as obsolete!",
-                  new Object[] {termId.getIdWithPrefix()});
+              LOGGER.warning("File contained term which is marked as obsolete!" +termId.getIdWithPrefix());
               return false;
             } else {
               return true;
@@ -246,8 +237,8 @@ public class App {
             // Only re-precompute if we have no precomputation value yet.
             if (!scoreDists.containsKey(termCount)
                 || scoreDists.get(termCount).getObjectScoreDistribution(entrezId) == null) {
-              final SimilarityScoreSampling<HpoTerm, Hporelationship> sampling =
-                  new SimilarityScoreSampling<HpoTerm, Hporelationship>(hpo, resnikSimilarity,
+              final SimilarityScoreSampling sampling =
+                  new SimilarityScoreSampling(hpo, resnikSimilarity,
                       options);
               final Map<Integer, ScoreDistribution> tmpDists =
                   sampling.performSampling(labelToTermIds);
@@ -266,8 +257,8 @@ public class App {
             }
             LOGGER.info("DONE: p-value computation");
           } else {
-            LOGGER.warn("Could not perform p value precomputation for Entrez gene ID {}, gene "
-                + "not linked to any terms!", new Object[] {entrezId});
+            LOGGER.warning("Could not perform p value precomputation for Entrez gene ID {}, gene "
+                + "not linked to any terms!" +entrezId);
             fields.addAll(ImmutableList.of("NA", "NA"));
           }
 

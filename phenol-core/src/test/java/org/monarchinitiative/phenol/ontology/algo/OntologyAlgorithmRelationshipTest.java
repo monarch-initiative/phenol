@@ -46,6 +46,25 @@ public class OntologyAlgorithmRelationshipTest {
   private TermId t3_1;
   private TermId t3_2;
 
+  /** Convenience method for making fake terms */
+  private Term makeTerm(TermId tid, String name, String definition ) {
+    return new Term(
+      tid,
+      new ArrayList<>(),
+      name,
+      definition,
+      ImmutableList.of(),
+      null,
+      new ArrayList<>(),
+      new ArrayList<>(),
+      false,
+      null,
+      null,
+      new ArrayList<>());
+  }
+
+
+
   @Before
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
@@ -75,185 +94,53 @@ public class OntologyAlgorithmRelationshipTest {
     GraphUtil.addEdgeToGraph(graph, t2_2, t2, 8);
     GraphUtil.addEdgeToGraph(graph, t3_1, t3, 9);
     GraphUtil.addEdgeToGraph(graph, t3_2, t3, 10);
+    // need to add corresponding relationships!
+    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
+    int i=1;
+    relationMapBuilder.put(i, new Relationship(root, t1, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(root, t2, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(root, t3, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t1, t1_1, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t1, t1_2, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t1_1, t1_1_1, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t1_1, t1_1_2, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t2, t2_1, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t2, t2_2, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t3, t3_1, i, RelationshipType.IS_A));
+    i++;
+    relationMapBuilder.put(i, new Relationship(t3, t3_2, i, RelationshipType.IS_A));
+    relationMap = relationMapBuilder.build();
 
     rootTermId = root;
 
     ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
-    termMapBuilder.put(
-        t1,
-        new Term(
-            t1,
-            new ArrayList<>(),
-            "term1",
-            "some definition 1",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t2,
-        new Term(
-            t2,
-            new ArrayList<>(),
-            "term2",
-            "some definition 2",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t3,
-        new Term(
-            t3,
-            new ArrayList<>(),
-            "term3",
-            "some definition 3",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t1_1,
-        new Term(
-            t1_1,
-            new ArrayList<>(),
-            "term1_1",
-            "some definition 4",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t1_2,
-        new Term(
-            t1_2,
-            new ArrayList<>(),
-            "term1_2",
-            "some definition 5",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-
-    termMapBuilder.put(
-        t1_1_1,
-        new Term(
-            t1_1_1,
-            new ArrayList<>(),
-            "term1_1_1",
-            "some definition 1_1_1",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t1_1_2,
-        new Term(
-            t1_1_2,
-            new ArrayList<>(),
-            "term1_1_2",
-            "some definition 1_1_2",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t2_1,
-        new Term(
-            t2_1,
-            new ArrayList<>(),
-            "term2_1",
-            "some definition 2_1",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t2_2,
-        new Term(
-            t2_2,
-            new ArrayList<>(),
-            "term2_2",
-            "some definition 2_2",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t3_1,
-        new Term(
-            t3_1,
-            new ArrayList<>(),
-            "term3_1",
-            "some definition 3_1",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
-    termMapBuilder.put(
-        t3_2,
-        new Term(
-            t3_2,
-            new ArrayList<>(),
-            "term3_2",
-            "some definition 3_2",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+    termMapBuilder.put(root,makeTerm(rootTermId,"root","root definition"));
+    termMapBuilder.put(t1, makeTerm(t1,"term1","some definition 1"));
+    termMapBuilder.put(t2, makeTerm(t2,"term2","some definition 2"));
+    termMapBuilder.put(t3, makeTerm(t3,"term3","some definition 3"));
+    termMapBuilder.put(t1_1, makeTerm(t1_1,"term1_1","some definition 1_1"));
+    termMapBuilder.put(t1_2, makeTerm(t1_2,"term1_2","some definition 1_2"));
+    termMapBuilder.put(t1_1_1, makeTerm(t1_1_1,"term1_1_1","some definition 1_1_1"));
+    termMapBuilder.put(t1_1_2, makeTerm(t1_1_2,"term1_1_2","some definition 1_1_2"));
+    termMapBuilder.put(t2_1, makeTerm(t2_1,"term2_1","some definition 2_1"));
+    termMapBuilder.put(t2_2, makeTerm(t2_2,"term2_2","some definition 2_2"));
+    termMapBuilder.put(t3_1, makeTerm(t3_1,"term3_1","some definition 3_1"));
+    termMapBuilder.put(t3_2, makeTerm(t3_2,"term3_2","some definition 3_2"));
 
     termMap = termMapBuilder.build();
 
     obsoleteTermMap = ImmutableMap.of();
 
-    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-        relationMapBuilder.put(1, new Relationship(t1, t2, 1, RelationshipType.IS_A));
-        relationMapBuilder.put(2, new Relationship(t1, t3, 2, RelationshipType.IS_A));
-    relationMap = relationMapBuilder.build();
+
 
     ontology =
         new ImmutableOntology(
