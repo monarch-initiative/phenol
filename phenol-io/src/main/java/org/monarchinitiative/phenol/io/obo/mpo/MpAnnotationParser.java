@@ -32,9 +32,9 @@ public class MpAnnotationParser {
   /** Used to store sex-specific phenotype annotations. */
   private Map<TermId,Map<TermId,MpAnnotation>> geno2ssannotMap = ImmutableMap.of();
   /** Key: A term id representing the genotype accession id of an MPO model
-   * Value: the corresponding MpModel object
+   * Value: the corresponding MpSimpleModel object
    */
-  private Map<TermId,MpModel> genotypeAccessionToMpModelMap;
+  private Map<TermId, MpSimpleModel> genotypeAccessionToMpModelMap;
   /** Show verbose debugging information. */
   private boolean verbose = true;
 
@@ -95,7 +95,7 @@ public class MpAnnotationParser {
     }
   }
 
-  public Map<TermId, MpModel> getGenotypeAccessionToMpModelMap() {
+  public Map<TermId, MpSimpleModel> getGenotypeAccessionToMpModelMap() {
     return genotypeAccessionToMpModelMap;
   }
 
@@ -172,8 +172,8 @@ public class MpAnnotationParser {
     }
     // When we get here, we have parsed all of the MGI_GenePheno.rpt file.
     // Annotation lines are groups according to genotype accession id in the multimap
-    // our goal in the following is to parse everything into corresponding MpModel objects
-    ImmutableMap.Builder<TermId,MpModel> builder = new ImmutableMap.Builder<>();
+    // our goal in the following is to parse everything into corresponding MpSimpleModel objects
+    ImmutableMap.Builder<TermId, MpSimpleModel> builder = new ImmutableMap.Builder<>();
     for (TermId genoId : annotationCollector.keySet()) {
       Collection<AnnotationLine> annotationLines = annotationCollector.get(genoId);
       ImmutableList.Builder<MpAnnotation> annotbuilder = new ImmutableList.Builder<>();
@@ -214,7 +214,7 @@ public class MpAnnotationParser {
           annotbuilder.add(annot); // no sex-specific available
         }
       }
-      MpModel mod = new MpModel(genoId,background,allelicComp,alleleId,alleleSymbol,markerId,annotbuilder.build());
+      MpSimpleModel mod = new MpSimpleModel(genoId,background,allelicComp,alleleId,alleleSymbol,markerId,annotbuilder.build());
       builder.put(genoId,mod);
     }
     genotypeAccessionToMpModelMap=builder.build();
