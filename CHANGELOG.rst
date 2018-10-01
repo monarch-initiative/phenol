@@ -2,6 +2,12 @@
 Changelog
 =========
 
+---------------
+v1.2.5-SNAPSHOT
+---------------
+- moving to SNAPSHOT version names to conform with maven standards
+- fixed bug in initialized association lists for Gene Ontology analysis.
+
 ------
 v1.1.4
 ------

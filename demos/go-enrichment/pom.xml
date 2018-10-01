@@ -3,9 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.monarchinitiative.phenol</groupId>
-  <artifactId>phenol-demos-go-enrichment</artifactId>
+  <artifactId>demos-go-enrichment</artifactId>
   <packaging>jar</packaging>
   <version>0.2-SNAPSHOT</version>
+
 
   <name>GO Enrichment (Term by term)</name>
 
@@ -14,17 +15,17 @@
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-core</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-io</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-analysis</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

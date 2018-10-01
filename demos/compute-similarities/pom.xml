@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.charite.compbio</groupId>
-  <artifactId>ontolib-demos-compute-similarities</artifactId>
+  <artifactId>demos-compute-similarities</artifactId>
   <packaging>jar</packaging>
   <version>0.2-SNAPSHOT</version>
 
@@ -14,17 +14,17 @@
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-core</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-io</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-analysis</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -77,7 +77,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.1.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -100,7 +100,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
+        <version>3.0.0-M2</version>
         <executions>
           <execution>
             <id>enforce</id>
