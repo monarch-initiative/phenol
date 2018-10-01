@@ -68,9 +68,8 @@ public class StudySet {
     }
 
     private void initAssociationMap(AssociationContainer associationContainer, Ontology ontology) {
-        Set<TermId> genes = associationContainer.getAllAnnotatedGenes();
         this.annotationMap = new HashMap<>();
-        for (TermId geneId : genes) {
+        for (TermId geneId : this.geneIds) {
             try {
                 //int idx = associationContainer.getIndex(geneId);
                 ItemAssociations assocs = associationContainer.get(geneId);
@@ -123,10 +122,8 @@ public class StudySet {
     }
 
     /* for debugging */
-    public String toString()
-    {
-        String str = name + " (n=" + (getGeneCount()) + ")";
-        return str;
+    public String toString() {
+        return name + " (n=" + (getGeneCount()) + ")";
     }
 
 

@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 0.1.8
+- **Version:** 1.2.5-SNAPSHOT
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -29,6 +29,7 @@ associate phenotype annotation files.
     - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
     - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
     - Maven module `phenol-cli` for performing empirical score distribution computation as a stand-alone program.
+    - Maven module `phenol-analysis` -- still experimental module for enrichment analysis).
 
 ## Usage
 We are working on the first public distribution of phenol, which we will make available on maven central.
