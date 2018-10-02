@@ -16,11 +16,12 @@ import java.util.Map;
  *
  * @author Sebastian Bauer
  */
-public class Bonferroni extends AbstractSimpleTestCorrection
+public class Bonferroni extends AbstractTestCorrection
 {
 	/** The name of the correction method */
 	private static final String NAME = "Bonferroni";
 
+  @Override
 	public Map<TermId, PValue> adjustPValues(IPValueCalculation pValueCalculation)
 	{
 		Map<TermId, PValue> pvalmap = pValueCalculation.calculatePValues();
@@ -35,10 +36,6 @@ public class Bonferroni extends AbstractSimpleTestCorrection
 		return pvalmap;
 	}
 
-	public String getDescription()
-	{
-		return "The Bonferroni correction is the most conservative approach.";
-	}
 
 	public String getName()
 	{

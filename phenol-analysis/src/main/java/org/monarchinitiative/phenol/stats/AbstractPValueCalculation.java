@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.analysis.StudySet;
+import org.monarchinitiative.phenol.analysis.TermAnnotations;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -31,7 +32,7 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
     protected Hypergeometric hyperg;
 
     /**
-     * Key: a GO id; value: a {@link TermAnnotations} object with the annotations of the Go Term.
+     * Key: a GO id; value: a {@link TermAnnotations} object with the annotations of the GO Term.
      */
     protected Map<TermId, TermAnnotations> annotationMap;
 

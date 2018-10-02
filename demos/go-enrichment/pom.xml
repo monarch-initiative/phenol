@@ -5,7 +5,12 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>demos-go-enrichment</artifactId>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2.1</version>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 
 
   <name>GO Enrichment (Term by term)</name>
@@ -15,17 +20,17 @@
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-core</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.2.6</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-io</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.2.6</version>
     </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-analysis</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.2.6</version>
     </dependency>
   </dependencies>
 
@@ -34,9 +39,6 @@
 
     <plugins>
 
-
-
-      <!-- Make an executable jar and specify the main class and classpath
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -48,21 +50,6 @@
               <classpathPrefix>lib/</classpathPrefix>
 
               <useUniqueVersions>false</useUniqueVersions>
-              <mainClass>org.monarchinitiative.demo.goenrichment.App</mainClass>
-            </manifest>
-          </archive>
-          <compilerArgument>-Xlint:all</compilerArgument>
-           <showWarnings>true</showWarnings>
-           <showDeprecation>true</showDeprecation>
-        </configuration>
-      </plugin>
-  -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
               <mainClass>org.monarchinitiative.demo.goenrichment.App</mainClass>
             </manifest>
           </archive>
@@ -94,7 +81,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.2</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>

@@ -11,10 +11,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.Map;
 
 /**
- * A multiple test correction...
+ * A superclass for multiple test correction...
  *
- * TODO: Write more (theory) and adapt the API to fit
- * more procedures.
  *
  * @author Sebastian Bauer
  *
@@ -30,13 +28,6 @@ public abstract class AbstractTestCorrection
 	 *         the p values of the nominal p value calculation.
 	 */
 	public abstract Map<TermId, PValue> adjustPValues(IPValueCalculation pValueCalculation);
-
-	/**
-	 * Return a description of the test.
-	 *
-	 * @return the descripton
-	 */
-	public abstract String getDescription();
 
 	/**
 	 * Return the name of the test correction.
@@ -89,7 +80,7 @@ public abstract class AbstractTestCorrection
 	}
 
 	/**
-	 * Enforce monotony constrains of the p values (i.e. that
+	 * Enforce monotony constraints of the p values (i.e. that
 	 * adjusted p values of increasing p values is increasing
 	 * as well)
 	 *

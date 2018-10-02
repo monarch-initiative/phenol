@@ -85,7 +85,7 @@ public final class App {
 
 
   private Set<TermId> getFocusedStudySet(List<GoGaf21Annotation> annots, TermId focus) {
-    Set<TermId> genes = new HashSet<TermId>();
+    Set<TermId> genes = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
       if (focus.equals(ann.getGoId())) {
         TermId geneId = ann.getDbObjectIdAsTermId();
@@ -99,7 +99,7 @@ public final class App {
     if (N>20) {
       M=N/3;
     }
-    Set<TermId> finalGenes=new HashSet<TermId>();
+    Set<TermId> finalGenes=new HashSet<>();
     int i=0;
     for (TermId tid: genes) {
       if (i++>M) break;
@@ -121,7 +121,7 @@ public final class App {
 
 
   private Set<TermId> getPopulationSet(List<GoGaf21Annotation> annots) {
-    Set<TermId> st = new HashSet<TermId>();
+    Set<TermId> st = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
       TermId geneId = ann.getDbObjectIdAsTermId();
       st.add(geneId);
@@ -136,7 +136,7 @@ public final class App {
    */
   private void parseArgs(String [] args) {
     if (args.length <2) {
-      printUsageError("Invalid argument count!");
+      printUsageError(String.format("Invalid argument count (%d)! %s",args.length,String.join(";",args)));
     }
 
     pathGoObo = args[0];
