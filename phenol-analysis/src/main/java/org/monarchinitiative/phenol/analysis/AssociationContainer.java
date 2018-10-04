@@ -14,6 +14,7 @@ import java.util.Set;
 /**
  * After AssociationParser was used to parse the gene_association.XXX file, this
  * class is used to store and process the information about Associations.
+ * @author Peter Robinson, Sebastian Bauer
  */
 public class AssociationContainer {
     /** Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene. */
@@ -24,8 +25,7 @@ public class AssociationContainer {
      *
      * @param assocs gene ontology associations (annotations)
      */
-    public AssociationContainer(List<GoGaf21Annotation> assocs)
-    {
+    public AssociationContainer(List<GoGaf21Annotation> assocs) {
         gene2associationMap=new HashMap<>();
         for (GoGaf21Annotation a : assocs) {
           TermId tid = a.getDbObjectIdAsTermId();
@@ -48,8 +48,7 @@ public class AssociationContainer {
      * @param dbObjectId id (e.g., MGI:12345) of the gene whose goAssociations are interesting
      * @return goAssociations for the given gene
      */
-    public ItemAssociations get(TermId dbObjectId) throws PhenolException
-    {
+    public ItemAssociations get(TermId dbObjectId) throws PhenolException {
        if (! this.gene2associationMap.containsKey(dbObjectId)) {
            throw new PhenolException("Could not find annotations for " + dbObjectId.getIdWithPrefix());
        } else {

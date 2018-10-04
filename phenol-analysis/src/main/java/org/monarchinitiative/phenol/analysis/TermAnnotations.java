@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis;
 
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -7,18 +7,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Instanced of this class represent items that are annotated to
+ * Instances of this class represent items (genes, represented by TermId objects) that are annotated to
  * the same term without any reference to that term.
- * TODO - replace corresponding class in phenol
  *
  * @author Sebastian Bauer
  */
 public class TermAnnotations
 {
-    /** List of directly annotated genes TODO: Make private */
+    /** List of directly annotated genes */
     private Set<TermId> directAnnotated = new HashSet<>();
 
-    /** List of genes annotated at whole TODO: Make private */
+    /** List of genes annotated in total (direct or via annotation propagation) */
     private Set<TermId> totalAnnotated = new HashSet<>();
 
     

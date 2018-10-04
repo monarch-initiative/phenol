@@ -4,6 +4,7 @@ package org.monarchinitiative.phenol.stats;
 import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
+import org.monarchinitiative.phenol.analysis.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -30,7 +31,7 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
 
     public Map<TermId, PValue> calculatePValues() {
         System.err.println("Study set n="+studySet.getGeneCount());
-        Map<TermId,TermAnnotations> studySetAnnotationMap =this.studySet.getAnnotationMap();
+        Map<TermId, TermAnnotations> studySetAnnotationMap =this.studySet.getAnnotationMap();
         ImmutableMap.Builder<TermId, PValue> builder=new ImmutableMap.Builder<>();
         int popGeneCount = populationSet.getGeneCount();
         int studyGeneCount = studySet.getGeneCount();
