@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
@@ -9,39 +8,38 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-public class MpGeneModel extends MpModel {
+class MpGeneModel extends MpModel {
   private List<TermId> genotypes;
 
-  public MpGeneModel(TermId markerId, MpoOntology mpoOnt,
-                     MpSimpleModel... modelList) throws PhenolException {
+  MpGeneModel(TermId markerId, MpoOntology mpoOnt,
+                     MpSimpleModel... modelList) {
     mpgmConstructor(markerId, mpoOnt, modelList);
   }
 
-  public MpGeneModel(TermId markerId, MpoOntology mpoOnt,
-                     List<MpSimpleModel> modelList) throws PhenolException {
+  MpGeneModel(TermId markerId, MpoOntology mpoOnt,
+                     List<MpSimpleModel> modelList) {
     mpgmConstructor(markerId, mpoOnt, modelList.toArray(new MpSimpleModel[] {}));
   }
 
-  private void mpgmConstructor(TermId markerId, MpoOntology mpo, MpSimpleModel[] models) throws PhenolException {
+  /*
+   * All of the models share the same gene (that's why they all belong to the same MpGeneModel).
+   */
+  private void mpgmConstructor(TermId markerId, MpoOntology mpo, MpSimpleModel[] models) {
     this.markerId = markerId;
-    this.phenotypicAbnormalities = mergeSimpleModels(mpo, models);
-    // TODO: initialize genotypes builder ;
+    ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
+    phenotypicAbnormalities = mergeSimpleModels(mpo, models, genotypesBuilder);
+    genotypes = genotypesBuilder.build();
   }
 
-  private List<MpAnnotation> mergeSimpleModels(MpoOntology mpo, MpSimpleModel[] models) throws PhenolException {
+  private List<MpAnnotation> mergeSimpleModels(MpoOntology mpo, MpSimpleModel[] models,
+                                               ImmutableList.Builder<TermId> gbuilder) {
+    // cannot use builder for annots because might need to remove something from set
     HashSet<MpAnnotation> annots = new HashSet<>();
     for (MpSimpleModel model : models) {
-      if (model.getMarkerId() != markerId) {
-        throw new PhenolException(String.format(
-          "Cannot create MpGeneModel with genetic marker %s from component with genetic marker %s",
-          markerId.getIdWithPrefix(), model.getMarkerId().getIdWithPrefix()));
-      }
-      // TODO: add this simple model's genotype to the genotype builder
+      gbuilder.add(model.getGenotypeId());
       mergeAnnotations(mpo, annots, model.getPhenotypicAbnormalities());
     }
-    ImmutableList.Builder<MpAnnotation> annotBuilder = new ImmutableList.Builder<>();
-    annotBuilder.addAll(annots);
-    return annotBuilder.build();
+    return ImmutableList.copyOf(annots);
   }
 
   private void mergeAnnotations(MpoOntology mpo, Set<MpAnnotation> alreadySeen, List<MpAnnotation> newAnnotations) {
@@ -88,9 +86,8 @@ public class MpGeneModel extends MpModel {
     }
   }
 
-  private boolean compatible(Set alreadySeen, MpAnnotation newAnnotation) {
+  private void mergeAnnotation(Set alreadySeen, MpAnnotation newAnnotation) {
     boolean returnValue = false;
-    return returnValue;
   }
 
   /**
