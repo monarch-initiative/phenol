@@ -1,21 +1,17 @@
-/*
- * Created on 06.07.2005
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.monarchinitiative.phenol.stats;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 
 /**
+ * Created on 06.07.2005
  * A superclass for multiple test correction...
  *
- *
  * @author Sebastian Bauer
- *
+ * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
  */
 public abstract class AbstractTestCorrection
 {
@@ -79,6 +75,23 @@ public abstract class AbstractTestCorrection
 		return filteredP;
 	}
 
+  /** @return non-ignored pvalues (sorted) */
+  protected Pair [] getRelevantRawPValues(Map<TermId, PValue> pvalmap) {
+    int pvalsCount = (int) pvalmap.values().stream().filter(PValue::doNotIgnore).count();
+    Pair[] pairs = new Pair[pvalsCount];
+    int i = 0;
+    for (Map.Entry<TermId, PValue> entry : pvalmap.entrySet()) {
+      if (entry.getValue().doNotIgnore()) {
+        pairs[i].tid = entry.getKey();
+        pairs[i].pval = entry.getValue();
+        i++;
+      }
+    }
+    Arrays.sort(pairs, Comparator.comparing(Pair::getPVal));
+    return pairs;
+  }
+
+
 	/**
 	 * Enforce monotony constraints of the p values (i.e. that
 	 * adjusted p values of increasing p values is increasing
@@ -99,4 +112,34 @@ public abstract class AbstractTestCorrection
 		for (int i=m-2;i>=0;i--)
 			p[i].p_adjusted = Math.min(p[i].p_adjusted,p[i+1].p_adjusted);
 	}
+
+  /**
+   * Enforce monotony constraints of the p values (i.e. that
+   * adjusted p values of increasing p values is increasing
+   * as well)
+   *
+   * @param pairs specifies the p values array which has to be already
+   *        in sorted order!
+   */
+  public static void enforcePValueMonotony(Pair [] pairs)
+  {
+    int m = pairs.length;
+
+    /* Do nothing if there are not enough pvalues */
+    if (m<2) return;
+
+    pairs[m-1].pval.p_adjusted = Math.min(pairs[m-1].pval.p_adjusted,1);
+
+    for (int i=m-2;i>=0;i--)
+      pairs[i].pval.p_adjusted = Math.min(pairs[i].pval.p_adjusted,pairs[i+1].pval.p_adjusted);
+  }
+
+  /**
+   * A convenience class to allow us to sort TermId, Pvalue pairs.
+   */
+  static class Pair {
+    TermId tid;
+    PValue pval;
+    public PValue getPVal() { return pval; }
+  }
 }
