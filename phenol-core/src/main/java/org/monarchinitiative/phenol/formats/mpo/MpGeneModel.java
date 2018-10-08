@@ -1,9 +1,11 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
 import com.google.common.collect.ImmutableList;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class MpGeneModel extends MpModel {
   private List<TermId> genotypes;
@@ -42,8 +44,8 @@ class MpGeneModel extends MpModel {
           Set<MpAnnotation> annotSet = annotsByMpId.get(mpId);
           if (annotSet == null) {
             annotSet = new HashSet<>();
-            annotSet.add(annot);                   // need to write equals, hashcode functions for MpAnnotation
-            annotsByMpId.put(mpId, annotSet);      // or maybe merge together all MpAnnotations for the same MpId?
+            annotSet.add(annot);
+            annotsByMpId.put(mpId, annotSet);
           } else {
             annotSet.add(annot);
           }
@@ -54,8 +56,10 @@ class MpGeneModel extends MpModel {
     return ImmutableList.copyOf(annots);
   }
 
-  private Set<MpAnnotation> mergeAnnotations(MpoOntology mpo, HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
-    // Check mpIds for child-ancestor pairs; keep the child and transfer the parents' annotations to the child
+  private Set<MpAnnotation> mergeAnnotations(MpoOntology mpo,
+                                             HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
+    // Check mpIds for child-ancestor pairs;
+    // keep the child and transfer ancestors' annotations to the child
     LinkedList<TermId> mpIds = new LinkedList<>(annotsByMpId.keySet());
     int index = 0;
     while (index < mpIds.size()) {
@@ -76,18 +80,60 @@ class MpGeneModel extends MpModel {
       }
       index++;
     }
-    // mpIds now contains the list of termIds for which we want to retain annotations. This will be smaller
-    // than the keySet of annotsByMpId if some ancestor termIds were eliminated.
+    // mpIds now contains the list of termIds for which we want to retain annotations. This will be
+    // smaller than the keySet of annotsByMpId if some ancestor termIds were eliminated.
     Set<MpAnnotation> returnSet = new HashSet<>();
     for (TermId mpId : mpIds) {
-      returnSet.addAll(annotsByMpId.get(mpId));
+      // call to collapseSet will combine all the MpAnnotations for a given MpId into one
+      // MpAnnotation object, which is then added to result set
+      returnSet.add(collapseSet(annotsByMpId.get(mpId)));
     }
     return returnSet;
   }
 
-  /*
-  public static MpGeneModel fromMpModelList(MpSimpleModel... modlist) {
-  return null;
-  }
+  /** collapses a set of MpAnnotations into a single MpAnnotation
+   *
+   * @param annots a set of MpAnnotations that all share the same MpId and are not negated
+   * @return a single MpAnnotation that has the same MpId and collects all the modifiers and
+   *         PMIDs of the annotations in the input
    */
+  private MpAnnotation collapseSet(Set<MpAnnotation> annots) {
+    MpAnnotation[] annotArray  = annots.toArray(new MpAnnotation[] {});
+    MpAnnotation returnValue = annotArray[0];
+
+    try {
+      for (int i = 1; i < annotArray.length; i++) {
+        returnValue = MpAnnotation.merge(returnValue, annotArray[i]);
+      }
+    } catch (PhenolException e) {
+      // exception won't occur provided all the annotations in the set share the same MpId and
+      // are not negated
+      e.printStackTrace();
+    }
+    return returnValue;
+  }
+
+  static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList,
+                                               MpoOntology ontology) {
+    HashMap<TermId, List<MpSimpleModel>> modelsByGene = new HashMap<>();
+    ImmutableList.Builder<MpGeneModel> returnListBuilder = new ImmutableList.Builder<>();
+
+    for (MpSimpleModel model : simpleModelList) {
+      TermId geneticMarker = model.getMarkerId();
+      List<MpSimpleModel> matchingModels = modelsByGene.get(geneticMarker);
+      if (matchingModels == null) {
+        matchingModels = new ArrayList<>();
+        matchingModels.add(model);
+        modelsByGene.put(geneticMarker, matchingModels);
+      } else {
+        matchingModels.add(model);
+      }
+    }
+
+    for (Map.Entry<TermId, List<MpSimpleModel>> entry : modelsByGene.entrySet()) {
+      returnListBuilder.add(new MpGeneModel(entry.getKey(), ontology, entry.getValue()));
+    }
+
+    return returnListBuilder.build();
+  }
 }
