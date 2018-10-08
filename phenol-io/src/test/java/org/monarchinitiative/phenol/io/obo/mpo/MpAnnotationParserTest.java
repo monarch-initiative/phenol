@@ -4,7 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpAnnotation;
-import org.monarchinitiative.phenol.formats.mpo.MpModel;
+import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class MpAnnotationParserTest {
   @Test
   public void testRetrieveCorrectNumberOfModels() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
-    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
     int expected_number_of_models=4;
     assertEquals(expected_number_of_models,modelmap.size());
   }
@@ -51,9 +51,9 @@ public class MpAnnotationParserTest {
   @Test
   public void testSexSpecificParser() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath,phenoSexPath);
-    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
     TermId kit = TermId.constructWithPrefix("MGI:2167486");
-    MpModel model = modelmap.get(kit);
+    MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     assertTrue(model.hasSexSpecificAnnotation());
   }
@@ -62,9 +62,9 @@ public class MpAnnotationParserTest {
   @Test
   public void testParseModelMgi5306347() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
-    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
     TermId kit = TermId.constructWithPrefix("MGI:5306347");
-    MpModel model = modelmap.get(kit);
+    MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
     int expected_number_of_MP_terms=5;
@@ -76,9 +76,9 @@ public class MpAnnotationParserTest {
   @Test
   public void getMultiplePmid() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
-    Map<TermId, MpModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
     TermId kit = TermId.constructWithPrefix("MGI:5433360");
-    MpModel model = modelmap.get(kit);
+    MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
     int expected_number_of_MP_terms=2;

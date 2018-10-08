@@ -87,6 +87,6 @@ public class MpAllelicComposition implements Comparable<MpAllelicComposition> {
    * An object that we will use to indicate that a MpGeneModel is composed from multiple individual models
    * that knockout the same gene.
    */
-  public final static MpAllelicComposition composite = new MpAllelicComposition("Composed of multiple MpModel objects");
+  public final static MpAllelicComposition composite = new MpAllelicComposition("Composed of multiple MpSimpleModel objects");
 }
 

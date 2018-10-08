@@ -145,4 +145,25 @@ public final class MpAnnotation {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    MpAnnotation that = (MpAnnotation) o;
+
+    if (negated != that.negated) return false;
+    if (!termId.equals(that.termId)) return false;
+    if (pmidList != null ? !pmidList.equals(that.pmidList) : that.pmidList != null) return false;
+    return modifers.equals(that.modifers);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = termId.hashCode();
+    result = 31 * result + (pmidList != null ? pmidList.hashCode() : 0);
+    result = 31 * result + modifers.hashCode();
+    result = 31 * result + (negated ? 1 : 0);
+    return result;
+  }
 }
