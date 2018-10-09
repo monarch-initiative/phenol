@@ -38,13 +38,13 @@ public class MpAnnotationParserTest {
 
   /**
    * We have the following models in the MGI_GenePheno.rpt.excerpt file.
-   * MGI:2166359; MGI:2167486; MGI:5306347,MGI:5433360 thus we expect to see four models
+   * MGI:2166359; MGI:2167486; MGI:5306347,MGI:5433360,MGI:2169820 thus we expect to see five models
    */
   @Test
   public void testRetrieveCorrectNumberOfModels() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    int expected_number_of_models=4;
+    int expected_number_of_models=5;
     assertEquals(expected_number_of_models,modelmap.size());
   }
 

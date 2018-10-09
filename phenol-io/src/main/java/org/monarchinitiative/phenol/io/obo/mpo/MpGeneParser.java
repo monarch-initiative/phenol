@@ -84,26 +84,19 @@ public class MpGeneParser {
     Map<TermId,List<MpSimpleModel>> gene2simpleMap=new HashMap<>();
     ImmutableMap.Builder<TermId,MpGeneModel> builder = new ImmutableMap.Builder<>();
     try {
-      System.err.println("$$$ ABout to start MpAnnotationParser");
       MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
       Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
-
-      System.err.println("$$$ simpleModelMap has size " + simpleModelMap.size());
-
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
         TermId geneId = simplemod.getGenotypeId();
         gene2simpleMap.putIfAbsent(geneId,new ArrayList<>());
         List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
         lst.add(simplemod);
       }
-
-      System.err.println("$$$ gene2simpleMap has size " + gene2simpleMap.size());
       // when we get here, the simpleModelMap has key-a gene ID, value-collection of
       // all simple models that have a knockout of the corresponding gene
       for (TermId geneId : gene2simpleMap.keySet()) {
         List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
           MpGeneModel genemod = new MpGeneModel(geneId,ontology,modCollection);
-          System.err.println("$$$ Putting model for "+ genemod.toString());
           builder.put(geneId,genemod);
       }
     } catch (PhenolException e) {

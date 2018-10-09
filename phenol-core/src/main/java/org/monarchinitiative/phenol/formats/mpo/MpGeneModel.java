@@ -7,6 +7,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
 
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
+
 public class MpGeneModel extends MpModel {
   private List<TermId> genotypes;
 
@@ -64,9 +66,11 @@ public class MpGeneModel extends MpModel {
     int index = 0;
     while (index < mpIds.size()) {
       TermId child = mpIds.get(index);
-      Set<TermId> ancestors = mpo.getAncestorTermIds(child, false);
-      // getAncestorTermIds method includes the starting vertex in the set of ancestors
-      ancestors.remove(child);
+//      Set<TermId> ancestors = mpo.getAncestorTermIds(child, false);
+//      // getAncestorTermIds method includes the starting vertex in the set of ancestors
+//      ancestors.remove(child);
+      Set<TermId> ancestors=getAncestorTerms(mpo,child,false);
+
       for (TermId anc : ancestors) {
         int ancIndex = mpIds.indexOf(anc);
         if (ancIndex > -1) {

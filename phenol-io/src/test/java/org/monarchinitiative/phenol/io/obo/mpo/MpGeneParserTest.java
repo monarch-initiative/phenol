@@ -1,18 +1,22 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
+import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.formats.mpo.MpMarkerType;
+import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +26,7 @@ import static org.junit.Assert.*;
 public class MpGeneParserTest {
 
   private static Map<TermId, MpGene> mpgenemap;
-  private static Ontology ontology;
+  private static String MGI_genePhenoPath;
 
   @BeforeClass
   public static void setup() throws IOException,PhenolException {
@@ -41,8 +45,8 @@ public class MpGeneParserTest {
     if (url == null) {
       throw new IOException("Cannot find MGI_GenePheno.rpt.excerpt.obo");
     }
-    String genePhenoPath = url.getFile();
-    MpGeneParser gmp = new MpGeneParser(markerFile,genePhenoPath,ontologyPath);
+    MGI_genePhenoPath = url.getFile();
+    MpGeneParser gmp = new MpGeneParser(markerFile,MGI_genePhenoPath,ontologyPath);
     mpgenemap = gmp.parseMarkers();
   }
 
@@ -76,6 +80,35 @@ public class MpGeneParserTest {
 //    thrown.expect(DimorphDataException.class);
 //    thrown.expectMessage("Could not find matching gene object for accession id ");
 //    ImmutableGene n = genes.findGene("MGI:333");
+  }
+
+  /**
+   * We have two models for RB1. Both of them have an annotation for MP:0000961
+   * and then they each have other (disjoint) annotations.
+   * @throws PhenolException
+   */
+  @Test @Ignore
+  private void testMerge() throws PhenolException,FileNotFoundException {
+    MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    List<MpSimpleModel> rb1Models=new ArrayList<>();
+    TermId rb1Id=TermId.constructWithPrefix("MGI:97874");
+    for (MpSimpleModel mod: modelmap.values()){
+      //System.out.println(mod);
+      if (rb1Id.equals(mod.getMarkerId())){
+        rb1Models.add(mod);
+      }
+    }
+    // there are two Rb1 models
+    assertEquals(2,rb1Models.size());
+    // GET FULL ONTOLOGY NOW USING LOCAL TEST
+    // TODO -- TAILOR THE TOY TEST ONTOLOGY SO THAT THIS WORKS
+    String localMpPath="/Users/peterrobinson/Documents/data/mgi/mp.obo";
+    MpOboParser oboparser = new MpOboParser(localMpPath);
+    Ontology ontology = oboparser.parse();
+
+
+    MpGeneModel genemod = new MpGeneModel(rb1Id,ontology,rb1Models);
   }
 
 
