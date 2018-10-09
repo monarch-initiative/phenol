@@ -68,6 +68,7 @@ public class MpAnnotationParser {
     this.phenoSexInputstream=null; // not needed
     parseErrors=new ArrayList<>();
     try {
+      System.err.println("PARSE SIMPLE");
       parse();
     } catch (IOException e) {
       throw new PhenolException("Could not parse MGI_GenePheno.rpt: " + e.getMessage());
@@ -104,7 +105,7 @@ public class MpAnnotationParser {
    * Parse data from MGI_Pheno_Sex.rpt.
    * Note that there may be multiple lines that suuport the same assertion that differ only in PMID
    * @throws IOException if MGI_Pheno_Sex.rpt cannot be successfully parsed
-   * @throws PhenolException
+   * @throws PhenolException upon parse issues with MGI_Pheno_Sex.rpt.
    */
   private void parsePhenoSexData() throws IOException, PhenolException {
     int EXPECTED_NUMBER_SEXSPECIFIC_FIELDS=7;
@@ -146,9 +147,9 @@ public class MpAnnotationParser {
   /** Parse the data in MGI_GenePheno.rpt. Interpolate the sex-specific data if available. */
   private void parse() throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(this.genePhenoInputstream));
-    Multimap<TermId,AnnotationLine> annotationCollector = ArrayListMultimap.create();
+    Multimap<TermId, AnnotationLine> annotationCollector = ArrayListMultimap.create();
     String line;
-    while ((line=br.readLine())!=null) {
+    while ((line = br.readLine()) != null) {
       //System.out.println(line);
       String A[] = line.split("\t");
       /* Expected number of fields of the MGI_GenePheno.rpt file (note -- there
@@ -164,9 +165,9 @@ public class MpAnnotationParser {
       try {
         AnnotationLine annot = new AnnotationLine(A);
         TermId modelId = annot.getGenotypeAccessionId();
-        annotationCollector.put(modelId,annot);
+        annotationCollector.put(modelId, annot);
       } catch (PhenolException e) {
-        String err=String.format("[PARSE ERROR] %s (%s)",e.getMessage(),line );
+        String err = String.format("[PARSE ERROR] %s (%s)", e.getMessage(), line);
         this.parseErrors.add(err);
       }
     }
@@ -178,23 +179,23 @@ public class MpAnnotationParser {
       Collection<AnnotationLine> annotationLines = annotationCollector.get(genoId);
       ImmutableList.Builder<MpAnnotation> annotbuilder = new ImmutableList.Builder<>();
       Iterator<AnnotationLine> it = annotationLines.iterator();
-      MpStrain background=null;
-      MpAllelicComposition allelicComp=null;
-      TermId alleleId=null;
-      String alleleSymbol=null;
-      TermId markerId=null;
+      MpStrain background = null;
+      MpAllelicComposition allelicComp = null;
+      TermId alleleId = null;
+      String alleleSymbol = null;
+      TermId markerId = null;
       // get the sex-specific annotations for this genotypeId, if any
-      Map<TermId,MpAnnotation> sexSpecific = ImmutableMap.of(); // default, empty set
+      Map<TermId, MpAnnotation> sexSpecific = ImmutableMap.of(); // default, empty set
       if (this.geno2ssannotMap.containsKey(genoId)) {
-        ImmutableMap.Builder<TermId,MpAnnotation> imapbuilder = new ImmutableMap.Builder<>();
-        Map<TermId,MpAnnotation> annots = this.geno2ssannotMap.get(genoId);
+        ImmutableMap.Builder<TermId, MpAnnotation> imapbuilder = new ImmutableMap.Builder<>();
+        Map<TermId, MpAnnotation> annots = this.geno2ssannotMap.get(genoId);
         for (MpAnnotation mpann : annots.values()) {
           imapbuilder.put(mpann.getTermId(), mpann);
         }
         try {
           sexSpecific = imapbuilder.build();
         } catch (Exception e) {
-          System.err.println("Error building map of sex-specific annotations for " + genoId.getIdWithPrefix() +": " + e.getMessage());
+          System.err.println("Error building map of sex-specific annotations for " + genoId.getIdWithPrefix() + ": " + e.getMessage());
         }
       }
       while (it.hasNext()) {
@@ -202,10 +203,10 @@ public class MpAnnotationParser {
         MpAnnotation annot = aline.toMpAnnotation();
         TermId mpoId = aline.getMpId();
         background = aline.geneticBackground;
-        allelicComp=aline.getAllelicComp();
-        alleleId=aline.getAlleleId();
-        alleleSymbol=aline.getAlleleSymbol();
-        markerId=aline.getMarkerAccessionId();
+        allelicComp = aline.getAllelicComp();
+        alleleId = aline.getAlleleId();
+        alleleSymbol = aline.getAlleleSymbol();
+        markerId = aline.getMarkerAccessionId();
         // TODO we could check that these are identical for any given genotype id
         // check if we have a sex-specific annotation matching the current annotation
         if (sexSpecific.containsKey(mpoId)) {
@@ -214,10 +215,10 @@ public class MpAnnotationParser {
           annotbuilder.add(annot); // no sex-specific available
         }
       }
-      MpSimpleModel mod = new MpSimpleModel(genoId,background,allelicComp,alleleId,alleleSymbol,markerId,annotbuilder.build());
-      builder.put(genoId,mod);
+      MpSimpleModel mod = new MpSimpleModel(genoId, background, allelicComp, alleleId, alleleSymbol, markerId, annotbuilder.build());
+      builder.put(genoId, mod);
     }
-    genotypeAccessionToMpModelMap=builder.build();
+    genotypeAccessionToMpModelMap = builder.build();
   }
 
   public boolean hasParseError(){ return this.parseErrors.size()>0;}

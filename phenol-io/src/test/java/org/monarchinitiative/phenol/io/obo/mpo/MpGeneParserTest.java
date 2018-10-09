@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpMarkerType;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.IOException;
@@ -15,10 +16,13 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+/**
+ * TODO Update tests!
+ */
 public class MpGeneParserTest {
 
   private static Map<TermId, MpGene> mpgenemap;
-
+  private static Ontology ontology;
 
   @BeforeClass
   public static void setup() throws IOException,PhenolException {
@@ -27,7 +31,18 @@ public class MpGeneParserTest {
     if (url == null) {
       throw new IOException("Cannot find MRK_List2.rpt.excerpt ");
     }
-    MpGeneParser gmp = new MpGeneParser(url.getFile());
+    String markerFile = url.getFile();
+    url = classLoader.getResource("mgi/mp_head.obo");
+    if (url == null) {
+      throw new IOException("Cannot find mp_head.obo");
+    }
+    String ontologyPath = url.getFile();
+    url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");
+    if (url == null) {
+      throw new IOException("Cannot find MGI_GenePheno.rpt.excerpt.obo");
+    }
+    String genePhenoPath = url.getFile();
+    MpGeneParser gmp = new MpGeneParser(markerFile,genePhenoPath,ontologyPath);
     mpgenemap = gmp.parseMarkers();
   }
 
@@ -39,7 +54,7 @@ public class MpGeneParserTest {
    * // MGI:1341858 is a 03B03F BAC/YAC
    */
   @Test
-  public void parseMarkersTest() throws PhenolException {
+  public void parseMarkersTest() {
     TermId tid = TermId.constructWithPrefix("MGI:1341858");
     MpGene g = mpgenemap.get(tid);
     assertNotNull(g);

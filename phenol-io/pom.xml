@@ -20,7 +20,7 @@
   </properties>
 
   <dependencies>
-    <!-- Phenolib core -->
+    <!-- Phenol core -->
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-core</artifactId>

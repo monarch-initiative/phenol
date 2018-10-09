@@ -2,12 +2,12 @@ package org.monarchinitiative.phenol.formats.mpo;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-class MpGeneModel extends MpModel {
+public class MpGeneModel extends MpModel {
   private List<TermId> genotypes;
 
   MpGeneModel(TermId markerId, MpoOntology mpoOnt,
@@ -15,7 +15,7 @@ class MpGeneModel extends MpModel {
     mpgmConstructor(markerId, mpoOnt, modelList);
   }
 
-  MpGeneModel(TermId markerId, MpoOntology mpoOnt,
+  public MpGeneModel(TermId markerId, Ontology mpoOnt,
               List<MpSimpleModel> modelList) {
     mpgmConstructor(markerId, mpoOnt, modelList.toArray(new MpSimpleModel[] {}));
   }
@@ -23,14 +23,14 @@ class MpGeneModel extends MpModel {
   /*
    * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
    */
-  private void mpgmConstructor(TermId markerId, MpoOntology mpo, MpSimpleModel[] models) {
+  private void mpgmConstructor(TermId markerId, Ontology mpo, MpSimpleModel[] models) {
     this.markerId = markerId;
     ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
     phenotypicAbnormalities = mergeSimpleModels(mpo, models, genotypesBuilder);
     genotypes = genotypesBuilder.build();
   }
 
-  private List<MpAnnotation> mergeSimpleModels(MpoOntology mpo, MpSimpleModel[] models,
+  private List<MpAnnotation> mergeSimpleModels(Ontology mpo, MpSimpleModel[] models,
                                                ImmutableList.Builder<TermId> gbuilder) {
     HashMap<TermId, Set<MpAnnotation>> annotsByMpId = new HashMap<>();
 
@@ -56,7 +56,7 @@ class MpGeneModel extends MpModel {
     return ImmutableList.copyOf(annots);
   }
 
-  private Set<MpAnnotation> mergeAnnotations(MpoOntology mpo,
+  private Set<MpAnnotation> mergeAnnotations(Ontology mpo,
                                              HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
     // Check mpIds for child-ancestor pairs;
     // keep the child and transfer ancestors' annotations to the child

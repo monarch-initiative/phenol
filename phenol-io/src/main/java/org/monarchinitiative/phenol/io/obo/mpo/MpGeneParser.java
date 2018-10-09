@@ -3,13 +3,17 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
+import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
+import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
 
@@ -24,11 +28,23 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
  */
 public class MpGeneParser {
   //private static final Logger logger = LogManager.getLogger();
-  private final String markersPath;
+  private final String mgiMarkerPath;
 
-  public MpGeneParser(String path) {
-    markersPath = path;
+  private final String mgiGenePhenoPath;
+  /** THe MPO ontology object. */
+  private final Ontology ontology;
+
+  public MpGeneParser(String markerPath, String MGI_GenePhenoPath, String ontologypath) {
+    mgiMarkerPath = markerPath;
+    mgiGenePhenoPath=MGI_GenePhenoPath;
+    this.ontology=parseMpo(ontologypath);
     //logger.trace("Genetic markers path = " + path);
+  }
+
+  public MpGeneParser(String markerPath, String MGI_GenePhenoPath,Ontology mpo) {
+    this.mgiMarkerPath=markerPath;
+    this.mgiGenePhenoPath=MGI_GenePhenoPath;
+    this.ontology=mpo;
   }
 
   /**
@@ -39,7 +55,7 @@ public class MpGeneParser {
    */
   public Map<TermId, MpGene> parseMarkers() throws IOException, PhenolException {
     ImmutableMap.Builder<TermId, MpGene> bld = ImmutableMap.builder();
-    BufferedReader br = new BufferedReader(new FileReader(markersPath));
+    BufferedReader br = new BufferedReader(new FileReader(mgiMarkerPath));
     // skip over first line of file, which is a header line
     String line = br.readLine();
     while ((line=br.readLine()) != null) {
@@ -51,6 +67,50 @@ public class MpGeneParser {
     }
     br.close();
     return bld.build();
+  }
+
+  private Ontology parseMpo(String path) {
+    Ontology mpo=null;
+    try {
+      MpOboParser parser = new MpOboParser(path);
+      mpo=parser.parse();
+    } catch (FileNotFoundException | PhenolException e) {
+      e.printStackTrace();
+    }
+    return mpo;
+  }
+
+  public Map<TermId,MpGeneModel> parseMpGeneModels() {
+    Map<TermId,List<MpSimpleModel>> gene2simpleMap=new HashMap<>();
+    ImmutableMap.Builder<TermId,MpGeneModel> builder = new ImmutableMap.Builder<>();
+    try {
+      System.err.println("$$$ ABout to start MpAnnotationParser");
+      MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
+      Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
+
+      System.err.println("$$$ simpleModelMap has size " + simpleModelMap.size());
+
+      for (MpSimpleModel simplemod : simpleModelMap.values()) {
+        TermId geneId = simplemod.getGenotypeId();
+        gene2simpleMap.putIfAbsent(geneId,new ArrayList<>());
+        List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
+        lst.add(simplemod);
+      }
+
+      System.err.println("$$$ gene2simpleMap has size " + gene2simpleMap.size());
+      // when we get here, the simpleModelMap has key-a gene ID, value-collection of
+      // all simple models that have a knockout of the corresponding gene
+      for (TermId geneId : gene2simpleMap.keySet()) {
+        List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
+          MpGeneModel genemod = new MpGeneModel(geneId,ontology,modCollection);
+          System.err.println("$$$ Putting model for "+ genemod.toString());
+          builder.put(geneId,genemod);
+      }
+    } catch (PhenolException e) {
+      e.printStackTrace();
+    }
+
+    return builder.build();
   }
 
 
