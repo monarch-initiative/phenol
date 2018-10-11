@@ -88,7 +88,7 @@ public class MpGeneParserTest {
    * @throws PhenolException
    */
   @Test @Ignore
-    private void testMerge() throws PhenolException,FileNotFoundException {
+    public void testMerge() throws PhenolException,FileNotFoundException {
     MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
     List<MpSimpleModel> rb1Models=new ArrayList<>();
