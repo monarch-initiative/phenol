@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -12,14 +14,45 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
 public class MpGeneModel extends MpModel {
   private List<TermId> genotypes;
 
+  private static final Logger logger = LogManager.getLogger();
+
   MpGeneModel(TermId markerId, MpoOntology mpoOnt,
               MpSimpleModel... modelList) {
     mpgmConstructor(markerId, mpoOnt, modelList);
   }
 
   public MpGeneModel(TermId markerId, Ontology mpoOnt,
-              List<MpSimpleModel> modelList) {
+                     List<MpSimpleModel> modelList) {
     mpgmConstructor(markerId, mpoOnt, modelList.toArray(new MpSimpleModel[] {}));
+  }
+
+  /** collapses a set of MpAnnotations into a single MpAnnotation with the specified MPO TermId
+   *  will result in runtime error if the input set is empty!
+   *
+   * @param mpId MPO term which becomes the TermId for the resulting MpAnnotation
+   * @param annots a set of MpAnnotations that all related to the mpId and are not negated
+   * @return a single MpAnnotation that has the specified mpId and collects all the modifiers and
+   *         PMIDs of the annotations in the input
+   */
+  private MpAnnotation collapseSet(TermId mpId, Set<MpAnnotation> annots) {
+    MpAnnotation[] annotArray  = annots.toArray(new MpAnnotation[] {});
+    MpAnnotation returnValue = annotArray[0];
+
+    if (annotArray.length > 1) {
+      logger.info(String.format("Starting with MpAnnotation %s", annotArray[0]));
+      try {
+        for (int i = 1; i < annotArray.length; i++) {
+          logger.info(String.format("Merging MpAnnotation %s to obtain annotation with mpId %s",
+            annotArray[i], mpId.getIdWithPrefix()));
+          returnValue = MpAnnotation.mergeRelated(mpId, returnValue, annotArray[i]);
+        }
+      } catch (PhenolException e) {
+        // exception won't occur provided there are no negated annotations in the set
+        e.printStackTrace();
+      }
+      logger.info(String.format("MpAnnotation resulting from collapseSet is %s", returnValue));
+    }
+    return returnValue;
   }
 
   /*
@@ -43,14 +76,9 @@ public class MpGeneModel extends MpModel {
         // skip over any negated annotations
         if (!annot.isNegated()) {
           TermId mpId = annot.getTermId();
+          annotsByMpId.putIfAbsent(mpId, new HashSet<>());
           Set<MpAnnotation> annotSet = annotsByMpId.get(mpId);
-          if (annotSet == null) {
-            annotSet = new HashSet<>();
-            annotSet.add(annot);
-            annotsByMpId.put(mpId, annotSet);
-          } else {
-            annotSet.add(annot);
-          }
+          annotSet.add(annot);
         }
       }
     }
@@ -66,9 +94,6 @@ public class MpGeneModel extends MpModel {
     int index = 0;
     while (index < mpIds.size()) {
       TermId child = mpIds.get(index);
-//      Set<TermId> ancestors = mpo.getAncestorTermIds(child, false);
-//      // getAncestorTermIds method includes the starting vertex in the set of ancestors
-//      ancestors.remove(child);
       Set<TermId> ancestors=getAncestorTerms(mpo,child,false);
 
       for (TermId anc : ancestors) {
@@ -90,31 +115,9 @@ public class MpGeneModel extends MpModel {
     for (TermId mpId : mpIds) {
       // call to collapseSet will combine all the MpAnnotations for a given MpId into one
       // MpAnnotation object, which is then added to result set
-      returnSet.add(collapseSet(annotsByMpId.get(mpId)));
+      returnSet.add(collapseSet(mpId, annotsByMpId.get(mpId)));
     }
     return returnSet;
-  }
-
-  /** collapses a set of MpAnnotations into a single MpAnnotation
-   *
-   * @param annots a set of MpAnnotations that all share the same MpId and are not negated
-   * @return a single MpAnnotation that has the same MpId and collects all the modifiers and
-   *         PMIDs of the annotations in the input
-   */
-  private MpAnnotation collapseSet(Set<MpAnnotation> annots) {
-    MpAnnotation[] annotArray  = annots.toArray(new MpAnnotation[] {});
-    MpAnnotation returnValue = annotArray[0];
-
-    try {
-      for (int i = 1; i < annotArray.length; i++) {
-        returnValue = MpAnnotation.merge(returnValue, annotArray[i]);
-      }
-    } catch (PhenolException e) {
-      // exception won't occur provided all the annotations in the set share the same MpId and
-      // are not negated
-      e.printStackTrace();
-    }
-    return returnValue;
   }
 
   static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList,
@@ -124,14 +127,9 @@ public class MpGeneModel extends MpModel {
 
     for (MpSimpleModel model : simpleModelList) {
       TermId geneticMarker = model.getMarkerId();
+      modelsByGene.putIfAbsent(geneticMarker, new ArrayList<>());
       List<MpSimpleModel> matchingModels = modelsByGene.get(geneticMarker);
-      if (matchingModels == null) {
-        matchingModels = new ArrayList<>();
-        matchingModels.add(model);
-        modelsByGene.put(geneticMarker, matchingModels);
-      } else {
-        matchingModels.add(model);
-      }
+      matchingModels.add(model);
     }
 
     for (Map.Entry<TermId, List<MpSimpleModel>> entry : modelsByGene.entrySet()) {

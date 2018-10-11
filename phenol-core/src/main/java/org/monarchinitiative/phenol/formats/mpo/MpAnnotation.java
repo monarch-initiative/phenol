@@ -98,11 +98,42 @@ public final class MpAnnotation {
     return new MpAnnotation(annot1.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist),annot1.negated);
   }
 
+  /**
+   * Merge the contents of two annotations and return an annotation with the specified MP id.
+   * @param mpId   TermId for the resulting MP annotation
+   * @param annot1 The first MP annotation
+   * @param annot2 The second MP annotation
+   * @return The merged MP annotation
+   * @throws PhenolException if annot1 and annot2 are incompatible
+   */
+  static MpAnnotation mergeRelated(TermId mpId, MpAnnotation annot1, MpAnnotation annot2)
+                                          throws PhenolException {
+    if (!(annot1.negated == annot2.negated))
+      throw new PhenolException(String.format("Attempt to merge annotations only one of which is negated: %s, %s" +
+        annot1.termId.getIdWithPrefix(), annot2.termId.getIdWithPrefix()));
+    // merge list of modifiers
+    List<MpModifier> modlist = new ArrayList<>(annot1.getModifers());
+    for (MpModifier mod: annot2.getModifers()) {
+      if (!modlist.contains(mod)) {
+        modlist.add(mod);
+      }
+    }
+    // merge PMIDs
+    List<String> pmidList=new ArrayList<>(annot1.getPmidList());
+    for (String pmid: annot2.getPmidList()) {
+      if (! pmidList.contains(pmid)) {
+        pmidList.add(pmid);
+      }
+    }
+    return new MpAnnotation(mpId, ImmutableList.copyOf(pmidList),
+      ImmutableList.copyOf(modlist), annot1.negated);
+  }
+
   @Override
   public String toString() {
     return negated ? "NOT " : "" +
       termId.getIdWithPrefix() +
-      modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
+       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
   }
 
   public static class Builder {
