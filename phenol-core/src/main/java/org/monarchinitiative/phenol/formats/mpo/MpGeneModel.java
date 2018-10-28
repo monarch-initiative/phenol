@@ -12,62 +12,62 @@ import java.util.*;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
 public class MpGeneModel extends MpModel {
+  private boolean filterAncestors;
   private List<TermId> genotypes;
 
   private static final Logger logger = LogManager.getLogger();
 
-  MpGeneModel(TermId markerId, MpoOntology mpoOnt,
+  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
               MpSimpleModel... modelList) {
-    mpgmConstructor(markerId, mpoOnt, modelList);
+    mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList);
   }
 
-  public MpGeneModel(TermId markerId, Ontology mpoOnt,
-                     List<MpSimpleModel> modelList) {
-    mpgmConstructor(markerId, mpoOnt, modelList.toArray(new MpSimpleModel[] {}));
+  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
+              List<MpSimpleModel> modelList) {
+    mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList.toArray(new MpSimpleModel[] {}));
   }
 
-  /** collapses a set of MpAnnotations into a single MpAnnotation with the specified MPO TermId
-   *  will result in runtime error if the input set is empty!
+  /** collapses a set of MpAnnotations that all share the same MPO TermId into a single MpAnnotation
    *
-   * @param mpId MPO term which becomes the TermId for the resulting MpAnnotation
-   * @param annots a set of MpAnnotations that all related to the mpId and are not negated
-   * @return a single MpAnnotation that has the specified mpId and collects all the modifiers and
+   * @param annots a set of MpAnnotations that all share the same mpId and are not negated
+   * @return a single MpAnnotation that has the same mpId and collects all the modifiers and
    *         PMIDs of the annotations in the input
    */
-  private MpAnnotation collapseSet(TermId mpId, Set<MpAnnotation> annots) {
-    MpAnnotation[] annotArray  = annots.toArray(new MpAnnotation[] {});
-    MpAnnotation returnValue = annotArray[0];
+  private MpAnnotation collapseSet(Set<MpAnnotation> annots) {
+    MpAnnotation returnValue;
+    if (annots.isEmpty()) {
+      returnValue = null;
+    }
+    else {
+      MpAnnotation[] annotArray = annots.toArray(new MpAnnotation[]{});
+      returnValue = annotArray[0];
 
-    if (annotArray.length > 1) {
-      logger.info(String.format("Starting with MpAnnotation %s", annotArray[0]));
-      try {
-        for (int i = 1; i < annotArray.length; i++) {
-          logger.info(String.format("Merging MpAnnotation %s to obtain annotation with mpId %s",
-            annotArray[i], mpId.getIdWithPrefix()));
-          returnValue = MpAnnotation.mergeRelated(mpId, returnValue, annotArray[i]);
+      if (annotArray.length > 1) {
+        logger.info(String.format("Starting with MpAnnotation %s", annotArray[0]));
+        try {
+          for (int i = 1; i < annotArray.length; i++) {
+            logger.info(String.format("Merging MpAnnotation %s with annotation %s",
+              returnValue, annotArray[i]));
+            returnValue = MpAnnotation.merge(returnValue, annotArray[i]);
+          }
+        } catch (PhenolException e) {
+          // exception indicates mismatch on MpId or on negated
+          e.printStackTrace();
         }
-      } catch (PhenolException e) {
-        // exception won't occur provided there are no negated annotations in the set
-        e.printStackTrace();
+        logger.info(String.format("MpAnnotation resulting from collapseSet is %s", returnValue));
       }
-      logger.info(String.format("MpAnnotation resulting from collapseSet is %s", returnValue));
     }
     return returnValue;
   }
 
-  /*
-   * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
-   */
-  private void mpgmConstructor(TermId markerId, Ontology mpo, MpSimpleModel[] models) {
-    this.markerId = markerId;
-    ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
-    phenotypicAbnormalities = mergeSimpleModels(mpo, models, genotypesBuilder);
-    genotypes = genotypesBuilder.build();
+  boolean isFilterAncestors() {
+    return filterAncestors;
   }
 
   private List<MpAnnotation> mergeSimpleModels(Ontology mpo, MpSimpleModel[] models,
                                                ImmutableList.Builder<TermId> gbuilder) {
     HashMap<TermId, Set<MpAnnotation>> annotsByMpId = new HashMap<>();
+    ImmutableList.Builder<MpAnnotation> annotsBuilder = new ImmutableList.Builder<>();
 
     for (MpSimpleModel model : models) {
       // remember genotype, record annotations according to their MpId
@@ -77,16 +77,29 @@ public class MpGeneModel extends MpModel {
         if (!annot.isNegated()) {
           TermId mpId = annot.getTermId();
           annotsByMpId.putIfAbsent(mpId, new HashSet<>());
-          Set<MpAnnotation> annotSet = annotsByMpId.get(mpId);
-          annotSet.add(annot);
+          annotsByMpId.get(mpId).add(annot);
         }
       }
     }
-    Set<MpAnnotation> annots = mergeAnnotations(mpo, annotsByMpId);
-    return ImmutableList.copyOf(annots);
+
+    if (filterAncestors) {
+      filterAncs(mpo, annotsByMpId);
+    }
+
+    annotsByMpId.values().forEach(v -> annotsBuilder.add(collapseSet(v)));
+    return annotsBuilder.build();
   }
 
-  private Set<MpAnnotation> mergeAnnotations(Ontology mpo,
+  private void filterAncs(Ontology mpo, HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
+    // Check mpIds for child-ancestor pairs; keep the child and eliminate the ancestor
+    for (TermId mpId : annotsByMpId.keySet()) {
+      for (TermId anc : getAncestorTerms(mpo, mpId,false)) {
+        annotsByMpId.remove(anc);
+      }
+    }
+  }
+
+/*  private Set<MpAnnotation> mergeAnnotations(Ontology mpo,
                                              HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
     // Check mpIds for child-ancestor pairs;
     // keep the child and transfer ancestors' annotations to the child
@@ -115,13 +128,25 @@ public class MpGeneModel extends MpModel {
     for (TermId mpId : mpIds) {
       // call to collapseSet will combine all the MpAnnotations for a given MpId into one
       // MpAnnotation object, which is then added to result set
-      returnSet.add(collapseSet(mpId, annotsByMpId.get(mpId)));
+      returnSet.add(collapseSet(annotsByMpId.get(mpId)));
     }
     return returnSet;
   }
+*/
+  /*
+   * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
+   */
+  private void mpgmConstructor(TermId markerId, Ontology mpo, boolean filterAncestors,
+                               MpSimpleModel[] models) {
+    this.markerId = markerId;
+    this.filterAncestors = filterAncestors;
+    ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
+    phenotypicAbnormalities = mergeSimpleModels(mpo, models, genotypesBuilder);
+    genotypes = genotypesBuilder.build();
+  }
 
   static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList,
-                                               MpoOntology ontology) {
+                                               MpoOntology ontology, boolean filterAncestors) {
     HashMap<TermId, List<MpSimpleModel>> modelsByGene = new HashMap<>();
     ImmutableList.Builder<MpGeneModel> returnListBuilder = new ImmutableList.Builder<>();
 
@@ -132,10 +157,7 @@ public class MpGeneModel extends MpModel {
       matchingModels.add(model);
     }
 
-    for (Map.Entry<TermId, List<MpSimpleModel>> entry : modelsByGene.entrySet()) {
-      returnListBuilder.add(new MpGeneModel(entry.getKey(), ontology, entry.getValue()));
-    }
-
+    modelsByGene.forEach((k, v) -> returnListBuilder.add(new MpGeneModel(k, ontology, filterAncestors, v)));
     return returnListBuilder.build();
   }
 }

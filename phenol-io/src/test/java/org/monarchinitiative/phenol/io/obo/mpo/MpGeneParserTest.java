@@ -108,7 +108,7 @@ public class MpGeneParserTest {
     Ontology ontology = oboparser.parse();
 
 
-    MpGeneModel genemod = new MpGeneModel(rb1Id,ontology,rb1Models);
+    MpGeneModel genemod = new MpGeneModel(rb1Id,ontology,true,rb1Models);
   }
 
 

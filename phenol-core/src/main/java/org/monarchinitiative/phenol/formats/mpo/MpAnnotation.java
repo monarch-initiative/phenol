@@ -98,14 +98,14 @@ public final class MpAnnotation {
     return new MpAnnotation(annot1.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist),annot1.negated);
   }
 
-  /**
+  /*
    * Merge the contents of two annotations and return an annotation with the specified MP id.
    * @param mpId   TermId for the resulting MP annotation
    * @param annot1 The first MP annotation
    * @param annot2 The second MP annotation
    * @return The merged MP annotation
    * @throws PhenolException if annot1 and annot2 are incompatible
-   */
+
   static MpAnnotation mergeRelated(TermId mpId, MpAnnotation annot1, MpAnnotation annot2)
                                           throws PhenolException {
     if (!(annot1.negated == annot2.negated))
@@ -128,6 +128,7 @@ public final class MpAnnotation {
     return new MpAnnotation(mpId, ImmutableList.copyOf(pmidList),
       ImmutableList.copyOf(modlist), annot1.negated);
   }
+  */
 
   @Override
   public String toString() {
