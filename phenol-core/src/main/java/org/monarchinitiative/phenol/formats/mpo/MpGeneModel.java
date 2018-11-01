@@ -18,12 +18,12 @@ public class MpGeneModel extends MpModel {
   private static final Logger logger = LogManager.getLogger();
 
   public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
-              MpSimpleModel... modelList) {
+                     MpSimpleModel... modelList) {
     mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList);
   }
 
   public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
-              List<MpSimpleModel> modelList) {
+                     List<MpSimpleModel> modelList) {
     mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList.toArray(new MpSimpleModel[] {}));
   }
 
@@ -92,47 +92,16 @@ public class MpGeneModel extends MpModel {
 
   private void filterAncs(Ontology mpo, HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
     // Check mpIds for child-ancestor pairs; keep the child and eliminate the ancestor
+    // accumulate set of MpIds to be removed, then remove them from annotsByMpId
+    HashSet<TermId> toRemove = new HashSet<>();
     for (TermId mpId : annotsByMpId.keySet()) {
-      for (TermId anc : getAncestorTerms(mpo, mpId,false)) {
-        annotsByMpId.remove(anc);
+      if (!toRemove.contains(mpId)) {
+        getAncestorTerms(mpo, mpId, false).forEach(anc -> toRemove.add(anc));
       }
     }
+    toRemove.forEach(anc -> annotsByMpId.remove(anc));
   }
 
-/*  private Set<MpAnnotation> mergeAnnotations(Ontology mpo,
-                                             HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
-    // Check mpIds for child-ancestor pairs;
-    // keep the child and transfer ancestors' annotations to the child
-    LinkedList<TermId> mpIds = new LinkedList<>(annotsByMpId.keySet());
-    int index = 0;
-    while (index < mpIds.size()) {
-      TermId child = mpIds.get(index);
-      Set<TermId> ancestors=getAncestorTerms(mpo,child,false);
-
-      for (TermId anc : ancestors) {
-        int ancIndex = mpIds.indexOf(anc);
-        if (ancIndex > -1) {
-          // ancestor is among the mpIds associated with this gene
-          // merge ancestor's annotations into the child's
-          Set<MpAnnotation> ancAnnots = annotsByMpId.get(anc);
-          annotsByMpId.get(child).addAll(ancAnnots);
-          // and remove the ancestor from further consideration
-          mpIds.remove(ancIndex);
-        }
-      }
-      index++;
-    }
-    // mpIds now contains the list of termIds for which we want to retain annotations. This will be
-    // smaller than the keySet of annotsByMpId if some ancestor termIds were eliminated.
-    Set<MpAnnotation> returnSet = new HashSet<>();
-    for (TermId mpId : mpIds) {
-      // call to collapseSet will combine all the MpAnnotations for a given MpId into one
-      // MpAnnotation object, which is then added to result set
-      returnSet.add(collapseSet(annotsByMpId.get(mpId)));
-    }
-    return returnSet;
-  }
-*/
   /*
    * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
    */

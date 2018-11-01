@@ -22,9 +22,6 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
  * Parses the MRK_List2.rpt file.
  * The file is List of Mouse Genetic Markers (sorted alphabetically by marker symbol, tab-delimited)
  * The List2 version excludes withdrawn symbols
- * @author Hannah Blau (blauh)
- * @version 0.0.2
- * @since 27 Aug 2018
  */
 public class MpGeneParser {
   //private static final Logger logger = LogManager.getLogger();
@@ -87,7 +84,7 @@ public class MpGeneParser {
       MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
       Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
-        TermId geneId = simplemod.getGenotypeId();
+        TermId geneId = simplemod.getMarkerId();
         gene2simpleMap.putIfAbsent(geneId,new ArrayList<>());
         List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
         lst.add(simplemod);
