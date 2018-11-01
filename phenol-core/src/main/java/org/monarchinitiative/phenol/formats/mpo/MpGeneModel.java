@@ -92,10 +92,15 @@ public class MpGeneModel extends MpModel {
 
   private void filterAncs(Ontology mpo, HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
     // Check mpIds for child-ancestor pairs; keep the child and eliminate the ancestor
+    List<TermId> toRemove = new ArrayList<>();
     for (TermId mpId : annotsByMpId.keySet()) {
       for (TermId anc : getAncestorTerms(mpo, mpId,false)) {
-        annotsByMpId.remove(anc);
+        //annotsByMpId.remove(anc);
+        toRemove.add(anc);
       }
+    }
+    for (TermId id : toRemove) {
+      annotsByMpId.remove(id);
     }
   }
 
