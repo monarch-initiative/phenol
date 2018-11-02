@@ -22,11 +22,13 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
  * Parses the MRK_List2.rpt file.
  * The file is List of Mouse Genetic Markers (sorted alphabetically by marker symbol, tab-delimited)
  * The List2 version excludes withdrawn symbols
+ * The
  */
 public class MpGeneParser {
   //private static final Logger logger = LogManager.getLogger();
+  /** Path to the MRK_List2.rpt file from MGI. */
   private final String mgiMarkerPath;
-
+  /** Path to the MGI_GenePheno.rpt file from MGI.*/
   private final String mgiGenePhenoPath;
   /** THe MPO ontology object. */
   private final Ontology ontology;
@@ -35,7 +37,6 @@ public class MpGeneParser {
     mgiMarkerPath = markerPath;
     mgiGenePhenoPath=MGI_GenePhenoPath;
     this.ontology=parseMpo(ontologypath);
-    //logger.trace("Genetic markers path = " + path);
   }
 
   public MpGeneParser(String markerPath, String MGI_GenePhenoPath,Ontology mpo) {

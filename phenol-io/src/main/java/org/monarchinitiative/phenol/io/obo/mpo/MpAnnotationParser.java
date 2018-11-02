@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * 5.  MGI_Pheno_Sex.rpt
  * // Plan to have a parallel parser for http://www.mousephenotype.org/ data.
  * // The MpAnnotation class needs to be flexible enough to work with both
- * // c.f. HpAnnotation and HpDisease
+ * // c.f. HpAnnotation and HpDiseas
  */
 public class MpAnnotationParser {
   /** Path of MGI_GenePheno.rpt file.*/
@@ -228,6 +228,17 @@ public class MpAnnotationParser {
   /**
    * A convenience class that allows us to collect all of the annotations that belong
    * to a given model (genotype accession id).
+   * The MGI_GenePheno.rpt file has the following structure:
+   *  <ul>
+   *    <li>0. Allelic Composition	</li>
+   *    <li>1. Allele Symbol(s)</li>
+   *    <li>2. Allele ID(s)</li>
+   *    <li>3. Genetic Background</li>
+   *    <li>4. Mammalian Phenotype ID</li>
+   *    <li>5. PubMed ID (pipe-delimited)</li>
+   *    <li>6. MGI Marker Accession ID (pipe-delimited)</li>
+   *    <li>7. MGI Genotype Accession ID (pipe-delimited)</li>
+   * </ul>
    */
    private static class AnnotationLine {
     /** [0] Index of Allelic Composition	Allele Symbol(s) field */
