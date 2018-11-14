@@ -127,7 +127,7 @@ public class HpoCategoryMap {
         HpoCategory nervousCat = new HpoCategory(NERVOUS_SYSTEM_ID, "Nervous System");
         mapbuilder.put(NERVOUS_SYSTEM_ID, nervousCat);
         //respiratory system
-        HpoCategory respiratoryCat = new HpoCategory(RESPIRATORY_ID, "Repiratory System");
+        HpoCategory respiratoryCat = new HpoCategory(RESPIRATORY_ID, "Respiratory System");
         mapbuilder.put(RESPIRATORY_ID, respiratoryCat);
         // skeletal
         HpoCategory skeletalCat = new HpoCategory(SKELETAL_ID, "Skeletal system");
