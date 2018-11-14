@@ -70,8 +70,8 @@ public final class UberphenoGeneAnnotation implements TermAnnotation {
 
   /** @return Entrez gene ID as "ENTREZ:${entrezGeneId}". */
   @Override
-  public String getLabel() {
-    return "ENTREZ:" + entrezGeneId;
+  public TermId getLabel() {
+    return TermId.constructWithPrefix(String.format("NCBIGene:%d", entrezGeneId));
   }
 
   /** @return The evidence description. */

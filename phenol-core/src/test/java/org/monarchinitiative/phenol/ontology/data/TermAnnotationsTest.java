@@ -29,7 +29,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
   @Test
   public void testConstructTermAnnotationToLabelsMap() {
-    Map<TermId, Collection<String>> map =
+    Map<TermId, Collection<TermId>> map =
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
     assertEquals(
@@ -39,7 +39,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
   @Test
   public void testConstructTermLabelToAnnotationsMap() {
-    Map<String, Collection<TermId>> map =
+    Map<TermId, Collection<TermId>> map =
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
     assertEquals(

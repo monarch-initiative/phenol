@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
+import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 /**
  * Annotate that a vegetable is used in a recipe.
@@ -14,11 +15,12 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   private static final long serialVersionUID = 1L;
 
   private TermId termId;
-  private String label;
+  private TermId label;
+  private final TermPrefix VEGGIE_PRE=new TermPrefix("VEG");
 
   public VegetableRecipeAnnotation(TermId termId, String label) {
     this.termId = termId;
-    this.label = label;
+    this.label = new TermId(VEGGIE_PRE,label);
   }
 
   @Override
@@ -27,7 +29,7 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   }
 
   @Override
-  public String getLabel() {
+  public TermId getLabel() {
     return label;
   }
 

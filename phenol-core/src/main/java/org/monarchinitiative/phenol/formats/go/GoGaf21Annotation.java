@@ -239,8 +239,9 @@ public final class GoGaf21Annotation implements TermAnnotation {
   }
 
   @Override
-  public String getLabel() {
-    return db + ":" + dbObjectId;
+  public TermId getLabel() {
+    //return db + ":" + dbObjectId;
+    return new TermId(new TermPrefix(db),dbObjectId);
   }
 
   @Override

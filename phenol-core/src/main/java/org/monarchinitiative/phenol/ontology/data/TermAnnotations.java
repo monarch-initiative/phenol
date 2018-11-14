@@ -30,9 +30,9 @@ public final class TermAnnotations {
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *     labels.
    */
-  public static Map<TermId, Collection<String>> constructTermAnnotationToLabelsMap(
+  public static Map<TermId, Collection<TermId>> constructTermAnnotationToLabelsMap(
       Ontology ontology, Collection<? extends TermAnnotation> annotations) {
-    final Map<TermId, Collection<String>> result = new HashMap<>();
+    final Map<TermId, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
@@ -61,9 +61,9 @@ public final class TermAnnotations {
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *     labels.
    */
-  public static Map<String, Collection<TermId>> constructTermLabelToAnnotationsMap(
+  public static Map<TermId, Collection<TermId>> constructTermLabelToAnnotationsMap(
       Ontology ontology, Collection<? extends TermAnnotation> annotations) {
-    final Map<String, Collection<TermId>> result = new HashMap<>();
+    final Map<TermId, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
