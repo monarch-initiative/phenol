@@ -12,9 +12,9 @@ public class TestTermAnnotation implements TermAnnotation {
 
   private final TermPrefix TEST_PRE=new TermPrefix("TEST");
 
-  public TestTermAnnotation(TermId termId, String label) {
+  public TestTermAnnotation(TermId termId, TermId label) {
     this.termId = termId;
-    this.label = new TermId(TEST_PRE,label);
+    this.label = label;
   }
 
   @Override

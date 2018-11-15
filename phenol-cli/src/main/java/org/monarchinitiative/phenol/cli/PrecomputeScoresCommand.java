@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class PrecomputeScoresCommand {
   private ImmutableOntology phenotypicAbnormalitySubOntology;
 
   /** The object ID to TermId mapping. */
-  private TreeMap<Integer, Collection<TermId>> objectIdToTermId = new TreeMap<>();
+  private TreeMap<TermId, Collection<TermId>> objectIdToTermId = new TreeMap<>();
 
   /** The TermId to object ID mapping. */
   private HashMap<TermId, Collection<Integer>> termIdToObjectId = new HashMap<>();
@@ -122,19 +122,20 @@ public class PrecomputeScoresCommand {
             phenotypicAbnormalitySubOntology, termAnnotations)
         .forEach(
             (geneId, termIds) -> {
-              objectIdToTermId.put(Integer.parseInt(geneId.substring("ENTREZ:".length())), termIds);
+              objectIdToTermId.put(geneId, termIds);
             });
-    TermAnnotations.constructTermAnnotationToLabelsMap(
-            phenotypicAbnormalitySubOntology, termAnnotations)
-        .forEach(
-            (termId, geneIds) -> {
-              termIdToObjectId.put(
-                  termId,
-                  geneIds
-                      .stream()
-                      .map(geneId -> Integer.parseInt(geneId.substring("ENTREZ:".length())))
-                      .collect(Collectors.toList()));
-            });
+    //TODO we probably do not need these maps
+//    TermAnnotations.constructTermAnnotationToLabelsMap(
+//            phenotypicAbnormalitySubOntology, termAnnotations)
+//        .forEach(
+//            (termId, geneIds) -> {
+//              termIdToObjectId.put(
+//                  termId,
+//                  geneIds
+//                      .stream()
+//                      .map(termId1 -> geneIds)))
+//                      .collect(Collectors.toList()));
+//            });
 
     LOGGER.info("Done loading gene-phenotype links.");
   }
@@ -170,7 +171,7 @@ public class PrecomputeScoresCommand {
     final SimilarityScoreSampling sampling =
         new SimilarityScoreSampling(
             phenotypicAbnormalitySubOntology, resnikSimilarity, samplingOptions);
-    scoreDistribution = sampling.performSampling(objectIdToTermId);
+    scoreDistribution = null;// TODO sampling.performSampling(objectIdToTermId);
 
     LOGGER.info("Done with sampling.");
   }

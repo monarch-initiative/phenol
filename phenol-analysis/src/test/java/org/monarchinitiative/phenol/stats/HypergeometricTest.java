@@ -17,7 +17,7 @@ public class HypergeometricTest {
     int studyAnnot=38;
     myP.p = hyperg.phypergeometric(pop, (double)popAnnot / (double)pop,
       study, studyAnnot);
-    System.err.println(myP.p);
+    //System.err.println(myP.p);
     assertTrue(myP.p < 1.0); // TODO develop some test cases, document.
   }
 

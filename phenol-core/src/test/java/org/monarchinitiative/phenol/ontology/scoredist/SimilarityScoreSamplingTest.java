@@ -30,7 +30,7 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
 
     InformationContentComputation computation =
         new InformationContentComputation(ontology);
-    Map<TermId, Collection<String>> termLabels =
+    Map<TermId, Collection<TermId>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
     PairwiseResnikSimilarity pairwise =
@@ -46,7 +46,7 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
   @Test
   public void test() {
     // TODO: this logic should be moved into the library
-    Map<String, Integer> recipeToId = new HashMap<>();
+    Map<TermId, Integer> recipeToId = new HashMap<>();
     Map<Integer, Set<TermId>> labels = new HashMap<>();
     int nextId = 1;
     for (VegetableRecipeAnnotation a : recipeAnnotations) {

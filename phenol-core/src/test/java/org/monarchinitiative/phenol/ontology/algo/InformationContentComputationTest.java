@@ -23,7 +23,7 @@ public class InformationContentComputationTest extends VegetableOntologyTestBase
 
   @Test
   public void test() {
-    Map<TermId, Collection<String>> termLabels =
+    Map<TermId, Collection<TermId>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
 
