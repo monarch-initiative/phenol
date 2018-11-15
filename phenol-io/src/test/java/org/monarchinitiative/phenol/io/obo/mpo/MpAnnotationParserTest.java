@@ -92,4 +92,17 @@ public class MpAnnotationParserTest {
   }
 
 
+  @Test
+  public void testGetCorrectMarker()throws PhenolException {
+    MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
+    Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
+    TermId kitlGenotype = TermId.constructWithPrefix("MGI:5306347");
+    MpSimpleModel model = modelmap.get(kitlGenotype);
+    assertNotNull(model);
+    // the MGI id for the kit ligand (kitl) gene is MGI:96974
+    TermId Kitl = TermId.constructWithPrefix("MGI:96974");
+    assertEquals(Kitl,model.getMarkerId());
+  }
+
+
 }

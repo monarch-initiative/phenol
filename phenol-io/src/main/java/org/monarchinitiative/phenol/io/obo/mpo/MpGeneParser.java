@@ -22,14 +22,13 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
  * Parses the MRK_List2.rpt file.
  * The file is List of Mouse Genetic Markers (sorted alphabetically by marker symbol, tab-delimited)
  * The List2 version excludes withdrawn symbols
- * @author Hannah Blau (blauh)
- * @version 0.0.2
- * @since 27 Aug 2018
+ * The
  */
 public class MpGeneParser {
   //private static final Logger logger = LogManager.getLogger();
+  /** Path to the MRK_List2.rpt file from MGI. */
   private final String mgiMarkerPath;
-
+  /** Path to the MGI_GenePheno.rpt file from MGI.*/
   private final String mgiGenePhenoPath;
   /** THe MPO ontology object. */
   private final Ontology ontology;
@@ -38,7 +37,6 @@ public class MpGeneParser {
     mgiMarkerPath = markerPath;
     mgiGenePhenoPath=MGI_GenePhenoPath;
     this.ontology=parseMpo(ontologypath);
-    //logger.trace("Genetic markers path = " + path);
   }
 
   public MpGeneParser(String markerPath, String MGI_GenePhenoPath,Ontology mpo) {
@@ -87,7 +85,7 @@ public class MpGeneParser {
       MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
       Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
-        TermId geneId = simplemod.getGenotypeId();
+        TermId geneId = simplemod.getMarkerId();
         gene2simpleMap.putIfAbsent(geneId,new ArrayList<>());
         List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
         lst.add(simplemod);
@@ -96,7 +94,7 @@ public class MpGeneParser {
       // all simple models that have a knockout of the corresponding gene
       for (TermId geneId : gene2simpleMap.keySet()) {
         List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
-          MpGeneModel genemod = new MpGeneModel(geneId,ontology,modCollection);
+          MpGeneModel genemod = new MpGeneModel(geneId, ontology, true, modCollection);
           builder.put(geneId,genemod);
       }
     } catch (PhenolException e) {

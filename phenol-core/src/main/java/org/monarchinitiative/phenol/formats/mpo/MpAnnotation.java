@@ -102,7 +102,7 @@ public final class MpAnnotation {
   public String toString() {
     return negated ? "NOT " : "" +
       termId.getIdWithPrefix() +
-      modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
+       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
   }
 
   public static class Builder {
