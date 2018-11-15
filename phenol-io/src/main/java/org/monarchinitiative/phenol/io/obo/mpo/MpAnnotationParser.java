@@ -214,6 +214,11 @@ public class MpAnnotationParser {
         } else {
           annotbuilder.add(annot); // no sex-specific available
         }
+        // Note that we do not check for sex-specific annotations that are not present in the "main" file
+        // in practice, these are only sex-specific normal -- i.e., a phenotype was ruled out in one sex
+        // even though "somebody" thought the phenotype might be present.
+        // this type of normality (absence of a phenotype) is not useful for downstream analysis at the
+        // present time and so we skip it to avoid unnecessarily complicating the implementation.
       }
       MpSimpleModel mod = new MpSimpleModel(genoId, background, allelicComp, alleleId, alleleSymbol, markerId, annotbuilder.build());
       builder.put(genoId, mod);

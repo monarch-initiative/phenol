@@ -17,7 +17,7 @@ import com.google.common.collect.ComparisonChain;
 public final class HpoGeneAnnotation implements TermAnnotation {
 
   /** Serial UId for serialization. */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** Numeric Entrez gene Id from annotation file. */
   private final int entrezGeneId;
@@ -70,8 +70,8 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /** @return The term's Id as string including prefix. */
   @Override
-  public String getLabel() {
-    return "ENTREZ:" + entrezGeneId;
+  public TermId getLabel() {
+    return TermId.constructWithPrefix(String.format("NCBIGene:%d", entrezGeneId));
   }
 
   @Override

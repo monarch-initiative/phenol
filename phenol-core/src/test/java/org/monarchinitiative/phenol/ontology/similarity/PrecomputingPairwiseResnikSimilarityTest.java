@@ -23,7 +23,7 @@ public class PrecomputingPairwiseResnikSimilarityTest extends VegetableOntologyT
 
     InformationContentComputation computation =
         new InformationContentComputation(ontology);
-    Map<TermId, Collection<String>> termLabels =
+    Map<TermId, Collection<TermId>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
 

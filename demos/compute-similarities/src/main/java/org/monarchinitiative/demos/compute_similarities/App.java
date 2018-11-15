@@ -144,12 +144,12 @@ public class App {
 
     // TODO: Want shortcut for this important case?s
     // Build mapping from numeric Entrez gene ID to
-    final Map<Integer, Collection<TermId>> labelToTermIds =
-        TermAnnotations.constructTermLabelToAnnotationsMap(hpo, annos).entrySet().stream()
-            .collect(Collectors.toMap(e -> {
-              final String[] tokens = e.getKey().split(":");
-              return (Integer) Integer.parseInt(tokens[1]);
-            }, Map.Entry::getValue));
+    final Map<Integer, Collection<TermId>> labelToTermIds = null;
+//        TermAnnotations.constructTermLabelToAnnotationsMap(hpo, annos).entrySet().stream()
+//            .collect(Collectors.toMap(e -> {
+//              final String[] tokens = e.getKey().split(":");
+//              return (Integer) Integer.parseInt(tokens[1]);
+//            }, Map.Entry::getValue));
 
     // Initialize Resnik similarity precomputation
     LOGGER.info("Performing Resnik precomputation...");
