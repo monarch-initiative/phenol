@@ -72,6 +72,11 @@ public final class HpoDisease {
     return phenotypicAbnormalities;
   }
 
+  /** @return The list of phenotype abnormalities as bare TermIds. */
+  public List<TermId> getPhenotypicAbnormalityTermIdList() {
+    return phenotypicAbnormalities.stream().map(HpoAnnotation::getTermId).collect(Collectors.toList());
+  }
+
   /** @return The list of frequency-annotated modes of inheritance. */
   public List<TermId> getModesOfInheritance() {
     return modesOfInheritance;
