@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.formats.go;
 
+import com.google.common.collect.ImmutableList;
+import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -7,9 +9,13 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Record from GAF v2.1 file.
@@ -18,17 +24,18 @@ import java.util.Optional;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public final class GoGaf21Annotation implements TermAnnotation {
-
   /** Serial UID for serialization. */
-  private static final long serialVersionUID = 1L;
-
-  /** Database source, e.g., <code>"UniProtKB"</code>. */
-  private final String db;
-
-  /** Id in database, e.g., <code>"P12345"</code>. */
-  private final String dbObjectId;
+  private static final long serialVersionUID = 2L;
+  /** The {@link TermId} of the database object being annotated. Includes both the "db" (which is the
+   * first column of the GO annotation file) as well as the dbObjectId (which is the second column in
+   * the GO annotation file). Note that GO is inconsistent, and sometimes the dbObjectId column
+   * also includes the database, e.g., the first two columns are "MGI","MGI:1918911". The constructor
+   * of this class sorts things out.
+   */
+  private final TermId dbObjectTermId;
 
   /** Symbol in database, e.g., <code>"PHO3"</code>. */
   private final String dbObjectSymbol;
@@ -100,6 +107,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
    * @param annotationExtension Annotation extension; optional, <code>null</code> when missing.
    * @param geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.
    */
+  @Deprecated
   public GoGaf21Annotation(
       String db,
       String dbObjectId,
@@ -118,8 +126,11 @@ public final class GoGaf21Annotation implements TermAnnotation {
       String assignedBy,
       String annotationExtension,
       String geneProductFormId) {
-    this.db = db;
-    this.dbObjectId = dbObjectId;
+    if (dbObjectId.contains(":")) {
+      this.dbObjectTermId=TermId.constructWithPrefix(dbObjectId);
+    } else {
+      this.dbObjectTermId=new TermId(new TermPrefix(db),dbObjectId);
+    }
     this.dbObjectSymbol = dbObjectSymbol;
     this.qualifier = qualifier;
     this.goId = goId;
@@ -137,14 +148,63 @@ public final class GoGaf21Annotation implements TermAnnotation {
     this.geneProductFormId = geneProductFormId;
   }
 
+
+  /**
+   * Construct an annotation from one Gene Ontology annotation line
+   * Note that the lines can have 15 or 17 fields (the latter is the extended format).
+   * @param arr Array containing the fields of a single GO annotation line
+   * @throws PhenolException if the length of arr is not 15 or 17
+   */
+  public GoGaf21Annotation(String [] arr) throws PhenolException {
+    if (arr.length < 15 || arr.length > 17) {
+      throw new PhenolException(
+        "GAF line had "
+          + arr.length
+          + " columns, but expected between 15 and 17 entries. \n Line was:"
+          + Arrays.stream(arr).collect(Collectors.joining("\t")));
+    }
+    if (arr[1].contains(":")) {
+      this.dbObjectTermId=TermId.constructWithPrefix(arr[1]);
+    } else {
+      this.dbObjectTermId=new TermId(new TermPrefix(arr[0]),arr[1]);
+    }
+
+    this.dbObjectSymbol = arr[2];
+    this.qualifier = arr[3];
+    this.goId = TermId.constructWithPrefix(arr[4]);
+    this.dbReference = arr[5];
+    this.evidenceCode = arr[6];
+    this.with = arr[7];
+    this.aspect = arr[8];
+    this.dbObjectName = arr[9];
+    this.dbObjectSynonym = arr[10];
+    this.dbObjectType = arr[11];
+    this.taxons = ImmutableList.copyOf(arr[12].split("\\|"));
+    final String dateStr = arr[13];
+    this.assignedBy = arr[14];
+    this.annotationExtension = (arr.length < 16) ? null : arr[15];
+    this.geneProductFormId = (arr.length < 17) ? null : arr[16];
+
+    final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    try {
+      this.date = format.parse(dateStr);
+    } catch (ParseException e) {
+      throw new PhenolException(
+        "There was a problem parsing the date value " + dateStr, e);
+    }
+  }
+
+
+
+
   /** @return The database name. */
   public String getDb() {
-    return db;
+    return this.dbObjectTermId.getPrefix().getValue();
   }
 
   /** @return The object's ID in the database. */
   public String getDbObjectId() {
-    return dbObjectId;
+    return this.dbObjectTermId.getId();
   }
 
   /** @return dbObjectId as phenol {@link TermId}. Note that in some cases, the GO
@@ -152,10 +212,8 @@ public final class GoGaf21Annotation implements TermAnnotation {
    * do not, e.g., Uniprot. In the latter case, we can combine the Database field (UniProtKB)
    * and the dbObjectId field (e.g., Q14469) to create a TermId.
    */
-  public TermId getDbObjectIdAsTermId() {
-    return dbObjectId.contains(":") ?
-      TermId.constructWithPrefix(dbObjectId) :
-      new TermId(new TermPrefix(db),dbObjectId);
+  public TermId getDbObjectTermId() {
+    return this.dbObjectTermId;
   }
 
   /** @return The object's symbol in the database. */
@@ -241,7 +299,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public TermId getLabel() {
     //return db + ":" + dbObjectId;
-    return new TermId(new TermPrefix(db),dbObjectId);
+    return this.dbObjectTermId;
   }
 
   @Override
@@ -257,8 +315,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
         .compare(this.aspect, that.aspect)
         .compare(this.assignedBy, that.assignedBy)
         .compare(this.date, that.date)
-        .compare(this.db, that.db)
-        .compare(this.dbObjectId, that.dbObjectId)
+        .compare(this.dbObjectTermId, that.dbObjectTermId)
         .compare(this.dbObjectName, that.dbObjectName)
         .compare(this.dbObjectSymbol, that.dbObjectSymbol)
         .compare(this.dbObjectSynonym, that.dbObjectSynonym)
@@ -281,8 +338,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
     result = prime * result + ((aspect == null) ? 0 : aspect.hashCode());
     result = prime * result + ((assignedBy == null) ? 0 : assignedBy.hashCode());
     result = prime * result + ((date == null) ? 0 : date.hashCode());
-    result = prime * result + ((db == null) ? 0 : db.hashCode());
-    result = prime * result + ((dbObjectId == null) ? 0 : dbObjectId.hashCode());
+    result = prime * result + ((dbObjectTermId == null) ? 0 : dbObjectTermId.hashCode());
     result = prime * result + ((dbObjectName == null) ? 0 : dbObjectName.hashCode());
     result = prime * result + ((dbObjectSymbol == null) ? 0 : dbObjectSymbol.hashCode());
     result = prime * result + ((dbObjectSynonym == null) ? 0 : dbObjectSynonym.hashCode());
@@ -337,18 +393,11 @@ public final class GoGaf21Annotation implements TermAnnotation {
     } else if (!date.equals(other.date)) {
       return false;
     }
-    if (db == null) {
-      if (other.db != null) {
+    if (dbObjectTermId == null) {
+      if (other.dbObjectTermId != null) {
         return false;
       }
-    } else if (!db.equals(other.db)) {
-      return false;
-    }
-    if (dbObjectId == null) {
-      if (other.dbObjectId != null) {
-        return false;
-      }
-    } else if (!dbObjectId.equals(other.dbObjectId)) {
+    } else if (!dbObjectTermId.equals(other.dbObjectTermId)) {
       return false;
     }
     if (dbObjectName == null) {
@@ -434,9 +483,9 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public String toString() {
     return "GoGaf21Annotation [db="
-        + db
+        + dbObjectTermId.getPrefix().getValue()
         + ", dbObjectId="
-        + dbObjectId
+        + dbObjectTermId.getId()
         + ", dbObjectSymbol="
         + dbObjectSymbol
         + ", qualifier="

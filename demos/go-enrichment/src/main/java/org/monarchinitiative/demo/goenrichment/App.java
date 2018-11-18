@@ -88,7 +88,7 @@ public final class App {
     Set<TermId> genes = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
       if (focus.equals(ann.getGoId())) {
-        TermId geneId = ann.getDbObjectIdAsTermId();
+        TermId geneId = ann.getDbObjectTermId();
         genes.add(geneId);
       }
     }
@@ -108,7 +108,7 @@ public final class App {
     i=0;
     M *= 3;
     for (GoGaf21Annotation ann : annots) {
-      TermId gene = ann.getDbObjectIdAsTermId();
+      TermId gene = ann.getDbObjectTermId();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
@@ -123,7 +123,7 @@ public final class App {
   private Set<TermId> getPopulationSet(List<GoGaf21Annotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
-      TermId geneId = ann.getDbObjectIdAsTermId();
+      TermId geneId = ann.getDbObjectTermId();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);

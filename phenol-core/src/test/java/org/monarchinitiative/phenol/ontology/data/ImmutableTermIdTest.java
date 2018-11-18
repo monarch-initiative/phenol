@@ -3,13 +3,14 @@ package org.monarchinitiative.phenol.ontology.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImmutableTermIdTest {
 
@@ -17,7 +18,7 @@ public class ImmutableTermIdTest {
   private TermId termId;
   private TermId termId2;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     termPrefix = new TermPrefix("HP");
     termId = new TermId(termPrefix, "0000001");
@@ -47,7 +48,7 @@ public class ImmutableTermIdTest {
 
   @Test
   public void testQueryFunctions() {
-    assertSame(termPrefix, termId.getPrefix());
+    assertEquals(termPrefix, termId.getPrefix());
     assertEquals("0000001", termId.getId());
     assertEquals("HP:0000001", termId.getIdWithPrefix());
   }

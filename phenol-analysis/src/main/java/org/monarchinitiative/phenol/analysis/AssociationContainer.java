@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class AssociationContainer {
     /** Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene. */
-    private Map<TermId, ItemAssociations> gene2associationMap;
+    private final Map<TermId, ItemAssociations> gene2associationMap;
 
     /**
      * Constructs the container using a list of bla32 and an annotation mapping created from it.
@@ -28,7 +28,7 @@ public class AssociationContainer {
     public AssociationContainer(List<GoGaf21Annotation> assocs) {
         gene2associationMap=new HashMap<>();
         for (GoGaf21Annotation a : assocs) {
-          TermId tid = a.getDbObjectIdAsTermId();
+          TermId tid = a.getDbObjectTermId();
           this.gene2associationMap.putIfAbsent(tid,new ItemAssociations(tid));
           ItemAssociations g2a = gene2associationMap.get(tid);
           g2a.add(a);
