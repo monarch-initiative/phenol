@@ -8,14 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -47,6 +40,7 @@ import org.monarchinitiative.phenol.formats.hpo.*;
  * App for computing similarity scores between gene (by entrez ID) and HPO term list.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax,org">Peter Robinson</a>
  */
 public class ComputeSimilarityDemo {
 
@@ -110,14 +104,18 @@ public class ComputeSimilarityDemo {
       return; // javac complains otherwise
     }
     // Compute list of annoations and mapping from OMIM ID to term IDs.
-    System.out.println("Loading HPO to gene annotation file...");
-    final Map<TermId, Set<TermId>> diseaseIdToTermIds = new HashMap<>();
-    final Map<TermId, Set<TermId>> termIdToDiseaseIds = new HashMap<>();
+    System.out.println("Loading HPO to disease annotation file...");
+    final Map<TermId, Collection<TermId>> diseaseIdToTermIds = new HashMap<>();
+    final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
+
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> terms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
       diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
-      for (TermId tid : terms) {
+      // add term anscestors
+      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
+
+      for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());
         termIdToDiseaseIds.get(tid).add(diseaseId);
         diseaseIdToTermIds.get(diseaseId).add(tid);
@@ -131,6 +129,10 @@ public class ComputeSimilarityDemo {
       new InformationContentComputation(hpo)
         .computeInformationContent(termIdToDiseaseIds);
     System.out.println("DONE: Performing IC precomputation");
+//    int i=0;
+//    for (TermId t:icMap.keySet()) {
+//      System.out.println("IC-> "+t.getIdWithPrefix() + ": " + icMap.get(t));
+//    }
 
 
     // Initialize Resnik similarity precomputation
@@ -140,6 +142,29 @@ public class ComputeSimilarityDemo {
     System.out.println("DONE: Performing Resnik precomputation");
     final ResnikSimilarity resnikSimilarity =
       new ResnikSimilarity(pairwiseResnikSimilarity, false);
+    System.out.println(String.format("name: %s  params %s",
+      resnikSimilarity.getName(),
+      resnikSimilarity.getParameters()));
+    // example of computing score between the sets of HPO terms that annotate two
+    // diseases (get the diseases at random)
+    System.out.println("About to calculate phenotype similarity from two random diseases from a map of size " + diseaseMap.size());
+    List<HpoDisease> valuesList = new ArrayList<>(diseaseMap.values());
+    int randomIndex1 = new Random().nextInt(valuesList.size());
+    HpoDisease randomDisease1 = valuesList.get(randomIndex1);
+    int randomIndex2 = new Random().nextInt(valuesList.size());
+    HpoDisease randomDisease2 = valuesList.get(randomIndex2);
+
+    List<TermId> phenoAbnormalities1 = randomDisease1.getPhenotypicAbnormalityTermIdList();
+    List<TermId> phenoAbnormalities2 = randomDisease2.getPhenotypicAbnormalityTermIdList();
+
+
+    double similarity = resnikSimilarity.computeScore(phenoAbnormalities1,phenoAbnormalities2);
+
+    System.out.println(String.format("Similarity score between the query %s and the target disease %s was %.4f",
+      randomDisease1.getName(),randomDisease2.getName(),similarity));
+
+    //public final double computeScore(Collection<TermId> query, Collection<TermId> target) {
+
 
     // Temporary storage of term count to score distributions.
     final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();
@@ -190,47 +215,8 @@ public class ComputeSimilarityDemo {
 
   @Deprecated
   private void oldcode() {
-    // Compute list of annoations and mapping from Entrez ID to term IDs.
-    System.out.println("Loading HPO to gene annotation file...");
-    // Raw annotations as read from file.
-    final List<HpoGeneAnnotation> annos = new ArrayList<>();
-    // TODO: augmentation happens already below?
-    // Build mappings from entrez gene ID to term IDs and the inverse. Note that these two mappings
-    // are built using the implicit transitive labeling: if a term is anotated with A, then all of
-    // its ancestors are labeled with this term as well.
-    final Map<Integer, Set<TermId>> entrezGeneIdToTermIds = new HashMap<>();
-    final Map<TermId, Set<Integer>> termIdToEntrezGeneIds = new HashMap<>();
-    // Build the actual mappings
-    try (HpoGeneAnnotationParser annoParser =
-           new HpoGeneAnnotationParser(new File(pathPhenotypeHpoa))) {
-      while (annoParser.hasNext()) {
-        final HpoGeneAnnotation anno = annoParser.next();
-        annos.add(anno);
 
-        // TODO: ancestors should be precomputed at some point...
-        // Also apply all annotations for all ancestors of the annotation, including root.
-        final Set<TermId> inclAncestorTermIds =
-          TermIds.augmentWithAncestors(hpo, Sets.newHashSet(anno.getTermId()), true);
 
-        // TODO: can we put this mapping building into a helper function?
-        if (entrezGeneIdToTermIds.containsKey(anno.getEntrezGeneId())) {
-          entrezGeneIdToTermIds.get(anno.getEntrezGeneId()).addAll(inclAncestorTermIds);
-        } else {
-          entrezGeneIdToTermIds.put(anno.getEntrezGeneId(), Sets.newHashSet(inclAncestorTermIds));
-        }
-
-        for (TermId termId : inclAncestorTermIds) {
-          if (termIdToEntrezGeneIds.containsKey(termId)) {
-            termIdToEntrezGeneIds.get(termId).add(anno.getEntrezGeneId());
-          } else {
-            termIdToEntrezGeneIds.put(termId, Sets.newHashSet(anno.getEntrezGeneId()));
-          }
-        }
-      }
-    } catch (IOException | TermAnnotationParserException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
     System.out.println("DONE: Loading HPO to gene annotation file");
     try (InputStream fis = new FileInputStream(pathTsvFile);
          InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));

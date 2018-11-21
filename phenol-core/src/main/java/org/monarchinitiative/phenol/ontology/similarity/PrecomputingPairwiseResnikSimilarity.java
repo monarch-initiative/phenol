@@ -104,6 +104,7 @@ public final class PrecomputingPairwiseResnikSimilarity
         (List<TermId> chunk) -> {
           try {
             for (TermId queryId : chunk) {
+
               for (TermId targetId : ontology.getNonObsoleteTermIds()) {
                 if (queryId.compareTo(targetId) <= 0) {
                   precomputedScores.put(
