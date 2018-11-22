@@ -27,15 +27,15 @@ public class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
   @Before
-  public void init() throws IOException, PhenolException {
+  public void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
 	ClassLoader classLoader = this.getClass().getClassLoader();
 
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
- 
-    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"), true);
+    boolean debugParse=false;
+    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"), debugParse);
     final HpoOntology ontology = oboParser.parse();
 
     parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);

@@ -9,13 +9,14 @@ import org.monarchinitiative.phenol.ontology.data.TermPrefix;
  * Annotate that a vegetable is used in a recipe.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class VegetableRecipeAnnotation implements TermAnnotation {
 
   private static final long serialVersionUID = 1L;
 
-  private TermId termId;
-  private TermId label;
+  private final TermId termId;
+  private final TermId label;
   private final TermPrefix VEGGIE_PRE=new TermPrefix("VEG");
 
   public VegetableRecipeAnnotation(TermId termId, String label) {
@@ -48,6 +49,6 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
 
   @Override
   public String toString() {
-    return "VegetableTermAnnotation [termId=" + termId + ", label=" + label + "]";
+    return "VegetableTermAnnotation [termId=" + termId + ", label=" + label.getIdWithPrefix() + "]";
   }
 }

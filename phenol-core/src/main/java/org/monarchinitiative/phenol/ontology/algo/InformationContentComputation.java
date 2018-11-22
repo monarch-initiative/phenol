@@ -51,11 +51,11 @@ public final class InformationContentComputation {
     LOGGER.info(
         "Computing IC of {} terms using {} labels...",
         new Object[] {
-          ontology.countAllTerms(), termLabels.values().stream().mapToInt(l -> l.size()).sum()
+          ontology.countAllTerms(), termLabels.values().stream().mapToInt(Collection::size).sum()
         });
 
     // Build mapping from TermId -> absolute frequency
-    final TermId root = TermId.constructWithPrefix("HP:0000118");//ontology.getRootTermId();
+    final TermId root = ontology.getRootTermId();
 
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
     for (TermId termId : ontology.getNonObsoleteTermIds()) {
@@ -88,7 +88,7 @@ public final class InformationContentComputation {
       LOGGER.warn(
           "Frequency of {} non-obsolete terms was zero! Their IC has been set to {} = "
               + "- log(1 / {}).",
-          new Object[] {countIcZero, dummyIc, maxFreq});
+        countIcZero, dummyIc, maxFreq);
     }
     LOGGER.info("Computing IC is complete.");
 
