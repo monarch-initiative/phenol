@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ public class MpGeneModel extends MpModel {
   private boolean filterAncestors;
   private List<TermId> genotypes;
 
-  private static final Logger logger = LogManager.getLogger();
+  private static final Logger logger = LoggerFactory.getLogger(MpGeneModel.class);
 
   public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
                      MpSimpleModel... modelList) {

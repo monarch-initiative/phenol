@@ -90,6 +90,19 @@
     <url>scm:git:git@github.com:phenomics/ontolib.git</url>
   </scm>-->
 
+  <!-- keeps the logging artifacts in sync with each other -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>2.10.0</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- JUnit testing
     <dependency>
@@ -152,6 +165,7 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
+
 
   <!--
    Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
@@ -256,7 +270,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.0</version>
         <configuration>
           <defaultVersion>${project.version}</defaultVersion>
           <show>public</show>
