@@ -218,9 +218,7 @@ public final class OboOntologyLoader {
       prefix = firstId.map(TermId::getPrefix).orElseGet(() -> new TermPrefix("Owl"));
       // Assumption: "0000000" is not used for actual terms in any OBO ontology
       rootId = new TermId(prefix,"0000000");
-      Term rootTerm = new Term();
-      rootTerm.setId(rootId);
-      rootTerm.setName("artificial root term");
+      Term rootTerm = Term.of(rootId, "artificial root term");
       phenolGraph.addVertex(rootId);
       nonDepreTermIdNodes.add(rootId);
       terms.put(rootId, rootTerm);

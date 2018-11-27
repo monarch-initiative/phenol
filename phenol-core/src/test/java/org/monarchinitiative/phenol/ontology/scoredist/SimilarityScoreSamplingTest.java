@@ -28,19 +28,14 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation computation =
-        new InformationContentComputation(ontology);
-    Map<TermId, Collection<TermId>> termLabels =
-        TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
+    InformationContentComputation computation = new InformationContentComputation(ontology);
+    Map<TermId, Collection<TermId>> termLabels = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
-    PairwiseResnikSimilarity pairwise =
-        new PairwiseResnikSimilarity(ontology, informationContent);
+    PairwiseResnikSimilarity pairwise = new PairwiseResnikSimilarity(ontology, informationContent);
     resnikSimilarity = new ResnikSimilarity(pairwise, true);
 
     ScoreSamplingOptions options = new ScoreSamplingOptions(1, null, null, 2, 2, 10_000, 42);
-    scoreSampling =
-        new SimilarityScoreSampling(
-            ontology, resnikSimilarity, options);
+    scoreSampling = new SimilarityScoreSampling(ontology, resnikSimilarity, options);
   }
 
   @Test

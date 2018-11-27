@@ -59,8 +59,7 @@ public class VegetableOntologyTestBase {
     idPumpkin = TermId.constructWithPrefix("VO:0000006");
     idBlueCarrot = TermId.constructWithPrefix("VO:0000007");
 
-    vertices =
-        ImmutableList.of(
+    vertices = ImmutableList.of(
             idVegetable,
             idRootVegetable,
             idLeafVegetable,
@@ -69,8 +68,7 @@ public class VegetableOntologyTestBase {
             idPumpkin,
             idBlueCarrot);
 
-    DefaultDirectedGraph<TermId, IdLabeledEdge> graph =
-      new DefaultDirectedGraph<>(IdLabeledEdge.class);
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, idRootVegetable, idVegetable, 1);
     GraphUtil.addEdgeToGraph(graph, idLeafVegetable, idVegetable, 2);
     GraphUtil.addEdgeToGraph(graph, idCarrot, idRootVegetable, 3);
@@ -83,114 +81,64 @@ public class VegetableOntologyTestBase {
 
     ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
     termMapBuilder.put(
-        idVegetable,
-        new Term(
-            idVegetable,
-            new ArrayList<>(),
-            "vegetable",
-            "part of a plant that is consumed",
-            ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idVegetable,
+      Term.builder()
+        .id(idVegetable)
+        .name("vegetable")
+        .definition("part of a plant that is consumed")
+        .build()
+    );
     termMapBuilder.put(
-        idRootVegetable,
-        new Term(
-            idRootVegetable,
-            new ArrayList<>(),
-            "root vegetable",
-            "consumed root part of plant",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idRootVegetable,
+      Term.builder()
+        .id(idRootVegetable)
+        .name("root vegetable")
+        .definition("consumed root part of plant")
+        .build()
+    );
     termMapBuilder.put(
-        idLeafVegetable,
-        new Term(
-            idLeafVegetable,
-            new ArrayList<>(),
-            "leaf vegetable",
-            "consumed leaf part of plant",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idLeafVegetable,
+      Term.builder()
+        .id(idLeafVegetable)
+        .name("leaf vegetable")
+        .definition("consumed leaf part of plant")
+        .build()
+    );
     termMapBuilder.put(
-        idCarrot,
-        new Term(
-            idCarrot,
-            new ArrayList<>(),
-            "carrot",
-            "carrots are very tasty root vegetables",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idCarrot,
+      Term.builder()
+        .id(idCarrot)
+        .name("carrot")
+        .definition("carrots are very tasty root vegetables")
+        .build()
+    );
     termMapBuilder.put(
-        idBlueCarrot,
-        new Term(
-            idBlueCarrot,
-            new ArrayList<>(),
-            "blue carrot",
-            "blue ones are even better",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idBlueCarrot,
+      Term.builder()
+        .id(idBlueCarrot)
+        .name("blue carrot")
+        .definition("blue ones are even better")
+        .build()
+    );
     termMapBuilder.put(
-        idBeet,
-        new Term(
-            idBeet,
-            new ArrayList<>(),
-            "beet root",
-            "beets are tasty and can be used for coloring",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idBeet,
+      Term.builder()
+        .id(idBeet)
+        .name("beet root")
+        .definition("beets are tasty and can be used for coloring")
+        .build()
+    );
     termMapBuilder.put(
-        idPumpkin,
-        new Term(
-            idPumpkin,
-            new ArrayList<>(),
-            "pumpkin",
-            "pumpkins are great for soup and pickling",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      idPumpkin,
+      Term.builder()
+        .id(idPumpkin)
+        .name("pumpkin")
+        .definition("pumpkins are great for soup and pickling")
+        .build()
+    );
     termMap = termMapBuilder.build();
 
-    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder =
-        ImmutableMap.builder();
+    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
     relationMapBuilder.put(1, new Relationship(idRootVegetable, idVegetable, 1, RelationshipType.IS_A));
     relationMapBuilder.put(2, new Relationship(idLeafVegetable, idVegetable, 2,RelationshipType.IS_A));
     relationMapBuilder.put(3, new Relationship(idCarrot, idRootVegetable, 3,RelationshipType.IS_A));

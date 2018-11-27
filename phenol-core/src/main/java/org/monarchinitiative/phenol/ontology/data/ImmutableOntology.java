@@ -189,19 +189,18 @@ public class ImmutableOntology implements Ontology {
   @Override
   public Ontology subOntology(TermId subOntologyRoot) {
     final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
-    final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph =
-        GraphUtil.subGraph(graph, childTermIds);
+    final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph = GraphUtil.subGraph(graph, childTermIds);
     Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds, childTermIds);
     // make sure the TermI map contains only terms from the subontology
     final ImmutableMap.Builder<TermId, Term> termBuilder = ImmutableMap.builder();
 
-    for (final TermId tid : intersectingTerms) {
+    for (TermId tid : intersectingTerms) {
       termBuilder.put(tid, termMap.get(tid));
     }
     ImmutableMap<TermId, Term> subsetTermMap = termBuilder.build();
     // Only retain relations where both source and destination are terms in the subontology
     final ImmutableMap.Builder<Integer, Relationship> relationBuilder = ImmutableMap.builder();
-    for (Map.Entry<Integer, Relationship> entry :  relationMap.entrySet() ) {
+    for (Map.Entry<Integer, Relationship> entry : relationMap.entrySet() ) {
       Relationship tr = entry.getValue();
       if (subsetTermMap.containsKey(tr.getSource()) && subsetTermMap.containsKey(tr.getTarget())) {
         relationBuilder.put(entry.getKey(), entry.getValue());

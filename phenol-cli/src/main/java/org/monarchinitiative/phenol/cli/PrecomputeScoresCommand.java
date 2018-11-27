@@ -48,7 +48,7 @@ public class PrecomputeScoresCommand {
   private TreeMap<TermId, Collection<TermId>> objectIdToTermId = new TreeMap<>();
 
   /** The TermId to object ID mapping. */
-  private HashMap<TermId, Collection<Integer>> termIdToObjectId = new HashMap<>();
+  private HashMap<TermId, Collection<TermId>> termIdToObjectId = new HashMap<>();
 
   /** The Resnik similarity. */
   private ResnikSimilarity resnikSimilarity;

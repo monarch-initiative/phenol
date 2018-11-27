@@ -48,19 +48,11 @@ public class OntologyAlgorithmRelationshipTest {
 
   /** Convenience method for making fake terms */
   private Term makeTerm(TermId tid, String name, String definition ) {
-    return new Term(
-      tid,
-      new ArrayList<>(),
-      name,
-      definition,
-      ImmutableList.of(),
-      null,
-      new ArrayList<>(),
-      new ArrayList<>(),
-      false,
-      null,
-      null,
-      new ArrayList<>());
+    return Term.builder()
+      .id(tid)
+      .name(name)
+      .definition(definition)
+      .build();
   }
 
 
