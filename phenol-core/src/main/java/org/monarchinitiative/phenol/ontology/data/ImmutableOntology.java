@@ -92,15 +92,12 @@ public class ImmutableOntology implements Ontology {
       final ImmutableSet.Builder<TermId> setBuilder = ImmutableSet.builder();
       BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
       bfs.startFromForward(
-          graph,
-          termId,
-          new VertexVisitor<TermId, IdLabeledEdge>() {
-            @Override
-            public boolean visit(DefaultDirectedGraph<TermId, IdLabeledEdge> g, TermId v) {
-              setBuilder.add(v);
-              return true;
-            }
-          });
+        graph,
+        termId,
+        (g, v) -> {
+          setBuilder.add(v);
+          return true;
+        });
 
       mapBuilder.put(termId, setBuilder.build());
     }
@@ -191,12 +188,13 @@ public class ImmutableOntology implements Ontology {
     final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
     final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph = GraphUtil.subGraph(graph, childTermIds);
     Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds, childTermIds);
+
     // make sure the TermI map contains only terms from the subontology
     final ImmutableMap.Builder<TermId, Term> termBuilder = ImmutableMap.builder();
-
     for (TermId tid : intersectingTerms) {
       termBuilder.put(tid, termMap.get(tid));
     }
+
     ImmutableMap<TermId, Term> subsetTermMap = termBuilder.build();
     // Only retain relations where both source and destination are terms in the subontology
     final ImmutableMap.Builder<Integer, Relationship> relationBuilder = ImmutableMap.builder();
@@ -207,10 +205,9 @@ public class ImmutableOntology implements Ontology {
       }
     }
     // Note: natural order returns a builder whose keys are ordered by their natural ordering.
-    final ImmutableSortedMap.Builder<String, String> metaInfoBuilder =
-        ImmutableSortedMap.naturalOrder();
-    for (String key : metaInfo.keySet()) {
-      metaInfoBuilder.put(key, metaInfo.get(key));
+    final ImmutableSortedMap.Builder<String, String> metaInfoBuilder = ImmutableSortedMap.naturalOrder();
+    for (Map.Entry<String, String> entry : metaInfo.entrySet()) {
+      metaInfoBuilder.put(entry.getKey(), entry.getValue());
     }
     metaInfoBuilder.put(
         "provenance",
