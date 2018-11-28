@@ -166,6 +166,22 @@
       <version>${slf4j.version}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   <!--
    Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
@@ -217,7 +233,7 @@
         <configuration>
           <forkCount>3</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m -Duser.region=US -Duser.timezone=UTC</argLine>
+          <argLine>-Xmx1024m -Duser.region=US -Duser.timezone=UTC</argLine>
           <systemPropertyVariables>
             <user.language>en</user.language>
             <user.region>US</user.region>
