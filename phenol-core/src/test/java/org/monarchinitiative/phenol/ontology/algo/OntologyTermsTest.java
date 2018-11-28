@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -20,27 +21,33 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
     Set<TermId> children = new TreeSet<>();
 
     OntologyTerms.visitChildrenOf(
-        idRootVegetable,
-        ontology,
-        new TermVisitor<ImmutableOntology>() {
-          @Override
-          public boolean visit(
-              ImmutableOntology ontology, TermId termId) {
-            children.add(termId);
-            return true;
-          }
-        });
+      idRootVegetable,
+      ontology,
+      (ontology, termId) -> {
+      children.add(termId);
+      return true;
+    });
 
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=VO], id=0000002], TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000005], TermId [prefix=TermPrefix [value=VO], id=0000006], TermId [prefix=TermPrefix [value=VO], id=0000007]]",
-        children.toString());
+      ImmutableSet.of(
+        TermId.of("VO:0000002"),
+        TermId.of("VO:0000004"),
+        TermId.of("VO:0000005"),
+        TermId.of("VO:0000006"),
+        TermId.of("VO:0000007")),
+      children);
   }
 
   @Test
   public void testChildrenOf() {
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000005], TermId [prefix=TermPrefix [value=VO], id=0000006], TermId [prefix=TermPrefix [value=VO], id=0000007], TermId [prefix=TermPrefix [value=VO], id=0000002]]",
-        OntologyTerms.childrenOf(idRootVegetable, ontology).toString());
+      ImmutableSet.of(
+        TermId.of("VO:0000004"),
+        TermId.of("VO:0000005"),
+        TermId.of("VO:0000006"),
+        TermId.of("VO:0000007"),
+        TermId.of("VO:0000002")),
+      OntologyTerms.childrenOf(idRootVegetable, ontology));
   }
 
   @Test
@@ -48,26 +55,29 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
     Set<TermId> parents = new TreeSet<>();
 
     OntologyTerms.visitParentsOf(
-        idBlueCarrot,
-        ontology,
-        new TermVisitor<ImmutableOntology>() {
-          @Override
-          public boolean visit(
-              ImmutableOntology ontology, TermId termId) {
-            parents.add(termId);
-            return true;
-          }
-        });
+      idBlueCarrot,
+      ontology,
+      (ontology, termId) -> {
+        parents.add(termId);
+        return true;
+      });
 
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=VO], id=0000001], TermId [prefix=TermPrefix [value=VO], id=0000002], TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000007]]",
-        parents.toString());
+      ImmutableSet.of(
+        TermId.of("VO:0000001"),
+        TermId.of("VO:0000002"),
+        TermId.of("VO:0000004"),
+        TermId.of("VO:0000007")),
+      parents);
   }
 
   @Test
   public void testParentsOf() {
-    assertEquals(
-        "[TermId [prefix=TermPrefix [value=VO], id=0000004], TermId [prefix=TermPrefix [value=VO], id=0000007], TermId [prefix=TermPrefix [value=VO], id=0000001], TermId [prefix=TermPrefix [value=VO], id=0000002]]",
-        OntologyTerms.parentsOf(idBlueCarrot, ontology).toString());
+    assertEquals(ImmutableSet.of(
+      TermId.of("VO:0000004"),
+      TermId.of("VO:0000007"),
+      TermId.of("VO:0000001"),
+      TermId.of("VO:0000002")),
+      OntologyTerms.parentsOf(idBlueCarrot, ontology));
   }
 }

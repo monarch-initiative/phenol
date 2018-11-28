@@ -24,7 +24,7 @@ public class Gene {
 
   @Override
   public String toString() {
-    return symbol +" [" + id.getIdWithPrefix() +"]";
+    return symbol +" [" + id.getValue() +"]";
   }
 
 

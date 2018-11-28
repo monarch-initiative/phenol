@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.ImmutableSet;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Test;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -25,10 +26,21 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     assertEquals("{}", ontology.getMetaInfo().toString());
 
     assertEquals(
-        "([TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]], [(TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000002])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000002]), (TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000003])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000003]), (TermId [prefix=TermPrefix [value=HP], id=0000001] : TermId [prefix=TermPrefix [value=HP], id=0000004])=(TermId [prefix=TermPrefix [value=HP], id=0000001],TermId [prefix=TermPrefix [value=HP], id=0000004]), (TermId [prefix=TermPrefix [value=HP], id=0000002] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000002],TermId [prefix=TermPrefix [value=HP], id=0000005]), (TermId [prefix=TermPrefix [value=HP], id=0000003] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000003],TermId [prefix=TermPrefix [value=HP], id=0000005]), (TermId [prefix=TermPrefix [value=HP], id=0000004] : TermId [prefix=TermPrefix [value=HP], id=0000005])=(TermId [prefix=TermPrefix [value=HP], id=0000004],TermId [prefix=TermPrefix [value=HP], id=0000005])])",
-        graph.toString());
+      "([HP:0000001, HP:0000002, HP:0000003, HP:0000004, HP:0000005], [(HP:0000001 : HP:0000002)=(HP:0000001,HP:0000002), (HP:0000001 : HP:0000003)=(HP:0000001,HP:0000003), (HP:0000001 : HP:0000004)=(HP:0000001,HP:0000004), (HP:0000002 : HP:0000005)=(HP:0000002,HP:0000005), (HP:0000003 : HP:0000005)=(HP:0000003,HP:0000005), (HP:0000004 : HP:0000005)=(HP:0000004,HP:0000005)])",
+      graph.toString());
 
-    assertEquals(graph.edgeSet().size(), 6);
+    assertEquals(
+      ImmutableSet.of(
+        TermId.of("HP:0000001"),
+        TermId.of("HP:0000002"),
+        TermId.of("HP:0000003"),
+        TermId.of("HP:0000004"),
+        TermId.of("HP:0000005")
+      ),
+      graph.vertexSet());
+
+    // surely should be able to create a set of edges?
+    assertEquals(6, graph.edgeSet().size());
 
 //    assertEquals(
 //        "{TermId [prefix=TermPrefix [value=HP], id=0000001]=CommonTerm [id=TermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000002]=CommonTerm [termId=TermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000003]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000004]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000005]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]}",
@@ -41,24 +53,36 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     assertTrue(ontology.isRootTerm(id5));
 
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]]",
-        ontology.getAllTermIds().toString());
-
-//    assertEquals(
-//        "[CommonTerm [id=TermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]]",
-//        ontology.getTerms().toString());
+      ImmutableSet.of(
+        TermId.of("HP:0000001"),
+        TermId.of("HP:0000002"),
+        TermId.of("HP:0000003"),
+        TermId.of("HP:0000004"),
+        TermId.of("HP:0000005")
+      ),
+      ontology.getAllTermIds());
 
     assertEquals(5, ontology.countAllTerms());
 
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=HP], id=0000001], TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004], TermId [prefix=TermPrefix [value=HP], id=0000005]]",
-        ontology.getNonObsoleteTermIds().toString());
+      ImmutableSet.of(
+        TermId.of("HP:0000001"),
+        TermId.of("HP:0000002"),
+        TermId.of("HP:0000003"),
+        TermId.of("HP:0000004"),
+        TermId.of("HP:0000005")
+      ),
+      ontology.getNonObsoleteTermIds());
 
     assertEquals("[]", ontology.getObsoleteTermIds().toString());
 
     assertEquals(
-        "[TermId [prefix=TermPrefix [value=HP], id=0000002], TermId [prefix=TermPrefix [value=HP], id=0000003], TermId [prefix=TermPrefix [value=HP], id=0000004]]",
-        ontology.getParentTermIds(id1).toString());
+      ImmutableSet.of(
+        TermId.of("HP:0000002"),
+        TermId.of("HP:0000003"),
+        TermId.of("HP:0000004")
+      ),
+      ontology.getParentTermIds(id1));
   }
 
   /**
@@ -68,12 +92,11 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
    */
   @Test
   public void testSubontologyCreation() {
-    ImmutableOntology subontology =
-        (ImmutableOntology) ontology.subOntology(id4);
+    ImmutableOntology subontology = (ImmutableOntology) ontology.subOntology(id4);
     assertTrue(subontology.getTermMap().containsKey(id4));
     assertTrue(subontology.getTermMap().containsKey(id1));
-    assertEquals(ontology.getTermMap().size() , 5);
-    assertEquals(subontology.getTermMap().size() , 2);
+    assertEquals(5, ontology.getTermMap().size());
+    assertEquals(2, subontology.getTermMap().size());
     assertFalse(subontology.getTermMap().containsKey(id5));
   }
 
@@ -97,13 +120,9 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
    */
   @Test
   public void testSubontologyRelations() {
-    ImmutableOntology subontology =
-        (ImmutableOntology) ontology.subOntology(id4);
+    ImmutableOntology subontology = (ImmutableOntology) ontology.subOntology(id4);
     Map<Integer, Relationship> relationMap = ontology.getRelationMap();
-    int expectedSize = 6;
-    assertEquals(expectedSize, relationMap.size());
-    relationMap = subontology.getRelationMap();
-    expectedSize = 1;
-    assertEquals(expectedSize, relationMap.size());
+    assertEquals(6, relationMap.size());
+    assertEquals(1, subontology.getRelationMap().size());
   }
 }

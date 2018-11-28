@@ -54,7 +54,7 @@ public final class InformationContentComputation {
 
     // Build mapping from TermId -> absolute frequency
     // Ought to use ontology.getRootTermId() ?
-    final TermId root = ontology.getRootTermId();//TermId.constructWithPrefix("HP:0000118");
+    final TermId root = ontology.getRootTermId();//TermId.of("HP:0000118");
 
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
     for (TermId termId : ontology.getNonObsoleteTermIds()) {

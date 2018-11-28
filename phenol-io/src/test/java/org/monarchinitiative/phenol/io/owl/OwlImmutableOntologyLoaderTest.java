@@ -25,7 +25,7 @@ public class OwlImmutableOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
-    Path ncitPath = Paths.get("src","test","resources","ncit_module.owl");
+    Path ncitPath = Paths.get("src","test", "resources", "ncit_module.owl");
     final OwlImmutableOntologyLoader loader =
         new OwlImmutableOntologyLoader(ncitPath.toFile());
     final ImmutableOntology ontology = loader.load();
@@ -34,12 +34,12 @@ public class OwlImmutableOntologyLoaderTest {
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
     TermPrefix termPrefix = new TermPrefix("NCIT");
-    TermId t1 = new TermId(termPrefix, "C2919");
-    TermId t2 = new TermId(termPrefix, "C2852");
-    TermId t3 = new TermId(termPrefix, "C48596");
-    TermId t4 = new TermId(termPrefix, "C60312");
-    TermId t5 = new TermId(termPrefix, "C116977");
-    TermId t6 = new TermId(termPrefix, "C126659");
+    TermId t1 = TermId.of(termPrefix, "C2919");
+    TermId t2 = TermId.of(termPrefix, "C2852");
+    TermId t3 = TermId.of(termPrefix, "C48596");
+    TermId t4 = TermId.of(termPrefix, "C60312");
+    TermId t5 = TermId.of(termPrefix, "C116977");
+    TermId t6 = TermId.of(termPrefix, "C126659");
 
     assertTrue(graph.vertexSet().contains(t1));
     assertTrue(graph.vertexSet().contains(t2));
@@ -75,7 +75,7 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getPrefix().getValue(), "owl");
+    assertEquals(rootTermId.getPrefix(), "owl");
     assertEquals(rootTermId.getId(), "Thing");
   }
 
@@ -98,7 +98,7 @@ public class OwlImmutableOntologyLoaderTest {
     // 1. Check whether the example Term instance properly read all xref entries.
     for (Term gt : ontology.getTerms()) {
       for (Dbxref xref : gt.getXrefs()) {
-        Boolean containFlag = false;
+        boolean containFlag = false;
         for (String xrefStr : xrefs) {
           if (xref.getName().contains(xrefStr)) containFlag = true;
         }
@@ -108,7 +108,6 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getPrefix().getValue(), "MONDO");
-    assertEquals(rootTermId.getId(), "0000624");
+    assertEquals(rootTermId.getValue(), "MONDO:0000624");
   }
 }

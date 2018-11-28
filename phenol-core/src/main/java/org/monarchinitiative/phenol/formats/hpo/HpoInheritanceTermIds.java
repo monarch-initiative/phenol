@@ -8,5 +8,5 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public class HpoInheritanceTermIds {
 
-  public static final TermId INHERITANCE_ROOT = TermId.constructWithPrefix("HP:0000005");
+  public static final TermId INHERITANCE_ROOT = TermId.of("HP:0000005");
 }

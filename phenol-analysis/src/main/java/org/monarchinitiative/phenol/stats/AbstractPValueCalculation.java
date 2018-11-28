@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.analysis.StudySet;
@@ -79,7 +78,7 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
                     // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
                     Term term = ontology.getTermMap().get(goId);
                     if (term == null) {
-                        System.err.println("Unable to retrieve term for id=" + goId.getIdWithPrefix());
+                        System.err.println("Unable to retrieve term for id=" + goId.getValue());
                         continue;
                     }
                     // replace an alt_id with the primary id.

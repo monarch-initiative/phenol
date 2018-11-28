@@ -11,6 +11,7 @@ import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,13 +36,13 @@ public class HpoGeneAnnotationParserTest {
     // Read and check first record.
     final HpoGeneAnnotation firstRecord = parser.next();
     assertEquals(
-      "HPOGeneAnnotation [entrezGeneId=8192, entrezGeneSymbol=CLPP, termName=Primary amenorrhea, termId=TermId [prefix=TermPrefix [value=HP], id=0000786]]",
-      firstRecord.toString());
+      new HpoGeneAnnotation(8192,"CLPP", "Primary amenorrhea", TermId.of("HP:0000786")),
+      firstRecord);
     // Read remaining records and check count.
     int count = 1;
     while (parser.hasNext()) {
       parser.next();
-      count += 1;
+      count++;
     }
     assertEquals(9, count);
 

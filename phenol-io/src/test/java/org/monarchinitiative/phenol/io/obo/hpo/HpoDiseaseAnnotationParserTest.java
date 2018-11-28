@@ -39,7 +39,7 @@ public class HpoDiseaseAnnotationParserTest {
 
     hpoHeadFile = tmpFolder.newFile("hp_head.obo");
     ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpOboParser oboParser = new HpOboParser(hpoHeadFile, true);
+    final HpOboParser oboParser = new HpOboParser(hpoHeadFile);
     final HpoOntology ontology = oboParser.parse();
 
     File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
@@ -58,27 +58,27 @@ public class HpoDiseaseAnnotationParserTest {
   @Test
   public void testDiseaseOneInheritance() {
     // Test that the parser correctly parses disease Id and number of annotations (4) of disease 1
-    HpoDisease testDisease = diseaseMap.get(TermId.constructWithPrefix("OMIM:123456"));
-    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.constructWithPrefix("OMIM:123456"));
+    HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:123456"));
+    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:123456"));
     // This disease is annotated with Autosomal recessive inheritance HP:0000007 con
     assertEquals(1,testDisease.getModesOfInheritance().size());
-    TermId autosomalRecessive = TermId.constructWithPrefix("HP:0000007");
+    TermId autosomalRecessive = TermId.of("HP:0000007");
     assertEquals(autosomalRecessive,testDisease.getModesOfInheritance().get(0));
   }
 
   @Test
   public void testDiseaseOneAnnotationCount() {
     // Test that the parser correctly parses disease Id and number of annotations (4) of disease 1
-    HpoDisease testDisease = diseaseMap.get(TermId.constructWithPrefix("OMIM:123456"));
-    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.constructWithPrefix("OMIM:123456"));
+    HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:123456"));
+    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:123456"));
     // This disease is annotated with Autosomal recessive inheritance HP:0000007 con
     assertEquals(3,testDisease.getPhenotypicAbnormalities().size());
     //Lacrimation abnormality HP:0000632
-    TermId lacrimation = TermId.constructWithPrefix("HP:0000632");
+    TermId lacrimation = TermId.of("HP:0000632");
     //Abnormal pupillary function HP:0007686
-    TermId pupillary = TermId.constructWithPrefix("HP:0007686");
+    TermId pupillary = TermId.of("HP:0007686");
     // Microphthalmia HP:0000568
-    TermId microphthalmia = TermId.constructWithPrefix("HP:0000568");
+    TermId microphthalmia = TermId.of("HP:0000568");
     List<TermId> abnormalities = testDisease.getPhenotypicAbnormalities().
       stream().
       map(HpoAnnotation::getTermId).
@@ -92,27 +92,27 @@ public class HpoDiseaseAnnotationParserTest {
   @Test
   public void testDiseaseTwoInheritance()  {
     // Test that the parser correctly parses disease Id and number of annotations (3) of disease 1
-    HpoDisease testDisease = diseaseMap.get(TermId.constructWithPrefix("OMIM:654321"));
-    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.constructWithPrefix("OMIM:654321"));
+    HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:654321"));
+    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:654321"));
     // This disease is annotated with Autosomal recessive inheritance HP:0000007 con
     assertEquals(1,testDisease.getModesOfInheritance().size());
-    TermId autosomalDominant = TermId.constructWithPrefix("HP:0000006");
+    TermId autosomalDominant = TermId.of("HP:0000006");
     assertEquals(autosomalDominant,testDisease.getModesOfInheritance().get(0));
   }
 
   @Test
   public void testDiseaseTwoAnnotations() {
     // Test that the parser correctly parses disease Id and number of annotations (2) of disease 1
-    HpoDisease testDisease = diseaseMap.get(TermId.constructWithPrefix("OMIM:654321"));
-    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.constructWithPrefix("OMIM:654321"));
+    HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:654321"));
+    assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:654321"));
     // This disease is annotated with Autosomal recessive inheritance HP:0000007 con
     assertEquals(2,testDisease.getPhenotypicAbnormalities().size());
     //Lacrimation abnormality HP:0000632
-    TermId lacrimation = TermId.constructWithPrefix("HP:0000632");
+    TermId lacrimation = TermId.of("HP:0000632");
     //Abnormal pupillary function HP:0007686
-    TermId pupillary = TermId.constructWithPrefix("HP:0007686");
+    TermId pupillary = TermId.of("HP:0007686");
     // Microphthalmia HP:0000568
-    TermId microphthalmia = TermId.constructWithPrefix("HP:0000568"); // a NOT for disease 2
+    TermId microphthalmia = TermId.of("HP:0000568"); // a NOT for disease 2
     List<TermId> abnormalities = testDisease.getPhenotypicAbnormalities().
       stream().
       map(HpoAnnotation::getTermId).

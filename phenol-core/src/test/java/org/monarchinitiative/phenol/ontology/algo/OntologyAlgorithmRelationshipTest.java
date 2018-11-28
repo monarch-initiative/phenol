@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
@@ -11,8 +10,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.junit.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -55,24 +52,22 @@ public class OntologyAlgorithmRelationshipTest {
       .build();
   }
 
-
-
   @Before
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    root = TermId.constructWithPrefix("HP:0000001");
-    t1 = TermId.constructWithPrefix("HP:0000002");
-    t2 = TermId.constructWithPrefix("HP:0000003");
-    t3 = TermId.constructWithPrefix("HP:0000004");
-    t1_1 = TermId.constructWithPrefix("HP:0000005");
-    t1_2 = TermId.constructWithPrefix("HP:0000006");
-    t1_1_1 = TermId.constructWithPrefix("HP:0000007");
-    t1_1_2 = TermId.constructWithPrefix("HP:0000008");
-    t2_1 = TermId.constructWithPrefix("HP:0000009");
-    t2_2 = TermId.constructWithPrefix("HP:0000010");
-    t3_1 = TermId.constructWithPrefix("HP:0000011");
-    t3_2 = TermId.constructWithPrefix("HP:0000012");
+    root = TermId.of("HP:0000001");
+    t1 = TermId.of("HP:0000002");
+    t2 = TermId.of("HP:0000003");
+    t3 = TermId.of("HP:0000004");
+    t1_1 = TermId.of("HP:0000005");
+    t1_2 = TermId.of("HP:0000006");
+    t1_1_1 = TermId.of("HP:0000007");
+    t1_1_2 = TermId.of("HP:0000008");
+    t2_1 = TermId.of("HP:0000009");
+    t2_2 = TermId.of("HP:0000010");
+    t3_1 = TermId.of("HP:0000011");
+    t3_2 = TermId.of("HP:0000012");
 
     graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, t1, root, 1);
@@ -131,8 +126,6 @@ public class OntologyAlgorithmRelationshipTest {
     termMap = termMapBuilder.build();
 
     obsoleteTermMap = ImmutableMap.of();
-
-
 
     ontology =
         new ImmutableOntology(

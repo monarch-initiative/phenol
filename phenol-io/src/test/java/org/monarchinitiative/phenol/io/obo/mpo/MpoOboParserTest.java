@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +25,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.SimpleXref;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
 
 
 /**
@@ -52,15 +52,15 @@ public class MpoOboParserTest {
   @Test
   public void testNumberOfTermsParsed() {
     // mp_head.obo has four valid MP terms
-   assertEquals(4,ontology.countNonObsoleteTerms());
+    assertEquals(4, ontology.countNonObsoleteTerms());
   }
 
   @Test
   public void testFindPrimaryId() {
     // MP:0000368 is an alt_id of MP:0002075
-    TermId altId = TermId.constructWithPrefix("MP:0000368");
-    TermId primaryId = TermId.constructWithPrefix("MP:0002075");
-    assertEquals(primaryId,ontology.getPrimaryTermId(altId));
+    TermId altId = TermId.of("MP:0000368");
+    TermId primaryId = TermId.of("MP:0002075");
+    assertEquals(primaryId, ontology.getPrimaryTermId(altId));
   }
 
   @Test
@@ -68,20 +68,20 @@ public class MpoOboParserTest {
     //id: MP:0001188
     //name: hyperpigmentation
     //def: "excess of pigment in any or all tissues or a part of a tissue" [ISBN:0-683-40008-8, PMID:9778510]
-    TermId tid = TermId.constructWithPrefix("MP:0001188");
+    TermId tid = TermId.of("MP:0001188");
     Term term = ontology.getTermMap().get(tid);
     List<SimpleXref> pmidXrefs = term.getPmidXrefs();
-    assertEquals(1,pmidXrefs.size());
+    assertEquals(1, pmidXrefs.size());
     SimpleXref sxref = pmidXrefs.get(0);
     assertTrue(sxref.isPmid());
-    assertEquals("PMID:9778510",sxref.getCurie());
+    assertEquals("PMID:9778510", sxref.getCurie());
 
     List<SimpleXref> allXrefs = term.getDatabaseXrefs();
-    assertEquals(2,allXrefs.size());
+    assertEquals(2, allXrefs.size());
     Optional<SimpleXref> isbn = allXrefs.stream().filter(SimpleXref::isIsbn).findAny();
     assertTrue(isbn.isPresent());
-    sxref=isbn.get();
-    assertEquals("0-683-40008-8",sxref.getId());
+    sxref = isbn.get();
+    assertEquals("0-683-40008-8", sxref.getId());
   }
 
   @Test
@@ -90,16 +90,15 @@ public class MpoOboParserTest {
     //name: abnormal coat/hair pigmentation
     //alt_id: MP:0000368
     //def: "irregular or unusual pigmentation of the hair" [MGI:csmith]
-    TermId tid = TermId.constructWithPrefix("MP:0002075");
+    TermId tid = TermId.of("MP:0002075");
     Term term = ontology.getTermMap().get(tid);
     List<SimpleXref> allXrefs = term.getDatabaseXrefs();
-    assertEquals(1,allXrefs.size());
+    assertEquals(1, allXrefs.size());
     SimpleXref sxref = allXrefs.get(0);
     assertTrue(sxref.isMgi());
-    assertEquals("MGI:csmith",sxref.getCurie());
-    assertEquals("csmith",sxref.getId());
+    assertEquals("MGI:csmith", sxref.getCurie());
+    assertEquals("csmith", sxref.getId());
   }
-
 
 
   /**
@@ -109,11 +108,11 @@ public class MpoOboParserTest {
   public void testGetAllFourTerms() throws PhenolException {
     Collection<Term> terms = ontology.getTerms();
     Set<TermId> tids = terms.stream().map(Term::getId).collect(Collectors.toSet());
-    assertTrue(tids.contains(TermId.constructWithPrefix("MP:0000001")));
-    assertTrue(tids.contains(TermId.constructWithPrefix("MP:0001186")));
-    assertTrue(tids.contains(TermId.constructWithPrefix("MP:0001188")));
-    assertTrue(tids.contains(TermId.constructWithPrefix("MP:0002075")));
-    TermId fakeTerm = TermId.constructWithPrefix("MP:1234567");
+    assertTrue(tids.contains(TermId.of("MP:0000001")));
+    assertTrue(tids.contains(TermId.of("MP:0001186")));
+    assertTrue(tids.contains(TermId.of("MP:0001188")));
+    assertTrue(tids.contains(TermId.of("MP:0002075")));
+    TermId fakeTerm = TermId.of("MP:1234567");
     assertFalse(tids.contains(fakeTerm));
   }
 
@@ -123,12 +122,10 @@ public class MpoOboParserTest {
 
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
-    assertEquals(graph.edgeSet().size(), 3);
+    assertEquals(3, graph.edgeSet().size());
 
-    assertEquals(
-        "TermId [prefix=TermPrefix [value=MP], id=0000001]",
-        ontology.getRootTermId().toString());
+    assertEquals(TermId.of("MP:0000001"), ontology.getRootTermId());
 
-    assertEquals("{data-version=http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl}", ontology.getMetaInfo().toString());
+    assertEquals(ImmutableMap.of("data-version","http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl"), ontology.getMetaInfo());
   }
 }

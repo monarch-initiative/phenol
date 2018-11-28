@@ -17,7 +17,7 @@ import java.util.Objects;
 public class HpoAnnotation {
   /** Note that we still do not have valid freuqency information for all of the annotations; the default
    * is to show "n/a"*/
-  private final static String DEFAULT_FREQUENCY_STRING="n/a";
+  private static final String DEFAULT_FREQUENCY_STRING = "n/a";
   /** The annotated {@link TermId}. */
   private final TermId termId;
   /** The frequency with which this phenotypic abnormality is seen in patients with this disease */
@@ -50,16 +50,12 @@ public class HpoAnnotation {
     this.citations=cites;
   }
 
-//  public HpoAnnotation(HpoAnnotationLine line){
-//
-//  }
-
   public static HpoAnnotation forTerm(TermId t) {
     return new Builder(t).build();
   }
 
   public static HpoAnnotation parseTerm(String id) {
-    TermId tid = TermId.constructWithPrefix(id);
+    TermId tid = TermId.of(id);
     return forTerm(tid);
   }
 
@@ -100,7 +96,7 @@ public class HpoAnnotation {
    * @return The full HPO, id, e.g., HP:0000123.
    */
   public String getIdWithPrefix() {
-    return this.termId.getIdWithPrefix();
+    return this.termId.getValue();
   }
 
   /**

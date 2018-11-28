@@ -31,27 +31,27 @@ public class SimpleFeatureVectorSimilarityTest {
         1.0,
         similarity.computeScore(
             Lists.newArrayList(
-                TermId.constructWithPrefix("HP:0000008"),
-                TermId.constructWithPrefix("HP:0000009")),
-            Lists.newArrayList(TermId.constructWithPrefix("HP:0000008"))),
+                TermId.of("HP:0000008"),
+                TermId.of("HP:0000009")),
+            Lists.newArrayList(TermId.of("HP:0000008"))),
         0.01);
     assertEquals(
         1.0,
         similarity.computeScore(
             Lists.newArrayList(
-                TermId.constructWithPrefix("HP:0000008"),
-                TermId.constructWithPrefix("HP:0000009")),
+                TermId.of("HP:0000008"),
+                TermId.of("HP:0000009")),
             Lists.newArrayList(
-                TermId.constructWithPrefix("HP:0000008"),
-                TermId.constructWithPrefix("HP:0000010"))),
+                TermId.of("HP:0000008"),
+                TermId.of("HP:0000010"))),
         0.01);
     assertEquals(
         0.0,
         similarity.computeScore(
-            Lists.newArrayList(TermId.constructWithPrefix("HP:0000009")),
+            Lists.newArrayList(TermId.of("HP:0000009")),
             Lists.newArrayList(
-                TermId.constructWithPrefix("HP:0000008"),
-                TermId.constructWithPrefix("HP:0000010"))),
+                TermId.of("HP:0000008"),
+                TermId.of("HP:0000010"))),
         0.01);
   }
 }

@@ -16,11 +16,10 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
 
   private TermId termId;
   private TermId label;
-  private final TermPrefix VEGGIE_PRE=new TermPrefix("VEG");
 
   public VegetableRecipeAnnotation(TermId termId, String label) {
     this.termId = termId;
-    this.label = new TermId(VEGGIE_PRE,label);
+    this.label = TermId.of("VEG", label);
   }
 
   @Override

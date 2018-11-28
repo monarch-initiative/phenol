@@ -231,7 +231,7 @@ public class ComputeSimilarityDemo {
         // TODO: add convenience routines for converting from term strings, filtering out obsolete
         // ones, possibly falling back to replaced_by
         final List<TermId> unfilteredHpoTermIds = rawHpoTermIds.stream()
-          .map(s -> TermId.constructWithPrefix(s)).collect(Collectors.toList());
+          .map(s -> TermId.of(s)).collect(Collectors.toList());
         final List<TermId> hpoTermIds = unfilteredHpoTermIds.stream().filter(termId -> {
           if (hpo.getObsoleteTermIds().contains(termId)) {
             System.err.println("File contained term which is marked as obsolete!" + termId.getIdWithPrefix());

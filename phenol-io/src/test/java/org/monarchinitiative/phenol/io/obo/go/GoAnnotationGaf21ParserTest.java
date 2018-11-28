@@ -48,7 +48,7 @@ public class GoAnnotationGaf21ParserTest {
     assertEquals("UniProtKB",firstRecord.getDb());
     assertEquals("A0A024R161",firstRecord.getDbObjectId());
     assertEquals("DNAJC25-GNG10",firstRecord.getDbObjectSymbol());
-    TermId expectedId= TermId.constructWithPrefix("GO:0004871");
+    TermId expectedId= TermId.of("GO:0004871");
     assertEquals(expectedId,firstRecord.getGoId());
     assertNotNull(firstRecord.getEvidenceCode().get());
     assertEquals("IEA",firstRecord.getEvidenceCode().get());

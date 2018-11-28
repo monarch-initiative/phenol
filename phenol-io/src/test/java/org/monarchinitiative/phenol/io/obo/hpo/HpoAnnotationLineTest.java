@@ -65,7 +65,7 @@ public class HpoAnnotationLineTest {
     assertFalse(hpoAnnot.isNOT());
     assertEquals(EMPTY_STRING,hpoAnnot.getFrequency());
     TermId diseaseId = hpoAnnot.getDiseaseTermId();
-    TermId expected = TermId.constructWithPrefix("OMIM:269150");
+    TermId expected = TermId.of("OMIM:269150");
     assertEquals(expected,diseaseId);
 
   }
@@ -118,7 +118,7 @@ public class HpoAnnotationLineTest {
       };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.895;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -149,7 +149,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.025;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -177,7 +177,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.17;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -206,7 +206,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.545;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -234,7 +234,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=1.0;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -262,7 +262,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.0;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);

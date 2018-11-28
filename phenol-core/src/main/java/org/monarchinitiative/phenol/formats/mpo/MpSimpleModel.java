@@ -62,8 +62,8 @@ public class MpSimpleModel extends MpModel {
     String abn=phenotypicAbnormalities.stream().
       map(MpAnnotation::toString).
       collect(Collectors.joining("\n"));
-    return String.format("[MpSimpleModel: %s] %s %s(%s): %s / %s \n%s", this.genotypeId.getIdWithPrefix(),
-      this.markerId.getIdWithPrefix(),this.alleleSymbol,this.alleleId.getIdWithPrefix() ,
+    return String.format("[MpSimpleModel: %s] %s %s(%s): %s / %s \n%s", this.genotypeId.getValue(),
+      this.markerId.getValue(),this.alleleSymbol,this.alleleId.getValue() ,
       this.allelicComposition,this.strain, abn);
   }
 

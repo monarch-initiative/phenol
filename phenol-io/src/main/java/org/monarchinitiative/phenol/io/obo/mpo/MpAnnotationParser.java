@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.mpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -195,7 +196,7 @@ public class MpAnnotationParser {
         try {
           sexSpecific = imapbuilder.build();
         } catch (Exception e) {
-          System.err.println("Error building map of sex-specific annotations for " + genoId.getIdWithPrefix() + ": " + e.getMessage());
+          System.err.println("Error building map of sex-specific annotations for " + genoId.getValue() + ": " + e.getMessage());
         }
       }
       while (it.hasNext()) {
@@ -273,21 +274,29 @@ public class MpAnnotationParser {
     private final TermId markerAccessionId;
     private final TermId genotypeAccessionId;
 
-    AnnotationLine(String[] A) throws PhenolException {
-      this.allelicComp = MpAllelicComposition.fromString(A[ALLELIC_COMPOSITION_IDX]);
-      this.alleleSymbol = A[ALLELE_SYMBOL_IDX];
-      this.alleleId=TermId.constructWithPrefixInternal(A[ALLELE_ID_IDX]);
-      this.geneticBackground=MpStrain.fromString(A[GENETIC_BACKGROUND_IDX]);
-      this.mpId = TermId.constructWithPrefixInternal(A[MPO_IDX]);
-      String pmids=A[PUBMED_IDX];
+    AnnotationLine(String[] annotations) throws PhenolException {
+      this.allelicComp = MpAllelicComposition.fromString(annotations[ALLELIC_COMPOSITION_IDX]);
+      this.alleleSymbol = annotations[ALLELE_SYMBOL_IDX];
+      this.alleleId = parseOrThrowException(annotations[ALLELE_ID_IDX]);
+      this.geneticBackground = MpStrain.fromString(annotations[GENETIC_BACKGROUND_IDX]);
+      this.mpId = parseOrThrowException(annotations[MPO_IDX]);
+      String pmids = annotations[PUBMED_IDX];
       ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-      String B[]=pmids.split(Pattern.quote("|"));
-      for (String b: B) {
+      String[] pubMedIds = pmids.split(Pattern.quote("|"));
+      for (String b : pubMedIds) {
         builder.add(b);
       }
-      this.pmidList=builder.build();
-      this.markerAccessionId=TermId.constructWithPrefixInternal(A[MGI_MARKER_IDX]);
-      this.genotypeAccessionId=TermId.constructWithPrefixInternal(A[GENOTYPE_ACCESSION_IDX]);
+      this.pmidList = builder.build();
+      this.markerAccessionId = parseOrThrowException(annotations[MGI_MARKER_IDX]);
+      this.genotypeAccessionId = parseOrThrowException(annotations[GENOTYPE_ACCESSION_IDX]);
+    }
+
+    private TermId parseOrThrowException(String termId) throws PhenolException {
+      try {
+        return TermId.of(termId);
+      } catch (PhenolRuntimeException e) {
+        throw new PhenolException(e.getMessage());
+      }
     }
 
     public MpAllelicComposition getAllelicComp() {
@@ -346,9 +355,9 @@ public class MpAnnotationParser {
     private final List<String> pmidList;
 
     SexSpecificAnnotationLine(String[] A) throws PhenolException {
-      this.genotypeID=TermId.constructWithPrefix(A[0]);
+      this.genotypeID=TermId.of(A[0]);
       this.sex = MpSex.fromString(A[1]);
-      this.mpId = TermId.constructWithPrefix(A[2]);
+      this.mpId = TermId.of(A[2]);
       this.allelicComposition =  MpAllelicComposition.fromString(A[3]);
       this.strain = MpStrain.fromString(A[4]);
       negated = A[5].equals("Y");

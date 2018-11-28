@@ -60,7 +60,7 @@ public class GoOboParserTest {
   @Test
   public void testArtificialRootTerm() {
     TermId tid = ontology.getRootTermId();
-    TermId expected = TermId.constructWithPrefix("GO:0000000");
+    TermId expected = TermId.of("GO:0000000");
     assertEquals(expected,tid);
   }
 

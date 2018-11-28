@@ -143,18 +143,17 @@ public final class HpoDisease {
 
   @Override
   public String toString() {
-    String abnormalityList =
-        phenotypicAbnormalities
-            .stream()
-            .map(HpoAnnotation::getIdWithPrefix)
-            .collect(Collectors.joining(";"));
+    String abnormalityList = phenotypicAbnormalities
+      .stream()
+      .map(HpoAnnotation::getIdWithPrefix)
+      .collect(Collectors.joining(";"));
     return String.format(
-        "HpoDisease [name=%s;%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
-        name, diseaseDatabaseId.getIdWithPrefix(), abnormalityList, modesOfInheritance);
+      "HpoDisease [name=%s;%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
+      name, diseaseDatabaseId.getValue(), abnormalityList, modesOfInheritance);
   }
 
   /** @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER (prefix of the diseaseId) */
   public String getDatabase() {
-    return diseaseDatabaseId.getPrefix().getValue();
+    return diseaseDatabaseId.getPrefix();
   }
 }

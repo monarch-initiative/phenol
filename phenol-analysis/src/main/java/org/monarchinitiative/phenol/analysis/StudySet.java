@@ -96,7 +96,7 @@ public class StudySet {
           // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
           Term term = ontology.getTermMap().get(goId);
           if (term == null) {
-            System.err.println("Unable to retrieve term for id=" + goId.getIdWithPrefix());
+            System.err.println("Unable to retrieve term for id=" + goId.getValue());
             continue;
           }
           // replace an alt_id with the primary id.

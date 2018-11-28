@@ -8,30 +8,29 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents an assertion that a gene or genes is(are) causally involved with a disease.
+ *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class DiseaseToGeneAssociation {
 
-
-
-  /** The CURIE representing a disease, e.g., OMIM:600100. */
+  /**
+   * The CURIE representing a disease, e.g., OMIM:600100.
+   */
   private final TermId disease;
-
-
   private final List<GeneToAssociation> gene2assoc;
 
   public DiseaseToGeneAssociation(TermId id, List<GeneToAssociation> genes) {
-    this.gene2assoc=genes;
-    this.disease=id;
-
+    this.gene2assoc = genes;
+    this.disease = id;
   }
-
 
   public TermId getDiseaseId() {
     return disease;
   }
 
-  /** @return a list of all genes (regardless of bla32 type). */
+  /**
+   * @return a list of all genes (regardless of bla32 type).
+   */
   public List<Gene> getGeneList() {
     return gene2assoc.stream().map(GeneToAssociation::getGene).collect(Collectors.toList());
   }
@@ -43,12 +42,12 @@ public class DiseaseToGeneAssociation {
   @Override
   public String toString() {
     return String.format("%s: %s",
-      disease.getIdWithPrefix(),
+      disease.getValue(),
       gene2assoc.stream().
         map(GeneToAssociation::getGene).
         map(Gene::toString).
         collect(Collectors.joining(";"))
-      );
+    );
   }
 
 }

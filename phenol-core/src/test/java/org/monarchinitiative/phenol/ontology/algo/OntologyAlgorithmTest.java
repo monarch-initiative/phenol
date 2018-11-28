@@ -40,11 +40,11 @@ public class OntologyAlgorithmTest {
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    id1 = TermId.constructWithPrefix("HP:0000001");
-    id2 = TermId.constructWithPrefix("HP:0000002");
-    id3 = TermId.constructWithPrefix("HP:0000003");
-    id4 = TermId.constructWithPrefix("HP:0000004");
-    id5 = TermId.constructWithPrefix("HP:0000005");
+    id1 = TermId.of("HP:0000001");
+    id2 = TermId.of("HP:0000002");
+    id3 = TermId.of("HP:0000003");
+    id4 = TermId.of("HP:0000004");
+    id5 = TermId.of("HP:0000005");
 
     graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, id1, id2, 1);

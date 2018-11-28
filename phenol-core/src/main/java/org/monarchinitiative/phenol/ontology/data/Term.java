@@ -78,7 +78,7 @@ public class Term {
   public static Term of(String termIdString, String name) {
     Objects.requireNonNull(termIdString);
     Objects.requireNonNull(name);
-    TermId termId = TermId.constructWithPrefix(termIdString);
+    TermId termId = TermId.of(termIdString);
     return new Term(termId, name);
   }
 

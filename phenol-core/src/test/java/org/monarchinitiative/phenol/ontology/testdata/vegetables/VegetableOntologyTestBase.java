@@ -51,13 +51,13 @@ public class VegetableOntologyTestBase {
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    idVegetable = TermId.constructWithPrefix("VO:0000001");
-    idRootVegetable = TermId.constructWithPrefix("VO:0000002");
-    idLeafVegetable = TermId.constructWithPrefix("VO:0000003");
-    idCarrot = TermId.constructWithPrefix("VO:0000004");
-    idBeet = TermId.constructWithPrefix("VO:0000005");
-    idPumpkin = TermId.constructWithPrefix("VO:0000006");
-    idBlueCarrot = TermId.constructWithPrefix("VO:0000007");
+    idVegetable = TermId.of("VO:0000001");
+    idRootVegetable = TermId.of("VO:0000002");
+    idLeafVegetable = TermId.of("VO:0000003");
+    idCarrot = TermId.of("VO:0000004");
+    idBeet = TermId.of("VO:0000005");
+    idPumpkin = TermId.of("VO:0000006");
+    idBlueCarrot = TermId.of("VO:0000007");
 
     vertices = ImmutableList.of(
             idVegetable,

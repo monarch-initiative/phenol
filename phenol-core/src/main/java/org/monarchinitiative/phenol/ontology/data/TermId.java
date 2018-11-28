@@ -1,10 +1,9 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import com.google.common.collect.ComparisonChain;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Immutable  TermId.
@@ -17,105 +16,77 @@ public final class TermId implements Comparable<TermId>, Serializable {
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 2L;
 
-  /** Prefix of the TermIdI. */
-  private final TermPrefix prefix;
-
-  /** Identifier behind the prefix. */
-  private final String id;
+  private final int separatorPos;
+  private final String value;
 
   /**
-   * Construct from term ID including prefix.
+   * Construct from term ID including prefix. e.g. HP:1234567
    *
-   * @param termIdString String with term Id to construct with.
+   * @param termId String with term Id to construct with.
    * @return Resulting {@link TermId}.
    * @throws PhenolRuntimeException if the string does not have a prefix
    */
-  public static TermId constructWithPrefix(String termIdString) {
-    final int pos = termIdString.indexOf(':');
+  public static TermId of(String termId) {
+    int pos = findPrefixSeparatorPosition(':', termId);
+    return new TermId(pos, termId);
+  }
+
+  public static TermId of(String termPrefix, String id) {
+    int pos = termPrefix.length();
+    String termId = String.join(":", termPrefix, id);
+    return new TermId(pos, termId);
+  }
+
+  public static TermId of(TermPrefix prefix, String id) {
+    return of(prefix.getValue(), id);
+  }
+
+  private static int findPrefixSeparatorPosition(char separator, String termIdString) {
+    int pos = termIdString.indexOf(separator);
     if (pos == -1) {
       throw new PhenolRuntimeException(
-          "TermId construction error: \"" + termIdString + "\" does not have a prefix!");
-    } else {
-      return new TermId(
-          new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
+          "TermId construction error: '" + termIdString + "' does not have a prefix!");
     }
+    return pos;
   }
 
-
-  /**
-   * Construct from term ID including prefix. This function has a checked exception which makes it easier for
-   * chains of errors to be propagated.
-   *
-   * @param termIdString String with term Id to construct with.
-   * @return Resulting {@link TermId}.
-   * @throws PhenolException if the string does not have a prefix
-   */
-  public static TermId constructWithPrefixInternal(String termIdString) throws PhenolException {
-    final int pos = termIdString.indexOf(':');
-    if (pos == -1) {
-      throw new PhenolException(
-        "TermId construction error: \"" + termIdString + "\" does not have a prefix!");
-    } else {
-      return new TermId(
-        new TermPrefix(termIdString.substring(0, pos)), termIdString.substring(pos + 1));
-    }
+  private TermId(int separatorPos, String termId) {
+    this.separatorPos = separatorPos;
+    this.value = termId;
   }
 
-  /**
-   * Constructor.
-   *
-   * @param prefix Prefix to use.
-   * @param id Identifier after the prefix.
-   */
-  public TermId(TermPrefix prefix, String id) {
-    this.prefix = prefix;
-    this.id = id;
+  public String getPrefix() {
+    return value.substring(0, separatorPos);
+  }
+
+  public String getId() {
+    return value.substring(separatorPos + 1);
+  }
+
+  public String getValue() {
+    return value;
   }
 
   @Override
   public int compareTo(TermId that) {
-    return ComparisonChain.start()
-        .compare(this.getPrefix(), that.getPrefix())
-        .compare(this.getId(), that.getId())
-        .result();
-  }
-
-  public TermPrefix getPrefix() {
-    return prefix;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getIdWithPrefix() {
-    return prefix.getValue() + ":" + id;
+    return this.value.compareTo(that.value);
   }
 
   @Override
-  public String toString() {
-    return "TermId [prefix=" + prefix + ", id=" + id + "]";
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TermId termId1 = (TermId) o;
+    return Objects.equals(value, termId1.value);
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
-    return result;
+    return Objects.hash(value);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    // Manual short-cuts for the important special cases.
-    if (this == obj) {
-      return true;
-    } else if (obj instanceof TermId) {
-      final TermId that = (TermId) obj;
-      return this.prefix.equals(that.getPrefix()) && (this.id.equals(that.getId()));
-    } else {
-      return false;
-    }
+  public String toString() {
+    return value;
   }
 }

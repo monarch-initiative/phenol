@@ -76,7 +76,7 @@
 //  @Test
 //  public void testRootTerm() {
 //    Ontology ontology = optionalOntology.get();
-//    TermId root = TermId.constructWithPrefix("UBERPHENO:00000001");
+//    TermId root = TermId.of("UBERPHENO:00000001");
 //    //TODO -- currently broken!!!!!!!!!!!
 //    //assertEquals(root,ontology.getRootTermId());
 //  }

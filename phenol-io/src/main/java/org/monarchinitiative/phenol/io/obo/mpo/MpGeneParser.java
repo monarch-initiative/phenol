@@ -60,7 +60,7 @@ public class MpGeneParser {
       String[] fields = line.split("\t");
       // first field is MGI Accession ID, seventh is Marker Symbol, tenth is Marker Type
       //String mgiId = fields[0];
-      TermId mgiId = TermId.constructWithPrefix(fields[0]);
+      TermId mgiId = TermId.of(fields[0]);
         bld.put(mgiId, createMpGene(mgiId, fields[6], fields[9]));
     }
     br.close();

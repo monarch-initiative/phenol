@@ -50,7 +50,7 @@ public class AssociationContainer {
      */
     public ItemAssociations get(TermId dbObjectId) throws PhenolException {
        if (! this.gene2associationMap.containsKey(dbObjectId)) {
-           throw new PhenolException("Could not find annotations for " + dbObjectId.getIdWithPrefix());
+           throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());
        } else {
            return this.gene2associationMap.get(dbObjectId);
        }

@@ -36,9 +36,6 @@ public class OrphaGeneToDiseaseParser {
   private boolean inDisorderGeneAssociation = false;
   private boolean inDisorderGeneAssociationList = false;
 
-
-  private final static TermPrefix ORPHA_PREFIX = new TermPrefix("ORPHA");
-
   /**
    * Key: e.g., ORPHA:163746 (for Peripheral demyelinating neuropathy-central dysmyelinating
    * leukodystrophy-Waardenburg syndrome-Hirschsprung disease). Value, corresponding gene symbol(s),
@@ -127,7 +124,7 @@ public class OrphaGeneToDiseaseParser {
             if (currentOrphanum != null &&
               currentDiseasename != null &&
               currentGeneSymbol != null) {
-              TermId orphaId = new TermId(ORPHA_PREFIX, currentOrphanum);
+              TermId orphaId = TermId.of("ORPHA", currentOrphanum);
               this.orphaDiseaseToGeneSymbol.put(orphaId, currentGeneSymbol);
               currentGeneSymbol = null; // reset
             }

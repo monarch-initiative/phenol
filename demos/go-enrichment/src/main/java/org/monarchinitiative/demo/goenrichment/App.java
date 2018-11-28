@@ -21,7 +21,7 @@ public final class App {
   private String pathGoGaf;
   /** We will create a study set that has 1/3 of the genes associated with this term
    * and three times as many other terms. GO:0070997 is 'neuron death'.*/
-  private final static TermId DEFAULT_GO_ID = TermId.constructWithPrefix("GO:0070997");
+  private final static TermId DEFAULT_GO_ID = TermId.of("GO:0070997");
   /** Term Id of a GO term we will investigate */
   private TermId targetGoTerm=DEFAULT_GO_ID;
 
@@ -142,7 +142,7 @@ public final class App {
     pathGoObo = args[0];
     pathGoGaf = args[1];
     if (args.length==3) {
-      targetGoTerm = TermId.constructWithPrefix(args[2]);
+      targetGoTerm = TermId.of(args[2]);
     }
   }
 

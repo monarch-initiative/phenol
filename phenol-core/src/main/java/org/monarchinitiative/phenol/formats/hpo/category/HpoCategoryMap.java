@@ -35,32 +35,32 @@ public class HpoCategoryMap {
      * several subcategories.*/
     private final ImmutableMap<TermId, HpoCategory> categorymap;
 
-    private static final TermId INHERITANCE_ID = TermId.constructWithPrefix("HP:0000005");
-    private static final TermId ABNORMAL_CELLULAR_ID = TermId.constructWithPrefix("HP:0025354");
-    private static final TermId BLOOD_ID = TermId.constructWithPrefix("HP:0001871");
-    private static final TermId CONNECTIVE_TISSUE_ID = TermId.constructWithPrefix("HP:0003549");
-    private static final TermId HEAD_AND_NECK_ID = TermId.constructWithPrefix("HP:0000152");
-    private static final TermId LIMBS_ID =TermId.constructWithPrefix("HP:0040064");
-    private static final TermId METABOLISM_ID = TermId.constructWithPrefix("HP:0001939");
-    private static final TermId PRENATAL_ID = TermId.constructWithPrefix("HP:0001197");
-    private static final TermId BREAST_ID = TermId.constructWithPrefix("HP:0000769");
-    private static final TermId CARDIOVASCULAR_ID = TermId.constructWithPrefix("HP:0001626");
-    private static final TermId DIGESTIVE_ID = TermId.constructWithPrefix("HP:0025031");
-    private static final TermId EAR_ID = TermId.constructWithPrefix("HP:0000598");
-    private static final TermId ENDOCRINE_ID = TermId.constructWithPrefix("HP:0000818");
-    private static final TermId EYE_ID = TermId.constructWithPrefix("HP:0000478");
-    private static final TermId GENITOURINARY_ID = TermId.constructWithPrefix("HP:0000119");
-    private static final TermId IMMUNOLOGY_ID = TermId.constructWithPrefix("HP:0002715");
-    private static final TermId INTEGUMENT_ID = TermId.constructWithPrefix("HP:0001574");
-    private static final TermId MUSCLE_ID = TermId.constructWithPrefix("HP:0003011");
-    private static final TermId NERVOUS_SYSTEM_ID = TermId.constructWithPrefix("HP:0000707");
-    private static final TermId RESPIRATORY_ID = TermId.constructWithPrefix("HP:0002086");
-    private static final TermId SKELETAL_ID = TermId.constructWithPrefix("HP:0000924");
-    private static final TermId THORACIC_CAVITY_ID = TermId.constructWithPrefix("HP:0045027");
-    private static final TermId VOICE_ID = TermId.constructWithPrefix("HP:0001608");
-    private static final TermId CONSTITUTIONAL_ID = TermId.constructWithPrefix("HP:0025142");
-    private static final TermId GROWTH_ID = TermId.constructWithPrefix("HP:0001507");
-    private static final TermId NEOPLASM_ID = TermId.constructWithPrefix("HP:0002664");
+    private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
+    private static final TermId ABNORMAL_CELLULAR_ID = TermId.of("HP:0025354");
+    private static final TermId BLOOD_ID = TermId.of("HP:0001871");
+    private static final TermId CONNECTIVE_TISSUE_ID = TermId.of("HP:0003549");
+    private static final TermId HEAD_AND_NECK_ID = TermId.of("HP:0000152");
+    private static final TermId LIMBS_ID =TermId.of("HP:0040064");
+    private static final TermId METABOLISM_ID = TermId.of("HP:0001939");
+    private static final TermId PRENATAL_ID = TermId.of("HP:0001197");
+    private static final TermId BREAST_ID = TermId.of("HP:0000769");
+    private static final TermId CARDIOVASCULAR_ID = TermId.of("HP:0001626");
+    private static final TermId DIGESTIVE_ID = TermId.of("HP:0025031");
+    private static final TermId EAR_ID = TermId.of("HP:0000598");
+    private static final TermId ENDOCRINE_ID = TermId.of("HP:0000818");
+    private static final TermId EYE_ID = TermId.of("HP:0000478");
+    private static final TermId GENITOURINARY_ID = TermId.of("HP:0000119");
+    private static final TermId IMMUNOLOGY_ID = TermId.of("HP:0002715");
+    private static final TermId INTEGUMENT_ID = TermId.of("HP:0001574");
+    private static final TermId MUSCLE_ID = TermId.of("HP:0003011");
+    private static final TermId NERVOUS_SYSTEM_ID = TermId.of("HP:0000707");
+    private static final TermId RESPIRATORY_ID = TermId.of("HP:0002086");
+    private static final TermId SKELETAL_ID = TermId.of("HP:0000924");
+    private static final TermId THORACIC_CAVITY_ID = TermId.of("HP:0045027");
+    private static final TermId VOICE_ID = TermId.of("HP:0001608");
+    private static final TermId CONSTITUTIONAL_ID = TermId.of("HP:0025142");
+    private static final TermId GROWTH_ID = TermId.of("HP:0001507");
+    private static final TermId NEOPLASM_ID = TermId.of("HP:0002664");
 
     public HpoCategoryMap() {
       termIdList = new TermId[]{INHERITANCE_ID,ABNORMAL_CELLULAR_ID,BLOOD_ID,CONNECTIVE_TISSUE_ID,HEAD_AND_NECK_ID,

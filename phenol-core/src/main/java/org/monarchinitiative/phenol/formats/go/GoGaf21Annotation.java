@@ -7,15 +7,12 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Record from GAF v2.1 file.
@@ -127,9 +124,9 @@ public final class GoGaf21Annotation implements TermAnnotation {
       String annotationExtension,
       String geneProductFormId) {
     if (dbObjectId.contains(":")) {
-      this.dbObjectTermId=TermId.constructWithPrefix(dbObjectId);
+      this.dbObjectTermId = TermId.of(dbObjectId);
     } else {
-      this.dbObjectTermId=new TermId(new TermPrefix(db),dbObjectId);
+      this.dbObjectTermId = TermId.of(db, dbObjectId);
     }
     this.dbObjectSymbol = dbObjectSymbol;
     this.qualifier = qualifier;
@@ -161,17 +158,17 @@ public final class GoGaf21Annotation implements TermAnnotation {
         "GAF line had "
           + arr.length
           + " columns, but expected between 15 and 17 entries. \n Line was:"
-          + Arrays.stream(arr).collect(Collectors.joining("\t")));
+          + String.join("\t", arr));
     }
     if (arr[1].contains(":")) {
-      this.dbObjectTermId=TermId.constructWithPrefix(arr[1]);
+      this.dbObjectTermId = TermId.of(arr[1]);
     } else {
-      this.dbObjectTermId=new TermId(new TermPrefix(arr[0]),arr[1]);
+      this.dbObjectTermId = TermId.of(arr[0], arr[1]);
     }
 
     this.dbObjectSymbol = arr[2];
     this.qualifier = arr[3];
-    this.goId = TermId.constructWithPrefix(arr[4]);
+    this.goId = TermId.of(arr[4]);
     this.dbReference = arr[5];
     this.evidenceCode = arr[6];
     this.with = arr[7];
@@ -199,7 +196,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
 
   /** @return The database name. */
   public String getDb() {
-    return this.dbObjectTermId.getPrefix().getValue();
+    return this.dbObjectTermId.getPrefix();
   }
 
   /** @return The object's ID in the database. */
@@ -483,7 +480,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   @Override
   public String toString() {
     return "GoGaf21Annotation [db="
-        + dbObjectTermId.getPrefix().getValue()
+        + dbObjectTermId.getPrefix()
         + ", dbObjectId="
         + dbObjectTermId.getId()
         + ", dbObjectSymbol="

@@ -137,7 +137,7 @@
 //    }
 //    final String termDescription = pair[0];
 //    final TermId termId =
-//        TermId.constructWithPrefix(pair[1].substring(0, pair[1].length() - 1));
+//        TermId.of(pair[1].substring(0, pair[1].length() - 1));
 //
 //    nextLine = reader.readLine();
 //
