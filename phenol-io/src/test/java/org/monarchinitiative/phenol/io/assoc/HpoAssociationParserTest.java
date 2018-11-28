@@ -27,7 +27,7 @@ public class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
   @Before
-  public void init() throws IOException, PhenolException {
+  public void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
 	ClassLoader classLoader = this.getClass().getClassLoader();

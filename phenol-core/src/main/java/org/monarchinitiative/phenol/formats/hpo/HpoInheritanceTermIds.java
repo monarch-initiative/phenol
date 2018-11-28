@@ -1,3 +1,4 @@
+
 package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
