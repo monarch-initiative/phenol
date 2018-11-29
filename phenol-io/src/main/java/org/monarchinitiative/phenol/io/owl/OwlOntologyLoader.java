@@ -18,6 +18,7 @@ import org.geneontology.obographs.model.Node;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -36,10 +37,10 @@ import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public final class OwlOntologyLoader {
+public class OwlOntologyLoader implements OntologyLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OwlOntologyLoader.class);
-  private static CurieUtil curieUtil;
+  private final CurieUtil curieUtil;
   private final File file;
   /** Term ids of non-obsolete Terms. */
   private final Collection<TermId> nonDepreTermIdNodes = Sets.newHashSet();
@@ -63,6 +64,7 @@ public final class OwlOntologyLoader {
     this.factory = new Owl2OboTermFactory();
   }
 
+  @Override
   public Ontology load() throws PhenolException {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
@@ -97,8 +99,7 @@ public final class OwlOntologyLoader {
 
     // Mapping edges in obographs to termIds in phenol
     int edgeId = 1;
-    DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph =
-        new DefaultDirectedGraph<>(IdLabeledEdge.class);
+    DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     Set<String> rootCandSet = Sets.newHashSet();
     Set<String> removeMarkSet = Sets.newHashSet();
 
@@ -109,9 +110,9 @@ public final class OwlOntologyLoader {
       if (! nodeCurie.isPresent() ) continue;
       TermId termId = TermId.of(nodeCurie.get());
       Term term = factory.constructTerm(node, termId);
-      TermPrefix oioPrefix = new TermPrefix("OIO");
-      TermPrefix iaoPrefix = new TermPrefix("IAO");
-      if (term.getId().getPrefix().equals(oioPrefix) || term.getId().getPrefix().equals(iaoPrefix)) continue;
+      if (term.getId().getPrefix().equals("OIO") || term.getId().getPrefix().equals("IAO")) {
+        continue;
+      }
 
       if (term.isObsolete()) {
         depreTermIdNodes.add(termId);
@@ -120,12 +121,7 @@ public final class OwlOntologyLoader {
         phenolGraph.addVertex(termId);
         terms.put(termId, term);
       }
-
-
-
     }
-
-
 
     for (Edge edge : gEdges) {
       String subId = edge.getSub();
@@ -158,8 +154,7 @@ public final class OwlOntologyLoader {
 
       phenolGraph.addVertex(subTermId);
       phenolGraph.addVertex(objTermId);
-      IdLabeledEdge e = new IdLabeledEdge();//edgeFactory.createEdge(subTermId, objTermId);
-      e.setId(edgeId);
+      IdLabeledEdge e = new IdLabeledEdge(edgeId);
       phenolGraph.addEdge(subTermId, objTermId, e);
       RelationshipType reltype = RelationshipType.fromString(edge.getPred());
       Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId,reltype);

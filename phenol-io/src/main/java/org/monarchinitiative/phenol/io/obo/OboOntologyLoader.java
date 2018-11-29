@@ -12,6 +12,7 @@ import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.owlapi.FromOwl;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.owl.OwlOntologyEntryFactory;
 import org.monarchinitiative.phenol.io.owl.Owl2OboTermFactory;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -33,7 +34,7 @@ import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public final class OboOntologyLoader {
+public class OboOntologyLoader implements OntologyLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboOntologyLoader.class);
 
@@ -51,9 +52,7 @@ public final class OboOntologyLoader {
    * @param file Path to the OBO file
    */
   public OboOntologyLoader(File file) throws FileNotFoundException {
-    this.obo = new FileInputStream(file);
-    curieUtil = new CurieUtil(CurieMapGenerator.generate());
-    this.factory = new Owl2OboTermFactory();
+    this(new FileInputStream(file));
   }
   
   public OboOntologyLoader(InputStream obo) {
@@ -62,30 +61,49 @@ public final class OboOntologyLoader {
     this.factory = new Owl2OboTermFactory();
   }
 
+  @Override
   public Ontology load() throws PhenolException {
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-    OWLOntology ontology;
+    OWLOntology owlOntology;
     try {
-      ontology = m.loadOntologyFromOntologyDocument(obo);
+      owlOntology = m.loadOntologyFromOntologyDocument(obo);
     } catch (OWLOntologyCreationException e) {
-      throw new PhenolException(e.toString());
+      throw new PhenolException(e);
     }
     LOGGER.debug("Finished loading OWLOntology");
 
     LOGGER.debug("Converting to obograph graph");
     FromOwl fromOwl = new FromOwl();
-    GraphDocument gd = fromOwl.generateGraphDocument(ontology);
+    GraphDocument gd = fromOwl.generateGraphDocument(owlOntology);
 
     // We assume there is only one graph instance in the graph document instance.
     Graph obograph = gd.getGraphs().get(0);
     if (obograph == null) {
-      LOGGER.warn("No graph in the loaded ontology.");
-      throw new PhenolException("PhenolException[ERROR]: No graph in the loaded ontology.");
+      LOGGER.error("No graph in the loaded ontology.");
+      throw new PhenolException("No graph in the loaded ontology.");
     }
     LOGGER.debug("Finished converting to obograph graph");
 
-    LOGGER.debug("Converting to phenol graph");
+    // TODO this can become a new GraphDocumentConverter
+    LOGGER.debug("Converting metadata...");
+    // Metadata about the ontology
+    Map<String, String> metaInfo = convertMetaData(obograph.getMeta());
+    LOGGER.debug("Converting nodes to terms...");
+    List<Term> terms = convertNodesToTerms(obograph.getNodes());
+    LOGGER.debug("Converting edges to relationships...");
+    // Mapping edges in obographs to termIds in phenol
+    int edgeId = 1;
+    List<Relationship> relationships = convertEdgesToRelationships(edgeId, obograph.getEdges());
+
+    // TODO and this ought to become an OntologyBuilder.meta().terms().relationships().build();
+    LOGGER.debug("Creating phenol ontology");
+    Ontology ontology = createOntology(metaInfo, terms, relationships);
+    LOGGER.debug("Done");
+    return ontology;
+  }
+
+  private Ontology createOntology(Map<String, String> metaInfo, List<Term> terms, List<Relationship> relationships) throws PhenolException {
     DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
 
     // Term ids of non-obsolete Terms
@@ -95,28 +113,8 @@ public final class OboOntologyLoader {
     // Key: a TermId; value: corresponding Term object
     Map<TermId, Term> termsMap = Maps.newTreeMap();
 
-    List<Node> gNodes = obograph.getNodes();
-    if (gNodes == null) {
-      LOGGER.warn("No nodes found in the loaded ontology.");
-      throw new PhenolException("PhenolException[ERROR]: No nodes found in the loaded ontology.");
-    }
-    LOGGER.debug("Mapping nodes...");
-    // Mapping nodes in obographs to termIds in phenol
-    for (Node node : gNodes) {
-      if (node.getType() == null || !node.getType().equals(Node.RDFTYPES.CLASS)) {
-        continue; // only take classes-- otherwise, we may get some OIO and IAO entities
-      }
-      String nodeId = node.getId();
-      Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
-      if (!nodeCurie.isPresent()) continue;
-
-      TermId termId = TermId.of(nodeCurie.get());
-      String idPrefix = termId.getPrefix();
-      if (isRelationshipOrBasicFormalOntologyTermId(idPrefix)) {
-        continue;
-      }
-
-      Term term = factory.constructTerm(node, termId);
+    for (Term term : terms) {
+      TermId termId = term.getId();
       if (term.isObsolete()) {
         obsoleteTermIds.add(termId);
       } else {
@@ -129,75 +127,36 @@ public final class OboOntologyLoader {
       }
     }
 
-    LOGGER.debug("Mapping edges...");
-    Set<TermId> rootCandSet = Sets.newHashSet();
+    Set<TermId> rootCandidateSet = Sets.newHashSet();
     Set<TermId> removeMarkSet = Sets.newHashSet();
-
-    List<Edge> gEdges = obograph.getEdges();
-    if (gEdges == null) {
-      LOGGER.warn("No edges found in the loaded ontology.");
-      throw new PhenolException("PhenolException[ERROR]: No edges found in the loaded ontology.");
-    }
-    // Mapping edges in obographs to termIds in phenol
-    int edgeId = 1;
     // The relations are numbered incrementally--this is the key, and the value is the corresponding relation.
     Map<Integer, Relationship> relationshipMap = Maps.newHashMap();
-    for (Edge edge : gEdges) {
-      String subId = edge.getSub();
-      String objId = edge.getObj();
-      Optional<String> subCurie = curieUtil.getCurie(subId);
-      if (! subCurie.isPresent() ) {
-        LOGGER.warn("No matching curie found for edge's subject: {}", subId);
-        continue;
-      }
-
-      Optional<String> objCurie = curieUtil.getCurie(objId);
-      if (! objCurie.isPresent()) {
-        LOGGER.warn("No matching curie found for edge's object: {}", objId);
-        continue;
-      }
-
-      String subCurieStr = subCurie.get();
-      String objCurieStr = objCurie.get();
-      TermId subTermId = TermId.of(subCurieStr);
-      TermId objTermId = TermId.of(objCurieStr);
-      // Note that GO has some Terms/Relations with RO and BFO that we want to skip
-      if (isRelationshipOrBasicFormalOntologyTermId(subTermId.getPrefix())) {
-        continue; // for GO, these relations have RO or BFO in both subject and object, no need to check both
-      }
-
+    for (Relationship relationship : relationships) {
+      TermId subjectTermId = relationship.getSource();
+      TermId objectTermId = relationship.getTarget();
       // For each edge and connected nodes,
-      // we add candidate obj nodes in rootCandSet, i.e. nodes that have incoming edges.
-      // we then remove subj nodes from rootCandSet, i.e. nodes that have outgoing edges.
-      rootCandSet.add(objTermId);
-      removeMarkSet.add(subTermId);
+      // we add candidate obj nodes in rootCandidateSet, i.e. nodes that have incoming edges.
+      // we then remove subj nodes from rootCandidateSet, i.e. nodes that have outgoing edges.
+      rootCandidateSet.add(objectTermId);
+      removeMarkSet.add(subjectTermId);
 
-      phenolGraph.addVertex(subTermId);
-      phenolGraph.addVertex(objTermId);
-      IdLabeledEdge e = new IdLabeledEdge();
-      e.setId(edgeId);
-      phenolGraph.addEdge(subTermId, objTermId, e);
-      RelationshipType reltype = RelationshipType.fromString(edge.getPred());
-      Relationship ctr = factory.constructRelationship(subTermId, objTermId, edgeId, reltype);
-      relationshipMap.put(edgeId, ctr);
-      edgeId++;
+      IdLabeledEdge e = new IdLabeledEdge(relationship.getId());
+      phenolGraph.addVertex(subjectTermId);
+      phenolGraph.addVertex(objectTermId);
+      phenolGraph.addEdge(subjectTermId, objectTermId, e);
+      relationshipMap.put(e.getId(), relationship);
     }
 
-    rootCandSet.removeAll(removeMarkSet);
+    rootCandidateSet.removeAll(removeMarkSet);
     CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
-
-    LOGGER.debug("Adding metadata...");
-    // Metadata about the ontology
-    Meta gMeta = obograph.getMeta();
-    Map<String, String> metaInfo = convertMetaData(gMeta);
 
     LOGGER.debug("Setting root node...");
     // A heuristic for determining root node(s).
     // If there are multiple candidate roots, we will just put owl:Thing as the root one.
     TermId rootId;
-    Optional<TermId> firstId = rootCandSet.stream().findFirst();
+    Optional<TermId> firstId = rootCandidateSet.stream().findFirst();
     if (firstId.isPresent()) {
-      if (rootCandSet.size() == 1) {
+      if (rootCandidateSet.size() == 1) {
         rootId = firstId.get();
       } else {
         Term rootTerm = createArtificialRootTerm(firstId);
@@ -205,15 +164,13 @@ public final class OboOntologyLoader {
         phenolGraph.addVertex(rootId);
         nonObsoleteTermIds.add(rootId);
         termsMap.put(rootId, rootTerm);
-
-        for (TermId childOfNewRootTermId : rootCandSet) {
-          IdLabeledEdge e = new IdLabeledEdge();
-          e.setId(edgeId);
+        int edgeId = relationships.stream().mapToInt(Relationship::getId).max().orElse(1);
+        for (TermId childOfNewRootTermId : rootCandidateSet) {
+          IdLabeledEdge e = new IdLabeledEdge(edgeId++);
           phenolGraph.addEdge(childOfNewRootTermId, rootId, e);
           //Note-for the "artificial root term, we use the IS_A relation
-          Relationship ctr = factory.constructRelationship(childOfNewRootTermId, rootId, edgeId, RelationshipType.IS_A);
-          relationshipMap.put(edgeId, ctr);
-          edgeId++;
+          Relationship relationship = new Relationship(childOfNewRootTermId, rootId, e.getId(), RelationshipType.IS_A);
+          relationshipMap.put(e.getId(), relationship);
         }
       }
     } else {
@@ -228,14 +185,6 @@ public final class OboOntologyLoader {
       obsoleteTermIds,
       ImmutableMap.copyOf(termsMap),
       ImmutableMap.copyOf(relationshipMap));
-  }
-
-  private Term createArtificialRootTerm(Optional<TermId> firstId) {
-    // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
-    String prefix = firstId.map(TermId::getPrefix).orElse("Owl");
-    // Assumption: "0000000" is not used for actual terms in any OBO ontology
-    TermId artificialTermId = TermId.of(prefix, "0000000");
-    return Term.of(artificialTermId, "artificial root term");
   }
 
   private Map<String, String> convertMetaData(Meta meta) {
@@ -254,6 +203,79 @@ public final class OboOntologyLoader {
       }
     }
     return metaInfo.build();
+  }
+
+  private List<Term> convertNodesToTerms(List<Node> gNodes) throws PhenolException {
+    List<Term> terms = new ArrayList<>();
+    if (gNodes == null) {
+      LOGGER.warn("No nodes found in the loaded ontology.");
+      throw new PhenolException("PhenolException[ERROR]: No nodes found in the loaded ontology.");
+    }
+    LOGGER.debug("Mapping nodes...");
+    // Mapping nodes in obographs to termIds in phenol
+    for (Node node : gNodes) {
+      if (node.getType() == null || node.getType() != Node.RDFTYPES.CLASS) {
+        continue; // only take classes-- otherwise, we may get some OIO and IAO entities
+      }
+      String nodeId = node.getId();
+      Optional<String> nodeCurie = curieUtil.getCurie(nodeId);
+      if (nodeCurie.isPresent()) {
+        TermId termId = TermId.of(nodeCurie.get());
+        String idPrefix = termId.getPrefix();
+        if (isRelationshipOrBasicFormalOntologyTermId(idPrefix)) {
+          continue;
+        }
+        Term term = factory.constructTerm(node, termId);
+        terms.add(term);
+      }
+    }
+    return terms;
+  }
+
+  private List<Relationship> convertEdgesToRelationships(int edgeId, List<Edge> edges) throws PhenolException{
+    List<Relationship> relationships = new ArrayList<>();
+    if (edges == null) {
+      LOGGER.warn("No edges found in the loaded ontology.");
+      throw new PhenolException("PhenolException[ERROR]: No edges found in the loaded ontology.");
+    }
+    for (Edge edge : edges) {
+      String subId = edge.getSub();
+      Optional<String> subCurie = curieUtil.getCurie(subId);
+      if (!subCurie.isPresent() ) {
+        LOGGER.warn("No matching curie found for edge's subject: {}", subId);
+        continue;
+      }
+      String subCurieStr = subCurie.get();
+      TermId subjectTermId = TermId.of(subCurieStr);
+
+      String objId = edge.getObj();
+      Optional<String> objCurie = curieUtil.getCurie(objId);
+      if (!objCurie.isPresent()) {
+        LOGGER.warn("No matching curie found for edge's object: {}", objId);
+        continue;
+      }
+      String objCurieStr = objCurie.get();
+      TermId objectTermId = TermId.of(objCurieStr);
+
+      // Note that GO has some Terms/Relations with RO and BFO that we want to skip
+      if (isRelationshipOrBasicFormalOntologyTermId(subjectTermId.getPrefix())) {
+        continue; // for GO, these relations have RO or BFO in both subject and object, no need to check both
+      }
+
+      RelationshipType reltype = RelationshipType.fromString(edge.getPred());
+      Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId, reltype);
+      relationships.add(relationship);
+      edgeId++;
+    }
+    return relationships;
+  }
+
+  private Term createArtificialRootTerm(Optional<TermId> firstId) {
+    // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
+    String prefix = firstId.map(TermId::getPrefix).orElse("Owl");
+    // Assumption: "0000000" is not used for actual terms in any OBO ontology
+    TermId artificialTermId = TermId.of(prefix, "0000000");
+    return Term.of(artificialTermId, "artificial root term");
   }
 
   private boolean isRelationshipOrBasicFormalOntologyTermId(String prefix) {

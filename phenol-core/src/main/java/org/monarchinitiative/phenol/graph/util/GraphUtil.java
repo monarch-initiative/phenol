@@ -16,8 +16,7 @@ public class GraphUtil<V> {
   public static <V> void addEdgeToGraph(DefaultDirectedGraph<V, IdLabeledEdge> g, V t1, V t2, int id) {
     g.addVertex(t1);
     g.addVertex(t2);
-    IdLabeledEdge e = new IdLabeledEdge();//edgeFactory.createEdge(t1, t2);
-    e.setId(id);
+    IdLabeledEdge e = new IdLabeledEdge(id);//edgeFactory.createEdge(t1, t2);
     g.addEdge(t1, t2, e);
   }
 
@@ -71,8 +70,7 @@ public class GraphUtil<V> {
 
     for (IdLabeledEdge e : g.edgeSet() ) {
       if (vertices.contains(e.getSource()) && vertices.contains(e.getTarget())) {
-        IdLabeledEdge termIdEdge = new IdLabeledEdge();
-        termIdEdge.setId(e.getId());
+        IdLabeledEdge termIdEdge = new IdLabeledEdge(e.getId());
         newSubgraph.addVertex((V) e.getSource());
         newSubgraph.addVertex((V) e.getTarget());
         newSubgraph.addEdge((V) e.getSource(), (V) e.getTarget(), termIdEdge);
