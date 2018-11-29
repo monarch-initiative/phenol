@@ -21,14 +21,13 @@ import org.junit.Test;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class OwlImmutableOntologyLoaderTest {
+public class OwlOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
     Path ncitPath = Paths.get("src","test", "resources", "ncit_module.owl");
-    final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(ncitPath.toFile());
-    final ImmutableOntology ontology = loader.load();
+    final OwlOntologyLoader loader = new OwlOntologyLoader(ncitPath.toFile());
+    final Ontology ontology = loader.load();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
@@ -70,21 +69,21 @@ public class OwlImmutableOntologyLoaderTest {
     Relationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
     assertNotNull(gr1);
     assertNotNull(gr2);
-    assertEquals(gr1.getRelationshipType(), RelationshipType.IS_A);
-    assertEquals(gr2.getRelationshipType(), RelationshipType.IS_A);
+    assertEquals(RelationshipType.IS_A, gr1.getRelationshipType());
+    assertEquals(RelationshipType.IS_A, gr2.getRelationshipType());
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getPrefix(), "owl");
-    assertEquals(rootTermId.getId(), "Thing");
+    assertEquals("owl", rootTermId.getPrefix());
+    assertEquals("Thing", rootTermId.getId());
   }
 
   @Test
   public void testMONDOLoad() throws Exception {
     Path mondoPath = Paths.get("src","test","resources","mondo_module.owl");
-    final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(mondoPath.toFile());
-    final ImmutableOntology ontology = loader.load();
+    final OwlOntologyLoader loader =
+        new OwlOntologyLoader(mondoPath.toFile());
+    final Ontology ontology = loader.load();
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",
@@ -108,6 +107,6 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getValue(), "MONDO:0000624");
+    assertEquals("MONDO:0000624", rootTermId.getValue());
   }
 }

@@ -9,8 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
- * Interface for constructing concrete  objects in {@link
- * OwlImmutableOntologyLoader}.
+ * Interface for constructing concrete  objects in {@link OwlOntologyLoader}.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */

@@ -36,9 +36,9 @@ import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public final class OwlImmutableOntologyLoader {
+public final class OwlOntologyLoader {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(OwlImmutableOntologyLoader.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OwlOntologyLoader.class);
   private static CurieUtil curieUtil;
   private final File file;
   /** Term ids of non-obsolete Terms. */
@@ -57,14 +57,13 @@ public final class OwlImmutableOntologyLoader {
    * Construct an OWL loader that can load an OBO ontology.
    * @param file Path to the OBO file
    */
-  public OwlImmutableOntologyLoader(File file) {
+  public OwlOntologyLoader(File file) {
     this.file = file;
     curieUtil = new CurieUtil(CurieMapGenerator.generate());
     this.factory = new Owl2OboTermFactory();
   }
 
-  public ImmutableOntology load()
-      throws PhenolException {
+  public Ontology load() throws PhenolException {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();

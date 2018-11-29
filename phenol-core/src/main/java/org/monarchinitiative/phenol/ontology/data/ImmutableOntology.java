@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
-import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
