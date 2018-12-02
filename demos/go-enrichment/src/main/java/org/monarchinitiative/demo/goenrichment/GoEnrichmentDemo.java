@@ -14,19 +14,19 @@ import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
 
 
-public final class App {
+public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
   private String pathGoObo;
   /** Path to the GoGaf file. */
   private String pathGoGaf;
   /** We will create a study set that has 1/3 of the genes associated with this term
    * and three times as many other terms. GO:0070997 is 'neuron death'.*/
-  private final static TermId DEFAULT_GO_ID = TermId.of("GO:0070997");
+  private final static TermId DEFAULT_GO_ID = TermId.constructWithPrefix("GO:0070997");
   /** Term Id of a GO term we will investigate */
   private TermId targetGoTerm=DEFAULT_GO_ID;
 
 
-  public App(String [] args) {
+  public GoEnrichmentDemo(String [] args) {
     parseArgs(args);
   }
 
@@ -142,7 +142,7 @@ public final class App {
     pathGoObo = args[0];
     pathGoGaf = args[1];
     if (args.length==3) {
-      targetGoTerm = TermId.of(args[2]);
+      targetGoTerm = TermId.constructWithPrefix(args[2]);
     }
   }
 
@@ -161,7 +161,7 @@ public final class App {
    * @param args Command line arguments.
    */
   public static void main(String[] args) {
-    new App(args).run();
+    new GoEnrichmentDemo(args).run();
   }
 
 }
