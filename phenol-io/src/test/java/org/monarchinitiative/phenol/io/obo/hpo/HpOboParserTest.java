@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.obo.OboDocConverter;
+//import org.monarchinitiative.phenol.io.obo.OboDocConverter;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.obolibrary.oboformat.model.OBODoc;
@@ -88,7 +88,7 @@ public class HpOboParserTest {
     Instant start = Instant.now();
     OBOFormatParser oboFormatParser = new OBOFormatParser();
     OBODoc oboDoc = oboFormatParser.parse(Paths.get("src/test/resources/hp.obo").toAbsolutePath().toFile());
-    OboDocConverter oboDocConverter = OboDocConverter.convert(oboDoc);
+//    OboDocConverter oboDocConverter = OboDocConverter.convert(oboDoc);
 
 //    System.out.println(oboDocConverter.getRelationships());
 
