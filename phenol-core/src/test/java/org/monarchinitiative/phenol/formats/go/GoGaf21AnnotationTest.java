@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.formats.go;
 import org.junit.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

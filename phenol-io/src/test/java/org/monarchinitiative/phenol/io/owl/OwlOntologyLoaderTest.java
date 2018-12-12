@@ -32,13 +32,12 @@ public class OwlOntologyLoaderTest {
 
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
-    TermPrefix termPrefix = new TermPrefix("NCIT");
-    TermId t1 = TermId.of(termPrefix, "C2919");
-    TermId t2 = TermId.of(termPrefix, "C2852");
-    TermId t3 = TermId.of(termPrefix, "C48596");
-    TermId t4 = TermId.of(termPrefix, "C60312");
-    TermId t5 = TermId.of(termPrefix, "C116977");
-    TermId t6 = TermId.of(termPrefix, "C126659");
+    TermId t1 = TermId.of("NCIT:C2919");
+    TermId t2 = TermId.of("NCIT:C2852");
+    TermId t3 = TermId.of("NCIT:C48596");
+    TermId t4 = TermId.of("NCIT:C60312");
+    TermId t5 = TermId.of("NCIT:C116977");
+    TermId t6 = TermId.of("NCIT:C126659");
 
     assertTrue(graph.vertexSet().contains(t1));
     assertTrue(graph.vertexSet().contains(t2));

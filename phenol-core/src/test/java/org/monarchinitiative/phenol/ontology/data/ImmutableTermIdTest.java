@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImmutableTermIdTest {
 
-  private final TermPrefix termPrefix = new TermPrefix("HP");
   private final TermId termId = TermId.of("HP:0000001");
   private final TermId termId2 = TermId.of("HP:0000002");
 
@@ -36,12 +35,6 @@ public class ImmutableTermIdTest {
   }
 
   @Test
-  void testStaticOfConstructorTermPrefixAndId() {
-    TermId otherId = TermId.of(new TermPrefix("HP"), "0000001");
-    assertEquals(termId, otherId);
-  }
-
-  @Test
   public void testComparable() {
     assertEquals(0, termId.compareTo(termId));
     assertThat(termId.compareTo(termId2), lessThan(0));
@@ -56,7 +49,7 @@ public class ImmutableTermIdTest {
 
   @Test
   public void testQueryFunctions() {
-    assertEquals(termPrefix.getValue(), termId.getPrefix());
+    assertEquals("HP", termId.getPrefix());
     assertEquals("0000001", termId.getId());
     assertEquals("HP:0000001", termId.getValue());
   }

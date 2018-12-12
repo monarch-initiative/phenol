@@ -69,9 +69,10 @@ public class GoOboParserTest {
    * @throws FileNotFoundException
    * @throws PhenolException
    */
-  @Test @Ignore public void testReal() throws FileNotFoundException, PhenolException {
+  @Ignore
+  @Test public void testReal() throws FileNotFoundException, PhenolException {
     String localpath="/home/robinp/data/go/go.obo";
-    TermPrefix RO_PREFIX=new TermPrefix("RO");
+    String RO_PREFIX = "RO";
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
     Map<TermId,Term> termmap =  gontology.getTermMap();

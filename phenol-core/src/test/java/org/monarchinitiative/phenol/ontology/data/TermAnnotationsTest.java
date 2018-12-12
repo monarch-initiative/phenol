@@ -17,7 +17,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
   private List<TestTermAnnotation> annotations;
 
-  private TermPrefix TEST_PREFIX = new TermPrefix("TEST");
+  private String TEST_PREFIX = "TEST";
 
   @Before
   public void setUp() {

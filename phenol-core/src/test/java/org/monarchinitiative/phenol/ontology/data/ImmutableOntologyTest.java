@@ -43,11 +43,11 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     assertEquals(6, graph.edgeSet().size());
 
 //    assertEquals(
-//        "{TermId [prefix=TermPrefix [value=HP], id=0000001]=CommonTerm [id=TermId [prefix=TermPrefix [value=HP], id=0000001], altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000002]=CommonTerm [termId=TermId [prefix=TermPrefix [value=HP], id=0000002], altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000003]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000003], altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000004]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000004], altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], TermId [prefix=TermPrefix [value=HP], id=0000005]=Term [termId=TermId [prefix=TermPrefix [value=HP], id=0000005], altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]}",
+//        "{HP:0000001=CommonTerm [id=HP:0000001, altTermIds=[], name=term1, definition=some definition 1, comment=null, subsets=[], synonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], HP:0000002=CommonTerm [termId=HP:0000002, altTermIds=[], name=term2, definition=some definition 2, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], HP:0000003=Term [termId=HP:0000003, altTermIds=[], name=term3, definition=some definition 3, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], HP:0000004=Term [termId=HP:0000004, altTermIds=[], name=term4, definition=some definition 4, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]], HP:0000005=Term [termId=HP:0000005, altTermIds=[], name=term5, definition=some definition 5, comment=null, subsets=[], termSynonyms=[], obsolete=false, createdBy=null, creationDate=null, xrefs=[]]}",
 //        ontology.getTermMap().toString());
 
 //    assertEquals(
-//        "{1=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000002], id=1], 2=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000003], id=2], 3=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001], dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3], 4=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000002], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=4], 5=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000003], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=5], 6=Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000004], dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=6]}",
+//        "{1=Relationship [source=HP:0000001, dest=HP:0000002, id=1], 2=Relationship [source=HP:0000001, dest=HP:0000003, id=2], 3=Relationship [source=HP:0000001, dest=HP:0000004, id=3], 4=Relationship [source=HP:0000002, dest=HP:0000005, id=4], 5=Relationship [source=HP:0000003, dest=HP:0000005, id=5], 6=Relationship [source=HP:0000004, dest=HP:0000005, id=6]}",
 //        ontology.getRelationMap().toString());
 
     assertTrue(ontology.isRootTerm(id5));
@@ -101,22 +101,15 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
   }
 
   /**
-   * The parent ontology has six relations 1 Relationship [source=TermId
-   * [prefix=TermPrefix [value=HP], id=0000001], dest=TermId
-   * [prefix=TermPrefix [value=HP], id=0000002], id=1] 2 Relationship
-   * [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000003], id=2] 3
-   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3] 4
-   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000002],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=4] 5
-   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000003],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=5] 6
-   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000004],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000005], id=6] The subontology
-   * has just the terms id1 and id4, and thus should just have only one relation./subontology 3
-   * Relationship [source=TermId [prefix=TermPrefix [value=HP], id=0000001],
-   * dest=TermId [prefix=TermPrefix [value=HP], id=0000004], id=3]
+   * The parent ontology has six relations 
+   * 1 Relationship [source=HP:0000001, dest=HP:0000002, id=1] 
+   * 2 Relationship [source=HP:0000001, dest=HP:0000003, id=2]
+   * 3 Relationship [source=HP:0000001, dest=HP:0000004, id=3]
+   * 4 Relationship [source=HP:0000002, dest=HP:0000005, id=4]
+   * 5 Relationship [source=HP:0000003, dest=HP:0000005, id=5]
+   * 6 Relationship [source=HP:0000004, dest=HP:0000005, id=6]
+   * The subontology has just the terms id1 and id4, and thus should just have only one relation./subontology 3
+   * Relationship [source=HP:0000001, dest=HP:0000004, id=3]
    */
   @Test
   public void testSubontologyRelations() {

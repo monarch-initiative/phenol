@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 /**
  * Annotate that a vegetable is used in a recipe.

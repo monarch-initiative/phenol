@@ -8,7 +8,6 @@ import org.junit.rules.TemporaryFolder;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import java.io.File;
 import java.io.IOException;

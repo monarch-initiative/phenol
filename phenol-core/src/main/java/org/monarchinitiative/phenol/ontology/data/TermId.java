@@ -37,10 +37,6 @@ public final class TermId implements Comparable<TermId>, Serializable {
     return new TermId(pos, termId);
   }
 
-  public static TermId of(TermPrefix prefix, String id) {
-    return of(prefix.getValue(), id);
-  }
-
   private static int findPrefixSeparatorPosition(char separator, String termIdString) {
     int pos = termIdString.indexOf(separator);
     if (pos == -1) {
