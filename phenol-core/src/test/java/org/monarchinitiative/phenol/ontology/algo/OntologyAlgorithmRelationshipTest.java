@@ -7,12 +7,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is designed to test the methods isSubclass, termsAreSiblings, termsAreRelated, and
@@ -52,7 +52,7 @@ public class OntologyAlgorithmRelationshipTest {
       .build();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 

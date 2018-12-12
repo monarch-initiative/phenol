@@ -1,42 +1,30 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.obo.DbXrefList;
 import org.monarchinitiative.phenol.io.obo.OboDocConverter;
-import org.monarchinitiative.phenol.ontology.data.*;
-import org.obolibrary.oboformat.model.*;
-import org.obolibrary.oboformat.parser.OBOFormatConstants;
-import org.obolibrary.oboformat.parser.OBOFormatConstants.OboFormatTag;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
+
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HpOboParserTest {
 
   private HpoOntology ontology;
 
-  @Before
+  @BeforeEach
   public void setUp() throws PhenolException {
     ClassLoader classLoader = this.getClass().getClassLoader();
     final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
@@ -78,7 +66,7 @@ public class HpOboParserTest {
   }
 
 
-  @Ignore
+  @Disabled
   @Test
   public void testParseFullHpo() throws Exception {
 //    for (int i = 0; i < 10; i++) {
@@ -92,7 +80,7 @@ public class HpOboParserTest {
 //    }
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testParseFullHpoWithOboFormatParser() throws Exception {
 //    for (int i = 0; i < 10; i++) {

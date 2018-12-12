@@ -1,17 +1,17 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
@@ -19,7 +19,7 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
 
   private String TEST_PREFIX = "TEST";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
     annotations =

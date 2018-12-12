@@ -1,14 +1,14 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
@@ -24,7 +24,7 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
   private SimilarityScoreSampling scoreSampling;
   private ResnikSimilarity resnikSimilarity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
 

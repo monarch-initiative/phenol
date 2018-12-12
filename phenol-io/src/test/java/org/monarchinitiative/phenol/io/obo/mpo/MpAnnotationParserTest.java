@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpAnnotation;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MpAnnotationParserTest {
 
@@ -20,7 +20,7 @@ public class MpAnnotationParserTest {
 
   private static String phenoSexPath;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");

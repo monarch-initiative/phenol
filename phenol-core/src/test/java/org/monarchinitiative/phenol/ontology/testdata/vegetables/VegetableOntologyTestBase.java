@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
@@ -47,7 +47,7 @@ public class VegetableOntologyTestBase {
 
   protected List<VegetableRecipeAnnotation> recipeAnnotations;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 

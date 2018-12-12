@@ -1,23 +1,21 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OntologyAlgorithmTest {
 
@@ -36,7 +34,7 @@ public class OntologyAlgorithmTest {
   private TermId id4;
   private TermId id5;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 

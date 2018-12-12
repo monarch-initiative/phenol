@@ -1,19 +1,19 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.Lists;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SimpleFeatureVectorSimilarityTest {
 
   SimpleFeatureVectorSimilarity similarity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     similarity = new SimpleFeatureVectorSimilarity();
   }

@@ -1,18 +1,14 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
@@ -23,10 +19,12 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
-  @Before
+  @BeforeEach
   public void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 

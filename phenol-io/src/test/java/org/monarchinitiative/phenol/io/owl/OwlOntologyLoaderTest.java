@@ -1,10 +1,6 @@
 package org.monarchinitiative.phenol.io.owl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +10,7 @@ import java.util.List;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.

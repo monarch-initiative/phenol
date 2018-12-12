@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoAnnotationLineTest {
 
@@ -25,7 +23,7 @@ public class HpoAnnotationLineTest {
 
   private HpoOntology ontology;
 
-  @Before
+  @BeforeEach
   public void setUp() throws PhenolException {
     ClassLoader classLoader = this.getClass().getClassLoader();
     final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
@@ -74,9 +72,9 @@ public class HpoAnnotationLineTest {
    * The first field ("BadPrefix" instead of "OMIM") is invalid and should throw an exception.
    * @throws PhenolException expected to throw because prefix is malformed
    */
-  @Test(expected = PhenolException.class)
+  @Test
   public void malformedDiseaseDatabasePrefix() throws PhenolException {
-    String items[]={"BadPrefix",
+    String[] items = {"BadPrefix",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
@@ -90,8 +88,7 @@ public class HpoAnnotationLineTest {
       "P",
       "2017-07-13",
       "HPO:skoehler"};
-    HpoAnnotationLine hpoAnnot = makeLine(items);
-    TermId diseaseId = hpoAnnot.getDiseaseTermId();
+    assertThrows(PhenolException.class, () -> makeLine(items));
   }
 
 

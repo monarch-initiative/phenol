@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.formats.go;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

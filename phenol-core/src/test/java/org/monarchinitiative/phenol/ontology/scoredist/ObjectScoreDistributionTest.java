@@ -1,16 +1,16 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableSortedMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ObjectScoreDistributionTest {
 
   ObjectScoreDistribution objDist;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     objDist =
         new ObjectScoreDistribution(1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));

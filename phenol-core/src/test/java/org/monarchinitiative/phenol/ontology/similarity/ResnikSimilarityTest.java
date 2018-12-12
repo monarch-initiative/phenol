@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
@@ -10,14 +10,14 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ResnikSimilarityTest extends VegetableOntologyTestBase {
 
   private ResnikSimilarity similarity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
 

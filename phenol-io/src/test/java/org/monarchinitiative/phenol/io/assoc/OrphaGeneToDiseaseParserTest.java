@@ -1,20 +1,17 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.Multimap;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrphaGeneToDiseaseParserTest {
 
@@ -44,28 +41,15 @@ public class OrphaGeneToDiseaseParserTest {
   //      <Name lang="en">Familial sick sinus syndrome</Name>
   //      <GeneList count="3">
   // with SCN5A, HCN4 and MYH6
-
-  @ClassRule
-  public static TemporaryFolder tmpFolder = new TemporaryFolder();
+  private static final String ORPHA_PREFIX = "ORPHA";
 
   private static Multimap<TermId, String> orphaId2GeneMultimap;
 
-  private static final String ORPHA_PREFIX = "ORPHA";
-
-  @BeforeClass
-  public static void init() throws IOException {
-    System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-    File orphaProduct6 = tmpFolder.newFile("orphaProduct6");
-    ResourceUtils.copyResourceToFile("/orphanet_disease2gene_en_product6_head.xml", orphaProduct6);
-    try {
-      OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaProduct6);
-      orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
-    } catch (PhenolException e) {
-      System.err.println(e.toString());
-    }
-
+  public OrphaGeneToDiseaseParserTest() throws IOException, PhenolException{
+    Path orphaPath = Paths.get("src/test/resources/orphanet_disease2gene_en_product6_head.xml");
+    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile());
+    orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
   }
-
 
   /**
    * There are four diseases in our test file (we get the set of disease Ids with keySet).

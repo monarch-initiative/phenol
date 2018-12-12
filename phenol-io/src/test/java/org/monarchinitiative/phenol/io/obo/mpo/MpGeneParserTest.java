@@ -1,10 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
@@ -18,7 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TODO Update tests!
@@ -28,7 +26,7 @@ public class MpGeneParserTest {
   private static Map<TermId, MpGene> mpgenemap;
   private static String MGI_genePhenoPath;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException, PhenolException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MRK_List2.rpt.excerpt");
@@ -49,9 +47,6 @@ public class MpGeneParserTest {
     MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, ontologyPath);
     mpgenemap = gmp.parseMarkers();
   }
-
-  @Rule
-  public final ExpectedException thrown = ExpectedException.none();
 
   /**
    * Look up a gene, a transgene, a nonsense MGI ID to make sure you get what you expect.
@@ -88,7 +83,7 @@ public class MpGeneParserTest {
    *
    * @throws PhenolException
    */
-  @Ignore
+  @Disabled
   @Test
   public void testMerge() throws PhenolException, FileNotFoundException {
     MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);

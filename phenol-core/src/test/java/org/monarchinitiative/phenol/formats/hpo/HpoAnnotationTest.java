@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>

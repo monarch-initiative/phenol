@@ -1,30 +1,24 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.ImmutableMap;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.SimpleXref;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableMap;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.SimpleXref;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -35,18 +29,11 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  */
 public class MpoOboParserTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
-
   private Ontology ontology;
 
-  @Before
-  public void setUp() throws IOException, PhenolException {
-
-    File mpoHeadFile = tmpFolder.newFile("mp_head.obo");
-    ResourceUtils.copyResourceToFile("/mgi/mp_head.obo", mpoHeadFile);
-    MpOboParser parser = new MpOboParser(mpoHeadFile);
-    this.ontology = parser.parse();
+  public MpoOboParserTest() throws FileNotFoundException, PhenolException {
+    MpOboParser mpOboParser = new MpOboParser(Paths.get("src/test/resources/mgi/mp_head.obo").toFile());
+    this.ontology = mpOboParser.parse();
   }
 
   @Test

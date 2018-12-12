@@ -1,53 +1,41 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import java.io.File;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.rules.TemporaryFolder;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * These tests were constructed with a mini hpo file and a mini annotation file -- look at them to
  * figure out the logic!
  */
 public class HpoDiseaseAnnotationParserTest {
-  private static Map<TermId, HpoDisease> diseaseMap;
 
-  @ClassRule
-  public static TemporaryFolder tmpFolder = new TemporaryFolder();
+  private final Map<TermId, HpoDisease> diseaseMap;
 
-  @BeforeClass
-  public static void setUp() throws IOException, PhenolException {
-    System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-    File hpoHeadFile;
+  public HpoDiseaseAnnotationParserTest() throws IOException, PhenolException {
+    Path testResources = Paths.get("src/test/resources");
+    Path hpoHeadPath = testResources.resolve("hp_head.obo");
+    HpOboParser oboParser = new HpOboParser(hpoHeadPath.toFile());
+    HpoOntology ontology = oboParser.parse();
 
-
-    hpoHeadFile = tmpFolder.newFile("hp_head.obo");
-    ResourceUtils.copyResourceToFile("/hp_head.obo", hpoHeadFile);
-    final HpOboParser oboParser = new HpOboParser(hpoHeadFile);
-    final HpoOntology ontology = oboParser.parse();
-
-    File hpoDiseaseAnnotationToyFile = tmpFolder.newFile("phenotype.100lines.hpoa.tmp");
-    ResourceUtils.copyResourceToFile("/phenotype_annotation_head.tab", hpoDiseaseAnnotationToyFile);
-    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(hpoDiseaseAnnotationToyFile.getAbsolutePath(), ontology);
-    diseaseMap = parser.parse();
+    Path hpoAnnotationsHeadPath = testResources.resolve("phenotype_annotation_head.tab");
+    HpoDiseaseAnnotationParser hpoaParser = new HpoDiseaseAnnotationParser(hpoAnnotationsHeadPath.toFile(), ontology);
+    diseaseMap = hpoaParser.parse();
   }
-
 
   @Test
   public void testSizeOfDiseaseMap() {

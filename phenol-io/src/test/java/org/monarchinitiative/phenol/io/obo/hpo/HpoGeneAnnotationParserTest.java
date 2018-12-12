@@ -1,33 +1,19 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HpoGeneAnnotationParserTest {
 
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
-
-  private File hpoGeneAnnotationHeadFile;
-
-  @Before
-  public void setUp() throws IOException {
-    hpoGeneAnnotationHeadFile =
-        tmpFolder.newFile("OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt");
-    ResourceUtils.copyResourceToFile(
-        "/OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt", hpoGeneAnnotationHeadFile);
-  }
+  private final File hpoGeneAnnotationHeadFile = Paths.get("src/test/resources/OMIM_ALL_FREQUENCIES_genes_to_phenotype_head.txt").toFile();
 
   @Test
   public void testParseHpoDiseaseAnnotationHead() throws IOException, TermAnnotationParserException {

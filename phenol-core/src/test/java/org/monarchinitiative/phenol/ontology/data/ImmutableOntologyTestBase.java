@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.ontology.data;
 import java.util.ArrayList;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
@@ -38,7 +38,7 @@ public class ImmutableOntologyTestBase {
   protected TermId id4;
   protected TermId id5;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
