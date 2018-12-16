@@ -4,7 +4,7 @@
   <artifactId>phenol-cli</artifactId>
   <packaging>jar</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>phenol-cli</name>
 
   <description>phenol-cli gives command line access to phenol</description>
   <url>https://github.com/monarchinitiative/phenol</url>
