@@ -16,6 +16,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.h2.mvstore.DataUtils;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
@@ -123,7 +124,7 @@ public class ComputeSimilarityDemo {
     }
 
 
-    // Compute information content of HPO terms, given the term-to-gene annotation.
+    // Compute information content of HPO terms, given the term-to-disease annotation.
     System.out.println("Performing IC precomputation...");
     final Map<TermId, Double> icMap =
       new InformationContentComputation(hpo)
@@ -167,7 +168,29 @@ public class ComputeSimilarityDemo {
 
 
     // Temporary storage of term count to score distributions.
-    final Map<Integer, ScoreDistribution> scoreDists = new HashMap<>();
+    Map<Integer, ScoreDistribution> scoreDists;
+    // to save computing time for the demo, we just compute score distributions when query term is [4-6]
+    ScoreSamplingOptions samplingOption = new ScoreSamplingOptions();
+    samplingOption.setMinNumTerms(4);
+    samplingOption.setMaxNumTerms(6);
+    SimilarityScoreSampling sampleing = new SimilarityScoreSampling(hpo, resnikSimilarity, samplingOption);
+    Map<Integer, List<TermId>> diseaseTerm_index = new HashMap<>();
+    Map<Integer, TermId> disease_index = new HashMap<>();
+    int count = 0;
+    for (Map.Entry<TermId, Collection<TermId>> entry: diseaseIdToTermIds.entrySet()) {
+      diseaseTerm_index.put(count, new ArrayList<>(entry.getValue()));
+      disease_index.put(count, entry.getKey());
+      count++;
+      if(count > 3) { //to save computing time for the demo, we just compute score distributions for three diseases
+        break;
+      }
+    }
+    scoreDists = sampleing.performSampling(diseaseTerm_index);
+
+    double p = scoreDists.get(5).getObjectScoreDistribution(1).estimatePValue(1);
+    System.out.println(String.format("If similartiy score (using 5 terms as query) is 1, the p-value for disease %s is: %f.", disease_index.get(1).getValue(), p));
+    double p2 = scoreDists.get(5).getObjectScoreDistribution(2).estimatePValue(7);
+    System.out.println(String.format("If similartiy score (using 5 terms as query) is 7, the p-value for disease %s is: %f.", disease_index.get(2).getValue(), p2));
 
     // Read file line-by line and process.
 
@@ -208,7 +231,6 @@ public class ComputeSimilarityDemo {
   public static void main(String[] args) {
     new ComputeSimilarityDemo(args).run();
   }
-
 
   /**
    * This is various code from the old app -- not sure what it does

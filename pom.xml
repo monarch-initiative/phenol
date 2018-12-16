@@ -216,6 +216,7 @@
       <artifactId>jgrapht-core</artifactId>
       <version>${jgrapht.version}</version>
     </dependency>
+
   </dependencies>
 
   <build>
