@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
 
@@ -91,6 +92,17 @@
     <tag>v${project.version}</tag>
   </scm>
 
+  <distributionManagement>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <!-- keeps the logging artifacts in sync with each other -->
   <dependencyManagement>
     <dependencies>
@@ -105,14 +117,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- JUnit testing
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>-->
-
     <!-- Hamcrest, JUnit addon-->
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -179,31 +183,31 @@
       <scope>test</scope>
     </dependency>
 
-  <!--
-   Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
-   but only depend on slf4j-api. When a library declares a compile-time dependency on a SLF4J binding,
-   it imposes that binding on the end-user, thus negating SLF4J's purpose.
+    <!--
+     Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
+     but only depend on slf4j-api. When a library declares a compile-time dependency on a SLF4J binding,
+     it imposes that binding on the end-user, thus negating SLF4J's purpose.
 
-   <dependency>
-       <groupId>org.slf4j</groupId>
-       <artifactId>slf4j-jdk14</artifactId>
-       <version>${slf4j.version}</version>
-     </dependency>
+     <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-jdk14</artifactId>
+         <version>${slf4j.version}</version>
+       </dependency>
 
 
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-enforcer-plugin</artifactId>
-      <version>3.0.0-M2</version>
-      <type>maven-plugin</type>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
+      <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M2</version>
+        <type>maven-plugin</type>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
 
-        </exclusion>
-      </exclusions>
-    </dependency> -->
+          </exclusion>
+        </exclusions>
+      </dependency> -->
 
     <!-- Google Guava -->
     <dependency>
@@ -222,6 +226,55 @@
 
   <build>
     <plugins>
+      <plugin>
+        <!-- Attach sources -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <!-- Generate javadocs -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- override version of GPG plugin to use new GPG signing features -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- JUnit testing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -248,22 +301,24 @@
             <id>enforce</id>
             <configuration>
               <rules>
-               <!-- <DependencyConvergence /> -->
-                  <bannedPlugins>
-                    <!-- will only display a warning but does not fail the build. -->
-                    <level>ERROR</level>
-                    <excludes>
-                      <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
-                    </excludes>
-                    <message>Please consider using the maven-invoker-plugin (http://maven.apache.org/plugins/maven-invoker-plugin/)!</message>
-                  </bannedPlugins>
-                  <requireMavenVersion>
-                    <version>3.0</version>
-                  </requireMavenVersion>
-                  <requireJavaVersion>
-                    <version>1.8</version>
-                  </requireJavaVersion>
-                </rules>
+                <!-- <DependencyConvergence /> -->
+                <bannedPlugins>
+                  <!-- will only display a warning but does not fail the build. -->
+                  <level>ERROR</level>
+                  <excludes>
+                    <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
+                  </excludes>
+                  <message>Please consider using the maven-invoker-plugin
+                    (http://maven.apache.org/plugins/maven-invoker-plugin/)!
+                  </message>
+                </bannedPlugins>
+                <requireMavenVersion>
+                  <version>3.0</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>1.8</version>
+                </requireJavaVersion>
+              </rules>
             </configuration>
             <goals>
               <goal>enforce</goal>
@@ -272,55 +327,6 @@
         </executions>
       </plugin>
 
-
-
-
-
-
-
-
-      <!-- Javadoc generation. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <defaultVersion>${project.version}</defaultVersion>
-          <show>public</show>
-          <nohelp>true</nohelp>
-          <header>${project.artifactId}, ${project.version}</header>
-          <footer>${project.artifactId}, ${project.version}</footer>
-          <doctitle>${project.artifactId}, ${project.version}</doctitle>
-          <destDir>${project.version}</destDir>
-          <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs/api/</reportOutputDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-            <phase>site</phase>
-            <configuration>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Source attachments -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.0.1</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <!-- Jacoco Coverage Reports -->
       <plugin>
@@ -419,7 +425,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -436,7 +442,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>

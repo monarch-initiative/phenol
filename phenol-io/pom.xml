@@ -196,8 +196,8 @@
               <artifactId>slf4j-api</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>org.slf4></groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jcl-over-slf4j</artifactId>
           </exclusion>
           <exclusion>
               <groupId>commons-io</groupId>
@@ -244,7 +244,7 @@
               <artifactId>slf4j-api</artifactId>
             </exclusion>
           <exclusion>
-            <groupId>org.slf4></groupId>
+            <groupId>org.slf4</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
           </exclusion>
         </exclusions>

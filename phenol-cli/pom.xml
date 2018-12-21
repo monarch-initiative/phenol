@@ -30,11 +30,6 @@
     <!-- Phenol modules -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>phenol-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>phenol-io</artifactId>
       <version>${project.version}</version>
     </dependency>
