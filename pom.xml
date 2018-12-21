@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>1.3.1-SNAPSHOT</version>
+  <version>1.3.1</version>
 
   <name>Phenol</name>
 
@@ -83,12 +83,13 @@
     </developer>
   </developers>
 
-  <!-- SCM Information for Maven Central
+  <!-- SCM Information for Maven Central -->
   <scm>
-    <connection>scm:git:git@github.com:phenomics/ontolib.git</connection>
-    <developerConnection>scm:git:git@github.com:phenomics/ontolib.git</developerConnection>
-    <url>scm:git:git@github.com:phenomics/ontolib.git</url>
-  </scm>-->
+    <connection>scm:git:git@github.com:monarch-initiative/phenol.git</connection>
+    <developerConnection>scm:git:git@github.com:monarch-initiative/phenol.git</developerConnection>
+    <url>scm:git:git@github.com:monarch-initiative/phenol.git</url>
+    <tag>v${project.version}</tag>
+  </scm>
 
   <!-- keeps the logging artifacts in sync with each other -->
   <dependencyManagement>
