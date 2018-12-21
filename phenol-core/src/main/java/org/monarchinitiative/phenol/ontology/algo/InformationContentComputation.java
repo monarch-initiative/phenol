@@ -43,34 +43,30 @@ public final class InformationContentComputation {
    * <p>Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
    * achieve this using {@link TermIds#augmentWithAncestors(ImmutableOntology, Set, boolean)}.
    *
-   * @param <LabelT> Labels for objects from "the real world". This could, e.g., be <code>String
-   *     </code>s with gene names. This type has to properly implement <code>equals(Object)</code>
-   *     and <code>hashValue()</code> as it is to be used as keys in a {@link HashMap}.
-   * @param termLabels Labels for each {@link Term}, identified by {@link TermId}
+   * @param termLabels Labels (for diseases, genes, ie., the objects being annotated to ontology terms() for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
    */
-  public <LabelT> Map<TermId, Double> computeInformationContent(
-      Map<TermId, ? extends Collection<LabelT>> termLabels) {
+  public Map<TermId, Double> computeInformationContent(Map<TermId, Collection<TermId>> termLabels) {
     LOGGER.info(
         "Computing IC of {} terms using {} labels...",
-        new Object[] {
-          ontology.countAllTerms(), termLabels.values().stream().mapToInt(l -> l.size()).sum()
-        });
+            ontology.countAllTerms(), termLabels.values().stream().mapToInt(Collection::size).sum()
+        );
 
     // Build mapping from TermId -> absolute frequency
-    final TermId root = ontology.getRootTermId();
+    // Ought to use ontology.getRootTermId() ?
+    final TermId root = ontology.getRootTermId();//TermId.of("HP:0000118");
+
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
     for (TermId termId : ontology.getNonObsoleteTermIds()) {
       termToFrequency.put(termId, 0);
     }
-    for (Entry<TermId, ? extends Collection<LabelT>> e : termLabels.entrySet()) {
+    for (Entry<TermId, Collection<TermId>> e : termLabels.entrySet()) {
       termToFrequency.put(e.getKey(), e.getValue().size());
     }
 
     // Compute information content for each TermId
     final int maxFreq = termToFrequency.get(root);
-    final Map<TermId, Double> termToInformationContent =
-        caculateInformationContent(maxFreq, termToFrequency);
+    final Map<TermId, Double> termToInformationContent = caculateInformationContent(maxFreq, termToFrequency);
 
     // Fix terms with IC of zero, set it to IC of root
     int countIcZero = 0;
@@ -88,9 +84,7 @@ public final class InformationContentComputation {
 
     if (countIcZero > 0) {
       LOGGER.warn(
-          "Frequency of {} non-obsolete terms was zero! Their IC has been set to {} = "
-              + "- log(1 / {}).",
-          new Object[] {countIcZero, dummyIc, maxFreq});
+          "Frequency of {} non-obsolete terms was zero! Their IC has been set to {} =  - log(1 / {}).", countIcZero, dummyIc, maxFreq);
     }
     LOGGER.info("Computing IC is complete.");
 
@@ -99,18 +93,18 @@ public final class InformationContentComputation {
 
   /**
    * Calculate information content for each {@link TermId}.
+   * We assign an information content of zero for terms that have zero frequency in our dataset
    *
    * @param maxFreq Maximal frequency of any term (root's frequency).
    * @param termToFrequency {@link Map} from term to absolute frequency.
    * @return {@link Map} from {@link TermId} to information content.
    */
-  private Map<TermId, Double> caculateInformationContent(
-      double maxFreq, Map<TermId, Integer> termToFrequency) {
+  private Map<TermId, Double> caculateInformationContent(double maxFreq, Map<TermId, Integer> termToFrequency) {
     final Map<TermId, Double> termToIc = new HashMap<>();
 
     for (Entry<TermId, Integer> e : termToFrequency.entrySet()) {
       final double probability = e.getValue() / maxFreq;
-      final double informationContent = -Math.log(probability);
+      final double informationContent = e.getValue()>0 ? -Math.log(probability) : 0;
       termToIc.put(e.getKey(), informationContent);
     }
 

@@ -3,32 +3,34 @@ package org.monarchinitiative.phenol.ontology.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImmutableTermIdTest {
 
-  private TermPrefix termPrefix;
-  private TermId termId;
-  private TermId termId2;
-
-  @Before
-  public void setUp() {
-    termPrefix = new TermPrefix("HP");
-    termId = new TermId(termPrefix, "0000001");
-    termId2 = new TermId(termPrefix, "0000002");
-  }
+  private final TermId termId = TermId.of("HP:0000001");
+  private final TermId termId2 = TermId.of("HP:0000002");
 
   @Test
   public void testStaticConstructMethod() {
-    TermId otherId = TermId.constructWithPrefix("HP:0000001");
-    assertEquals(
-        "TermId [prefix=TermPrefix [value=HP], id=0000001]", otherId.toString());
+    TermId otherId = TermId.of("HP:0000001");
+    assertEquals("HP:0000001", otherId.toString());
+    assertEquals(termId, otherId);
+  }
+
+  @Test
+  void testStaticOfConstructorFullId() {
+    TermId otherId = TermId.of("HP:0000001");
+    assertEquals(termId, otherId);
+  }
+
+  @Test
+  void testStaticOfConstructorPrefixAndId() {
+    TermId otherId = TermId.of("HP", "0000001");
     assertEquals(termId, otherId);
   }
 
@@ -47,14 +49,13 @@ public class ImmutableTermIdTest {
 
   @Test
   public void testQueryFunctions() {
-    assertSame(termPrefix, termId.getPrefix());
+    assertEquals("HP", termId.getPrefix());
     assertEquals("0000001", termId.getId());
-    assertEquals("HP:0000001", termId.getIdWithPrefix());
+    assertEquals("HP:0000001", termId.getValue());
   }
 
   @Test
   public void testToString() {
-    assertEquals(
-        "TermId [prefix=TermPrefix [value=HP], id=0000001]", termId.toString());
+    assertEquals("HP:0000001", termId.toString());
   }
 }

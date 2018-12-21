@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoAnnotationLineTest {
 
@@ -25,7 +23,7 @@ public class HpoAnnotationLineTest {
 
   private HpoOntology ontology;
 
-  @Before
+  @BeforeEach
   public void setUp() throws PhenolException {
     ClassLoader classLoader = this.getClass().getClassLoader();
     final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
@@ -65,7 +63,7 @@ public class HpoAnnotationLineTest {
     assertFalse(hpoAnnot.isNOT());
     assertEquals(EMPTY_STRING,hpoAnnot.getFrequency());
     TermId diseaseId = hpoAnnot.getDiseaseTermId();
-    TermId expected = TermId.constructWithPrefix("OMIM:269150");
+    TermId expected = TermId.of("OMIM:269150");
     assertEquals(expected,diseaseId);
 
   }
@@ -74,9 +72,9 @@ public class HpoAnnotationLineTest {
    * The first field ("BadPrefix" instead of "OMIM") is invalid and should throw an exception.
    * @throws PhenolException expected to throw because prefix is malformed
    */
-  @Test(expected = PhenolException.class)
+  @Test
   public void malformedDiseaseDatabasePrefix() throws PhenolException {
-    String items[]={"BadPrefix",
+    String[] items = {"BadPrefix",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
@@ -90,8 +88,7 @@ public class HpoAnnotationLineTest {
       "P",
       "2017-07-13",
       "HPO:skoehler"};
-    HpoAnnotationLine hpoAnnot = makeLine(items);
-    TermId diseaseId = hpoAnnot.getDiseaseTermId();
+    assertThrows(PhenolException.class, () -> makeLine(items));
   }
 
 
@@ -118,7 +115,7 @@ public class HpoAnnotationLineTest {
       };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.895;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -149,7 +146,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.025;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -177,7 +174,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.17;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -206,7 +203,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.545;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -234,7 +231,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=1.0;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
@@ -262,7 +259,7 @@ public class HpoAnnotationLineTest {
     };
     HpoAnnotationLine line = makeLine(items);
     HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.constructWithPrefix("OMIM:123456");
+    TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.0;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);

@@ -8,12 +8,19 @@ package org.monarchinitiative.phenol.ontology.data;
 public class SimpleXref {
 
   enum Prefix {
-    HPO("HPO"), MGI("MGI"), PMID("PMID"),ISBN("ISBN"),
-    MONDO("MONDO"),NCIT("NCIT"),ORCID("ORCID"),MESH("MESH"),
-    DOID("DOID"),ORPHANET("Orphanet"),EFO("EFO"), UNKNOWN("?");
+    HPO("HPO"), MGI("MGI"), PMID("PMID"), ISBN("ISBN"),
+    MONDO("MONDO"), NCIT("NCIT"), ORCID("ORCID"), MESH("MESH"),
+    DOID("DOID"), ORPHANET("Orphanet"), EFO("EFO"), UNKNOWN("?");
     private final String name;
-    Prefix(String n){this.name=n;}
-   @Override public String toString(){return name;}
+
+    Prefix(String n) {
+      this.name = n;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
   }
 
 
@@ -22,7 +29,7 @@ public class SimpleXref {
   private final String id;
 
   public SimpleXref(String xref) {
-    int i = xref.indexOf(":");
+    int i = xref.indexOf(':');
     // if there is no semicolon then i<0
     // if the semicolon is at the first or last position, then the xref is also invalid
     if (i<1 || i==xref.length()-1) {

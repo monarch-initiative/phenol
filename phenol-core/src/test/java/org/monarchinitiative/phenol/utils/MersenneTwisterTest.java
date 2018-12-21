@@ -3,9 +3,10 @@ package org.monarchinitiative.phenol.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test the MersenneTwister class (although copied from somewhere else).
@@ -18,7 +19,7 @@ public class MersenneTwisterTest {
 
   MersenneTwister rng;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     rng = new MersenneTwister(seed);
   }
@@ -29,7 +30,6 @@ public class MersenneTwisterTest {
     for (int i = 0; i < 10_000; ++i) {
       values.add(rng.nextDouble());
     }
-    Assert.assertEquals(
-        0.5, values.stream().mapToDouble(x -> (double) x).average().orElse(-1.0), 0.01);
+    assertEquals(0.5, values.stream().mapToDouble(x -> (double) x).average().orElse(-1.0), 0.01);
   }
 }

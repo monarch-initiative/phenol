@@ -94,7 +94,7 @@ public class HpoGeneAnnotationParser implements TermAnnotationParser<HpoGeneAnno
     final int geneId = Integer.parseInt(arr[0]);
     final String geneSymbol = arr[1];
     final String hpoTermName = arr[2];
-    final TermId hpoTermId = TermId.constructWithPrefix(arr[3]);
+    final TermId hpoTermId = TermId.of(arr[3]);
 
     nextLine = reader.readLine();
 

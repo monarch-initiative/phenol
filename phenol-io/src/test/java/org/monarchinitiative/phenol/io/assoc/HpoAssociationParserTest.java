@@ -1,18 +1,14 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
@@ -23,11 +19,13 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
-  @Before
-  public void init() throws IOException, PhenolException {
+  @BeforeEach
+  public void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
 	ClassLoader classLoader = this.getClass().getClassLoader();
@@ -35,7 +33,7 @@ public class HpoAssociationParserTest {
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
  
-    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"), true);
+    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
     final HpoOntology ontology = oboParser.parse();
 
     parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
@@ -54,13 +52,13 @@ public class HpoAssociationParserTest {
   @Test
   public void testHoltOram() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
-    TermId holtOramId = TermId.constructWithPrefix("OMIM:142900");
+    TermId holtOramId = TermId.of("OMIM:142900");
     assertTrue(diseasemap.containsKey(holtOramId));
     DiseaseToGeneAssociation holtOramAssociation = diseasemap.get(holtOramId);
     List<Gene> geneList = holtOramAssociation.getGeneList();
     assertEquals(1, geneList.size());
     Gene gene = geneList.get(0);
-    TermId tbx5Id = TermId.constructWithPrefix("NCBIGene:6910");
+    TermId tbx5Id = TermId.of("NCBIGene:6910");
     assertEquals(tbx5Id, gene.getId());
     String symbol = "TBX5";
     assertEquals(symbol, gene.getSymbol());
@@ -73,13 +71,13 @@ public class HpoAssociationParserTest {
   @Test
   public void testAdamsOliver() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
-    TermId adamsOliver1Id = TermId.constructWithPrefix("OMIM:100300");
+    TermId adamsOliver1Id = TermId.of("OMIM:100300");
     assertTrue(diseasemap.containsKey(adamsOliver1Id));
     DiseaseToGeneAssociation holtOramAssociation = diseasemap.get(adamsOliver1Id);
     List<Gene> geneList = holtOramAssociation.getGeneList();
     assertEquals(1, geneList.size());
     Gene gene = geneList.get(0);
-    TermId tbx5Id = TermId.constructWithPrefix("NCBIGene:57514");
+    TermId tbx5Id = TermId.of("NCBIGene:57514");
     assertEquals(tbx5Id, gene.getId());
     String symbol = "ARHGAP31";
     assertEquals(symbol, gene.getSymbol());
@@ -99,25 +97,25 @@ public class HpoAssociationParserTest {
   @Test
   public void testFbn1() {
     Multimap<TermId, TermId> mmap = parser.getGeneToDiseaseIdMap();
-    TermId Fbn1Id = TermId.constructWithPrefix("NCBIGene:2200");
+    TermId Fbn1Id = TermId.of("NCBIGene:2200");
     assertTrue(mmap.containsKey(Fbn1Id));
     Collection<TermId> diseaseIdCollection = mmap.get(Fbn1Id);
     assertEquals(8, diseaseIdCollection.size());
-    TermId acromicricDysplasia = TermId.constructWithPrefix("OMIM:102370");
+    TermId acromicricDysplasia = TermId.of("OMIM:102370");
     assertTrue(diseaseIdCollection.contains(acromicricDysplasia));
-    TermId ectopiaLentis = TermId.constructWithPrefix("OMIM:129600");
+    TermId ectopiaLentis = TermId.of("OMIM:129600");
     assertTrue(diseaseIdCollection.contains(ectopiaLentis));
-    TermId geleophysicDysplasia2 = TermId.constructWithPrefix("OMIM:614185");
+    TermId geleophysicDysplasia2 = TermId.of("OMIM:614185");
     assertTrue(diseaseIdCollection.contains(geleophysicDysplasia2));
-    TermId marfanLipodystrophySyndrome = TermId.constructWithPrefix("OMIM:616914");
+    TermId marfanLipodystrophySyndrome = TermId.of("OMIM:616914");
     assertTrue(diseaseIdCollection.contains(marfanLipodystrophySyndrome));
-    TermId marfanSyndrome = TermId.constructWithPrefix("OMIM:154700");
+    TermId marfanSyndrome = TermId.of("OMIM:154700");
     assertTrue(diseaseIdCollection.contains(marfanSyndrome));
-    TermId massSyndrome = TermId.constructWithPrefix("OMIM:604308");
+    TermId massSyndrome = TermId.of("OMIM:604308");
     assertTrue(diseaseIdCollection.contains(massSyndrome));
-    TermId stiffSkinSyndrome = TermId.constructWithPrefix("OMIM:184900");
+    TermId stiffSkinSyndrome = TermId.of("OMIM:184900");
     assertTrue(diseaseIdCollection.contains(stiffSkinSyndrome));
-    TermId weillMarchesani2 = TermId.constructWithPrefix("OMIM:608328");
+    TermId weillMarchesani2 = TermId.of("OMIM:608328");
     assertTrue(diseaseIdCollection.contains(weillMarchesani2));
   }
 
@@ -145,32 +143,32 @@ public class HpoAssociationParserTest {
   @Test
   public void testSusceptibilityGenes() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
-    TermId familialHypercholesterolemia = TermId.constructWithPrefix("OMIM:143890");
+    TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
     assertTrue(diseasemap.containsKey(familialHypercholesterolemia));
     DiseaseToGeneAssociation hypercholesterolemiaAssociation = diseasemap.get(familialHypercholesterolemia);
     List<Gene> geneList = hypercholesterolemiaAssociation.getGeneList();
     assertEquals(7, geneList.size());
-    Gene APOA2 = new Gene(TermId.constructWithPrefix("NCBIGene:336"), "APOA2");
+    Gene APOA2 = new Gene(TermId.of("NCBIGene:336"), "APOA2");
     assertTrue(geneList.contains(APOA2));
-    Gene ITIH4 = new Gene(TermId.constructWithPrefix("NCBIGene:3700"), "ITIH4");
+    Gene ITIH4 = new Gene(TermId.of("NCBIGene:3700"), "ITIH4");
     assertTrue(geneList.contains(ITIH4));
-    Gene GHR = new Gene(TermId.constructWithPrefix("NCBIGene:2690"), "GHR");
+    Gene GHR = new Gene(TermId.of("NCBIGene:2690"), "GHR");
     assertTrue(geneList.contains(GHR));
-    Gene PPP1R17 = new Gene(TermId.constructWithPrefix("NCBIGene:10842"), "PPP1R17");
+    Gene PPP1R17 = new Gene(TermId.of("NCBIGene:10842"), "PPP1R17");
     assertTrue(geneList.contains(PPP1R17));
-    Gene EPHX2 = new Gene(TermId.constructWithPrefix("NCBIGene:2053"), "EPHX2");
+    Gene EPHX2 = new Gene(TermId.of("NCBIGene:2053"), "EPHX2");
     assertTrue(geneList.contains(EPHX2));
-    Gene ABCA1 = new Gene(TermId.constructWithPrefix("NCBIGene:19"), "ABCA1");
+    Gene ABCA1 = new Gene(TermId.of("NCBIGene:19"), "ABCA1");
     assertTrue(geneList.contains(ABCA1));
-    Gene LDLR = new Gene(TermId.constructWithPrefix("NCBIGene:3949"), "LDLR");
+    Gene LDLR = new Gene(TermId.of("NCBIGene:3949"), "LDLR");
     assertTrue(geneList.contains(LDLR));
   }
 
   @Test
   public void testTermToGene() throws PhenolException {
     // This test map should come from {@link HpoDiseaseAnnotationParser}
-    TermId familialHypercholesterolemia = TermId.constructWithPrefix("OMIM:143890");
-    TermId fakePhenotype = TermId.constructWithPrefix("HP:0000118");
+    TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
+    TermId fakePhenotype = TermId.of("HP:0000118");
     Multimap<TermId, TermId> testMap = ArrayListMultimap.create();
     testMap.put(fakePhenotype, familialHypercholesterolemia);
     parser.setTermToGene(testMap);
@@ -180,7 +178,7 @@ public class HpoAssociationParserTest {
   @Test
   public void testDiseasetoGene() {
     Multimap<TermId, TermId> diseaseMap = parser.getDiseaseToGeneIdMap();
-    Collection<TermId> genes = diseaseMap.get(TermId.constructWithPrefix("OMIM:143890"));
+    Collection<TermId> genes = diseaseMap.get(TermId.of("OMIM:143890"));
     assertEquals(genes.size(), 7);
   }
 
@@ -188,7 +186,7 @@ public class HpoAssociationParserTest {
   @Test
   public void testGeneIdToGeneSymbol(){
     Map<TermId, String> geneMap = parser.getGeneIdToSymbolMap();
-    assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2690")),"GHR");
-    assertEquals(geneMap.get(TermId.constructWithPrefix("NCBIGene:2200")),"FBN1");
+    assertEquals(geneMap.get(TermId.of("NCBIGene:2690")),"GHR");
+    assertEquals(geneMap.get(TermId.of("NCBIGene:2200")),"FBN1");
   }
 }

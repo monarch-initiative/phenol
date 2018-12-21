@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
 
 
-public final class App {
+public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
   private String pathGoObo;
   /** Path to the GoGaf file. */
@@ -26,7 +26,7 @@ public final class App {
   private TermId targetGoTerm=DEFAULT_GO_ID;
 
 
-  public App(String [] args) {
+  public GoEnrichmentDemo(String [] args) {
     parseArgs(args);
   }
 
@@ -88,7 +88,7 @@ public final class App {
     Set<TermId> genes = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
       if (focus.equals(ann.getGoId())) {
-        TermId geneId = ann.getDbObjectIdAsTermId();
+        TermId geneId = ann.getDbObjectTermId();
         genes.add(geneId);
       }
     }
@@ -108,7 +108,7 @@ public final class App {
     i=0;
     M *= 3;
     for (GoGaf21Annotation ann : annots) {
-      TermId gene = ann.getDbObjectIdAsTermId();
+      TermId gene = ann.getDbObjectTermId();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
@@ -123,7 +123,7 @@ public final class App {
   private Set<TermId> getPopulationSet(List<GoGaf21Annotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (GoGaf21Annotation ann : annots) {
-      TermId geneId = ann.getDbObjectIdAsTermId();
+      TermId geneId = ann.getDbObjectTermId();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);
@@ -161,7 +161,7 @@ public final class App {
    * @param args Command line arguments.
    */
   public static void main(String[] args) {
-    new App(args).run();
+    new GoEnrichmentDemo(args).run();
   }
 
 }

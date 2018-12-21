@@ -1,23 +1,21 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OntologyAlgorithmTest {
 
@@ -36,15 +34,15 @@ public class OntologyAlgorithmTest {
   private TermId id4;
   private TermId id5;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metaInfo = ImmutableSortedMap.of();
 
-    id1 = TermId.constructWithPrefix("HP:0000001");
-    id2 = TermId.constructWithPrefix("HP:0000002");
-    id3 = TermId.constructWithPrefix("HP:0000003");
-    id4 = TermId.constructWithPrefix("HP:0000004");
-    id5 = TermId.constructWithPrefix("HP:0000005");
+    id1 = TermId.of("HP:0000001");
+    id2 = TermId.of("HP:0000002");
+    id3 = TermId.of("HP:0000003");
+    id4 = TermId.of("HP:0000004");
+    id5 = TermId.of("HP:0000005");
 
     graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
@@ -58,80 +56,45 @@ public class OntologyAlgorithmTest {
 
     ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
     termMapBuilder.put(
-        id1,
-        new Term(
-            id1,
-            new ArrayList<>(),
-            "term1",
-            "some definition 1",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      id1,
+      Term.builder()
+        .id(id1)
+        .name("term1")
+        .definition("some definition 1")
+        .build()
+    );
     termMapBuilder.put(
-        id2,
-        new Term(
-            id2,
-            new ArrayList<>(),
-            "term2",
-            "some definition 2",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      id2,
+      Term.builder()
+        .id(id2)
+        .name("term2")
+        .definition("some definition 2")
+        .build()
+    );
     termMapBuilder.put(
-        id3,
-        new Term(
-            id3,
-            new ArrayList<>(),
-            "term3",
-            "some definition 3",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      id3,
+      Term.builder()
+        .id(id3)
+        .name("term3")
+        .definition("some definition 3")
+        .build()
+    );
     termMapBuilder.put(
-        id4,
-        new Term(
-            id4,
-            new ArrayList<>(),
-            "term4",
-            "some definition 4",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      id4,
+      Term.builder()
+        .id(id4)
+        .name("term4")
+        .definition("some definition 4")
+        .build()
+    );
     termMapBuilder.put(
-        id5,
-        new Term(
-            id5,
-            new ArrayList<>(),
-            "term5",
-            "some definition 5",
-          ImmutableList.of(),
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false,
-            null,
-            null,
-            new ArrayList<>()));
+      id5,
+      Term.builder()
+        .id(id5)
+        .name("term5")
+        .definition("some definition 5")
+        .build()
+    );
     termMap = termMapBuilder.build();
 
     obsoleteTermMap = ImmutableMap.of();

@@ -31,7 +31,7 @@ public interface TermAnnotation extends Serializable, Comparable<TermAnnotation>
    *
    * @return The "world object" label that the term is annotated with.
    */
-  String getLabel();
+  TermId getLabel();
 
   /**
    * Query for evidence code.

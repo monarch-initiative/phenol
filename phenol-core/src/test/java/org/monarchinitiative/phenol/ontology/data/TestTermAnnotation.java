@@ -8,9 +8,9 @@ public class TestTermAnnotation implements TermAnnotation {
   private static final long serialVersionUID = 1L;
 
   private TermId termId;
-  private String label;
+  private TermId label;
 
-  public TestTermAnnotation(TermId termId, String label) {
+  public TestTermAnnotation(TermId termId, TermId label) {
     this.termId = termId;
     this.label = label;
   }
@@ -21,7 +21,7 @@ public class TestTermAnnotation implements TermAnnotation {
   }
 
   @Override
-  public String getLabel() {
+  public TermId getLabel() {
     return label;
   }
 

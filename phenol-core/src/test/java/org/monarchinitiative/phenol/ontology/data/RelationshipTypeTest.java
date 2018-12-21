@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RelationshipTypeTest {
 
