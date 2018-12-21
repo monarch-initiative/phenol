@@ -1,38 +1,18 @@
 package org.monarchinitiative.demos.compute_similarities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.*;
-import java.util.stream.Collectors;
-
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.h2.mvstore.DataUtils;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
-import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
-import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
-import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistributions;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
 import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
 import org.monarchinitiative.phenol.ontology.similarity.PrecomputingPairwiseResnikSimilarity;
 import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
-import org.monarchinitiative.phenol.io.obo.hpo.*;
-import org.monarchinitiative.phenol.formats.hpo.*;
+
+import java.io.File;
+import java.io.IOException;
 
 
 // TODO: This needs some refactorization love
@@ -78,6 +58,15 @@ public class ComputeSimilarityDemo {
    */
   public ComputeSimilarityDemo(String[] args) {
     this.args = args;
+  }
+
+  /**
+   * Program entry point.
+   *
+   * @param args Command line arguments.
+   */
+  public static void main(String[] args) {
+    new ComputeSimilarityDemo(args).run();
   }
 
   /**
@@ -159,10 +148,10 @@ public class ComputeSimilarityDemo {
     List<TermId> phenoAbnormalities2 = randomDisease2.getPhenotypicAbnormalityTermIdList();
 
 
-    double similarity = resnikSimilarity.computeScore(phenoAbnormalities1,phenoAbnormalities2);
+    double similarity = resnikSimilarity.computeScore(phenoAbnormalities1, phenoAbnormalities2);
 
     System.out.println(String.format("Similarity score between the query %s and the target disease %s was %.4f",
-      randomDisease1.getName(),randomDisease2.getName(),similarity));
+      randomDisease1.getName(), randomDisease2.getName(), similarity));
 
     //public final double computeScore(Collection<TermId> query, Collection<TermId> target) {
 
@@ -177,11 +166,11 @@ public class ComputeSimilarityDemo {
     Map<Integer, List<TermId>> diseaseTerm_index = new HashMap<>();
     Map<Integer, TermId> disease_index = new HashMap<>();
     int count = 0;
-    for (Map.Entry<TermId, Collection<TermId>> entry: diseaseIdToTermIds.entrySet()) {
+    for (Map.Entry<TermId, Collection<TermId>> entry : diseaseIdToTermIds.entrySet()) {
       diseaseTerm_index.put(count, new ArrayList<>(entry.getValue()));
       disease_index.put(count, entry.getKey());
       count++;
-      if(count > 3) { //to save computing time for the demo, we just compute score distributions for three diseases
+      if (count > 3) { //to save computing time for the demo, we just compute score distributions for three diseases
         break;
       }
     }
@@ -197,8 +186,6 @@ public class ComputeSimilarityDemo {
 
   }
 
-
-
   /**
    * Parse command line arguments.
    */
@@ -209,7 +196,7 @@ public class ComputeSimilarityDemo {
 
     pathHpObo = args[0];
     pathPhenotypeHpoa = args[1];
-    if (args.length==3) { // otherwise use default
+    if (args.length == 3) { // otherwise use default
       pathTsvFile = args[2];
     }
   }
@@ -224,103 +211,93 @@ public class ComputeSimilarityDemo {
   }
 
   /**
-   * Program entry point.
-   *
-   * @param args Command line arguments.
-   */
-  public static void main(String[] args) {
-    new ComputeSimilarityDemo(args).run();
-  }
-
-  /**
    * This is various code from the old app -- not sure what it does
 
-  @Deprecated
-  private void oldcode() {
+   @Deprecated private void oldcode() {
 
 
-    System.out.println("DONE: Loading HPO to gene annotation file");
-    try (InputStream fis = new FileInputStream(pathTsvFile);
-         InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-         BufferedReader br = new BufferedReader(isr)) {
-      while ((line = br.readLine()) != null) {
-        // Compute term set from gene.
-        final int entrezId = Integer.parseInt(arr[nameToCol.get("entrez_id")]);
-        final Set<TermId> geneTermIds = diseaseIdToTermIds.getOrDefault(entrezId, new HashSet<>());
-        // Convert string list of HPO terms to TermId objects.
-        final List<String> rawHpoTermIds =
-          Arrays.asList(arr[nameToCol.get("hpo_terms")].split(","));
-        // TODO: add convenience routines for converting from term strings, filtering out obsolete
-        // ones, possibly falling back to replaced_by
-        final List<TermId> unfilteredHpoTermIds = rawHpoTermIds.stream()
-          .map(s -> TermId.of(s)).collect(Collectors.toList());
-        final List<TermId> hpoTermIds = unfilteredHpoTermIds.stream().filter(termId -> {
-          if (hpo.getObsoleteTermIds().contains(termId)) {
-            System.err.println("File contained term which is marked as obsolete!" + termId.getIdWithPrefix());
-            return false;
-          } else {
-            return true;
-          }
-        }).collect(Collectors.toList());
-        // Prepare values to write out.
-        final List<String> fields = Lists.newArrayList(Arrays.asList(line.split("\t")));
-        // Append names into output.
-        fields.add(Joiner.on('|').join(unfilteredHpoTermIds.stream().map(termId -> {
-          if (hpo.getObsoleteTermIds().contains(termId)) {
-            return hpo.getTermMap().get(termId).getName() + " (obsolete)";
-          } else if (hpo.getTermMap().containsKey(termId)) {
-            return hpo.getTermMap().get(termId).getName();
-          } else {
-            return "UNRESOLVABLE: " + termId;
-          }
-        }).collect(Collectors.toList())));
-        // Compute Resnik similarity and p-value if the gene is annotated with any terms.
-        if (diseaseIdToTermIds.containsKey(entrezId)) {
-          // Compute Resnik similarity between the two sets of terms.
-          final double resnikSim = resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
-          fields.add(Double.toString(resnikSim));
+   System.out.println("DONE: Loading HPO to gene annotation file");
+   try (InputStream fis = new FileInputStream(pathTsvFile);
+   InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+   BufferedReader br = new BufferedReader(isr)) {
+   while ((line = br.readLine()) != null) {
+   // Compute term set from gene.
+   final int entrezId = Integer.parseInt(arr[nameToCol.get("entrez_id")]);
+   final Set<TermId> geneTermIds = diseaseIdToTermIds.getOrDefault(entrezId, new HashSet<>());
+   // Convert string list of HPO terms to TermId objects.
+   final List<String> rawHpoTermIds =
+   Arrays.asList(arr[nameToCol.get("hpo_terms")].split(","));
+   // TODO: add convenience routines for converting from term strings, filtering out obsolete
+   // ones, possibly falling back to replaced_by
+   final List<TermId> unfilteredHpoTermIds = rawHpoTermIds.stream()
+   .map(s -> TermId.of(s)).collect(Collectors.toList());
+   final List<TermId> hpoTermIds = unfilteredHpoTermIds.stream().filter(termId -> {
+   if (hpo.getObsoleteTermIds().contains(termId)) {
+   System.err.println("File contained term which is marked as obsolete!" + termId.getIdWithPrefix());
+   return false;
+   } else {
+   return true;
+   }
+   }).collect(Collectors.toList());
+   // Prepare values to write out.
+   final List<String> fields = Lists.newArrayList(Arrays.asList(line.split("\t")));
+   // Append names into output.
+   fields.add(Joiner.on('|').join(unfilteredHpoTermIds.stream().map(termId -> {
+   if (hpo.getObsoleteTermIds().contains(termId)) {
+   return hpo.getTermMap().get(termId).getName() + " (obsolete)";
+   } else if (hpo.getTermMap().containsKey(termId)) {
+   return hpo.getTermMap().get(termId).getName();
+   } else {
+   return "UNRESOLVABLE: " + termId;
+   }
+   }).collect(Collectors.toList())));
+   // Compute Resnik similarity and p-value if the gene is annotated with any terms.
+   if (diseaseIdToTermIds.containsKey(entrezId)) {
+   // Compute Resnik similarity between the two sets of terms.
+   final double resnikSim = resnikSimilarity.computeScore(hpoTermIds, geneTermIds);
+   fields.add(Double.toString(resnikSim));
 
-          System.out.println("Computing p-value...");
-          final ScoreSamplingOptions options = new ScoreSamplingOptions();
-          options.setNumThreads(numThreads);
-          options.setMinNumTerms(hpoTermIds.size());
-          options.setMaxNumTerms(hpoTermIds.size());
-          options.setMinObjectId(entrezId);
-          options.setMaxObjectId(entrezId);
-          final int termCount = hpoTermIds.size();
+   System.out.println("Computing p-value...");
+   final ScoreSamplingOptions options = new ScoreSamplingOptions();
+   options.setNumThreads(numThreads);
+   options.setMinNumTerms(hpoTermIds.size());
+   options.setMaxNumTerms(hpoTermIds.size());
+   options.setMinObjectId(entrezId);
+   options.setMaxObjectId(entrezId);
+   final int termCount = hpoTermIds.size();
 
-          // Only re-precompute if we have no precomputation value yet.
-          if (!scoreDists.containsKey(termCount)
-            || scoreDists.get(termCount).getObjectScoreDistribution(entrezId) == null) {
-            final SimilarityScoreSampling sampling =
-              new SimilarityScoreSampling(hpo, resnikSimilarity,
-                options);
-            final Map<Integer, ScoreDistribution> tmpDists =
-              sampling.performSampling(labelToTermIds);
-            if (!scoreDists.containsKey(termCount)) {
-              // no need to merge
-              scoreDists.put(termCount, tmpDists.get(termCount));
-            } else {
-              // we need to merge
-              scoreDists.put(termCount,
-                ScoreDistributions.merge(scoreDists.get(termCount), tmpDists.get(termCount)));
-            }
+   // Only re-precompute if we have no precomputation value yet.
+   if (!scoreDists.containsKey(termCount)
+   || scoreDists.get(termCount).getObjectScoreDistribution(entrezId) == null) {
+   final SimilarityScoreSampling sampling =
+   new SimilarityScoreSampling(hpo, resnikSimilarity,
+   options);
+   final Map<Integer, ScoreDistribution> tmpDists =
+   sampling.performSampling(labelToTermIds);
+   if (!scoreDists.containsKey(termCount)) {
+   // no need to merge
+   scoreDists.put(termCount, tmpDists.get(termCount));
+   } else {
+   // we need to merge
+   scoreDists.put(termCount,
+   ScoreDistributions.merge(scoreDists.get(termCount), tmpDists.get(termCount)));
+   }
 
-            final double pValue = scoreDists.get(hpoTermIds.size())
-              .getObjectScoreDistribution(entrezId).estimatePValue(resnikSim);
-            fields.add(Double.toString(pValue));
-            System.out.println("DONE: p-value computation");
-          } else {
-            System.err.println("Could not perform p value precomputation for Entrez gene ID {}, gene "
-              + "not linked to any terms!" + entrezId);
-            fields.addAll(ImmutableList.of("NA", "NA"));
-          }
+   final double pValue = scoreDists.get(hpoTermIds.size())
+   .getObjectScoreDistribution(entrezId).estimatePValue(resnikSim);
+   fields.add(Double.toString(pValue));
+   System.out.println("DONE: p-value computation");
+   } else {
+   System.err.println("Could not perform p value precomputation for Entrez gene ID {}, gene "
+   + "not linked to any terms!" + entrezId);
+   fields.addAll(ImmutableList.of("NA", "NA"));
+   }
 
-          System.out.println(Joiner.on('\t').join(fields));
-        }
-      }
-    }
-  }
+   System.out.println(Joiner.on('\t').join(fields));
+   }
+   }
+   }
+   }
    */
 
 
