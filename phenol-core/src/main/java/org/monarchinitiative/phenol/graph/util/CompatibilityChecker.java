@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 public class CompatibilityChecker {
   private static final Logger LOGGER = LoggerFactory.getLogger(CompatibilityChecker.class);
 
+  private CompatibilityChecker() {
+  }
+
   /**
    * Check compatibility of <code>vertices</code> and <code>edges</code>, i.e., there must not be a
    * vertex in <code>edges</code> that is not present in <code>vertices</code>.
@@ -22,11 +25,8 @@ public class CompatibilityChecker {
    * @throws  VerticesAndEdgesIncompatibleException in case of incompatibilities.
    */
   @SuppressWarnings("unchecked")
-  public static <V extends Comparable<V>> void check(
-      Collection<V> vertices, Collection<IdLabeledEdge> edges) {
-    LOGGER.info(
-        "Checking vertices ({}) and edges ({}) for compatibility...",
-        new Object[] {vertices.size(), edges.size()});
+  public static <V extends Comparable<V>> void check(Collection<V> vertices, Collection<IdLabeledEdge> edges) {
+    LOGGER.debug("Checking vertices ({}) and edges ({}) for compatibility...", vertices.size(), edges.size());
 
     Set<V> vertexSet = new HashSet<>(vertices);
     for (IdLabeledEdge edge : edges) {
@@ -41,7 +41,7 @@ public class CompatibilityChecker {
       }
     }
 
-    LOGGER.info("Vertices and edges are compatible!");
+    LOGGER.debug("Vertices and edges are compatible!");
 
     final Map<V, Set<V>> seen = new HashMap<>();
     for (IdLabeledEdge edge : edges) {
@@ -54,6 +54,6 @@ public class CompatibilityChecker {
       }
       seen.get(edge.getSource()).add((V) edge.getTarget());
     }
-    LOGGER.info("Graph is simple!");
+    LOGGER.debug("Graph is simple!");
   }
 }

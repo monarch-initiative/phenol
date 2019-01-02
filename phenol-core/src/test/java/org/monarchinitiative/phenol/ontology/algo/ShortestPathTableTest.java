@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
@@ -11,7 +11,7 @@ public class ShortestPathTableTest extends VegetableOntologyTestBase {
 
   ShortestPathTable table;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
     table = new ShortestPathTable(ontology);

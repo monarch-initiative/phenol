@@ -4,7 +4,7 @@
   <artifactId>phenol-analysis</artifactId>
   <packaging>jar</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>phenol-analysis</name>
 
   <description>phenol-analysis implements some algorithms for working with ontology data</description>
   <url>https://github.com/monarchinitiative/phenol</url>
@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.2.6</version>
+    <version>1.3.1</version>
   </parent>
 
   <properties>

@@ -1,7 +1,7 @@
 //package org.monarchinitiative.phenol.io.obo.uberpheno;
 //
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertTrue;
+//import static org.junit.jupiter.api.Assertions.assertEquals;
+//import static org.junit.jupiter.api.Assertions.assertTrue;
 //
 //import java.io.File;
 //import java.io.IOException;
@@ -9,9 +9,9 @@
 //import java.util.Optional;
 //
 //import org.jgrapht.graph.DefaultDirectedGraph;
-//import org.junit.Before;
+//import org.junit.jupiter.api.BeforeEach;
 //import org.junit.Rule;
-//import org.junit.Test;
+//import org.junit.jupiter.api.Test;
 //import org.junit.rules.TemporaryFolder;
 //
 //import org.monarchinitiative.phenol.formats.uberpheno.UberphenoOntology;
@@ -39,7 +39,7 @@
 //
 //  private Optional<Ontology> optionalOntology;
 //
-//  @Before
+//  @BeforeEach
 //  public void setUp() throws IOException {
 //    uberphenoHeadFile = tmpFolder.newFile("crossSpeciesPheno_head.obo");
 //    ResourceUtils.copyResourceToFile("/crossSpeciesPheno_head.obo", uberphenoHeadFile);
@@ -76,7 +76,7 @@
 //  @Test
 //  public void testRootTerm() {
 //    Ontology ontology = optionalOntology.get();
-//    TermId root = TermId.constructWithPrefix("UBERPHENO:00000001");
+//    TermId root = TermId.of("UBERPHENO:00000001");
 //    //TODO -- currently broken!!!!!!!!!!!
 //    //assertEquals(root,ontology.getRootTermId());
 //  }

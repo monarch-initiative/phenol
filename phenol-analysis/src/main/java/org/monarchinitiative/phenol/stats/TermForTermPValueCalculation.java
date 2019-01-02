@@ -40,9 +40,9 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
                  continue; // only a single annotated entry -- do not perform a statistical test
              }
              TermId goId = entry.getKey();
-             System.err.println("Analyzing pval for " + goId.getIdWithPrefix());
+             System.err.println("Analyzing pval for " + goId.getValue());
              if (! this.annotationMap.containsKey(goId)) {
-                System.err.println("ERROR -- study set contains ID but pop set does not: "+ goId.getIdWithPrefix());
+                System.err.println("ERROR -- study set contains ID but pop set does not: "+ goId.getValue());
              }
              int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
              int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();

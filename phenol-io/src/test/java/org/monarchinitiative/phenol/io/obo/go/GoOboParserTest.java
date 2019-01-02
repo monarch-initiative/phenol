@@ -1,25 +1,23 @@
 package org.monarchinitiative.phenol.io.obo.go;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Map;
-
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
-import org.monarchinitiative.phenol.ontology.data.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
@@ -30,20 +28,11 @@ import org.monarchinitiative.phenol.ontology.data.*;
  */
 public class GoOboParserTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+  private final Ontology ontology;
 
-  private Ontology ontology;
-
-  @Before
-  public void setUp() throws IOException, PhenolException {
-
-    File goHeadFile;
-    goHeadFile = tmpFolder.newFile("go_head.obo");
-    ResourceUtils.copyResourceToFile("/go/go_head.obo", goHeadFile);
-    GoOboParser parser = new GoOboParser(goHeadFile);
-
-    this.ontology = parser.parse();
+  public GoOboParserTest() throws IOException, PhenolException {
+      GoOboParser parser = new GoOboParser(Paths.get("src/test/resources/go/go_head.obo").toFile());
+      this.ontology = parser.parse();
   }
 
   /** The obo file has the three top-level GO terms and one child each (i.e., three asserted is_a links).
@@ -60,7 +49,7 @@ public class GoOboParserTest {
   @Test
   public void testArtificialRootTerm() {
     TermId tid = ontology.getRootTermId();
-    TermId expected = TermId.constructWithPrefix("GO:0000000");
+    TermId expected = TermId.of("GO:0000000");
     assertEquals(expected,tid);
   }
 
@@ -69,9 +58,10 @@ public class GoOboParserTest {
    * @throws FileNotFoundException
    * @throws PhenolException
    */
-  @Test @Ignore public void testReal() throws FileNotFoundException, PhenolException {
+  @Disabled
+  @Test public void testReal() throws FileNotFoundException, PhenolException {
     String localpath="/home/robinp/data/go/go.obo";
-    TermPrefix RO_PREFIX=new TermPrefix("RO");
+    String RO_PREFIX = "RO";
     GoOboParser parser = new GoOboParser(localpath);
     GoOntology gontology=parser.parse();
     Map<TermId,Term> termmap =  gontology.getTermMap();

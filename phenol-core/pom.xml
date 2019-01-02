@@ -4,7 +4,7 @@
   <artifactId>phenol-core</artifactId>
   <packaging>jar</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>phenol-core</name>
 
   <description>phenol-core contains the core functionality for representing ontologies</description>
   <url>https://github.com/monarchinitiative/phenol</url>
@@ -12,12 +12,27 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.2.6</version>
+    <version>1.3.1</version>
   </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>2.7.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.5.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
@@ -47,6 +62,7 @@
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>false</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
+              <includeScope>runtime</includeScope>
             </configuration>
           </execution>
         </executions>

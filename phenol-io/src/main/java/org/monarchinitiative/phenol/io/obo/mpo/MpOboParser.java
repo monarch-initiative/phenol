@@ -21,16 +21,20 @@ public class MpOboParser {
       this.obo = new FileInputStream(oboFile);
       this.debug = debug;
   }
-  
+
   public MpOboParser(File oboFile) throws FileNotFoundException {
     this(oboFile,false);
   }
-  
+
+  public MpOboParser(String path) throws FileNotFoundException {
+    this(new File(path),false);
+  }
+
   public MpOboParser(InputStream obo, boolean debug) {
     this.obo = obo;
     this.debug = debug;
   }
-  
+
   public MpOboParser(InputStream obo) {
     this(obo,false);
   }

@@ -138,7 +138,7 @@ public enum HpoFrequency {
    *     TermId}.
    */
   public static HpoFrequency fromTermId(TermId termId) {
-    switch (termId.getIdWithPrefix()) {
+    switch (termId.getValue()) {
       case "HP:0040280":
         return ALWAYS_PRESENT;
       case "HP:0040281":

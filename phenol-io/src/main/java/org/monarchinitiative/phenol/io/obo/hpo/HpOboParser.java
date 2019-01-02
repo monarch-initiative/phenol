@@ -15,39 +15,31 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HpOboParser {
 
+  private static final Logger logger = LoggerFactory.getLogger(HpOboParser.class);
+
   private final InputStream obo;
 
-  private final boolean debug;
-
-  public HpOboParser(File oboFile, boolean debug) throws FileNotFoundException {
-    this.obo = new FileInputStream(oboFile);
-    this.debug = debug;
-  }
-  
   public HpOboParser(File oboFile) throws FileNotFoundException {
-    this(oboFile,false);
+    this.obo = new FileInputStream(oboFile);
   }
-  
-  public HpOboParser(InputStream obo, boolean debug) {
-    this.obo = obo;
-    this.debug = debug;
-  }
-  
+
   public HpOboParser(InputStream obo) {
-    this(obo,false);
+    this.obo = obo;
   }
 
   public HpoOntology parse() throws PhenolException {
     Ontology ontology;
 
+    logger.debug("Loading HPO");
     final OboOntologyLoader loader = new OboOntologyLoader(obo);
     ontology = loader.load();
-    if (debug) {
-      System.err.println(String.format("Parsed a total of %d HP terms",ontology.countAllTerms()));
-    }
+
+    logger.debug("Parsed a total of {} HP terms", ontology.countAllTerms());
 
     return new HpoOntology(
       (ImmutableSortedMap<String, String>) ontology.getMetaInfo(),

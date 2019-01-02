@@ -78,9 +78,9 @@ public final class MpAnnotation {
   public static MpAnnotation merge(MpAnnotation annot1, MpAnnotation annot2) throws PhenolException {
     if (! annot1.termId.equals(annot2.termId))
       throw new PhenolException(String.format("Attempt to merge annotations with distinct MP ids [%s/%s]",
-        annot1.termId.getIdWithPrefix(),annot2.termId.getIdWithPrefix()));
+        annot1.termId.getValue(),annot2.termId.getValue()));
     if (! annot1.negated == annot2.negated)
-      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getIdWithPrefix());
+      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getValue());
     // merge list of modifiers
     List<MpModifier> modlist = new ArrayList<>(annot1.getModifers());
     for (MpModifier mod: annot2.getModifers()) {
@@ -101,8 +101,8 @@ public final class MpAnnotation {
   @Override
   public String toString() {
     return negated ? "NOT " : "" +
-      termId.getIdWithPrefix() +
-      modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
+      termId.getValue() +
+       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
   }
 
   public static class Builder {
@@ -145,4 +145,25 @@ public final class MpAnnotation {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    MpAnnotation that = (MpAnnotation) o;
+
+    if (negated != that.negated) return false;
+    if (!termId.equals(that.termId)) return false;
+    if (pmidList != null ? !pmidList.equals(that.pmidList) : that.pmidList != null) return false;
+    return modifers.equals(that.modifers);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = termId.hashCode();
+    result = 31 * result + (pmidList != null ? pmidList.hashCode() : 0);
+    result = 31 * result + modifers.hashCode();
+    result = 31 * result + (negated ? 1 : 0);
+    return result;
+  }
 }

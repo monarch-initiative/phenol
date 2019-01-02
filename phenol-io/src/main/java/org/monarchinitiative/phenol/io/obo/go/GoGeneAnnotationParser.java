@@ -4,15 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -52,8 +48,7 @@ public final class GoGeneAnnotationParser  {
    * Create new parser for GO gene annotation file.
    *
    * @param file The file to read from.
-   * @throws IOException In case of problems with opening and reading from <code>file</code>.
-   * @throws TermAnnotationParserException If there are problems with the file's header.
+   * @throws PhenolException In case of problems with opening and reading from <code>file</code>.
    */
   public GoGeneAnnotationParser(File file) throws PhenolException {
     this.file = file;
@@ -120,63 +115,12 @@ public final class GoGeneAnnotationParser  {
   }
 
   /** Use an iterator paradigm internally to parse the file. */
-  private GoGaf21Annotation next() throws IOException, TermAnnotationParserException {
+  private GoGaf21Annotation next() throws IOException, PhenolException {
     skipUntilData();
     final String[] arr = nextLine.split("\t");
-    if (arr.length < 15 || arr.length > 17) {
-      throw new TermAnnotationParserException(
-          "GAF line had "
-              + arr.length
-              + " columns, but expected between 15 and 17 entries. \n Line was:"
-              + nextLine);
-    }
-    final String db = arr[0];
-    final String dbObjectId = arr[1];
-    final String dbObjectSymbol = arr[2];
-    final String qualifier = arr[3];
-    final TermId goId = TermId.constructWithPrefix(arr[4]);
-    final String dbReference = arr[5];
-    final String evidenceCode = arr[6];
-    final String with = arr[7];
-    final String aspect = arr[8];
-    final String dbObjectName = arr[9];
-    final String dbObjectSynonym = arr[10];
-    final String dbObjectType = arr[11];
-    final List<String> taxons = ImmutableList.copyOf(arr[12].split("\\|"));
-    final String dateStr = arr[13];
-    final String assignedBy = arr[14];
-    final String annotationExtension = (arr.length < 16) ? null : arr[15];
-    final String geneProductFormId = (arr.length < 17) ? null : arr[16];
-
+    GoGaf21Annotation annot = new GoGaf21Annotation(arr);
     nextLine = reader.readLine();
-
-    final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-    Date date;
-    try {
-      date = format.parse(dateStr);
-    } catch (ParseException e) {
-      throw new TermAnnotationParserException(
-          "There was a problem parsing the date value " + dateStr, e);
-    }
-
-    return new GoGaf21Annotation(
-        db,
-        dbObjectId,
-        dbObjectSymbol,
-        qualifier,
-        goId,
-        dbReference,
-        evidenceCode,
-        with,
-        aspect,
-        dbObjectName,
-        dbObjectSynonym,
-        dbObjectType,
-        taxons,
-        date,
-        assignedBy,
-        annotationExtension,
-        geneProductFormId);
+    return annot;
   }
 
 

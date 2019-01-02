@@ -8,17 +8,18 @@ import com.google.common.collect.ComparisonChain;
  * Annotate that a vegetable is used in a recipe.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class VegetableRecipeAnnotation implements TermAnnotation {
 
   private static final long serialVersionUID = 1L;
 
-  private TermId termId;
-  private String label;
+  private final TermId termId;
+  private final TermId label;
 
   public VegetableRecipeAnnotation(TermId termId, String label) {
     this.termId = termId;
-    this.label = label;
+    this.label = TermId.of("VEG", label);
   }
 
   @Override
@@ -27,7 +28,7 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   }
 
   @Override
-  public String getLabel() {
+  public TermId getLabel() {
     return label;
   }
 

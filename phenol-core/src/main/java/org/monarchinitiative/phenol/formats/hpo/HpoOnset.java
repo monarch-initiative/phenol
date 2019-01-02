@@ -131,7 +131,7 @@ public enum HpoOnset {
    * @return Corresponding {@link HpoFrequency} (if not available, return {@link #UNKNOWN}).
    */
   public static HpoOnset fromTermId(TermId termId) {
-    switch (termId.getIdWithPrefix()) {
+    switch (termId.getValue()) {
       case "HP:0003674":
         return ONSET;
       case "HP:0003577":

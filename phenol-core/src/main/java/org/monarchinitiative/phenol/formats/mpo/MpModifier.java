@@ -30,4 +30,22 @@ public class MpModifier {
   public boolean femaleSpecific() { return type.equals(ModifierType.FEMALE_SPECIFIC); }
   public boolean sexSpecific() { return ( type.equals(ModifierType.MALE_SPECIFIC) ||
     type.equals(ModifierType.FEMALE_SPECIFIC) ); }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    MpModifier that = (MpModifier) o;
+
+    if (type != that.type) return false;
+    return payload != null ? payload.equals(that.payload) : that.payload == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = type.hashCode();
+    result = 31 * result + (payload != null ? payload.hashCode() : 0);
+    return result;
+  }
 }
