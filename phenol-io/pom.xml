@@ -4,7 +4,7 @@
   <artifactId>phenol-io</artifactId>
   <packaging>jar</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>phenol-io</name>
 
   <description>phenol-io contains the generic I/O functionality for ontologies</description>
   <url>https://github.com/monarchinitiative/phenol</url>
@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -196,8 +196,8 @@
               <artifactId>slf4j-api</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>org.slf4></groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jcl-over-slf4j</artifactId>
           </exclusion>
           <exclusion>
               <groupId>commons-io</groupId>
@@ -244,7 +244,7 @@
               <artifactId>slf4j-api</artifactId>
             </exclusion>
           <exclusion>
-            <groupId>org.slf4></groupId>
+            <groupId>org.slf4</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
           </exclusion>
         </exclusions>
