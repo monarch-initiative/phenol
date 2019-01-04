@@ -42,6 +42,12 @@ public final class MpAnnotation {
   public boolean maleSpecific() {
     return modifers.stream().anyMatch(MpModifier::maleSpecific);
   }
+  /** @return true if this phenotype was excluded in all models for males. */
+  public boolean maleSpecificNormal() {
+    return modifers.stream().allMatch(MpModifier::maleSpecificNormal);
+  }
+
+
 
   public boolean femaleSpecific() {
     return modifers.stream().anyMatch(MpModifier::femaleSpecific);
@@ -59,14 +65,14 @@ public final class MpAnnotation {
   public List<String> getPmidList() {
     return pmidList;
   }
-
+  /** @return list of modifiers for this annotation. May be empty but cannot be null. */
   public List<MpModifier> getModifers() {
     return modifers;
   }
 
-  public boolean isNegated() {
-    return negated;
-  }
+//  public boolean isNegated() {
+//    return negated;
+//  }
 
   /**
    * Merge the contents of two annotation to the same MP term with differnet metadata
@@ -102,7 +108,7 @@ public final class MpAnnotation {
   public String toString() {
     return negated ? "NOT " : "" +
       termId.getValue() +
-       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
+       modifers.stream().map(MpModifier::getType).map(MpModifierType::toString).collect(Collectors.joining("; "));
   }
 
   public static class Builder {
@@ -124,9 +130,9 @@ public final class MpAnnotation {
 
     public Builder sex(MpSex sex) {
       if (sex.equals(MpSex.FEMALE)) {
-        modifers.add(new MpModifier(ModifierType.FEMALE_SPECIFIC));
+        modifers.add(new MpModifier(MpModifierType.FEMALE_SPECIFIC));
       } else if (sex.equals(MpSex.MALE)) {
-        modifers.add(new MpModifier(ModifierType.MALE_SPECIFIC));
+        modifers.add(new MpModifier(MpModifierType.MALE_SPECIFIC));
       }
       return this;
     }

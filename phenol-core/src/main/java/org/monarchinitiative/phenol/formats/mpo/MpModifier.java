@@ -1,17 +1,17 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
 public class MpModifier {
-  private final ModifierType type;
+  private final MpModifierType type;
   private final static String EMPTY_STRING="";
   /** A String to hold data that is specific to a modifier type */
   private final String payload;
 
-  public MpModifier(ModifierType mt){
+  MpModifier(MpModifierType mt){
     this.type=mt;
     payload=EMPTY_STRING; // i.e., this modifier has no additional information
   }
 
-  public MpModifier(ModifierType mt,String data){
+  public MpModifier(MpModifierType mt, String data){
     this.type=mt;
     payload=data;
   }
@@ -22,14 +22,16 @@ public class MpModifier {
   public String getPayload() {
     return payload;
   }
-  public ModifierType getType() { return this.type; }
+  public MpModifierType getType() { return this.type; }
   @Override
   public String toString() { return this.type.toString(); }
 
-  public boolean maleSpecific() { return type.equals(ModifierType.MALE_SPECIFIC); }
-  public boolean femaleSpecific() { return type.equals(ModifierType.FEMALE_SPECIFIC); }
-  public boolean sexSpecific() { return ( type.equals(ModifierType.MALE_SPECIFIC) ||
-    type.equals(ModifierType.FEMALE_SPECIFIC) ); }
+  boolean maleSpecific() { return type.equals(MpModifierType.MALE_SPECIFIC); }
+  boolean femaleSpecific() { return type.equals(MpModifierType.FEMALE_SPECIFIC); }
+  boolean sexSpecific() { return ( type.equals(MpModifierType.MALE_SPECIFIC) ||
+    type.equals(MpModifierType.FEMALE_SPECIFIC) ); }
+  boolean maleSpecificNormal() { return type.equals(MpModifierType.MALE_SPECIFIC_NORMAL); }
+  boolean femaleSpecificNormal() { return type.equals(MpModifierType.FEMALE_SPECIFIC_NORMAL); }
 
   @Override
   public boolean equals(Object o) {

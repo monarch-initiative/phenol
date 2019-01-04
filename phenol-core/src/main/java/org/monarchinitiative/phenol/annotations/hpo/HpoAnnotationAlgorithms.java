@@ -22,7 +22,7 @@ public class HpoAnnotationAlgorithms {
    * @param diseaseSet A set of diseases annotated with HPO terms
    * @param ontology A reference to the HPO ontology
    * @param propagate If true, include ancestors in the term counts
-   * @return
+   * @return map with key: an HPO id, value: number of times to term was used to annotate a disease in diseaseSet
    */
   public static Map<TermId,Integer> countAnnotationsInDiseaseSet(Set<HpoDisease> diseaseSet,
                                                                  HpoOntology ontology,
@@ -47,13 +47,14 @@ public class HpoAnnotationAlgorithms {
    * Calculate the number of times HPO terms were used to annotate the diseases in diseaseSet
    * Excluded negated annotations. Only show terms with at least one annotation.
    * Include ancestors in the term counts.
-   * @param diseaseSet
-   * @param ontology
-   * @return
+   * @param diseaseSet A set of diseases annotated with HPO terms
+   * @param ontology A reference to the HPO ontology
+   * @return  map with key: an HPO id, value: number of times to term was used to annotate a disease in diseaseSet
    */
   public static Map<TermId,Integer> countAnnotationsInDiseaseSet(Set<HpoDisease> diseaseSet,
                                                                  HpoOntology ontology) {
     return countAnnotationsInDiseaseSet(diseaseSet,ontology,true);
   }
+
 
 }
