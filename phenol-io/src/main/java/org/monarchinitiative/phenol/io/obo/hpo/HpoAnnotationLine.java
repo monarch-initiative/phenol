@@ -95,10 +95,10 @@ class HpoAnnotationLine {
     this.databaseId = F[DatabaseId_IDX];
     this.DbObjectName = F[DB_NAME_IDX];
     String phenoId = F[PHENOTYPE_ID_IDX];
-    this.phenotypeId = TermId.constructWithPrefix(phenoId);
+    this.phenotypeId = TermId.of(phenoId);
     String onset = F[ONSET_ID_IDX];
     if (onset != null && onset.startsWith("HP:")) {
-      onsetId = TermId.constructWithPrefix(onset);
+      onsetId = TermId.of(onset);
     }
     this.frequency = F[FREQUENCY_IDX];
     this.sex = F[SEX_IDX];
@@ -154,7 +154,7 @@ class HpoAnnotationLine {
       databaseId.startsWith("ORPHA") ||
       databaseId.startsWith("DECIPHER")
       )
-        return TermId.constructWithPrefix(databaseId);
+        return TermId.of(databaseId);
     // we should never get here
     throw new PhenolException("Invalid disease id (not OMIM/ORPHA/DECIPHER: "+databaseId);
   }
@@ -243,7 +243,7 @@ class HpoAnnotationLine {
     if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
     String modifierTermStrings[] = lst.split(";");
     for (String mt : modifierTermStrings) {
-      TermId mtid = TermId.constructWithPrefix(mt.trim());
+      TermId mtid = TermId.of(mt.trim());
       builder.add(mtid);
     }
     return builder.build();
@@ -304,7 +304,7 @@ class HpoAnnotationLine {
     if (!hp.startsWith("HP:")) {
       return null;
     } else {
-      TermId tid = TermId.constructWithPrefix(hp);
+      TermId tid = TermId.of(hp);
       if (ontology.getTermMap().containsKey(tid)) {
         return ontology
           .getTermMap()
@@ -335,7 +335,7 @@ class HpoAnnotationLine {
   public String toString() {
     return this.databaseId + "\t" +
       this.DbObjectName + "\t" +
-      this.phenotypeId.getIdWithPrefix() + "\t" +
+      this.phenotypeId.getValue() + "\t" +
       this.onsetId+ "\t" +
       this.frequency + "\t" +
       this.sex + "\t" +

@@ -10,8 +10,6 @@ public class TestTermAnnotation implements TermAnnotation {
   private TermId termId;
   private TermId label;
 
-  private final TermPrefix TEST_PRE=new TermPrefix("TEST");
-
   public TestTermAnnotation(TermId termId, TermId label) {
     this.termId = termId;
     this.label = label;

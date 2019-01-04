@@ -12,7 +12,7 @@ public class Relationship {
   /** Source {@link TermId}. */
   protected final TermId source;
 
-  /** Destination {@link TermId}. */
+  /** Target {@link TermId}. */
   protected final TermId target;
 
   /** Id for this term relation, corresponds to Id of edge in graph. */
@@ -25,14 +25,13 @@ public class Relationship {
    * Constructor.
    *
    * @param source Source {@link TermId}.
-   * @param dest Destination {@link TermId}.
+   * @param target Destination {@link TermId}.
    * @param id The term relation's Id, corresponds to Id of edge in graph.
    * @param relationshipType The relation's type.
    */
-  public Relationship(
-    TermId source, TermId dest, int id, RelationshipType relationshipType) {
+  public Relationship(TermId source, TermId target, int id, RelationshipType relationshipType) {
     this.source = source;
-    this.target = dest;
+    this.target = target;
     this.id = id;
     this.relationshipType = relationshipType;
   }
@@ -58,7 +57,7 @@ public class Relationship {
   public String toString() {
     return "Relationship [source="
         + source
-        + ", dest="
+        + ", target="
         + target
         + ", id="
         + id

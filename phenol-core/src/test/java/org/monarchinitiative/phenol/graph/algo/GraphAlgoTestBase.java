@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.graph.algo;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base/prerequisite codes for testing graph algorithms.
@@ -16,7 +16,7 @@ public class GraphAlgoTestBase {
   protected DefaultDirectedGraph<Integer, IdLabeledEdge> simpleDag;
   protected DefaultDirectedGraph<Integer, IdLabeledEdge> simpleLine;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     simpleDag = new DefaultDirectedGraph<>(IdLabeledEdge.class);
     GraphUtil.addEdgeToGraph(simpleDag, 1, 2, 1);

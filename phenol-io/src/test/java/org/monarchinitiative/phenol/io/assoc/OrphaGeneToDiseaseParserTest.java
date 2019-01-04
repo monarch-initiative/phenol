@@ -1,21 +1,17 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.Multimap;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.io.utils.ResourceUtils;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrphaGeneToDiseaseParserTest {
 
@@ -45,28 +41,15 @@ public class OrphaGeneToDiseaseParserTest {
   //      <Name lang="en">Familial sick sinus syndrome</Name>
   //      <GeneList count="3">
   // with SCN5A, HCN4 and MYH6
+  private static final String ORPHA_PREFIX = "ORPHA";
 
-  @ClassRule
-  public static TemporaryFolder tmpFolder = new TemporaryFolder();
+  private static Multimap<TermId, String> orphaId2GeneMultimap;
 
-  private static Multimap<TermId,String> orphaId2GeneMultimap;
-
-  private static final TermPrefix ORPHA_PREFIX=new TermPrefix("ORPHA");
-
-  @BeforeClass
-  public static void init() throws IOException {
-    System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
-    File orphaProduct6 = tmpFolder.newFile("orphaProduct6");
-    ResourceUtils.copyResourceToFile("/orphanet_disease2gene_en_product6_head.xml", orphaProduct6);
-    try{
-      OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaProduct6);
-      orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
-    }catch(PhenolException e){
-      System.err.println(e.toString());
-    }
-
-    }
-
+  public OrphaGeneToDiseaseParserTest() throws IOException, PhenolException{
+    Path orphaPath = Paths.get("src/test/resources/orphanet_disease2gene_en_product6_head.xml");
+    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile());
+    orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
+  }
 
   /**
    * There are four diseases in our test file (we get the set of disease Ids with keySet).
@@ -74,46 +57,46 @@ public class OrphaGeneToDiseaseParserTest {
   @Test
   public void testDiseaseCount() {
     int expected = 4;
-    assertEquals(expected,orphaId2GeneMultimap.keySet().size());
+    assertEquals(expected, orphaId2GeneMultimap.keySet().size());
   }
 
   @Test
   public void testMultipleEpiphysealDysplasia() {
-    TermId medId=new TermId(ORPHA_PREFIX,"166024");
+    TermId medId = TermId.of(ORPHA_PREFIX, "166024");
     assertTrue(orphaId2GeneMultimap.containsKey(medId));
     Collection<String> genes = orphaId2GeneMultimap.get(medId);
-    assertEquals(1,genes.size());
-    String expectedGeneSymbol="KIF7";
-    assertEquals(expectedGeneSymbol,genes.iterator().next());
+    assertEquals(1, genes.size());
+    String expectedGeneSymbol = "KIF7";
+    assertEquals(expectedGeneSymbol, genes.iterator().next());
   }
 
   @Test
   public void testBrachydactyly() {
-    TermId brachydactylyId=new TermId(ORPHA_PREFIX,"166035");
+    TermId brachydactylyId = TermId.of(ORPHA_PREFIX, "166035");
     assertTrue(orphaId2GeneMultimap.containsKey(brachydactylyId));
     Collection<String> genes = orphaId2GeneMultimap.get(brachydactylyId);
-    assertEquals(1,genes.size());
-    String expectedGeneSymbol="CWC27";
-    assertEquals(expectedGeneSymbol,genes.iterator().next());
+    assertEquals(1, genes.size());
+    String expectedGeneSymbol = "CWC27";
+    assertEquals(expectedGeneSymbol, genes.iterator().next());
   }
 
   @Test
   public void testAspartylglucosaminuria() {
-    TermId aspartylglucosaminuriaId=new TermId(ORPHA_PREFIX,"93");
+    TermId aspartylglucosaminuriaId = TermId.of(ORPHA_PREFIX, "93");
     assertTrue(orphaId2GeneMultimap.containsKey(aspartylglucosaminuriaId));
     Collection<String> genes = orphaId2GeneMultimap.get(aspartylglucosaminuriaId);
-    assertEquals(1,genes.size());
-    String expectedGeneSymbol="AGA";
-    assertEquals(expectedGeneSymbol,genes.iterator().next());
+    assertEquals(1, genes.size());
+    String expectedGeneSymbol = "AGA";
+    assertEquals(expectedGeneSymbol, genes.iterator().next());
   }
 
 
   @Test
   public void testFamilialSickSinusSyndrome() {
-    TermId familialSSS=new TermId(ORPHA_PREFIX,"166282");
+    TermId familialSSS = TermId.of(ORPHA_PREFIX, "166282");
     assertTrue(orphaId2GeneMultimap.containsKey(familialSSS));
     Collection<String> genes = orphaId2GeneMultimap.get(familialSSS);
-    assertEquals(3,genes.size());
+    assertEquals(3, genes.size());
     // This disease is associated with the following three genes
     assertTrue(genes.contains("SCN5A"));
     assertTrue(genes.contains("HCN4"));

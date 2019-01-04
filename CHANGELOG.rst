@@ -2,6 +2,13 @@
 Changelog
 =========
 
+------
+v1.3.0
+------
+- refactored TermAnnotation interface to use TermId instead of String to identify objects being annotation
+- refactored GoGaf21Annotation class to use TermId internally instead of Strings for db and dbObjectId
+- refactored to use junit 5 (allowing legacy use of junit 4, will migrate completely in coming releases)
+
 ---------------
 v1.2.5-SNAPSHOT
 ---------------

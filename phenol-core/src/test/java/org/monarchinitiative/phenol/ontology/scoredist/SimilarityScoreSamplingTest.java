@@ -1,14 +1,14 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
@@ -24,23 +24,18 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
   private SimilarityScoreSampling scoreSampling;
   private ResnikSimilarity resnikSimilarity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
 
-    InformationContentComputation computation =
-        new InformationContentComputation(ontology);
-    Map<TermId, Collection<TermId>> termLabels =
-        TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
+    InformationContentComputation computation = new InformationContentComputation(ontology);
+    Map<TermId, Collection<TermId>> termLabels = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
-    PairwiseResnikSimilarity pairwise =
-        new PairwiseResnikSimilarity(ontology, informationContent);
+    PairwiseResnikSimilarity pairwise = new PairwiseResnikSimilarity(ontology, informationContent);
     resnikSimilarity = new ResnikSimilarity(pairwise, true);
 
     ScoreSamplingOptions options = new ScoreSamplingOptions(1, null, null, 2, 2, 10_000, 42);
-    scoreSampling =
-        new SimilarityScoreSampling(
-            ontology, resnikSimilarity, options);
+    scoreSampling = new SimilarityScoreSampling(ontology, resnikSimilarity, options);
   }
 
   @Test

@@ -5,7 +5,6 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 
 import java.io.*;
@@ -43,8 +42,8 @@ public class HpoAssociationParser {
 
   private final String homoSapiensGeneInfoPath;
 
-  private final String mim2gene_medgenPath;
-  private final File orpha_to_genePath;
+  private final String mim2geneMedgenPath;
+  private final File orphaToGenePath;
 
   /** Key--an EntrezGene id; value--the corresponding symbol. all */
   private BiMap<TermId,String> allGeneIdToSymbolMap;
@@ -64,32 +63,31 @@ public class HpoAssociationParser {
   /** List of all associations */
   private List<DiseaseToGeneAssociation> associationList;
 
-  private static final TermPrefix ENTREZ_GENE_PREFIX=new TermPrefix("NCBIGene");
+  private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
+  private static final String OMIM_PREFIX = "OMIM";
 
-  private static final TermPrefix OMIM_PREFIX = new TermPrefix("OMIM");
 
-
-  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, File orphaToGenePath,
+  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, File orphaToGenePath,
                               HpoOntology ontology){
     this.hpoOntology = ontology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
-    this.mim2gene_medgenPath = mim2gene_medgenPath;
-    this.orpha_to_genePath = orphaToGenePath;
+    this.mim2geneMedgenPath = mim2geneMedgenPath;
+    this.orphaToGenePath = orphaToGenePath;
   }
 
-  public HpoAssociationParser(File geneInfoPath, File mim2gene_medgenPath, File  orphaToGenePath, HpoOntology ontology){
+  public HpoAssociationParser(File geneInfoPath, File mim2geneMedgenPath, File  orphaToGenePath, HpoOntology ontology){
     this.hpoOntology = ontology;
     this.homoSapiensGeneInfoPath = geneInfoPath.getAbsolutePath();
-    this.mim2gene_medgenPath = mim2gene_medgenPath.getAbsolutePath();
-    this.orpha_to_genePath = orphaToGenePath;
+    this.mim2geneMedgenPath = mim2geneMedgenPath.getAbsolutePath();
+    this.orphaToGenePath = orphaToGenePath;
   }
 
   /** Parse everything except the Orphanet data!.*/
-  public HpoAssociationParser(String geneInfoPath, String mim2gene_medgenPath, HpoOntology ontology){
+  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, HpoOntology ontology){
     this.hpoOntology = ontology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
-    this.mim2gene_medgenPath = mim2gene_medgenPath;
-    this.orpha_to_genePath = null;
+    this.mim2geneMedgenPath = mim2geneMedgenPath;
+    this.orphaToGenePath = null;
   }
 
 
@@ -211,7 +209,7 @@ public class HpoAssociationParser {
     Multimap<TermId,String> orphaToGene;
     Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
     Map<TermId, String> geneMap = new HashMap<>();
-    BufferedReader br = new BufferedReader(new FileReader(mim2gene_medgenPath));
+    BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenPath));
     String line;
 
     while ((line=br.readLine())!=null) {
@@ -219,9 +217,9 @@ public class HpoAssociationParser {
       String a[] = line.split("\t");
       if (a[2].equals("phenotype")) {
         String mimid=a[0];
-        TermId omimCurie = new TermId(OMIM_PREFIX, mimid);
+        TermId omimCurie = TermId.of(OMIM_PREFIX, mimid);
         String entrezGeneNumber=a[1];
-        TermId entrezId = new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
+        TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX,entrezGeneNumber);
         String symbol = this.allGeneIdToSymbolMap.get(entrezId);
         if(!"-".equals(entrezGeneNumber)){
           if (symbol==null) {
@@ -232,7 +230,7 @@ public class HpoAssociationParser {
               geneMap.put(entrezId, symbol);
             }
           }
-          TermId geneId=new TermId(ENTREZ_GENE_PREFIX,entrezGeneNumber);
+          TermId geneId = TermId.of(ENTREZ_GENE_PREFIX,entrezGeneNumber);
           Gene gene = new Gene(geneId,symbol);
           if (a[5].contains("susceptibility")) {
             GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.POLYGENIC);
@@ -249,10 +247,10 @@ public class HpoAssociationParser {
       }
     }
 
-    if(this.orpha_to_genePath != null){
+    if(this.orphaToGenePath != null){
       Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
       try{
-        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orpha_to_genePath);
+        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orphaToGenePath);
         orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
         for (Map.Entry<TermId, String> entry : orphaToGene.entries()) {
           TermId orpha = entry.getKey();
@@ -296,7 +294,7 @@ public class HpoAssociationParser {
       if(!("unknown".equals(a[9]) | "tRNA".equals(a[9]) | "rRNA".equals(a[9]) | "pseudo".equals(a[9]))){
         String geneId=a[1];
         String symbol=a[2];
-        TermId tid = new TermId(ENTREZ_GENE_PREFIX,geneId);
+        TermId tid = TermId.of(ENTREZ_GENE_PREFIX,geneId);
         builder.put(tid,symbol);
       }
     }

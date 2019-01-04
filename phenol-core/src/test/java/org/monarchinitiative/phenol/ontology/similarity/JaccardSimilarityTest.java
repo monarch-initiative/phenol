@@ -1,19 +1,19 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
 import com.google.common.collect.Lists;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JaccardSimilarityTest extends VegetableOntologyTestBase {
 
   private JaccardSimilarity similarity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     super.setUp();
     similarity = new JaccardSimilarity(ontology);

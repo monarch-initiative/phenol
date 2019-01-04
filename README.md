@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.2.5-SNAPSHOT
+- **Version:** 1.3.1
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -24,7 +24,7 @@ associate phenotype annotation files.
     - Manuel Holtgrewe
     - HyeongSik Kim
     - Michael Gargano
-    
+
 - **Availability:**
     - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
     - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
@@ -32,33 +32,29 @@ associate phenotype annotation files.
     - Maven module `phenol-analysis` -- still experimental module for enrichment analysis).
 
 ## Usage
-We are working on the first public distribution of phenol, which we will make available on maven central.
-For now, to use phenol in application code, it must be installed locally by cloning this GitHub
-repository and entering the following command.
-```bash
-$ mvn install
+We have released the first public distribution of phenol to maven central (1.3.1). We recommend indicating the
+phenol version in the properties section of the pom file of the application.
+
 ```
-This will install the phenol library code into your local maven repository (.m2 directory) and
-thereby make it available to application code, which can use phenol by adding the following
-stanza to the pom.xml file.
+<properties>
+  (...)
+  <phenol.version>1.3.1</phenol.version>
+</properties>
+```
+
+Then import the phenol modules that are needed for your application.
 ```xml
+<dependency>
+    <groupId>org.monarchinitiative.phenol</groupId>
+    <artifactId>phenol-core</artifactId>
+    <version>${phenol.version}</version>
+</dependency>
 <dependency>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol-io</artifactId>
     <version>${phenol.version}</version>
-    <exclusions>
-        <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </exclusion>
-    </exclusions>
 </dependency>
 ```
-The above stanza shows the code that is needed for the phenol-io component, and also shows
-how to exclude the slf4j version from the application code (which can help to avoid maven enforcer errors).
-Add analogous stanzas for other phenol modules.
-
-## Input files
 
 
 ## History

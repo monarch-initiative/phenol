@@ -1,10 +1,6 @@
 package org.monarchinitiative.phenol.io.owl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,32 +10,30 @@ import java.util.List;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class OwlImmutableOntologyLoaderTest {
+public class OwlOntologyLoaderTest {
 
   @Test
   public void testNCITLoad() throws Exception {
-    Path ncitPath = Paths.get("src","test","resources","ncit_module.owl");
-    final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(ncitPath.toFile());
-    final ImmutableOntology ontology = loader.load();
+    Path ncitPath = Paths.get("src","test", "resources", "ncit_module.owl");
+    final OwlOntologyLoader loader = new OwlOntologyLoader(ncitPath.toFile());
+    final Ontology ontology = loader.load();
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     // 1. Checking vertices
     // In this dummy ontology, we have 6 classes.
-    TermPrefix termPrefix = new TermPrefix("NCIT");
-    TermId t1 = new TermId(termPrefix, "C2919");
-    TermId t2 = new TermId(termPrefix, "C2852");
-    TermId t3 = new TermId(termPrefix, "C48596");
-    TermId t4 = new TermId(termPrefix, "C60312");
-    TermId t5 = new TermId(termPrefix, "C116977");
-    TermId t6 = new TermId(termPrefix, "C126659");
+    TermId t1 = TermId.of("NCIT:C2919");
+    TermId t2 = TermId.of("NCIT:C2852");
+    TermId t3 = TermId.of("NCIT:C48596");
+    TermId t4 = TermId.of("NCIT:C60312");
+    TermId t5 = TermId.of("NCIT:C116977");
+    TermId t6 = TermId.of("NCIT:C126659");
 
     assertTrue(graph.vertexSet().contains(t1));
     assertTrue(graph.vertexSet().contains(t2));
@@ -70,21 +64,21 @@ public class OwlImmutableOntologyLoaderTest {
     Relationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
     assertNotNull(gr1);
     assertNotNull(gr2);
-    assertEquals(gr1.getRelationshipType(), RelationshipType.IS_A);
-    assertEquals(gr2.getRelationshipType(), RelationshipType.IS_A);
+    assertEquals(RelationshipType.IS_A, gr1.getRelationshipType());
+    assertEquals(RelationshipType.IS_A, gr2.getRelationshipType());
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getPrefix().getValue(), "owl");
-    assertEquals(rootTermId.getId(), "Thing");
+    assertEquals("owl", rootTermId.getPrefix());
+    assertEquals("Thing", rootTermId.getId());
   }
 
   @Test
   public void testMONDOLoad() throws Exception {
     Path mondoPath = Paths.get("src","test","resources","mondo_module.owl");
-    final OwlImmutableOntologyLoader loader =
-        new OwlImmutableOntologyLoader(mondoPath.toFile());
-    final ImmutableOntology ontology = loader.load();
+    final OwlOntologyLoader loader =
+        new OwlOntologyLoader(mondoPath.toFile());
+    final Ontology ontology = loader.load();
     final List<String> xrefs =
         Arrays.asList(
             "DOID:0060111",
@@ -98,7 +92,7 @@ public class OwlImmutableOntologyLoaderTest {
     // 1. Check whether the example Term instance properly read all xref entries.
     for (Term gt : ontology.getTerms()) {
       for (Dbxref xref : gt.getXrefs()) {
-        Boolean containFlag = false;
+        boolean containFlag = false;
         for (String xrefStr : xrefs) {
           if (xref.getName().contains(xrefStr)) containFlag = true;
         }
@@ -108,7 +102,6 @@ public class OwlImmutableOntologyLoaderTest {
 
     // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals(rootTermId.getPrefix().getValue(), "MONDO");
-    assertEquals(rootTermId.getId(), "0000624");
+    assertEquals("MONDO:0000624", rootTermId.getValue());
   }
 }

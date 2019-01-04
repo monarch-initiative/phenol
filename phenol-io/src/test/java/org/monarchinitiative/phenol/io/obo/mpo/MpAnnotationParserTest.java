@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpAnnotation;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MpAnnotationParserTest {
 
@@ -20,7 +20,7 @@ public class MpAnnotationParserTest {
 
   private static String phenoSexPath;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");
@@ -52,7 +52,7 @@ public class MpAnnotationParserTest {
   public void testSexSpecificParser() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath,phenoSexPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    TermId kit = TermId.constructWithPrefix("MGI:2167486");
+    TermId kit = TermId.of("MGI:2167486");
     MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     assertTrue(model.hasSexSpecificAnnotation());
@@ -63,7 +63,7 @@ public class MpAnnotationParserTest {
   public void testParseModelMgi5306347() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    TermId kit = TermId.constructWithPrefix("MGI:5306347");
+    TermId kit = TermId.of("MGI:5306347");
     MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
@@ -77,7 +77,7 @@ public class MpAnnotationParserTest {
   public void getMultiplePmid() throws PhenolException{
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    TermId kit = TermId.constructWithPrefix("MGI:5433360");
+    TermId kit = TermId.of("MGI:5433360");
     MpSimpleModel model = modelmap.get(kit);
     assertNotNull(model);
     List<MpAnnotation> annots = model.getPhenotypicAbnormalities();
@@ -96,11 +96,11 @@ public class MpAnnotationParserTest {
   public void testGetCorrectMarker()throws PhenolException {
     MpAnnotationParser parser = new MpAnnotationParser(genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap=parser.getGenotypeAccessionToMpModelMap();
-    TermId kitlGenotype = TermId.constructWithPrefix("MGI:5306347");
+    TermId kitlGenotype = TermId.of("MGI:5306347");
     MpSimpleModel model = modelmap.get(kitlGenotype);
     assertNotNull(model);
     // the MGI id for the kit ligand (kitl) gene is MGI:96974
-    TermId Kitl = TermId.constructWithPrefix("MGI:96974");
+    TermId Kitl = TermId.of("MGI:96974");
     assertEquals(Kitl,model.getMarkerId());
   }
 

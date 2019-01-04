@@ -27,4 +27,8 @@ public class PhenolException extends Exception {
   public PhenolException(String message) {
     super(message);
   }
+
+  public PhenolException(Throwable cause) {
+    super(cause);
+  }
 }

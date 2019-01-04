@@ -32,8 +32,7 @@ public final class TermSynonym {
    * @param synonymTypeName Optional synonym type name, <code>null</code> if missing.
    * @param termXrefs Optional dbxref list, <code>null</code> if missing.
    */
-  public TermSynonym(
-      String value, TermSynonymScope scope, String synonymTypeName, List<TermXref> termXrefs) {
+  public TermSynonym(String value, TermSynonymScope scope, String synonymTypeName, List<TermXref> termXrefs) {
     this.value = value;
     this.scope = scope;
     this.synonymTypeName = synonymTypeName;

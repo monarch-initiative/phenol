@@ -1,17 +1,17 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ScoreDistributionTest {
 
   ScoreDistribution dist;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     dist =
         new ScoreDistribution(

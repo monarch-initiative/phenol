@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermPrefix;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -35,9 +34,6 @@ public class OrphaGeneToDiseaseParser {
   private boolean inGene = true;
   private boolean inDisorderGeneAssociation = false;
   private boolean inDisorderGeneAssociationList = false;
-
-
-  private final static TermPrefix ORPHA_PREFIX = new TermPrefix("ORPHA");
 
   /**
    * Key: e.g., ORPHA:163746 (for Peripheral demyelinating neuropathy-central dysmyelinating
@@ -127,7 +123,7 @@ public class OrphaGeneToDiseaseParser {
             if (currentOrphanum != null &&
               currentDiseasename != null &&
               currentGeneSymbol != null) {
-              TermId orphaId = new TermId(ORPHA_PREFIX, currentOrphanum);
+              TermId orphaId = TermId.of("ORPHA", currentOrphanum);
               this.orphaDiseaseToGeneSymbol.put(orphaId, currentGeneSymbol);
               currentGeneSymbol = null; // reset
             }

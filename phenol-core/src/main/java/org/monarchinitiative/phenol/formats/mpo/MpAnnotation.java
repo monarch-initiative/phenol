@@ -78,9 +78,9 @@ public final class MpAnnotation {
   public static MpAnnotation merge(MpAnnotation annot1, MpAnnotation annot2) throws PhenolException {
     if (! annot1.termId.equals(annot2.termId))
       throw new PhenolException(String.format("Attempt to merge annotations with distinct MP ids [%s/%s]",
-        annot1.termId.getIdWithPrefix(),annot2.termId.getIdWithPrefix()));
+        annot1.termId.getValue(),annot2.termId.getValue()));
     if (! annot1.negated == annot2.negated)
-      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getIdWithPrefix());
+      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getValue());
     // merge list of modifiers
     List<MpModifier> modlist = new ArrayList<>(annot1.getModifers());
     for (MpModifier mod: annot2.getModifers()) {

@@ -82,6 +82,7 @@ public abstract class AbstractTestCorrection
     int i = 0;
     for (Map.Entry<TermId, PValue> entry : pvalmap.entrySet()) {
       if (entry.getValue().doNotIgnore()) {
+        pairs[i] = new Pair();
         pairs[i].tid = entry.getKey();
         pairs[i].pval = entry.getValue();
         i++;

@@ -5,8 +5,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.slf4j.Logger;
 
@@ -14,7 +14,7 @@ public class ProgressReporterTest {
 
   Logger logger;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     logger = mock(Logger.class);
   }
