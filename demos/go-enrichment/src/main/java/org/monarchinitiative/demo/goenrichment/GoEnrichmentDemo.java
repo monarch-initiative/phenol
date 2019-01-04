@@ -21,7 +21,7 @@ public final class GoEnrichmentDemo {
   private String pathGoGaf;
   /** We will create a study set that has 1/3 of the genes associated with this term
    * and three times as many other terms. GO:0070997 is 'neuron death'.*/
-  private final static TermId DEFAULT_GO_ID = TermId.constructWithPrefix("GO:0070997");
+  private final static TermId DEFAULT_GO_ID = TermId.of("GO:0070997");
   /** Term Id of a GO term we will investigate */
   private TermId targetGoTerm=DEFAULT_GO_ID;
 
@@ -65,7 +65,7 @@ public final class GoEnrichmentDemo {
         PValue pval = pvalmap.get(tid);
         Term term = gontology.getTermMap().get(tid);
         if (term==null) {
-          System.err.println("[ERROR] Could not retrieve term for " + tid.getIdWithPrefix());
+          System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
           continue;
         }
         String label = term.getName();
@@ -73,7 +73,7 @@ public final class GoEnrichmentDemo {
           continue;
         }
         n_sig++;
-        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getIdWithPrefix(), pval.p, pval.p_adjusted));
+        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getValue(), pval.p, pval.p_adjusted));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
         n_sig,pvalmap.size(),ALPHA));
@@ -94,7 +94,7 @@ public final class GoEnrichmentDemo {
     }
 
     int N=genes.size();
-    System.out.println(String.format("[INFO] Total genes annotated to %s is %d",focus.getIdWithPrefix(),N));
+    System.out.println(String.format("[INFO] Total genes annotated to %s is %d",focus.getValue(),N));
     int M=N;
     if (N>20) {
       M=N/3;
@@ -142,7 +142,7 @@ public final class GoEnrichmentDemo {
     pathGoObo = args[0];
     pathGoGaf = args[1];
     if (args.length==3) {
-      targetGoTerm = TermId.constructWithPrefix(args[2]);
+      targetGoTerm = TermId.of(args[2]);
     }
   }
 

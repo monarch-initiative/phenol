@@ -73,12 +73,9 @@ public class MpGeneModel extends MpModel {
       // remember genotype, record annotations according to their MpId
       gbuilder.add(model.getGenotypeId());
       for (MpAnnotation annot : model.getPhenotypicAbnormalities()) {
-        // skip over any negated annotations
-        if (!annot.isNegated()) {
-          TermId mpId = annot.getTermId();
-          annotsByMpId.putIfAbsent(mpId, new HashSet<>());
-          annotsByMpId.get(mpId).add(annot);
-        }
+        TermId mpId = annot.getTermId();
+        annotsByMpId.putIfAbsent(mpId, new HashSet<>());
+        annotsByMpId.get(mpId).add(annot);
       }
     }
 

@@ -8,14 +8,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MpAnnotationTest {
+class MpAnnotationTest {
 
   /** Test the toString method -- todo, we should prettify this output! */
   @Test
-  public void testAnnotationTypeString() {
+  void testAnnotationTypeString() {
     TermId mpId = TermId.of("MP:123");
     List<String> pmids = ImmutableList.of();
-    MpAnnotation.Builder builder = new MpAnnotation.Builder(mpId,pmids).sex(MpSex.FEMALE);
+    MpAnnotation.Builder builder = new MpAnnotation.Builder(mpId,pmids).sexSpecific(MpSex.FEMALE);
     MpAnnotation annot = builder.build();
     String expected = "MP:123FEMALE_SPECIFIC";
     assertEquals(expected,annot.toString());

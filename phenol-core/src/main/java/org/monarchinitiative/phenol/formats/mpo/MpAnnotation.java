@@ -20,32 +20,25 @@ public final class MpAnnotation {
   private final List<String> pmidList;
   /** List of modifiers for the current phenotype annotation */
   private final List<MpModifier> modifers;
-  /** If this is true, then the model is NOT characterized by this phenotype. */
-  private final boolean negated;
-
 
   /**
    * Constructor is intended to be used with the Builder, which ensures that the Lists
    * are immutable.
    * @param tid TermId of the MP term in this anotation
    * @param pmids List of pubmed ids supporting this annotation
-   * @param mods Modifiers (e.g., sex-specific) for this annotation
-   * @param neg this is true is the annotated is negated (e.g., NOT inflammed).
+   * @param mods Modifiers (e.g., sexSpecific- or sexSpecificNormal) for this annotation
    */
-  private MpAnnotation(TermId tid, List<String> pmids, List<MpModifier> mods, boolean neg) {
+  private MpAnnotation(TermId tid, List<String> pmids, List<MpModifier> mods) {
     this.termId = tid;
     this.pmidList = pmids;
     modifers = mods;
-    negated = neg;
   }
 
   public boolean maleSpecific() {
     return modifers.stream().anyMatch(MpModifier::maleSpecific);
   }
-  /** @return true if this phenotype was excluded in all models for males. */
-  public boolean maleSpecificNormal() {
-    return modifers.stream().allMatch(MpModifier::maleSpecificNormal);
-  }
+
+
 
 
 
@@ -56,6 +49,12 @@ public final class MpAnnotation {
   public boolean sexSpecific() {
     return modifers.stream().anyMatch(MpModifier::sexSpecific);
   }
+  /** @return true if this phenotype was excluded in all models for males. */
+  public boolean maleSpecificNormal() {return modifers.stream().allMatch(MpModifier::maleSpecificNormal); }
+  /** @return true if this phenotype was excluded in all models for females. */
+  public boolean femaleSpecificNormal() {return modifers.stream().allMatch(MpModifier::femaleSpecificNormal); }
+  /** @return true if this phenotype was excluded in all models for males or females or both. */
+  public boolean sexSpecificNormal() { return ( maleSpecificNormal() || femaleSpecificNormal() ); }
 
 
   public TermId getTermId() {
@@ -75,19 +74,19 @@ public final class MpAnnotation {
 //  }
 
   /**
-   * Merge the contents of two annotation to the same MP term with differnet metadata
+   * Merge the contents of two annotation to the same MP term with different metadata
    * @param annot1 The first MP annotation
    * @param annot2 The second MP annotation
    * @return The merged MP annotation
    * @throws PhenolException if annot1 and annot2 are incompatible
    */
   public static MpAnnotation merge(MpAnnotation annot1, MpAnnotation annot2) throws PhenolException {
-    if (! annot1.termId.equals(annot2.termId))
+    if (! annot1.termId.equals(annot2.termId)) {
+      // should never happen!
       throw new PhenolException(String.format("Attempt to merge annotations with distinct MP ids [%s/%s]",
-        annot1.termId.getValue(),annot2.termId.getValue()));
-    if (! annot1.negated == annot2.negated)
-      throw new PhenolException("Attempt to merge annotations only one of which is negated: "+annot1.termId.getValue());
-    // merge list of modifiers
+        annot1.termId.getValue(), annot2.termId.getValue()));
+    }
+       // merge list of modifiers
     List<MpModifier> modlist = new ArrayList<>(annot1.getModifers());
     for (MpModifier mod: annot2.getModifers()) {
       if (!modlist.contains(mod)) {
@@ -101,13 +100,12 @@ public final class MpAnnotation {
         pmidList.add(pmid);
       }
     }
-    return new MpAnnotation(annot1.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist),annot1.negated);
+    return new MpAnnotation(annot1.termId,ImmutableList.copyOf(pmidList),ImmutableList.copyOf(modlist));
   }
 
   @Override
   public String toString() {
-    return negated ? "NOT " : "" +
-      termId.getValue() +
+    return termId.getValue() +
        modifers.stream().map(MpModifier::getType).map(MpModifierType::toString).collect(Collectors.joining("; "));
   }
 
@@ -119,7 +117,6 @@ public final class MpAnnotation {
 
     private List<MpModifier> modifers;
 
-    private boolean negated = false;
 
     public Builder(TermId tid, List<String> pmids) {
       Objects.requireNonNull(tid, "TermId cannot be null");
@@ -128,7 +125,7 @@ public final class MpAnnotation {
       modifers = new ArrayList<>();
     }
 
-    public Builder sex(MpSex sex) {
+    public Builder sexSpecific(MpSex sex) {
       if (sex.equals(MpSex.FEMALE)) {
         modifers.add(new MpModifier(MpModifierType.FEMALE_SPECIFIC));
       } else if (sex.equals(MpSex.MALE)) {
@@ -137,17 +134,19 @@ public final class MpAnnotation {
       return this;
     }
 
-    public Builder negated(boolean neg) {
-      this.negated = neg;
+    public Builder sexSpecificNormal(MpSex sex) {
+      if (sex.equals(MpSex.FEMALE)) {
+        modifers.add(new MpModifier(MpModifierType.FEMALE_SPECIFIC_NORMAL));
+      } else if (sex.equals(MpSex.MALE)) {
+        modifers.add(new MpModifier(MpModifierType.MALE_SPECIFIC_NORMAL));
+      }
       return this;
     }
-
 
     public MpAnnotation build() {
       return new MpAnnotation(this.termId,
         ImmutableList.copyOf(this.pmidList),
-        ImmutableList.copyOf(this.modifers),
-        this.negated);
+        ImmutableList.copyOf(this.modifers));
     }
   }
 
@@ -158,7 +157,6 @@ public final class MpAnnotation {
 
     MpAnnotation that = (MpAnnotation) o;
 
-    if (negated != that.negated) return false;
     if (!termId.equals(that.termId)) return false;
     if (pmidList != null ? !pmidList.equals(that.pmidList) : that.pmidList != null) return false;
     return modifers.equals(that.modifers);
@@ -169,7 +167,6 @@ public final class MpAnnotation {
     int result = termId.hashCode();
     result = 31 * result + (pmidList != null ? pmidList.hashCode() : 0);
     result = 31 * result + modifers.hashCode();
-    result = 31 * result + (negated ? 1 : 0);
     return result;
   }
 }
