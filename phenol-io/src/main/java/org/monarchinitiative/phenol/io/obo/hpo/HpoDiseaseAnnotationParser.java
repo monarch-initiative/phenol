@@ -1,12 +1,9 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.*;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.BufferedReader;
@@ -15,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
@@ -39,17 +37,38 @@ public class HpoDiseaseAnnotationParser {
   private ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap;
   /** List of errors encountered during parsing of the annotation file. */
   private List<String> errors;
+  /** We will, by default, parse in disease models from the following databases. */
+  private final Set<String> DEFAULT_DATABASE_PREFIXES= ImmutableSet.of("OMIM","ORPHA","DECIPHER");
+  /** We will parse in disease models from the following databases. */
+  private final Set<String> databasePrefixes;
 
   public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontlgy;
     this.diseaseMap = new HashMap<>();
+    databasePrefixes=DEFAULT_DATABASE_PREFIXES;
+  }
+
+  /**
+   * Create {@link HpoDisease} objects from the {@code phenotype.hpoa} file
+   * @param annotationFile path to the the {@code phenotype.hpoa} file
+   * @param ontlgy reference to HPO Ontology object
+   * @param databases list of databases we will keep for parsing (from OMIM, ORPHA, DECIPHER)
+   */
+  public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy,List<String> databases) {
+    this.annotationFilePath = annotationFile;
+    this.ontology = ontlgy;
+    this.diseaseMap = new HashMap<>();
+    ImmutableSet.Builder builder = new ImmutableSet.Builder();
+    for (String database : databases) { builder.add(database); }
+    databasePrefixes=builder.build();
   }
 
   public HpoDiseaseAnnotationParser(File annotationFile, HpoOntology ontlgy){
     this.annotationFilePath = annotationFile.getAbsolutePath();
     this.ontology = ontlgy;
     this.diseaseMap = new HashMap<>();
+    databasePrefixes=DEFAULT_DATABASE_PREFIXES;
   }
   /** @return true if the entire parse was error-free */
   public boolean validParse(){ return errors.isEmpty(); }
@@ -108,6 +127,10 @@ public class HpoDiseaseAnnotationParser {
     // When we get down here, we have added all of the disease annotations to the disease2AnnotLineMap
     // Now we want to transform them into HpoDisease objects
     for (TermId diseaseId : disease2AnnotLineMap.keySet()) {
+      String diseaseDatabasePrefix = diseaseId.getPrefix();
+      if (! databasePrefixes.contains(diseaseDatabasePrefix)) {
+        continue; // skip unless we want to keep this database
+      }
       List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
       final ImmutableList.Builder<HpoAnnotation> phenoListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
