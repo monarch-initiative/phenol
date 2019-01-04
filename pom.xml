@@ -293,22 +293,24 @@
         </configuration>
       </plugin>
 
-      <!-- JUnit testing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.0</version>
-        <configuration>
-          <forkCount>3</forkCount>
-          <reuseForks>true</reuseForks>
-          <argLine>-Xmx1024m -Duser.region=US -Duser.timezone=UTC</argLine>
-          <systemPropertyVariables>
-            <user.language>en</user.language>
-            <user.region>US</user.region>
-            <user.timezone>UTC</user.timezone>
-          </systemPropertyVariables>
-        </configuration>
+        <version>2.19.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>1.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.1.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
+
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -422,53 +424,6 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <!-- Ignore various plugins in Eclipse/m2e -->
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>enforce</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>
-                      jacoco-maven-plugin
-                    </artifactId>
-                    <versionRange>
-                      [0.7.2.201409121644,)
-                    </versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>
