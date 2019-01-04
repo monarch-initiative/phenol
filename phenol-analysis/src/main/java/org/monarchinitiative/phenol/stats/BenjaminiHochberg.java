@@ -34,7 +34,7 @@ public class BenjaminiHochberg extends AbstractTestCorrection
      * within relevantP also are objects within p!
      */
     for (int r=0;r<n;r++) {
-      relevantP[r].pval.p_adjusted = relevantP[r].pval.p * n / (r + 1);
+      relevantP[r].pval.setAdjustedPValue( relevantP[r].pval.getRawPValue() * n / (r + 1) );
     }
     enforcePValueMonotony(relevantP);
     return pvalmap;
