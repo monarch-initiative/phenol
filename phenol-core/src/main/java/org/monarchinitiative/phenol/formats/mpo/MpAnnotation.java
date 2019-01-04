@@ -101,9 +101,8 @@ public final class MpAnnotation {
   @Override
   public String toString() {
     return negated ? "NOT " : "" +
-      termId.getIdWithPrefix() + " " +
-      pmidList.stream().collect(Collectors.joining("; ")) + " " +
-      modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
+      termId.getValue() +
+       modifers.stream().map(MpModifier::getType).map(ModifierType::toString).collect(Collectors.joining("; "));
   }
 
   public static class Builder {

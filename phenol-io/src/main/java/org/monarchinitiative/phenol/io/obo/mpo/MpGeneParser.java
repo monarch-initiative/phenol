@@ -30,33 +30,19 @@ public class MpGeneParser {
   private final String mgiMarkerPath;
   /** Path to the MGI_GenePheno.rpt file from MGI.*/
   private final String mgiGenePhenoPath;
-  /** Path to the MGI_Pheno_Sex.rpt file from MGI.*/
-  private final String mgiPhenoSexPath;
   /** THe MPO ontology object. */
   private final Ontology ontology;
 
   public MpGeneParser(String markerPath, String MGI_GenePhenoPath, String ontologypath) {
-    this(markerPath, MGI_GenePhenoPath, null, ontologypath);
+    mgiMarkerPath = markerPath;
+    mgiGenePhenoPath=MGI_GenePhenoPath;
+    this.ontology=parseMpo(ontologypath);
   }
 
   public MpGeneParser(String markerPath, String MGI_GenePhenoPath,Ontology mpo) {
-    this(markerPath, MGI_GenePhenoPath, null, mpo);
-  }
-
-  public MpGeneParser(String markerPath, String MGI_GenePhenoPath,
-                      String MGI_PhenoSexPath, String ontologypath) {
-    mgiMarkerPath = markerPath;
-    mgiGenePhenoPath = MGI_GenePhenoPath;
-    mgiPhenoSexPath = MGI_PhenoSexPath;
-    ontology=parseMpo(ontologypath);
-  }
-
-  public MpGeneParser(String markerPath, String MGI_GenePhenoPath,
-                      String MGI_PhenoSexPath, Ontology mpo) {
-    mgiMarkerPath = markerPath;
-    mgiGenePhenoPath = MGI_GenePhenoPath;
-    mgiPhenoSexPath = MGI_PhenoSexPath;
-    ontology = mpo;
+    this.mgiMarkerPath=markerPath;
+    this.mgiGenePhenoPath=MGI_GenePhenoPath;
+    this.ontology=mpo;
   }
 
   /**
@@ -95,13 +81,8 @@ public class MpGeneParser {
   public Map<TermId,MpGeneModel> parseMpGeneModels() {
     Map<TermId,List<MpSimpleModel>> gene2simpleMap=new HashMap<>();
     ImmutableMap.Builder<TermId,MpGeneModel> builder = new ImmutableMap.Builder<>();
-    MpAnnotationParser annotParser;
     try {
-      if (mgiPhenoSexPath == null) {
-        annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
-      } else {
-        annotParser = new MpAnnotationParser(mgiGenePhenoPath, mgiPhenoSexPath);
-      }
+      MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
       Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
         TermId geneId = simplemod.getMarkerId();

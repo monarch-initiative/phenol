@@ -109,7 +109,7 @@ public class MpAnnotationParser {
    * @throws PhenolException upon parse issues with MGI_Pheno_Sex.rpt.
    */
   private void parsePhenoSexData() throws IOException, PhenolException {
-    int EXPECTED_NUMBER_SEXSPECIFIC_FIELDS=8;
+    int EXPECTED_NUMBER_SEXSPECIFIC_FIELDS=7;
     BufferedReader br = new BufferedReader(new InputStreamReader(this.phenoSexInputstream));
     //this.sexSpecificAnnotationMap = ArrayListMultimap.create();
     this.geno2ssannotMap=new HashMap<>();
@@ -121,7 +121,7 @@ public class MpAnnotationParser {
     while ((line=br.readLine())!=null) {
       //System.out.println(line);
       String A[] = line.split("\t");
-      if (A.length != EXPECTED_NUMBER_SEXSPECIFIC_FIELDS) {
+      if (A.length < EXPECTED_NUMBER_SEXSPECIFIC_FIELDS) {
         if (verbose) {
           //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
         System.err.println("[Phenol-ERROR] Unexpected number of fields in MGI_Pheno_Sex.rpt(" + A.length + ") in line " + line);
@@ -216,11 +216,10 @@ public class MpAnnotationParser {
           annotbuilder.add(annot); // no sex-specific available
         }
         // Note that we do not check for sex-specific annotations that are not present in the "main" file
-        // in practice, these are annotations on models involving multiple genes, and annotations marked
-        // sex-specific normal -- i.e., a phenotype was ruled out in one sex even though "somebody" thought
-        // the phenotype might be present. This type of normality (absence of a phenotype) is not useful for
-        // downstream analysis at the present time and so we skip it to avoid unnecessarily complicating the
-        // implementation.
+        // in practice, these are only sex-specific normal -- i.e., a phenotype was ruled out in one sex
+        // even though "somebody" thought the phenotype might be present.
+        // this type of normality (absence of a phenotype) is not useful for downstream analysis at the
+        // present time and so we skip it to avoid unnecessarily complicating the implementation.
       }
       MpSimpleModel mod = new MpSimpleModel(genoId, background, allelicComp, alleleId, alleleSymbol, markerId, annotbuilder.build());
       builder.put(genoId, mod);
@@ -358,11 +357,11 @@ public class MpAnnotationParser {
     SexSpecificAnnotationLine(String[] A) throws PhenolException {
       this.genotypeID=TermId.of(A[0]);
       this.sex = MpSex.fromString(A[1]);
-      this.mpId = TermId.constructWithPrefix(A[2]);
-      this.allelicComposition =  MpAllelicComposition.fromString(A[4]);
-      this.strain = MpStrain.fromString(A[5]);
-      negated = A[6].equals("Y");
-      String pmids=A[7];
+      this.mpId = TermId.of(A[2]);
+      this.allelicComposition =  MpAllelicComposition.fromString(A[3]);
+      this.strain = MpStrain.fromString(A[4]);
+      negated = A[5].equals("Y");
+      String pmids=A[6];
       ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
       String B[]=pmids.split(Pattern.quote("|"));
       for (String b: B) {
