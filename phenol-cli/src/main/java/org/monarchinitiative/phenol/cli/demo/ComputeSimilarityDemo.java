@@ -1,10 +1,16 @@
-package org.monarchinitiative.demos.compute_similarities;
+package org.monarchinitiative.phenol.cli.demo;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
 import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
@@ -13,6 +19,7 @@ import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 
 
 // TODO: This needs some refactorization love
@@ -31,50 +38,38 @@ public class ComputeSimilarityDemo {
    */
   private final int numThreads = 4;
 
-  /**
-   * Command line arguments.
-   */
-  private final String[] args;
 
   /**
    * Path to hp.obo file to read.
    */
-  private String pathHpObo;
+  private final String pathHpObo;
 
   /**
    * Path to {@code phenotype.hpoa}
    */
-  private String pathPhenotypeHpoa;
+  private final String pathPhenotypeHpoa;
 
   /**
    * Path to TSV file to read
    */
+  @Deprecated
   private String pathTsvFile = "resources/omim-example.txt";
 
   /**
    * Construct with argument list.
    *
-   * @param args Argument list.
+
    */
-  public ComputeSimilarityDemo(String[] args) {
-    this.args = args;
+  public ComputeSimilarityDemo(Options options) {
+    this.pathHpObo=options.getHpoPath();
+    this.pathPhenotypeHpoa=options.getPhenotypeDotHpoaPath();
   }
 
-  /**
-   * Program entry point.
-   *
-   * @param args Command line arguments.
-   */
-  public static void main(String[] args) {
-    new ComputeSimilarityDemo(args).run();
-  }
 
   /**
    * Run application.
    */
   public void run() {
-    this.parseArgs();
-
     final HpoOntology hpo;
     try {
       hpo = new HpOboParser(new File(pathHpObo)).parse();
@@ -177,37 +172,33 @@ public class ComputeSimilarityDemo {
     scoreDists = sampleing.performSampling(diseaseTerm_index);
 
     double p = scoreDists.get(5).getObjectScoreDistribution(1).estimatePValue(1);
-    System.out.println(String.format("If similartiy score (using 5 terms as query) is 1, the p-value for disease %s is: %f.", disease_index.get(1).getValue(), p));
+    System.out.println(String.format("If similarity score (using 5 terms as query) is 1, the p-value for disease %s is: %f.", disease_index.get(1).getValue(), p));
     double p2 = scoreDists.get(5).getObjectScoreDistribution(2).estimatePValue(7);
-    System.out.println(String.format("If similartiy score (using 5 terms as query) is 7, the p-value for disease %s is: %f.", disease_index.get(2).getValue(), p2));
+    System.out.println(String.format("If similarity score (using 5 terms as query) is 7, the p-value for disease %s is: %f.", disease_index.get(2).getValue(), p2));
 
     // Read file line-by line and process.
 
 
   }
 
-  /**
-   * Parse command line arguments.
-   */
-  private void parseArgs() {
-    if (args.length < 2) {
-      printUsageError("Invalid argument count!");
+
+
+
+
+  @Parameters(commandDescription = "Compute similarity demo")
+  public static class Options {
+    @Parameter(names = {"-h"}, description = "path to hp.obo file")
+    private String hpoPath;
+    @Parameter(names="-a", description = "path to phenotype.hpoa file")
+    private String phenotypeDotHpoaPath;
+
+    String getHpoPath() {
+      return hpoPath;
     }
 
-    pathHpObo = args[0];
-    pathPhenotypeHpoa = args[1];
-    if (args.length == 3) { // otherwise use default
-      pathTsvFile = args[2];
+    String getPhenotypeDotHpoaPath() {
+      return phenotypeDotHpoaPath;
     }
-  }
-
-  /**
-   * Print error and usage, then exit.
-   */
-  private void printUsageError(String string) {
-    System.err.println("ERROR: " + string + "\n");
-    System.err.println("Usage: java -jar ComputeSimilarityDemo.jar hp.obo phenotype.hpoa");
-    System.exit(1);
   }
 
   /**

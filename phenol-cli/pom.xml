@@ -35,6 +35,13 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- Phenol modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>phenol-analysis</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

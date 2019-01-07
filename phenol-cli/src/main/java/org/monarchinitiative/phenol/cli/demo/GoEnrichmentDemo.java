@@ -1,37 +1,48 @@
-package org.monarchinitiative.demo.goenrichment;
+package org.monarchinitiative.phenol.cli.demo;
 
-import org.monarchinitiative.phenol.analysis.StudySet;
+
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.io.obo.go.GoOboParser;
 import org.monarchinitiative.phenol.io.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.formats.go.GoOntology;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+
+import org.monarchinitiative.phenol.analysis.*;
 
 import java.util.*;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
 
-
+/**
+ * This demo app shows how Gene Ontology enrichtment analysis is performed using the
+ * Fisher Exact test. The app inputs the GO file and the GAF annotation file and the
+ * name of a GO term (default: GO:0070997, 'neuron death'). It then creates a study set
+ * that has 1/3 of the genes associated with this term
+ * and three times as many other terms. The enrichment analysis should identify this term
+ * and may identify a few related terms.
+ * @author Manuel Holtgrewe
+ * @author Peter Robinson
+ */
 public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
   private String pathGoObo;
   /** Path to the GoGaf file. */
   private String pathGoGaf;
-  /** We will create a study set that has 1/3 of the genes associated with this term
-   * and three times as many other terms. GO:0070997 is 'neuron death'.*/
-  private final static TermId DEFAULT_GO_ID = TermId.of("GO:0070997");
   /** Term Id of a GO term we will investigate */
-  private TermId targetGoTerm=DEFAULT_GO_ID;
+  private final TermId targetGoTerm;
 
 
-  public GoEnrichmentDemo(String [] args) {
-    parseArgs(args);
+  public GoEnrichmentDemo(GoEnrichmentDemo.Options options) {
+    this.pathGoObo = options.getGoPath();
+    this.pathGoGaf = options.getGafPath();
+    this.targetGoTerm = TermId.of(options.getGoTermId());
   }
 
 
-  private void run() {
+  public void run() {
     try {
       System.out.println("[INFO] parsing  " + pathGoObo);
       GoOboParser parser = new GoOboParser(pathGoObo);
@@ -69,11 +80,11 @@ public final class GoEnrichmentDemo {
           continue;
         }
         String label = term.getName();
-        if (pval.p_adjusted > ALPHA) {
+        if (pval.getAdjustedPValue() > ALPHA) {
           continue;
         }
         n_sig++;
-        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getValue(), pval.p, pval.p_adjusted));
+        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getValue(), pval.getRawPValue(), pval.getAdjustedPValue()));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
         n_sig,pvalmap.size(),ALPHA));
@@ -94,7 +105,7 @@ public final class GoEnrichmentDemo {
     }
 
     int N=genes.size();
-    System.out.println(String.format("[INFO] Total genes annotated to %s is %d",focus.getValue(),N));
+    System.out.println(String.format("[INFO] Genes annotated to %s: n=%d",focus.getValue(),N));
     int M=N;
     if (N>20) {
       M=N/3;
@@ -129,39 +140,35 @@ public final class GoEnrichmentDemo {
     return ImmutableSet.copyOf(st);
   }
 
+  
 
+  @Parameters(commandDescription = "Gene Ontology Enrichment Analysis (demo)")
+  public static class Options {
+    @Parameter(names = {"-o","--obo"}, description = "path to go.obo file", required = true)
+    private String goPath;
 
-  /**
-   * Parse command line arguments.
-   */
-  private void parseArgs(String [] args) {
-    if (args.length <2) {
-      printUsageError(String.format("Invalid argument count (%d)! %s",args.length,String.join(";",args)));
+    @Parameter(names = {"-a","--annot"}, description = "path to go association file (e.g., goa_human.gaf", required = true)
+    private String gafPath;
+    /** For the demo, We will create a study set that has 1/3 of the genes associated with this term
+      * and three times as many other terms. The default GO:0070997 is 'neuron death'.*/
+    @Parameter(names = {"-i","--id"},description = "term ID to search for enrichment")
+    private String goTermId="GO:0070997";
+
+    String getGoPath() {
+      return goPath;
     }
 
-    pathGoObo = args[0];
-    pathGoGaf = args[1];
-    if (args.length==3) {
-      targetGoTerm = TermId.of(args[2]);
+    String getGafPath() {
+      return gafPath;
+    }
+
+    String getGoTermId() {
+      return goTermId;
     }
   }
 
-  /**
-   * Print error and usage, then exit.
-   */
-  private void printUsageError(String string) {
-    System.err.println("ERROR: " + string + "\n");
-    System.err.println("Usage: java -jar app.jar go.obo gene_to_pheno.tsv IN.tsv");
-    System.exit(1);
-  }
 
-  /**
-   * Program entry point.
-   *
-   * @param args Command line arguments.
-   */
-  public static void main(String[] args) {
-    new GoEnrichmentDemo(args).run();
-  }
+
+
 
 }
