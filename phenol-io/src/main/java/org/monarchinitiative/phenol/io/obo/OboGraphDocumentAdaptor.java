@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.io.obo;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.model.*;
@@ -24,17 +25,15 @@ public class OboGraphDocumentAdaptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphDocumentAdaptor.class);
 
-  private final GraphDocument graphDocument;
-
   /** Factory object that adds OBO-typical data to each term. */
   private final OboGraphTermFactory factory = new OboGraphTermFactory();
   private final CurieUtil curieUtil = new CurieUtil(CurieMapGenerator.generate());
 
-  public OboGraphDocumentAdaptor(GraphDocument graphDocument) {
-    this.graphDocument = graphDocument;
-  }
+  private final Map<String, String> metaInfo;
+  private final List<Term> terms;
+  private final List<Relationship> relationships;
 
-  public Ontology createOntology() throws PhenolException {
+  public OboGraphDocumentAdaptor(GraphDocument graphDocument) throws PhenolException {
     // We assume there is only one graph instance in the graph document instance.
     Graph obograph = graphDocument.getGraphs().get(0);
     if (obograph == null) {
@@ -45,64 +44,67 @@ public class OboGraphDocumentAdaptor {
 
     LOGGER.debug("Converting metadata...");
     // Metadata about the ontology
-    Map<String, String> metaInfo = convertMetaData(obograph.getMeta());
+    this.metaInfo = convertMetaData(obograph.getMeta());
     LOGGER.debug("Converting nodes to terms...");
-    List<Term> terms = convertNodesToTerms(obograph.getNodes());
+    this.terms = convertNodesToTerms(obograph.getNodes());
     LOGGER.debug("Converting edges to relationships...");
     // Mapping edges in obographs to termIds in phenol
-    List<Relationship> relationships = convertEdgesToRelationships(obograph.getEdges());
+    this.relationships = convertEdgesToRelationships(obograph.getEdges());
+  }
 
-    LOGGER.debug("Creating phenol ontology");
-    Ontology ontology = ImmutableOntology.builder()
-      .metaInfo(metaInfo)
-      .terms(terms)
-      .relationships(relationships)
-      .build();
-    LOGGER.debug("Done");
-    return ontology;
+  public Map<String, String> getMetaInfo() {
+    return metaInfo;
+  }
+
+  public List<Term> getTerms() {
+    return terms;
+  }
+
+  public List<Relationship> getRelationships() {
+    return relationships;
   }
 
   private Map<String, String> convertMetaData(Meta meta) {
     if (meta == null){
       return ImmutableSortedMap.of();
     }
-    ImmutableMap.Builder<String, String> metaInfo = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
+    ImmutableMap.Builder<String, String> metaMap = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
     String version = meta.getVersion() != null ? meta.getVersion() : "";
-    metaInfo.put("data-version", version);
+    metaMap.put("data-version", version);
     if (meta.getBasicPropertyValues() != null) {
       for (BasicPropertyValue basicPropertyValue : meta.getBasicPropertyValues()) {
         if (basicPropertyValue.getPred().equalsIgnoreCase("date")) {
           String date = basicPropertyValue.getVal().trim();
-          metaInfo.put("date", date);
+          metaMap.put("date", date);
         }
       }
     }
-    return metaInfo.build();
+    return metaMap.build();
   }
 
-  private List<Term> convertNodesToTerms(List<Node> gNodes) throws PhenolException {
-    List<Term> terms = new ArrayList<>();
-    if (gNodes == null) {
+  private List<Term> convertNodesToTerms(List<Node> nodes) throws PhenolException {
+    ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
+    if (nodes == null) {
       LOGGER.warn("No nodes found in the loaded ontology.");
       throw new PhenolException("PhenolException: No nodes found in the loaded ontology.");
     }
     LOGGER.debug("Mapping nodes...");
     // Mapping nodes in obographs to termIds in phenol
-    for (Node node : gNodes) {
+    for (Node node : nodes) {
       // only take classes, otherwise we may get some OIO and IAO entities
       if (node.getType() != null && node.getType() == Node.RDFTYPES.CLASS) {
         TermId termId = getTermIdOrNull(node.getId());
         if (termId != null) {
           Term term = factory.constructTerm(node, termId);
-          terms.add(term);
+          termsList.add(term);
         }
       }
     }
-    return terms;
+    return termsList.build();
   }
 
   private List<Relationship> convertEdgesToRelationships(List<Edge> edges) throws PhenolException{
-    List<Relationship> relationships = new ArrayList<>();
+    ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
     if (edges == null) {
       LOGGER.warn("No edges found in the loaded ontology.");
       throw new PhenolException("PhenolException: No edges found in the loaded ontology.");
@@ -115,11 +117,11 @@ public class OboGraphDocumentAdaptor {
       if (subjectTermId != null && objectTermId != null) {
         RelationshipType reltype = RelationshipType.fromString(edge.getPred());
         Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId, reltype);
-        relationships.add(relationship);
+        relationshipsList.add(relationship);
         edgeId++;
       }
     }
-    return relationships;
+    return relationshipsList.build();
   }
 
   private TermId getTermIdOrNull(String id) {

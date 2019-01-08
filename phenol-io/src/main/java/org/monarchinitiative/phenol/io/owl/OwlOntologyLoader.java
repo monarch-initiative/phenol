@@ -51,9 +51,9 @@ public class OwlOntologyLoader implements OntologyLoader {
 
     // We first load ontologies expressed in owl using Obographs's FromOwl class.
     OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-    OWLOntology ontology;
+    OWLOntology owlOntology;
     try {
-      ontology = m.loadOntologyFromOntologyDocument(file);
+      owlOntology = m.loadOntologyFromOntologyDocument(file);
     } catch (OWLOntologyCreationException e) {
       throw new PhenolException("Could not create OWL ontology: " + e.getMessage());
     }
@@ -61,10 +61,18 @@ public class OwlOntologyLoader implements OntologyLoader {
 
     LOGGER.debug("Converting to obograph graph");
     FromOwl fromOwl = new FromOwl();
-    GraphDocument gd = fromOwl.generateGraphDocument(ontology);
+    GraphDocument gd = fromOwl.generateGraphDocument(owlOntology);
 
-    OboGraphDocumentAdaptor oboGraphDocumentAdaptor = new OboGraphDocumentAdaptor(gd);
-    return oboGraphDocumentAdaptor.createOntology();
+    OboGraphDocumentAdaptor graphDocumentAdaptor = new OboGraphDocumentAdaptor(gd);
+
+    LOGGER.debug("Creating phenol ontology");
+    Ontology ontology = ImmutableOntology.builder()
+      .metaInfo(graphDocumentAdaptor.getMetaInfo())
+      .terms(graphDocumentAdaptor.getTerms())
+      .relationships(graphDocumentAdaptor.getRelationships())
+      .build();
+    LOGGER.debug("Done");
+    return ontology;
   }
 
 }

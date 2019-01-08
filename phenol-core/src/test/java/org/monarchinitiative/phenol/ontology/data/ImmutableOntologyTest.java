@@ -228,12 +228,10 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     TermId childId = TermId.of("HP:0000001");
     Term child = Term.of(childId, "child");
 
-    ImmutableList<Term> terms = ImmutableList.of(child, root);
-
     Relationship relationship = new Relationship(childId, rootId, 1, RelationshipType.IS_A);
 
     Ontology instance = ImmutableOntology.builder()
-      .terms(terms)
+      .terms(ImmutableList.of(root, child))
       .relationships(ImmutableList.of(relationship))
       .build();
 
@@ -251,10 +249,8 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     TermId child2Id = TermId.of("HP:0000002");
     Term child2 = Term.of(child2Id, "child2");
 
-    ImmutableList<Term> terms = ImmutableList.of(child, child2);
-
     assertThrows(PhenolRuntimeException.class, () -> ImmutableOntology.builder()
-      .terms(terms)
+      .terms(ImmutableList.of(child, child2))
       .relationships(ImmutableList.of())
       .build(), "No root candidate found.");
   }

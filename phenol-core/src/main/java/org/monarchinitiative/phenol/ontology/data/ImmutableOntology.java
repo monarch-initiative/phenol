@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -10,6 +12,10 @@ import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -21,6 +27,8 @@ public class ImmutableOntology implements Ontology {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 2L;
+
+  private static final Logger logger = LoggerFactory.getLogger(ImmutableOntology.class);
 
   /** Meta information, as loaded from file. */
   private final ImmutableSortedMap<String, String> metaInfo;
@@ -233,96 +241,55 @@ public class ImmutableOntology implements Ontology {
     private Collection<Relationship> relationships = new ArrayList<>();
 
     public Builder metaInfo(Map<String, String> metaInfo) {
-      this.metaInfo = metaInfo;
+      Objects.requireNonNull(metaInfo);
+      this.metaInfo = new LinkedHashMap<>(metaInfo);
       return this;
     }
 
     public Builder terms(Collection<Term> terms) {
-      this.terms = terms;
+      Objects.requireNonNull(terms);
+      this.terms = new ArrayList<>(terms);
       return this;
     }
 
     public Builder relationships(Collection<Relationship> relationships) {
-      this.relationships = relationships;
+      Objects.requireNonNull(relationships);
+      this.relationships = new ArrayList<>(relationships);
       return this;
     }
 
     public ImmutableOntology build() {
-      Objects.requireNonNull(metaInfo);
-      Objects.requireNonNull(terms);
-      Objects.requireNonNull(relationships);
-
-      DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
+      // A heuristic for determining root node(s).
+      // If there are multiple candidate roots, we will just put owl:Thing as the root one.
+      // WARNING - this method could mutate the terms and relationships, so DO NOT MOVE THIS METHOD CALL!
+      TermId rootId = findRootTermId();
 
       // Term ids of non-obsolete Terms
-      Collection<TermId> nonObsoleteTermIds = Sets.newHashSet();
-      // Term ids of obsolete Terms
-      Collection<TermId> obsoleteTermIds = Sets.newHashSet();
+      Set<TermId> nonObsoleteTermIds = Sets.newHashSet();
       // Key: a TermId; value: corresponding Term object
       Map<TermId, Term> termsMap = Maps.newTreeMap();
 
       for (Term term : terms) {
-        TermId termId = term.getId();
-        if (term.isObsolete()) {
-          obsoleteTermIds.add(termId);
-        } else {
+        if (!term.isObsolete()) {
+          TermId termId = term.getId();
           nonObsoleteTermIds.add(termId);
-          phenolGraph.addVertex(termId);
           termsMap.put(termId, term);
           for (TermId alternateId : term.getAltTermIds()) {
             termsMap.put(alternateId, term);
           }
         }
       }
+      // Term ids of obsolete Terms
+      Set<TermId> obsoleteTermIds = terms.stream()
+        .filter(Term::isObsolete)
+        .map(Term::getId)
+        .collect(toSet());
 
-      Set<TermId> rootCandidateSet = Sets.newHashSet();
-      Set<TermId> removeMarkSet = Sets.newHashSet();
       // The relations are numbered incrementally--this is the key, and the value is the corresponding relation.
-      Map<Integer, Relationship> relationshipMap = Maps.newHashMap();
-      for (Relationship relationship : relationships) {
-        TermId subjectTermId = relationship.getSource();
-        TermId objectTermId = relationship.getTarget();
-        // For each edge and connected nodes,
-        // we add candidate obj nodes in rootCandidateSet, i.e. nodes that have incoming edges.
-        // we then remove subj nodes from rootCandidateSet, i.e. nodes that have outgoing edges.
-        rootCandidateSet.add(objectTermId);
-        removeMarkSet.add(subjectTermId);
+      Map<Integer, Relationship> relationshipMap = relationships.stream()
+        .collect(Collectors.toMap(Relationship::getId, Function.identity()));
 
-        IdLabeledEdge edge = new IdLabeledEdge(relationship.getId());
-        phenolGraph.addVertex(subjectTermId);
-        phenolGraph.addVertex(objectTermId);
-        phenolGraph.addEdge(subjectTermId, objectTermId, edge);
-        relationshipMap.put(edge.getId(), relationship);
-      }
-
-      rootCandidateSet.removeAll(removeMarkSet);
-      CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
-
-      // A heuristic for determining root node(s).
-      // If there are multiple candidate roots, we will just put owl:Thing as the root one.
-      TermId rootId;
-      Optional<TermId> firstId = rootCandidateSet.stream().findFirst();
-      if (firstId.isPresent()) {
-        if (rootCandidateSet.size() == 1) {
-          rootId = firstId.get();
-        } else {
-          Term rootTerm = createArtificialRootTerm(firstId.get());
-          rootId = rootTerm.getId();
-          phenolGraph.addVertex(rootId);
-          nonObsoleteTermIds.add(rootId);
-          termsMap.put(rootId, rootTerm);
-          int edgeId = 1 + relationships.stream().mapToInt(Relationship::getId).max().orElse(0);
-          for (TermId childOfNewRootTermId : rootCandidateSet) {
-            IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
-            phenolGraph.addEdge(childOfNewRootTermId, rootId, idLabeledEdge);
-            //Note-for the "artificial root term, we use the IS_A relation
-            Relationship relationship = new Relationship(childOfNewRootTermId, rootId, idLabeledEdge.getId(), RelationshipType.IS_A);
-            relationshipMap.put(idLabeledEdge.getId(), relationship);
-          }
-        }
-      } else {
-        throw new PhenolRuntimeException("No root candidate found.");
-      }
+      DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = makeDefaultDirectedGraph(nonObsoleteTermIds, relationships);
 
       return new ImmutableOntology(
         ImmutableSortedMap.copyOf(metaInfo),
@@ -334,10 +301,72 @@ public class ImmutableOntology implements Ontology {
         ImmutableMap.copyOf(relationshipMap));
     }
 
-    private Term createArtificialRootTerm(TermId firstId) {
+    private DefaultDirectedGraph<TermId, IdLabeledEdge> makeDefaultDirectedGraph(Set<TermId> nonObsoleteTermIds, Collection<Relationship> relationships) {
+      DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
+      // This is probably redundant as the relationships should contain all non-obsolete TermIds
+      nonObsoleteTermIds.forEach(phenolGraph::addVertex);
+
+      for (Relationship relationship : relationships) {
+        TermId subjectTermId = relationship.getSource();
+        TermId objectTermId = relationship.getTarget();
+
+        phenolGraph.addVertex(subjectTermId);
+        phenolGraph.addVertex(objectTermId);
+        phenolGraph.addEdge(subjectTermId, objectTermId, new IdLabeledEdge(relationship.getId()));
+      }
+
+      CompatibilityChecker.check(phenolGraph.vertexSet(), phenolGraph.edgeSet());
+      return phenolGraph;
+    }
+
+    private TermId findRootTermId() {
+      List<TermId> rootCandidates = findRootCandidates(relationships);
+      logger.debug("Root candidates: {}", rootCandidates);
+      if (rootCandidates.isEmpty()) {
+        throw new PhenolRuntimeException("No root candidate found.");
+      }
+      if (rootCandidates.size() == 1) {
+        return rootCandidates.get(0);
+      }
+
+      Term rootTerm = createArtificialRootTerm(rootCandidates.get(0));
+      TermId rootId = rootTerm.getId();
+
+      logger.debug("Created new root term {}", rootId);
+
+      terms.add(rootTerm);
+      int edgeId = 1 + relationships.stream().mapToInt(Relationship::getId).max().orElse(0);
+      for (TermId childOfNewRootTermId : rootCandidates) {
+        IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
+        //Note-for the "artificial root term, we use the IS_A relation
+        Relationship relationship = new Relationship(childOfNewRootTermId, rootTerm.getId(), idLabeledEdge.getId(), RelationshipType.IS_A);
+        logger.debug("Adding new artificial root relationship {}", relationship);
+        relationships.add(relationship);
+      }
+
+      return rootId;
+    }
+
+    private List<TermId> findRootCandidates(Collection<Relationship> relationships) {
+      Set<TermId> rootCandidateSet = Sets.newHashSet();
+      Set<TermId> removeMarkSet = Sets.newHashSet();
+      for (Relationship relationship : relationships) {
+        TermId subjectTermId = relationship.getSource();
+        TermId objectTermId = relationship.getTarget();
+        // For each edge and connected nodes,
+        // we add candidate obj nodes in rootCandidateSet, i.e. nodes that have incoming edges.
+        rootCandidateSet.add(objectTermId);
+        // we then remove subj nodes from rootCandidateSet, i.e. nodes that have outgoing edges.
+        removeMarkSet.add(subjectTermId);
+      }
+      rootCandidateSet.removeAll(removeMarkSet);
+      return new ArrayList<>(rootCandidateSet);
+    }
+
+    private Term createArtificialRootTerm(TermId rootId) {
       // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
       // Assumption: "0000000" is not used for actual terms in any OBO ontology, otherwise use owl terminology
-      TermId artificialTermId = firstId == null ? TermId.of("owl", "thing") : TermId.of(firstId.getPrefix(), "0000000");
+      TermId artificialTermId = rootId == null ? TermId.of("owl", "thing") : TermId.of(rootId.getPrefix(), "0000000");
       return Term.of(artificialTermId, "artificial root term");
     }
   }

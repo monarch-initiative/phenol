@@ -60,7 +60,13 @@ public class OboOntologyLoader implements OntologyLoader {
 
     OboGraphDocumentAdaptor graphDocumentAdaptor = new OboGraphDocumentAdaptor(gd);
 
-    return graphDocumentAdaptor.createOntology();
+    LOGGER.debug("Creating phenol ontology");
+    Ontology ontology = ImmutableOntology.builder()
+      .metaInfo(graphDocumentAdaptor.getMetaInfo())
+      .terms(graphDocumentAdaptor.getTerms())
+      .relationships(graphDocumentAdaptor.getRelationships())
+      .build();
+    LOGGER.debug("Done");
+    return ontology;
   }
-
 }
