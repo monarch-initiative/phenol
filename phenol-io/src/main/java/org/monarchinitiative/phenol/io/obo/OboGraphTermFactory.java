@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.io.owl;
+package org.monarchinitiative.phenol.io.obo;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class Owl2OboTermFactory implements OwlOntologyEntryFactory {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Owl2OboTermFactory.class);
+public class OboGraphTermFactory {
 
-  @Override
+  private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphTermFactory.class);
+
   public Term constructTerm(Node node, TermId termId) {
     Term.Builder termBuilder = Term.builder();
     termBuilder.id(termId);
@@ -76,12 +76,6 @@ public class Owl2OboTermFactory implements OwlOntologyEntryFactory {
     termBuilder.altTermIds(altIds);
 
     return termBuilder.build();
-  }
-
-  // It seems that only actual relation used across ontologies is "IS_A" one for now.
-  @Override
-  public Relationship constructRelationship(TermId source, TermId dest, int id,  RelationshipType reltype) {
-    return new Relationship(source, dest, id, reltype);
   }
 
   private String getDefinition(DefinitionPropertyValue definitionPropertyValue) {
