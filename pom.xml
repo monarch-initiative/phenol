@@ -200,6 +200,12 @@
       <version>${slf4j.version}</version>
     </dependency>
 
+    <!--
+     Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
+     but only depend on slf4j-api. When a library declares a compile-time dependency on a SLF4J binding,
+     it imposes that binding on the end-user, thus negating SLF4J's purpose.
+      -->
+
     <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -216,32 +222,6 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!--
-     Embedded components such as libraries or frameworks should not declare a dependency on any SLF4J binding
-     but only depend on slf4j-api. When a library declares a compile-time dependency on a SLF4J binding,
-     it imposes that binding on the end-user, thus negating SLF4J's purpose.
-
-     <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-jdk14</artifactId>
-         <version>${slf4j.version}</version>
-       </dependency>
-
-
-      <dependency>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
-        <type>maven-plugin</type>
-        <exclusions>
-          <exclusion>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-
-          </exclusion>
-        </exclusions>
-      </dependency> -->
 
     <!-- Google Guava -->
     <dependency>
@@ -279,7 +259,7 @@
         <!-- Generate javadocs -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -289,7 +269,7 @@
           </execution>
         </executions>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <doclint>none</doclint>
         </configuration>
       </plugin>
 

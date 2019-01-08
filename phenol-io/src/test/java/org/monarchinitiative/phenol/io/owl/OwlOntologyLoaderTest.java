@@ -45,7 +45,9 @@ public class OwlOntologyLoaderTest {
 
     // 2. Checking edges
     // Two subclasses are translated into two edges. Other axioms are not yet captured.
-    assertEquals(graph.edgeSet().size(), 2);
+    // Given there is no root term an artificial one is created and linked
+    graph.edgeSet().forEach(edge -> System.out.printf("%d %s (%s) - %s (%s)%n", edge.getId(), edge.getSource(), ontology.getTermMap().get(edge.getSource()).getName(), edge.getTarget(), ontology.getTermMap().get(edge.getTarget()).getName()));
+    assertEquals(4, graph.edgeSet().size());
     assertNotNull(graph.getEdge(t1, t2));
     assertNotNull(graph.getEdge(t1, t3));
 
@@ -69,8 +71,9 @@ public class OwlOntologyLoaderTest {
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
-    assertEquals("owl", rootTermId.getPrefix());
-    assertEquals("Thing", rootTermId.getId());
+
+    assertEquals("NCIT", rootTermId.getPrefix());
+    assertEquals("0000000", rootTermId.getId());
   }
 
   @Test
@@ -102,6 +105,7 @@ public class OwlOntologyLoaderTest {
 
     // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
+
     assertEquals("MONDO:0000624", rootTermId.getValue());
   }
 }

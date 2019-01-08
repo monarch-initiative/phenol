@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.utils;
 import java.io.InputStream;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -23,11 +24,10 @@ public class CurieMapGenerator {
     try {
       InputStream inputStream = CurieMapGenerator.class.getClassLoader().getResourceAsStream("curie_map.yaml");
       Yaml yaml = new Yaml();
-      Map<String, String> curieMap = yaml.load(inputStream);
-      return curieMap;
+      return yaml.load(inputStream);
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
     }
-    return null;
+    return ImmutableMap.of();
   }
 }
