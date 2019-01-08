@@ -1,15 +1,17 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testcases that verify the implementation of {@link ImmutableOntology}
@@ -117,5 +119,143 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
     Map<Integer, Relationship> relationMap = ontology.getRelationMap();
     assertEquals(6, relationMap.size());
     assertEquals(1, subontology.getRelationMap().size());
+  }
+
+  @Test
+  void testBuilder() {
+    TermId rootId = TermId.of("HP:0000000");
+    Term root = Term.of(rootId, "root");
+
+    TermId childId = TermId.of("HP:0000001");
+    Term child = Term.of(childId, "child");
+
+    TermId child2Id = TermId.of("HP:0000002");
+    Term child2 = Term.of(child2Id, "child2");
+
+    TermId child3Id = TermId.of("HP:0000003");
+    TermId child3SecondaryId = TermId.of("HP:3333333");
+    Term child3 = Term.builder()
+      .id(child3Id)
+      .name("child3")
+      .altTermIds(ImmutableList.of(child3SecondaryId))
+      .build();
+
+    TermId obsoleteId = TermId.of("HP:0000004");
+    Term obsolete = Term.builder().id(obsoleteId).name("obsolete").obsolete(true).build();
+
+    ImmutableList<Term> terms = ImmutableList.of(root, child, child2, child3, obsolete);
+
+
+    Relationship relationship1 = new Relationship(childId, rootId, 1, RelationshipType.IS_A);
+    Relationship relationship2 = new Relationship(child2Id, rootId, 2, RelationshipType.IS_A);
+    Relationship relationship3 = new Relationship(child3Id, child2Id, 3, RelationshipType.IS_A);
+    Relationship relationship4 = new Relationship(childId, obsoleteId, 4, RelationshipType.IS_A);
+
+    ImmutableList<Relationship> relationships = ImmutableList.of(relationship1, relationship2, relationship3, relationship4);
+
+
+    Ontology instance = ImmutableOntology.builder()
+      .terms(terms)
+      .relationships(relationships)
+      .build();
+
+    assertEquals(rootId, instance.getRootTermId());
+    assertTrue(instance.isRootTerm(rootId));
+
+    Set<TermId> allTermIds = terms.stream().map(Term::getId).collect(Collectors.toSet());
+    assertEquals(allTermIds, instance.getAllTermIds());
+
+    Set<TermId> nonObsoleteTermIds = terms.stream()
+      .filter(term -> !term.isObsolete())
+      .map(Term::getId)
+      .collect(Collectors.toSet());
+    assertEquals(nonObsoleteTermIds, instance.getNonObsoleteTermIds());
+
+
+    assertEquals(child3Id, instance.getPrimaryTermId(child3Id));
+    assertEquals(child3Id, instance.getPrimaryTermId(child3SecondaryId));
+
+    assertEquals(ImmutableSet.of(rootId), instance.getParentTermIds(child2Id));
+    assertEquals(ImmutableSet.of(child2Id), instance.getParentTermIds(child3Id));
+    assertEquals(ImmutableSet.of(child3Id, child2Id, rootId), instance.getAncestorTermIds(child3Id));
+    assertEquals(ImmutableSet.of(child3Id, child2Id), instance.getAncestorTermIds(child3Id, false));
+  }
+
+  @Test
+  void testBuilderMultipleRoots() {
+
+    TermId childId = TermId.of("HP:0000001");
+    Term child = Term.of(childId, "child");
+
+    TermId child2Id = TermId.of("HP:0000002");
+    Term child2 = Term.of(child2Id, "child2");
+
+    TermId child3Id = TermId.of("HP:0000003");
+    Term child3 = Term.of(child3Id, "child3");
+
+    TermId obsoleteId = TermId.of("HP:0000004");
+    Term obsolete = Term.builder().id(obsoleteId).name("obsolete").obsolete(true).build();
+
+    ImmutableList<Term> terms = ImmutableList.of(child, child2, child3, obsolete);
+
+    Relationship relationship3 = new Relationship(child3Id, child2Id, 3, RelationshipType.IS_A);
+    Relationship relationship4 = new Relationship(childId, obsoleteId, 4, RelationshipType.IS_A);
+
+    ImmutableList<Relationship> relationships = ImmutableList.of(relationship3, relationship4);
+
+
+    Ontology instance = ImmutableOntology.builder()
+      .terms(terms)
+      .relationships(relationships)
+      .build();
+
+    TermId rootId = TermId.of("HP:0000000");
+    assertEquals(rootId, instance.getRootTermId());
+    assertTrue(instance.isRootTerm(rootId));
+
+    assertEquals(ImmutableSet.of(child2Id), instance.getParentTermIds(child3Id));
+
+    assertEquals(ImmutableSet.of(child3Id, child2Id, rootId), instance.getAncestorTermIds(child3Id));
+    assertEquals(ImmutableSet.of(child3Id, child2Id), instance.getAncestorTermIds(child3Id, false));
+  }
+
+  @Test
+  void testBuilderSingleRootCandidate() {
+
+    TermId rootId = TermId.of("HP:0000000");
+    Term root = Term.of(rootId, "root");
+
+    TermId childId = TermId.of("HP:0000001");
+    Term child = Term.of(childId, "child");
+
+    ImmutableList<Term> terms = ImmutableList.of(child, root);
+
+    Relationship relationship = new Relationship(childId, rootId, 1, RelationshipType.IS_A);
+
+    Ontology instance = ImmutableOntology.builder()
+      .terms(terms)
+      .relationships(ImmutableList.of(relationship))
+      .build();
+
+    assertEquals(rootId, instance.getRootTermId());
+    assertTrue(instance.isRootTerm(rootId));
+  }
+
+
+  @Test
+  void testBuilderNoRoot() {
+
+    TermId childId = TermId.of("HP:0000001");
+    Term child = Term.of(childId, "child");
+
+    TermId child2Id = TermId.of("HP:0000002");
+    Term child2 = Term.of(child2Id, "child2");
+
+    ImmutableList<Term> terms = ImmutableList.of(child, child2);
+
+    assertThrows(PhenolRuntimeException.class, () -> ImmutableOntology.builder()
+      .terms(terms)
+      .relationships(ImmutableList.of())
+      .build(), "No root candidate found.");
   }
 }
