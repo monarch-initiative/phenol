@@ -71,7 +71,7 @@ public class OwlOntologyLoaderTest {
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     TermId rootTermId = ontology.getRootTermId();
-    System.out.println(ontology.getTermMap().get(rootTermId));
+
     assertEquals("NCIT", rootTermId.getPrefix());
     assertEquals("0000000", rootTermId.getId());
   }
@@ -105,7 +105,6 @@ public class OwlOntologyLoaderTest {
 
     // 2. This sample ontology file contains a single root labeled as MONDO:0000624.
     TermId rootTermId = ontology.getRootTermId();
-    ontology.getGraph().edgeSet().forEach(edge -> System.out.printf("%d %s - %s%n", edge.getId(), edge.getSource(), edge.getTarget()));
 
     assertEquals("MONDO:0000624", rootTermId.getValue());
   }
