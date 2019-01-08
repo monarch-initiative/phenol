@@ -65,8 +65,8 @@ public class ImmutableOntology implements Ontology {
       ImmutableSortedMap<String, String> metaInfo,
       DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
       TermId rootTermId,
-      Collection<? extends TermId> nonObsoleteTermIds,
-      Collection<? extends TermId> obsoleteTermIds,
+      Collection<TermId> nonObsoleteTermIds,
+      Collection<TermId> obsoleteTermIds,
       ImmutableMap<TermId, Term> termMap,
       ImmutableMap<Integer, Relationship> relationMap) {
     this.metaInfo = metaInfo;
