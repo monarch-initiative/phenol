@@ -116,9 +116,8 @@ public class OboGraphDocumentAdaptor {
 
       if (subjectTermId != null && objectTermId != null) {
         RelationshipType reltype = RelationshipType.fromString(edge.getPred());
-        Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId, reltype);
+        Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, reltype);
         relationshipsList.add(relationship);
-        edgeId++;
       }
     }
     return relationshipsList.build();
