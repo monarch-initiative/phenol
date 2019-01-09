@@ -17,13 +17,11 @@ public class MpGeneModel extends MpModel {
 
   private static final Logger logger = LoggerFactory.getLogger(MpGeneModel.class);
 
-  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
-                     MpSimpleModel... modelList) {
+  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors, MpSimpleModel... modelList) {
     mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList);
   }
 
-  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors,
-                     List<MpSimpleModel> modelList) {
+  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors, List<MpSimpleModel> modelList) {
     mpgmConstructor(markerId, mpoOnt, filterAncestors, modelList.toArray(new MpSimpleModel[] {}));
   }
 
@@ -43,18 +41,17 @@ public class MpGeneModel extends MpModel {
       returnValue = annotArray[0];
 
       if (annotArray.length > 1) {
-        logger.info(String.format("Starting with MpAnnotation %s", annotArray[0]));
+        logger.info("Starting with MpAnnotation {}", annotArray[0]);
         try {
           for (int i = 1; i < annotArray.length; i++) {
-            logger.info(String.format("Merging MpAnnotation %s with annotation %s",
-              returnValue, annotArray[i]));
+            logger.info("Merging MpAnnotation {} with annotation {}", returnValue, annotArray[i]);
             returnValue = MpAnnotation.merge(returnValue, annotArray[i]);
           }
         } catch (PhenolException e) {
           // exception indicates mismatch on MpId or on negated
           e.printStackTrace();
         }
-        logger.info(String.format("MpAnnotation resulting from collapseSet is %s", returnValue));
+        logger.info("MpAnnotation resulting from collapseSet is {}", returnValue);
       }
     }
     return returnValue;
@@ -96,17 +93,16 @@ public class MpGeneModel extends MpModel {
     HashSet<TermId> toRemove = new HashSet<>();
     for (TermId mpId : annotsByMpId.keySet()) {
       if (!toRemove.contains(mpId)) {
-        getAncestorTerms(mpo, mpId, false).forEach(anc -> toRemove.add(anc));
+        getAncestorTerms(mpo, mpId, false).forEach(toRemove::add);
       }
     }
-    toRemove.forEach(anc -> annotsByMpId.remove(anc));
+    toRemove.forEach(annotsByMpId::remove);
   }
 
   /*
    * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
    */
-  private void mpgmConstructor(TermId markerId, Ontology mpo, boolean filterAncestors,
-                               MpSimpleModel[] models) {
+  private void mpgmConstructor(TermId markerId, Ontology mpo, boolean filterAncestors, MpSimpleModel[] models) {
     this.markerId = markerId;
     this.filterAncestors = filterAncestors;
     ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
@@ -114,8 +110,7 @@ public class MpGeneModel extends MpModel {
     genotypes = genotypesBuilder.build();
   }
 
-  static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList,
-                                               MpoOntology ontology, boolean filterAncestors) {
+  static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList, Ontology ontology, boolean filterAncestors) {
     HashMap<TermId, List<MpSimpleModel>> modelsByGene = new HashMap<>();
     ImmutableList.Builder<MpGeneModel> returnListBuilder = new ImmutableList.Builder<>();
 
