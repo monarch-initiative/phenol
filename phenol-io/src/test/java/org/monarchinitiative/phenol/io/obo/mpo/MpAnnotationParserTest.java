@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +87,7 @@ class MpAnnotationParserTest {
     assertFalse(model.hasSexSpecificAnnotation());
     // The following annotation should have two PMIDs: 2383655|22773809
     MpAnnotation annot = annots.get(0);
-    List<String> pmids = annot.getPmidList();
+    Set<String> pmids = annot.getPmidSet();
     assertEquals(2,pmids.size());
 
   }

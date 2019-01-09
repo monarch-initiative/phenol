@@ -268,7 +268,7 @@ public class MpAnnotationParser {
     private final TermId alleleId;
     private final MpStrain geneticBackground;
     private final TermId mpId;
-    private final List<String> pmidList;
+    private final Set<String> pmidSet;
     private final TermId markerAccessionId;
     private final TermId genotypeAccessionId;
 
@@ -279,12 +279,12 @@ public class MpAnnotationParser {
       this.geneticBackground = MpStrain.fromString(annotations[GENETIC_BACKGROUND_IDX]);
       this.mpId = parseOrThrowException(annotations[MPO_IDX]);
       String pmids = annotations[PUBMED_IDX];
-      ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+      ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
       String[] pubMedIds = pmids.split(Pattern.quote("|"));
       for (String b : pubMedIds) {
         builder.add(b);
       }
-      this.pmidList = builder.build();
+      this.pmidSet = builder.build();
       this.markerAccessionId = parseOrThrowException(annotations[MGI_MARKER_IDX]);
       this.genotypeAccessionId = parseOrThrowException(annotations[GENOTYPE_ACCESSION_IDX]);
     }
@@ -317,8 +317,8 @@ public class MpAnnotationParser {
       return mpId;
     }
 
-    public List<String> getPmidList() {
-      return pmidList;
+    public Set<String> getPmidSet() {
+      return pmidSet;
     }
 
     public TermId getMarkerAccessionId() {
@@ -334,7 +334,7 @@ public class MpAnnotationParser {
      * @return THe {@link MpAnnotation} object corresponding to this {@link AnnotationLine}.
      */
     public MpAnnotation toMpAnnotation() {
-      return new MpAnnotation.Builder(this.mpId,this.pmidList).build();
+      return new MpAnnotation.Builder(this.mpId,this.pmidSet).build();
     }
 
   }
@@ -350,7 +350,7 @@ public class MpAnnotationParser {
     private final MpAllelicComposition allelicComposition;
     private final MpStrain strain;
     private final boolean sexSpecificNormal;
-    private final List<String> pmidList;
+    private final Set<String> pmidList;
 
     SexSpecificAnnotationLine(String[] A) throws PhenolException {
       this.genotypeID=TermId.of(A[0]);
@@ -360,7 +360,7 @@ public class MpAnnotationParser {
       this.strain = MpStrain.fromString(A[4]);
       sexSpecificNormal = A[5].equals("Y");
       String pmids=A[6];
-      ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+      ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
       String B[]=pmids.split(Pattern.quote("|"));
       for (String b: B) {
         builder.add(b);

@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  */
 abstract class MpModel {
   /** Genetic marker id */
-  TermId markerId;
+  protected TermId markerId;
 
   /** List of MPO term ids */
-  List<MpAnnotation> phenotypicAbnormalities;
+  protected List<MpAnnotation> phenotypicAbnormalities;
 
   public TermId getMarkerId() {
     return markerId;
@@ -28,13 +28,13 @@ abstract class MpModel {
   /** @return true if this model has one or more abnormal male-specific phenotype. */
   public boolean hasMaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream()
-      .anyMatch(MpAnnotation::maleSpecific);
+      .anyMatch(MpAnnotation::maleSpecificAbnormal);
   }
 
   /**  @return a list of male-specific MpTerm ids, and excludes sexSpecific-specific normal terms. */
   public List<TermId> getMaleSpecificMpTermIds() {
     return phenotypicAbnormalities.stream()
-      .filter(MpAnnotation::maleSpecific)
+      .filter(MpAnnotation::maleSpecificAbnormal)
       .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }
@@ -42,13 +42,13 @@ abstract class MpModel {
   /** @return true if this model has one or more abnormal female-specific phenotype. */
   public boolean hasFemaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream()
-      .anyMatch(MpAnnotation::femaleSpecific);
+      .anyMatch(MpAnnotation::femaleSpecificAbnormal);
   }
 
   /**  @return a list of sexSpecific-specific MpTerm ids, and excludes sexSpecific-specific normal terms. */
   public List<TermId> getFemaleSpecificMpTermIds() {
     return phenotypicAbnormalities.stream()
-      .filter(MpAnnotation::femaleSpecific)
+      .filter(MpAnnotation::femaleSpecificAbnormal)
       .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }

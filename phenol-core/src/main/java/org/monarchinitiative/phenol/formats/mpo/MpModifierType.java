@@ -6,9 +6,9 @@ package org.monarchinitiative.phenol.formats.mpo;
  */
 public enum MpModifierType {
   /** An MP phenotype observed specifically in female mice */
-  FEMALE_SPECIFIC,
+  FEMALE_SPECIFIC_ABNORMAL,
   /** An MP phenotype observed specifically in male mice */
-  MALE_SPECIFIC,
+  MALE_SPECIFIC_ABNORMAL,
   /** An MP phenotype excluded specifically in female mice */
   FEMALE_SPECIFIC_NORMAL,
   /** An MP phenotype excluded specifically in male mice */
