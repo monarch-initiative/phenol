@@ -1,16 +1,13 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RelationshipTypeTest {
-
-
+class RelationshipTypeTest {
 
   @Test
-  public void testHasModifier() throws PhenolException {
+  void testHasModifier() {
     RelationshipType hasMod = RelationshipType.fromString("http://purl.obolibrary.org/obo/RO_0002573");
     assertEquals(RelationshipType.HAS_MODIFIER, hasMod);
     assertNotEquals(RelationshipType.PART_OF,hasMod);
@@ -18,9 +15,14 @@ public class RelationshipTypeTest {
   }
 
   @Test
-  public void testPartOf() throws PhenolException {
+  void testPartOf() {
     RelationshipType partOf = RelationshipType.fromString("http://purl.obolibrary.org/obo/BFO_0000050");
     assertEquals(RelationshipType.PART_OF,partOf);
     assertTrue(partOf.propagates());
+  }
+
+  @Test
+  void returnsUnknownForUnknownRelationship() {
+    assertEquals(RelationshipType.UNKNOWN, RelationshipType.fromString("wibble"));
   }
 }
