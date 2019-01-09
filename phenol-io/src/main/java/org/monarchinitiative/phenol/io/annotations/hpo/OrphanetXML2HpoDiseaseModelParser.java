@@ -1,11 +1,9 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.monarchinitiative.hpoannotqc.exception.HpoAnnotationModelException;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationEntry;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationModel;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
+import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -57,7 +55,6 @@ import javax.xml.stream.events.XMLEvent;
  * @author Peter Robinson
  */
 public class OrphanetXML2HpoDiseaseModelParser {
-    private static final Logger logger = LogManager.getLogger();
     /** Path to {@code en_product4_HPO.xml} file. */
     private final String orphanetXmlPath;
     /** Reference to the HPO Ontology. */
@@ -110,7 +107,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
      * @param fstring An Orphanet id (attribute in XML file) corresponding to a frequency category
      * @return corresponding HPO Frequency TermId
      */
-    private TermId string2frequency(String fstring) {
+    private TermId string2frequency(String fstring) throws PhenolRuntimeException {
         switch (fstring) {
             case "28405": return HpoFrequencyTermIds.ALWAYS_PRESENT;// Obligate
             case "28412": return HpoFrequencyTermIds.VERY_FREQUENT;
@@ -119,10 +116,9 @@ public class OrphanetXML2HpoDiseaseModelParser {
             case "28433": return HpoFrequencyTermIds.VERY_RARE;
             case "28440": return HpoFrequencyTermIds.EXCLUDED;
         }
-        logger.fatal("[ERROR] Could not find TermId for Orphanet frequency "+ fstring);
-        logger.fatal("Not a recoverable error -- check and recompile");
-        System.exit(1);
-        return null; // needed to avoid warning
+        // the following should never happen, actually!
+        throw new PhenolRuntimeException("[ERROR] Could not find TermId for Orphanet frequency {}. "+
+          "This indicates a serious and unexpected error, please report to the developers"+ fstring);
     }
 
 
@@ -218,17 +214,14 @@ public class OrphanetXML2HpoDiseaseModelParser {
                         currentHpoId = null;
                         currentHpoTermLabel = null;
                         currentFrequencyTermId = null;// reset
-
                         currentAnnotationEntryList.add(entry);
-
                     } catch (HpoAnnotationModelException e) {
-                        logger.error(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
+                        System.err.println(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
                                 currentDiseaseName != null ? currentDiseaseName : "n/a",
                                 currentOrphanumber != null ? currentOrphanumber : "n/a",
                                 currentHpoId != null ? currentHpoId : "n/a",
                                 e.getMessage())
                                 );
-                        //e.printStackTrace();
                     }
                 } else if (endElementName.equals("Disorder")) {
                     HpoAnnotationModel file = new HpoAnnotationModel(String.format("ORPHA:%s", currentOrphanumber),

@@ -31,22 +31,22 @@ public class TermAnnotationsTest extends ImmutableOntologyTestBase {
   }
 
   @Test
-  public void testConstructTermAnnotationToLabelsMap() {
+  void testConstructTermAnnotationToLabelsMap() {
     Map<TermId, Collection<TermId>> map =
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
-    debugPrint(map,ontology);
+    //debugPrint(map,ontology);
     // 5 annotation classes (to four labels), thus we expect 5 keys
     assertEquals(5, map.size());
   }
 
   @Test
-  public void testConstructTermLabelToAnnotationsMap() {
+  void testConstructTermLabelToAnnotationsMap() {
     Map<TermId, Collection<TermId>> map =
         ImmutableSortedMap.copyOf(
             TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
     TermId test1 = TermId.of("TEST:one");
-    debugPrint(map,ontology);
+    //debugPrint(map,ontology);
     assertTrue(map.containsKey(test1));
     // there are three annotated items, so we expect 3 keys
     assertEquals(3,map.size());

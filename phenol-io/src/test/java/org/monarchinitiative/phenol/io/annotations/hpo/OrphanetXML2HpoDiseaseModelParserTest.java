@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.io.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationEntry;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationModel;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
@@ -29,14 +29,13 @@ class OrphanetXML2HpoDiseaseModelParserTest {
 
     @BeforeAll
     private static void init() throws PhenolException, FileNotFoundException {
-        ClassLoader classLoader = OrphanetXML2HpoDiseaseModelParserTest.class.getClassLoader();
-        String orphaXMLpath =Objects.requireNonNull(classLoader.getResource("en_product4_HPO.small.xml")).getFile();
-        Path hpOboPath = Paths.get("src","test","resources","hp_head.obo");
+        Path orphaXMLpath =Paths.get("src","test","resources","annotations","en_product4_HPO.small.xml");
+        Path hpOboPath = Paths.get("src","test","resources","annotations","hp_head.obo");
         String hpOboFile=hpOboPath.toAbsolutePath().toString();
         HpOboParser oboparser = new HpOboParser(new File(hpOboFile));
         HpoOntology ontology = oboparser.parse();
         try {
-            parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath, ontology, false);
+            parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
         } catch (Exception e) {
             System.err.println("Could not parse Orpha " + e.getMessage());
             throw e;

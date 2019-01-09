@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
-import org.monarchinitiative.hpoannotqc.exception.HpoAnnotationModelException;
-import org.monarchinitiative.hpoannotqc.exception.ObsoleteTermIdException;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationEntry;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationModel;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
+import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
+import org.monarchinitiative.phenol.base.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 
@@ -134,7 +134,7 @@ public class HpoAnnotationFileParser {
      * If it doesn't, then a serious error has occured somewhere and it is better to
      * die and figure out what is wrong than to attempt error correction
      * @param line a header line of a V2 small file
-     * @throws if the number of fields in the head is not equal to {@link #NUMBER_OF_FIELDS} or if a column header is incorrect
+     * @throws HpoAnnotationModelException if the number of fields in the head is not equal to {@link #NUMBER_OF_FIELDS} or if a column header is incorrect
      */
     private void qcHeaderLine(String line) throws HpoAnnotationModelException {
         String fields[] = line.split("\t");

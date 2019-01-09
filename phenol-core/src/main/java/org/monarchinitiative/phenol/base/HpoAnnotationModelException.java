@@ -9,5 +9,6 @@ import org.monarchinitiative.phenol.base.PhenolException;
  * @author Peter Robinson
  */
 public class HpoAnnotationModelException extends PhenolException {
+  private final static long serialVersionUID = 2;
     public HpoAnnotationModelException(String msg) {super(msg);}
 }

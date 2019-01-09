@@ -1,6 +1,9 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.base.PhenolException;

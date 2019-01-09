@@ -59,7 +59,7 @@ public class HpoDiseaseAnnotationParser {
     this.annotationFilePath = annotationFile;
     this.ontology = ontlgy;
     this.diseaseMap = new HashMap<>();
-    ImmutableSet.Builder builder = new ImmutableSet.Builder();
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
     for (String database : databases) { builder.add(database); }
     databasePrefixes=builder.build();
   }

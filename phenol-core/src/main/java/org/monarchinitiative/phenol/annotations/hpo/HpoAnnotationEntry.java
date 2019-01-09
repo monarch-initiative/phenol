@@ -71,13 +71,13 @@ public class HpoAnnotationEntry {
     private static final int NUMBER_OF_FIELDS=expectedFields.length;
 
 
-    private final static Set validDatabases = ImmutableSet.of("OMIM","DECIPHER","ORPHA");
+    private final static Set<String> validDatabases = ImmutableSet.of("OMIM","DECIPHER","ORPHA");
     /** A set with all of the TermIds for frequency. */
-    private final static Set frequencySubhierarcyTermIds = ImmutableSet.of(TermId.of("HP:0003674"),TermId.of("HP:0040280"),
+    private final static Set<TermId> frequencySubhierarcyTermIds = ImmutableSet.of(TermId.of("HP:0003674"),TermId.of("HP:0040280"),
             TermId.of("HP:0040281"), TermId.of("HP:0040282"),TermId.of("HP:0040283"),TermId.of("HP:0040284"),
             TermId.of("HP:0040285"));
     /** A set with all of the TermIds for age of onset. */
-    private final static Set onsetSubhierarcyTermIds = ImmutableSet.of( TermId.of("HP:0003674"), TermId.of("HP:0011460"),
+    private final static Set<TermId> onsetSubhierarcyTermIds = ImmutableSet.of( TermId.of("HP:0003674"), TermId.of("HP:0011460"),
             TermId.of("HP:0003581"), TermId.of("HP:0003596"), TermId.of("HP:0003584"), TermId.of("HP:0011462"),
              TermId.of("HP:0003577"), TermId.of("HP:0003623"), TermId.of("HP:0410280"), TermId.of("HP:0011463"),
              TermId.of("HP:0003593"), TermId.of("HP:0003621"), TermId.of("HP:0030674"), TermId.of("HP:0011461"));
@@ -269,6 +269,66 @@ public class HpoAnnotationEntry {
         performQualityControl(entry, ontology);
         return entry;
     }
+
+
+  /**
+   * Create an {@link HpoAnnotationEntry} object for a line in an HPO Annotation file. By default, we do not
+   * replace obsolete term ids here, this should be done with PhenoteFX in the original files.
+   * @param line A line from an HPO Annotation file (small file)
+   * @param ontology reference to HPO ontology
+   * @return corresponding {@link HpoAnnotationEntry} object
+   */
+  public static Optional<HpoAnnotationEntry> fromLineReplaceObsoletePhenotypeData(String line, HpoOntology ontology)
+   {
+    String A[] = line.split("\t");
+    if (A.length!= NUMBER_OF_FIELDS) {
+      return Optional.empty();
+    }
+    String diseaseID=A[0];
+    String diseaseName=A[1];
+    TermId phenotypeId = TermId.of(A[2]);
+    String phenotypeName=A[3];
+    // replace if out of data
+    TermId currentPhenotypeId = ontology.getPrimaryTermId(phenotypeId);
+    if (currentPhenotypeId!=null) {
+      String currentLabel=ontology.getTermMap().get(currentPhenotypeId).getName();
+      phenotypeId=currentPhenotypeId;
+      phenotypeName=currentLabel;
+    }
+    String ageOfOnsetId=A[4];
+    String ageOfOnsetName=A[5];
+    String frequencyString=A[6];
+    String sex=A[7];
+    String negation=A[8];
+    String modifier=A[9];
+    String description=A[10];
+    String publication=A[11];
+    String evidenceCode=A[12];
+    String biocuration=A[13];
+
+    HpoAnnotationEntry entry = new HpoAnnotationEntry(diseaseID,
+      diseaseName,
+      phenotypeId,
+      phenotypeName,
+      ageOfOnsetId,
+      ageOfOnsetName,
+      frequencyString,
+      sex,
+      negation,
+      modifier,
+      description,
+      publication,
+      evidenceCode,
+      biocuration);
+    // if the following method does not throw an Exception, we are good to go!
+    try {
+      performQualityControl(entry, ontology);
+    } catch (HpoAnnotationModelException e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
+    return Optional.of(entry);
+  }
 
 
     /**

@@ -1,9 +1,8 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.monarchinitiative.hpoannotqc.exception.HpoAnnotationModelException;
-import org.monarchinitiative.hpoannotqc.smallfile.HpoAnnotationModel;
+
+import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
+import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
 
 import java.io.BufferedReader;
@@ -22,7 +21,6 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoAnnotationFileIngestor {
-    private static final Logger logger = LogManager.getLogger();
     /** Reference to the HPO object. */
     private final HpoOntology ontology;
     /** The paths to all of the v2 small files. */
@@ -53,29 +51,16 @@ public class HpoAnnotationFileIngestor {
     }
 
     private void inputHpoAnnotationFiles() {
-        logger.trace("We found " + v2smallFilePaths.size() + " small files.");
         int i=0;
         for (String path : v2smallFilePaths) {
-            if (++i%1000==0) {
-                logger.trace(String.format("Inputting %d-th file at %s",i,path));
-            }
             HpoAnnotationFileParser parser=new HpoAnnotationFileParser(path,ontology);
             try {
                 HpoAnnotationModel v2sf = parser.parse();
                 n_total_annotation_lines += v2sf.getNumberOfAnnotations();
                 v2SmallFileList.add(v2sf);
             } catch (HpoAnnotationModelException hafe) {
-                logger.error("Errors encountered with V2 small file at {}: {}",path, hafe.getMessage());
-            }
-        }
-        logger.info("Finished with input of {} files with {} annotations",i,n_total_annotation_lines);
-        logger.info("A total of {} entries found in the small file directory were omitted.",n_total_omitted_entries);
-        if (! parseErrors.isEmpty()) {
-            logger.error("Parsing errors were encountered while ingesting the small files");
-            int k=0;
-            for (String err: parseErrors) {
-                k++;
-                logger.error("("+k+") "+err);
+                System.err.println(String.format("Errors encountered with V2 small file at %s: {%s",
+                  path, hafe.getMessage()));
             }
         }
     }
@@ -128,7 +113,6 @@ public class HpoAnnotationFileIngestor {
                 if (path.toString().endsWith(".tab")) {
                     String basename=baseName(path);
                     if (omitEntries.contains(basename)) {
-                        logger.trace("Skipping annotations for omitted entry {}", basename);
                         n_total_omitted_entries++;
                         continue; // skip this one!
                     }
