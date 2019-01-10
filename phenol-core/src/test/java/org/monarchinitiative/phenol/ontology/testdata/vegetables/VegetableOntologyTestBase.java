@@ -148,9 +148,15 @@ public class VegetableOntologyTestBase {
     relationMapBuilder.put(7, new Relationship(idBlueCarrot, idCarrot, 7,RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
 
-    ontology =
-        new ImmutableOntology(
-            metaInfo, graph, rootTermId, termMap.keySet(), ImmutableSet.of(), termMap, relationMap);
+    ontology = ImmutableOntology.builder()
+      .metaInfo(metaInfo)
+      .terms(termMap.values())
+      .relationships(relationMap.values())
+      .build();
+
+//    ontology =
+//        new ImmutableOntology(
+//            metaInfo, graph, rootTermId, termMap.keySet(), ImmutableSet.of(), termMap, relationMap);
 
     recipeAnnotations =
         Lists.newArrayList(

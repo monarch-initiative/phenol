@@ -102,6 +102,33 @@ public class ImmutableOntologyTestBase {
     );
     termMap = termMapBuilder.build();
 
+    ImmutableList<Term> terms = ImmutableList.of(
+      Term.builder()
+      .id(id1)
+      .name("term1")
+      .definition("some definition 1")
+      .build(),
+      Term.builder()
+        .id(id2)
+        .name("term2")
+        .definition("some definition 2")
+        .build(),
+      Term.builder()
+        .id(id3)
+        .name("term3")
+        .definition("some definition 3")
+        .build(),
+      Term.builder()
+        .id(id4)
+        .name("term4")
+        .definition("some definition 4")
+        .build(),
+      Term.builder()
+        .id(id5)
+        .name("term5")
+        .definition("some definition 5")
+        .build());
+
     obsoleteTermMap = ImmutableMap.of();
 
     ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
@@ -113,14 +140,19 @@ public class ImmutableOntologyTestBase {
     relationMapBuilder.put(6, new Relationship(id4, id5, 6,RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
 
-    ontology =
-        new ImmutableOntology(
-            metaInfo,
-            graph,
-            rootTermId,
-            termMap.keySet(),
-            obsoleteTermMap.keySet(),
-            termMap,
-            relationMap);
+    ontology = ImmutableOntology.builder()
+      .metaInfo(metaInfo)
+      .terms(terms)
+      .relationships(relationMap.values())
+      .build();
+
+//        new ImmutableOntology(
+//            metaInfo,
+//            graph,
+//            rootTermId,
+//            termMap.keySet(),
+//            obsoleteTermMap.keySet(),
+//            termMap,
+//            relationMap);
   }
 }
