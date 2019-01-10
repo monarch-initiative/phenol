@@ -64,18 +64,18 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
                  * white balls after the whole drawing process?
                  */
                 System.err.println(String.format("popgene=%d annotPopGene=%d studygene=%d, studyGeneAnnot=%d",popGeneCount,goidAnnotatedPopGeneCount,studyGeneCount,goidAnnotatedStudyGeneCount ));
-                myP.p = hyperg.phypergeometric(popGeneCount, (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
-                        studyGeneCount, goidAnnotatedStudyGeneCount);
-                myP.p_min = hyperg.dhyper(
+                myP.setRawPValue( hyperg.phypergeometric(popGeneCount, (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
+                        studyGeneCount, goidAnnotatedStudyGeneCount) );
+                myP.setMinPValue ( hyperg.dhyper(
                         goidAnnotatedPopGeneCount,
                         popGeneCount,
                         goidAnnotatedPopGeneCount,
-                        goidAnnotatedPopGeneCount);
+                        goidAnnotatedPopGeneCount) );
             } else {
                 /* Mark this p value as irrelevant so it isn't considered in a mtc */
-                myP.p = 1.0;
+                myP.setRawPValue(1.0);
                 myP.ignoreAtMTC = true;
-                myP.p_min = 1.0;
+                myP.setMinPValue( 1.0 );
             }
             builder.put(goId,myP);
             }

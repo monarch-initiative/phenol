@@ -1,0 +1,4 @@
+#diseaseID	diseaseName	phenotypeID	phenotypeName	onsetID	onsetName	frequency	sex	negation	modifier	description	publication	evidence	biocuration
+OMIM:123456	Testing only	HP:0000006	Autosomal dominant inheritance								OMIM:123456	TAS	HP:probinson[2018-05-28]
+OMIM:123456	Testing only	HP:0000528	Anophthalmia			3/4					PMID:1234	PCS	HP:probinson[2018-05-28]
+OMIM:123456	Testing only	HP:0000528	Anophthalmia			2/5					PMID:3214	PCS	HP:probinson[2018-05-28]

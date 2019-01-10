@@ -32,23 +32,6 @@ public abstract class AbstractTestCorrection
 	 */
 	public abstract String getName();
 
-	/**
-	 * Returns the number of pvalues that don't have
-	 * the ignoreAtMTC attribute set.
-	 *
-	 * @param p
-	 * @return number of relevant p values
-	 */
-//	protected int countRelevantPValues(PValue [] p)
-//	{
-//		int pvalsCount = 0;
-//
-//		/* Count number of p values which shouldn't be ignored */
-//		for (int i=0;i<p.length;i++)
-//			if (!p[i].ignoreAtMTC) pvalsCount++;
-//
-//		return pvalsCount;
-//	}
 
 	/**
 	 * Returns an array of all raw p values that don't have
@@ -76,7 +59,7 @@ public abstract class AbstractTestCorrection
 	}
 
   /** @return non-ignored pvalues (sorted) */
-  protected Pair [] getRelevantRawPValues(Map<TermId, PValue> pvalmap) {
+  Pair [] getRelevantRawPValues(Map<TermId, PValue> pvalmap) {
     int pvalsCount = (int) pvalmap.values().stream().filter(PValue::doNotIgnore).count();
     Pair[] pairs = new Pair[pvalsCount];
     int i = 0;
@@ -108,10 +91,10 @@ public abstract class AbstractTestCorrection
 		/* Do nothing if there are not enough pvalues */
 		if (m<2) return;
 
-		p[m-1].p_adjusted = Math.min(p[m-1].p_adjusted,1);
+		p[m-1].setAdjustedPValue( Math.min(p[m-1].getAdjustedPValue(),1));
 
 		for (int i=m-2;i>=0;i--)
-			p[i].p_adjusted = Math.min(p[i].p_adjusted,p[i+1].p_adjusted);
+			p[i].setAdjustedPValue( Math.min(p[i].getAdjustedPValue(),p[i+1].getAdjustedPValue()));
 	}
 
   /**
@@ -122,17 +105,17 @@ public abstract class AbstractTestCorrection
    * @param pairs specifies the p values array which has to be already
    *        in sorted order!
    */
-  public static void enforcePValueMonotony(Pair [] pairs)
+  static void enforcePValueMonotony(Pair [] pairs)
   {
     int m = pairs.length;
 
     /* Do nothing if there are not enough pvalues */
     if (m<2) return;
 
-    pairs[m-1].pval.p_adjusted = Math.min(pairs[m-1].pval.p_adjusted,1);
+    pairs[m-1].pval.setAdjustedPValue(Math.min(pairs[m-1].pval.getAdjustedPValue(),1));
 
     for (int i=m-2;i>=0;i--)
-      pairs[i].pval.p_adjusted = Math.min(pairs[i].pval.p_adjusted,pairs[i+1].pval.p_adjusted);
+      pairs[i].pval.setAdjustedPValue( Math.min(pairs[i].pval.getAdjustedPValue(),pairs[i+1].pval.getAdjustedPValue()));
   }
 
   /**
@@ -141,6 +124,6 @@ public abstract class AbstractTestCorrection
   static class Pair {
     TermId tid;
     PValue pval;
-    public PValue getPVal() { return pval; }
+    PValue getPVal() { return pval; }
   }
 }

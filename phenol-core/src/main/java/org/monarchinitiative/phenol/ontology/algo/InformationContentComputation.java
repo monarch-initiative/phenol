@@ -1,11 +1,10 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,5 +108,45 @@ public final class InformationContentComputation {
     }
 
     return termToIc;
+  }
+
+  /**
+   * This method returns the <b>most informative common ancestor (MICA)</b> of a set of
+   * two terms t1 and t2. It is designed to use the map returned by {@link #computeInformationContent}.
+   * @param t1 The first term
+   * @param t2 the second term
+   * @param ontology reference to the ontology
+   * @param term2ic map of information content calculated for each term
+   * @return The term representing the most informative common ancestor
+   */
+  public static TermId mostInformativeCommonAncestor(TermId t1, TermId t2, Ontology ontology, Map<TermId, Double> term2ic) {
+    // Case 1, terms are identical
+    if (t1.equals(t2)) return t1;
+    // Case 2, t2 is an ancestor of t1
+    Set<TermId> anc1 = ontology.getAncestorTermIds(t1,false);
+    if (anc1.contains(t2)) return t2;
+    // Case 3, t1 is an ancestor of t2
+    Set<TermId> anc2 = ontology.getAncestorTermIds(t2,false);
+    if (anc2.contains(t1)) return t1;
+    // Case 4, t1 and t2 are not ancestors of one another
+    Sets.SetView<TermId> intersection = Sets.intersection(anc1,anc2);
+    TermId mica = null;
+    double maxIC = -1.0; // information content
+    Stack<TermId> stack = new Stack<>();
+    stack.push(t1);
+    while (! stack.empty()) {
+      TermId t = stack.pop();
+      if (intersection.contains(t)) {
+        double ic = term2ic.get(t);
+        if (ic>maxIC) {
+          mica=t;
+          maxIC=ic;
+        }
+      }
+      for (TermId p : ontology.getParentTermIds(t)) {
+        stack.push(p);
+      }
+    }
+    return mica;
   }
 }

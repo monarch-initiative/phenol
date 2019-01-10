@@ -11,15 +11,24 @@ package org.monarchinitiative.phenol.stats;
  */
 public class PValue implements Cloneable, Comparable<PValue>
 {
-    public double p;
-    public double p_adjusted;
-    public double p_min;
+    private double p;
+    private double p_adjusted;
+    private double p_min;
 
     /**
      * Indicates whether the p value should be ignored my a mtc
      * (and hence no adjusted p value will be applied)
      */
     public boolean ignoreAtMTC;
+    public void setRawPValue(double pv) { this.p = pv;}
+    public void setAdjustedPValue(double p_adj) { this.p_adjusted = p_adj;}
+  public void setMinPValue(double pmin) { this.p_min = pmin;}
+
+  public double getRawPValue() { return this.p;}
+  public double getAdjustedPValue() {return this.p_adjusted;}
+  public double getMinPValue() { return this.p_min;}
+
+
 
     @Override
     public int compareTo(PValue o)

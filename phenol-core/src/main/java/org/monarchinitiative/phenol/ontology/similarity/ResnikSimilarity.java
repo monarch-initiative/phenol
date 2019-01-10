@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -12,7 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public final class ResnikSimilarity
-    extends AbstractCommonAncestorSimilarity {
+    extends AbstractCommonAncestorSimilarity implements Serializable {
   static final long serialVersionUID = 2L;
   /**
    * Constructor.
