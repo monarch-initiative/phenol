@@ -49,6 +49,7 @@ The best place to leave feedback, ask questions, and report bugs is the `Phenol 
     :hidden:
 
     install
+    input
     tutorial_io
     tutorial_hpo
     tutorial_similarity
