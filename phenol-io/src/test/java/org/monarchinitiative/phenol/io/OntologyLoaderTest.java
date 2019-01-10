@@ -110,13 +110,14 @@ public class OntologyLoaderTest {
     Path ectoPath = Paths.get("src/test/resources/ecto.obo");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here (the PURL isn't correct)
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://purl.obolibrary.org/obo/ECTO_"));
-    assertTrue(curieUtil.getCurieMap().containsKey("ECTO"));
+    //CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://purl.obolibrary.org/obo/ECTO_"));
+    //assertTrue(curieUtil.getCurieMap().containsKey("ECTO"));
 
     // ECTO also contains a bunch of unknown relationships so we're going to simplify this graph by only
     // loading ECTO nodes (this ignores the true root term XCO:0000000) and other nodes from CHEBI,
     // BFO and UBERON among others.
-    Ontology ecto = OntologyLoader.loadOntology(ectoPath.toFile(), curieUtil, "ECTO");
+    //Ontology ecto = OntologyLoader.loadOntology(ectoPath.toFile(), curieUtil, "ECTO");
+    Ontology ecto = OntologyLoader.loadOntology(ectoPath.toFile(), "ECTO");
 
     ecto.getRelationMap()
       .values()
@@ -136,8 +137,9 @@ public class OntologyLoaderTest {
     Path ectoPath = Paths.get("src/test/resources/ecto.obo");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://http://purl.obolibrary.org/obo/ECTO_"));
-    Ontology permissiveOntology = OntologyLoader.loadOntology(ectoPath.toFile(), curieUtil);
+    //CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://http://purl.obolibrary.org/obo/ECTO_"));
+    //Ontology permissiveOntology = OntologyLoader.loadOntology(ectoPath.toFile(), curieUtil);
+    Ontology permissiveOntology = OntologyLoader.loadOntology(ectoPath.toFile());
 
     assertEquals(TermId.of("owl:Thing"), permissiveOntology.getRootTermId());
     assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
