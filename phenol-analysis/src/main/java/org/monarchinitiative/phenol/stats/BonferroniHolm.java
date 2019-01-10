@@ -25,7 +25,7 @@ public class BonferroniHolm extends AbstractTestCorrection {
     // Adjust the p values. Note that all object within pvalmap
     // are also objects within pairs!
     for (int i = 0; i < pairs.length; i++) {
-      pairs[i].pval.p_adjusted = pairs[i].pval.p * (pairs.length - i);
+      pairs[i].pval.setAdjustedPValue( pairs[i].pval.getRawPValue() * (pairs.length - i));
     }
     enforcePValueMonotony(pairs);
     return pvalmap;

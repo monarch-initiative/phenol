@@ -28,15 +28,13 @@ abstract class MpModel {
   /** @return true if this model has one or more abnormal male-specific phenotype. */
   public boolean hasMaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream()
-      .filter(a ->!a.isNegated())
-      .anyMatch(MpAnnotation::maleSpecific);
+      .anyMatch(MpAnnotation::maleSpecificAbnormal);
   }
 
-  /**  @return a list of male-specific MpTerm ids, and excludes sex-specific normal terms. */
+  /**  @return a list of male-specific MpTerm ids, and excludes sexSpecific-specific normal terms. */
   public List<TermId> getMaleSpecificMpTermIds() {
     return phenotypicAbnormalities.stream()
-      .filter(MpAnnotation::maleSpecific)
-      .filter(a ->!a.isNegated())
+      .filter(MpAnnotation::maleSpecificAbnormal)
       .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }
@@ -44,38 +42,36 @@ abstract class MpModel {
   /** @return true if this model has one or more abnormal female-specific phenotype. */
   public boolean hasFemaleSpecificAnnotation() {
     return phenotypicAbnormalities.stream()
-      .filter(a ->!a.isNegated())
-      .anyMatch(MpAnnotation::femaleSpecific);
+      .anyMatch(MpAnnotation::femaleSpecificAbnormal);
   }
 
-  /**  @return a list of sex-specific MpTerm ids, and excludes sex-specific normal terms. */
+  /**  @return a list of sexSpecific-specific MpTerm ids, and excludes sexSpecific-specific normal terms. */
   public List<TermId> getFemaleSpecificMpTermIds() {
     return phenotypicAbnormalities.stream()
-      .filter(MpAnnotation::femaleSpecific)
-      .filter(a ->!a.isNegated())
+      .filter(MpAnnotation::femaleSpecificAbnormal)
       .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }
 
-  /** @return true if this model has one or more abnormal sex-specific phenotype. */
+  /** @return true if this model has one or more abnormal sexSpecific-specific phenotype. */
   public boolean hasSexSpecificAnnotation() {
     return phenotypicAbnormalities.stream().
-      filter(a->!a.isNegated()).
       anyMatch(MpAnnotation::sexSpecific);
   }
 
-  /**  @return a list of sex-specific MpTerm ids, and excludes sex-specific normal terms. */
+  /**
+   * This returns a list of TermIds for which there is at least one sex-specific annotation (regardless of whether
+   * all annotations are sex-specific or not).
+   * @return a list of sexSpecific-specific MpTerm ids, . */
   public List<TermId> getSexSpecificMpTermIds() {
     return phenotypicAbnormalities.stream()
       .filter(MpAnnotation::sexSpecific)
-      .filter(a ->!a.isNegated())
       .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }
 
   public int getTotalAnnotationCount() {
-    int neg = (int)phenotypicAbnormalities.stream().filter(MpAnnotation::isNegated).count();
-    return phenotypicAbnormalities.size()-neg;
+    return phenotypicAbnormalities.size();
   }
 
 }
