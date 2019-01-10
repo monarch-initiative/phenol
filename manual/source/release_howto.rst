@@ -73,12 +73,6 @@ Update README CHANGELOG
 
 Open README.md and CHANGELOG.md and adjust the files to include the header for the next ``SNAPSHOT`` version.
 
---------------------------------
-Update the demo ``pom.xml`` file
---------------------------------
-
-- Ensure that the dependencies to OntoLib version is set to the non-``SNAPSHOT`` version.
-
 --------------
 Maven comments
 --------------

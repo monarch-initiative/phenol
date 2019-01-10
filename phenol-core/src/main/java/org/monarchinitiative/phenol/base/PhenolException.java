@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.base;
 
 /**
- * Base class for handled exceptions thrown by OntoLib.
+ * Base class for handled exceptions thrown by phenol.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

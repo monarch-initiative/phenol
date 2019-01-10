@@ -14,7 +14,7 @@
  *   <li>The central classes offer relatively minimal interfaces, decorator classes are used for
  *       providing more extended behaviour.
  *   <li>Even more complex behaviour is available in the <code>
- *       de.charite.compbio.ontolib.ontology.algo</code> package in a one-class-per-algorithm
+ *       org.monarchinitiative.phenol.ontology.algo</code> package in a one-class-per-algorithm
  *       fashion, similar to the separation between graph data structures and graph algorithms.
  * </ul>
  *
