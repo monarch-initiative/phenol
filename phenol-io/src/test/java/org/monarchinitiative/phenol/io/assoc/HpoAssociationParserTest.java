@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.io.assoc;
 
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -12,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.DiseaseToGeneAssociation;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
-import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
+import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -28,13 +27,12 @@ public class HpoAssociationParserTest {
   public void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
-	ClassLoader classLoader = this.getClass().getClassLoader();
+	  ClassLoader classLoader = this.getClass().getClassLoader();
 
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
- 
-    final HpOboParser oboParser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
-    final HpoOntology ontology = oboParser.parse();
+
+    Ontology ontology = OntologyLoader.loadOntology(classLoader.getResourceAsStream("hp_head.obo"));
 
     parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
     parser.parse();

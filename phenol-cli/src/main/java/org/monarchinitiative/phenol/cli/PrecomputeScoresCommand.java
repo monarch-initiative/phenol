@@ -2,21 +2,20 @@ package org.monarchinitiative.phenol.cli;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.formats.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
-import org.monarchinitiative.phenol.io.obo.hpo.HpOboParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoGeneAnnotationParser;
 import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
 import org.monarchinitiative.phenol.ontology.scoredist.SimilarityScoreSampling;
 import org.monarchinitiative.phenol.ontology.similarity.ResnikSimilarity;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -37,11 +36,8 @@ public class PrecomputeScoresCommand {
   /** Configuration parsed from command line. */
   private final PrecomputeScoresOptions options;
 
-  /** The HPO ontology. */
-  private HpoOntology ontology;
-
   /** The phenotypic abnormality sub ontology. */
-  private ImmutableOntology phenotypicAbnormalitySubOntology;
+  private Ontology phenotypicAbnormalitySubOntology;
 
   /** The TermId to object ID mapping. */
   private final HashMap<TermId, Collection<TermId>> termIdToObjectId = new HashMap<>();
@@ -63,7 +59,7 @@ public class PrecomputeScoresCommand {
   }
 
   /** Execute the command. */
-  public void run() throws PhenolException {
+  public void run() {
     printHeader();
     loadOntology();
     precomputePairwiseResnik();
@@ -81,18 +77,15 @@ public class PrecomputeScoresCommand {
     LOGGER.info(options.toString());
   }
 
-  private void loadOntology() throws PhenolException {
+  private void loadOntology() {
     LOGGER.info("Loading ontology from OBO...");
-    HpOboParser hpOboParser;
-	try {
-		hpOboParser = new HpOboParser(new File(options.getOboFile()));
-	    HpoOntology ontology = hpOboParser.parse();
-	    phenotypicAbnormalitySubOntology = ontology.getPhenotypicAbnormalitySubOntology();
-	} catch (FileNotFoundException e) {
-		LOGGER.error(e.getMessage(), e);
-	    LOGGER.error("Problem reading from obo file.");
-	    return;
-	}
+    try {
+      Ontology hpoOntology = OntologyLoader.loadOntology(new File(options.getOboFile()));
+      phenotypicAbnormalitySubOntology = hpoOntology.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
+    } catch (PhenolException e) {
+      LOGGER.error("Problem reading from obo file {}", options.getOboFile(), e);
+      return;
+    }
     LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");

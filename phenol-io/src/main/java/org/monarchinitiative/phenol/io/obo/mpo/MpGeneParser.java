@@ -5,14 +5,12 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
@@ -25,7 +23,6 @@ import static org.monarchinitiative.phenol.formats.mpo.MpGene.createMpGene;
  * The
  */
 public class MpGeneParser {
-  //private static final Logger logger = LogManager.getLogger();
   /** Path to the MRK_List2.rpt file from MGI. */
   private final String mgiMarkerPath;
   /** Path to the MGI_GenePheno.rpt file from MGI.*/
@@ -33,16 +30,14 @@ public class MpGeneParser {
   /** THe MPO ontology object. */
   private final Ontology ontology;
 
-  public MpGeneParser(String markerPath, String MGI_GenePhenoPath, String ontologypath) {
-    mgiMarkerPath = markerPath;
-    mgiGenePhenoPath=MGI_GenePhenoPath;
-    this.ontology=parseMpo(ontologypath);
+  public MpGeneParser(String markerPath, String mgiGenePhenoPath, String ontologypath) throws PhenolException {
+    this(markerPath, mgiGenePhenoPath, OntologyLoader.loadOntology(new File(ontologypath)));
   }
 
-  public MpGeneParser(String markerPath, String MGI_GenePhenoPath,Ontology mpo) {
-    this.mgiMarkerPath=markerPath;
-    this.mgiGenePhenoPath=MGI_GenePhenoPath;
-    this.ontology=mpo;
+  public MpGeneParser(String markerPath, String mgiGenePhenoPath, Ontology mpo) {
+    this.mgiMarkerPath = markerPath;
+    this.mgiGenePhenoPath = mgiGenePhenoPath;
+    this.ontology = mpo;
   }
 
   /**
@@ -65,17 +60,6 @@ public class MpGeneParser {
     }
     br.close();
     return bld.build();
-  }
-
-  private Ontology parseMpo(String path) {
-    Ontology mpo=null;
-    try {
-      MpOboParser parser = new MpOboParser(path);
-      mpo=parser.parse();
-    } catch (FileNotFoundException | PhenolException e) {
-      e.printStackTrace();
-    }
-    return mpo;
   }
 
   public Map<TermId,MpGeneModel> parseMpGeneModels() {

@@ -32,7 +32,7 @@ public class HpoDiseaseAnnotationParser {
   /** Path to the phenotype.hpoa annotation file. */
   private final String annotationFilePath;
   /** Reference to the HPO Ontology object. */
-  private final HpoOntology ontology;
+  private final Ontology ontology;
   /** Key: disease CURIE, e.g., OMIM:600100; Value: corresponding {@link HpoDisease} object. */
   private final Map<TermId, HpoDisease> diseaseMap;
   /** Key: HpoPhenotypeId; Value: corresponding {@link HpoDisease} object. */
@@ -40,21 +40,31 @@ public class HpoDiseaseAnnotationParser {
   /** List of errors encountered during parsing of the annotation file. */
   private List<String> errors;
 
-  public HpoDiseaseAnnotationParser(String annotationFile, HpoOntology ontlgy) {
+  public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
     this.annotationFilePath = annotationFile;
-    this.ontology = ontlgy;
+    this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
   }
 
-  public HpoDiseaseAnnotationParser(File annotationFile, HpoOntology ontlgy){
+  public HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology){
     this.annotationFilePath = annotationFile.getAbsolutePath();
-    this.ontology = ontlgy;
+    this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
   }
-  /** @return true if the entire parse was error-free */
-  public boolean validParse(){ return errors.isEmpty(); }
-  /** @return a list of Strings each of which represents one parse error.*/
-  public List<String> getErrors() { return errors; }
+
+  /**
+   * @return true if the entire parse was error-free
+   */
+  public boolean validParse() {
+    return errors.isEmpty();
+  }
+
+  /**
+   * @return a list of Strings each of which represents one parse error.
+   */
+  public List<String> getErrors() {
+    return errors;
+  }
 
   public ImmutableMultimap<TermId, TermId> getTermToDiseaseMap(){
     return this.phenotypeToDiseaseMap;
@@ -70,40 +80,37 @@ public class HpoDiseaseAnnotationParser {
     Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
     ImmutableList.Builder<String> errorbuilder=new ImmutableList.Builder<>();
 
-    try {
-      BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath));
-      String line = br.readLine();
-      while (line.startsWith("#")) {
-        line=br.readLine();
-      } // this skips the comments. The next line has the definition of the header
-      if (!HpoAnnotationLine.isValidHeaderLine(line)) {
-        br.close();
-        throw new PhenolException(
-          String.format(
-            "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
-      }
-      while ((line = br.readLine()) != null) {
-        HpoAnnotationLine aline =  HpoAnnotationLine.constructFromString(line);
-        if (! aline.hasValidNumberOfFields()) {
-          errorbuilder.add(String.format("Invalid number of fields: %s",line));
-          continue;
+      try (BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath))) {
+        String line = br.readLine();
+        while (line.startsWith("#")) {
+          line = br.readLine();
+        } // this skips the comments. The next line has the definition of the header
+        if (!HpoAnnotationLine.isValidHeaderLine(line)) {
+          throw new PhenolException(
+            String.format(
+              "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
         }
-        if(!termToDisease.containsEntry(aline.getPhenotypeId(),aline.getDiseaseTermId())){
-          termToDisease.put(aline.getPhenotypeId(),aline.getDiseaseTermId());
+        while ((line = br.readLine()) != null) {
+          HpoAnnotationLine aline = HpoAnnotationLine.constructFromString(line);
+          if (!aline.hasValidNumberOfFields()) {
+            errorbuilder.add(String.format("Invalid number of fields: %s", line));
+            continue;
+          }
+          if (!termToDisease.containsEntry(aline.getPhenotypeId(), aline.getDiseaseTermId())) {
+            termToDisease.put(aline.getPhenotypeId(), aline.getDiseaseTermId());
+          }
+
+          TermId diseaseId = aline.getDiseaseTermId();
+          disease2AnnotLineMap.putIfAbsent(diseaseId, new ArrayList<>());
+          List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
+          annots.add(aline);
+
         }
-
-        TermId diseaseId = aline.getDiseaseTermId();
-        disease2AnnotLineMap.putIfAbsent(diseaseId,new ArrayList<>());
-        List<HpoAnnotationLine> annots=disease2AnnotLineMap.get(diseaseId);
-        annots.add(aline);
-
-      }
-      ImmutableMultimap.Builder<TermId,TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
-      builderTermToDisease.putAll(termToDisease);
-      this.phenotypeToDiseaseMap = builderTermToDisease.build();
-      br.close();
+        ImmutableMultimap.Builder<TermId, TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
+        builderTermToDisease.putAll(termToDisease);
+        this.phenotypeToDiseaseMap = builderTermToDisease.build();
     } catch (IOException e) {
-      throw new PhenolException(String.format("Could not read annotation file: %s",e.getMessage()));
+      throw new PhenolException(String.format("Could not read annotation file: %s", e.getMessage()));
     }
     // When we get down here, we have added all of the disease annotations to the disease2AnnotLineMap
     // Now we want to transform them into HpoDisease objects
@@ -120,7 +127,7 @@ public class HpoDiseaseAnnotationParser {
           } else if (line.isNOT()) {
             negativeTermListBuilder.add(line.getPhenotypeId());
           } else {
-            HpoAnnotation tidm = HpoAnnotationLine.toHpoAnnotation(line,ontology);
+            HpoAnnotation tidm = HpoAnnotationLine.toHpoAnnotation(line, ontology);
             phenoListBuilder.add(tidm);
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
@@ -154,9 +161,4 @@ public class HpoDiseaseAnnotationParser {
   private boolean isInheritanceTerm(TermId tid) {
     return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
   }
-
-
-
-
-
 }

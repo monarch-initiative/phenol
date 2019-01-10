@@ -123,7 +123,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
 
   @Test
   void testBuilder() {
-    TermId rootId = TermId.of("HP:0000000");
+    TermId rootId = TermId.of("owl:Thing");
     Term root = Term.of(rootId, "root");
 
     TermId childId = TermId.of("HP:0000001");
@@ -209,7 +209,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
       .relationships(relationships)
       .build();
 
-    TermId rootId = TermId.of("HP:0000000");
+    TermId rootId = TermId.of("owl:Thing");
     assertEquals(rootId, instance.getRootTermId());
     assertTrue(instance.isRootTerm(rootId));
 

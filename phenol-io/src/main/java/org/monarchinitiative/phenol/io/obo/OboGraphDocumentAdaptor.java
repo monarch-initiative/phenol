@@ -6,7 +6,8 @@ import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.model.*;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.io.utils.CurieMapGenerator;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
@@ -25,31 +26,14 @@ public class OboGraphDocumentAdaptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphDocumentAdaptor.class);
 
-  /** Factory object that adds OBO-typical data to each term. */
-  private final OboGraphTermFactory factory = new OboGraphTermFactory();
-  private final CurieUtil curieUtil = new CurieUtil(CurieMapGenerator.generate());
-
   private final Map<String, String> metaInfo;
   private final List<Term> terms;
   private final List<Relationship> relationships;
 
-  public OboGraphDocumentAdaptor(GraphDocument graphDocument) throws PhenolException {
-    // We assume there is only one graph instance in the graph document instance.
-    Graph obograph = graphDocument.getGraphs().get(0);
-    if (obograph == null) {
-      LOGGER.error("No graph in the loaded ontology.");
-      throw new PhenolException("No graph in the loaded ontology.");
-    }
-    LOGGER.debug("Finished converting to obograph graph");
-
-    LOGGER.debug("Converting metadata...");
-    // Metadata about the ontology
-    this.metaInfo = convertMetaData(obograph.getMeta());
-    LOGGER.debug("Converting nodes to terms...");
-    this.terms = convertNodesToTerms(obograph.getNodes());
-    LOGGER.debug("Converting edges to relationships...");
-    // Mapping edges in obographs to termIds in phenol
-    this.relationships = convertEdgesToRelationships(obograph.getEdges());
+  private OboGraphDocumentAdaptor(Builder builder) {
+    this.metaInfo = builder.metaInfo;
+    this.terms = builder.terms;
+    this.relationships = builder.relationships;
   }
 
   public Map<String, String> getMetaInfo() {
@@ -64,79 +48,158 @@ public class OboGraphDocumentAdaptor {
     return relationships;
   }
 
-  private Map<String, String> convertMetaData(Meta meta) {
-    if (meta == null){
-      return ImmutableSortedMap.of();
+  public Ontology buildOntology() {
+    return ImmutableOntology.builder()
+      .metaInfo(metaInfo)
+      .terms(terms)
+      .relationships(relationships)
+      .build();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    // Factory object that adds OBO-typical data to each term.
+    private OboGraphTermFactory factory = new OboGraphTermFactory();
+    private CurieUtil curieUtil = CurieUtilBuilder.defaultCurieUtil();
+    private Set<String> wantedTermIdPrefixes = Collections.emptySet();
+
+    private Map<String, String> metaInfo;
+    private List<Term> terms;
+    private List<Relationship> relationships;
+
+    public Builder curieUtil(CurieUtil curieUtil) {
+      Objects.requireNonNull(curieUtil);
+      this.curieUtil = curieUtil;
+      return this;
     }
-    ImmutableMap.Builder<String, String> metaMap = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
-    String version = meta.getVersion() != null ? meta.getVersion() : "";
-    metaMap.put("data-version", version);
-    if (meta.getBasicPropertyValues() != null) {
-      for (BasicPropertyValue basicPropertyValue : meta.getBasicPropertyValues()) {
-        if (basicPropertyValue.getPred().equalsIgnoreCase("date")) {
-          String date = basicPropertyValue.getVal().trim();
-          metaMap.put("date", date);
+
+    public Builder wantedTermIdPrefixes(Set<String> wantedTermIdPrefixes) {
+      Objects.requireNonNull(wantedTermIdPrefixes);
+      this.wantedTermIdPrefixes = wantedTermIdPrefixes;
+      return this;
+    }
+
+    public OboGraphDocumentAdaptor build(GraphDocument graphDocument) throws PhenolException {
+      // check the curieUtil contains a mapping for the requested prefixes otherwise
+      // they will not be included in the output and users will not get the graph they asked for
+      List<String> unMappedIdPrefixes = getWantedButUnmappedIdPrefixes();
+      if (!unMappedIdPrefixes.isEmpty()) {
+        String message = String.format("Unable to filter terms for prefix(s) %s as these not mapped. Add the mapping to CurieUtil.", unMappedIdPrefixes);
+        throw new PhenolRuntimeException(message);
+      }
+
+      Graph oboGraph = getFirstGraph(graphDocument);
+
+      LOGGER.debug("Converting graph document...");
+      LOGGER.debug("Converting metadata...");
+      // Metadata about the ontology
+      this.metaInfo = convertMetaData(oboGraph.getMeta());
+      LOGGER.debug("Converting nodes to terms...");
+      this.terms = convertNodesToTerms(oboGraph.getNodes());
+      LOGGER.debug("Converting edges to relationships...");
+      // Mapping edges in obographs to termIds in phenol
+      this.relationships = convertEdgesToRelationships(oboGraph.getEdges());
+
+      return new OboGraphDocumentAdaptor(this);
+    }
+
+    private Graph getFirstGraph(GraphDocument graphDocument) {
+      Objects.requireNonNull(graphDocument);
+      List<Graph> graphs = graphDocument.getGraphs();
+      if (graphs == null || graphs.isEmpty()) {
+        throw new PhenolRuntimeException("GraphDocument is empty");
+      }
+      // We assume there is only one graph instance in the graph document instance.
+      return graphs.get(0);
+    }
+
+    private List<String> getWantedButUnmappedIdPrefixes() {
+      List<String> unmappedIdPrefixes = new ArrayList<>();
+      if(!wantedTermIdPrefixes.isEmpty()) {
+        for (String prefix : wantedTermIdPrefixes) {
+          if (!curieUtil.getCurieMap().containsKey(prefix)) {
+            unmappedIdPrefixes.add(prefix);
+          }
         }
       }
+      return unmappedIdPrefixes;
     }
-    return metaMap.build();
-  }
 
-  private List<Term> convertNodesToTerms(List<Node> nodes) throws PhenolException {
-    ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
-    if (nodes == null) {
-      LOGGER.warn("No nodes found in the loaded ontology.");
-      throw new PhenolException("PhenolException: No nodes found in the loaded ontology.");
-    }
-    LOGGER.debug("Mapping nodes...");
-    // Mapping nodes in obographs to termIds in phenol
-    for (Node node : nodes) {
-      // only take classes, otherwise we may get some OIO and IAO entities
-      if (node.getType() != null && node.getType() == Node.RDFTYPES.CLASS) {
-        TermId termId = getTermIdOrNull(node.getId());
-        if (termId != null) {
-          Term term = factory.constructTerm(node, termId);
-          termsList.add(term);
+    private Map<String, String> convertMetaData(Meta meta) {
+      if (meta == null) {
+        return ImmutableSortedMap.of();
+      }
+      ImmutableMap.Builder<String, String> metaMap = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
+      String version = meta.getVersion() != null ? meta.getVersion() : "";
+      metaMap.put("data-version", version);
+      if (meta.getBasicPropertyValues() != null) {
+        for (BasicPropertyValue basicPropertyValue : meta.getBasicPropertyValues()) {
+          if (basicPropertyValue.getPred().equalsIgnoreCase("date")) {
+            String date = basicPropertyValue.getVal().trim();
+            metaMap.put("date", date);
+          }
         }
       }
+      return metaMap.build();
     }
-    return termsList.build();
-  }
 
-  private List<Relationship> convertEdgesToRelationships(List<Edge> edges) throws PhenolException{
-    ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
-    if (edges == null) {
-      LOGGER.warn("No edges found in the loaded ontology.");
-      throw new PhenolException("PhenolException: No edges found in the loaded ontology.");
-    }
-    int edgeId = 1;
-    for (Edge edge : edges) {
-      TermId subjectTermId = getTermIdOrNull(edge.getSub());
-      TermId objectTermId = getTermIdOrNull(edge.getObj());
-
-      if (subjectTermId != null && objectTermId != null) {
-        RelationshipType reltype = RelationshipType.fromString(edge.getPred());
-        Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, reltype);
-        relationshipsList.add(relationship);
+    private List<Term> convertNodesToTerms(List<Node> nodes) throws PhenolException {
+      ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
+      if (nodes == null) {
+        LOGGER.warn("No nodes found in loaded ontology.");
+        throw new PhenolException("PhenolException: No nodes found in loaded ontology.");
       }
+      // Mapping nodes in obographs to termIds in phenol
+      for (Node node : nodes) {
+        // only take classes, otherwise we may get some OIO and IAO entities
+        if (node.getType() != null && node.getType() == Node.RDFTYPES.CLASS) {
+          TermId termId = getTermIdOrNull(node.getId());
+          if (termId != null) {
+            Term term = factory.constructTerm(node, termId);
+            termsList.add(term);
+          }
+        }
+      }
+      return termsList.build();
     }
-    return relationshipsList.build();
-  }
 
-  private TermId getTermIdOrNull(String id) {
-    Optional<String> curie = curieUtil.getCurie(id);
-    if (!curie.isPresent() ) {
-      LOGGER.warn("No matching curie found for id: {}", id);
+    private List<Relationship> convertEdgesToRelationships(List<Edge> edges) throws PhenolException {
+      ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
+      if (edges == null) {
+        LOGGER.warn("No edges found in loaded ontology.");
+        throw new PhenolException("No edges found in loaded ontology.");
+      }
+      int edgeId = 1;
+      for (Edge edge : edges) {
+        TermId subjectTermId = getTermIdOrNull(edge.getSub());
+        TermId objectTermId = getTermIdOrNull(edge.getObj());
+
+        if (subjectTermId != null && objectTermId != null) {
+          RelationshipType reltype = RelationshipType.fromString(edge.getPred());
+          Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, reltype);
+          relationshipsList.add(relationship);
+        }
+      }
+      return relationshipsList.build();
+    }
+
+    private TermId getTermIdOrNull(String id) {
+      Optional<String> curie = curieUtil.getCurie(id);
+      if (!curie.isPresent()) {
+        LOGGER.warn("No matching curie found for id: {}", id);
+        return null;
+      }
+      String curieStr = curie.get();
+      TermId termId = TermId.of(curieStr);
+      // Note that GO has some Terms/Relations with RO and BFO that we want to skip
+      String prefix = termId.getPrefix();
+      if (wantedTermIdPrefixes.isEmpty() || wantedTermIdPrefixes.contains(prefix)) {
+        return termId;
+      }
       return null;
     }
-    String curieStr = curie.get();
-    TermId termId = TermId.of(curieStr);
-    // Note that GO has some Terms/Relations with RO and BFO that we want to skip
-    String prefix = termId.getPrefix();
-    if (prefix.equals("BFO") || prefix.equals("RO")) {
-      return null;
-    }
-    return termId;
   }
-
 }

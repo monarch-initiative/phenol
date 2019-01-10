@@ -15,9 +15,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
@@ -57,8 +59,7 @@ public final class SimilarityScoreSampling {
    *
    * @param options Configuration for score sampling.
    */
-  public SimilarityScoreSampling(
-      Ontology ontology, Similarity similarity, ScoreSamplingOptions options) {
+  public SimilarityScoreSampling(Ontology ontology, Similarity similarity, ScoreSamplingOptions options) {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
@@ -76,8 +77,7 @@ public final class SimilarityScoreSampling {
    *     labels.
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
-  public Map<Integer, ScoreDistribution> performSampling(
-      Map<Integer, ? extends Collection<TermId>> labels) {
+  public Map<Integer, ScoreDistribution> performSampling(Map<Integer, ? extends Collection<TermId>> labels) {
     Map<Integer, ScoreDistribution> result = new HashMap<>();
     for (int numTerms = options.getMinNumTerms();
         numTerms <= options.getMaxNumTerms();
@@ -99,29 +99,24 @@ public final class SimilarityScoreSampling {
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.
    */
-  public ScoreDistribution performSamplingForTermCount(
-    Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
-    LOGGER.info(
-        "Running precomputation for {} world objects using {} query terms...",
-        new Object[] {labels.size(), numTerms});
+  public ScoreDistribution performSamplingForTermCount(Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
+    LOGGER.info("Running precomputation for {} world objects using {} query terms...", labels.size(), numTerms);
 
     // Setup progress reporting.
     final ProgressReporter progressReport = new ProgressReporter(LOGGER, "objects", labels.size());
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    final ConcurrentHashMap<Integer, ObjectScoreDistribution> distributions =
-        new ConcurrentHashMap<>();
-    Consumer<Integer> task =
-        (Integer objectId) -> {
+    final ConcurrentHashMap<Integer, ObjectScoreDistribution> distributions = new ConcurrentHashMap<>();
+    IntConsumer task =
+      objectId -> {
           try {
             final ObjectScoreDistribution dist =
                 performComputation(objectId, labels.get(objectId), numTerms);
             distributions.put(dist.getObjectId(), dist);
             progressReport.incCurrent();
           } catch (Exception e) {
-            System.err.print("An exception occured in parallel processing!");
-            e.printStackTrace();
+            LOGGER.error("An exception occured in parallel processing!", e);
           }
         };
 
@@ -136,8 +131,7 @@ public final class SimilarityScoreSampling {
         new ThreadPoolExecutor(
             numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Submit all chunks into the executor.
-    final Iterator<Integer> objectIdIter =
-        labels.keySet().stream().filter(this::selectObject).iterator();
+    final Iterator<Integer> objectIdIter = labels.keySet().stream().filter(this::selectObject).iterator();
     while (objectIdIter.hasNext()) {
       final int objectId = objectIdIter.next();
       threadPoolExecutor.submit(() -> task.accept(objectId));
@@ -147,7 +141,7 @@ public final class SimilarityScoreSampling {
     try {
       threadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Could not wait for thread pool being done.", e);
+      throw new PhenolRuntimeException("Could not wait for thread pool being done.", e);
     }
     progressReport.stop();
 
@@ -165,11 +159,8 @@ public final class SimilarityScoreSampling {
   private boolean selectObject(Integer objectId) {
     if (options.getMinObjectId() != null && objectId < options.getMinObjectId()) {
       return false;
-    } else if (options.getMaxObjectId() != null && objectId > options.getMaxObjectId()) {
-      return false;
-    } else {
-      return true;
     }
+    return options.getMaxObjectId() == null || objectId <= options.getMaxObjectId();
   }
 
   /**
@@ -183,7 +174,7 @@ public final class SimilarityScoreSampling {
    */
   private ObjectScoreDistribution performComputation(
     int objectId, Collection<TermId> terms, int numTerms) {
-    LOGGER.info("Running precomputation for world object {}.", new Object[] {objectId});
+    LOGGER.info("Running precomputation for world object {}.", objectId);
 
     // Create and seed MersenneTwister
     final MersenneTwister rng = new MersenneTwister();
@@ -198,7 +189,7 @@ public final class SimilarityScoreSampling {
             sampleScoreCumulativeRelFreq(
                 objectId, terms, numTerms, options.getNumIterations(), rng));
 
-    LOGGER.info("Done computing precomputation for world object {}.", new Object[] {objectId});
+    LOGGER.info("Done computing precomputation for world object {}.", objectId);
     return result;
   }
 

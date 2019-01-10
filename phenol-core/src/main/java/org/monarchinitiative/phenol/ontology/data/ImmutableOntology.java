@@ -328,23 +328,14 @@ public class ImmutableOntology implements Ontology {
       if (rootCandidates.size() == 1) {
         return rootCandidates.get(0);
       }
+      // No single root candidate, so create a new one and add it into the nodes and edges
+      // As per suggestion https://github.com/monarch-initiative/phenol/issues/163#issuecomment-452880405
+      // We'll use owl:Thing instead of ID:0000000 so as not to potentially conflict with an existing term id.
+      Term artificialRootTerm = Term.of(TermId.of("owl", "Thing"), "artificial root term");
+      logger.debug("Created new artificial root term {} {}", artificialRootTerm.getId(), artificialRootTerm.getName());
+      addArtificialRootTerm(artificialRootTerm, rootCandidates);
 
-      Term rootTerm = createArtificialRootTerm(rootCandidates.get(0));
-      TermId rootId = rootTerm.getId();
-
-      logger.debug("Created new root term {}", rootId);
-
-      terms.add(rootTerm);
-      int edgeId = 1 + relationships.stream().mapToInt(Relationship::getId).max().orElse(0);
-      for (TermId childOfNewRootTermId : rootCandidates) {
-        IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
-        //Note-for the "artificial root term, we use the IS_A relation
-        Relationship relationship = new Relationship(childOfNewRootTermId, rootTerm.getId(), idLabeledEdge.getId(), RelationshipType.IS_A);
-        logger.debug("Adding new artificial root relationship {}", relationship);
-        relationships.add(relationship);
-      }
-
-      return rootId;
+      return artificialRootTerm.getId();
     }
 
     private List<TermId> findRootCandidates(Collection<Relationship> relationships) {
@@ -363,11 +354,16 @@ public class ImmutableOntology implements Ontology {
       return new ArrayList<>(rootCandidateSet);
     }
 
-    private Term createArtificialRootTerm(TermId rootId) {
-      // getPrefix should always work actually, but if we cannot find a term for some reason, use Owl as the prefix
-      // Assumption: "0000000" is not used for actual terms in any OBO ontology, otherwise use owl terminology
-      TermId artificialTermId = rootId == null ? TermId.of("owl", "thing") : TermId.of(rootId.getPrefix(), "0000000");
-      return Term.of(artificialTermId, "artificial root term");
+    private void addArtificialRootTerm(Term rootTerm, List<TermId> rootCandidates) {
+      terms.add(rootTerm);
+      int edgeId = 1 + relationships.stream().mapToInt(Relationship::getId).max().orElse(0);
+      for (TermId rootCandidate : rootCandidates) {
+        IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
+        //Note-for the "artificial root term, we use the IS_A relation
+        Relationship relationship = new Relationship(rootCandidate, rootTerm.getId(), idLabeledEdge.getId(), RelationshipType.IS_A);
+        logger.debug("Adding new artificial root relationship {}", relationship);
+        relationships.add(relationship);
+      }
     }
   }
 }

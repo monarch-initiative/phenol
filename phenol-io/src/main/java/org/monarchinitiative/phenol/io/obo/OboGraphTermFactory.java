@@ -34,7 +34,8 @@ public class OboGraphTermFactory {
 
     Meta meta = node.getMeta();
     if (meta == null) {
-      LOGGER.warn("No meta instance exists for the node: {}", node.getId());
+      // this isn't really a problem
+      LOGGER.debug("No meta instance exists for node: {} {}", node.getId(), node.getLabel());
       return termBuilder.build();
     }
 
