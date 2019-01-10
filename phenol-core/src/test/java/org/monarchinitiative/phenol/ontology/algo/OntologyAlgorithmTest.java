@@ -108,15 +108,19 @@ public class OntologyAlgorithmTest {
     relationMapBuilder.put(6, new Relationship(id4, id5, 6,RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
 
-    ontology =
-        new ImmutableOntology(
-            metaInfo,
-            graph,
-            rootTermId,
-            termMap.keySet(),
-            obsoleteTermMap.keySet(),
-            termMap,
-            relationMap);
+    ontology = ImmutableOntology.builder()
+      .metaInfo(metaInfo)
+      .terms(termMap.values())
+      .relationships(relationMap.values())
+      .build();
+//        new ImmutableOntology(
+//            metaInfo,
+//            graph,
+//            rootTermId,
+//            termMap.keySet(),
+//            obsoleteTermMap.keySet(),
+//            termMap,
+//            relationMap);
   }
 
   /** The example graph has id1->id2, id1->id3, id1->id4, id2->id5, id3-> id5, id4->id5 */

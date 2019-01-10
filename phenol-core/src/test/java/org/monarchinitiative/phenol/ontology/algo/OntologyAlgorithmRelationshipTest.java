@@ -83,30 +83,20 @@ public class OntologyAlgorithmRelationshipTest {
     GraphUtil.addEdgeToGraph(graph, t3_2, t3, 10);
     // need to add corresponding relationships!
     ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-    int i=1;
-    relationMapBuilder.put(i, new Relationship(root, t1, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(root, t2, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(root, t3, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t1, t1_1, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t1, t1_2, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t1_1, t1_1_1, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t1_1, t1_1_2, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t2, t2_1, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t2, t2_2, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t3, t3_1, i, RelationshipType.IS_A));
-    i++;
-    relationMapBuilder.put(i, new Relationship(t3, t3_2, i, RelationshipType.IS_A));
+    // n.b. these were originally incorrectly entered in the original test...
+    relationMapBuilder.put(1, new Relationship(t1, root, 1, RelationshipType.IS_A));
+    relationMapBuilder.put(2, new Relationship(t2, root, 2, RelationshipType.IS_A));
+    relationMapBuilder.put(3, new Relationship(t3, root, 3, RelationshipType.IS_A));
+    relationMapBuilder.put(4, new Relationship(t1_1, t1, 4, RelationshipType.IS_A));
+    relationMapBuilder.put(5, new Relationship(t1_2, t1, 5, RelationshipType.IS_A));
+    relationMapBuilder.put(6, new Relationship(t1_1_1, t1_1,  6, RelationshipType.IS_A));
+    relationMapBuilder.put(7, new Relationship(t1_1_2, t1_1, 7, RelationshipType.IS_A));
+    relationMapBuilder.put(8, new Relationship(t2_1, t2, 8, RelationshipType.IS_A));
+    relationMapBuilder.put(9, new Relationship(t2_2, t2, 9, RelationshipType.IS_A));
+    relationMapBuilder.put(10, new Relationship(t3_1, t3, 10, RelationshipType.IS_A));
+    relationMapBuilder.put(11, new Relationship(t3_2, t3, 11, RelationshipType.IS_A));
     relationMap = relationMapBuilder.build();
-
+    System.out.println(relationMap);
     rootTermId = root;
 
     ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
@@ -127,15 +117,11 @@ public class OntologyAlgorithmRelationshipTest {
 
     obsoleteTermMap = ImmutableMap.of();
 
-    ontology =
-        new ImmutableOntology(
-            metaInfo,
-            graph,
-            rootTermId,
-            termMap.keySet(),
-            obsoleteTermMap.keySet(),
-            termMap,
-            relationMap);
+    ontology = ImmutableOntology.builder()
+      .metaInfo(metaInfo)
+      .terms(termMap.values())
+      .relationships(relationMap.values())
+      .build();
   }
 
   /** t_1_1 is a subclass of t_1 but not vice versa */
