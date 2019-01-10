@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -17,7 +18,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 abstract class AbstractCommonAncestorSimilarity
-    implements Similarity {
+    implements Similarity, Serializable {
+  static final long serialVersionUID = 2L;
 
   /** Whether or not to use symmetric score flavor (arithmetic mean of both directions). */
   private final boolean symmetric;

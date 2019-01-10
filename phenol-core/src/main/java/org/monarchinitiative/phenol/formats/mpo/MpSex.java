@@ -15,7 +15,7 @@ public enum MpSex {
       case "f":
         return FEMALE;
       default:
-        throw new PhenolException("Did not recognize sex symbol: \""+s+"\"");
+        throw new PhenolException("Did not recognize sexSpecific symbol: \""+s+"\"");
     }
   }
 
