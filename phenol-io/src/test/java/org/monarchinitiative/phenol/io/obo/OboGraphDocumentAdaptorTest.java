@@ -4,16 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.*;
-import org.geneontology.obographs.model.meta.BasicPropertyValue;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.prefixcommons.CurieUtil;
-
-import javax.validation.constraints.Null;
 
 import java.util.List;
 
@@ -39,7 +35,7 @@ class OboGraphDocumentAdaptorTest {
   void testEmptyGraph() {
     Graph graph = new Graph.Builder().build();
     GraphDocument graphDocument = new GraphDocument.Builder().graphs(ImmutableList.of(graph)).build();
-    assertThrows(PhenolException.class, () -> OboGraphDocumentAdaptor.builder().build(graphDocument), "No nodes found in loaded ontology.");
+    assertThrows(PhenolRuntimeException.class, () -> OboGraphDocumentAdaptor.builder().build(graphDocument), "No nodes found in loaded ontology.");
   }
 
   @Test
@@ -48,7 +44,7 @@ class OboGraphDocumentAdaptorTest {
     List<Node> nodes = ImmutableList.of(root);
     Graph graph = new Graph.Builder().nodes(nodes).build();
     GraphDocument graphDocument = new GraphDocument.Builder().graphs(ImmutableList.of(graph)).build();
-    assertThrows(PhenolException.class, () -> OboGraphDocumentAdaptor.builder().build(graphDocument), "No edges found in loaded ontology.");
+    assertThrows(PhenolRuntimeException.class, () -> OboGraphDocumentAdaptor.builder().build(graphDocument), "No edges found in loaded ontology.");
   }
 
   @Test

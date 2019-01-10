@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.model.*;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -82,7 +81,7 @@ public class OboGraphDocumentAdaptor {
       return this;
     }
 
-    public OboGraphDocumentAdaptor build(GraphDocument graphDocument) throws PhenolException {
+    public OboGraphDocumentAdaptor build(GraphDocument graphDocument) {
       // check the curieUtil contains a mapping for the requested prefixes otherwise
       // they will not be included in the output and users will not get the graph they asked for
       List<String> unMappedIdPrefixes = getWantedButUnmappedIdPrefixes();
@@ -146,11 +145,11 @@ public class OboGraphDocumentAdaptor {
       return metaMap.build();
     }
 
-    private List<Term> convertNodesToTerms(List<Node> nodes) throws PhenolException {
+    private List<Term> convertNodesToTerms(List<Node> nodes) {
       ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
       if (nodes == null) {
         LOGGER.warn("No nodes found in loaded ontology.");
-        throw new PhenolException("PhenolException: No nodes found in loaded ontology.");
+        throw new PhenolRuntimeException("PhenolException: No nodes found in loaded ontology.");
       }
       // Mapping nodes in obographs to termIds in phenol
       for (Node node : nodes) {
@@ -166,11 +165,11 @@ public class OboGraphDocumentAdaptor {
       return termsList.build();
     }
 
-    private List<Relationship> convertEdgesToRelationships(List<Edge> edges) throws PhenolException {
+    private List<Relationship> convertEdgesToRelationships(List<Edge> edges) {
       ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
       if (edges == null) {
         LOGGER.warn("No edges found in loaded ontology.");
-        throw new PhenolException("No edges found in loaded ontology.");
+        throw new PhenolRuntimeException("No edges found in loaded ontology.");
       }
       int edgeId = 1;
       for (Edge edge : edges) {
