@@ -70,14 +70,7 @@ public class ComputeSimilarityDemo {
    * Run application.
    */
   public void run() {
-    final Ontology hpo;
-    try {
-      hpo = OntologyLoader.loadOntology(new File(pathHpObo));
-    } catch (PhenolException e) {
-      e.printStackTrace();
-      System.exit(1);
-      return; // javac complains otherwise
-    }
+    final Ontology hpo = OntologyLoader.loadOntology(new File(pathHpObo));
     System.out.println("DONE: Loading HPO");
     final Map<TermId, HpoDisease> diseaseMap;
     try {

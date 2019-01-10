@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obo.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obo.OboGraphDocumentLoader;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
@@ -35,31 +36,31 @@ public class OntologyLoader {
   private OntologyLoader() {
   }
 
-  public static Ontology loadOntology(File file) throws PhenolException {
+  public static Ontology loadOntology(File file) {
     return loadOntology(file, CurieUtilBuilder.defaultCurieUtil());
   }
 
-  public static Ontology loadOntology(File file, String... termIdPrefixes) throws PhenolException {
+  public static Ontology loadOntology(File file, String... termIdPrefixes) {
     return loadOntology(file, CurieUtilBuilder.defaultCurieUtil(), termIdPrefixes);
   }
 
-  public static Ontology loadOntology(File file, CurieUtil curieUtil, String... termIdPrefixes) throws PhenolException {
+  public static Ontology loadOntology(File file, CurieUtil curieUtil, String... termIdPrefixes) {
     try {
       return loadOntology(new FileInputStream(file), curieUtil, termIdPrefixes);
     } catch (FileNotFoundException e) {
-      throw new PhenolException(e);
+      throw new PhenolRuntimeException("Unable to load ontology", e);
     }
   }
 
-  public static Ontology loadOntology(InputStream inputStream) throws PhenolException {
+  public static Ontology loadOntology(InputStream inputStream) {
     return loadOntology(inputStream, CurieUtilBuilder.defaultCurieUtil());
   }
 
-  public static Ontology loadOntology(InputStream inputStream, String... termIdPrefixes) throws PhenolException {
+  public static Ontology loadOntology(InputStream inputStream, String... termIdPrefixes) {
     return loadOntology(inputStream, CurieUtilBuilder.defaultCurieUtil(), termIdPrefixes);
   }
 
-  public static Ontology loadOntology(InputStream inputStream, CurieUtil curieUtil, String... termIdPrefixes) throws PhenolException {
+  public static Ontology loadOntology(InputStream inputStream, CurieUtil curieUtil, String... termIdPrefixes) {
 
     GraphDocument graphDocument = loadGraphDocument(inputStream);
     logger.debug("Finished loading ontology");
@@ -75,7 +76,7 @@ public class OntologyLoader {
     return ontology;
   }
 
-  private static GraphDocument loadGraphDocument(InputStream inputStream) throws PhenolException {
+  private static GraphDocument loadGraphDocument(InputStream inputStream) {
     // The input file might be json or obo/owl
     try {
       return OboGraphDocumentLoader.loadObo(inputStream);
@@ -86,7 +87,7 @@ public class OntologyLoader {
     try {
       return OboGraphDocumentLoader.loadJson(inputStream);
     } catch (Exception e) {
-      throw new PhenolException("Unable to load ontology", e);
+      throw new PhenolRuntimeException("Unable to load ontology", e);
     }
   }
 }

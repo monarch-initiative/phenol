@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
@@ -82,15 +81,7 @@ public class ParsingBenchmark {
     private void parseHpoObo() {
       System.err.println("Parsing HPO OBO...");
       long startTime = System.nanoTime();
-      Ontology hpo;
-
-      try {
-        hpo = OntologyLoader.loadOntology(hpoFile);
-      } catch (PhenolException e) {
-        e.printStackTrace();
-        System.exit(1);
-        return; // javac does not understand this is unreachable
-      }
+      Ontology hpo = OntologyLoader.loadOntology(hpoFile);
 
       long endTime = System.nanoTime();
       double duration = (endTime - startTime) / 1_000_000_000.0;
@@ -104,15 +95,7 @@ public class ParsingBenchmark {
     private void parseMpoObo() {
       System.err.println("Parsing MPO OBO...");
       long startTime = System.nanoTime();
-      Ontology mpo;
-
-      try {
-       mpo = OntologyLoader.loadOntology(mpoFile);
-      } catch (PhenolException e) {
-        e.printStackTrace();
-        System.exit(1);
-        return; // javac does not understand this is unreachable
-      }
+      Ontology mpo = OntologyLoader.loadOntology(mpoFile);
 
       long endTime = System.nanoTime();
       double duration = (endTime - startTime) / 1_000_000_000.0;
@@ -127,15 +110,7 @@ public class ParsingBenchmark {
       System.err.println("Parsing GO OBO...");
       long startTime = System.nanoTime();
 
-
-      Ontology go;
-      try {
-        go = OntologyLoader.loadOntology(goFile, "GO");
-      } catch (PhenolException e) {
-        e.printStackTrace();
-        System.exit(1);
-        return; // javac does not understand this is unreachable
-      }
+      Ontology go = OntologyLoader.loadOntology(goFile, "GO");
 
       long endTime = System.nanoTime();
       double duration = (endTime - startTime) / 1_000_000_000.0;

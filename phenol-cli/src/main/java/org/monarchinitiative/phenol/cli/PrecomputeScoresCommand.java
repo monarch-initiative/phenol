@@ -77,13 +77,9 @@ public class PrecomputeScoresCommand {
 
   private void loadOntology() {
     LOGGER.info("Loading ontology from OBO...");
-    try {
-      Ontology hpoOntology = OntologyLoader.loadOntology(new File(options.getOboFile()));
-      phenotypicAbnormalitySubOntology = hpoOntology.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
-    } catch (PhenolException e) {
-      LOGGER.error("Problem reading from obo file {}", options.getOboFile(), e);
-      return;
-    }
+    Ontology hpoOntology = OntologyLoader.loadOntology(new File(options.getOboFile()));
+    phenotypicAbnormalitySubOntology = hpoOntology.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
+
     LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");
