@@ -1,5 +1,8 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Enumeration for describing relation qualifiers (forked from GoRelationQualifer in Ontolib).
  * A class that encapsulates the edge type in the ontology graph.
@@ -37,6 +40,8 @@ public enum RelationshipType {
   /** Unknown, used for any other relation. */
   UNKNOWN("unknown");
 
+  private static final Logger logger = LoggerFactory.getLogger(RelationshipType.class);
+
   private final String relationshipName;
 
   RelationshipType(String name) {
@@ -47,7 +52,7 @@ public enum RelationshipType {
     return this.relationshipName;
   }
 
-  static public RelationshipType fromString(String reltype) {
+  public static RelationshipType fromString(String reltype) {
     switch (reltype) {
       case "is_a":
         return IS_A;
@@ -100,6 +105,7 @@ public enum RelationshipType {
       case "http://purl.obolibrary.org/obo/RO_0004028":
         return REALIZED_IN_RESPONSE_TO_STIMULUS;
       default:
+        logger.warn("Unknown relationship: {}", reltype);
         return UNKNOWN;
     }
   }
