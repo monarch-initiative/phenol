@@ -16,6 +16,9 @@ import com.google.common.collect.Sets;
  */
 public final class TermAnnotations {
 
+  private TermAnnotations() {
+  }
+
   /**
    * Construct mapping from {@link TermId} to {@link Collection} of "world object" labels from
    * {@link Collection} of {@link TermAnnotation}s.
