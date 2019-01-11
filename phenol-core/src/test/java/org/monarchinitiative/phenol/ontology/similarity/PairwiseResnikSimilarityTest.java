@@ -19,10 +19,7 @@ public class PairwiseResnikSimilarityTest extends VegetableOntologyTestBase {
 
   @BeforeEach
   public void setUp() {
-    super.setUp();
-
-    InformationContentComputation computation =
-        new InformationContentComputation(ontology);
+    InformationContentComputation computation = new InformationContentComputation(ontology);
     Map<TermId, Collection<TermId>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);

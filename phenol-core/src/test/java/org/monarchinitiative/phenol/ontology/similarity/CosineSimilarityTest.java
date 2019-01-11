@@ -12,13 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class CosineSimilarityTest extends VegetableOntologyTestBase {
 
-  private CosineSimilarity similarity;
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    similarity = new CosineSimilarity(ontology);
-  }
+  private final CosineSimilarity similarity = new CosineSimilarity(ontology);
 
   @Test
   public void testQueries() {

@@ -10,13 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
 
-  private TermOverlapSimilarity similarity;
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    similarity = new TermOverlapSimilarity(ontology);
-  }
+  private final TermOverlapSimilarity similarity = new TermOverlapSimilarity(ontology);
 
   @Test
   public void testQueries() {

@@ -14,13 +14,7 @@ import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntolo
 
 public class InformationContentComputationTest extends VegetableOntologyTestBase {
 
-  private InformationContentComputation computation;
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    computation = new InformationContentComputation(ontology);
-  }
+  private final InformationContentComputation computation = new InformationContentComputation(ontology);
 
   @Test
   void test() {

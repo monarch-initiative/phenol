@@ -25,31 +25,21 @@ import com.google.common.collect.Lists;
  */
 public class VegetableOntologyTestBase {
 
-  private ImmutableSortedMap<String, String> metaInfo;
+  protected static final TermId rootTermId;
 
-  protected ImmutableList<TermId> vertices;
-  protected ImmutableList<IdLabeledEdge> edges;
-  protected DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
+  protected static final Ontology ontology;
 
-  private TermId rootTermId;
-  private ImmutableMap<TermId, Term> termMap;
-  private ImmutableMap<Integer, Relationship> relationMap;
+  protected static final TermId idVegetable;
+  protected static final TermId idRootVegetable;
+  protected static final TermId idLeafVegetable;
+  protected static final TermId idCarrot;
+  protected static final TermId idBeet;
+  protected static final TermId idPumpkin;
+  protected static final TermId idBlueCarrot;
 
-  protected ImmutableOntology ontology;
+  protected static final List<VegetableRecipeAnnotation> recipeAnnotations;
 
-  protected TermId idVegetable;
-  protected TermId idRootVegetable;
-  protected TermId idLeafVegetable;
-  protected TermId idCarrot;
-  protected TermId idBeet;
-  protected TermId idPumpkin;
-  protected TermId idBlueCarrot;
-
-  protected List<VegetableRecipeAnnotation> recipeAnnotations;
-
-  @BeforeEach
-  public void setUp() {
-    metaInfo = ImmutableSortedMap.of();
+  static {
 
     idVegetable = TermId.of("VO:0000001");
     idRootVegetable = TermId.of("VO:0000002");
@@ -58,24 +48,6 @@ public class VegetableOntologyTestBase {
     idBeet = TermId.of("VO:0000005");
     idPumpkin = TermId.of("VO:0000006");
     idBlueCarrot = TermId.of("VO:0000007");
-
-    vertices = ImmutableList.of(
-            idVegetable,
-            idRootVegetable,
-            idLeafVegetable,
-            idCarrot,
-            idBeet,
-            idPumpkin,
-            idBlueCarrot);
-
-    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    GraphUtil.addEdgeToGraph(graph, idRootVegetable, idVegetable, 1);
-    GraphUtil.addEdgeToGraph(graph, idLeafVegetable, idVegetable, 2);
-    GraphUtil.addEdgeToGraph(graph, idCarrot, idRootVegetable, 3);
-    GraphUtil.addEdgeToGraph(graph, idBeet, idRootVegetable, 4);
-    GraphUtil.addEdgeToGraph(graph, idBeet, idLeafVegetable, 5);
-    GraphUtil.addEdgeToGraph(graph, idPumpkin, idRootVegetable, 6);
-    GraphUtil.addEdgeToGraph(graph, idBlueCarrot, idCarrot, 7);
 
     rootTermId = idVegetable;
 
@@ -136,27 +108,23 @@ public class VegetableOntologyTestBase {
         .definition("pumpkins are great for soup and pickling")
         .build()
     );
-    termMap = termMapBuilder.build();
+    ImmutableMap<TermId, Term> termMap = termMapBuilder.build();
 
     ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
     relationMapBuilder.put(1, new Relationship(idRootVegetable, idVegetable, 1, RelationshipType.IS_A));
-    relationMapBuilder.put(2, new Relationship(idLeafVegetable, idVegetable, 2,RelationshipType.IS_A));
-    relationMapBuilder.put(3, new Relationship(idCarrot, idRootVegetable, 3,RelationshipType.IS_A));
-    relationMapBuilder.put(4, new Relationship(idBeet, idRootVegetable, 4,RelationshipType.IS_A));
-    relationMapBuilder.put(5, new Relationship(idBeet, idLeafVegetable, 5,RelationshipType.IS_A));
-    relationMapBuilder.put(6, new Relationship(idPumpkin, idRootVegetable, 6,RelationshipType.IS_A));
-    relationMapBuilder.put(7, new Relationship(idBlueCarrot, idCarrot, 7,RelationshipType.IS_A));
-    relationMap = relationMapBuilder.build();
+    relationMapBuilder.put(2, new Relationship(idLeafVegetable, idVegetable, 2, RelationshipType.IS_A));
+    relationMapBuilder.put(3, new Relationship(idCarrot, idRootVegetable, 3, RelationshipType.IS_A));
+    relationMapBuilder.put(4, new Relationship(idBeet, idRootVegetable, 4, RelationshipType.IS_A));
+    relationMapBuilder.put(5, new Relationship(idBeet, idLeafVegetable, 5, RelationshipType.IS_A));
+    relationMapBuilder.put(6, new Relationship(idPumpkin, idRootVegetable, 6, RelationshipType.IS_A));
+    relationMapBuilder.put(7, new Relationship(idBlueCarrot, idCarrot, 7, RelationshipType.IS_A));
+    ImmutableMap<Integer, Relationship> relationMap = relationMapBuilder.build();
 
     ontology = ImmutableOntology.builder()
-      .metaInfo(metaInfo)
+      .metaInfo(ImmutableSortedMap.of())
       .terms(termMap.values())
       .relationships(relationMap.values())
       .build();
-
-//    ontology =
-//        new ImmutableOntology(
-//            metaInfo, graph, rootTermId, termMap.keySet(), ImmutableSet.of(), termMap, relationMap);
 
     recipeAnnotations =
         Lists.newArrayList(
