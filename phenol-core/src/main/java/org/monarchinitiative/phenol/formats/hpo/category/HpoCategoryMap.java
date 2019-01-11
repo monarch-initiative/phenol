@@ -7,10 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getParentTerms;
 
@@ -190,9 +187,9 @@ public class HpoCategoryMap {
    */
     private Set<TermId> getAncestorCategories(Ontology ontology, TermId childTermId) {
         ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
-        Stack<TermId> stack = new Stack<>();
+      Deque<TermId> stack = new ArrayDeque<>();
         stack.push(childTermId);
-        while (! stack.empty()) {
+        while (! stack.isEmpty()) {
             TermId tid = stack.pop();
             Set<TermId> parents = getParentTerms(ontology,tid,false);
             for (TermId p : parents) {

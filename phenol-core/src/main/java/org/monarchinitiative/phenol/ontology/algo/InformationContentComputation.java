@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.ontology.algo;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
@@ -132,9 +131,9 @@ public final class InformationContentComputation {
     Sets.SetView<TermId> intersection = Sets.intersection(anc1,anc2);
     TermId mica = null;
     double maxIC = -1.0; // information content
-    Stack<TermId> stack = new Stack<>();
+    Deque<TermId> stack = new ArrayDeque<>();
     stack.push(t1);
-    while (! stack.empty()) {
+    while (! stack.isEmpty()) {
       TermId t = stack.pop();
       if (intersection.contains(t)) {
         double ic = term2ic.get(t);
