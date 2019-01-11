@@ -9,6 +9,9 @@ import java.util.Set;
  */
 public final class TermIds {
 
+  private TermIds() {
+  }
+
   /**
    * Augment list of term ids with all of their ancestors.
    *

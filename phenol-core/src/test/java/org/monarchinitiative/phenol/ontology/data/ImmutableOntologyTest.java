@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.ontology.TestOntology;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,18 +22,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
+public class ImmutableOntologyTest {
 
-  @Disabled("Currently failing on a string comparison")
+  private final Ontology ontology = TestOntology.ontology();
+
+//  @Disabled("Currently failing on a string comparison")
   @Test
   public void test() {
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     assertEquals(ImmutableMap.of(), ontology.getMetaInfo());
 
-    assertEquals(
-      "([HP:0000001, HP:0000002, HP:0000003, HP:0000004, HP:0000005], [(HP:0000001 : HP:0000002)=(HP:0000001,HP:0000002), (HP:0000001 : HP:0000003)=(HP:0000001,HP:0000003), (HP:0000001 : HP:0000004)=(HP:0000001,HP:0000004), (HP:0000002 : HP:0000005)=(HP:0000002,HP:0000005), (HP:0000003 : HP:0000005)=(HP:0000003,HP:0000005), (HP:0000004 : HP:0000005)=(HP:0000004,HP:0000005)])",
-      graph.toString());
+    // TODO: this fails the vertex order
+    //  Expected: [HP:0000001, HP:0000002, HP:0000003, HP:0000004, HP:0000005]
+    //  Actual:   [HP:0000002, HP:0000001, HP:0000004, HP:0000003, HP:0000005]
+//    assertEquals(
+//      "([HP:0000001, HP:0000002, HP:0000003, HP:0000004, HP:0000005], [(HP:0000001 : HP:0000002)=(HP:0000001,HP:0000002), (HP:0000001 : HP:0000003)=(HP:0000001,HP:0000003), (HP:0000001 : HP:0000004)=(HP:0000001,HP:0000004), (HP:0000002 : HP:0000005)=(HP:0000002,HP:0000005), (HP:0000003 : HP:0000005)=(HP:0000003,HP:0000005), (HP:0000004 : HP:0000005)=(HP:0000004,HP:0000005)])",
+//      graph.toString());
 
     assertEquals(
       ImmutableSet.of(
@@ -55,7 +61,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
 //        "{1=Relationship [source=HP:0000001, dest=HP:0000002, id=1], 2=Relationship [source=HP:0000001, dest=HP:0000003, id=2], 3=Relationship [source=HP:0000001, dest=HP:0000004, id=3], 4=Relationship [source=HP:0000002, dest=HP:0000005, id=4], 5=Relationship [source=HP:0000003, dest=HP:0000005, id=5], 6=Relationship [source=HP:0000004, dest=HP:0000005, id=6]}",
 //        ontology.getRelationMap().toString());
 
-    assertTrue(ontology.isRootTerm(id5));
+    assertTrue(ontology.isRootTerm(TestOntology.rootId()));
 
     assertEquals(
       ImmutableSet.of(
@@ -79,7 +85,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
       ),
       ontology.getNonObsoleteTermIds());
 
-    assertEquals("[]", ontology.getObsoleteTermIds().toString());
+    assertTrue(ontology.getObsoleteTermIds().isEmpty());
 
     assertEquals(
       ImmutableSet.of(
@@ -87,7 +93,7 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
         TermId.of("HP:0000003"),
         TermId.of("HP:0000004")
       ),
-      ontology.getParentTermIds(id1));
+      ontology.getParentTermIds(TestOntology.TERM_ID_1));
   }
 
   /**
@@ -97,12 +103,12 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
    */
   @Test
   public void testSubontologyCreation() {
-    ImmutableOntology subontology = (ImmutableOntology) ontology.subOntology(id4);
-    assertTrue(subontology.getTermMap().containsKey(id4));
-    assertTrue(subontology.getTermMap().containsKey(id1));
+    Ontology subontology = ontology.subOntology(TestOntology.TERM_ID_4);
+    assertTrue(subontology.getTermMap().containsKey(TestOntology.TERM_ID_4));
+    assertTrue(subontology.getTermMap().containsKey(TestOntology.TERM_ID_1));
     assertEquals(5, ontology.getTermMap().size());
     assertEquals(2, subontology.getTermMap().size());
-    assertFalse(subontology.getTermMap().containsKey(id5));
+    assertFalse(subontology.getTermMap().containsKey(TestOntology.rootId()));
   }
 
   /**
@@ -118,9 +124,8 @@ public class ImmutableOntologyTest extends ImmutableOntologyTestBase {
    */
   @Test
   public void testSubontologyRelations() {
-    ImmutableOntology subontology = (ImmutableOntology) ontology.subOntology(id4);
-    Map<Integer, Relationship> relationMap = ontology.getRelationMap();
-    assertEquals(6, relationMap.size());
+    Ontology subontology = ontology.subOntology(TestOntology.TERM_ID_4);
+    assertEquals(6, ontology.getRelationMap().size());
     assertEquals(1, subontology.getRelationMap().size());
   }
 

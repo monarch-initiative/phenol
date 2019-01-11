@@ -9,47 +9,34 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
+import org.monarchinitiative.phenol.ontology.TestOntology;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TermAnnotationsTest extends ImmutableOntologyTestBase {
+public class TermAnnotationsTest {
 
-  private List<TestTermAnnotation> annotations;
-
-  private String TEST_PREFIX = "TEST";
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    annotations =
-        Lists.newArrayList(
-            new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of(TEST_PREFIX,"one")),
-            new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of(TEST_PREFIX,"two")),
-            new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of(TEST_PREFIX,"one")),
-            new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of(TEST_PREFIX,"three")));
-  }
+  private final Ontology ontology = TestOntology.ontology();
+  private final List<TestTermAnnotation> annotations = Lists.newArrayList(
+      new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of("TEST","one")),
+      new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of("TEST","two")),
+      new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of("TEST","one")),
+      new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of("TEST","three")));
 
   @Test
   void testConstructTermAnnotationToLabelsMap() {
-    Map<TermId, Collection<TermId>> map =
-        ImmutableSortedMap.copyOf(
-            TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations));
-    //debugPrint(map,ontology);
+    Map<TermId, Collection<TermId>> map = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations);
     // 5 annotation classes (to four labels), thus we expect 5 keys
     assertEquals(5, map.size());
   }
 
   @Test
   void testConstructTermLabelToAnnotationsMap() {
-    Map<TermId, Collection<TermId>> map =
-        ImmutableSortedMap.copyOf(
-            TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations));
+    Map<TermId, Collection<TermId>> map = TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations);
     TermId test1 = TermId.of("TEST:one");
-    //debugPrint(map,ontology);
     assertTrue(map.containsKey(test1));
     // there are three annotated items, so we expect 3 keys
-    assertEquals(3,map.size());
+    assertEquals(3, map.size());
   }
 
   private void debugPrint(Map<TermId, Collection<TermId>> map, Ontology ontology) {
