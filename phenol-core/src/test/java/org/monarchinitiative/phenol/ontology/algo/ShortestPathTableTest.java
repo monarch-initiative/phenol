@@ -9,13 +9,7 @@ import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntolo
 
 public class ShortestPathTableTest extends VegetableOntologyTestBase {
 
-  ShortestPathTable table;
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    table = new ShortestPathTable(ontology);
-  }
+  private final ShortestPathTable table = new ShortestPathTable(ontology);
 
   @Test
   public void testGetDistance() {

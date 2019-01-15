@@ -1,42 +1,28 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedMap;
-
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
 
 public class OntologyAlgorithmTest {
 
-  private ImmutableSortedMap<String, String> metaInfo;
-  private DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
+  private final ImmutableOntology ontology;
 
-  private TermId rootTermId;
-  private ImmutableMap<TermId, Term> termMap;
-  private ImmutableMap<TermId, Term> obsoleteTermMap;
-  private ImmutableMap<Integer, Relationship> relationMap;
-  private ImmutableOntology ontology;
+  private final TermId id1;
+  private final TermId id2;
+  private final TermId id3;
+  private final TermId id4;
+  private final TermId id5;
 
-  private TermId id1;
-  private TermId id2;
-  private TermId id3;
-  private TermId id4;
-  private TermId id5;
-
-  @BeforeEach
-  public void setUp() {
-    metaInfo = ImmutableSortedMap.of();
+  OntologyAlgorithmTest() {
 
     id1 = TermId.of("HP:0000001");
     id2 = TermId.of("HP:0000002");
@@ -44,79 +30,46 @@ public class OntologyAlgorithmTest {
     id4 = TermId.of("HP:0000004");
     id5 = TermId.of("HP:0000005");
 
-    graph = new DefaultDirectedGraph<>(IdLabeledEdge.class);
-    GraphUtil.addEdgeToGraph(graph, id1, id2, 1);
-    GraphUtil.addEdgeToGraph(graph, id1, id3, 2);
-    GraphUtil.addEdgeToGraph(graph, id1, id4, 3);
-    GraphUtil.addEdgeToGraph(graph, id2, id5, 4);
-    GraphUtil.addEdgeToGraph(graph, id3, id5, 5);
-    GraphUtil.addEdgeToGraph(graph, id4, id5, 6);
-
-    rootTermId = id5;
-
-    ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
-    termMapBuilder.put(
-      id1,
+    ImmutableList<Term> terms = ImmutableList.of(
       Term.builder()
         .id(id1)
         .name("term1")
         .definition("some definition 1")
-        .build()
-    );
-    termMapBuilder.put(
-      id2,
+        .build(),
       Term.builder()
         .id(id2)
         .name("term2")
         .definition("some definition 2")
-        .build()
-    );
-    termMapBuilder.put(
-      id3,
+        .build(),
       Term.builder()
         .id(id3)
         .name("term3")
         .definition("some definition 3")
-        .build()
-    );
-    termMapBuilder.put(
-      id4,
+        .build(),
       Term.builder()
         .id(id4)
         .name("term4")
         .definition("some definition 4")
-        .build()
-    );
-    termMapBuilder.put(
-      id5,
+        .build(),
       Term.builder()
         .id(id5)
         .name("term5")
         .definition("some definition 5")
-        .build()
+        .build());
+
+    List<Relationship> relationships = ImmutableList.of(
+      new Relationship(id1, id2, 1, RelationshipType.IS_A),
+      new Relationship(id1, id3, 2, RelationshipType.IS_A),
+      new Relationship(id1, id4, 3, RelationshipType.IS_A),
+      new Relationship(id2, id5, 4, RelationshipType.IS_A),
+      new Relationship(id3, id5, 5, RelationshipType.IS_A),
+      new Relationship(id4, id5, 6, RelationshipType.IS_A)
     );
-    termMap = termMapBuilder.build();
 
-    obsoleteTermMap = ImmutableMap.of();
-
-    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-    relationMapBuilder.put(1, new Relationship(id1, id2, 1, RelationshipType.IS_A));
-    relationMapBuilder.put(2, new Relationship(id1, id3, 2,RelationshipType.IS_A));
-    relationMapBuilder.put(3, new Relationship(id1, id4, 3,RelationshipType.IS_A));
-    relationMapBuilder.put(4, new Relationship(id2, id5, 4,RelationshipType.IS_A));
-    relationMapBuilder.put(5, new Relationship(id3, id5, 5,RelationshipType.IS_A));
-    relationMapBuilder.put(6, new Relationship(id4, id5, 6,RelationshipType.IS_A));
-    relationMap = relationMapBuilder.build();
-
-    ontology =
-        new ImmutableOntology(
-            metaInfo,
-            graph,
-            rootTermId,
-            termMap.keySet(),
-            obsoleteTermMap.keySet(),
-            termMap,
-            relationMap);
+    ontology = ImmutableOntology.builder()
+      .terms(terms)
+      .relationships(relationships)
+      .build();
   }
 
   /** The example graph has id1->id2, id1->id3, id1->id4, id2->id5, id3-> id5, id4->id5 */

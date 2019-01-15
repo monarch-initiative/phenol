@@ -27,14 +27,23 @@ public final class TermId implements Comparable<TermId>, Serializable {
    * @throws PhenolRuntimeException if the string does not have a prefix
    */
   public static TermId of(String termId) {
+    requireNonNullOrEmpty(termId, "termId cannot be null or empty");
     int pos = findPrefixSeparatorPosition(':', termId);
     return new TermId(pos, termId);
   }
 
   public static TermId of(String termPrefix, String id) {
+    requireNonNullOrEmpty(termPrefix, "termPrefix cannot be null or empty");
+    requireNonNullOrEmpty(id, "term id cannot be null or empty");
     int pos = termPrefix.length();
     String termId = String.join(":", termPrefix, id);
     return new TermId(pos, termId);
+  }
+
+  private static void requireNonNullOrEmpty(String input, String message) {
+    if (input == null || input.isEmpty()) {
+      throw new PhenolRuntimeException(message);
+    }
   }
 
   private static int findPrefixSeparatorPosition(char separator, String termIdString) {

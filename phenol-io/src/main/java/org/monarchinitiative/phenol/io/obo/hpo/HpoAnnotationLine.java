@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.*;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 class HpoAnnotationLine {
 
-  private static final int DatabaseId_IDX = 0;
+  private static final int DATABASE_ID_IDX = 0;
   private static final int DB_NAME_IDX = 1;
   private static final int QUALIFIER_IDX = 2;
   private static final int PHENOTYPE_ID_IDX = 3;
@@ -87,28 +88,28 @@ class HpoAnnotationLine {
   private String biocuration;
 
   private HpoAnnotationLine(String line) throws PhenolException {
-    String F[] = line.split("\t");
-   if (F.length != headerFields.length) {
-     valid_number_of_fields=false;
-     throw new PhenolException("[phenol:ERROR] Annotation line with " + F.length + "fields: \""+line+"\"");
-   }
-    this.databaseId = F[DatabaseId_IDX];
-    this.DbObjectName = F[DB_NAME_IDX];
-    String phenoId = F[PHENOTYPE_ID_IDX];
+    String[] fields = line.split("\t");
+    if (fields.length != headerFields.length) {
+      valid_number_of_fields = false;
+      throw new PhenolException("[phenol:ERROR] Annotation line with " + fields.length + "fields: \"" + line + "\"");
+    }
+    this.databaseId = fields[DATABASE_ID_IDX];
+    this.DbObjectName = fields[DB_NAME_IDX];
+    String phenoId = fields[PHENOTYPE_ID_IDX];
     this.phenotypeId = TermId.of(phenoId);
-    String onset = F[ONSET_ID_IDX];
+    String onset = fields[ONSET_ID_IDX];
     if (onset != null && onset.startsWith("HP:")) {
       onsetId = TermId.of(onset);
     }
-    this.frequency = F[FREQUENCY_IDX];
-    this.sex = F[SEX_IDX];
-    String neg = F[QUALIFIER_IDX];
+    this.frequency = fields[FREQUENCY_IDX];
+    this.sex = fields[SEX_IDX];
+    String neg = fields[QUALIFIER_IDX];
     this.NOT =  (neg != null && neg.equalsIgnoreCase("NOT"));
-    this.aspect = F[ASPECT_IDX];
-    this.modifierList = F[MODIFIER_IDX];
-    this.publication = F[DB_REFERENCE_IDX];
-    this.evidence = F[EVIDENCE_IDX];
-    this.biocuration = F[BIOCURATION_IDX];
+    this.aspect = fields[ASPECT_IDX];
+    this.modifierList = fields[MODIFIER_IDX];
+    this.publication = fields[DB_REFERENCE_IDX];
+    this.evidence = fields[EVIDENCE_IDX];
+    this.biocuration = fields[BIOCURATION_IDX];
   }
 
   static HpoAnnotationLine constructFromString(String line) throws PhenolException {
@@ -119,21 +120,19 @@ class HpoAnnotationLine {
     }
   }
 
-
-
   /**
    * @param line The header line of a V2 small file
    * @return true iff the fields of the line exactly match {@link #headerFields}.
    */
   static boolean isValidHeaderLine(String line) throws PhenolException {
-    String F[] = line.split("\t");
-    if (F.length != headerFields.length) {
-      String msg = String.format("Expected %d fields in header line but got %d",headerFields.length,F.length);
+    String[] fields = line.split("\t");
+    if (fields.length != headerFields.length) {
+      String msg = String.format("Expected %d fields in header line but got %d",headerFields.length, fields.length);
       throw new PhenolException(msg);
     }
     for (int i = 0; i < headerFields.length; i++) {
-      if (!F[i].equals(headerFields[i])) {
-        String msg = String.format("Expected header field %d to be %s but got %s",i,headerFields[i],F[i]);
+      if (!fields[i].equals(headerFields[i])) {
+        String msg = String.format("Expected header field %d to be %s but got %s",i, headerFields[i], fields[i]);
         throw new PhenolException(msg);
       }
     }
@@ -181,8 +180,8 @@ class HpoAnnotationLine {
 
   List<String> getPublication() {
     ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-    if (publication==null || publication.isEmpty()) return builder.build();
-    String A[] = publication.split(";") ;
+    if (publication == null || publication.isEmpty()) return builder.build();
+    String[] A = publication.split(";") ;
     for (String a : A ){
       builder.add(a.trim());
     }
@@ -218,13 +217,13 @@ class HpoAnnotationLine {
    * negative annotations. For this reason, the method is package-private and should only be
    * called by {@link org.monarchinitiative.phenol.io.assoc.HpoAssociationParser}.
    * @param line AN HpoAnnotationLinbe object representing opne phenotype annotation
-   * @param ontology refernece to Hpo Ontology object
+   * @param ontology reference to HPO Ontology object
    * @return corresponding HpoAnnotation object
    */
-   static HpoAnnotation toHpoAnnotation(HpoAnnotationLine line, HpoOntology ontology) {
+   static HpoAnnotation toHpoAnnotation(HpoAnnotationLine line, Ontology ontology) {
     TermId phenoId = line.getPhenotypeId();
-    double frequency = getFrequency(line.getFrequency(),ontology);
-    String frequencyString=line.frequency.isEmpty()?DEFAULT_FREQUENCY_STRING : line.frequency;
+    double frequency = getFrequency(line.getFrequency(), ontology);
+    String frequencyString=line.frequency.isEmpty() ? DEFAULT_FREQUENCY_STRING : line.frequency;
     HpoOnset onset = getOnset(line.onsetId);
     return new HpoAnnotation(phenoId,
       frequency,
@@ -241,23 +240,13 @@ class HpoAnnotationLine {
   private static List<TermId> getModifiers(String lst) {
     ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
     if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
-    String modifierTermStrings[] = lst.split(";");
+    String[] modifierTermStrings = lst.split(";");
     for (String mt : modifierTermStrings) {
-      TermId mtid = TermId.of(mt.trim());
-      builder.add(mtid);
+      TermId mtId = TermId.of(mt.trim());
+      builder.add(mtId);
     }
     return builder.build();
   }
-  /*
-  public HpoAnnotation(TermId termId, double f, String freqString,HpoOnset onset, List<TermId> modifiers, List<String> cites) {
-    this.termId = termId;
-    this.frequency = f;
-    frequencyString=freqString.isEmpty()?DEFAULT_FREQUENCY_STRING:freqString;
-    this.onset = onset;
-    this.modifiers = modifiers;
-    this.citations=cites;
-  }
-   */
 
   /**
    * Extract the {@link HpoFrequency} object that corresponds to the frequency modifier in an
@@ -270,22 +259,22 @@ class HpoAnnotationLine {
    * @return the corresponding {@link HpoFrequency} object or the default {@link HpoFrequency}
    * object (100%).
    */
-  private static double getFrequency(String freq, HpoOntology ontology) {
+  private static double getFrequency(String freq, Ontology ontology) {
     if (freq == null || freq.isEmpty()) {
       return HpoFrequency.ALWAYS_PRESENT.mean();
     }
-    int i = freq.indexOf("%");
+    int i = freq.indexOf('%');
     if (i > 0) {
       return 0.01 * Double.parseDouble(freq.substring(0, i));
     }
-    i = freq.indexOf("/");
+    i = freq.indexOf('/');
     if (i > 0 && freq.length() > (i + 1)) {
       int n = Integer.parseInt(freq.substring(0, i));
       int m = Integer.parseInt(freq.substring(i + 1));
       return (double) n / (double) m;
     }
     try {
-      TermId tid = string2TermId(freq,ontology);
+      TermId tid = string2TermId(freq, ontology);
       if (tid != null) return HpoFrequency.fromTermId(tid).mean();
     } catch (Exception e) {
       e.printStackTrace();
@@ -300,7 +289,7 @@ class HpoAnnotationLine {
    * @param hp String version of an HPO term id
    * @return corresponding {@link TermId} object
    */
-  private static TermId string2TermId(String hp, HpoOntology ontology) {
+  private static TermId string2TermId(String hp, Ontology ontology) {
     if (!hp.startsWith("HP:")) {
       return null;
     } else {
@@ -327,9 +316,6 @@ class HpoAnnotationLine {
     if (ons == null) return HpoOnset.UNKNOWN;
     return HpoOnset.fromTermId(ons);
   }
-
-
-
 
   @Override
   public String toString() {

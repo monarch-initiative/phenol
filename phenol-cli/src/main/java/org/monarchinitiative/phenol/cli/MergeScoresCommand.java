@@ -121,7 +121,7 @@ public class MergeScoresCommand {
   }
 
   private void printHeader() {
-    LOGGER.info("OntoLib CLI -- Merging Score Distribution Files");
+    LOGGER.info("phenol CLI -- Merging Score Distribution Files");
     LOGGER.info("");
     LOGGER.info("Options");
     LOGGER.info("=======");

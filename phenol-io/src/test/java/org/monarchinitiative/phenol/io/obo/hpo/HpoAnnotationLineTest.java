@@ -1,13 +1,14 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,25 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoAnnotationLineTest {
 
-  private final static String EMPTY_STRING="";
+  private final static double EPSILON = 0.00001;
 
-  private final static double EPSILON=0.00001;
+  private final Ontology ontology;
 
-  private HpoOntology ontology;
-
-  @BeforeEach
-  public void setUp() throws PhenolException {
-    ClassLoader classLoader = this.getClass().getClassLoader();
-    final HpOboParser parser = new HpOboParser(classLoader.getResourceAsStream("hp_head.obo"));
-    ontology = parser.parse();
+  public HpoAnnotationLineTest() throws PhenolException {
+    this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp_head.obo").toFile());
   }
 
   private HpoAnnotationLine makeLine(String items[]) throws PhenolException {
-    String line = Arrays.stream(items).collect(Collectors.joining("\t"));
+    String line = String.join("\t", items);
     return HpoAnnotationLine.constructFromString(line);
   }
-
-
 
   @Test
   public void test1() throws PhenolException{
@@ -61,7 +55,7 @@ public class HpoAnnotationLineTest {
     assertEquals("P",hpoAnnot.getAspect());
     assertEquals("HPO:skoehler[2017-07-13]", hpoAnnot.getBiocuration());
     assertFalse(hpoAnnot.isNOT());
-    assertEquals(EMPTY_STRING,hpoAnnot.getFrequency());
+    assertEquals("", hpoAnnot.getFrequency());
     TermId diseaseId = hpoAnnot.getDiseaseTermId();
     TermId expected = TermId.of("OMIM:269150");
     assertEquals(expected,diseaseId);
@@ -114,7 +108,7 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
       };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
+    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line, ontology);
     TermId expectedId = TermId.of("OMIM:123456");
     assertEquals(expectedId,line.getDiseaseTermId());
     double expectedFrequency=0.895;

@@ -17,7 +17,7 @@ Types of Contributions
 Report Bugs
 ===========
 
-Report bugs at https://github.com/phenomics/ontolib/issues
+Report bugs at https://github.com/monarch-initiative/phenol/issues
 
 If you are reporting a bug, please include:
 
@@ -53,7 +53,7 @@ See `doc_setup` on creating a local setup for building the documentation.
 Submit Feedback
 ===============
 
-The best way to send feedback is to file an issue at https://github.com/phenomics/ontolib/issues
+The best way to send feedback is to file an issue at https://github.com/monarch-initiative/phenol/issues
 
 If you are proposing a feature:
 
@@ -124,7 +124,7 @@ For building the documentation, you have to install the Python program Sphinx.
 This is best done in a virtual environment.
 The following assumes you have a working Python 3 setup.
 
-Use the following steps for installing Sphinx and the dependencies for building the OntoLib documentation:
+Use the following steps for installing Sphinx and the dependencies for building the phenol documentation:
 
 .. code-block:: console
 
@@ -152,10 +152,10 @@ Get Started!
 Ready to contribute?
 First, create your Java/Documentation development setup as described in `install_from_source`/`doc_setup`.
 
-1. Fork the `OntoLib` repo on GitHub.
+1. Fork the `phenol` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/ontolib.git
+    $ git clone git@github.com:your_name_here/phenol.git
 
 3. Create a branch for local development::
 

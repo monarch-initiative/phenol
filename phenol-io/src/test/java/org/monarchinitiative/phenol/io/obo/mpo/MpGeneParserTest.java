@@ -8,12 +8,15 @@ import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.formats.mpo.MpMarkerType;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,10 +103,8 @@ public class MpGeneParserTest {
     assertEquals(2, rb1Models.size());
     // GET FULL ONTOLOGY NOW USING LOCAL TEST
     // TODO -- TAILOR THE TOY TEST ONTOLOGY SO THAT THIS WORKS
-    String localMpPath = "/Users/peterrobinson/Documents/data/mgi/mp.obo";
-    MpOboParser oboparser = new MpOboParser(localMpPath);
-    Ontology ontology = oboparser.parse();
-
+    Path localMpPath = Paths.get("/Users/peterrobinson/Documents/data/mgi/mp.obo");
+    Ontology ontology = OntologyLoader.loadOntology(localMpPath.toFile());
 
     MpGeneModel genemod = new MpGeneModel(rb1Id, ontology, true, rb1Models);
   }

@@ -4,6 +4,7 @@ import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 
@@ -38,7 +39,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class HpoAssociationParser {
 
-  private final HpoOntology hpoOntology;
+  private final Ontology hpoOntology;
 
   private final String homoSapiensGeneInfoPath;
 
@@ -67,24 +68,23 @@ public class HpoAssociationParser {
   private static final String OMIM_PREFIX = "OMIM";
 
 
-  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, File orphaToGenePath,
-                              HpoOntology ontology){
-    this.hpoOntology = ontology;
+  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, File orphaToGenePath, Ontology hpoOntology){
+    this.hpoOntology = hpoOntology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2geneMedgenPath = mim2geneMedgenPath;
     this.orphaToGenePath = orphaToGenePath;
   }
 
-  public HpoAssociationParser(File geneInfoPath, File mim2geneMedgenPath, File  orphaToGenePath, HpoOntology ontology){
-    this.hpoOntology = ontology;
+  public HpoAssociationParser(File geneInfoPath, File mim2geneMedgenPath, File  orphaToGenePath, Ontology hpoOntology){
+    this.hpoOntology = hpoOntology;
     this.homoSapiensGeneInfoPath = geneInfoPath.getAbsolutePath();
     this.mim2geneMedgenPath = mim2geneMedgenPath.getAbsolutePath();
     this.orphaToGenePath = orphaToGenePath;
   }
 
   /** Parse everything except the Orphanet data!.*/
-  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, HpoOntology ontology){
-    this.hpoOntology = ontology;
+  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, Ontology hpoOntology){
+    this.hpoOntology = hpoOntology;
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2geneMedgenPath = mim2geneMedgenPath;
     this.orphaToGenePath = null;
@@ -209,38 +209,37 @@ public class HpoAssociationParser {
     Multimap<TermId,String> orphaToGene;
     Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
     Map<TermId, String> geneMap = new HashMap<>();
-    BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenPath));
-    String line;
-
-    while ((line=br.readLine())!=null) {
-      if (line.startsWith("#")) continue;
-      String a[] = line.split("\t");
-      if (a[2].equals("phenotype")) {
-        String mimid=a[0];
-        TermId omimCurie = TermId.of(OMIM_PREFIX, mimid);
-        String entrezGeneNumber=a[1];
-        TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX,entrezGeneNumber);
-        String symbol = this.allGeneIdToSymbolMap.get(entrezId);
-        if(!"-".equals(entrezGeneNumber)){
-          if (symbol==null) {
-            symbol="-";
-          }
-          else{
-            if(!geneMap.containsKey(entrezId)){
-              geneMap.put(entrezId, symbol);
+    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenPath))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        if (line.startsWith("#")) continue;
+        String[] associations = line.split("\t");
+        if (associations[2].equals("phenotype")) {
+          String mimid = associations[0];
+          TermId omimCurie = TermId.of(OMIM_PREFIX, mimid);
+          String entrezGeneNumber = associations[1];
+          TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
+          String symbol = this.allGeneIdToSymbolMap.get(entrezId);
+          if (!"-".equals(entrezGeneNumber)) {
+            if (symbol == null) {
+              symbol = "-";
+            } else {
+              if (!geneMap.containsKey(entrezId)) {
+                geneMap.put(entrezId, symbol);
+              }
             }
-          }
-          TermId geneId = TermId.of(ENTREZ_GENE_PREFIX,entrezGeneNumber);
-          Gene gene = new Gene(geneId,symbol);
-          if (a[5].contains("susceptibility")) {
-            GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.POLYGENIC);
-            if(!associationMap.containsEntry(omimCurie, g2a)){
-              associationMap.put(omimCurie,g2a);
-            }
-          } else {
-            GeneToAssociation g2a = new GeneToAssociation(gene,AssociationType.MENDELIAN);
-            if(!associationMap.containsEntry(omimCurie, g2a)){
-              associationMap.put(omimCurie,g2a);
+            TermId geneId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
+            Gene gene = new Gene(geneId, symbol);
+            if (associations[5].contains("susceptibility")) {
+              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.POLYGENIC);
+              if (!associationMap.containsEntry(omimCurie, g2a)) {
+                associationMap.put(omimCurie, g2a);
+              }
+            } else {
+              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.MENDELIAN);
+              if (!associationMap.containsEntry(omimCurie, g2a)) {
+                associationMap.put(omimCurie, g2a);
+              }
             }
           }
         }

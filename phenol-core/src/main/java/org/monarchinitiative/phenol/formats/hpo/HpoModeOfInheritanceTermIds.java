@@ -102,7 +102,7 @@ public final class HpoModeOfInheritanceTermIds {
   public static final TermId AUTOSOMAL_DOMINANT_CONTIGUOUS_GENE_SYNDROME =
       TermId.of("HP:0001452");
 
-  /** {@link TermId} for "sex-limited autosomal dominant". */
+  /** {@link TermId} for "sexSpecific-limited autosomal dominant". */
   public static final TermId AUTOSOMAL_DOMINANT_SEX_LIMITED =
       TermId.of("HP:0001470");
 

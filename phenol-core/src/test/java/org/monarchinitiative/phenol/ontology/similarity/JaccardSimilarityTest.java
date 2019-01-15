@@ -11,13 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class JaccardSimilarityTest extends VegetableOntologyTestBase {
 
-  private JaccardSimilarity similarity;
-
-  @BeforeEach
-  public void setUp() {
-    super.setUp();
-    similarity = new JaccardSimilarity(ontology);
-  }
+  private final JaccardSimilarity similarity = new JaccardSimilarity(ontology);
 
   @Test
   public void testQueries() {

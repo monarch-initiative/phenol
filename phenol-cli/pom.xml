@@ -13,7 +13,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.3.2</version>
   </parent>
 
   <properties>
@@ -32,6 +32,13 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-io</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Phenol modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>phenol-analysis</artifactId>
       <version>${project.version}</version>
     </dependency>
 

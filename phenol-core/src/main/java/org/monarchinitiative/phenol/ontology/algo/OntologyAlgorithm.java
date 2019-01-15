@@ -11,6 +11,8 @@ import org.monarchinitiative.phenol.ontology.data.*;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -26,6 +28,11 @@ import java.util.*;
  * @author <a href="mailto:HyeongSikKIm@lbl.gov">HyeongSik Kim</a>
  */
 public class OntologyAlgorithm {
+
+  private static final Logger logger = LoggerFactory.getLogger(OntologyAlgorithm.class);
+
+  private OntologyAlgorithm() {
+  }
 
   public static boolean existsPath(
       Ontology ontology,
@@ -136,9 +143,9 @@ public class OntologyAlgorithm {
   public static Set<TermId> getDescendents(
     Ontology ontology, TermId parentTermId) {
     ImmutableSet.Builder<TermId> descset = new ImmutableSet.Builder<>();
-    Stack<TermId> stack = new Stack<>();
+    Deque<TermId> stack = new ArrayDeque<>();
     stack.push(parentTermId);
-    while (!stack.empty()) {
+    while (!stack.isEmpty()) {
       TermId tid = stack.pop();
       descset.add(tid);
       Set<TermId> directChildrenSet = getChildTerms(ontology, tid, false);
@@ -166,9 +173,8 @@ public class OntologyAlgorithm {
     for (IdLabeledEdge edge : ontology.getGraph().outgoingEdgesOf(childTermId)) {
       int edgeId = edge.getId();
       Relationship rel = ontology.getRelationMap().get(edgeId);
-      if (rel==null) {
-        System.err.println("Could not retrieve relation for id="+
-          edgeId+" [child term=" + ontology.getTermMap().get(childTermId).getName()+"]");
+      if (rel == null) {
+        logger.error("Could not retrieve relation for id={} [child term={}]", edgeId, ontology.getTermMap().get(childTermId).getName());
         continue;
       }
       RelationshipType reltyp = rel.getRelationshipType();
@@ -209,10 +215,10 @@ public class OntologyAlgorithm {
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
     if (includeOriginalTerm) builder.addAll(children);
-    Stack<TermId> stack = new Stack<>();
+    Deque<TermId> stack = new ArrayDeque<>();
     Set<TermId> parents = getParentTerms(ontology, children, false);
     for (TermId t : parents) stack.push(t);
-    while (!stack.empty()) {
+    while (!stack.isEmpty()) {
       TermId tid = stack.pop();
       builder.add(tid);
       Set<TermId> prnts = getParentTerms(ontology, tid, false);
@@ -227,10 +233,10 @@ public class OntologyAlgorithm {
       boolean includeOriginalTerm) {
     ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
     if (includeOriginalTerm) builder.add(child);
-    Stack<TermId> stack = new Stack<>();
+    Deque<TermId> stack = new ArrayDeque<>();
     Set<TermId> parents = getParentTerms(ontology, child, false);
     for (TermId t : parents) stack.push(t);
-    while (!stack.empty()) {
+    while (!stack.isEmpty()) {
       TermId tid = stack.pop();
       builder.add(tid);
       Set<TermId> prnts = getParentTerms(ontology, tid, false);

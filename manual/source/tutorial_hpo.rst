@@ -4,12 +4,12 @@
 Working with HPO
 ================
 
-OntoLib supports you in working with the HPO in the following ways:
+phenol supports working with the HPO in the following ways:
 
 - The ``HpoOntology`` class supports the standard ``Ontology`` interface.
   Besides this, the "phenotypic abnormality" sub ontology is extracted on construction and is available through ``HpoOntology.getPhenotypicAbnormalitySubOntology()``.
 - The classes ``HpoFrequencyTermIds``, ``HpoModeOfInheritanceTermIds``, and ``HpoSubOntologyRootTermIds`` provide shortcuts to important/special terms that come in handy when using the HPO.
-- OntoLib provides means to parse disease-to-phenotype and disease-to-gene annotations from the HPO project into ``HpoDiseaseAnnotation`` and ``HpoGeneAnnotation`` objects.
+- phenol provides means to parse disease-to-phenotype and disease-to-gene annotations from the HPO project into ``HpoDiseaseAnnotation`` and ``HpoGeneAnnotation`` objects.
 
 This section will demonstrate these three features.
 

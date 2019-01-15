@@ -17,8 +17,7 @@ import org.monarchinitiative.phenol.graph.util.GraphUtil;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public interface Ontology
-    extends MinimalOntology, Serializable {
+public interface Ontology extends MinimalOntology, Serializable {
 
   long serialVersionUID = 2L;
 

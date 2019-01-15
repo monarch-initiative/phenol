@@ -8,7 +8,7 @@
  *
  * <h4>H2 Dependency Notes</h4>
  *
- * <p>The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
+ * <p>The class itself only uses JDBC. Thus, the phenol module does not depend on H2 via maven but
  * your calling code has to depend on H2, e.g., as follows.
  *
  * <pre>

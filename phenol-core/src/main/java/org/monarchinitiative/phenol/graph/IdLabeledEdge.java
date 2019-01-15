@@ -21,10 +21,12 @@ public class IdLabeledEdge extends DefaultEdge {
     return id;
   }
 
+  @Override
   public Object getSource() {
     return super.getSource();
   }
 
+  @Override
   public Object getTarget() {
     return super.getTarget();
   }

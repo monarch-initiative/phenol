@@ -4,13 +4,10 @@ package org.monarchinitiative.phenol.formats.hpo.category;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getParentTerms;
 
@@ -20,7 +17,7 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getPa
  * <p>
  * <p>
  * The main function takes a list of HPO terms and returns a compatible list but sorted according to the
- * categories. Client code should use {@link #addAnnotatedTerms(List, HpoOntology)}  to initialize the
+ * categories. Client code should use {@link #addAnnotatedTerms(List, Ontology)}  to initialize the
  * Category map. The function {@link #getActiveCategoryList()} returns an immutable list of categories
  * that include at least one HPO term used for annotation.
  * </p>
@@ -159,7 +156,7 @@ public class HpoCategoryMap {
    * @param tid HPO term to be added
    * @param ontology reference to HPO ontology object
    */
-    public void addAnnotatedTerm(TermId tid, HpoOntology ontology) {
+    public void addAnnotatedTerm(TermId tid, Ontology ontology) {
         try {
             HpoCategory cat = getCategory(tid, ontology);
             if (cat==null) {
@@ -173,11 +170,11 @@ public class HpoCategoryMap {
         }
     }
   /**
-   * Add a list of {@link TermId} objects using the method {@link #addAnnotatedTerm(TermId, HpoOntology)}
+   * Add a list of {@link TermId} objects using the method {@link #addAnnotatedTerm(TermId, Ontology)}
    * @param tidlist list of HPO terms to be added
    * @param ontology reference to HPO ontology object
    */
-    public void addAnnotatedTerms(List<TermId> tidlist, HpoOntology ontology) {
+    public void addAnnotatedTerms(List<TermId> tidlist, Ontology ontology) {
         for (TermId tid : tidlist) {
             addAnnotatedTerm(tid,ontology);
         }
@@ -188,11 +185,11 @@ public class HpoCategoryMap {
    * @param childTermId TermId for which we will find the category or categories
    * @return an immutable Set of all category ids for childTermId
    */
-    private Set<TermId> getAncestorCategories(HpoOntology ontology, TermId childTermId) {
+    private Set<TermId> getAncestorCategories(Ontology ontology, TermId childTermId) {
         ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
-        Stack<TermId> stack = new Stack<>();
+      Deque<TermId> stack = new ArrayDeque<>();
         stack.push(childTermId);
-        while (! stack.empty()) {
+        while (! stack.isEmpty()) {
             TermId tid = stack.pop();
             Set<TermId> parents = getParentTerms(ontology,tid,false);
             for (TermId p : parents) {
@@ -208,7 +205,7 @@ public class HpoCategoryMap {
 
 
     /** Identify the category that best matches the term id (usually just fine the category that represents a parent term). */
-    private HpoCategory getCategory(TermId tid, HpoOntology ontology) {
+    private HpoCategory getCategory(TermId tid, Ontology ontology) {
         //logger.trace(String.format("GetCategory for %s[%s]",ontology.getTermMap().get(tid).getName(),tid.getIdWithPrefix()));
         List<HpoCategory> activeCategoryList = new ArrayList<>();
         if (tid==null) {

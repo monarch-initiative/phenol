@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.formats.uberpheno;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ComparisonChain;
@@ -102,7 +103,7 @@ public final class UberphenoGeneAnnotation implements TermAnnotation {
   @Override
   public int compareTo(TermAnnotation o) {
     if (!(o instanceof UberphenoGeneAnnotation)) {
-      throw new RuntimeException("Cannot compare " + o + " to a UberphenoGeneAnnotation");
+      throw new PhenolRuntimeException("Cannot compare " + o + " to a UberphenoGeneAnnotation");
     }
 
     final UberphenoGeneAnnotation that = (UberphenoGeneAnnotation) o;

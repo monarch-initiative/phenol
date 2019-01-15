@@ -44,21 +44,21 @@ Prerequisites
 
 For building Phenol, you will need
 
-#. `Java JDK 8 or higher <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ for compiling OntoLib,
-#. `Maven 3 <http://maven.apache.org/>`_ for building OntoLib, and
+#. `Java JDK 8 or higher <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ for compiling phenol,
+#. `Maven 3 <http://maven.apache.org/>`_ for building phenol, and
 #. `Git <http://git-scm.com/>`_ for getting the sources.
 
 Git Checkout
 ============
 
-In this tutorial, we will download the OntoLib sources and build them in ``~/Development/ontolib``.
+In this tutorial, we will download the phenol sources and build them in ``~/Development/ontolib``.
 
 .. code-block:: console
 
    ~ # mkdir -p ~/Development
    ~ # cd ~/Development
-   Development # git clone https://github.com/phenomics/ontolib.git ontolib
-   Development # cd ontolib
+   Development # git clone https://github.com/monarch-initiative/phenol
+   Development # cd phenol
 
 Maven Proxy Settings
 ====================
@@ -88,7 +88,7 @@ Building
 ========
 
 You can build Phenol using ``mvn package``.
-This will automatically download all dependencies, build OntoLib, and run all tests.
+This will automatically download all dependencies, build phenol, and run all tests.
 
 .. code-block:: console
 
@@ -99,14 +99,3 @@ In case that you have non-compiling test, you can use the `-DskipTests=true` par
 .. code-block:: console
 
     phenol # mvn install -DskipTests=true
-
-Creating Eclipse Projects
-=========================
-
-Maven can be used to generate Eclipse projects that can be imported by the Eclipse IDE.
-This can be done calling ``mvn eclipse:eclipse`` command after calling ``mvn install``:
-
-.. code-block:: console
-
-    phenol # mvn install
-    phenol # mvn eclipse:eclipse

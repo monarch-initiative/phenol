@@ -8,8 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Model of a disease from the HPO annotations. This is an extension of HpoDisease and will be
- * replaced in ontolib
+ * Model of a disease from the HPO annotations.
  *
  * <p>The main purpose here is to separate phenotypic abnormalities from mode of inheritance and
  * other annotations.

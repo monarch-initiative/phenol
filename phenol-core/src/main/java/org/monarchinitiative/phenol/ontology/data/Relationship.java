@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 
+import java.util.Objects;
+
 /**
  * A class that encapsulates the edge type in the ontology graph.
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
@@ -51,6 +53,22 @@ public class Relationship {
   /** @return The relation's qualifier. */
   public RelationshipType getRelationshipType() {
     return relationshipType;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Relationship that = (Relationship) o;
+    return id == that.id &&
+      Objects.equals(source, that.source) &&
+      Objects.equals(target, that.target) &&
+      relationshipType == that.relationshipType;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(source, target, id, relationshipType);
   }
 
   @Override

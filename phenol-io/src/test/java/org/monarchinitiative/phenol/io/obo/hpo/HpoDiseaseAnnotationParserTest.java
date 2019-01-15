@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.formats.hpo.HpoOntology;
+import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.IOException;
@@ -29,8 +30,7 @@ public class HpoDiseaseAnnotationParserTest {
   public HpoDiseaseAnnotationParserTest() throws IOException, PhenolException {
     Path testResources = Paths.get("src/test/resources");
     Path hpoHeadPath = testResources.resolve("hp_head.obo");
-    HpOboParser oboParser = new HpOboParser(hpoHeadPath.toFile());
-    HpoOntology ontology = oboParser.parse();
+    Ontology ontology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
 
     Path hpoAnnotationsHeadPath = testResources.resolve("phenotype_annotation_head.tab");
     HpoDiseaseAnnotationParser hpoaParser = new HpoDiseaseAnnotationParser(hpoAnnotationsHeadPath.toFile(), ontology);
