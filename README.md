@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.3.1
+- **Version:** 1.3.2
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -32,13 +32,13 @@ associate phenotype annotation files.
     - Maven module `phenol-analysis` -- still experimental module for enrichment analysis).
 
 ## Usage
-We have released the first public distribution of phenol to maven central (1.3.1). We recommend indicating the
+We have released the first public distribution of phenol to maven central (1.3.2). We recommend indicating the
 phenol version in the properties section of the pom file of the application.
 
 ```
 <properties>
   (...)
-  <phenol.version>1.3.1</phenol.version>
+  <phenol.version>1.3.2</phenol.version>
 </properties>
 ```
 
