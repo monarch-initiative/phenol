@@ -157,7 +157,7 @@ public class HpoAnnotationModel {
         termId2AnnotEntryListMap.putIfAbsent(entry.getPhenotypeId(),new ArrayList<>());
         termId2AnnotEntryListMap.get(entry.getPhenotypeId()).add(entry);
       }
-      ImmutableList.Builder builder = new ImmutableList.Builder();
+      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder();
       for (TermId tid : termId2AnnotEntryListMap.keySet()) {
         List<HpoAnnotationEntry> entrylist = termId2AnnotEntryListMap.get(tid);
         if (entrylist.size()==1) { // No duplicate entries for this TermId
@@ -172,7 +172,7 @@ public class HpoAnnotationModel {
           } else if (divergentOnset(entrylist)) {
             mergable=false;
           }
-          Optional<String> frequenyOpt = mergeFrequencies(entrylist);
+          Optional<String> frequencyOpt = mergeFrequencies(entrylist);
           if (mergable) {
             HpoAnnotationEntry merged = mergeEntries(entrylist);
             builder.add(merged);
