@@ -11,7 +11,7 @@ import java.util.Map;
  * correction. It controls the FDR for independent and positive
  * regression dependent test statistics.
  *
- * The formular for p value adjustment is:
+ * The formula for p value adjustment is:
  *    adjusted-p-value = p-value * (n/n-rank),
  * with n being the number of p-values (tests) and rank being
  * the p-value's corresponding rank. Here rank starts at 0

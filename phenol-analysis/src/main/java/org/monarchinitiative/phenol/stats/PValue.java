@@ -11,9 +11,20 @@ package org.monarchinitiative.phenol.stats;
  */
 public class PValue implements Cloneable, Comparable<PValue>
 {
+  /** The nominal (unadjusted) p value of a test. */
     private double p;
+  /** The adjusted p value of a test (adjusted according to a method such as Bonferoni or Bejamini Holm). */
     private double p_adjusted;
     private double p_min;
+
+
+    public PValue(){}
+
+    public PValue(double pval) {
+      this.p=pval;
+    }
+
+
 
     /**
      * Indicates whether the p value should be ignored my a mtc
