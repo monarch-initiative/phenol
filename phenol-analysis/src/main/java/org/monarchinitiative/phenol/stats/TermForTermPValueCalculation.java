@@ -10,6 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -20,7 +21,7 @@ import java.util.Map;
  */
 public class TermForTermPValueCalculation extends  AbstractPValueCalculation
 {
-
+  private final static Logger logger = Logger.getLogger(StudySet.class.getName());
     public TermForTermPValueCalculation(Ontology graph,
                                         AssociationContainer goAssociations,
                                         StudySet populationSet,
@@ -30,17 +31,16 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
     }
 
     public Map<TermId, PValue> calculatePValues() {
-        System.err.println("Study set n="+studySet.getGeneCount());
+        logger.info("Study set n="+studySet.getAnnotatedItemCount());
         Map<TermId, TermAnnotations> studySetAnnotationMap =this.studySet.getAnnotationMap();
         ImmutableMap.Builder<TermId, PValue> builder=new ImmutableMap.Builder<>();
-        int popGeneCount = populationSet.getGeneCount();
-        int studyGeneCount = studySet.getGeneCount();
+        int popGeneCount = populationSet.getAnnotatedItemCount();
+        int studyGeneCount = studySet.getAnnotatedItemCount();
          for (Map.Entry<TermId,TermAnnotations> entry : studySetAnnotationMap.entrySet() ) {
              if (entry.getValue().totalAnnotatedCount()<2) {
                  continue; // only a single annotated entry -- do not perform a statistical test
              }
              TermId goId = entry.getKey();
-             System.err.println("Analyzing pval for " + goId.getValue());
              if (! this.annotationMap.containsKey(goId)) {
                 System.err.println("ERROR -- study set contains ID but pop set does not: "+ goId.getValue());
              }
@@ -63,7 +63,7 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
                  * How big is the probability, that you got goidAnnotatedStudyGeneCount
                  * white balls after the whole drawing process?
                  */
-                System.err.println(String.format("popgene=%d annotPopGene=%d studygene=%d, studyGeneAnnot=%d",popGeneCount,goidAnnotatedPopGeneCount,studyGeneCount,goidAnnotatedStudyGeneCount ));
+                //System.err.println(String.format("popgene=%d annotPopGene=%d studygene=%d, studyGeneAnnot=%d",popGeneCount,goidAnnotatedPopGeneCount,studyGeneCount,goidAnnotatedStudyGeneCount ));
                 myP.setRawPValue( hyperg.phypergeometric(popGeneCount, (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
                         studyGeneCount, goidAnnotatedStudyGeneCount) );
                 myP.setMinPValue ( hyperg.dhyper(

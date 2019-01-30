@@ -62,8 +62,8 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
      * GO annotations to the term. Note that the function also adds counts for direct and
      * direct and total (including propagated) annotations.
      *
-     * @param associationContainer
-     * @param ontology
+     * @param associationContainer associations for all the Ontology terms
+     * @param ontology reference to the ontology
      */
     private void initAssociationMap(AssociationContainer associationContainer, Ontology ontology) {
         Set<TermId> genes = associationContainer.getAllAnnotatedGenes();
@@ -114,7 +114,7 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
                                                             Ontology ontology,
                                                             StudySet studySet) {
         Map<TermId, TermAnnotations> studyMap = new HashMap<>();
-        for (TermId geneId : studySet.getAllGeneIds()) {
+        for (TermId geneId : studySet.getAnnotatedItemTermIds()) {
             try {
                 System.err.println("createAnnotationMap gene=" + geneId.getIdWithPrefix());
                 ItemAssociations assocs = associationContainer.get(geneId);

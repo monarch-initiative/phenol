@@ -29,7 +29,7 @@ import org.monarchinitiative.phenol.stats.*;
  */
 public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
-  private String pathGoObo;
+  private final String pathGoObo;
   /** Path to the GoGaf file. */
   private String pathGoGaf;
   /** Term Id of a GO term we will investigate */
@@ -119,7 +119,7 @@ public final class GoEnrichmentDemo {
     i=0;
     M *= 3;
     for (TermAnnotation ann : annots) {
-      TermId gene = ann.getTermId();
+      TermId gene = ann.getLabel();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
