@@ -6,9 +6,9 @@ import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.analysis.TermAnnotations;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -72,9 +72,9 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
             try {
                 //int idx = associationContainer.getIndex(geneId);
                 ItemAssociations assocs = associationContainer.get(geneId);
-                for (GoGaf21Annotation goAnnotation : assocs) {
+                for (TermAnnotation goAnnotation : assocs) {
                     /* At first add the direct counts and remember the terms */
-                    TermId goId = goAnnotation.getGoId();
+                    TermId goId = goAnnotation.getTermId();
                     // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
                     Term term = ontology.getTermMap().get(goId);
                     if (term == null) {
@@ -102,7 +102,7 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
         }
     }
 
-    /**
+    /*
      * Create an annotation map from the AssociationContainer and the study set.
      * Note that the Association container holds
      * @param associationContainer

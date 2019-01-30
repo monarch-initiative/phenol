@@ -5,9 +5,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.obo.go.GoGeneAnnotationParser;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import org.monarchinitiative.phenol.analysis.*;
@@ -51,7 +51,7 @@ public final class GoEnrichmentDemo {
       System.out.println("[INFO] parsed " + n_terms + " GO terms.");
       System.out.println("[INFO] parsing  " + pathGoGaf);
       final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
-      List<GoGaf21Annotation> goAnnots = annotparser.getAnnotations();
+      List<TermAnnotation> goAnnots = annotparser.getTermAnnotations();
       System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
 
       AssociationContainer associationContainer = new AssociationContainer(goAnnots);
@@ -95,11 +95,11 @@ public final class GoEnrichmentDemo {
 
 
 
-  private Set<TermId> getFocusedStudySet(List<GoGaf21Annotation> annots, TermId focus) {
+  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
     Set<TermId> genes = new HashSet<>();
-    for (GoGaf21Annotation ann : annots) {
-      if (focus.equals(ann.getGoId())) {
-        TermId geneId = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      if (focus.equals(ann.getTermId())) {
+        TermId geneId = ann.getLabel();
         genes.add(geneId);
       }
     }
@@ -118,8 +118,8 @@ public final class GoEnrichmentDemo {
     }
     i=0;
     M *= 3;
-    for (GoGaf21Annotation ann : annots) {
-      TermId gene = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      TermId gene = ann.getTermId();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
@@ -130,17 +130,21 @@ public final class GoEnrichmentDemo {
     return ImmutableSet.copyOf(finalGenes);
   }
 
-
-  private Set<TermId> getPopulationSet(List<GoGaf21Annotation> annots) {
+  /**
+   * Get a list of all of the labeled genes in the population set.
+   * @param annots List of annotations of genes/diseases to GO/HPO terms etc
+   * @return an immutable set of TermIds representing the labeled genes/diseases
+   */
+  private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
-    for (GoGaf21Annotation ann : annots) {
-      TermId geneId = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      TermId geneId = ann.getLabel();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);
   }
 
-  
+
 
   @Parameters(commandDescription = "Gene Ontology Enrichment Analysis (demo)")
   public static class Options {

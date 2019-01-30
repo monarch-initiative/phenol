@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.Serializable;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author Peter Robinson, Sebastian Bauer
  */
 
-public class ItemAssociations implements Iterable<GoGaf21Annotation>, Serializable
+public class ItemAssociations implements Iterable<TermAnnotation>, Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class ItemAssociations implements Iterable<GoGaf21Annotation>, Serializab
     private TermId  gene;
 
     /** List of GO functional annotations */
-    private ArrayList<GoGaf21Annotation> associations;
+    private ArrayList<TermAnnotation> associations;
 
     /**
      *
@@ -52,7 +52,7 @@ public class ItemAssociations implements Iterable<GoGaf21Annotation>, Serializab
      *
      * @param a defines the bla32 to be added.
      */
-    public void add(GoGaf21Annotation a) {
+    public void add(TermAnnotation a) {
         associations.add(a);
     }
 
@@ -67,13 +67,13 @@ public class ItemAssociations implements Iterable<GoGaf21Annotation>, Serializab
      * belonging to the gene.
      */
     public List<TermId> getAssociations() {
-       return this.associations.stream().map(GoGaf21Annotation::getGoId).collect(Collectors.toList());
+       return this.associations.stream().map(TermAnnotation::getTermId).collect(Collectors.toList());
     }
 
     /**
      * Returns the iterator to iterate over all goAssociations.
      */
-    public Iterator<GoGaf21Annotation> iterator()
+    public Iterator<TermAnnotation> iterator()
     {
         return associations.iterator();
     }
@@ -85,6 +85,6 @@ public class ItemAssociations implements Iterable<GoGaf21Annotation>, Serializab
      * @return whether tid is contained in this mapping.
      */
     public boolean containsID(TermId tid) {
-       return associations.stream().anyMatch(annot -> annot.getGoId().equals(tid) );
+       return associations.stream().anyMatch(annot -> annot.getTermId().equals(tid) );
     }
 }

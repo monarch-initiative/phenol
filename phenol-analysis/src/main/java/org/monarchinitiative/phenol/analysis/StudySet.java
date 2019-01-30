@@ -2,9 +2,9 @@ package org.monarchinitiative.phenol.analysis;
 
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -90,9 +90,9 @@ public class StudySet {
       try {
         //int idx = associationContainer.getIndex(geneId);
         ItemAssociations assocs = associationContainer.get(geneId);
-        for (GoGaf21Annotation goAnnotation : assocs) {
+        for (TermAnnotation goAnnotation : assocs) {
           /* At first add the direct counts and remember the terms */
-          TermId goId = goAnnotation.getGoId();
+          TermId goId = goAnnotation.getTermId();
           // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
           Term term = ontology.getTermMap().get(goId);
           if (term == null) {

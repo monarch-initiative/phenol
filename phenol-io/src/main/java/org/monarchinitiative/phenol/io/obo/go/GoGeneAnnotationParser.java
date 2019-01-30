@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.io.base.TermAnnotationParserException;
 import com.google.common.collect.ImmutableList;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 
 /**
  * Parser for GO "gene annotation file" (GAF) format.
@@ -106,7 +108,14 @@ public final class GoGeneAnnotationParser  {
 
   public  List<GoGaf21Annotation> getAnnotations() {
     return this.annotations;
+  }
 
+  /**
+   * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
+   */
+  public  List<TermAnnotation> getTermAnnotations() {
+    List<TermAnnotation> talist = new ArrayList<>(this.annotations);
+    return talist;
   }
 
   /** Use an iterator paradigm internally to parse the file. */

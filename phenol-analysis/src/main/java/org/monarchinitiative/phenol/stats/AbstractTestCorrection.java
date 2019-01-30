@@ -33,30 +33,6 @@ public abstract class AbstractTestCorrection
 	public abstract String getName();
 
 
-	/**
-	 * Returns an array of all raw p values that don't have
-	 * the ignoreAtMTC attribute set.
-	 *
-	 * @param p array of p values
-	 * @return array of p values that don't have ignoreAtMTC set
-	 */
-	protected PValue [] getRelevantRawPValues(PValue [] p)
-	{
-		int i;
-		int j;
-		int pvalsCount = 0;
-
-		/* Count number of p values which shouldn't be ignored */
-		for (i=0;i<p.length;i++)
-			if (!p[i].ignoreAtMTC) pvalsCount++;
-
-		/* Now put all relevant p values into a new array */
-		PValue [] filteredP = new PValue[pvalsCount];
-		for (i=0,j=0;i<p.length;i++)
-			if (!p[i].ignoreAtMTC) filteredP[j++] = p[i];
-
-		return filteredP;
-	}
 
   /** @return non-ignored pvalues (sorted) */
   Pair [] getRelevantRawPValues(Map<TermId, PValue> pvalmap) {
