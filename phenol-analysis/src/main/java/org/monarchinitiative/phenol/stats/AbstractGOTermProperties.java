@@ -10,7 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author Sebastian Bauer
  * @author Steffen Grossmann
  */
-public abstract class AbstractGOTermProperties extends PValue
+public abstract class AbstractGOTermProperties
 {
 	public TermId term;
 	public int annotatedStudyGenes;

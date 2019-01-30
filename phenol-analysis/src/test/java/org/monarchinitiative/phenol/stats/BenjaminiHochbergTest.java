@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,37 +20,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BenjaminiHochbergTest {
 
 
-  private static IPValueCalculation ipval;
+  private static PValueCalculation ipval;
 
   private static final double EPSILON=0.00001;
 
-  private static Map<TermId, PValue> pvalmap;
+  static List<Item2PValue<TermId>> pvallist;
+
+
 
   @BeforeAll
   static void init() {
-    ipval =  new MadeUpPValues();
-    AbstractTestCorrection BH = new BenjaminiHochberg();
-    pvalmap = BH.adjustPValues(ipval);
+    pvallist =  new MadeUpPValues().getRawPValues();
   }
 
   /** 0.0001 and  0.00150000 */
   @Test
   void testA() {
-    PValue pval = pvalmap.get(MadeUpPValues.A); // raw value was 0.0001
-    assertEquals(0.00150000,pval.getAdjustedPValue(),EPSILON);
+    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    bonf.adjustPvals(pvallist);
+    // index 0
+    double adjpval = pvallist.get(0).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
+    assertEquals(0.00150000,adjpval,EPSILON);
   }
 
   /** 0.0001 and  0.00150000 */
   @Test
   void testB() {
-    PValue pval = pvalmap.get(MadeUpPValues.B); // raw value was 0.0001
+    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    bonf.adjustPvals(pvallist);
+    // index 0
+    PValue pval = pvallist.get(1).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
     assertEquals(0.00300000,pval.getAdjustedPValue(),EPSILON);
   }
 
   /** 0.0001 and  0.00150000 */
   @Test
   void testC() {
-    PValue pval = pvalmap.get(MadeUpPValues.C); // raw value was 0.0001
+    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    bonf.adjustPvals(pvallist);
+    // index 0
+    PValue pval = pvallist.get(2).getPVal(); // raw value was 0.0001// raw value was 0.0001
     assertEquals(0.00950000,pval.getAdjustedPValue(),EPSILON);
   }
 

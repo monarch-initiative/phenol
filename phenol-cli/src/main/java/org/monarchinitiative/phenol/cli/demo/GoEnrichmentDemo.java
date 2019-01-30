@@ -61,19 +61,22 @@ public final class GoEnrichmentDemo {
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
       StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
-
-      IPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
+      MultipleTestingCorrection bonf = new Bonferroni();
+      PValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,
         studySet,
-        hgeo);
-      AbstractTestCorrection bonf = new Bonferroni();
-      Map<TermId, PValue> pvalmap = bonf.adjustPValues(tftpvalcal);
-      System.err.println("Total number of retrieved p values: " + pvalmap.size());
+        hgeo,
+        bonf);
+
+      //Map<TermId, PValue> pvalmap = bonf.adjustPValues(tftpvalcal);
+      List<Item2PValue<TermId>> pvals = tftpvalcal.calculatePVals();
+      System.err.println("Total number of retrieved p values: " + pvals.size());
       int n_sig=0;
       double ALPHA=0.00005;
-      for (TermId tid : pvalmap.keySet()) {
-        PValue pval = pvalmap.get(tid);
+      for (Item2PValue<TermId> item : pvals) {
+        PValue pval =item.getPVal();
+        TermId tid = item.getItem();
         Term term = gontology.getTermMap().get(tid);
         if (term==null) {
           System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
@@ -84,10 +87,10 @@ public final class GoEnrichmentDemo {
           continue;
         }
         n_sig++;
-        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getValue(), pval.getRawPValue(), pval.getAdjustedPValue()));
+        System.out.println(String.format("%s [%s]: %.5e (adjusted %.5e)", label, tid.getValue(), pval.getRawPValue(), pval.getAdjustedPValue()));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
-        n_sig,pvalmap.size(),ALPHA));
+        n_sig,pvals.size(),ALPHA));
     } catch (Exception e) {
       e.printStackTrace(); // just wimp out, we cannot recover here.
     }
