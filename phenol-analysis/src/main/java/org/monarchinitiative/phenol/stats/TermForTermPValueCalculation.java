@@ -66,16 +66,10 @@ public class TermForTermPValueCalculation extends  AbstractPValueCalculation
                 //System.err.println(String.format("popgene=%d annotPopGene=%d studygene=%d, studyGeneAnnot=%d",popGeneCount,goidAnnotatedPopGeneCount,studyGeneCount,goidAnnotatedStudyGeneCount ));
                 myP.setRawPValue( hyperg.phypergeometric(popGeneCount, (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
                         studyGeneCount, goidAnnotatedStudyGeneCount) );
-                myP.setMinPValue ( hyperg.dhyper(
-                        goidAnnotatedPopGeneCount,
-                        popGeneCount,
-                        goidAnnotatedPopGeneCount,
-                        goidAnnotatedPopGeneCount) );
             } else {
                 /* Mark this p value as irrelevant so it isn't considered in a mtc */
                 myP.setRawPValue(1.0);
-                myP.ignoreAtMTC = true;
-                myP.setMinPValue( 1.0 );
+                myP.setIgnoreAtMTC();
             }
             builder.put(goId,myP);
             }

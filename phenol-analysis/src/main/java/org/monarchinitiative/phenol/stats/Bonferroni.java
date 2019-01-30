@@ -30,7 +30,7 @@ public class Bonferroni extends AbstractTestCorrection
 		/* Adjust the values */
 		for (PValue p : pvalmap.values())
 		{
-			if (!p.ignoreAtMTC)
+			if (p.doNotIgnore())
 				p.setAdjustedPValue(Math.min(1.0, p.getRawPValue() * pvalsCount));
 		}
 		return pvalmap;

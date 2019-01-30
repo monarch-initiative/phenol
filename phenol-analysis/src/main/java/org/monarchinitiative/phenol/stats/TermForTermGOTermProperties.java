@@ -36,7 +36,6 @@ public class TermForTermGOTermProperties extends AbstractGOTermProperties
 			case 	4: return Integer.toString(annotatedStudyGenes);
 			case	5: return Double.toString(getRawPValue());
 			case	6: return Double.toString(getAdjustedPValue());
-			case	7: return Double.toString(getMinPValue());
       default: return "TermForTermGOTermProperties-did not recognize propNumber " + propNumber;
 		}
 	}
