@@ -154,6 +154,25 @@ public final class HpoDisease {
     } else return tiwm.getFrequency();
   }
 
+  /**
+   * Get the frequency of a term in the disease. This includes if any disease term is an ancestor of the
+   * query term -- we take the maximum of any ancestor term.
+   * @param tid Term ID of an HPO term whose frequency we want to know
+   * @param ontology Reference to the HPO ontology
+   * @return frequency of the term in the disease (including annotation propagation)
+   */
+  private double getFrequencyOfTermInDiseaseWithAnnotationPropagation(TermId tid, Ontology ontology) {
+    double freq=0.0;
+    for (TermId diseaseTermId :  getPhenotypicAbnormalityTermIdList() ) {
+      Set<TermId> ancs = ontology.getAncestorTermIds(diseaseTermId,true);
+      if (ancs.contains(tid)) {
+        double f = getFrequencyOfTermInDisease(diseaseTermId);
+        freq = Math.max(f,freq);
+      }
+    }
+    return freq;
+  }
+
   @Override
   public String toString() {
     String abnormalityList = phenotypicAbnormalities
