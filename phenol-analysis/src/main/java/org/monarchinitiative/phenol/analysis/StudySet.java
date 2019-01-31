@@ -26,8 +26,6 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * @author Peter Robinson, Sebastian Bauer
  */
 public class StudySet {
-  private final static Logger logger = Logger.getLogger(StudySet.class.getName());
-
   /**
    * Key: an Ontology id (usually GO or HP); value: a {@link TermAnnotations} object with the items that the
    * ontology term annotates.

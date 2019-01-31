@@ -6,7 +6,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

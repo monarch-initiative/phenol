@@ -2,11 +2,12 @@ package org.monarchinitiative.phenol.stats;
 
 /**
  * This class is used to store an item (such as an ontology TermId) and its associated
- * {@link PValue}.
+ * raw and adjusted p values.
  * @param <T>
  */
 public class Item2PValue<T> implements Comparable<Item2PValue> {
   private final T item;
+  /** The nominal (i.e., uncorrected) p-value for this item. */
   private double p_raw;
   /**
    * The adjusted p_raw value of a test (adjusted according to a method such as Bonferoni
@@ -16,15 +17,6 @@ public class Item2PValue<T> implements Comparable<Item2PValue> {
 
 
 
-
-
-  public void setRawPValue(double pv) {
-    this.p_raw = pv;
-  }
-
-  public void setAdjustedPValue(double p_adj) {
-    this.p_adjusted = p_adj;
-  }
 
 
   /**
@@ -45,18 +37,21 @@ public class Item2PValue<T> implements Comparable<Item2PValue> {
     return this.item;
   }
 
-
-  public void setAdjustedPValue(Double padj) {
-    this.p_adjusted=padj;
-  }
-  public double getAdjustedPValue() {
-    return this.p_adjusted;
+  public void setRawPValue(double pv) {
+    this.p_raw = pv;
   }
 
   public double getRawPValue() {
     return this.p_raw;
   }
 
+  public void setAdjustedPValue(double p_adj) {
+    this.p_adjusted = p_adj;
+  }
+
+  public double getAdjustedPValue() {
+    return this.p_adjusted;
+  }
 
 
   @Override
