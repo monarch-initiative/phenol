@@ -60,10 +60,7 @@ public abstract class PValueCalculation {
         initAssociationMap(goAssociations, graph);
     }
 
-
-    //public abstract Map<TermId, PValue> calculatePValues();
-
-    public abstract List<Item2PValue<TermId>> calculatePVals();
+    public abstract List<GoTerm2PValAndCounts> calculatePVals();
 
 
     /**

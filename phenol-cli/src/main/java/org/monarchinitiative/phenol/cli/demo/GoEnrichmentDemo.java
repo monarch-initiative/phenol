@@ -62,20 +62,23 @@ public final class GoEnrichmentDemo {
       StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
       MultipleTestingCorrection bonf = new Bonferroni();
-      PValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
+      TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,
         studySet,
         hgeo,
         bonf);
 
-      //Map<TermId, PValue> pvalmap = bonf.adjustPValues(tftpvalcal);
-      List<Item2PValue<TermId>> pvals = tftpvalcal.calculatePVals();
+      int popsize=populationGenes.size();
+      int studysize=studyGenes.size();
+
+      List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
       System.err.println("Total number of retrieved p values: " + pvals.size());
       int n_sig=0;
       double ALPHA=0.00005;
-      for (Item2PValue<TermId> item : pvals) {
-        PValue pval =item.getPVal();
+      for (GoTerm2PValAndCounts item : pvals) {
+        double pval =item.getRawPValue();
+        double pval_adj = item.getAdjustedPValue();
         TermId tid = item.getItem();
         Term term = gontology.getTermMap().get(tid);
         if (term==null) {
@@ -83,11 +86,15 @@ public final class GoEnrichmentDemo {
           continue;
         }
         String label = term.getName();
-        if (pval.getAdjustedPValue() > ALPHA) {
+        if (pval_adj > ALPHA) {
           continue;
         }
         n_sig++;
-        System.out.println(String.format("%s [%s]: %.5e (adjusted %.5e)", label, tid.getValue(), pval.getRawPValue(), pval.getAdjustedPValue()));
+        double studyproportion=(double)item.getAnnotatedStudyGenes()/studysize;
+        double popproportion=(double)item.getAnnotatedPopulationGenes()/popsize;
+        System.out.println(String.format("%s [%s]: %.5e (adjusted %.5e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studyproportion,
+          item.getAnnotatedPopulationGenes(),popproportion));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
         n_sig,pvals.size(),ALPHA));

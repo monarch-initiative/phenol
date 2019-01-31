@@ -10,11 +10,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BonferroniTest {
+class BonferroniTest {
 
-  static List<Item2PValue<TermId>> pvallist;
+  private static List<Item2PValue<TermId>> pvallist;
 
-  static final double EPSILON=0.00001;
+  private static final double EPSILON=0.00001;
 
   @BeforeAll
   static void init() {
@@ -36,9 +36,9 @@ public class BonferroniTest {
     MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
     bonf.adjustPvals(pvallist);
     // index 0
-    PValue pval = pvallist.get(0).getPVal(); // raw value was 0.0001
+    double adjustedPValue = pvallist.get(0).getAdjustedPValue(); // raw value was 0.0001
     // Bonferoni is 15x0.0001
-    assertEquals(15*0.0001,pval.getAdjustedPValue(),EPSILON);
+    assertEquals(15*0.0001,adjustedPValue,EPSILON);
 
   }
 
@@ -46,9 +46,9 @@ public class BonferroniTest {
   void testB() {
     MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
     bonf.adjustPvals(pvallist);
-    PValue pval = pvallist.get(1).getPVal();// raw value was 0.0004
+    double adjustedPValue = pvallist.get(1).getAdjustedPValue();// raw value was 0.0004
     // Bonferoni is 15x0.0001
-    assertEquals(15*0.0004,pval.getAdjustedPValue(),EPSILON);
+    assertEquals(15*0.0004,adjustedPValue,EPSILON);
   }
 
 
@@ -59,9 +59,9 @@ public class BonferroniTest {
     MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
     bonf.adjustPvals(pvallist);
     // index of N is 14
-    PValue pval = pvallist.get(14).getPVal(); // raw value was 0.7590
+    double adjustedPValue = pvallist.get(14).getAdjustedPValue(); // raw value was 0.7590
     // Bonferoni is 15x0.7590 thus should be 1.0
-    assertEquals(1.000,pval.getAdjustedPValue(),EPSILON);
+    assertEquals(1.000,adjustedPValue,EPSILON);
   }
 
 

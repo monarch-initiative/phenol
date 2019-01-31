@@ -10,6 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -34,50 +35,58 @@ public class TermForTermPValueCalculation extends PValueCalculation
     }
 
 
+    public  List<GoTerm2PValAndCounts> calculatePVals() {
+      Map<TermId, TermAnnotations> studySetAnnotationMap =this.studySet.getAnnotationMap();
+      // ImmutableMap.Builder<TermId, Item2PValue<TermId>> builder=new ImmutableMap.Builder<>();
 
-  public List<Item2PValue<TermId>> calculatePVals(){
-    Map<TermId, TermAnnotations> studySetAnnotationMap =this.studySet.getAnnotationMap();
-   // ImmutableMap.Builder<TermId, Item2PValue<TermId>> builder=new ImmutableMap.Builder<>();
+      ImmutableList.Builder<Item2PValue<TermId>> listbuilder = new ImmutableList.Builder<>();
 
-    ImmutableList.Builder<Item2PValue<TermId>> listbuilder = new ImmutableList.Builder<>();
-    int popGeneCount = populationSet.getAnnotatedItemCount();
-    int studyGeneCount = studySet.getAnnotatedItemCount();
-    for (Map.Entry<TermId,TermAnnotations> entry : studySetAnnotationMap.entrySet() ) {
-      if (entry.getValue().totalAnnotatedCount()<2) {
-        continue; // only a single annotated entry -- do not perform a statistical test
+      List<GoTerm2PValAndCounts> results = new ArrayList<>();
+
+      int popGeneCount = populationSet.getAnnotatedItemCount();
+      int studyGeneCount = studySet.getAnnotatedItemCount();
+      for (Map.Entry<TermId,TermAnnotations> entry : studySetAnnotationMap.entrySet() ) {
+        if (entry.getValue().totalAnnotatedCount()<2) {
+          continue; // only a single annotated entry -- do not perform a statistical test
+        }
+        TermId goId = entry.getKey();
+        if (! this.annotationMap.containsKey(goId)) {
+          System.err.println("ERROR -- study set contains ID but pop set does not: "+ goId.getValue());
+        }
+        int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
+        int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
+        if (goidAnnotatedStudyGeneCount != 0) {
+          /* Imagine the following...
+           *
+           * In an urn you put popGeneCount number of balls where a color of a
+           * ball can be white or black. The number of balls having white color
+           * is goidAnnontatedPopGeneCount (all genes of the population which
+           * are annotated by the current GOID).
+           *
+           * You choose to draw studyGeneCount number of balls without replacement.
+           * How big is the probability, that you got goidAnnotatedStudyGeneCount
+           * white balls after the whole drawing process?
+           */
+          double raw_pval=hyperg.phypergeometric(popGeneCount,
+            (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
+            studyGeneCount,
+            goidAnnotatedStudyGeneCount);
+          Item2PValue<TermId> item = new Item2PValue<>(goId,raw_pval);
+          listbuilder.add(item);
+
+          GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId,raw_pval,goidAnnotatedStudyGeneCount,goidAnnotatedPopGeneCount);
+          results.add(goPval);
+        }
+        // If desired we could record the SKIPPED TESTS (Terms) HERE
       }
-      TermId goId = entry.getKey();
-      if (! this.annotationMap.containsKey(goId)) {
-        System.err.println("ERROR -- study set contains ID but pop set does not: "+ goId.getValue());
-      }
-      int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
-      int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
-      if (goidAnnotatedStudyGeneCount != 0) {
-        /* Imagine the following...
-         *
-         * In an urn you put popGeneCount number of balls where a color of a
-         * ball can be white or black. The number of balls having white color
-         * is goidAnnontatedPopGeneCount (all genes of the population which
-         * are annotated by the current GOID).
-         *
-         * You choose to draw studyGeneCount number of balls without replacement.
-         * How big is the probability, that you got goidAnnotatedStudyGeneCount
-         * white balls after the whole drawing process?
-         */
-        double raw_pval=hyperg.phypergeometric(popGeneCount,
-           (double)goidAnnotatedPopGeneCount / (double)popGeneCount,
-             studyGeneCount,
-           goidAnnotatedStudyGeneCount);
-        Item2PValue<TermId> item = new Item2PValue<>(goId,raw_pval);
-        listbuilder.add(item);
-      }
-      // If desired we could record the SKIPPED TESTS (Terms) HERE
+      // Now do multiple testing correction
+      List<Item2PValue<TermId>> mylist = listbuilder.build();
+      this.testCorrection.adjustPvals(results);
+      return results;
     }
-    // Now do multiple testing correction
-    List<Item2PValue<TermId>> mylist = listbuilder.build();
-    this.testCorrection.adjustPvals(mylist);
-    return mylist;
-  }
+
+
+
 
 }
 

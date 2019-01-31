@@ -24,7 +24,7 @@ public class BenjaminiHochbergTest {
 
   private static final double EPSILON=0.00001;
 
-  static List<Item2PValue<TermId>> pvallist;
+  private static List<Item2PValue<TermId>> pvallist;
 
 
 
@@ -49,8 +49,8 @@ public class BenjaminiHochbergTest {
     MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
     bonf.adjustPvals(pvallist);
     // index 0
-    PValue pval = pvallist.get(1).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
-    assertEquals(0.00300000,pval.getAdjustedPValue(),EPSILON);
+    double adjustedPValue = pvallist.get(1).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
+    assertEquals(0.00300000,adjustedPValue,EPSILON);
   }
 
   /** 0.0001 and  0.00150000 */
@@ -59,8 +59,8 @@ public class BenjaminiHochbergTest {
     MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
     bonf.adjustPvals(pvallist);
     // index 0
-    PValue pval = pvallist.get(2).getPVal(); // raw value was 0.0001// raw value was 0.0001
-    assertEquals(0.00950000,pval.getAdjustedPValue(),EPSILON);
+    double adjustedPValue = pvallist.get(2).getAdjustedPValue(); // raw value was 0.0001// raw value was 0.0001
+    assertEquals(0.00950000,adjustedPValue,EPSILON);
   }
 
 
