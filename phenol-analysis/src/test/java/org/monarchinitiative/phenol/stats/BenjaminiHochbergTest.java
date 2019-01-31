@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BenjaminiHochbergTest {
 
 
-  private static PValueCalculation ipval;
-
   private static final double EPSILON=0.00001;
 
   private static List<Item2PValue<TermId>> pvallist;

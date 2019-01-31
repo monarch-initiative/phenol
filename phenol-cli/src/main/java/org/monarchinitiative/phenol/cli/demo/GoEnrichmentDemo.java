@@ -31,7 +31,7 @@ public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
   private final String pathGoObo;
   /** Path to the GoGaf file. */
-  private String pathGoGaf;
+  private final String pathGoGaf;
   /** Term Id of a GO term we will investigate */
   private final TermId targetGoTerm;
 
@@ -76,6 +76,10 @@ public final class GoEnrichmentDemo {
       System.err.println("Total number of retrieved p values: " + pvals.size());
       int n_sig=0;
       double ALPHA=0.00005;
+      System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
+        gontology.getTermMap().get(targetGoTerm).getName(),targetGoTerm.getValue()));
+      System.out.println(String.format("Study set: %d genes. Population set: %d genes",
+        studysize,popsize));
       for (GoTerm2PValAndCounts item : pvals) {
         double pval =item.getRawPValue();
         double pval_adj = item.getAdjustedPValue();
@@ -90,11 +94,11 @@ public final class GoEnrichmentDemo {
           continue;
         }
         n_sig++;
-        double studyproportion=(double)item.getAnnotatedStudyGenes()/studysize;
-        double popproportion=(double)item.getAnnotatedPopulationGenes()/popsize;
-        System.out.println(String.format("%s [%s]: %.5e (adjusted %.5e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
-          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studyproportion,
-          item.getAnnotatedPopulationGenes(),popproportion));
+        double studypercentage=100.0*(double)item.getAnnotatedStudyGenes()/studysize;
+        double poppercentage=(double)item.getAnnotatedPopulationGenes()/popsize;
+        System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studypercentage,
+          item.getAnnotatedPopulationGenes(),poppercentage));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
         n_sig,pvals.size(),ALPHA));

@@ -1,10 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  *

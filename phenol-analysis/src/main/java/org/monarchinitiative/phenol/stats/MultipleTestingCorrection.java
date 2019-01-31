@@ -1,11 +1,6 @@
 package org.monarchinitiative.phenol.stats;
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created on 06.07.2005
@@ -24,7 +19,7 @@ public interface MultipleTestingCorrection<T>
 	 * @return the adjusted p values matching the order of the
 	 *         the p values of the nominal p value calculation.
 	 */
-  public void adjustPvals(List<Item2PValue<T>> pvals);
+  void adjustPvals(List<Item2PValue<T>> pvals);
 
 	/**
 	 * Return the name of the test correction.
