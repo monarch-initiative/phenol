@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 
@@ -121,6 +122,19 @@ public final class HpoDisease {
     }
     return false;
   }
+
+  /**
+   * Check if {@code tid} is annotated to any of the terms to which this disease is annotated or their ancestors
+   * @param tid An HP query term
+   * @param ontology reference to HPO ontology
+   * @return true iff this disease is annotated to the term directly or via annotation propagation
+   */
+  private boolean isAnnotatedTo(TermId tid, Ontology ontology) {
+    List<TermId> direct = getPhenotypicAbnormalityTermIdList();
+    Set<TermId> ancs = ontology.getAllAncestorTermIds(direct,true);
+    return ancs.contains(tid);
+  }
+
 
   /**
    * Returns the mean frequency of the feature in the disease.
