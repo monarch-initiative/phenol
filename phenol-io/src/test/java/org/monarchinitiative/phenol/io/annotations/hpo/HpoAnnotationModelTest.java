@@ -24,7 +24,7 @@ class HpoAnnotationModelTest {
 
 
     @BeforeAll
-    static void init() throws PhenolException, FileNotFoundException {
+    static void init() throws PhenolException {
         Path hpOboPath = Paths.get("src","test","resources","annotations","hp_head.obo");
         ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
         Path omim123456path = Paths.get("src","test","resources","annotations","OMIM-123456.tab");
@@ -55,6 +55,10 @@ class HpoAnnotationModelTest {
         Assertions.assertEquals(3,v2sf.getNumberOfAnnotations());
     }
 
-
+    @Test
+  void testFrequencyMerge() {
+     HpoAnnotationModel merged= v2sf.getMergedModel();
+     assertEquals(2,merged.getNumberOfAnnotations());
+    }
 
 }

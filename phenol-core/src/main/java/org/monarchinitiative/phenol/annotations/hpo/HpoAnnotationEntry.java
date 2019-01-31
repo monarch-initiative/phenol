@@ -162,9 +162,11 @@ public class HpoAnnotationEntry {
     }
 
 
-
-
-    private HpoAnnotationEntry(String disID,
+  /**
+   * This constructor is package-private so that we can use it for merging in
+   * {@link HpoAnnotationModel}
+   */
+    HpoAnnotationEntry(String disID,
                                String diseaseName,
                                TermId phenotypeId,
                                String phenotypeName,
