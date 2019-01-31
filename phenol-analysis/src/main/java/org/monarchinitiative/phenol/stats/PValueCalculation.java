@@ -6,20 +6,24 @@ import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.analysis.TermAnnotations;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
-
-public abstract class AbstractPValueCalculation implements IPValueCalculation {
+/**
+ * Abstract base class for methods that calculate a p-values for ontology term overrepresentation.
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ */
+public abstract class PValueCalculation {
 
     protected Ontology ontology;
 
@@ -30,31 +34,34 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
     protected StudySet studySet;
     protected Hypergeometric hyperg;
 
+    protected MultipleTestingCorrection testCorrection;
+
     /**
      * Key: a GO id; value: a {@link TermAnnotations} object with the annotations of the GO Term.
      */
     protected Map<TermId, TermAnnotations> annotationMap;
 
 
-    protected AbstractPValueCalculation() {
+    protected PValueCalculation() {
     }
 
 
-    public AbstractPValueCalculation(Ontology graph,
-                                     AssociationContainer goAssociations,
-                                     StudySet populationSet,
-                                     StudySet studySet,
-                                     Hypergeometric hyperg) {
+    public PValueCalculation(Ontology graph,
+                             AssociationContainer goAssociations,
+                             StudySet populationSet,
+                             StudySet studySet,
+                             Hypergeometric hyperg,MultipleTestingCorrection mtc) {
         this.ontology = graph;
         this.goAssociations = goAssociations;
         this.populationSet = populationSet;
         this.studySet=studySet;
         this.hyperg = hyperg;
+        this.testCorrection=mtc;
         initAssociationMap(goAssociations, graph);
     }
 
+    public abstract List<GoTerm2PValAndCounts> calculatePVals();
 
-    public abstract Map<TermId, PValue> calculatePValues();
 
     /**
      * Initialize the {@link #annotationMap}, whose key is a GO Id and whose value is a
@@ -62,8 +69,8 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
      * GO annotations to the term. Note that the function also adds counts for direct and
      * direct and total (including propagated) annotations.
      *
-     * @param associationContainer
-     * @param ontology
+     * @param associationContainer associations for all the Ontology terms
+     * @param ontology reference to the ontology
      */
     private void initAssociationMap(AssociationContainer associationContainer, Ontology ontology) {
         Set<TermId> genes = associationContainer.getAllAnnotatedGenes();
@@ -72,9 +79,9 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
             try {
                 //int idx = associationContainer.getIndex(geneId);
                 ItemAssociations assocs = associationContainer.get(geneId);
-                for (GoGaf21Annotation goAnnotation : assocs) {
+                for (TermAnnotation goAnnotation : assocs) {
                     /* At first add the direct counts and remember the terms */
-                    TermId goId = goAnnotation.getGoId();
+                    TermId goId = goAnnotation.getTermId();
                     // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
                     Term term = ontology.getTermMap().get(goId);
                     if (term == null) {
@@ -102,47 +109,4 @@ public abstract class AbstractPValueCalculation implements IPValueCalculation {
         }
     }
 
-    /**
-     * Create an annotation map from the AssociationContainer and the study set.
-     * Note that the Association container holds
-     * @param associationContainer
-     * @param ontology
-     * @param studySet
-     * @return
-
-    public Map<TermId, TermAnnotations> createAnnotationMap(AssociationContainer associationContainer,
-                                                            Ontology ontology,
-                                                            StudySet studySet) {
-        Map<TermId, TermAnnotations> studyMap = new HashMap<>();
-        for (TermId geneId : studySet.getAllGeneIds()) {
-            try {
-                System.err.println("createAnnotationMap gene=" + geneId.getIdWithPrefix());
-                ItemAssociations assocs = associationContainer.get(geneId);
-                for (GoGaf21Annotation goAnnotation : assocs) {
-                    TermId goId = goAnnotation.getGoId();
-                    Term term = ontology.getTermMap().get(goId);
-                    if (term == null) {
-                        System.err.println("Unable to retrieve term for id=" + goId.getIdWithPrefix());
-                        continue;
-                    }
-                    goId = term.getId(); // move to the primary ID in case an alt_id was used!
-                    studyMap.putIfAbsent(goId, new TermAnnotations());
-                    TermAnnotations termAnnots = studyMap.get(goId);
-                    termAnnots.addGeneAnnotationDirect(geneId);
-                    // In addition to the direct annotation, the gene is also indirectly annotated to all of the
-                    // GO Term's ancestors
-                    Set<TermId> ancs = getAncestorTerms(ontology, goId, true);
-                    for (TermId ancestor : ancs) {
-                        studyMap.putIfAbsent(ancestor, new TermAnnotations());
-                        TermAnnotations termAncAnnots = studyMap.get(ancestor);
-                        termAncAnnots.addGeneAnnotationTotal(geneId);
-                    }
-                }
-            } catch (PhenolException ee) {
-                ee.printStackTrace(); // todo do something sensible here
-            }
-        }
-        return ImmutableMap.copyOf(studyMap);
-    }
-     */
 }

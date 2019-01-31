@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.analysis;
 
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.HashMap;
@@ -20,15 +20,18 @@ public class AssociationContainer {
     /** Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene. */
     private final Map<TermId, ItemAssociations> gene2associationMap;
 
+
+
+
     /**
      * Constructs the container using a list of bla32 and an annotation mapping created from it.
      *
      * @param assocs gene ontology associations (annotations)
      */
-    public AssociationContainer(List<GoGaf21Annotation> assocs) {
+    public AssociationContainer(List<TermAnnotation> assocs) {
         gene2associationMap=new HashMap<>();
-        for (GoGaf21Annotation a : assocs) {
-          TermId tid = a.getDbObjectTermId();
+        for (TermAnnotation a : assocs) {
+          TermId tid = a.getLabel();
           this.gene2associationMap.putIfAbsent(tid,new ItemAssociations(tid));
           ItemAssociations g2a = gene2associationMap.get(tid);
           g2a.add(a);

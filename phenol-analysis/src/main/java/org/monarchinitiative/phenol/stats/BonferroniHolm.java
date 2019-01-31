@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
 import java.util.*;
 
 /**
@@ -13,23 +11,23 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
  */
 
-public class BonferroniHolm extends AbstractTestCorrection {
+public class BonferroniHolm<T> implements MultipleTestingCorrection<T> {
   /** The name of the correction method. */
   private static final String NAME = "Bonferroni-Holm";
 
   @Override
-  public Map<TermId, PValue> adjustPValues(IPValueCalculation pValueCalculation) {
-    Map<TermId, PValue> pvalmap = pValueCalculation.calculatePValues();
-    Pair[] pairs = getRelevantRawPValues(pvalmap);
-
-    // Adjust the p values. Note that all object within pvalmap
-    // are also objects within pairs!
-    for (int i = 0; i < pairs.length; i++) {
-      pairs[i].pval.setAdjustedPValue( pairs[i].pval.getRawPValue() * (pairs.length - i));
+  public void adjustPvals(List<Item2PValue<T>> pvals) {
+    int N=pvals.size();
+    if (N<2) return;
+    for (int r=0;r<N;r++) {
+      Item2PValue item = pvals.get(r);
+      double raw_p = item.getRawPValue();
+      item.setAdjustedPValue(raw_p * (N-1));
     }
-    enforcePValueMonotony(pairs);
-    return pvalmap;
+    enforcePValueMonotony(pvals);
   }
+
+
 
   @Override
   public String getName() {

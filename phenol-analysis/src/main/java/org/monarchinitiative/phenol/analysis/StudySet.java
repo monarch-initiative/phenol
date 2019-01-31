@@ -2,9 +2,9 @@ package org.monarchinitiative.phenol.analysis;
 
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -19,23 +19,23 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * This class holds all gene names of a study and their associated
  * (optional) descriptions. The names are extracted directly by the
  * constructor given study file. The class takes a list of genes in the constructor; the list
- * can be for the population set or the study set. It stores these genes in {@link #geneIds}, and
+ * can be for the population set or the study set. It stores these genes in {@link #annotatedItemTermIds}, and
  * creates a map for each Gene Ontology term used to directly or indirectly annotate the genes; each
  * gene is thereby associated with a list of all of the genes that annotate the terms.
  *
  * @author Peter Robinson, Sebastian Bauer
  */
 public class StudySet {
-  private final static Logger logger = Logger.getLogger(StudySet.class.getName());
-
   /**
-   * AKey: a GO id; value: a {@link TermAnnotations} object with the gene annotations of the Go Term.
+   * Key: an Ontology id (usually GO or HP); value: a {@link TermAnnotations} object with the items that the
+   * ontology term annotates.
    */
   private Map<TermId, TermAnnotations> annotationMap;
   /**
-   * List containing genes (or other items) of this set.
+   * List containing genes, diseases or other items of this set. These are the items that have been annotated
+   * with the terms of an ontology such as GO or HPO.
    */
-  private final Set<TermId> geneIds;
+  private final Set<TermId> annotatedItemTermIds;
   /**
    * The name of the study set
    */
@@ -48,7 +48,7 @@ public class StudySet {
    * @param ontology             reference to the Gene Ontology object
    */
   public StudySet(Set<TermId> genes, String name, AssociationContainer associationContainer, Ontology ontology) {
-    this.geneIds = genes;
+    this.annotatedItemTermIds = genes;
     this.name = name;
     initAssociationMap(associationContainer, ontology);
   }
@@ -63,22 +63,22 @@ public class StudySet {
   /**
    * @return set of all genes in this StudySet.
    */
-  public Set<TermId> getAllGeneIds() {
+  public Set<TermId> getAnnotatedItemTermIds() {
     return this.annotationMap.keySet();
   }
 
   /**
-   * @return set of all GO ids used to annotate the genes in this study set.
+   * @return set of all GO/HP ids used to annotate the genes in this study set.
    */
-  public Set<TermId> getAllAnnotatingTerms() {
+  public Set<TermId> getAnnotatingTermIds() {
     return this.annotationMap.keySet();
   }
 
   /**
    * return the genes annotating any gene in this study set.
    *
-   * @param goId a GeneOntology id
-   * @return TermAnnotations object with all of the genes that annotate to goId
+   * @param goId a GO or HP id
+   * @return TermAnnotations object with all of the items (genes or diseases) that annotate to goId
    */
   public TermAnnotations getAnnotatedGenes(TermId goId) {
     return this.annotationMap.get(goId);
@@ -86,32 +86,31 @@ public class StudySet {
 
   private void initAssociationMap(AssociationContainer associationContainer, Ontology ontology) {
     this.annotationMap = new HashMap<>();
-    for (TermId geneId : this.geneIds) {
+    for (TermId domainTermId : this.annotatedItemTermIds) {
       try {
-        //int idx = associationContainer.getIndex(geneId);
-        ItemAssociations assocs = associationContainer.get(geneId);
-        for (GoGaf21Annotation goAnnotation : assocs) {
+        ItemAssociations assocs = associationContainer.get(domainTermId);
+        for (TermAnnotation termAnnotation : assocs) {
           /* At first add the direct counts and remember the terms */
-          TermId goId = goAnnotation.getGoId();
+          TermId ontologyTermId = termAnnotation.getTermId();
           // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
-          Term term = ontology.getTermMap().get(goId);
+          Term term = ontology.getTermMap().get(ontologyTermId);
           if (term == null) {
-            System.err.println("Unable to retrieve term for id=" + goId.getValue());
+            System.err.println("Unable to retrieve term for id=" + ontologyTermId.getValue());
             continue;
           }
           // replace an alt_id with the primary id.
           // if we already have the primary id, nothing is changed.
           TermId primaryGoId = term.getId();
-          annotationMap.putIfAbsent(goId, new TermAnnotations());
+          annotationMap.putIfAbsent(ontologyTermId, new TermAnnotations());
           TermAnnotations termAnnots = annotationMap.get(primaryGoId);
-          termAnnots.addGeneAnnotationDirect(geneId);
+          termAnnots.addGeneAnnotationDirect(domainTermId);
           // In addition to the direct annotation, the gene is also indirectly annotated to all of the
           // GO Term's ancestors
           Set<TermId> ancs = getAncestorTerms(ontology, primaryGoId, true);
           for (TermId ancestor : ancs) {
             annotationMap.putIfAbsent(ancestor, new TermAnnotations());
             TermAnnotations termAncAnnots = annotationMap.get(ancestor);
-            termAncAnnots.addGeneAnnotationTotal(geneId);
+            termAncAnnots.addGeneAnnotationTotal(domainTermId);
           }
         }
       } catch (PhenolException e) {
@@ -124,8 +123,8 @@ public class StudySet {
   /**
    * @return the desired count of the number of genes or gene products within this studyset..
    */
-  public int getGeneCount() {
-    return geneIds.size();
+  public int getAnnotatedItemCount() {
+    return annotatedItemTermIds.size();
   }
 
   /**
@@ -137,7 +136,7 @@ public class StudySet {
 
   /* for debugging */
   public String toString() {
-    return name + " (n=" + (getGeneCount()) + ")";
+    return name + " (n=" + (getAnnotatedItemCount()) + ")";
   }
 
 
@@ -148,7 +147,7 @@ public class StudySet {
    * @return true if study contains gene, else false.
    */
   public boolean contains(TermId geneName) {
-    return geneIds.contains(geneName);
+    return annotatedItemTermIds.contains(geneName);
   }
 
 

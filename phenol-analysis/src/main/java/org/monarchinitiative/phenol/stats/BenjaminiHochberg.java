@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import java.util.Map;
+import java.util.List;
 
 /**
  *
@@ -11,7 +9,7 @@ import java.util.Map;
  * correction. It controls the FDR for independent and positive
  * regression dependent test statistics.
  *
- * The formular for p value adjustment is:
+ * The formula for p value adjustment is:
  *    adjusted-p-value = p-value * (n/n-rank),
  * with n being the number of p-values (tests) and rank being
  * the p-value's corresponding rank. Here rank starts at 0
@@ -21,24 +19,20 @@ import java.util.Map;
  * @author Sebastian Bauer
  *
  */
-public class BenjaminiHochberg extends AbstractTestCorrection
+public class BenjaminiHochberg<T> implements MultipleTestingCorrection<T>
 {
   @Override
-  public Map<TermId, PValue> adjustPValues(IPValueCalculation pValueCalculation)
-  {
-    Map<TermId, PValue> pvalmap = pValueCalculation.calculatePValues();
-    Pair [] relevantP = getRelevantRawPValues(pvalmap);
-    int n = relevantP.length;
-
-    /* Adjust the p values according to BH. Note that all object
-     * within relevantP also are objects within p!
-     */
-    for (int r=0;r<n;r++) {
-      relevantP[r].pval.setAdjustedPValue( relevantP[r].pval.getRawPValue() * n / (r + 1) );
+  public void adjustPvals(List<Item2PValue<T>> pvals) {
+    int N=pvals.size();
+    for (int r=0;r<N;r++) {
+      Item2PValue item = pvals.get(r);
+      double raw_p = item.getRawPValue();
+      item.setAdjustedPValue(raw_p * N/(r+1));
     }
-    enforcePValueMonotony(relevantP);
-    return pvalmap;
+    enforcePValueMonotony(pvals);
   }
+
+
 
   @Override
   public String getName() {

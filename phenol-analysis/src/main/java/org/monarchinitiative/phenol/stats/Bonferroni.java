@@ -6,9 +6,7 @@
  */
 package org.monarchinitiative.phenol.stats;
 
-import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import java.util.Map;
+import java.util.List;
 
 /**
  * This class implements the Bonferroni multiple test correction which is the
@@ -16,25 +14,21 @@ import java.util.Map;
  *
  * @author Sebastian Bauer
  */
-public class Bonferroni extends AbstractTestCorrection
+public class Bonferroni<T> implements MultipleTestingCorrection<T>
 {
 	/** The name of the correction method */
 	private static final String NAME = "Bonferroni";
 
   @Override
-	public Map<TermId, PValue> adjustPValues(IPValueCalculation pValueCalculation)
-	{
-		Map<TermId, PValue> pvalmap = pValueCalculation.calculatePValues();
-		int pvalsCount = (int) pvalmap.values().stream().filter(PValue::doNotIgnore).count();
+  public void adjustPvals(List<Item2PValue<T>> pvals) {
+    int N=pvals.size();
+    for (Item2PValue<T> item : pvals) {
+      double p_raw= item.getRawPValue();
+      item.setAdjustedPValue(Math.min(1.0,N*p_raw));
+    }
+  }
 
-		/* Adjust the values */
-		for (PValue p : pvalmap.values())
-		{
-			if (!p.ignoreAtMTC)
-				p.setAdjustedPValue(Math.min(1.0, p.getRawPValue() * pvalsCount));
-		}
-		return pvalmap;
-	}
+
 
 
 	public String getName()

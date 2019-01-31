@@ -5,9 +5,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.obo.go.GoGeneAnnotationParser;
-import org.monarchinitiative.phenol.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import org.monarchinitiative.phenol.analysis.*;
@@ -29,9 +29,9 @@ import org.monarchinitiative.phenol.stats.*;
  */
 public final class GoEnrichmentDemo {
   /** Path to the go.obo file */
-  private String pathGoObo;
+  private final String pathGoObo;
   /** Path to the GoGaf file. */
-  private String pathGoGaf;
+  private final String pathGoGaf;
   /** Term Id of a GO term we will investigate */
   private final TermId targetGoTerm;
 
@@ -51,7 +51,7 @@ public final class GoEnrichmentDemo {
       System.out.println("[INFO] parsed " + n_terms + " GO terms.");
       System.out.println("[INFO] parsing  " + pathGoGaf);
       final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
-      List<GoGaf21Annotation> goAnnots = annotparser.getAnnotations();
+      List<TermAnnotation> goAnnots = annotparser.getTermAnnotations();
       System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
 
       AssociationContainer associationContainer = new AssociationContainer(goAnnots);
@@ -61,33 +61,47 @@ public final class GoEnrichmentDemo {
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
       StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
-
-      IPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
+      MultipleTestingCorrection bonf = new Bonferroni();
+      TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,
         studySet,
-        hgeo);
-      AbstractTestCorrection bonf = new Bonferroni();
-      Map<TermId, PValue> pvalmap = bonf.adjustPValues(tftpvalcal);
-      System.err.println("Total number of retrieved p values: " + pvalmap.size());
+        hgeo,
+        bonf);
+
+      int popsize=populationGenes.size();
+      int studysize=studyGenes.size();
+
+      List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
+      System.err.println("Total number of retrieved p values: " + pvals.size());
       int n_sig=0;
       double ALPHA=0.00005;
-      for (TermId tid : pvalmap.keySet()) {
-        PValue pval = pvalmap.get(tid);
+      System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
+        gontology.getTermMap().get(targetGoTerm).getName(),targetGoTerm.getValue()));
+      System.out.println(String.format("Study set: %d genes. Population set: %d genes",
+        studysize,popsize));
+      for (GoTerm2PValAndCounts item : pvals) {
+        double pval =item.getRawPValue();
+        double pval_adj = item.getAdjustedPValue();
+        TermId tid = item.getItem();
         Term term = gontology.getTermMap().get(tid);
         if (term==null) {
           System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
           continue;
         }
         String label = term.getName();
-        if (pval.getAdjustedPValue() > ALPHA) {
+        if (pval_adj > ALPHA) {
           continue;
         }
         n_sig++;
-        System.out.println(String.format("%s [%s]: %.8f (adjusted %.5f)", label, tid.getValue(), pval.getRawPValue(), pval.getAdjustedPValue()));
+        double studypercentage=100.0*(double)item.getAnnotatedStudyGenes()/studysize;
+        double poppercentage=(double)item.getAnnotatedPopulationGenes()/popsize;
+        System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studypercentage,
+          item.getAnnotatedPopulationGenes(),poppercentage));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
-        n_sig,pvalmap.size(),ALPHA));
+        n_sig,pvals.size(),ALPHA));
     } catch (Exception e) {
       e.printStackTrace(); // just wimp out, we cannot recover here.
     }
@@ -95,11 +109,11 @@ public final class GoEnrichmentDemo {
 
 
 
-  private Set<TermId> getFocusedStudySet(List<GoGaf21Annotation> annots, TermId focus) {
+  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
     Set<TermId> genes = new HashSet<>();
-    for (GoGaf21Annotation ann : annots) {
-      if (focus.equals(ann.getGoId())) {
-        TermId geneId = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      if (focus.equals(ann.getTermId())) {
+        TermId geneId = ann.getLabel();
         genes.add(geneId);
       }
     }
@@ -118,8 +132,8 @@ public final class GoEnrichmentDemo {
     }
     i=0;
     M *= 3;
-    for (GoGaf21Annotation ann : annots) {
-      TermId gene = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      TermId gene = ann.getLabel();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
@@ -130,17 +144,21 @@ public final class GoEnrichmentDemo {
     return ImmutableSet.copyOf(finalGenes);
   }
 
-
-  private Set<TermId> getPopulationSet(List<GoGaf21Annotation> annots) {
+  /**
+   * Get a list of all of the labeled genes in the population set.
+   * @param annots List of annotations of genes/diseases to GO/HPO terms etc
+   * @return an immutable set of TermIds representing the labeled genes/diseases
+   */
+  private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
-    for (GoGaf21Annotation ann : annots) {
-      TermId geneId = ann.getDbObjectTermId();
+    for (TermAnnotation ann : annots) {
+      TermId geneId = ann.getLabel();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);
   }
 
-  
+
 
   @Parameters(commandDescription = "Gene Ontology Enrichment Analysis (demo)")
   public static class Options {
