@@ -28,6 +28,11 @@ public class Bonferroni<T> implements MultipleTestingCorrection<T>
     }
   }
 
+  @Override
+  public void adjustSortedPvals(List<Item2PValue<T>> pvals) {
+    adjustPvals(pvals); // no difference
+  }
+
 
 
 

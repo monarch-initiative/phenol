@@ -17,17 +17,21 @@ public class BonferroniHolm<T> implements MultipleTestingCorrection<T> {
 
   @Override
   public void adjustPvals(List<Item2PValue<T>> pvals) {
+    Collections.sort(pvals,Collections.reverseOrder());
+    adjustSortedPvals(pvals);
+  }
+
+  /** Same as {@link #adjustPvals} for a list of pre-sorted pvalues */
+  @Override
+  public void adjustSortedPvals(List<Item2PValue<T>> pvals) {
     int N=pvals.size();
-    if (N<2) return;
     for (int r=0;r<N;r++) {
       Item2PValue item = pvals.get(r);
       double raw_p = item.getRawPValue();
-      item.setAdjustedPValue(raw_p * (N-1));
+      item.setAdjustedPValue(raw_p * N/(r+1));
     }
     enforcePValueMonotony(pvals);
   }
-
-
 
   @Override
   public String getName() {

@@ -21,6 +21,16 @@ public interface MultipleTestingCorrection<T>
 	 */
   void adjustPvals(List<Item2PValue<T>> pvals);
 
+
+  /**
+   * Similar to adjust Pvals but can be used for a pre-sorted list of pvalues.
+   *
+   * @param pvals an object implementing the p value 	calculation.
+   * @return the adjusted p values matching the order of the
+   *         the p values of the nominal p value calculation.
+   */
+  void adjustSortedPvals(List<Item2PValue<T>> pvals);
+
 	/**
 	 * Return the name of the test correction.
 	 *
