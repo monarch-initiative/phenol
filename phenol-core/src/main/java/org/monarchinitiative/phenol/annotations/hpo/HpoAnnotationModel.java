@@ -43,6 +43,8 @@ public class HpoAnnotationModel {
    */
   private final Database database;
 
+  private static final String EMPTY_STRING = "";
+
   /**
    * To be used for matching n/m frequencies.
    */
@@ -108,7 +110,7 @@ public class HpoAnnotationModel {
     return entryList.size();
   }
 
-  private static final String EMPTY_STRING = "";
+
 
   private boolean divergentNegation(List<HpoAnnotationEntry> entrylist) {
     String firstItemNegated = entrylist.get(0).getNegation();
@@ -154,7 +156,6 @@ public class HpoAnnotationModel {
    * @return merged frequency string
    */
   private String mergeFrequencies(final List<HpoAnnotationEntry> entrylist) {
-    List<String> frequencyStringList = new ArrayList<>();
     int sum_of_numerators = 0;
     int sum_of_denominators = 0;
     final int DEFAULT_NUMBER_OF_OBSERVATIONS = 10;
