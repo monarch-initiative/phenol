@@ -30,9 +30,6 @@ public class HpoAnnotationFileIngestor {
     private final List<HpoAnnotationModel> v2SmallFileList =new ArrayList<>();
     /** Names of entries (small files) that we will omit because they do not represent diseases. */
     private final Set<String> omitEntries;
-
-    private final List<String> parseErrors=new ArrayList<>();
-
     /** Total number of annotations of all of the annotation files. */
     private int n_total_annotation_lines=0;
 
@@ -47,16 +44,13 @@ public class HpoAnnotationFileIngestor {
     }
 
   /**
-   *
+   * Default constructor. Will NOT merge annotation lines to same HPO term.
    * @param directoryPath path to the directory with HPO annotation "small files"
    * @param omitFile path to the {@code omit-list.txt} file with non-disease entries to be omitted
    * @param ontology reference to HPO ontology object
    */
     public HpoAnnotationFileIngestor(String directoryPath, String omitFile, Ontology ontology) {
-        omitEntries=getOmitEntries(omitFile);
-        v2smallFilePaths=getListOfV2SmallFiles(directoryPath);
-        this.ontology=ontology;
-        inputHpoAnnotationFiles();
+       this(directoryPath,omitFile,ontology,false);
     }
 
   /**
@@ -80,6 +74,9 @@ public class HpoAnnotationFileIngestor {
             HpoAnnotationFileParser parser=new HpoAnnotationFileParser(path,ontology);
             try {
                 HpoAnnotationModel v2sf = parser.parse();
+                if (mergeEntries) {
+                  v2sf=v2sf.getMergedModel();
+                }
                 n_total_annotation_lines += v2sf.getNumberOfAnnotations();
                 v2SmallFileList.add(v2sf);
             } catch (HpoAnnotationModelException hafe) {

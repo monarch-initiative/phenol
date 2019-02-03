@@ -87,7 +87,6 @@ class HpoAnnotationModelTest {
    */
   @Test
   void testMergeLacrimationAbnormalityFunction() {
-    int expected = 3;
     HpoAnnotationModel mergedModel = v2sf.getMergedModel();
     // There were two entries for Lacrimation Abnormality, HP:0040282 and 12/42.
     //HP:0040282 is frequent, 30% to 79, thus 109/2=54.5, or 5/10
