@@ -39,6 +39,8 @@ class HpoAnnotationLine {
 
   private static final String DEFAULT_FREQUENCY_STRING="n/a";
 
+  private static final String EMPTY_STRING="";
+
 
   private boolean valid_number_of_fields=true;
 
@@ -322,7 +324,7 @@ class HpoAnnotationLine {
     String [] fields={this.databaseId,
       this.DbObjectName ,
       this.phenotypeId.getValue() ,
-      this.onsetId.getValue(),
+      this.onsetId==null?EMPTY_STRING:this.onsetId.getValue(),
       this.frequency ,
       this.sex ,
       this.NOT?"NOT":"" ,
