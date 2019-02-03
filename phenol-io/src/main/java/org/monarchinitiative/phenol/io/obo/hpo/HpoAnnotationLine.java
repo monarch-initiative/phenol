@@ -319,17 +319,18 @@ class HpoAnnotationLine {
 
   @Override
   public String toString() {
-    return this.databaseId + "\t" +
-      this.DbObjectName + "\t" +
-      this.phenotypeId.getValue() + "\t" +
-      this.onsetId+ "\t" +
-      this.frequency + "\t" +
-      this.sex + "\t" +
-      this.NOT + "\t" +
-      this.aspect + "\t" +
-      this.modifierList + "\t" +
-      this.publication + "\t" +
-      this.evidence + "\t" +
-      this.biocuration;
+    String [] fields={this.databaseId,
+      this.DbObjectName ,
+      this.phenotypeId.getValue() ,
+      this.onsetId.getValue(),
+      this.frequency ,
+      this.sex ,
+      this.NOT?"NOT":"" ,
+      this.aspect,
+      this.modifierList ,
+      this.publication,
+      this.evidence ,
+      this.biocuration};
+    return String.join("\t",fields);
   }
 }
