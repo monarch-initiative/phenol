@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.obo.hpo;
 
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
@@ -25,21 +26,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class HpoDiseaseAnnotationParserTest {
 
-  private final Map<TermId, HpoDisease> diseaseMap;
+  private static Map<TermId, HpoDisease> diseaseMap;
+  private static String annotationPath;
+  private static Ontology hpoOntology;
 
-  public HpoDiseaseAnnotationParserTest() throws IOException, PhenolException {
+  @BeforeAll
+  public static void init() throws  PhenolException {
     Path testResources = Paths.get("src/test/resources");
     Path hpoHeadPath = testResources.resolve("hp_head.obo");
-    Ontology ontology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
+    hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
 
-    Path hpoAnnotationsHeadPath = testResources.resolve("phenotype_annotation_head.tab");
-    HpoDiseaseAnnotationParser hpoaParser = new HpoDiseaseAnnotationParser(hpoAnnotationsHeadPath.toFile(), ontology);
+    Path hpoAnnotationsHeadPath = testResources.resolve("annotations/phenotype_annotation_head.tab");
+    annotationPath=hpoAnnotationsHeadPath.toFile().toString();
+    HpoDiseaseAnnotationParser hpoaParser = new HpoDiseaseAnnotationParser(annotationPath, hpoOntology);
     diseaseMap = hpoaParser.parse();
   }
 
+  /**
+   * There are three different diseases in "annotations/phenotype_annotation_head.tab"
+   */
   @Test
   public void testSizeOfDiseaseMap() {
-    assertEquals(diseaseMap.size(), 2);
+    assertEquals(diseaseMap.size(), 3);
   }
 
 
@@ -114,6 +122,7 @@ public class HpoDiseaseAnnotationParserTest {
     assertEquals(1,notAbnormal.size());
     assertTrue(notAbnormal.contains(microphthalmia));
   }
+
 
 
 }

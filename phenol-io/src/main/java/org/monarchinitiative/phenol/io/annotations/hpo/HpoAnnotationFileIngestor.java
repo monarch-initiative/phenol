@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
 
+import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -29,13 +30,12 @@ public class HpoAnnotationFileIngestor {
     private final List<HpoAnnotationModel> v2SmallFileList =new ArrayList<>();
     /** Names of entries (small files) that we will omit because they do not represent diseases. */
     private final Set<String> omitEntries;
-
-    private final List<String> parseErrors=new ArrayList<>();
-
     /** Total number of annotations of all of the annotation files. */
     private int n_total_annotation_lines=0;
 
     private int n_total_omitted_entries=0;
+    /** Merge entries with the same phenotype-disease association but different metadata for the big file. */
+    private boolean mergeEntries=false;
 
     private final List<String> errors = new ArrayList<>();
 
@@ -43,12 +43,30 @@ public class HpoAnnotationFileIngestor {
         return v2SmallFileList;
     }
 
+  /**
+   * Default constructor. Will NOT merge annotation lines to same HPO term.
+   * @param directoryPath path to the directory with HPO annotation "small files"
+   * @param omitFile path to the {@code omit-list.txt} file with non-disease entries to be omitted
+   * @param ontology reference to HPO ontology object
+   */
     public HpoAnnotationFileIngestor(String directoryPath, String omitFile, Ontology ontology) {
-        omitEntries=getOmitEntries(omitFile);
-        v2smallFilePaths=getListOfV2SmallFiles(directoryPath);
-        this.ontology=ontology;
-        inputHpoAnnotationFiles();
+       this(directoryPath,omitFile,ontology,false);
     }
+
+  /**
+   *
+   * @param directoryPath path to the directory with HPO annotation "small files"
+   * @param omitFile path to the {@code omit-list.txt} file with non-disease entries to be omitted
+   * @param ontology reference to HPO ontologt object
+   * @param merge Should we merge small file lines with the same HPO but different metadata?
+   */
+  public HpoAnnotationFileIngestor(String directoryPath, String omitFile, Ontology ontology, boolean merge) {
+    omitEntries=getOmitEntries(omitFile);
+    this.mergeEntries=merge;
+    v2smallFilePaths=getListOfV2SmallFiles(directoryPath);
+    this.ontology=ontology;
+    inputHpoAnnotationFiles();
+  }
 
     private void inputHpoAnnotationFiles() {
         int i=0;
@@ -56,6 +74,9 @@ public class HpoAnnotationFileIngestor {
             HpoAnnotationFileParser parser=new HpoAnnotationFileParser(path,ontology);
             try {
                 HpoAnnotationModel v2sf = parser.parse();
+                if (mergeEntries) {
+                  v2sf=v2sf.getMergedModel();
+                }
                 n_total_annotation_lines += v2sf.getNumberOfAnnotations();
                 v2SmallFileList.add(v2sf);
             } catch (HpoAnnotationModelException hafe) {
@@ -74,10 +95,12 @@ public class HpoAnnotationFileIngestor {
      * OMIM:107850   trait
      * OMIM:147320   legacy
      * </pre>
+     * If this file is not passed (is null or empty), then we return the empty set.
      * @param path the path to {@code omit-list.txt}
      * @return List of entries (encoded as strings like "OMIM:600123") that should be omitted
      */
     private Set<String> getOmitEntries(String path) {
+      if (path==null || path.isEmpty()) return ImmutableSet.of();
         Set<String> entrylist=new HashSet<>();
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;

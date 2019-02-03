@@ -39,6 +39,8 @@ class HpoAnnotationLine {
 
   private static final String DEFAULT_FREQUENCY_STRING="n/a";
 
+  private static final String EMPTY_STRING="";
+
 
   private boolean valid_number_of_fields=true;
 
@@ -319,17 +321,18 @@ class HpoAnnotationLine {
 
   @Override
   public String toString() {
-    return this.databaseId + "\t" +
-      this.DbObjectName + "\t" +
-      this.phenotypeId.getValue() + "\t" +
-      this.onsetId+ "\t" +
-      this.frequency + "\t" +
-      this.sex + "\t" +
-      this.NOT + "\t" +
-      this.aspect + "\t" +
-      this.modifierList + "\t" +
-      this.publication + "\t" +
-      this.evidence + "\t" +
-      this.biocuration;
+    String [] fields={this.databaseId,
+      this.DbObjectName ,
+      this.phenotypeId.getValue() ,
+      this.onsetId==null?EMPTY_STRING:this.onsetId.getValue(),
+      this.frequency ,
+      this.sex ,
+      this.NOT?"NOT":"" ,
+      this.aspect,
+      this.modifierList ,
+      this.publication,
+      this.evidence ,
+      this.biocuration};
+    return String.join("\t",fields);
   }
 }
