@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test whether the BH implementation is working correctly
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *  [1] 0.00150000 0.00300000 0.00950000 0.03562500 0.06030000 0.06385714 0.06385714 0.06450000 0.07650000 0.48600000 0.58118182
  * [12] 0.71487500 0.75323077 0.81321429 1.00000000
  */
-public class BenjaminiHochbergTest {
+class BenjaminiHochbergTest {
 
 
   private static final double EPSILON=0.00001;
@@ -30,13 +31,26 @@ public class BenjaminiHochbergTest {
     pvallist =  new MadeUpPValues().getRawPValues();
   }
 
+  /** Convenience method to retrieve the correct item for testing. */
+  private Item2PValue<TermId> getResult(TermId tid, List<Item2PValue<TermId>> lst) {
+    for (Item2PValue<TermId> item : lst) {
+      if (item.getItem().equals(tid)) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+
   /** 0.0001 and  0.00150000 */
   @Test
   void testA() {
     MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
     bonf.adjustPvals(pvallist);
     // index 0
-    double adjpval = pvallist.get(0).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
+    Item2PValue<TermId> item = getResult(MadeUpPValues.A,pvallist);
+    assertNotNull(item);
+    double adjpval = item.getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
     assertEquals(0.00150000,adjpval,EPSILON);
   }
 

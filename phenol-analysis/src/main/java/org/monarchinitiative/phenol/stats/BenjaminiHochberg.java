@@ -24,13 +24,7 @@ public class BenjaminiHochberg<T> implements MultipleTestingCorrection<T>
 {
   @Override
   public void adjustPvals(List<Item2PValue<T>> pvals) {
-    Collections.sort(pvals,Collections.reverseOrder());
-    adjustSortedPvals(pvals);
-  }
-
-
-  @Override
-  public void adjustSortedPvals(List<Item2PValue<T>> pvals) {
+    Collections.sort(pvals);
     int N=pvals.size();
     for (int r=0;r<N;r++) {
       Item2PValue item = pvals.get(r);

@@ -11,7 +11,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
