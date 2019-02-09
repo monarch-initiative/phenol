@@ -4,17 +4,8 @@ Phenotype Ontology Library: Phenol
 
 Phenol is a modern Java (version 8 and above) library for working with
 phenotype and other attribute ontologies (including Gene Ontology). Phenolib
-was forked from `Ontolib <https://github.com/Phenomics/ontolib>`_  and is being extended to add additional functionality
-for working with phenotype annotations.
-
-
--------
-Warning
--------
-Phenol is undergoing substantial refactoring and is currently not intended for the faint of heart. We anticipate that
-phenol will be suitable for external use by Summer 2018.
-
-
+was forked from `Ontolib <https://github.com/Phenomics/ontolib>`_  and has been extended to add additional functionality
+for working with phenotype annotations, as well as support Gene Ontology overrepresentation analysis, and working with some other ontologies.
 
 
 -------------
@@ -23,17 +14,17 @@ Quick Example
 
   .. code-block:: java
 
-    HpoOntology hpo;
-    try (HpoOboParser hpoOboParser = new HpoOboParser(new File("hp.obo"))) {
-      hpo = hpoOboParser.parse();
-    } except (IOException e) {
-      System.exit(1);
+    String hpoOboFilePath=...; // initialize to path of hp.obo file
+    Ontology hpo =  OntologyLoader.loadOntology(new File(hpoOboFilePath));
+    if (ontology==null) {
+      throw new PhenolRuntimeException("Could not load ontology from \"" + hpoOboFilePath +"\"");
     }
-
-    Ontology<HpoTerm, HpoTermRelation> abnormalPhenoSubOntology =
-      hpo.getPhenotypicAbnormalitySubOntology();
-    for (TermId termId : abnormalPhenoSubOntology.getNonObsoleteTermIds()) {
-      // ...
+    // The following will process all of the terms of the Phenotypic Abnormality subontology
+    // and ignore terms from other subontologies such as Clinical Modifier
+    final TermId PHENOTYPIC_ABNORMALITY = TermId.of("HP:0000118");
+    for (TermId tid : getDescendents(ontology, PHENOTYPIC_ABNORMALITY)) {
+      Term hpoTerm = ontology.getTermMap().get(tid);
+      // ... do something with the Term
     }
 
 --------

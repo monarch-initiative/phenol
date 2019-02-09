@@ -9,3 +9,4 @@ Authors
 - Sebastian Koehler
 - Manuel Holtgrewe
 - HyeongSik Kim
+- Michael Gargano
