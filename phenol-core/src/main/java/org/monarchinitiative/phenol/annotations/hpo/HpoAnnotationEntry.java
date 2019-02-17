@@ -9,6 +9,9 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.Optional;
 import java.util.Set;
@@ -23,7 +26,9 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoAnnotationEntry {
-    private final static String EMPTY_STRING="";
+  final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
+
+  private final static String EMPTY_STRING="";
     /** The CURIE of the disease, e.g., OMIM:600201 (Field #0). */
     private final String diseaseID;
     /** Field #2 */
@@ -369,8 +374,8 @@ public class HpoAnnotationEntry {
             TermId currentPhenotypeId  = ontology.getPrimaryTermId(phenotypeId);
             if (currentPhenotypeId !=null && ! currentPhenotypeId.equals(phenotypeId)) {
                 String newLabel=ontology.getTermMap().get(phenotypeId).getName();
-                System.err.println(String.format("Replacing obsolete TermId %s with current ID %s (and obsolete label %s with current label %s)",
-                        hpoId,currentPhenotypeId.getValue(),hpoLabel,newLabel));
+                logger.warn("{}: Replacing obsolete TermId \"{}\" with current ID \"{}\" (and obsolete label {} with current label {})",
+                        diseaseID,hpoId,currentPhenotypeId.getValue(),hpoLabel,newLabel);
                 phenotypeId=currentPhenotypeId;
                 hpoLabel=newLabel;
             }
@@ -378,8 +383,8 @@ public class HpoAnnotationEntry {
             if (currentPhenotypeId!=null) { // we can only get new name if we got the new id!
                 String currentPhenotypeLabel = ontology.getTermMap().get(phenotypeId).getName();
                 if (currentPhenotypeLabel != null && !hpoLabel.equals(currentPhenotypeLabel)) {
-                    System.err.println(String.format("Replacing obsolete Term label \"%s\" with current label \"%s\"",
-                            hpoLabel, currentPhenotypeLabel));
+                    logger.warn("{}: Replacing obsolete Term label \"{}\" with current label \"{}\"",
+                            diseaseID,hpoLabel, currentPhenotypeLabel);
                     hpoLabel = currentPhenotypeLabel;
                 }
             }
