@@ -57,7 +57,7 @@ public final class ObjectScoreDistribution implements Serializable {
   public double estimatePValue(double score) {
     Entry<Double, Double> previous = null;
     for (Entry<Double, Double> entry : cumulativeFrequencies.entrySet()) {
-      if (previous == null && score < entry.getKey()) {
+      if (previous == null && score <= entry.getKey()) {
         return 1.0; // smaller than all
       }
       if (previous != null && previous.getKey() <= score && score < entry.getKey()) {
