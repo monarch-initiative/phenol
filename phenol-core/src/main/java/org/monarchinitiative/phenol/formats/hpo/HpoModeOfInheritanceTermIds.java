@@ -6,8 +6,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * Utility class with constants from "Mode of Inheritance" sub ontology.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
- * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a> * @author <a
- *     href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public final class HpoModeOfInheritanceTermIds {
 

@@ -18,7 +18,7 @@ public enum HpoOnset {
   NEONATAL_ONSET,
   /** Onset within the first 12 months of life */
   INFANTILE_ONSET,
-  /** Onset between the ages of one and five years: 1<= age <5 */
+  /** Onset between the ages of one and five years: at least one but less than 5 years */
   CHILDHOOD_ONSET,
   /** Onset between 5 and 15 years */
   JUVENILE_ONSET,

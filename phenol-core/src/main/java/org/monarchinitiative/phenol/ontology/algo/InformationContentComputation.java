@@ -39,7 +39,7 @@ public final class InformationContentComputation {
    * Perform the actual computation.
    *
    * <p>Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
-   * achieve this using {@link TermIds#augmentWithAncestors(ImmutableOntology, Set, boolean)}.
+   * achieve this using {@link TermIds#augmentWithAncestors(Ontology, Set, boolean)}.
    *
    * @param termLabels Labels (for diseases, genes, ie., the objects being annotated to ontology terms() for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.

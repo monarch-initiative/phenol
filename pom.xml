@@ -259,7 +259,12 @@
         <!-- Generate javadocs -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
+        <configuration>
+          <javadocVersion>${java.version}</javadocVersion>
+        <!--  <javadocExecutable>/usr/lib/jvm/java-8-oracle/bin/javadoc</javadocExecutable> -->
+          <doclint>none</doclint>
+        </configuration>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -268,9 +273,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <doclint>none</doclint>
-        </configuration>
       </plugin>
 
       <plugin>

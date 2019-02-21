@@ -60,7 +60,7 @@ public final class OntologyTerms {
    * @param termId The root of the sub ontology DAG to query for.
    * @param ontology The {@link Ontology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of children of the term corresponding to
-   *     {@link @termId} (including {@link TermId}).
+   *     {@link TermId} (including {@link TermId}).
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology> Set<TermId> childrenOf(TermId termId, O ontology) {
@@ -112,7 +112,7 @@ public final class OntologyTerms {
    * @param termId The {@link TermId} of the term to visit the parents of.
    * @param ontology The {@link Ontology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of parents of the term corresponding to
-   *     {@link @termId} (including {@link TermId}).
+   *     {@link TermId}).
    * @param <O> {@link Ontology} specialization to use.
    */
   public static <O extends Ontology> Set<TermId> parentsOf(TermId termId, O ontology) {
