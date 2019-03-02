@@ -23,7 +23,7 @@ import java.util.List;
 public class BenjaminiHochberg<T> implements MultipleTestingCorrection<T>
 {
   @Override
-  public void adjustPvals(List<Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
     Collections.sort(pvals);
     int N=pvals.size();
     for (int r=0;r<N;r++) {
