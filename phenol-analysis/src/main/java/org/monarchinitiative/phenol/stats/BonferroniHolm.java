@@ -16,7 +16,7 @@ public class BonferroniHolm<T> implements MultipleTestingCorrection<T> {
   private static final String NAME = "Bonferroni-Holm";
 
   @Override
-  public void adjustPvals(List<Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
     Collections.sort(pvals);
     int N=pvals.size();
     for (int r=0;r<N;r++) {

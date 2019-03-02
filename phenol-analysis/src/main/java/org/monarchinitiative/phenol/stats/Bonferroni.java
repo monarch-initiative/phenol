@@ -20,7 +20,7 @@ public class Bonferroni<T> implements MultipleTestingCorrection<T>
 	private static final String NAME = "Bonferroni";
 
   @Override
-  public void adjustPvals(List<Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
     int N=pvals.size();
     for (Item2PValue<T> item : pvals) {
       double p_raw= item.getRawPValue();

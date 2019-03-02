@@ -6,7 +6,7 @@ import java.util.List;
 public class BenjaminiYekutieli<T> implements MultipleTestingCorrection<T> {
 
   @Override
-  public void adjustPvals(List<Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
     Collections.sort(pvals);
     int N = pvals.size();
     double h = 0.0;
