@@ -26,6 +26,7 @@ public class ObjectScoreDistributionTest {
   @Test
   public void testEstimatePValue() {
     assertEquals(1.0, objDist.estimatePValue(0.0), 0.01);
+    assertEquals(1.0, objDist.estimatePValue(0.1), 0.01);
     assertEquals(0.82, objDist.estimatePValue(0.2), 0.01);
     assertEquals(0.82, objDist.estimatePValue(0.4), 0.01);
     assertEquals(0.42, objDist.estimatePValue(0.6), 0.01);
