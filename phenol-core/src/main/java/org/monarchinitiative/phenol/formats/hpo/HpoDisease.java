@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ImmutableList;
 
@@ -32,6 +33,11 @@ public final class HpoDisease {
   private final List<TermId> modesOfInheritance;
   /** {@link TermId}s that do NOT characterize this disease. */
   private final List<TermId> negativeAnnotations;
+  /** {@link TermId}s for clinical modifiers. */
+  private final List<TermId> clinicalModifiers;
+  /** {@link TermId}s clinical courses. */
+  private final List<TermId> clinicalCourses;
+
 
   public TermId getDiseaseDatabaseId() {
     return diseaseDatabaseId;
@@ -44,6 +50,7 @@ public final class HpoDisease {
    * @param phenotypicAbnormalities {@link List} of phenotypic abnormalities with their frequencies.
    * @param modesOfInheritance {@link List} of modes of inheritance with their frequencies.
    */
+  @Deprecated
   public HpoDisease(
       String name,
       TermId databaseId,
@@ -55,6 +62,26 @@ public final class HpoDisease {
     this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
     this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
     this.negativeAnnotations = ImmutableList.copyOf(notTerms);
+    this.clinicalModifiers = ImmutableList.of();
+    this.clinicalCourses = ImmutableList.of();
+
+  }
+
+  public HpoDisease(
+    String name,
+    TermId databaseId,
+    List<HpoAnnotation> phenotypicAbnormalities,
+    List<TermId> modesOfInheritance,
+    List<TermId> notTerms,
+    List<TermId> clinicalModifiers,
+    List<TermId> clinicalCourses) {
+    this.name = name;
+    this.diseaseDatabaseId = databaseId;
+    this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
+    this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
+    this.negativeAnnotations = ImmutableList.copyOf(notTerms);
+    this.clinicalModifiers = ImmutableList.copyOf(clinicalModifiers);
+    this.clinicalCourses = ImmutableList.copyOf(clinicalCourses);
   }
 
   /** @return The name of the disease. */
@@ -84,6 +111,14 @@ public final class HpoDisease {
 
   public List<TermId> getNegativeAnnotations() {
     return this.negativeAnnotations;
+  }
+
+  public List<TermId> getClinicalModifiers() {
+    return clinicalModifiers;
+  }
+
+  public List<TermId> getClinicalCourses() {
+    return clinicalCourses;
   }
 
   /**

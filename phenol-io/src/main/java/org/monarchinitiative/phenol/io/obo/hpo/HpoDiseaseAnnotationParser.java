@@ -142,11 +142,17 @@ public class HpoDiseaseAnnotationParser {
       final ImmutableList.Builder<HpoAnnotation> phenoListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
       final ImmutableList.Builder<TermId> negativeTermListBuilder = ImmutableList.builder();
+      final ImmutableList.Builder<TermId> clinicalModifierListBuilder = ImmutableList.builder();
+      final ImmutableList.Builder<TermId> clinicalCourseListBuilder = ImmutableList.builder();
       String diseaseName = null;
       for (HpoAnnotationLine line : annots) {
         try {
           if (isInheritanceTerm(line.getPhenotypeId())) {
             inheritanceListBuilder.add(line.getPhenotypeId());
+          } else if (isClinicalModifierTerm(line.getPhenotypeId())) {
+            clinicalModifierListBuilder.add(line.getPhenotypeId());
+          } else if (isClinicalCourse(line.getPhenotypeId())) {
+            clinicalCourseListBuilder.add(line.getPhenotypeId());
           } else if (line.isNOT()) {
             negativeTermListBuilder.add(line.getPhenotypeId());
           } else {
@@ -165,7 +171,9 @@ public class HpoDiseaseAnnotationParser {
           diseaseId,
           phenoListBuilder.build(),
           inheritanceListBuilder.build(),
-          negativeTermListBuilder.build());
+          negativeTermListBuilder.build(),
+          clinicalModifierListBuilder.build(),
+          clinicalCourseListBuilder.build());
       this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
     this.errors=errorbuilder.build();
@@ -183,5 +191,15 @@ public class HpoDiseaseAnnotationParser {
    */
   private boolean isInheritanceTerm(TermId tid) {
     return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
+  }
+
+  private boolean isClinicalModifierTerm(TermId tid) {
+    final TermId CLINICAL_MODIFIER_ROOT = TermId.of("HP:0012823");
+    return tid.equals(CLINICAL_MODIFIER_ROOT) || existsPath(this.ontology,tid,CLINICAL_MODIFIER_ROOT);
+  }
+
+  private boolean isClinicalCourse(TermId tid) {
+    final TermId CLINICAL_COURSE = TermId.of("HP:0031797");
+    return tid.equals(CLINICAL_COURSE) || existsPath(this.ontology,tid,CLINICAL_COURSE);
   }
 }
