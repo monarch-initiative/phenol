@@ -112,10 +112,16 @@ public final class HpoDisease {
     return this.negativeAnnotations;
   }
 
+  /**
+   * @return The list of clinical modifiers for the disease
+   */
   public List<TermId> getClinicalModifiers() {
     return clinicalModifiers;
   }
 
+  /**
+   * @return The list of clinical course terms for the disease
+   */
   public List<TermId> getClinicalCourses() {
     return clinicalCourses;
   }

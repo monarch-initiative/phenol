@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
@@ -193,11 +192,29 @@ public class HpoDiseaseAnnotationParser {
     return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
   }
 
+  /**
+   * Check whether a term is a member of the clinical modifier subontology.
+   * We check whether there is a path between the term and the root of the clinical modifier ontology.
+   * We also check whether the term is itself the root of the clinical modifier ontology because
+   * there cannot be a path between a term and itself.
+   *
+   * @param tid A term to be checked
+   * @return true of tid is a clinical modifier term
+   */
   private boolean isClinicalModifierTerm(TermId tid) {
     final TermId CLINICAL_MODIFIER_ROOT = TermId.of("HP:0012823");
     return tid.equals(CLINICAL_MODIFIER_ROOT) || existsPath(this.ontology,tid,CLINICAL_MODIFIER_ROOT);
   }
 
+  /**
+   * Check whether a term is a member of the clinical course subontology.
+   * We check whether there is a path between the term and the root of the clinical course ontology.
+   * We also check whether the term is itself the root of the clinical course ontology because
+   * there cannot be a path between a term and itself.
+   *
+   * @param tid A term to be checked
+   * @return true of tid is a clinical course term
+   */
   private boolean isClinicalCourse(TermId tid) {
     final TermId CLINICAL_COURSE = TermId.of("HP:0031797");
     return tid.equals(CLINICAL_COURSE) || existsPath(this.ontology,tid,CLINICAL_COURSE);
