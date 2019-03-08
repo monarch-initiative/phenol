@@ -186,7 +186,7 @@ public class HpoDiseaseAnnotationParser {
    * there cannot be a path between a term and itself.
    *
    * @param tid A term to be checked
-   * @return true of tid is an inheritance term
+   * @return true if tid is an inheritance term
    */
   private boolean isInheritanceTerm(TermId tid) {
     return tid.equals(INHERITANCE_ROOT) || existsPath(this.ontology,tid,INHERITANCE_ROOT);
@@ -199,7 +199,7 @@ public class HpoDiseaseAnnotationParser {
    * there cannot be a path between a term and itself.
    *
    * @param tid A term to be checked
-   * @return true of tid is a clinical modifier term
+   * @return true if tid is a clinical modifier term
    */
   private boolean isClinicalModifierTerm(TermId tid) {
     final TermId CLINICAL_MODIFIER_ROOT = TermId.of("HP:0012823");
@@ -213,7 +213,7 @@ public class HpoDiseaseAnnotationParser {
    * there cannot be a path between a term and itself.
    *
    * @param tid A term to be checked
-   * @return true of tid is a clinical course term
+   * @return true if tid is a clinical course term
    */
   private boolean isClinicalCourse(TermId tid) {
     final TermId CLINICAL_COURSE = TermId.of("HP:0031797");
