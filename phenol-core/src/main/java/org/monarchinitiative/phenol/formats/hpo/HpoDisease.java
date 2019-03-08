@@ -32,29 +32,31 @@ public final class HpoDisease {
   private final List<TermId> modesOfInheritance;
   /** {@link TermId}s that do NOT characterize this disease. */
   private final List<TermId> negativeAnnotations;
+  /** {@link TermId}s for clinical modifiers, including Incomplete penetrance . */
+  private final List<TermId> clinicalModifiers;
+  /** {@link TermId}s clinical course representing Onset, Mortality, Pace of progression and Temporal pattern . */
+  private final List<TermId> clinicalCourseList;
+
 
   public TermId getDiseaseDatabaseId() {
     return diseaseDatabaseId;
   }
 
-  /**
-   * Constructor.
-   *
-   * @param name Name of the disease.
-   * @param phenotypicAbnormalities {@link List} of phenotypic abnormalities with their frequencies.
-   * @param modesOfInheritance {@link List} of modes of inheritance with their frequencies.
-   */
   public HpoDisease(
-      String name,
-      TermId databaseId,
-      List<HpoAnnotation> phenotypicAbnormalities,
-      List<TermId> modesOfInheritance,
-      List<TermId> notTerms) {
+    String name,
+    TermId databaseId,
+    List<HpoAnnotation> phenotypicAbnormalities,
+    List<TermId> modesOfInheritance,
+    List<TermId> notTerms,
+    List<TermId> clinicalModifiers,
+    List<TermId> clinicalCourses) {
     this.name = name;
     this.diseaseDatabaseId = databaseId;
     this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
     this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
     this.negativeAnnotations = ImmutableList.copyOf(notTerms);
+    this.clinicalModifiers = ImmutableList.copyOf(clinicalModifiers);
+    this.clinicalCourseList = ImmutableList.copyOf(clinicalCourses);
   }
 
   /** @return The name of the disease. */
@@ -84,6 +86,20 @@ public final class HpoDisease {
 
   public List<TermId> getNegativeAnnotations() {
     return this.negativeAnnotations;
+  }
+
+  /**
+   * @return The list of clinical modifiers for the disease
+   */
+  public List<TermId> getClinicalModifiers() {
+    return clinicalModifiers;
+  }
+
+  /**
+   * @return The list of clinical course terms for the disease
+   */
+  public List<TermId> getClinicalCourseList() {
+    return clinicalCourseList;
   }
 
   /**
