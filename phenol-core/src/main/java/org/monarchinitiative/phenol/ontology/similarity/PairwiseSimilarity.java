@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -12,7 +11,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-interface PairwiseSimilarity {
+public interface PairwiseSimilarity {
 
   /**
    * Compute similarity score between two terms, given their {@link TermId}s.
