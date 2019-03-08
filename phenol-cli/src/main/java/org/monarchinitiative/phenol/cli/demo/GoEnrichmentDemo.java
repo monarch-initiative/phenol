@@ -61,7 +61,7 @@ public final class GoEnrichmentDemo {
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
       StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
-      MultipleTestingCorrection bonf = new Bonferroni();
+      MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni();
       TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,
