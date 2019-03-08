@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v1.3.3
+------
+- Various bug fixes
+
+------
 v1.3.0
 ------
 - refactored TermAnnotation interface to use TermId instead of String to identify objects being annotation
