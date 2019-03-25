@@ -61,7 +61,7 @@ public final class GoEnrichmentDemo {
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
       StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
       Hypergeometric hgeo = new Hypergeometric();
-      MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni();
+      MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni<>();
       TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,
@@ -95,7 +95,7 @@ public final class GoEnrichmentDemo {
         }
         n_sig++;
         double studypercentage=100.0*(double)item.getAnnotatedStudyGenes()/studysize;
-        double poppercentage=(double)item.getAnnotatedPopulationGenes()/popsize;
+        double poppercentage=100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
         System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
           label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studypercentage,
           item.getAnnotatedPopulationGenes(),poppercentage));
