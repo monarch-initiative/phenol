@@ -2,8 +2,7 @@ package org.monarchinitiative.phenol.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.cli.demo.ComputeSimilarityDemo;
+import org.monarchinitiative.phenol.cli.demo.DiseasePairwiseSimilarityDemo;
 import org.monarchinitiative.phenol.cli.demo.GoEnrichmentDemo;
 import org.monarchinitiative.phenol.cli.demo.ParsingBenchmark;
 import org.slf4j.Logger;
@@ -25,12 +24,12 @@ public class Main {
   private static final String BENCHMARK = "benchmark";
   private static final String HPO_SIM="hpo-sim";
 
-  public static void main(String[] argv) throws PhenolException {
+  public static void main(String[] argv)  {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final GoEnrichmentDemo.Options godemo = new GoEnrichmentDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
-    final ComputeSimilarityDemo.Options hpo_sim = new ComputeSimilarityDemo.Options();
+    final DiseasePairwiseSimilarityDemo.Options hpo_sim = new DiseasePairwiseSimilarityDemo.Options();
     final JCommander jc =
         JCommander.newBuilder()
             .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
@@ -42,8 +41,8 @@ public class Main {
     try {
       jc.parse(argv);
     } catch (ParameterException e) {
-      LOGGER.error("ERROR: " + e.getMessage());
-      jc.usage();
+      System.err.println("[ERROR]: " + e.getMessage());
+      //jc.usage();
       System.exit(1);
     }
 
@@ -66,7 +65,7 @@ public class Main {
         new ParsingBenchmark(bench).run();
         break;
       case HPO_SIM:
-        new ComputeSimilarityDemo(hpo_sim).run();
+        new DiseasePairwiseSimilarityDemo(hpo_sim).run();
     }
   }
 }
