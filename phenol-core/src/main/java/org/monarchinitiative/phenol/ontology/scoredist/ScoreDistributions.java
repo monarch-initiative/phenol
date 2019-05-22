@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public final class ScoreDistributions {
    * @return Merge result.
    * @throws CannotMergeScoreDistributions In case of problems with {@code distributions}.
    */
-  public static ScoreDistribution merge(Collection<ScoreDistribution> distributions) {
+  public static <T extends Serializable> ScoreDistribution merge(Collection<ScoreDistribution<T>> distributions) {
     if (distributions.isEmpty()) {
       throw new CannotMergeScoreDistributions("Cannot merge zero ScoreDistributions objects.");
     }
@@ -31,10 +32,10 @@ public final class ScoreDistributions {
       throw new CannotMergeScoreDistributions("Different numbers of terms used for precomputation");
     }
 
-    Map<Integer, ObjectScoreDistribution> mapping = new HashMap<>();
-    for (ScoreDistribution d : distributions) {
+    Map<Integer, ObjectScoreDistribution<T>> mapping = new HashMap<>();
+    for (ScoreDistribution<T> d : distributions) {
       for (Integer objectId : d.getObjectIds()) {
-        final ObjectScoreDistribution dist = d.getObjectScoreDistribution(objectId);
+        final ObjectScoreDistribution<T> dist = d.getObjectScoreDistribution(objectId);
         if (mapping.containsKey(objectId)) {
           throw new CannotMergeScoreDistributions("Duplicate object ID " + objectId + " detected");
         } else {
@@ -52,7 +53,7 @@ public final class ScoreDistributions {
    * @param distributions {@link ScoreDistribution}s to merge.
    * @return Merge result.
    */
-  public static ScoreDistribution merge(ScoreDistribution... distributions) {
+  public static <T extends Serializable> ScoreDistribution<T> merge(ScoreDistribution<T>... distributions) {
     return merge(Arrays.asList(distributions));
   }
 }

@@ -4,6 +4,7 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,7 +26,7 @@ import java.util.TreeMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class H2ScoreDistributionReader implements ScoreDistributionReader {
+public class H2ScoreDistributionReader<T extends Serializable> implements ScoreDistributionReader<T> {
 
   /** Path to database. */
   private final String pathDb;
@@ -95,7 +96,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   }
 
   @Override
-  public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
+  public ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, int objectId)
       throws PhenolException {
     try (final PreparedStatement stmt =
         conn.prepareStatement(
@@ -126,7 +127,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
    * @return {@link ObjectScoreDistribution} constructed from {@code rs}.
    * @throws SQLException In the case of a problem with retrieving the data.
    */
-  private ObjectScoreDistribution objectScoreDistributionFromResultSet(ResultSet rs)
+  private ObjectScoreDistribution<T> objectScoreDistributionFromResultSet(ResultSet rs)
       throws SQLException {
     final int termCount = rs.getInt(1);
     final int objectId = rs.getInt(2);
@@ -141,15 +142,15 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   }
 
   @Override
-  public ScoreDistribution readForTermCount(int termCount) throws PhenolException {
-    final Map<Integer, ObjectScoreDistribution> dists = new HashMap<>();
+  public ScoreDistribution<T> readForTermCount(int termCount) throws PhenolException {
+    final Map<T, ObjectScoreDistribution<T>> dists = new HashMap<>();
 
     try (final PreparedStatement stmt =
         conn.prepareStatement(String.format(H2_SELECT_BY_TERM_COUNT_STATEMENT, tableName))) {
       stmt.setInt(1, termCount);
       try (final ResultSet rs = stmt.executeQuery()) {
         while (rs.next()) {
-          final ObjectScoreDistribution objScoreDist = objectScoreDistributionFromResultSet(rs);
+          final ObjectScoreDistribution<T> objScoreDist = objectScoreDistributionFromResultSet(rs);
           dists.put(objScoreDist.getObjectId(), objScoreDist);
         }
       }
@@ -166,7 +167,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
   }
 
   @Override
-  public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
+  public Map<Integer, ScoreDistribution<T>> readAll() throws PhenolException {
     // Get all term counts.
     final List<Integer> termCounts = new ArrayList<>();
     try (final PreparedStatement stmt =
@@ -180,7 +181,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
     }
 
     // Query for all term counts.
-    final Map<Integer, ScoreDistribution> result = new HashMap<>();
+    final Map<Integer, ScoreDistribution<T>> result = new HashMap<>();
     for (int termCount : termCounts) {
       result.put(termCount, readForTermCount(termCount));
     }

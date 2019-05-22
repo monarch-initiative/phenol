@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class ScoreDistributionTest {
 
-  ScoreDistribution dist;
+  ScoreDistribution<Integer> dist;
 
   @BeforeEach
   public void setUp() {
@@ -26,6 +26,6 @@ public class ScoreDistributionTest {
   public void testQueries() {
     assertEquals(2, dist.getNumTerms());
     assertEquals("[1]", dist.getObjectIds().toString());
-    assertEquals(1, dist.getObjectScoreDistribution(1).getObjectId());
+    assertEquals(1, dist.getObjectScoreDistribution(1).getObjectId().intValue());
   }
 }
