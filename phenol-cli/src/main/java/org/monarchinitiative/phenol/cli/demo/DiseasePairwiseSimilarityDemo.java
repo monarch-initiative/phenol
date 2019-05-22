@@ -165,8 +165,6 @@ public class DiseasePairwiseSimilarityDemo {
     System.out.println(String.format("name: %s  params %s",
       resnikSimilarity.getName(),
       resnikSimilarity.getParameters()));
-    // example of computing score between the sets of HPO terms that annotate two
-    // diseases (get the diseases at random)
     System.out.println("[INFO] Calculating pairwise phenotype similarity for " + diseaseMap.size() + "diseases." );
     List<HpoDisease> diseaseList = new ArrayList<>(diseaseMap.values());
 
@@ -205,8 +203,8 @@ public class DiseasePairwiseSimilarityDemo {
       String [] fields = {"disease1","disease2","similarity"};
       String header = String.join("\t",fields);
       writer.write(header + "\n");
-      for (int i=0;i<N;i++) {
-        for (int j = i; j < N; j++) {
+      for (int i=0;i<N-1;i++) {
+        for (int j = i+1; j < N; j++) {
           if (similarityScores[i][j]>threshold) {
             String d1 = diseaseList.get(i).getDiseaseDatabaseId().getValue();
             String d2 = diseaseList.get(j).getDiseaseDatabaseId().getValue();
