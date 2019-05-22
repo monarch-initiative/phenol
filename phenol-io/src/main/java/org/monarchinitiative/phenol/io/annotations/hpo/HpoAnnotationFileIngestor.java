@@ -4,6 +4,7 @@ package org.monarchinitiative.phenol.io.annotations.hpo;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.io.BufferedReader;
@@ -82,6 +83,10 @@ public class HpoAnnotationFileIngestor {
             } catch (HpoAnnotationModelException hafe) {
                 System.err.println(String.format("Errors encountered with V2 small file at %s: {%s",
                   path, hafe.getMessage()));
+            } catch (PhenolRuntimeException pre) {
+              System.err.println(String.format("[ERROR] PhenolRuntimeException: with file %s: %s", path,pre.getMessage()));
+              throw pre;
+
             }
         }
     }
