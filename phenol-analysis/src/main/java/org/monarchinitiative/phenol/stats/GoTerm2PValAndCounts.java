@@ -13,8 +13,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public class GoTerm2PValAndCounts extends Item2PValue<TermId>
 {
 
-  private int annotatedStudyGenes;
-  private int annotatedPopulationGenes;
+  private final int annotatedStudyGenes;
+  private final int annotatedPopulationGenes;
 
   public GoTerm2PValAndCounts(TermId goId, double raw_pval, int annotatedStudyGenes, int annotatedPopulationGenes){
     super(goId,raw_pval);
@@ -29,4 +29,5 @@ public class GoTerm2PValAndCounts extends Item2PValue<TermId>
   public int getAnnotatedPopulationGenes() {
     return annotatedPopulationGenes;
   }
+
 }

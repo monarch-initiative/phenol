@@ -12,7 +12,7 @@ Use Maven Central Binaries
 
     This is the recommended way of installing for normal users.
 
-Simply use the following snippet for your ``pom.xml`` for using OntoLib modules in your Maven project.
+Simply use the following snippet for your ``pom.xml`` for using phenol modules in your Maven project.
 
 .. code-block:: xml
 
@@ -44,14 +44,14 @@ Prerequisites
 
 For building Phenol, you will need
 
-#. `Java JDK 8 or higher <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ for compiling phenol,
+#. `Java JDK 8 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ for compiling phenol,
 #. `Maven 3 <http://maven.apache.org/>`_ for building phenol, and
 #. `Git <http://git-scm.com/>`_ for getting the sources.
 
 Git Checkout
 ============
 
-In this tutorial, we will download the phenol sources and build them in ``~/Development/ontolib``.
+The following code snippet downloads the phenol sources and builds them in ``~/Development/phenol``.
 
 .. code-block:: console
 
@@ -59,6 +59,25 @@ In this tutorial, we will download the phenol sources and build them in ``~/Deve
    ~ # cd ~/Development
    Development # git clone https://github.com/monarch-initiative/phenol
    Development # cd phenol
+
+
+Building
+========
+
+You can build Phenol using ``mvn package``.
+This will automatically download all dependencies, build phenol, and run all tests.
+
+.. code-block:: console
+
+    phenol # mvn package
+
+In case that you have non-compiling test, you can use the `-DskipTests=true` parameter for skipping them.
+
+.. code-block:: console
+
+    phenol # mvn install -DskipTests=true
+
+
 
 Maven Proxy Settings
 ====================
@@ -84,18 +103,3 @@ Then, execute the following commands to fill ``~/.m2/settings.xml``.
     </settings>
     END
 
-Building
-========
-
-You can build Phenol using ``mvn package``.
-This will automatically download all dependencies, build phenol, and run all tests.
-
-.. code-block:: console
-
-    phenol # mvn package
-
-In case that you have non-compiling test, you can use the `-DskipTests=true` parameter for skipping them.
-
-.. code-block:: console
-
-    phenol # mvn install -DskipTests=true
