@@ -114,7 +114,7 @@ public class StudySet {
           }
         }
       } catch (PhenolException e) {
-        e.printStackTrace();// TODO are there exceptions
+        System.err.println("[ERROR (StudySet.java)] " + e.getMessage());
       }
     }
   }

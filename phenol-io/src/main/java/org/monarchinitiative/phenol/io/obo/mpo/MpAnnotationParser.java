@@ -101,6 +101,8 @@ public class MpAnnotationParser {
     return genotypeAccessionToMpModelMap;
   }
 
+  public int getParsedAnnotationCount() { return genotypeAccessionToMpModelMap.size();}
+
 
   /**
    * Parse data from MGI_Pheno_Sex.rpt.

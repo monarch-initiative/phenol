@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import org.monarchinitiative.phenol.cli.demo.PairwisePhenotypicSimilarityCalculator;
 import org.monarchinitiative.phenol.cli.demo.GoEnrichmentDemo;
+import org.monarchinitiative.phenol.cli.demo.MpEnrichmentDemo;
 import org.monarchinitiative.phenol.cli.demo.ParsingBenchmark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class Main {
   private static final String GO_DEMO = "go-demo";
   private static final String BENCHMARK = "benchmark";
   private static final String HPO_SIM="hpo-sim";
+  private static final String MPO_ENRICH="mpo";
 
   public static void main(String[] argv)  {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
@@ -36,6 +38,7 @@ public class Main {
             .addCommand(MERGE_SCORES, mergeScoresOptions)
           .addCommand(GO_DEMO, godemo)
           .addCommand(BENCHMARK, bench)
+          .addCommand(MPO_ENRICH,mpo)
           .addCommand(HPO_SIM, hpo_sim)
             .build();
     try {
