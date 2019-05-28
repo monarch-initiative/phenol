@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.monarchinitiative.phenol.cli.demo.DiseasePairwiseSimilarityDemo;
+import org.monarchinitiative.phenol.cli.demo.PairwisePhenotypicSimilarityCalculator;
 import org.monarchinitiative.phenol.cli.demo.GoEnrichmentDemo;
 import org.monarchinitiative.phenol.cli.demo.ParsingBenchmark;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class Main {
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final GoEnrichmentDemo.Options godemo = new GoEnrichmentDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
-    final DiseasePairwiseSimilarityDemo.Options hpo_sim = new DiseasePairwiseSimilarityDemo.Options();
+    final PairwisePhenotypicSimilarityCalculator.Options hpo_sim = new PairwisePhenotypicSimilarityCalculator.Options();
     final JCommander jc =
         JCommander.newBuilder()
             .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
@@ -65,7 +65,7 @@ public class Main {
         new ParsingBenchmark(bench).run();
         break;
       case HPO_SIM:
-        new DiseasePairwiseSimilarityDemo(hpo_sim).run();
+        new PairwisePhenotypicSimilarityCalculator(hpo_sim).run();
     }
   }
 }

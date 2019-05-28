@@ -3,10 +3,12 @@ package org.monarchinitiative.phenol.cli.demo;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.io.assoc.HpoAssociationParser;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -21,7 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 
 /**
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:peter.robinson@jax,org">Peter Robinson</a>
  */
-public class DiseasePairwiseSimilarityDemo {
+public class PairwisePhenotypicSimilarityCalculator {
 
 
   /**
@@ -54,6 +56,21 @@ public class DiseasePairwiseSimilarityDemo {
 
 
   private final String output_filename;
+
+
+  private String mimgeneMedgenPath;
+  private String geneInfoPath;
+  private boolean doGeneBasedAnalysis;
+
+  private Ontology hpo;
+  private Map<TermId, HpoDisease> diseaseMap;
+  /** order list of HpoDiseases taken from the above map. */
+  private List<HpoDisease> diseaseList;
+  private Map<TermId,Integer> diseaseIdToIndexMap;
+  private ResnikSimilarity resnikSimilarity;
+  private  double[][] similarityScores;
+  private Multimap<TermId,TermId> geneToDiseaseMap;
+  private Map<TermId,String> geneIdToSymbolMap;
 
 
   static class DescriptiveStatistics{
@@ -101,11 +118,126 @@ public class DiseasePairwiseSimilarityDemo {
    *
 
    */
-  public DiseasePairwiseSimilarityDemo(Options options) {
+  public PairwisePhenotypicSimilarityCalculator(Options options) {
     this.pathHpObo=options.getHpoPath();
     this.pathPhenotypeHpoa=options.getPhenotypeDotHpoaPath();
     this.output_filename=options.getOutname();
+    this.geneInfoPath=options.geneInfoPath;
+    this.mimgeneMedgenPath=options.mim2genMedgenPath;
+    if (geneInfoPath==null || mimgeneMedgenPath==null){
+      doGeneBasedAnalysis=false;
+      System.out.println("[INFO] We will perform disease-based phenotypic similarity analysis");
+    } else {
+      doGeneBasedAnalysis=true;
+      System.out.println("[INFO] We will perform gene-based phenotypic similarity analysis");
+    }
   }
+
+
+  private double getMaximumGeneGeneSimilarity(TermId geneI, TermId geneJ) {
+    double max = 0.0;
+    Collection<TermId> diseasesI = this.geneToDiseaseMap.get(geneI);
+    Collection<TermId> diseasesJ = this.geneToDiseaseMap.get(geneJ);
+    for (TermId i : diseasesI) {
+      for (TermId j : diseasesJ) {
+        int index_i = this.diseaseIdToIndexMap.get(i);
+        int index_j = this.diseaseIdToIndexMap.get(j);
+        double s = this.similarityScores[index_i][index_j];
+        if (s>max) max=s;
+      }
+    }
+    return max;
+  }
+
+
+  private void performGeneBasedAnalysis() {
+    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(this.geneInfoPath,this.mimgeneMedgenPath,this.hpo);
+    hpoAssociationParser.parse();
+    this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
+    System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
+    this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
+    System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
+    List<TermId> geneList = new ArrayList<>(geneToDiseaseMap.keySet());
+    int N = geneList.size();
+    double[][] geneSimilarityMatrix = new double[N][N];
+    DescriptiveStatistics stats = new DescriptiveStatistics();
+    for (int i=0;i<N-1;i++) {
+      for (int j = i+1; j < N; j++) {
+        TermId geneI = geneList.get(i);
+        TermId geneJ = geneList.get(j);
+        double sim = getMaximumGeneGeneSimilarity(geneI,geneJ);
+        geneSimilarityMatrix[i][j]=sim;
+        geneSimilarityMatrix[j][i]=sim;
+        stats.addValue(sim);
+      }
+    }
+    double mean = stats.getMean();
+    double sd = stats.getSd();
+    System.out.println("\n\n[INFO] Done calculating gene based similarity matrix. Mean="+mean+", sd="+sd);
+    double threshold = mean + 2.0*sd;
+    System.out.println("[INFO] Writing pairwise gene similarity to file." );
+    int aboveThreshold=0;
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename));
+      String [] fields = {"gene1","symbol1","gene2","symbol2","similarity"};
+      String header = String.join("\t",fields);
+      writer.write(header + "\n");
+      for (int i=0;i<N-1;i++) {
+        for (int j = i+1; j < N; j++) {
+          if (geneSimilarityMatrix[i][j]>threshold) {
+            TermId geneId1=geneList.get(i);
+            TermId geneId2=geneList.get(j);
+            String g1 = geneId1.getValue();
+            String g2 = geneList.get(j).getValue();
+            String symbol1 = this.geneIdToSymbolMap.get(geneId1);
+            String symbol2 = this.geneIdToSymbolMap.get(geneId2);
+            writer.write(g1 + "\t" + symbol1 + "\t" + g2+"\t"+symbol2+"\t"+geneSimilarityMatrix[i][j] + "\n");
+            aboveThreshold++;
+          }
+        }
+      }
+      writer.close();
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.println(String.format("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.",aboveThreshold,threshold) );
+  }
+
+
+
+  private void performDiseaseBasedAnalysis(DescriptiveStatistics stats) {
+    double mean = stats.getMean();
+    double sd = stats.getSd();
+    System.out.println("\n\nMean="+mean+", sd="+sd);
+
+    double threshold = mean + 2.0*sd;
+    System.out.println("[INFO] Writing pairwise phenotype similarity to file." );
+    int aboveThreshold=0;
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename));
+      String [] fields = {"disease1","disease2","similarity"};
+      String header = String.join("\t",fields);
+      writer.write(header + "\n");
+      int N = diseaseList.size();
+      for (int i=0;i<N-1;i++) {
+        for (int j = i+1; j < N; j++) {
+          if (similarityScores[i][j]>threshold) {
+            String d1 = diseaseList.get(i).getDiseaseDatabaseId().getValue();
+            String d2 = diseaseList.get(j).getDiseaseDatabaseId().getValue();
+            writer.write(d1 + "\t" + d2 + "\t" + similarityScores[i][j] + "\n");
+            aboveThreshold++;
+          }
+        }
+      }
+      writer.close();
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.println(String.format("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.",aboveThreshold,threshold) );
+  }
+
 
 
   /**
@@ -113,22 +245,29 @@ public class DiseasePairwiseSimilarityDemo {
    */
   public void run() {
     if (pathHpObo==null || pathPhenotypeHpoa == null) {
-      System.err.println("Must pass path-to-hp.obo and path-to-phenotype.hpoa");
+      System.err.println("[ERROR] Must pass path-to-hp.obo and path-to-phenotype.hpoa");
       System.exit(1);
     }
-    final Ontology hpo = OntologyLoader.loadOntology(new File(pathHpObo));
+    this.hpo = OntologyLoader.loadOntology(new File(pathHpObo));
     System.out.println("[INFO] DONE: Loading HPO");
-    final Map<TermId, HpoDisease> diseaseMap;
+
     try {
       List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
       HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(this.pathPhenotypeHpoa, hpo,databases);
-      diseaseMap = parser.parse();
+      this.diseaseMap = parser.parse();
     } catch (PhenolException e) {
       e.printStackTrace();
       System.exit(1);
       return; // javac complains otherwise
     }
     System.out.println("[INFO] DONE: Loading phenotype.hpoa");
+
+
+
+
+
+
+
     // Compute list of annoations and mapping from OMIM ID to term IDs.
     final Map<TermId, Collection<TermId>> diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
@@ -160,22 +299,22 @@ public class DiseasePairwiseSimilarityDemo {
     final PrecomputingPairwiseResnikSimilarity pairwiseResnikSimilarity =
       new PrecomputingPairwiseResnikSimilarity(hpo, icMap, numThreads);
     System.out.println("[INFO] DONE: Performing Resnik precomputation");
-    final ResnikSimilarity resnikSimilarity =
+    this.resnikSimilarity =
       new ResnikSimilarity(pairwiseResnikSimilarity, false);
     System.out.println(String.format("name: %s  params %s",
       resnikSimilarity.getName(),
       resnikSimilarity.getParameters()));
     System.out.println("[INFO] Calculating pairwise phenotype similarity for " + diseaseMap.size() + "diseases." );
-    List<HpoDisease> diseaseList = new ArrayList<>(diseaseMap.values());
 
-
-
+    this.diseaseList = new ArrayList<>(diseaseMap.values());
     int N = diseaseList.size();
     int expectedTotal = N*(N-1)/2;
-    double[][] similarityScores = new double[N][N];
+    this.similarityScores = new double[N][N];
     DescriptiveStatistics stats = new DescriptiveStatistics();
     int c=0;
+    this.diseaseIdToIndexMap=new HashMap<>();
     for (int i=0;i<N;i++) {
+      this.diseaseIdToIndexMap.putIfAbsent(diseaseList.get(i).getDiseaseDatabaseId(),i);
       for (int j=i;j<N;j++) {
         HpoDisease d1 = diseaseList.get(i);
         HpoDisease d2 = diseaseList.get(j);
@@ -191,38 +330,18 @@ public class DiseasePairwiseSimilarityDemo {
       }
     }
 
-    double mean = stats.getMean();
-    double sd = stats.getSd();
-    System.out.println("\n\nMean="+mean+", sd="+sd);
 
-    double threshold = mean + 2.0*sd;
-    System.out.println("[INFO] Writing pairwise phenotype similarity to file." );
-    int aboveThreshold=0;
-    try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename));
-      String [] fields = {"disease1","disease2","similarity"};
-      String header = String.join("\t",fields);
-      writer.write(header + "\n");
-      for (int i=0;i<N-1;i++) {
-        for (int j = i+1; j < N; j++) {
-          if (similarityScores[i][j]>threshold) {
-            String d1 = diseaseList.get(i).getDiseaseDatabaseId().getValue();
-            String d2 = diseaseList.get(j).getDiseaseDatabaseId().getValue();
-            writer.write(d1 + "\t" + d2 + "\t" + similarityScores[i][j] + "\n");
-            aboveThreshold++;
-          }
-        }
-      }
-      writer.close();
-
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (doGeneBasedAnalysis) {
+      performGeneBasedAnalysis();
+    } else {
+      performDiseaseBasedAnalysis(stats);
     }
-    System.out.println(String.format("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.",aboveThreshold,threshold) );
+
+
   }
 
 
-
+//HpoAssociationParserString geneInfoPath, String mim2geneMedgenPath,
 
 
   @Parameters(commandDescription = "Compute similarity demo")
@@ -233,7 +352,10 @@ public class DiseasePairwiseSimilarityDemo {
     private String phenotypeDotHpoaPath;
     @Parameter(names="-o",description = "output file name")
     private String outname="pairwise_disease_similarity.tsv";
-
+    @Parameter(names="--geneinfo",description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz")
+    private String geneInfoPath;
+    @Parameter(names="--mimgene2medgen",description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
+    private String mim2genMedgenPath;
     String getHpoPath() {
       return hpoPath;
     }
