@@ -5,7 +5,7 @@ package org.monarchinitiative.phenol.stats;
  * raw and adjusted p values.
  * @param <T>
  */
-public class Item2PValue<T> implements Comparable<Item2PValue> {
+public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
   private final T item;
   /** The nominal (i.e., uncorrected) p-value for this item. */
   private double p_raw;

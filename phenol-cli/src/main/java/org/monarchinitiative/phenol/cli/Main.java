@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.monarchinitiative.phenol.cli.demo.ComputeSimilarityDemo;
+import org.monarchinitiative.phenol.cli.demo.DiseasePairwiseSimilarityDemo;
 import org.monarchinitiative.phenol.cli.demo.GoEnrichmentDemo;
 import org.monarchinitiative.phenol.cli.demo.MpEnrichmentDemo;
 import org.monarchinitiative.phenol.cli.demo.ParsingBenchmark;
@@ -31,8 +31,7 @@ public class Main {
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final GoEnrichmentDemo.Options godemo = new GoEnrichmentDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
-    final ComputeSimilarityDemo.Options hpo_sim = new ComputeSimilarityDemo.Options();
-    final MpEnrichmentDemo.Options mpo = new MpEnrichmentDemo.Options();
+    final DiseasePairwiseSimilarityDemo.Options hpo_sim = new DiseasePairwiseSimilarityDemo.Options();
     final JCommander jc =
         JCommander.newBuilder()
             .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
@@ -69,9 +68,7 @@ public class Main {
         new ParsingBenchmark(bench).run();
         break;
       case HPO_SIM:
-        new ComputeSimilarityDemo(hpo_sim).run();
-      case MPO_ENRICH:
-        new MpEnrichmentDemo(mpo).run();
+        new DiseasePairwiseSimilarityDemo(hpo_sim).run();
     }
   }
 }
