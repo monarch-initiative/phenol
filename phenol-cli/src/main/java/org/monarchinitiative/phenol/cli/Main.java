@@ -30,6 +30,7 @@ public class Main {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final GoEnrichmentDemo.Options godemo = new GoEnrichmentDemo.Options();
+    final MpEnrichmentDemo.Options mpo = new MpEnrichmentDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
     final PairwisePhenotypicSimilarityCalculator.Options hpo_sim = new PairwisePhenotypicSimilarityCalculator.Options();
     final JCommander jc =

@@ -206,7 +206,7 @@
      it imposes that binding on the end-user, thus negating SLF4J's purpose.
       -->
 
-    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j -->
+    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -216,7 +216,7 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <scope>test</scope>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
