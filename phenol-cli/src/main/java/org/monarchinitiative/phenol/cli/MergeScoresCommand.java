@@ -37,10 +37,10 @@ public class MergeScoresCommand {
   private MergeScoresOptions options;
 
   /** The loaded distributions. */
-  private SortedMap<Integer, List<ScoreDistribution>> loadedDists = new TreeMap<>();
+  private SortedMap<Integer, List<ScoreDistribution<Integer>>> loadedDists = new TreeMap<>();
 
   /** The merged distributions. */
-  private SortedMap<Integer, ScoreDistribution> mergedDists = new TreeMap<>();
+  private SortedMap<Integer, ScoreDistribution<Integer>> mergedDists = new TreeMap<>();
 
   public MergeScoresCommand(MergeScoresOptions options) {
     this.options = options;
@@ -64,8 +64,8 @@ public class MergeScoresCommand {
       LOGGER.info("Loading {}", inputPath);
       try (final ScoreDistributionReader reader =
           new TextFileScoreDistributionReader(new File(inputPath))) {
-        Map<Integer, ScoreDistribution> distributions = reader.readAll();
-        for (Entry<Integer, ScoreDistribution> e : distributions.entrySet()) {
+        Map<Integer, ScoreDistribution<Integer>> distributions = reader.readAll();
+        for (Entry<Integer, ScoreDistribution<Integer>> e : distributions.entrySet()) {
           if (!loadedDists.containsKey(e.getKey())) {
             loadedDists.put(e.getKey(), new ArrayList<>());
           }
@@ -82,7 +82,7 @@ public class MergeScoresCommand {
   private void mergeDistributions() {
     LOGGER.info("Merging distributions...");
 
-    for (Entry<Integer, List<ScoreDistribution>> e : loadedDists.entrySet()) {
+    for (Entry<Integer, List<ScoreDistribution<Integer>>> e : loadedDists.entrySet()) {
       mergedDists.put(e.getKey(), ScoreDistributions.merge(e.getValue()));
     }
 
@@ -92,7 +92,7 @@ public class MergeScoresCommand {
   private void writeResult() {
     LOGGER.info("Writing result...");
     try (ScoreDistributionWriter writer = buildWriter()) {
-      for (Entry<Integer, ScoreDistribution> e : mergedDists.entrySet()) {
+      for (Entry<Integer, ScoreDistribution<Integer>> e : mergedDists.entrySet()) {
         writer.write(e.getKey(), e.getValue(), options.getResampleToPoints());
       }
     } catch (IOException | PhenolException e) {

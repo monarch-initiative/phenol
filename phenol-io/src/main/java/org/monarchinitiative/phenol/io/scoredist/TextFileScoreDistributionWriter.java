@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.scoredist;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -38,9 +39,9 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
   }
 
   @Override
-  public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution) {
+  public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution) {
     for (int objectId : scoreDistribution.getObjectIds()) {
-      final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
+      final ObjectScoreDistribution<T> dist = scoreDistribution.getObjectScoreDistribution(objectId);
       final List<Double> scores = dist.observedScores();
       final ArrayList<String> points = new ArrayList<>();
       if (resolution != 0) {
