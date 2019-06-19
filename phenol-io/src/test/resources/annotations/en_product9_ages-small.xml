@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<JDBOR date="2019-06-01 05:05:20" version="1.2.11 / 4.1.6 [2018-04-12] (orientdb version)" copyright="Orphanet (c) 2019">
+    <Availability>
+        <Licence>
+            <FullName lang="en">Creative Commons Attribution 4.0 International</FullName>
+            <ShortIdentifier>CC-BY-4.0</ShortIdentifier>
+            <LegalCode>https://creativecommons.org/licenses/by/4.0/legalcode</LegalCode>
+        </Licence>
+    </Availability>
+    <DisorderList count="9355">
+        <Disorder id="17601">
+            <OrphaNumber>166024</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=166024</ExpertLink>
+            <Name lang="en">Multiple epiphyseal dysplasia, Al-Gazali type</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="2">
+                <AverageAgeOfOnset id="23522">
+                    <OrphaNumber>409945</OrphaNumber>
+                    <Name lang="en">Infancy</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23515">
+                    <OrphaNumber>409944</OrphaNumber>
+                    <Name lang="en">Neonatal</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="0">
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="1">
+                <TypeOfInheritance id="23417">
+                    <OrphaNumber>409930</OrphaNumber>
+                    <Name lang="en">Autosomal recessive</Name>
+                </TypeOfInheritance>
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="17603">
+            <OrphaNumber>166032</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=166032</ExpertLink>
+            <Name lang="en">Multiple epiphyseal dysplasia, with miniepiphyses</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="2">
+                <AverageAgeOfOnset id="23529">
+                    <OrphaNumber>409946</OrphaNumber>
+                    <Name lang="en">Childhood</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23522">
+                    <OrphaNumber>409945</OrphaNumber>
+                    <Name lang="en">Infancy</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23655">
+                    <OrphaNumber>409964</OrphaNumber>
+                    <Name lang="en">No data available</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="0">
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="2">
+            <OrphaNumber>58</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=58</ExpertLink>
+            <Name lang="en">Alexander disease</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="1">
+                <AverageAgeOfOnset id="23557">
+                    <OrphaNumber>409950</OrphaNumber>
+                    <Name lang="en">All ages</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23648">
+                    <OrphaNumber>409963</OrphaNumber>
+                    <Name lang="en">any age</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="1">
+                <TypeOfInheritance id="23410">
+                    <OrphaNumber>409929</OrphaNumber>
+                    <Name lang="en">Autosomal dominant</Name>
+                </TypeOfInheritance>
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="17602">
+            <OrphaNumber>166029</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=166029</ExpertLink>
+            <Name lang="en">Multiple epiphyseal dysplasia, with severe proximal femoral dysplasia</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="1">
+                <AverageAgeOfOnset id="23529">
+                    <OrphaNumber>409946</OrphaNumber>
+                    <Name lang="en">Childhood</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23655">
+                    <OrphaNumber>409964</OrphaNumber>
+                    <Name lang="en">No data available</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="0">
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="3">
+            <OrphaNumber>61</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=61</ExpertLink>
+            <Name lang="en">Alpha-mannosidosis</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="3">
+                <AverageAgeOfOnset id="23529">
+                    <OrphaNumber>409946</OrphaNumber>
+                    <Name lang="en">Childhood</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23522">
+                    <OrphaNumber>409945</OrphaNumber>
+                    <Name lang="en">Infancy</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23515">
+                    <OrphaNumber>409944</OrphaNumber>
+                    <Name lang="en">Neonatal</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23648">
+                    <OrphaNumber>409963</OrphaNumber>
+                    <Name lang="en">any age</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="1">
+                <TypeOfInheritance id="23417">
+                    <OrphaNumber>409930</OrphaNumber>
+                    <Name lang="en">Autosomal recessive</Name>
+                </TypeOfInheritance>
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="17605">
+            <OrphaNumber>166038</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=166038</ExpertLink>
+            <Name lang="en">Metaphyseal chondrodysplasia, Kaitila type</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="1">
+                <AverageAgeOfOnset id="23515">
+                    <OrphaNumber>409944</OrphaNumber>
+                    <Name lang="en">Neonatal</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23655">
+                    <OrphaNumber>409964</OrphaNumber>
+                    <Name lang="en">No data available</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="0">
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="17604">
+            <OrphaNumber>166035</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=166035</ExpertLink>
+            <Name lang="en">Brachydactyly-short stature-retinitis pigmentosa syndrome</Name>
+            <DisorderType id="21401">
+                <OrphaNumber>377789</OrphaNumber>
+                <Name lang="en">Malformation syndrome</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="2">
+                <AverageAgeOfOnset id="23529">
+                    <OrphaNumber>409946</OrphaNumber>
+                    <Name lang="en">Childhood</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23522">
+                    <OrphaNumber>409945</OrphaNumber>
+                    <Name lang="en">Infancy</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="1">
+                <AverageAgeOfDeath id="23655">
+                    <OrphaNumber>409964</OrphaNumber>
+                    <Name lang="en">No data available</Name>
+                </AverageAgeOfDeath>
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="0">
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="5">
+            <OrphaNumber>93</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=93</ExpertLink>
+            <Name lang="en">Aspartylglucosaminuria</Name>
+            <DisorderType id="21394">
+                <OrphaNumber>377788</OrphaNumber>
+                <Name lang="en">Disease</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="1">
+                <AverageAgeOfOnset id="23529">
+                    <OrphaNumber>409946</OrphaNumber>
+                    <Name lang="en">Childhood</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="0">
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="1">
+                <TypeOfInheritance id="23417">
+                    <OrphaNumber>409930</OrphaNumber>
+                    <Name lang="en">Autosomal recessive</Name>
+                </TypeOfInheritance>
+            </TypeOfInheritanceList>
+        </Disorder>
+        <Disorder id="14011">
+            <OrphaNumber>98994</OrphaNumber>
+            <ExpertLink lang="en">http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&amp;Expert=98994</ExpertLink>
+            <Name lang="en">Total early-onset cataract</Name>
+            <DisorderType id="21450">
+                <OrphaNumber>377796</OrphaNumber>
+                <Name lang="en">Clinical subtype</Name>
+            </DisorderType>
+            <AverageAgeOfOnsetList count="2">
+                <AverageAgeOfOnset id="23522">
+                    <OrphaNumber>409945</OrphaNumber>
+                    <Name lang="en">Infancy</Name>
+                </AverageAgeOfOnset>
+                <AverageAgeOfOnset id="23515">
+                    <OrphaNumber>409944</OrphaNumber>
+                    <Name lang="en">Neonatal</Name>
+                </AverageAgeOfOnset>
+            </AverageAgeOfOnsetList>
+            <AverageAgeOfDeathList count="0">
+            </AverageAgeOfDeathList>
+            <TypeOfInheritanceList count="2">
+                <TypeOfInheritance id="23410">
+                    <OrphaNumber>409929</OrphaNumber>
+                    <Name lang="en">Autosomal dominant</Name>
+                </TypeOfInheritance>
+                <TypeOfInheritance id="23417">
+                    <OrphaNumber>409930</OrphaNumber>
+                    <Name lang="en">Autosomal recessive</Name>
+                </TypeOfInheritance>
+            </TypeOfInheritanceList>
+        </Disorder>
+    </DisorderList>
+</JDBOR>

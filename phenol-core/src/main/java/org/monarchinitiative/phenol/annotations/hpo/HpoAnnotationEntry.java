@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
 
 
 /**
@@ -26,7 +28,7 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoAnnotationEntry {
-  final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
+  private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
 
   private final static String EMPTY_STRING="";
     /** The CURIE of the disease, e.g., OMIM:600201 (Field #0). */
@@ -239,7 +241,7 @@ public class HpoAnnotationEntry {
      * @throws PhenolException if there were Q/C problems with the line.
      */
     public static HpoAnnotationEntry fromLine(String line, Ontology ontology) throws PhenolException {
-        String A[] = line.split("\t");
+        String [] A= line.split("\t");
         if (A.length!= NUMBER_OF_FIELDS) {
             throw new HpoAnnotationModelException(String.format("We were expecting %d expectedFields but got %d for line %s",NUMBER_OF_FIELDS,A.length,line ));
         }
@@ -287,7 +289,7 @@ public class HpoAnnotationEntry {
    */
   public static Optional<HpoAnnotationEntry> fromLineReplaceObsoletePhenotypeData(String line, Ontology ontology)
    {
-    String A[] = line.split("\t");
+    String []A = line.split("\t");
     if (A.length!= NUMBER_OF_FIELDS) {
       return Optional.empty();
     }
@@ -411,7 +413,67 @@ public class HpoAnnotationEntry {
     }
 
 
-    // Q/C methods
+
+  /**
+   * If the frequency of an HPO term is listed in Orphanet as Excluded (0%), then we encode it as
+   * a NOT (negated) term.
+   * @param diseaseID Orphanet ID, e.g., ORPHA:99776
+   * @param diseaseName Orphanet disease name, e.g., Moasic trisomy 9
+   * @param orphaInheritanceId Orphanet id (e.g., HP:0001234) as String
+   * @param orphaLabel corresponding Orphanet term Label
+   * @param ontology reference to HPO ontology
+   * @param biocuration A String to represent provenance from Orphanet, e.g., ORPHA:orphadata[2019-01-05]
+   * @return corresponding HpoAnnotationEntry object
+   * @throws HpoAnnotationModelException if there is a Q/C problem with the data
+   */
+  public static HpoAnnotationEntry fromOrphaInheritanceData(String diseaseID,
+                                                 String diseaseName,
+                                                 String orphaInheritanceId,
+                                                 String orphaLabel,
+                                                 Ontology ontology,
+                                                 String biocuration) throws HpoAnnotationModelException {
+
+    if (orphaInheritanceId==null) {
+      throw new HpoAnnotationModelException("Null String passed as orphaInheritanceId for disease " + (diseaseID!=null?diseaseID:"n/a"));
+    } else if (orphaLabel == null) {
+      throw new HpoAnnotationModelException("Null String passed as orphaLabel for disease " + (diseaseID!=null?diseaseID:"n/a"));
+    }
+    TermId inheritanceId=null;
+    if (orphaInheritanceId.equals("409930") && orphaLabel.equals("Autosomal recessive")){
+      inheritanceId = AUTOSOMAL_RECESSIVE;
+    } else if (orphaInheritanceId.equals("409929") && orphaLabel.equals("Autosomal dominant")) {
+      inheritanceId=AUTOSOMAL_DOMINANT;
+    } else {
+      System.err.println("DID NOT RECOGNIZE INHERITANCE id="+orphaInheritanceId + " label="+orphaLabel);
+      System.exit(1);
+    }
+
+    String hpoLabel = ontology.getTermMap().get(inheritanceId).getName();
+
+    // These items are always empty for inheritance annotations
+    String frequencyString =  EMPTY_STRING ;
+    String negationString =  EMPTY_STRING;
+
+
+    return new HpoAnnotationEntry(diseaseID,
+      diseaseName,
+      inheritanceId,
+      hpoLabel,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      frequencyString,
+      EMPTY_STRING,
+      negationString,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      diseaseID,
+      "TAS",
+      biocuration);
+  }
+
+
+
+  // Q/C methods
 
     /**
      * This method checks all of the fields of the HpoAnnotationEntry. If there is an error, then
@@ -603,7 +665,7 @@ public class HpoAnnotationEntry {
         TermId clinicalModifier = TermId.of("HP:0012823");
         TermId temporalPattern = TermId.of("HP:0011008");
         TermId paceOfProgression = TermId.of("HP:0003679");
-        String A[] = modifierString.split(";");
+        String[] A = modifierString.split(";");
         for (String a: A) {
             try {
                 TermId tid = TermId.of(a);
@@ -649,7 +711,7 @@ public class HpoAnnotationEntry {
         if (entrylist==null || entrylist.isEmpty()) {
             throw new HpoAnnotationModelException("empty biocuration entry");
         }
-        String fields[] = entrylist.split(";");
+        String []fields = entrylist.split(";");
         for (String f : fields) {
             Matcher matcher = biocurationPattern.matcher(f);
             if (! matcher.find()) {
