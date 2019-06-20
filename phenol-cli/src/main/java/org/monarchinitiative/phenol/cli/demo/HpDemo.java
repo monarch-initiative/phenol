@@ -47,19 +47,19 @@ public class HpDemo {
     List<TermSynonym> synonyms = ridgedNail.getSynonyms();
     System.out.println("Synonyms:");
     for (TermSynonym syn : synonyms) {
-      String val =syn.getValue();
+      String val = syn.getValue();
       String scope = syn.getScope().name();
       List<TermXref> xrefs = syn.getTermXrefs();
       String xrefstring = xrefs.stream().map(TermXref::getDescription).collect(Collectors.joining("; "));
-      System.out.println("\tval:"+val +", scope: "+scope + ", xrefs: " + xrefstring);
+      System.out.println("\tval:" + val + ", scope: " + scope + ", xrefs: " + xrefstring);
     }
     System.out.println("Alternative IDs:");
     List<TermId> alternateIds = ridgedNail.getAltTermIds();
     for (TermId altId : alternateIds) {
-      System.out.println("\t"+altId.getValue());
+      System.out.println("\t" + altId.getValue());
     }
     String comment = ridgedNail.getComment();
-    System.out.println("Comment: "+comment);
+    System.out.println("Comment: " + comment);
     List<Dbxref> xrefs = ridgedNail.getXrefs();
     System.out.println("Cross references:");
     for (Dbxref xref: xrefs) {
