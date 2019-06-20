@@ -321,7 +321,6 @@ public class ImmutableOntology implements Ontology {
 
     private TermId findRootTermId() {
       List<TermId> rootCandidates = findRootCandidates(relationships);
-      logger.debug("Root candidates: {}", rootCandidates);
       if (rootCandidates.isEmpty()) {
         throw new PhenolRuntimeException("No root candidate found.");
       }
