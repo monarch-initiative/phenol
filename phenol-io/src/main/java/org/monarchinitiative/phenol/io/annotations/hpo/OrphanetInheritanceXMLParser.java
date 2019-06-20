@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
@@ -24,16 +23,23 @@ import java.util.Date;
 import java.util.List;
 
 public class OrphanetInheritanceXMLParser {
-  /** Path to {@code en_product9_age.xml} file. */
+  /**
+   * Path to {@code en_product9_age.xml} file.
+   */
   private final String orphanetXmlPath;
-  /** Reference to the HPO Ontology. */
+  /**
+   * Reference to the HPO Ontology.
+   */
   private final Ontology ontology;
-  /** A String of the form ORPHA:orphadata[2019-01-05] that we will use as the biocuration entry. */
+  /**
+   * A String of the form ORPHA:orphadata[2019-01-05] that we will use as the biocuration entry.
+   */
   private final String orphanetBiocurationString;
-  /** Key: an Orphanet disease id; value: an array list of HpoAnnotations, one for each inheritance mode
+  /**
+   * Key: an Orphanet disease id; value: an array list of HpoAnnotations, one for each inheritance mode
    * that is associated with the disease.
    */
-  private final Multimap<TermId,HpoAnnotationEntry> disease2inheritanceMultimap;
+  private final Multimap<TermId, HpoAnnotationEntry> disease2inheritanceMultimap;
   // XML Parsing
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaNumber";
@@ -43,8 +49,18 @@ public class OrphanetInheritanceXMLParser {
   private static final String AVERAGE_AGE_OF_ONSET_LIST = "AverageAgeOfOnsetList";
   private static final String AVERAGE_AGE_OF_DEATH_LIST = "AverageAgeOfDeathList";
   private static final String DISORDER_TYPE = "DisorderType";
+  /** Orphanet marks some of its intheritance entries as Not apploicable. We will just skip them.
+   * This is the corresponding ID.
+   */
+  private static final String NOT_APPLICABLE_ID="409941";
+  /** similar to above. We will skip this. */
+  private static final String UNKNOWN_ID="409939";
+  /** similar to above. We will skip this. */
+  private static final String NO_DATA_AVAILABLE="409940";
+
+
+
   private boolean inDisorder = false;
-  private boolean inOrphaNumber = false;
   private boolean inTypeOfInheritanceList = false;
   private boolean inTypeOfInheritance = false;
   private boolean inAverageAgeOfOnsetList = false;
@@ -55,8 +71,8 @@ public class OrphanetInheritanceXMLParser {
     orphanetXmlPath = xmlpath;
     this.ontology = onto;
     String todaysDate = getTodaysDate();
-    orphanetBiocurationString=String.format("ORPHA:orphadata[%s]", todaysDate);
-    disease2inheritanceMultimap =  ArrayListMultimap.create();
+    orphanetBiocurationString = String.format("ORPHA:orphadata[%s]", todaysDate);
+    disease2inheritanceMultimap = ArrayListMultimap.create();
     parse(new File(orphanetXmlPath));
   }
 
@@ -71,10 +87,9 @@ public class OrphanetInheritanceXMLParser {
       InputStream in = new FileInputStream(file);
       XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
       String currentOrphanum = null;
-      String currentDiseaseName=null;
-      String currentInheritanceId=null;
-      String currentModeOfInheritanceLabel=null;
-      ArrayList<String> currentModesOfInheritance = new ArrayList<>();
+      String currentDiseaseName = null;
+      String currentInheritanceId = null;
+      String currentModeOfInheritanceLabel = null;
       while (eventReader.hasNext()) {
         XMLEvent event = eventReader.nextEvent();
         if (event.isStartElement()) {
@@ -83,52 +98,54 @@ public class OrphanetInheritanceXMLParser {
             inDisorder = true;
           } else if (inDisorder &&
             !inAverageAgeOfOnsetList &&
-            ! isInAverageAgeOfDeathList &&
-            ! inDisorderType &&
-            ! inTypeOfInheritance &&
+            !isInAverageAgeOfDeathList &&
+            !inDisorderType &&
+            !inTypeOfInheritance &&
             localPart.equals(ORPHA_NUMBER)) {
-            inOrphaNumber=true;
             event = eventReader.nextEvent(); // go to the contents of the node
             currentOrphanum = event.asCharacters().getData();
           } else if (inDisorder && localPart.equals(TYPE_OF_INHERITANCE_LIST)) {
-            inTypeOfInheritanceList=true;
-            currentModesOfInheritance.clear();
+            inTypeOfInheritanceList = true;
           } else if (inTypeOfInheritanceList && localPart.equals(TYPE_OF_INHERITANCE)) {
             inTypeOfInheritance = true;
           } else if (inDisorder &&
-            ! inAverageAgeOfOnsetList &&
-            ! isInAverageAgeOfDeathList &&
-            ! inDisorderType &&
-            ! inTypeOfInheritance &&
+            !inAverageAgeOfOnsetList &&
+            !isInAverageAgeOfDeathList &&
+            !inDisorderType &&
+            !inTypeOfInheritance &&
             localPart.equals(NAME)) {
+
             event = eventReader.nextEvent(); // go to the contents of the node
             currentDiseaseName = event.asCharacters().getData();
           } else if (inDisorder &&
-            ! inAverageAgeOfOnsetList &&
-            ! isInAverageAgeOfDeathList &&
-            ! inDisorderType &&
+            !inAverageAgeOfOnsetList &&
+            !isInAverageAgeOfDeathList &&
+            !inDisorderType &&
             inTypeOfInheritance &&
             localPart.equals(NAME)) {
             event = eventReader.nextEvent(); // go to the contents of the node
             currentModeOfInheritanceLabel = event.asCharacters().getData();
+            if (currentInheritanceId.equals(NOT_APPLICABLE_ID) ||
+              currentInheritanceId.equals(UNKNOWN_ID) ||
+              currentInheritanceId.equals(NO_DATA_AVAILABLE)) {
+              continue;
+            }
             try {
-              TermId disId = TermId.of(String.format("ORPHA:%s",currentOrphanum ));
+              TermId disId = TermId.of(String.format("ORPHA:%s", currentOrphanum));
               HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaInheritanceData(disId.getValue(),
                 currentDiseaseName,
                 currentInheritanceId,
                 currentModeOfInheritanceLabel,
                 this.ontology,
                 orphanetBiocurationString);
-              this.disease2inheritanceMultimap.put(disId,entry);
-            } catch ( HpoAnnotationModelException e) {
-              System.err.println("[WARNING] Could not parse Orphanet Inheritance annotation: "+e.getMessage());
+              this.disease2inheritanceMultimap.put(disId, entry);
+            } catch (HpoAnnotationModelException e) {
+              System.err.println("[WARNING] Could not parse Orphanet Inheritance annotation: " + e.getMessage());
             }
-
-
-          }else if (localPart.equals(AVERAGE_AGE_OF_ONSET_LIST)) {
+          } else if (localPart.equals(AVERAGE_AGE_OF_ONSET_LIST)) {
             inAverageAgeOfOnsetList = true;
           } else if (localPart.equals(AVERAGE_AGE_OF_DEATH_LIST)) {
-            isInAverageAgeOfDeathList=true;
+            isInAverageAgeOfDeathList = true;
           } else if (localPart.equals(TYPE_OF_INHERITANCE)) {
             inTypeOfInheritance = true;
           } else if (localPart.equals(DISORDER_TYPE)) {
@@ -138,17 +155,11 @@ public class OrphanetInheritanceXMLParser {
             event = eventReader.nextEvent(); // go to the contents of the node
             currentInheritanceId = event.asCharacters().getData();
           }
-        }  else if (event.isEndElement()) {
+        } else if (event.isEndElement()) {
           EndElement endElement = event.asEndElement();
           String localPart = endElement.getName().getLocalPart();
           if (localPart.equals(DISORDER)) {
             inDisorder = false;
-            System.out.println("Disorder:" + currentDiseaseName);
-            for (String moi : currentModesOfInheritance) {
-              System.out.println("MOI:"+currentOrphanum +": " + currentDiseaseName + ": "+ moi);
-            }
-          } else if (localPart.equals(ORPHA_NUMBER)) {
-            inOrphaNumber = false;
           } else if (localPart.equals(TYPE_OF_INHERITANCE_LIST)) {
             inTypeOfInheritanceList = false;
           } else if (localPart.equals(TYPE_OF_INHERITANCE)) {
@@ -156,7 +167,7 @@ public class OrphanetInheritanceXMLParser {
           } else if (localPart.equals(AVERAGE_AGE_OF_ONSET_LIST)) {
             inAverageAgeOfOnsetList = false;
           } else if (localPart.equals(AVERAGE_AGE_OF_DEATH_LIST)) {
-            isInAverageAgeOfDeathList=false;
+            isInAverageAgeOfDeathList = false;
           } else if (localPart.equals(DISORDER_TYPE)) {
             inDisorderType = false;
           }
@@ -168,8 +179,10 @@ public class OrphanetInheritanceXMLParser {
   }
 
 
-  /** We are using this to supply a date created value for the Orphanet annotations.
+  /**
+   * We are using this to supply a date created value for the Orphanet annotations.
    * After some research, no better way of getting the current date was found.
+   *
    * @return A String such as 2018-02-22
    */
   private String getTodaysDate() {

@@ -18,8 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
-import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
 
 
 /**
@@ -439,15 +438,31 @@ public class HpoAnnotationEntry {
       throw new HpoAnnotationModelException("Null String passed as orphaLabel for disease " + (diseaseID!=null?diseaseID:"n/a"));
     }
     TermId inheritanceId=null;
+
     if (orphaInheritanceId.equals("409930") && orphaLabel.equals("Autosomal recessive")){
       inheritanceId = AUTOSOMAL_RECESSIVE;
     } else if (orphaInheritanceId.equals("409929") && orphaLabel.equals("Autosomal dominant")) {
       inheritanceId=AUTOSOMAL_DOMINANT;
-    } else {
+    } else if (orphaInheritanceId.equals("409931") && orphaLabel.equals("Multigenic/multifactorial")){
+      inheritanceId=MULTIFACTORIAL;
+    } else if (orphaInheritanceId.equals("409932") && orphaLabel.equals("X-linked recessive")){
+      inheritanceId=X_LINKED_RECESSIVE;
+    } else if (orphaInheritanceId.equals("409933") && orphaLabel.equals("Mitochondrial inheritance")) {
+      inheritanceId=MITOCHONDRIAL;
+    } else if (orphaInheritanceId.equals("409934") && orphaLabel.equals("X-linked dominant")) {
+      inheritanceId = X_LINKED_DOMINANT;
+    } else if (orphaInheritanceId.equals("409938") && orphaLabel.equals("Y-linked")) {
+      inheritanceId =Y_LINKED;
+    } else if (orphaInheritanceId.equals("409937") && orphaLabel.equals("Semi-dominant")) {
+      inheritanceId=INHERITANCE_ROOT; //TODO SEMIDOMINANT
+    } else if (orphaInheritanceId.equals("409936") && orphaLabel.equals("Oligogenic")) {
+      inheritanceId = OLIGOGENIC;
+    }
+
+    else {
       System.err.println("DID NOT RECOGNIZE INHERITANCE id="+orphaInheritanceId + " label="+orphaLabel);
       System.exit(1);
     }
-
     String hpoLabel = ontology.getTermMap().get(inheritanceId).getName();
 
     // These items are always empty for inheritance annotations

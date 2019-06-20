@@ -26,6 +26,7 @@ public class OrphanetInheritanceXMLParserTest {
   @BeforeAll
   private static void init()  {
     Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product9_ages-small.xml");
+    //orphaXMLpath = Paths.get("..","en_product9_ages.xml");
     Path hpOboPath = Paths.get("src", "test", "resources", "annotations", "hp_head.obo");
     Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
     try {
@@ -125,12 +126,18 @@ public class OrphanetInheritanceXMLParserTest {
   }
 
   /*
-  14011: Total early-onset cataract: both recessive and dominant
+  98994: Total early-onset cataract: both recessive and dominant
    */
   @Test
   void testTotalEarlyOnsetCataract() {
-    TermId diseaseId = TermId.of("ORPHA:14011");
+    TermId diseaseId = TermId.of("ORPHA:98994");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
-    assertEquals(1,entrylist.size());
+    assertEquals(2,entrylist.size());
+  }
+
+
+  @Test
+  void aufspueren() {
+
   }
 }
