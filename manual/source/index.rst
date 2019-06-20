@@ -52,22 +52,19 @@ Feedback
 The best place to leave feedback, ask questions, and report bugs is the `Phenol Issue Tracker <https://github.com/monarchinitiative/phenol/issues>`_.
 
 .. toctree::
-    :caption: Installation & Tutorial
-    :name: tutorial
-    :maxdepth: 1
-    :hidden:
+   :caption: Installation & Tutorial
+   :name: tutorial
+   :maxdepth: 1
 
-    install
-    input
-    tutorial_io
-    tutorial_hpo
-    tutorial_similarity
+   install
+   input
+   tutorial_hpo
+   tutorial_similarity
 
 .. toctree::
     :caption: Project Info
     :name: project-info
     :maxdepth: 1
-    :hidden:
 
     contributing
     authors

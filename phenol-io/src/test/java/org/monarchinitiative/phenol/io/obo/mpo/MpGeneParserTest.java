@@ -22,7 +22,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * TODO Update tests!
+ *
  */
 public class MpGeneParserTest {
 
@@ -63,21 +63,6 @@ public class MpGeneParserTest {
     assertEquals("03B03F", g.getGeneSymbol());
     assertSame(MpMarkerType.BAC_YAC_END, g.getMarkerType());
     assertEquals(tid, g.getMgiGeneId());
-//    for (MpGene mg : mpgenemap.values()) {
-//      System.out.println(mg.toString());
-//    }
-
-//    assertEquals(g.getMgiId(), "MGI:97874");
-//    assertEquals(g.getGeneSymbol(), "Rb1");
-//    assertEquals(g.getMarkerType(), "Gene");
-//    ImmutableGene t = genes.findGene("MGI:3623968");
-//    assertNotNull(t);
-//    assertEquals(t.getMgiId(), "MGI:3623968");
-//    assertEquals(t.getGeneSymbol(), "Tg(CD2-CD4,HLA-DQA1,HLA-DQB1)1Ell");
-//    assertTrue(t.isTransgene());
-//    thrown.expect(DimorphDataException.class);
-//    thrown.expectMessage("Could not find matching gene object for accession id ");
-//    ImmutableGene n = genes.findGene("MGI:333");
   }
 
   /**
@@ -86,9 +71,9 @@ public class MpGeneParserTest {
    *
    * @throws PhenolException
    */
-  @Disabled
+
   @Test
-  public void testMerge() throws PhenolException, FileNotFoundException {
+  public void testMergeGetsCorrectGeneId() throws PhenolException {
     MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap = parser.getGenotypeAccessionToMpModelMap();
     List<MpSimpleModel> rb1Models = new ArrayList<>();
@@ -101,12 +86,8 @@ public class MpGeneParserTest {
     }
     // there are two Rb1 models
     assertEquals(2, rb1Models.size());
-    // GET FULL ONTOLOGY NOW USING LOCAL TEST
-    // TODO -- TAILOR THE TOY TEST ONTOLOGY SO THAT THIS WORKS
-    Path localMpPath = Paths.get("/Users/peterrobinson/Documents/data/mgi/mp.obo");
-    Ontology ontology = OntologyLoader.loadOntology(localMpPath.toFile());
-
-    MpGeneModel genemod = new MpGeneModel(rb1Id, ontology, true, rb1Models);
+    MpGeneModel genemod = new MpGeneModel(rb1Id, rb1Models);
+    assertEquals(genemod.getMarkerId(),rb1Id);
   }
 
 

@@ -2,10 +2,7 @@ package org.monarchinitiative.phenol.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.monarchinitiative.phenol.cli.demo.PairwisePhenotypicSimilarityCalculator;
-import org.monarchinitiative.phenol.cli.demo.GoEnrichmentDemo;
-import org.monarchinitiative.phenol.cli.demo.MpEnrichmentDemo;
-import org.monarchinitiative.phenol.cli.demo.ParsingBenchmark;
+import org.monarchinitiative.phenol.cli.demo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +19,7 @@ public class Main {
   private static final String PRECOMPUTE_SCORES = "precompute-scores";
   private static final String MERGE_SCORES = "merge-scores";
   private static final String GO_DEMO = "go-demo";
+  private static final String HP_DEMO = "hp-demo";
   private static final String BENCHMARK = "benchmark";
   private static final String HPO_SIM="hpo-sim";
   private static final String MPO_ENRICH="mpo";
@@ -31,17 +29,19 @@ public class Main {
     final MergeScoresOptions mergeScoresOptions = new MergeScoresOptions();
     final GoEnrichmentDemo.Options godemo = new GoEnrichmentDemo.Options();
     final MpEnrichmentDemo.Options mpo = new MpEnrichmentDemo.Options();
+    final HpDemo.Options hpoDemo = new HpDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
     final PairwisePhenotypicSimilarityCalculator.Options hpo_sim = new PairwisePhenotypicSimilarityCalculator.Options();
     final JCommander jc =
         JCommander.newBuilder()
-            .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
-            .addCommand(MERGE_SCORES, mergeScoresOptions)
+          .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
+          .addCommand(MERGE_SCORES, mergeScoresOptions)
           .addCommand(GO_DEMO, godemo)
           .addCommand(BENCHMARK, bench)
           .addCommand(MPO_ENRICH,mpo)
           .addCommand(HPO_SIM, hpo_sim)
-            .build();
+          .addCommand(HP_DEMO,hpoDemo)
+          .build();
     try {
       jc.parse(argv);
     } catch (ParameterException e) {
@@ -70,6 +70,8 @@ public class Main {
         break;
       case HPO_SIM:
         new PairwisePhenotypicSimilarityCalculator(hpo_sim).run();
+      case HP_DEMO:
+        new HpDemo(hpoDemo).run();
     }
   }
 }

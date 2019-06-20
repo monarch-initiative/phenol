@@ -4,14 +4,12 @@
 Working with HPO
 ================
 
-phenol supports working with the HPO in the following ways:
+Phenol supports many different operations on the `Human Phenotype Ontology (HPO) <https://hpo.jax.org/app/>`_.
+Many applications will w
+ant to input both the hp ontology file as well as the HPO annotations,
+the `phenotype.hpoa <http://compbio.charite.de/jenkins/job/hpo.annotations.2018/lastSuccessfulBuild/artifact/misc_2018/phenotype.hpoa>`_
+file.
 
-- The ``HpoOntology`` class supports the standard ``Ontology`` interface.
-  Besides this, the "phenotypic abnormality" sub ontology is extracted on construction and is available through ``HpoOntology.getPhenotypicAbnormalitySubOntology()``.
-- The classes ``HpoFrequencyTermIds``, ``HpoModeOfInheritanceTermIds``, and ``HpoSubOntologyRootTermIds`` provide shortcuts to important/special terms that come in handy when using the HPO.
-- phenol provides means to parse disease-to-phenotype and disease-to-gene annotations from the HPO project into ``HpoDiseaseAnnotation`` and ``HpoGeneAnnotation`` objects.
-
-This section will demonstrate these three features.
 
 ---------------------
 The HpoOntology Class

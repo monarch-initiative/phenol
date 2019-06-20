@@ -48,35 +48,16 @@ For building Phenol, you will need
 #. `Maven 3 <http://maven.apache.org/>`_ for building phenol, and
 #. `Git <http://git-scm.com/>`_ for getting the sources.
 
-Git Checkout
-============
+Git Checkout and maven build
+============================
 
-The following code snippet downloads the phenol sources and builds them in ``~/Development/phenol``.
-
-.. code-block:: console
-
-   ~ # mkdir -p ~/Development
-   ~ # cd ~/Development
-   Development # git clone https://github.com/monarch-initiative/phenol
-   Development # cd phenol
-
-
-Building
-========
-
-You can build Phenol using ``mvn package``.
-This will automatically download all dependencies, build phenol, and run all tests.
+The following code snippet downloads the phenol sources and builds them.
 
 .. code-block:: console
 
-    phenol # mvn package
-
-In case that you have non-compiling test, you can use the `-DskipTests=true` parameter for skipping them.
-
-.. code-block:: console
-
-    phenol # mvn install -DskipTests=true
-
+   $ git clone https://github.com/monarch-initiative/phenol
+   $ cd phenol
+   $ mvn package
 
 
 Maven Proxy Settings
@@ -88,8 +69,8 @@ Then, execute the following commands to fill ``~/.m2/settings.xml``.
 
 .. code-block:: console
 
-    ontolib # mkdir -p ~/.m2
-    ontolib # test -f ~/.m2/settings.xml || cat >~/.m2/settings.xml <<END
+    $ mkdir -p ~/.m2
+    $ test -f ~/.m2/settings.xml || cat >~/.m2/settings.xml <<END
     <settings>
       <proxies>
        <proxy>

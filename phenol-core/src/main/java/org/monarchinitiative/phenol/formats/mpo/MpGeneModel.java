@@ -17,11 +17,7 @@ public class MpGeneModel extends MpModel {
   /** The gene model combines MPO phenotype terms from one or multiple {@link MpSimpleModel}. These are the genotypes of the merged models */
   private List<TermId> genotypes;
 
-  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors, MpSimpleModel... modelList) {
-    init(markerId, modelList);
-  }
-
-  public MpGeneModel(TermId markerId, Ontology mpoOnt, boolean filterAncestors, List<MpSimpleModel> modelList) {
+  public MpGeneModel(TermId markerId, List<MpSimpleModel> modelList) {
     init(markerId, modelList.toArray(new MpSimpleModel[] {}));
   }
 
@@ -69,22 +65,7 @@ public class MpGeneModel extends MpModel {
   }
 
 
-
-//  private void filterAncs(Ontology mpo, HashMap<TermId, Set<MpAnnotation>> annotsByMpId) {
-//    // Check mpIds for child-ancestor pairs; keep the child and eliminate the ancestor
-//    // accumulate set of MpIds to be removed, then remove them from annotsByMpId
-//    HashSet<TermId> toRemove = new HashSet<>();
-//    for (TermId mpId : annotsByMpId.keySet()) {
-//      if (!toRemove.contains(mpId)) {
-//        getAncestorTerms(mpo, mpId, false).forEach(anc -> toRemove.add(anc));
-//      }
-//    }
-//    toRemove.forEach(anc -> annotsByMpId.remove(anc));
-//  }
-
-
-
-  static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList, Ontology ontology, boolean filterAncestors) {
+  static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList) {
     HashMap<TermId, List<MpSimpleModel>> modelsByGene = new HashMap<>();
     ImmutableList.Builder<MpGeneModel> returnListBuilder = new ImmutableList.Builder<>();
 
@@ -95,7 +76,7 @@ public class MpGeneModel extends MpModel {
       matchingModels.add(model);
     }
 
-    modelsByGene.forEach((k, v) -> returnListBuilder.add(new MpGeneModel(k, ontology, filterAncestors, v)));
+    modelsByGene.forEach((k, v) -> returnListBuilder.add(new MpGeneModel(k, v)));
     return returnListBuilder.build();
   }
 }
