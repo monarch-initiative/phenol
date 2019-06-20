@@ -1,35 +1,33 @@
-package org.monarchinitiative.phenol.cli.demo;
+.. _rstterm:
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.*;
+===========================
+Working with the Term class
+===========================
 
-import java.io.File;
-import java.util.List;
-import java.util.stream.Collectors;
-
-/**
- * A demonstration of how to access data in the human phenotype ontology and its annotation files.
- */
-public class HpDemo {
+Each of the concepts, or terms, of an ontology in represented using the class *Term*.
+The following excerpt shows how to access information contained in a typical term from
+the `Human Phenotype Ontology (HPO) <https://hpo.jax.org/app/>`_, but the code would
+work for other OBO ontologies such as MP, GO, and ECTO.
 
 
+Getting a list of all terms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /** Path to the hp.obo file */
-  private final String hpoPath;
-  /** Path to the phenotyoe.hpoa file. */
-  private final String annotPath;
+.. code-block:: java
 
-
-
-  public HpDemo(HpDemo.Options options) {
-    this.hpoPath = options.getHpoPath();
-    this.annotPath = options.getAnnotationPath();
+  String hpoPath = ....; // get the path to the hp.obo file
+  Ontology hpo = OntologyLoader.loadOntology(new File(hpoPath));
+  System.err.println("Term IDs in HPO (primary, non-obsolete)");
+  for (TermId termId : hpo.getNonObsoleteTermIds()) {
+    System.err.println(termId);
   }
 
 
-  public void run() {
+Getting information about an individual term
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: java
+
     Ontology hpo = OntologyLoader.loadOntology(new File(hpoPath));
     TermId rootTermId = hpo.getRootTermId();
     String rootLabel = hpo.getTermMap().get(rootTermId).getName();
@@ -78,27 +76,36 @@ public class HpDemo {
       System.out.println("\t" + sset);
     }
 
-  }
+
+
+The output of this code is as follows. ::
+
+  root term: All (HP:0000001)
+  Data contained in term: Ridged nail (HP:0001807)
+  Definition: Longitudinal, linear prominences in the nail plate.
+  Synonyms:
+  	val:Grooved nails, scope: EXACT, xrefs:
+	  val:Longitudinal ridging, scope: EXACT, xrefs:
+	  val:Nail ridging, scope: EXACT, xrefs:
+	  val:Ridged nails, scope: RELATED, xrefs:
+  Alternative IDs:
+  	HP:0001801
+	  HP:0001811
+  Comment: There may be only one, or several ridges. The affected digits should be specified.
+  Cross references:
+	  UMLS:C0423820
+	  SNOMEDCT_US:271768001
+  Database Cross references:
+	  PMID:19125433
+  PubMed ids:
+	  PMID:19125433
+  Subsets:
+	  http://purl.obolibrary.org/obo/hp.obo#hposlim_core
 
 
 
+Please see HpDemo.java in the  ``phenol-cli`` branch. The demo can be run with the following command. ::
 
-  @Parameters(commandDescription = "Human Phenotype Ontology demo")
-  public static class Options {
-    @Parameter(names = {"-o","--obo"}, description = "path to hp.obo file", required = true)
-    private String hpoPath;
-    @Parameter(names = {"-a","--annot"}, description = "path to HPO annotation file (phenotyoe.hpoa", required = true)
-    private String annotPath;
+  $ mvn package # if necessary
+  $ java -jar phenol-cli/target/phenol-cli.jar hp-demo -o hp.obo -a phenotype.hpoa
 
-
-    String getHpoPath() {
-      return hpoPath;
-    }
-
-    String getAnnotationPath() {
-      return annotPath;
-    }
-
-  }
-
-}

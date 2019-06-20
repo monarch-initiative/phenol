@@ -58,8 +58,7 @@ The best place to leave feedback, ask questions, and report bugs is the `Phenol 
 
    install
    input
-   tutorial_hpo
-   tutorial_similarity
+   tutorial
 
 .. toctree::
     :caption: Project Info

@@ -52,6 +52,7 @@
   </dependencies>
 
   <build>
+    <finalName>phenol-cli</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
