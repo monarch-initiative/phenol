@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.hpo.*;
 
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -40,6 +41,29 @@ public class HpoDiseaseAnnotationParser {
   private final Set<String> DEFAULT_DATABASE_PREFIXES= ImmutableSet.of("OMIM","ORPHA","DECIPHER");
   /** We will parse in disease models from the following databases. */
   private final Set<String> databasePrefixes;
+
+
+
+  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology){
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology);
+    try {
+      return parser.parse();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile +": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
+  }
+
+  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology, List<String> databases){
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology,databases);
+    try {
+      return parser.parse();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile +": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
+  }
+
 
   public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
     this.annotationFilePath = annotationFile;

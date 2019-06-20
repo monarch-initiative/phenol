@@ -2,11 +2,14 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -77,6 +80,10 @@ public class HpDemo {
     for (String sset : subsets) {
       System.out.println("\t" + sset);
     }
+
+
+    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotPath,hpo);
+    System.out.println("Imported " + diseaseMap.size() + " disease models");
 
   }
 
