@@ -418,52 +418,19 @@ public class HpoAnnotationEntry {
    * a NOT (negated) term.
    * @param diseaseID Orphanet ID, e.g., ORPHA:99776
    * @param diseaseName Orphanet disease name, e.g., Moasic trisomy 9
-   * @param orphaInheritanceId Orphanet id (e.g., HP:0001234) as String
-   * @param orphaLabel corresponding Orphanet term Label
-   * @param ontology reference to HPO ontology
+   * @param hpoInheritanceId HPO id (e.g., HP:0001234) for an inheritance term
+   * @param hpoLabel corresponding HPO term Label
    * @param biocuration A String to represent provenance from Orphanet, e.g., ORPHA:orphadata[2019-01-05]
    * @return corresponding HpoAnnotationEntry object
    * @throws HpoAnnotationModelException if there is a Q/C problem with the data
    */
   public static HpoAnnotationEntry fromOrphaInheritanceData(String diseaseID,
                                                  String diseaseName,
-                                                 String orphaInheritanceId,
-                                                 String orphaLabel,
-                                                 Ontology ontology,
-                                                 String biocuration) throws HpoAnnotationModelException {
+                                                 TermId hpoInheritanceId,
+                                                 String hpoLabel,
+                                                 String biocuration) {
 
-    if (orphaInheritanceId==null) {
-      throw new HpoAnnotationModelException("Null String passed as orphaInheritanceId for disease " + (diseaseID!=null?diseaseID:"n/a"));
-    } else if (orphaLabel == null) {
-      throw new HpoAnnotationModelException("Null String passed as orphaLabel for disease " + (diseaseID!=null?diseaseID:"n/a"));
-    }
-    TermId inheritanceId=null;
 
-    if (orphaInheritanceId.equals("409930") && orphaLabel.equals("Autosomal recessive")){
-      inheritanceId = AUTOSOMAL_RECESSIVE;
-    } else if (orphaInheritanceId.equals("409929") && orphaLabel.equals("Autosomal dominant")) {
-      inheritanceId=AUTOSOMAL_DOMINANT;
-    } else if (orphaInheritanceId.equals("409931") && orphaLabel.equals("Multigenic/multifactorial")){
-      inheritanceId=MULTIFACTORIAL;
-    } else if (orphaInheritanceId.equals("409932") && orphaLabel.equals("X-linked recessive")){
-      inheritanceId=X_LINKED_RECESSIVE;
-    } else if (orphaInheritanceId.equals("409933") && orphaLabel.equals("Mitochondrial inheritance")) {
-      inheritanceId=MITOCHONDRIAL;
-    } else if (orphaInheritanceId.equals("409934") && orphaLabel.equals("X-linked dominant")) {
-      inheritanceId = X_LINKED_DOMINANT;
-    } else if (orphaInheritanceId.equals("409938") && orphaLabel.equals("Y-linked")) {
-      inheritanceId =Y_LINKED;
-    } else if (orphaInheritanceId.equals("409937") && orphaLabel.equals("Semi-dominant")) {
-      inheritanceId=INHERITANCE_ROOT; //TODO SEMIDOMINANT
-    } else if (orphaInheritanceId.equals("409936") && orphaLabel.equals("Oligogenic")) {
-      inheritanceId = OLIGOGENIC;
-    }
-
-    else {
-      System.err.println("DID NOT RECOGNIZE INHERITANCE id="+orphaInheritanceId + " label="+orphaLabel);
-      System.exit(1);
-    }
-    String hpoLabel = ontology.getTermMap().get(inheritanceId).getName();
 
     // These items are always empty for inheritance annotations
     String frequencyString =  EMPTY_STRING ;
@@ -472,7 +439,7 @@ public class HpoAnnotationEntry {
 
     return new HpoAnnotationEntry(diseaseID,
       diseaseName,
-      inheritanceId,
+      hpoInheritanceId,
       hpoLabel,
       EMPTY_STRING,
       EMPTY_STRING,

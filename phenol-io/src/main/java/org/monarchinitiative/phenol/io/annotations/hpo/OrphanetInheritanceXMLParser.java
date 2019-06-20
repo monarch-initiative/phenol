@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
+import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.OLIGOGENIC;
+
 public class OrphanetInheritanceXMLParser {
   /**
    * Path to {@code en_product9_age.xml} file.
@@ -49,15 +53,19 @@ public class OrphanetInheritanceXMLParser {
   private static final String AVERAGE_AGE_OF_ONSET_LIST = "AverageAgeOfOnsetList";
   private static final String AVERAGE_AGE_OF_DEATH_LIST = "AverageAgeOfDeathList";
   private static final String DISORDER_TYPE = "DisorderType";
-  /** Orphanet marks some of its intheritance entries as Not apploicable. We will just skip them.
+  /**
+   * Orphanet marks some of its intheritance entries as Not apploicable. We will just skip them.
    * This is the corresponding ID.
    */
-  private static final String NOT_APPLICABLE_ID="409941";
-  /** similar to above. We will skip this. */
-  private static final String UNKNOWN_ID="409939";
-  /** similar to above. We will skip this. */
-  private static final String NO_DATA_AVAILABLE="409940";
-
+  private static final String NOT_APPLICABLE_ID = "409941";
+  /**
+   * similar to above. We will skip this.
+   */
+  private static final String UNKNOWN_ID = "409939";
+  /**
+   * similar to above. We will skip this.
+   */
+  private static final String NO_DATA_AVAILABLE = "409940";
 
 
   private boolean inDisorder = false;
@@ -130,18 +138,22 @@ public class OrphanetInheritanceXMLParser {
               currentInheritanceId.equals(NO_DATA_AVAILABLE)) {
               continue;
             }
-            try {
-              TermId disId = TermId.of(String.format("ORPHA:%s", currentOrphanum));
-              HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaInheritanceData(disId.getValue(),
-                currentDiseaseName,
-                currentInheritanceId,
-                currentModeOfInheritanceLabel,
-                this.ontology,
-                orphanetBiocurationString);
-              this.disease2inheritanceMultimap.put(disId, entry);
-            } catch (HpoAnnotationModelException e) {
-              System.err.println("[WARNING] Could not parse Orphanet Inheritance annotation: " + e.getMessage());
+            TermId disId = TermId.of(String.format("ORPHA:%s", currentOrphanum));
+            TermId hpoInheritanceId = getHpoInheritanceTermId(currentInheritanceId, currentModeOfInheritanceLabel);
+            if (hpoInheritanceId == null) {
+              continue;
             }
+            if (!ontology.getTermMap().containsKey(hpoInheritanceId)) {
+              System.err.println("[WARNING] Could not find HPO label for " + hpoInheritanceId.getValue());
+              continue;
+            }
+            String hpoLabel = ontology.getTermMap().get(hpoInheritanceId).getName();
+            HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaInheritanceData(disId.getValue(),
+              currentDiseaseName,
+              hpoInheritanceId,
+              hpoLabel,
+              orphanetBiocurationString);
+            this.disease2inheritanceMultimap.put(disId, entry);
           } else if (localPart.equals(AVERAGE_AGE_OF_ONSET_LIST)) {
             inAverageAgeOfOnsetList = true;
           } else if (localPart.equals(AVERAGE_AGE_OF_DEATH_LIST)) {
@@ -175,6 +187,32 @@ public class OrphanetInheritanceXMLParser {
       }
     } catch (IOException | XMLStreamException e) {
       e.printStackTrace();
+    }
+  }
+
+
+  private TermId getHpoInheritanceTermId(String orphaInheritanceId, String orphaLabel) {
+    if (orphaInheritanceId.equals("409930") && orphaLabel.equals("Autosomal recessive")) {
+      return AUTOSOMAL_RECESSIVE;
+    } else if (orphaInheritanceId.equals("409929") && orphaLabel.equals("Autosomal dominant")) {
+      return AUTOSOMAL_DOMINANT;
+    } else if (orphaInheritanceId.equals("409931") && orphaLabel.equals("Multigenic/multifactorial")) {
+      return MULTIFACTORIAL;
+    } else if (orphaInheritanceId.equals("409932") && orphaLabel.equals("X-linked recessive")) {
+      return X_LINKED_RECESSIVE;
+    } else if (orphaInheritanceId.equals("409933") && orphaLabel.equals("Mitochondrial inheritance")) {
+      return MITOCHONDRIAL;
+    } else if (orphaInheritanceId.equals("409934") && orphaLabel.equals("X-linked dominant")) {
+      return X_LINKED_DOMINANT;
+    } else if (orphaInheritanceId.equals("409938") && orphaLabel.equals("Y-linked")) {
+      return Y_LINKED;
+    } else if (orphaInheritanceId.equals("409937") && orphaLabel.equals("Semi-dominant")) {
+      return INHERITANCE_ROOT; //TODO SEMIDOMINANT
+    } else if (orphaInheritanceId.equals("409936") && orphaLabel.equals("Oligogenic")) {
+      return OLIGOGENIC;
+    } else {
+      System.err.println("[WARNING] Could not find HPO id for " + orphaLabel + "(" + orphaInheritanceId + ")");
+      return null; // could not find correct id.
     }
   }
 
