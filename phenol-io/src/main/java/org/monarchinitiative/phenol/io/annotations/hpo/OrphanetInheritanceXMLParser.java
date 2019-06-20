@@ -90,9 +90,9 @@ public class OrphanetInheritanceXMLParser {
   }
 
   private void parse(File file) {
-    try {
+
+    try (InputStream in = new FileInputStream(file)) {
       XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-      InputStream in = new FileInputStream(file);
       XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
       String currentOrphanum = null;
       String currentDiseaseName = null;
