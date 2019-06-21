@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoFrequency;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -10,7 +9,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * This class represents one disease-entity annotation consisting usually of multiple annotations lines, and using

@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 
@@ -427,7 +426,6 @@ public class HpoAnnotationEntry {
    * @param hpoLabel corresponding HPO term Label
    * @param biocuration A String to represent provenance from Orphanet, e.g., ORPHA:orphadata[2019-01-05]
    * @return corresponding HpoAnnotationEntry object
-   * @throws HpoAnnotationModelException if there is a Q/C problem with the data
    */
   public static HpoAnnotationEntry fromOrphaInheritanceData(String diseaseID,
                                                  String diseaseName,

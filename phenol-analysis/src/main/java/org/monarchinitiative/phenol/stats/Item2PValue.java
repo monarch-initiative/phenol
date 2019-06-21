@@ -24,8 +24,8 @@ public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
    * raw pavel) and {@link #p_adjusted} to this value (i.e., by default there is no multiple testing
    * correction. The class is designed to be used with other classes such as {@link Bonferroni} to
    * adjust the raw pvalues that are stored in {@link #p_adjusted}.
-   * @param item
-   * @param p
+   * @param item An item whose p value was calculated
+   * @param p the corresponding p value
    */
   public Item2PValue(T item, double p) {
       this.item=item;
@@ -56,9 +56,7 @@ public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
 
   @Override
   public int compareTo(Item2PValue o) {
-    if (p_raw < o.p_raw) return -1;
-    if (p_raw > o.p_raw) return 1;
-    return 0;
+    return Double.compare(p_raw,o.p_raw);
   }
 
 

@@ -5,7 +5,6 @@ import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.assoc.HpoAssociationParser;
@@ -229,11 +228,11 @@ public class PairwisePhenotypicSimilarityCalculator {
             continue;
           }
           if (i > n_diseases) {
-            System.err.println(String.format("i=%d but n_diseases=%", i, n_diseases));
+            System.err.println(String.format("i=%d but n_diseases=%d", i, n_diseases));
             continue;
           }
           if (j > n_diseases) {
-            System.err.println(String.format("j=%d but n_diseases=%", j, n_diseases));
+            System.err.println(String.format("j=%d but n_diseases=%d", j, n_diseases));
             continue;
           }
           double sim = getMaximumGeneGeneSimilarity(geneI, geneJ);
@@ -257,9 +256,6 @@ public class PairwisePhenotypicSimilarityCalculator {
       writer.write(header + "\n");
       for (int i=0;i<N-1;i++) {
         for (int j = i+1; j < N; j++) {
-          if (geneSimilarityMatrix[i][j] == Double.NaN){
-            continue;
-          }
           if (geneSimilarityMatrix[i][j]>threshold) {
             TermId geneId1=geneList.get(i);
             TermId geneId2=geneList.get(j);

@@ -6,7 +6,6 @@ import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.BufferedWriter;
@@ -15,8 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 /**
  * This class coordinates writing out the {@code phenotype.hpoa}, the so-called "big file", which is
@@ -74,12 +71,11 @@ public class PhenotypeDotHpoaFileWriter {
                                                    String orphaInheritanceXMLpath,
                                                    String outpath) {
 
-    PhenotypeDotHpoaFileWriter pwriter = new PhenotypeDotHpoaFileWriter(ont,
+    return new PhenotypeDotHpoaFileWriter(ont,
       smallFileDirectoryPath,
       orphaPhenotypeXMLpath,
       orphaInheritanceXMLpath,
       outpath);
-    return pwriter;
 
   }
   /**

@@ -164,8 +164,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    */
   private void writeObjectScoreDistribution(
       int numTerms, ObjectScoreDistribution<Integer> dist, int resolution) throws PhenolException {
-    final double scores[];
-    final double pValues[];
+    final double[] scores;
+    final double[] pValues;
 
     final List<Double> observedScores = dist.observedScores();
     if (resolution != 0) {

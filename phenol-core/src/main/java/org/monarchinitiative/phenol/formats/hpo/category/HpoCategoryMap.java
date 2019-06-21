@@ -224,10 +224,7 @@ public class HpoCategoryMap {
         }
         // if we get here there was no prioritized category
         // return the first item.
-        for (TermId c : catlist) {
-            return  categorymap.get(c);
-        }
-        return null;
+      return categorymap.values().iterator().next();
     }
 
 

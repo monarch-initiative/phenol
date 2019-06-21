@@ -112,7 +112,7 @@ public class Hypergeometric
      *
      * @return the probability
      */
-    public double dhyper(int x, int N, int M, int n)
+    private double dhyper(int x, int N, int M, int n)
     {
         /* It is not possible to draw more white balls
          * from an urn containing M white balls. Hence
@@ -175,7 +175,7 @@ public class Hypergeometric
         }
     }
 
-    public double lNchooseK(int n, int k)
+    private double lNchooseK(int n, int k)
     {
         double ans;
         ans = logfact(n) - logfact(k) - logfact(n - k);
@@ -187,7 +187,7 @@ public class Hypergeometric
      * calculating this. If we have a cache miss, fill up all values from the
      * last valid cache value to the value we currently need.
      */
-    public double logfact(int i)
+    private double logfact(int i)
     {
         /*
          * Make sure value is already in lfactorial. If not, calculate all
@@ -197,13 +197,13 @@ public class Hypergeometric
         {
             for (int j = lfactorial.size(); j <= i; j++)
             {
-                double lf = lfactorial.get(j - 1).doubleValue()
+                double lf = lfactorial.get(j - 1)
                         + Math.log(j);
                 lfactorial.add(j, lf);
             }
         }
 
-        return lfactorial.get(i).doubleValue();
+        return lfactorial.get(i);
     }
 
     /**

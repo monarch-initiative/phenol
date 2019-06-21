@@ -1,14 +1,11 @@
 package org.monarchinitiative.phenol.formats.mpo;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
 public class MpGeneModel extends MpModel {
   private static final Logger logger = LoggerFactory.getLogger(MpGeneModel.class);
@@ -24,8 +21,8 @@ public class MpGeneModel extends MpModel {
   /**
    * All of the models share the same gene markerId (that's why they all belong to the same MpGeneModel).
    *
-   * @param markerId
-   * @param models
+   * @param markerId The id of the marker (usually a gene)
+   * @param models List of models that correspond to the gene
    */
   private void init(TermId markerId, MpSimpleModel[] models) {
     this.markerId = markerId;

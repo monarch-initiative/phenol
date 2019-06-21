@@ -3,8 +3,6 @@ package org.monarchinitiative.phenol.io.annotations.hpo;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
-import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -18,13 +16,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
-import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT;
-import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.OLIGOGENIC;
 
 public class OrphanetInheritanceXMLParser {
   /**
@@ -133,7 +127,7 @@ public class OrphanetInheritanceXMLParser {
             localPart.equals(NAME)) {
             event = eventReader.nextEvent(); // go to the contents of the node
             currentModeOfInheritanceLabel = event.asCharacters().getData();
-            if (currentInheritanceId.equals(NOT_APPLICABLE_ID) ||
+            if (currentInheritanceId==null || currentInheritanceId.equals(NOT_APPLICABLE_ID) ||
               currentInheritanceId.equals(UNKNOWN_ID) ||
               currentInheritanceId.equals(NO_DATA_AVAILABLE)) {
               continue;
