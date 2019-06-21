@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.base.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 
 /**
@@ -28,7 +30,10 @@ import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermI
  */
 public class HpoAnnotationEntry {
   private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
-
+  private static final TermId phenotypeRoot = TermId.of("HP:0000118");
+  private static final TermId INHERITANCE_TERM_ID = TermId.of("HP:0000005");
+  private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
+  private static final TermId CLINICAL_MODIFIER_ID = TermId.of("HP:0012823");
   private final static String EMPTY_STRING="";
     /** The CURIE of the disease, e.g., OMIM:600201 (Field #0). */
     private final String diseaseID;
@@ -701,6 +706,44 @@ public class HpoAnnotationEntry {
             }
 
         }
+    }
+
+
+  private String getAspect(TermId tid, Ontology ontology) throws HpoAnnotationModelException {
+    Term term = ontology.getTermMap().get(tid);
+    if (term == null) {
+      throw new HpoAnnotationModelException("Cannot compute Aspect of NULL term");
+    }
+    TermId primaryTid = term.getId(); // update in case term is an alt_id
+    if (existsPath(ontology, primaryTid, phenotypeRoot)) {
+      return "P"; // organ/phenotype abnormality
+    } else if (existsPath(ontology, primaryTid, INHERITANCE_TERM_ID)) {
+      return "I";
+    } else if (existsPath(ontology, primaryTid, CLINICAL_COURSE_ID)) {
+      return "C";
+    } else if (existsPath(ontology, primaryTid, CLINICAL_MODIFIER_ID)) {
+      return "M";
+    } else {
+      throw new HpoAnnotationModelException("Could not determine aspect of TermId " + tid.getValue());
+    }
+  }
+
+    public String toBigFileLine(Ontology ontology) throws HpoAnnotationModelException {
+      String[] elems = {
+        getDiseaseID(), //DB_Object_ID
+        getDiseaseName(), // DB_Name
+        getNegation(), // Qualifier
+        getPhenotypeId().getValue(), // HPO_ID
+        getPublication(), // DB_Reference
+        getEvidenceCode(), // Evidence_Code
+        getAgeOfOnsetId() != null ? getAgeOfOnsetId() : EMPTY_STRING, // Onset
+        getFrequencyModifier() != null ? getFrequencyModifier() : EMPTY_STRING, // Frequency
+        getSex(), // Sex
+        getModifier(), // Modifier
+        getAspect(getPhenotypeId(),ontology), // Aspect
+        getBiocuration() // Biocuration
+      };
+      return String.join("\t", elems);
     }
 
 

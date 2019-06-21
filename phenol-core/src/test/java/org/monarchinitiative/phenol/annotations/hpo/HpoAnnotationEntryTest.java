@@ -1,7 +1,19 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
+
+import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +22,27 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class HpoAnnotationEntryTest {
 
+
+  @BeforeAll
+  static void init() throws PhenolException, FileNotFoundException {
+    // Make a typical entry. All other fields are emtpy.
+    String diseaseID="OMIM:123456";
+    String diseaseName="MADE-UP SYNDROME";
+    String hpoId= "HP:0000528";
+    String hpoName="Anophthalmia";
+    String age1="";
+    String age2="";
+    String freq="HP:0040283";
+    String sex="";
+    String negation="";
+    String mod="";
+    String description="";
+    String pub="OMIM:154700";
+    String evidenceCode="IEA";
+    String biocuration="HPO:skoehler[2015-07-26]";
+    String fields[] ={diseaseID,diseaseName,hpoId,hpoName,age1,age2,freq,sex,negation,mod,description,pub,evidenceCode,biocuration};
+    String line = String.join("\t",fields);
+  }
 
   /**
    * This is testing the regex we use in the main class to capture n of m frequency string.s
@@ -37,6 +70,9 @@ public class HpoAnnotationEntryTest {
     m = n_of_m_pattern.matcher(freq3);
     assertFalse(m.matches());
   }
+
+
+
 
 
 }

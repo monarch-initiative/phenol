@@ -59,12 +59,8 @@ public class OrphanetXML2HpoDiseaseModelParser {
     private final String orphanetXmlPath;
     /** Reference to the HPO Ontology. */
     private final Ontology ontology;
-    //private int n_could_not_find_orphanet_HpoId=0;
-    //private int n_updatedTermId=0;
-    //private int n_updatedTermLabel=0;
-
     /** A String of the form ORPHA:orphadata[2019-01-05] that we will use as the biocuration entry. */
-     private final String orphanetBiocurationString;
+    private final String orphanetBiocurationString;
     /** A list of diseases parsed from Orphanet. */
     private final List<HpoAnnotationModel> orphanetDiseaseList=new ArrayList<>();
     /** If true, replace obsolete term ids without throwing Exception. */

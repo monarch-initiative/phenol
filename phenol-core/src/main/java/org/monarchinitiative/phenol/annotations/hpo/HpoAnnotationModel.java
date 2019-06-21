@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoFrequency;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -29,7 +30,7 @@ public class HpoAnnotationModel {
   /**
    * List of {@link HpoAnnotationEntry} objects representing the original lines of the small file
    */
-  private final List<HpoAnnotationEntry> entryList;
+  private List<HpoAnnotationEntry> entryList;
 
   /**
    * These are the databases currently represented in our data resource.
@@ -75,6 +76,8 @@ public class HpoAnnotationModel {
     else if (basename.contains("DECIPHER")) this.database = Database.DECIPHER;
     else this.database = Database.UNKNOWN;
   }
+
+  public HpoAnnotation mergeWithInheritanceAnnotations()
 
   /**
    * Private constructor, intended to be used by {@link #getMergedModel()}
@@ -331,6 +334,25 @@ public class HpoAnnotationModel {
       }
     }
     return new HpoAnnotationModel(this.basename,builder.build());
+  }
+
+  /**
+   * By construction, the disease ID field of each of the entries in this object must be the same
+   * Therefore, we return the first one. Also by construction, there must be at least one entry
+   * in ({@link #entryList} for this object to have been created
+   * @return The diseaseID of this model
+   */
+  public TermId getDiseaseId() {
+    HpoAnnotationEntry entry = entryList.iterator().next();
+    return TermId.of(entry.getDiseaseID());
+  }
+
+
+  public void addInheritanceEntryCollection(Collection<HpoAnnotationEntry> entries) {
+      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+      builder.addAll(this.entryList);
+      builder.addAll(entries);
+      this.entryList = builder.build();
   }
 
 

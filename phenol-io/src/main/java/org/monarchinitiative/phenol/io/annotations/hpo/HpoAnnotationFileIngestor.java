@@ -8,6 +8,7 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -53,6 +54,15 @@ public class HpoAnnotationFileIngestor {
     public HpoAnnotationFileIngestor(String directoryPath, String omitFile, Ontology ontology) {
        this(directoryPath,omitFile,ontology,false);
     }
+
+  public HpoAnnotationFileIngestor(String directoryPath,  Ontology ontology) {
+    this(directoryPath,
+      String.format("%s%s%s",directoryPath, File.separator,"omit-list.txt") ,
+      ontology,
+      false);
+  }
+
+
 
   /**
    *
