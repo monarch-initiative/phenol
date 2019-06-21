@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
@@ -128,14 +129,18 @@ public class PhenotypeDotHpoaFileWriter {
       new OrphanetXML2HpoDiseaseModelParser(this.orphaPhenotypeXMLfile.getAbsolutePath(), ontology, tolerant);
     List<HpoAnnotationModel> prelimOrphaDiseaseList = orphaParser.getOrphanetDiseaseModels();
 
+    ImmutableList.Builder<HpoAnnotationModel> builder = new ImmutableList.Builder<>();
+
     for (HpoAnnotationModel model : prelimOrphaDiseaseList) {
       TermId diseaseID = model.getDiseaseId();
       if (this.inheritanceMultiMap.containsKey(diseaseID)) {
         Collection<HpoAnnotationEntry> inheritanceEntryList = this.inheritanceMultiMap.get(diseaseID);
-        HpoAnnotationEntry mergedModel = model.mergeWithInheritanceAnnotations(inheritanceEntryList);
-        model.addInheritanceEntryCollection(inheritanceEntryList);
+        HpoAnnotationModel mergedModel = model.mergeWithInheritanceAnnotations(inheritanceEntryList);
+        builder.add(mergedModel);
       }
     }
+
+    this.orphanetSmallFileList = builder.build();
     setOntologyMetadata(ont.getMetaInfo());
     setNumberOfDiseasesForHeader();
   }
@@ -145,7 +150,7 @@ public class PhenotypeDotHpoaFileWriter {
    * number of OMIM, Orphanet, and DECIPHER entries. This is calculated
    * here (except for Orphanet).
    */
-  public void setNumberOfDiseasesForHeader() {
+  private void setNumberOfDiseasesForHeader() {
 
     this.n_decipher = 0;
     this.n_omim = 0;
@@ -210,18 +215,6 @@ public class PhenotypeDotHpoaFileWriter {
       List<HpoAnnotationEntry> entryList = smallFile.getEntryList();
       for (HpoAnnotationEntry entry : entryList) {
         try {
-          TermId diseaseId = TermId.of(entry.getDB_Object_ID());
-          if (this.inheritanceMultiMap.containsKey(diseaseId)  // just output the first time around
-            && !seenInheritance.contains(diseaseId)) {
-            seenInheritance.add(diseaseId);
-            List<HpoAnnotationEntry> inheritanceEntryList =
-              new ArrayList<>(inheritanceMultiMap.get(diseaseId));
-            for (HpoAnnotationEntry inhEntry : inheritanceEntryList) {
-              String bigFileInheritanceLine = inhEntry.toBigFileLine(ontology);
-              writer.write(bigFileInheritanceLine + "\n");
-              System.out.println("Writing inheritance line\n\t " + bigFileInheritanceLine);
-            }
-          }
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
@@ -235,18 +228,6 @@ public class PhenotypeDotHpoaFileWriter {
     System.out.println("Total output lines was " + (n + m));
     writer.close();
   }
-
-  /**
-   * This method calculates the aspect of a term used for an annotation.
-   * The aspect depends on the location of the term in the HPO hierarchy,
-   * for instance it is "I" if the term is in the inheritance subhierarchy and it
-   * is "P" if the term is in the phenotype subhierarchy.
-   *
-   * @param tid The term id of an HPO Term
-   * @return The Aspect (P,I,C,M) of the term.
-   * @throws HpoAnnotationModelException if the term cannot be identified as either P,C,I, or M.
-   */
-
 
   /**
    * @return Header line for the big file (indicating column names for the data).

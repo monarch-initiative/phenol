@@ -77,7 +77,12 @@ public class HpoAnnotationModel {
     else this.database = Database.UNKNOWN;
   }
 
-  public HpoAnnotation mergeWithInheritanceAnnotations()
+  public HpoAnnotationModel mergeWithInheritanceAnnotations(Collection<HpoAnnotationEntry> inherit) {
+      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+      builder.addAll(this.entryList);
+      builder.addAll(inherit);
+      return new HpoAnnotationModel(this.basename,builder.build());
+  }
 
   /**
    * Private constructor, intended to be used by {@link #getMergedModel()}
@@ -214,7 +219,7 @@ public class HpoAnnotationModel {
     if (modifiers.isEmpty()) {
       return ""; // no modifiers, return empty string
     } else {
-      return modifiers.stream().collect(Collectors.joining(";"));
+      return String.join(";",modifiers);
     }
   }
 
@@ -229,7 +234,7 @@ public class HpoAnnotationModel {
     if (descriptions.isEmpty()) {
       return ""; // no modifiers, return empty string
     } else {
-      return descriptions.stream().collect(Collectors.joining(";"));
+      return String.join(";",descriptions);
     }
   }
 
@@ -238,7 +243,7 @@ public class HpoAnnotationModel {
     for (HpoAnnotationEntry entry : entrylist) {
       pubs.add(entry.getPublication());
     }
-    return pubs.stream().collect(Collectors.joining(";"));
+    return String.join(";",pubs);
   }
 
   private String getHighestEvidenceCode(final List<HpoAnnotationEntry> entrylist) {
@@ -258,7 +263,7 @@ public class HpoAnnotationModel {
     for (HpoAnnotationEntry entry : entrylist) {
       biocuration.add(entry.getBiocuration());
     }
-    return biocuration.stream().collect(Collectors.joining(";"));
+    return String.join(";",biocuration);
   }
 
 
