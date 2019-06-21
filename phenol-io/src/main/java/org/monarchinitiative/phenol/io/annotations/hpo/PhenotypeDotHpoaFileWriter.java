@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
+import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
@@ -11,9 +12,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
@@ -27,6 +26,9 @@ public class PhenotypeDotHpoaFileWriter {
     private final List<HpoAnnotationModel> internalAnnotFileList;
     /** List of all of the {@link HpoAnnotationModel} objects derived from the Orphanet XML file. */
     private final List<HpoAnnotationModel> orphanetSmallFileList;
+
+    private final Multimap<TermId,HpoAnnotationEntry> inheritanceMultiMap;
+
     /**Usually "phenotype.hpoa", but may also include path. */
     private final String outputFileName;
     private final static String EMPTY_STRING="";
@@ -45,13 +47,39 @@ public class PhenotypeDotHpoaFileWriter {
     private Map<String,String> ontologyMetaInfo;
 
 
-
-    public PhenotypeDotHpoaFileWriter(Ontology ont, List<HpoAnnotationModel> internalAnnotFileList, List<HpoAnnotationModel> orphaList, String outpath) {
+  /**
+   *
+   * @param ont reference to HPO ontology
+   * @param internalAnnotFileList List of annotation models for data from the HPO small files
+   * @param orphaList List of annotation models for Orphanet data
+   * @param inheritanceMultMap List of inheritance annotations for Orphanet data
+   * @param outpath path of the outfile (usually {@code phenotype.hpoa})
+   */
+    public PhenotypeDotHpoaFileWriter(Ontology ont,
+                                      List<HpoAnnotationModel> internalAnnotFileList,
+                                      List<HpoAnnotationModel> orphaList,
+                                      Multimap<TermId,HpoAnnotationEntry> inheritanceMultMap,
+                                      String outpath) {
         this.ontology=ont;
         this.internalAnnotFileList =internalAnnotFileList;
         this.orphanetSmallFileList=orphaList;
+        this.inheritanceMultiMap=inheritanceMultMap;
         this.outputFileName =outpath;
     }
+
+  /**
+   * Constructor that uses the default output path of {@code phenotype.hpoa} (in the PWD).
+   * @param ont reference to HPO ontology
+   * @param internalAnnotFileList List of annotation models for data from the HPO small files
+   * @param orphaList List of annotation models for Orphanet data
+   * @param inheritanceMultMap List of inheritance annotations for Orphanet data
+   */
+  public PhenotypeDotHpoaFileWriter(Ontology ont,
+                                    List<HpoAnnotationModel> internalAnnotFileList,
+                                    List<HpoAnnotationModel> orphaList,
+                                    Multimap<TermId,HpoAnnotationEntry> inheritanceMultMap) {
+    this(ont,internalAnnotFileList,orphaList,inheritanceMultMap,"phenotype.hpoa");
+  }
 
 
     /** In the header of the {@code phenotype.hpoa} file, we write the
@@ -117,10 +145,23 @@ public class PhenotypeDotHpoaFileWriter {
         }
         System.out.println("We output a total of " + n + " big file lines from internal HPO Annotation files");
         int m=0;
+        Set<TermId> seenInheritance=new HashSet<>();
         for (HpoAnnotationModel smallFile : this.orphanetSmallFileList) {
             List<HpoAnnotationEntry> entryList = smallFile.getEntryList();
             for (HpoAnnotationEntry entry : entryList) {
                 try {
+                    TermId diseaseId = TermId.of(entry.getDB_Object_ID());
+                    if (this.inheritanceMultiMap.containsKey(diseaseId)  // just output the first time around
+                      && !seenInheritance.contains(diseaseId)) {
+                      seenInheritance.add(diseaseId);
+                      List<HpoAnnotationEntry> inheritanceEntryList =
+                        new ArrayList<>(inheritanceMultiMap.get(diseaseId));
+                      for (HpoAnnotationEntry inhEntry : inheritanceEntryList) {
+                        String bigFileInheritanceLine = transformEntry2BigFileLine(inhEntry);
+                        writer.write(bigFileInheritanceLine + "\n");
+                        System.out.println("Writing inheritance line\n\t " + bigFileInheritanceLine);
+                      }
+                    }
                     String bigfileLine = transformEntry2BigFileLine(entry);
                     writer.write(bigfileLine + "\n");
                 } catch (HpoAnnotationModelException e) {

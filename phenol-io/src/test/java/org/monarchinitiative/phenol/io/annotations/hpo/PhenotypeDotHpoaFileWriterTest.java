@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
@@ -9,6 +11,7 @@ import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,7 +74,8 @@ class PhenotypeDotHpoaFileWriterTest {
         };
         String expected= String.join("\t", bigFileFields);
         List<HpoAnnotationModel> emptyList = ImmutableList.of(); // needed for testing.
-        PhenotypeDotHpoaFileWriter v1b = new PhenotypeDotHpoaFileWriter(ontology, emptyList, emptyList,"");
+      Multimap<TermId,HpoAnnotationEntry> mockmap =ArrayListMultimap.create();
+        PhenotypeDotHpoaFileWriter v1b = new PhenotypeDotHpoaFileWriter(ontology, emptyList, emptyList,mockmap);
         String line = v1b.transformEntry2BigFileLine(entry);
         assertEquals(expected,line);
     }
