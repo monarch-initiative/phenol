@@ -261,7 +261,8 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.0.1</version>
         <configuration>
-          <javadocVersion>${java.version}</javadocVersion>
+          <javadocVersion>8</javadocVersion>
+          <source>8</source>
         <!--  <javadocExecutable>/usr/lib/jvm/java-8-oracle/bin/javadoc</javadocExecutable> -->
           <doclint>none</doclint>
         </configuration>
