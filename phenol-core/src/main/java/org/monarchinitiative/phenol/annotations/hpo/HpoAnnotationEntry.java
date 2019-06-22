@@ -721,6 +721,10 @@ public class HpoAnnotationEntry {
       return "C";
     } else if (existsPath(ontology, primaryTid, CLINICAL_MODIFIER_ID)) {
       return "M";
+    } else if (primaryTid.equals(phenotypeRoot)){
+      return "P"; // the Orphanet annotations include some entries to the phenotype root
+    } else if (primaryTid.equals(INHERITANCE_TERM_ID)) {
+      return "I"; // the Orphanet annotations include some entries to the rrot
     } else {
       throw new HpoAnnotationModelException("Could not determine aspect of TermId " + tid.getValue());
     }
