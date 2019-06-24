@@ -65,7 +65,7 @@ public class HpoDiseaseAnnotationParser {
   }
 
 
-  public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
+  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
@@ -78,7 +78,7 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology reference to HPO Ontology object
    * @param databases list of databases we will keep for parsing (from OMIM, ORPHA, DECIPHER)
    */
-  public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<String> databases) {
+  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<String> databases) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
@@ -87,7 +87,7 @@ public class HpoDiseaseAnnotationParser {
     databasePrefixes=builder.build();
   }
 
-  public HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology){
+  private HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology){
     this.annotationFilePath = annotationFile.getAbsolutePath();
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
