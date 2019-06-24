@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -46,9 +47,14 @@ class OrphanetXML2HpoDiseaseModelParserTest {
         assertNotNull(parser);
     }
 
-    @Test
-    void testTwoDiseases() {
-        int expectedNumberOfDiseases=2;
+  /**
+   * There are three disease entries:
+   * $ grep -c '<Disorder id' en_product4_HPO.small.xml
+   * 3
+   */
+  @Test
+    void testThreeDiseases() {
+        int expectedNumberOfDiseases=3;
         List<HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseModels();
         assertEquals(expectedNumberOfDiseases,diseaseModels.size());
     }
@@ -96,8 +102,24 @@ class OrphanetXML2HpoDiseaseModelParserTest {
         TermId AbnormalPupillaryFunction = TermId.of("HP:0007686");
         assertEquals(AbnormalPupillaryFunction,entry2.getPhenotypeId());
         assertEquals(occasional.getValue(),entry1.getFrequencyModifier());
-
     }
+
+  /** consult the XML file en_product4_HPO.small.xml for the source of the ground truth here. */
+  @Test
+  void  testHemimelia() {
+    TermId hemimelia = TermId.of("ORPHA:988");
+    List<HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseModels();
+    HpoAnnotationModel model=null;
+    for (HpoAnnotationModel ham : diseaseModels) {
+      System.err.println(ham.getDiseaseId());
+      if (ham.getDiseaseId().equals(hemimelia)) {
+        model = ham; break;
+      }
+    }
+    assertNotNull(model);
+
+
+  }
 
 
 }

@@ -214,8 +214,7 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println("Error encountered with entry " + entry.toString());
-          e.printStackTrace();
+          System.err.println(String.format("[ERROR] Malformed line from  entry %s: ", entry.toString(),e.getMessage()));
         }
         m++;
       }
