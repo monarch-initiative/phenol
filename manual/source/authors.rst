@@ -10,3 +10,4 @@ Authors
 - Manuel Holtgrewe
 - HyeongSik Kim
 - Michael Gargano
+- Jules Jacobsen

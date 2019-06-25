@@ -49,13 +49,15 @@ public class HpoAssociationParser {
   /** Key--an EntrezGene id; value--the corresponding symbol. all */
   private BiMap<TermId,String> allGeneIdToSymbolMap;
   private ImmutableMap<TermId, String> geneIdToSymbolMap;
-  /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). */
+  /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
+   * MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 1; is associated to the gene VEGF as POLYGENIC,
+   * and MARFAN SYNDROME is associated to the gene FBN1 as MENDELIAN.*/
   private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
   /** Key: a disease Id; Value: a geneId */
   private ImmutableMultimap<TermId,TermId> diseaseToGeneMap;
   /** Key: a gene Id; Value: a diseaseId */
   private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
-  /** Key: a disease Id; Value:  disease obj, all gene associations */
+  /** Key: a disease Id; Value:  disease obj, all gene associations. */
   private ImmutableMap<TermId, DiseaseToGeneAssociation> diseaseToAssociationsMap;
   /** Key: an phenotype Id Value: disease obj, HpoDisease, Immutable. */
   private Map<TermId, HpoDisease> termToDisease;
@@ -287,7 +289,7 @@ public class HpoAssociationParser {
     BufferedReader br = new BufferedReader(decoder);
     String line;
     while ((line=br.readLine())!=null) {
-      String a[] = line.split("\t");
+      String[] a = line.split("\t");
       String taxon=a[0];
       if (! taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
       if(!("unknown".equals(a[9]) | "tRNA".equals(a[9]) | "rRNA".equals(a[9]) | "pseudo".equals(a[9]))){

@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.io;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.GraphDocument;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obo.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obo.OboGraphDocumentLoader;

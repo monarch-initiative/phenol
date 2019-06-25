@@ -5,7 +5,7 @@
       <Name lang="en">Made up 1</Name>
       <HPODisorderAssociationList count="3">
         <HPODisorderAssociation id="39666">
-	  <HPO id="4">
+	        <HPO id="4">
             <HPOId>HP:0100886</HPOId>
             <HPOTerm>Abnormality of globe location</HPOTerm>
           </HPO>

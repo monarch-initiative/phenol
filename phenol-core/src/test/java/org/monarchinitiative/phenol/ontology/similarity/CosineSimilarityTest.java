@@ -1,28 +1,28 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
 import com.google.common.collect.Lists;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CosineSimilarityTest extends VegetableOntologyTestBase {
+class CosineSimilarityTest extends VegetableOntologyTestBase {
 
   private final CosineSimilarity similarity = new CosineSimilarity(ontology);
 
   @Test
-  public void testQueries() {
+  void testQueries() {
     assertEquals("Cosine similarity", similarity.getName());
-    assertEquals(true, similarity.isSymmetric());
+    assertTrue(similarity.isSymmetric());
     assertEquals("{oppositeAware: false}", similarity.getParameters());
   }
 
   @Test
-  public void testComputeSimilarities() {
+  void testComputeSimilarities() {
     assertEquals(
         0.408,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

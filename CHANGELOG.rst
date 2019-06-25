@@ -6,6 +6,8 @@ Changelog
 v1.3.3
 ------
 - Various bug fixes
+- Orphanet inheritance XML file ingest
+- Adding additional demo app to show how to access Term information (hpdemo).
 
 ------
 v1.3.0

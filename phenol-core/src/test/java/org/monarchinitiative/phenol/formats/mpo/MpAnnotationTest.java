@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

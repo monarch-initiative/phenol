@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class ScoreDistribution implements Serializable {
+public final class ScoreDistribution<T extends Serializable> implements Serializable {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public final class ScoreDistribution implements Serializable {
   private final int numTerms;
 
   /** Mapping from "world object" Id to score distribution. */
-  private final Map<Integer, ObjectScoreDistribution> objectScoreDistributions;
+  private final Map<Integer, ObjectScoreDistribution<T>> objectScoreDistributions;
 
   /**
    * Constructor.
@@ -28,7 +28,7 @@ public final class ScoreDistribution implements Serializable {
    *     ObjectScoreDistribution}.
    */
   public ScoreDistribution(
-      int numTerms, Map<Integer, ObjectScoreDistribution> objectScoreDistributions) {
+      int numTerms, Map<Integer, ObjectScoreDistribution<T>> objectScoreDistributions) {
     this.numTerms = numTerms;
     this.objectScoreDistributions = objectScoreDistributions;
   }
@@ -49,7 +49,7 @@ public final class ScoreDistribution implements Serializable {
    * @param objectId "World object" Id to get {@link ObjectScoreDistribution} for.
    * @return The object score distributions for the given <code>objectId</code>.
    */
-  public ObjectScoreDistribution getObjectScoreDistribution(int objectId) {
+  public ObjectScoreDistribution<T> getObjectScoreDistribution(int objectId) {
     return objectScoreDistributions.get(objectId);
   }
 

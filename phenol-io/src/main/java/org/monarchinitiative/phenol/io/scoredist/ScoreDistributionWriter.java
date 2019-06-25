@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.scoredist;
 
 import java.io.Closeable;
+import java.io.Serializable;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
@@ -18,7 +19,7 @@ public interface ScoreDistributionWriter extends Closeable {
    * @throws PhenolException In the case that there was a problem writing.
    * @see #write(int, ScoreDistribution, int)
    */
-  default void write(int numTerms, ScoreDistribution scoreDistribution) throws PhenolException {
+  default <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution) throws PhenolException {
     write(numTerms, scoreDistribution, 100);
   }
 
@@ -31,6 +32,6 @@ public interface ScoreDistributionWriter extends Closeable {
    *     resampling.
    * @throws PhenolException In the case that there was a problem writing.
    */
-  void write(int numTerms, ScoreDistribution scoreDistribution, int resolution)
+  <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution)
       throws PhenolException;
 }

@@ -84,9 +84,7 @@ public class HpoAnnotationFileParser {
                 } catch (ObsoleteTermIdException obsE) {
                     // try to rescue obsolete termid!
                     Optional<HpoAnnotationEntry> entryOpt = HpoAnnotationEntry.fromLineReplaceObsoletePhenotypeData(line, ontology);
-                    if (entryOpt.isPresent()) {
-                        entryList.add(entryOpt.get());
-                    }
+                    entryOpt.ifPresent(entryList::add);
                 } catch (PhenolException e) {
                     parseErrors.add(String.format("%s:%s", pathToHpoAnnotationFile,e.getMessage()));
                 }
@@ -95,8 +93,9 @@ public class HpoAnnotationFileParser {
             if (parseErrors.size()>0) {
               String errstr= String.join("\n",parseErrors);
               if (faultTolerant) {
-                  System.err.println(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
+                  System.err.println(String.format("234Errors encountered while parsing HPO Annotation file at %s.\n%s",
                           pathToHpoAnnotationFile,errstr));
+                  System.err.println(errstr);
               } else {
                   throw new HpoAnnotationModelException(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
                           pathToHpoAnnotationFile, errstr));
@@ -137,7 +136,7 @@ public class HpoAnnotationFileParser {
      * @throws HpoAnnotationModelException if the number of fields in the head is not equal to {@link #NUMBER_OF_FIELDS} or if a column header is incorrect
      */
     private void qcHeaderLine(String line) throws HpoAnnotationModelException {
-        String fields[] = line.split("\t");
+      String[] fields = line.split("\t");
         if (fields.length != NUMBER_OF_FIELDS) {
             String msg = String.format("Malformed header line\n"+line+
             "\nExpecting %d fields but got %d", NUMBER_OF_FIELDS, fields.length);

@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.mpo;
 
 import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
@@ -40,6 +41,8 @@ public class MpGeneParser {
     this.ontology = mpo;
   }
 
+  public Ontology getMpOntology() { return ontology; }
+
   /**
    * Reads the file of genetic markers. For each genetic marker, extracts the full MGI Accession ID,
    * the Marker Symbol, and Marker Type.
@@ -67,6 +70,12 @@ public class MpGeneParser {
     ImmutableMap.Builder<TermId,MpGeneModel> builder = new ImmutableMap.Builder<>();
     try {
       MpAnnotationParser annotParser = new MpAnnotationParser(this.mgiGenePhenoPath);
+      if (annotParser.getParsedAnnotationCount()==0) {
+        for (String e:annotParser.getParseErrors()) {
+          System.err.println(e);
+        }
+        throw new PhenolRuntimeException("Could not parse " + mgiGenePhenoPath);
+      }
       Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
         TermId geneId = simplemod.getMarkerId();
@@ -78,7 +87,7 @@ public class MpGeneParser {
       // all simple models that have a knockout of the corresponding gene
       for (TermId geneId : gene2simpleMap.keySet()) {
         List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
-          MpGeneModel genemod = new MpGeneModel(geneId, ontology, true, modCollection);
+          MpGeneModel genemod = new MpGeneModel(geneId, modCollection);
           builder.put(geneId,genemod);
       }
     } catch (PhenolException e) {

@@ -76,7 +76,6 @@ public final class ProgressReporter {
     logger.info(
         "Resnik precomputation done by {}% ({} of {} done, step elapsed: {} s, elapsed: "
             + "{} s, processing {} {}/s, estimated to go: {} s",
-        new Object[] {
           ((int) (100.0 * current / totalCount)),
           current,
           totalCount,
@@ -85,7 +84,7 @@ public final class ProgressReporter {
           elementsPerSec,
           elementsLabel,
           estimatedToGoSec
-        });
+        );
   }
 
   /** Set start timer. */

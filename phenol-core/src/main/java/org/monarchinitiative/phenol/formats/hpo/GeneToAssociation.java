@@ -2,6 +2,10 @@ package org.monarchinitiative.phenol.formats.hpo;
 
 import org.monarchinitiative.phenol.formats.Gene;
 
+/**
+ * This class records the way in which a gene is associated with a disease according to {@link AssociationType},
+ * i.e., one of MENDELIAN, DIGENIC, POLYGENIC, UNKNOWN.
+ */
 public class GeneToAssociation {
   private final Gene gene;
   private final AssociationType association;

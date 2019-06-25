@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.formats.hpo.category;
 
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;

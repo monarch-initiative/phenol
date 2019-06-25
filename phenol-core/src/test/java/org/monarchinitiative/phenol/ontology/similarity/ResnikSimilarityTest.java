@@ -13,12 +13,12 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ResnikSimilarityTest extends VegetableOntologyTestBase {
+class ResnikSimilarityTest extends VegetableOntologyTestBase {
 
   private ResnikSimilarity similarity;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     InformationContentComputation computation = new InformationContentComputation(ontology);
     Map<TermId, Collection<TermId>> termLabels =
         TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
@@ -29,14 +29,14 @@ public class ResnikSimilarityTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  public void testQueries() {
+  void testQueries() {
     assertEquals("Resnik similarity", similarity.getName());
-    assertEquals(true, similarity.isSymmetric());
+    assertTrue(similarity.isSymmetric());
     assertEquals("{symmetric: true}", similarity.getParameters());
   }
 
   @Test
-  public void testComputeSimilarities() {
+  void testComputeSimilarities() {
     assertEquals(
         0.0,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

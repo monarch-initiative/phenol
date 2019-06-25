@@ -8,16 +8,14 @@ import java.util.TreeSet;
 import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
-import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermVisitor;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
 
-public class OntologyTermsTest extends VegetableOntologyTestBase {
+class OntologyTermsTest extends VegetableOntologyTestBase {
 
   @Test
-  public void testVisitChildrenOf() {
+  void testVisitChildrenOf() {
     Set<TermId> children = new TreeSet<>();
 
     OntologyTerms.visitChildrenOf(
@@ -39,7 +37,7 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  public void testChildrenOf() {
+  void testChildrenOf() {
     assertEquals(
       ImmutableSet.of(
         TermId.of("VO:0000004"),
@@ -51,7 +49,7 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  public void testVisitParentsOf() {
+  void testVisitParentsOf() {
     Set<TermId> parents = new TreeSet<>();
 
     OntologyTerms.visitParentsOf(
@@ -72,7 +70,7 @@ public class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  public void testParentsOf() {
+  void testParentsOf() {
     assertEquals(ImmutableSet.of(
       TermId.of("VO:0000004"),
       TermId.of("VO:0000007"),

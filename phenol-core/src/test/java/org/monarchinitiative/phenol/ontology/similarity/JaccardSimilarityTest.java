@@ -6,22 +6,21 @@ import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntolo
 
 import com.google.common.collect.Lists;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class JaccardSimilarityTest extends VegetableOntologyTestBase {
+class JaccardSimilarityTest extends VegetableOntologyTestBase {
 
   private final JaccardSimilarity similarity = new JaccardSimilarity(ontology);
 
   @Test
-  public void testQueries() {
+  void testQueries() {
     assertEquals("Jaccard similarity", similarity.getName());
-    assertEquals(true, similarity.isSymmetric());
+    assertTrue(similarity.isSymmetric());
     assertEquals("{normalized: true}", similarity.getParameters());
   }
 
   @Test
-  public void testComputeSimilarities() {
+  void testComputeSimilarities() {
     assertEquals(
         0.25,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

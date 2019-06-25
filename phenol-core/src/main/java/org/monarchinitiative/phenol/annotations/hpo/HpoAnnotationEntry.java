@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.base.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 
 /**
@@ -26,8 +28,11 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class HpoAnnotationEntry {
-  final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
-
+  private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
+  private static final TermId phenotypeRoot = TermId.of("HP:0000118");
+  private static final TermId INHERITANCE_TERM_ID = TermId.of("HP:0000005");
+  private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
+  private static final TermId CLINICAL_MODIFIER_ID = TermId.of("HP:0012823");
   private final static String EMPTY_STRING="";
     /** The CURIE of the disease, e.g., OMIM:600201 (Field #0). */
     private final String diseaseID;
@@ -239,7 +244,7 @@ public class HpoAnnotationEntry {
      * @throws PhenolException if there were Q/C problems with the line.
      */
     public static HpoAnnotationEntry fromLine(String line, Ontology ontology) throws PhenolException {
-        String A[] = line.split("\t");
+        String [] A= line.split("\t");
         if (A.length!= NUMBER_OF_FIELDS) {
             throw new HpoAnnotationModelException(String.format("We were expecting %d expectedFields but got %d for line %s",NUMBER_OF_FIELDS,A.length,line ));
         }
@@ -287,7 +292,7 @@ public class HpoAnnotationEntry {
    */
   public static Optional<HpoAnnotationEntry> fromLineReplaceObsoletePhenotypeData(String line, Ontology ontology)
    {
-    String A[] = line.split("\t");
+    String []A = line.split("\t");
     if (A.length!= NUMBER_OF_FIELDS) {
       return Optional.empty();
     }
@@ -411,7 +416,49 @@ public class HpoAnnotationEntry {
     }
 
 
-    // Q/C methods
+
+  /**
+   * If the frequency of an HPO term is listed in Orphanet as Excluded (0%), then we encode it as
+   * a NOT (negated) term.
+   * @param diseaseID Orphanet ID, e.g., ORPHA:99776
+   * @param diseaseName Orphanet disease name, e.g., Moasic trisomy 9
+   * @param hpoInheritanceId HPO id (e.g., HP:0001234) for an inheritance term
+   * @param hpoLabel corresponding HPO term Label
+   * @param biocuration A String to represent provenance from Orphanet, e.g., ORPHA:orphadata[2019-01-05]
+   * @return corresponding HpoAnnotationEntry object
+   */
+  public static HpoAnnotationEntry fromOrphaInheritanceData(String diseaseID,
+                                                 String diseaseName,
+                                                 TermId hpoInheritanceId,
+                                                 String hpoLabel,
+                                                 String biocuration) {
+
+
+
+    // These items are always empty for inheritance annotations
+    String frequencyString =  EMPTY_STRING ;
+    String negationString =  EMPTY_STRING;
+
+
+    return new HpoAnnotationEntry(diseaseID,
+      diseaseName,
+      hpoInheritanceId,
+      hpoLabel,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      frequencyString,
+      EMPTY_STRING,
+      negationString,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      diseaseID,
+      "TAS",
+      biocuration);
+  }
+
+
+
+  // Q/C methods
 
     /**
      * This method checks all of the fields of the HpoAnnotationEntry. If there is an error, then
@@ -603,7 +650,7 @@ public class HpoAnnotationEntry {
         TermId clinicalModifier = TermId.of("HP:0012823");
         TermId temporalPattern = TermId.of("HP:0011008");
         TermId paceOfProgression = TermId.of("HP:0003679");
-        String A[] = modifierString.split(";");
+        String[] A = modifierString.split(";");
         for (String a: A) {
             try {
                 TermId tid = TermId.of(a);
@@ -649,7 +696,7 @@ public class HpoAnnotationEntry {
         if (entrylist==null || entrylist.isEmpty()) {
             throw new HpoAnnotationModelException("empty biocuration entry");
         }
-        String fields[] = entrylist.split(";");
+        String []fields = entrylist.split(";");
         for (String f : fields) {
             Matcher matcher = biocurationPattern.matcher(f);
             if (! matcher.find()) {
@@ -657,6 +704,48 @@ public class HpoAnnotationEntry {
             }
 
         }
+    }
+
+
+  private String getAspect(TermId tid, Ontology ontology) throws HpoAnnotationModelException {
+    Term term = ontology.getTermMap().get(tid);
+    if (term == null) {
+      throw new HpoAnnotationModelException("Cannot compute Aspect of NULL term");
+    }
+    TermId primaryTid = term.getId(); // update in case term is an alt_id
+    if (existsPath(ontology, primaryTid, phenotypeRoot)) {
+      return "P"; // organ/phenotype abnormality
+    } else if (existsPath(ontology, primaryTid, INHERITANCE_TERM_ID)) {
+      return "I";
+    } else if (existsPath(ontology, primaryTid, CLINICAL_COURSE_ID)) {
+      return "C";
+    } else if (existsPath(ontology, primaryTid, CLINICAL_MODIFIER_ID)) {
+      return "M";
+    } else if (primaryTid.equals(phenotypeRoot)){
+      return "P"; // the Orphanet annotations include some entries to the phenotype root
+    } else if (primaryTid.equals(INHERITANCE_TERM_ID)) {
+      return "I"; // the Orphanet annotations include some entries to the rrot
+    } else {
+      throw new HpoAnnotationModelException("Could not determine aspect of TermId " + tid.getValue());
+    }
+  }
+
+    public String toBigFileLine(Ontology ontology) throws HpoAnnotationModelException {
+      String[] elems = {
+        getDiseaseID(), //DB_Object_ID
+        getDiseaseName(), // DB_Name
+        getNegation(), // Qualifier
+        getPhenotypeId().getValue(), // HPO_ID
+        getPublication(), // DB_Reference
+        getEvidenceCode(), // Evidence_Code
+        getAgeOfOnsetId() != null ? getAgeOfOnsetId() : EMPTY_STRING, // Onset
+        getFrequencyModifier() != null ? getFrequencyModifier() : EMPTY_STRING, // Frequency
+        getSex(), // Sex
+        getModifier(), // Modifier
+        getAspect(getPhenotypeId(),ontology), // Aspect
+        getBiocuration() // Biocuration
+      };
+      return String.join("\t", elems);
     }
 
 

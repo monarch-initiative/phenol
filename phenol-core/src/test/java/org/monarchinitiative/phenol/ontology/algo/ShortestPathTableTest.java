@@ -2,17 +2,16 @@ package org.monarchinitiative.phenol.ontology.algo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
-public class ShortestPathTableTest extends VegetableOntologyTestBase {
+class ShortestPathTableTest extends VegetableOntologyTestBase {
 
   private final ShortestPathTable table = new ShortestPathTable(ontology);
 
   @Test
-  public void testGetDistance() {
+  void testGetDistance() {
     assertEquals(1, table.getDistance(idRootVegetable, idVegetable));
     assertEquals(-1, table.getDistance(idVegetable, idRootVegetable));
 
@@ -30,7 +29,7 @@ public class ShortestPathTableTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  public void testGetDistanceSymmetric() {
+  void testGetDistanceSymmetric() {
     assertEquals(1, table.getDistanceSymmetric(idRootVegetable, idVegetable));
     assertEquals(1, table.getDistanceSymmetric(idVegetable, idRootVegetable));
 
