@@ -257,21 +257,3 @@ xref: SNOMEDCT_US:72124005
 xref: UMLS:C0917967
 is_a: HP:0012373 ! Abnormal eye physiology
 
-
-[Term]
-id: HP:0002991
-name: Abnormality of fibula morphology
-def: "An anomaly of the calf bone (fibula), one of the two bones of the calf." [HPO:probinson]
-subset: hposlim_core
-synonym: "Abnormality of the calf bone" EXACT layperson [ORCID:0000-0001-5208-3432]
-xref: UMLS:C4025664
-is_a: HP:0002981 ! Abnormality of the calf
-is_a: HP:0040066 ! Abnormal morphology of bones of the lower limbs
-
-[Term]
-id: HP:0002981
-name: Abnormality of the calf
-def: "An abnormality of the calf, i.e. of the posterior part of the lower leg." [HPO:probinson]
-synonym: "Abnormality of the calf" EXACT layperson []
-xref: UMLS:C4021832
-is_a: + ! Abnormality of the lower limb

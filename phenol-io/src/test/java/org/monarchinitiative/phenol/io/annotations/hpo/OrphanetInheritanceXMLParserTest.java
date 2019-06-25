@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
 
-public class OrphanetInheritanceXMLParserTest {
+class OrphanetInheritanceXMLParserTest {
 
 
   static private OrphanetInheritanceXMLParser parser;

@@ -11,9 +11,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -61,13 +59,10 @@ public class OrphanetXML2HpoDiseaseModelParser {
     private final Ontology ontology;
     /** A String of the form ORPHA:orphadata[2019-01-05] that we will use as the biocuration entry. */
     private final String orphanetBiocurationString;
-    /** A list of diseases parsed from Orphanet. */
-    private final List<HpoAnnotationModel> orphanetDiseaseList=new ArrayList<>();
+    /** A map of diseases parsed from Orphanet. */
+    private final Map<TermId,HpoAnnotationModel> orphanetDiseaseMap = new HashMap<>();
     /** If true, replace obsolete term ids without throwing Exception. */
     private boolean replaceObsoleteTermId;
-
-
-
 
 
     public OrphanetXML2HpoDiseaseModelParser(String xmlpath, Ontology onto, boolean tolerant) {
@@ -83,10 +78,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
         }
     }
 
-
-    public List<HpoAnnotationModel> getOrphanetDiseaseModels() { return this.orphanetDiseaseList;}
-
-
+    public Map<TermId,HpoAnnotationModel> getOrphanetDiseaseMap() { return  this.orphanetDiseaseMap; }
 
     /**
      * Transform the Orphanet codes into HPO Frequency TermId's.
@@ -220,9 +212,10 @@ public class OrphanetXML2HpoDiseaseModelParser {
                                 );
                     }
                 } else if (endElementName.equals("Disorder")) {
-                    HpoAnnotationModel file = new HpoAnnotationModel(String.format("ORPHA:%s", currentOrphanumber),
+                  TermId orphaDiseaseId = TermId.of(String.format("ORPHA:%s",currentOrphanumber));
+                    HpoAnnotationModel model = new HpoAnnotationModel(String.format("ORPHA:%s", currentOrphanumber),
                             currentAnnotationEntryList);
-                    orphanetDiseaseList.add(file);
+                  orphanetDiseaseMap.put(orphaDiseaseId,model);
                     currentOrphanumber=null;
                     currentDiseaseName=null;
                     currentAnnotationEntryList.clear();

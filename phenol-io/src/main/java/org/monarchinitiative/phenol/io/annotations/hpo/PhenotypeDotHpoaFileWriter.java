@@ -32,6 +32,8 @@ public class PhenotypeDotHpoaFileWriter {
   private final List<HpoAnnotationModel> orphanetSmallFileList;
 
   private final Multimap<TermId, HpoAnnotationEntry> inheritanceMultiMap;
+  /** tolerant mode (update obsolte term ids if possible) */
+  private final boolean tolerant;
 
   /**
    * Usually "phenotype.hpoa", but may also include path.
@@ -56,7 +58,6 @@ public class PhenotypeDotHpoaFileWriter {
   private final File orphaPhenotypeXMLfile;
   private final File orphaInheritanceXMLfile;
 
-  private boolean tolerant = true;
 
   /**
    * @param ont                     reference to HPO ontology
@@ -69,13 +70,15 @@ public class PhenotypeDotHpoaFileWriter {
                                                    String smallFileDirectoryPath,
                                                    String orphaPhenotypeXMLpath,
                                                    String orphaInheritanceXMLpath,
-                                                   String outpath) {
+                                                   String outpath,
+                                                   boolean toler) {
 
     return new PhenotypeDotHpoaFileWriter(ont,
       smallFileDirectoryPath,
       orphaPhenotypeXMLpath,
       orphaInheritanceXMLpath,
-      outpath);
+      outpath,
+      toler);
 
   }
   /**
@@ -89,7 +92,8 @@ public class PhenotypeDotHpoaFileWriter {
                                      String smallFileDirectoryPath,
                                      String orphaPhenotypeXMLpath,
                                      String orphaInheritanceXMLpath,
-                                     String outpath) {
+                                     String outpath,
+                                     boolean toler) {
     Objects.requireNonNull(ont);
     this.ontology = ont;
     Objects.requireNonNull(outpath);
@@ -113,9 +117,10 @@ public class PhenotypeDotHpoaFileWriter {
       throw new RuntimeException("Could not find " + orphaInheritanceXMLpath
         + " (We were expecting the path to en_product9_ages.xml");
     }
+    this.tolerant = toler;
     HpoAnnotationFileIngestor annotationFileIngestor =
       new HpoAnnotationFileIngestor(smallFileDirectory.getAbsolutePath(), ont);
-    this.internalAnnotFileList = annotationFileIngestor.getV2SmallFileEntries();
+    this.internalAnnotFileList = annotationFileIngestor.getSmallFileEntries();
     // 2. Get the Orphanet Inheritance Annotations
     OrphanetInheritanceXMLParser inheritanceXMLParser =
       new OrphanetInheritanceXMLParser(orphaInheritanceXMLfile.getAbsolutePath(), ontology);
@@ -123,20 +128,20 @@ public class PhenotypeDotHpoaFileWriter {
 
     OrphanetXML2HpoDiseaseModelParser orphaParser =
       new OrphanetXML2HpoDiseaseModelParser(this.orphaPhenotypeXMLfile.getAbsolutePath(), ontology, tolerant);
-    List<HpoAnnotationModel> prelimOrphaDiseaseList = orphaParser.getOrphanetDiseaseModels();
-
+    //List<HpoAnnotationModel> prelimOrphaDiseaseList = orphaParser.getOrphanetDiseaseModels();
+    Map<TermId,HpoAnnotationModel> prelimOrphaDiseaseMap = orphaParser.getOrphanetDiseaseMap();
     ImmutableList.Builder<HpoAnnotationModel> builder = new ImmutableList.Builder<>();
 
-    for (HpoAnnotationModel model : prelimOrphaDiseaseList) {
-      TermId diseaseID = model.getDiseaseId();
-      if (this.inheritanceMultiMap.containsKey(diseaseID)) {
-        Collection<HpoAnnotationEntry> inheritanceEntryList = this.inheritanceMultiMap.get(diseaseID);
+    for (TermId diseaseId : prelimOrphaDiseaseMap.keySet()) {
+      HpoAnnotationModel model = prelimOrphaDiseaseMap.get(diseaseId);
+      if (this.inheritanceMultiMap.containsKey(diseaseId)) {
+        Collection<HpoAnnotationEntry> inheritanceEntryList = this.inheritanceMultiMap.get(diseaseId);
         HpoAnnotationModel mergedModel = model.mergeWithInheritanceAnnotations(inheritanceEntryList);
-        builder.add(mergedModel);
+        prelimOrphaDiseaseMap.put(diseaseId,mergedModel); // replace with model that has inheritance
       }
     }
 
-    this.orphanetSmallFileList = builder.build();
+    this.orphanetSmallFileList = new ArrayList<>(prelimOrphaDiseaseMap.values());
     setOntologyMetadata(ont.getMetaInfo());
     setNumberOfDiseasesForHeader();
   }
@@ -198,13 +203,12 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println("Error encountered with entry " + entry.toString());
-          e.printStackTrace();
+          System.err.println(String.format("[ERROR] with entry (%S): %s", entry.toString(),e.getMessage()));
         }
         n++;
       }
     }
-    System.out.println("We output a total of " + n + " big file lines from internal HPO Annotation files");
+    System.out.println("[INFO] We output a total of " + n + " big file lines from internal HPO Annotation files");
     int m = 0;
     Set<TermId> seenInheritance = new HashSet<>();
     for (HpoAnnotationModel smallFile : this.orphanetSmallFileList) {
@@ -219,7 +223,7 @@ public class PhenotypeDotHpoaFileWriter {
         m++;
       }
     }
-    System.out.println("We output a total of " + m + " big file lines from internal HPO Annotation files");
+    System.out.println("We output a total of " + m + " big file lines from the Orphanet Annotation files");
     System.out.println("Total output lines was " + (n + m));
     writer.close();
   }
