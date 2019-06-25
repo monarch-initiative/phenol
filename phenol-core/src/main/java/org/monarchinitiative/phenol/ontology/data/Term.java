@@ -261,7 +261,6 @@ public class Term {
 
     /**
      * @param id The term's ID.
-     * @return
      */
     public Builder id(TermId id) {
       this.id = id;
@@ -270,7 +269,6 @@ public class Term {
 
     /**
      * @param name Human-readable term name.
-     * @return
      */
     public Builder name(String name) {
       this.name = name;
@@ -279,7 +277,6 @@ public class Term {
 
     /**
      * @param altTermIds Alternative term Ids.
-     * @return
      */
     public Builder altTermIds(List<TermId> altTermIds) {
       this.altTermIds = altTermIds;
@@ -288,7 +285,6 @@ public class Term {
 
     /**
      * @param definition TermI definition.
-     * @return
      */
     public Builder definition(String definition) {
       this.definition = definition;

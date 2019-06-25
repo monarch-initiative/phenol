@@ -14,8 +14,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 class HpoAnnotationEntryTest {
 
@@ -23,7 +21,7 @@ class HpoAnnotationEntryTest {
 
 
     @BeforeAll
-    static void init() throws PhenolException, FileNotFoundException  {
+    static void init()  {
         Path resourceDirectory = Paths.get("src","test","resources","hp_head.obo");
         ontology = OntologyLoader.loadOntology(resourceDirectory.toFile());
     }

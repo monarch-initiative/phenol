@@ -26,14 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class HpoAnnotationFileParserTest {
 
-  private static Ontology ontology;
   private static HpoAnnotationModel smallFile1 =null;
 
 
   @BeforeAll
   static void init() throws PhenolException {
     Path hpOboPath = Paths.get("src","test","resources","annotations","hp_head.obo");
-    ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
+    Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
     Path omim123456path = Paths.get("src","test","resources","annotations","OMIM-123456.tab");
     String omim123456file = omim123456path.toAbsolutePath().toString();
     HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456file,ontology);

@@ -9,23 +9,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableMap;
-import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Test;
-import org.prefixcommons.CurieUtil;
 
 /**
  * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class OntologyLoaderTest {
+class OntologyLoaderTest {
 
   @Test
-  public void testNCITLoad() throws Exception {
+  void testNCITLoad() throws Exception {
     Path ncitPath = Paths.get("src/test/resources/ncit_module.owl");
     Ontology ontology = OntologyLoader.loadOntology(ncitPath.toFile(), "NCIT");
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
@@ -77,7 +74,7 @@ public class OntologyLoaderTest {
   }
 
   @Test
-  public void testMONDOLoad() throws Exception {
+  void testMONDOLoad() {
     Path mondoPath = Paths.get("src", "test", "resources", "mondo_module.owl");
     Ontology ontology = OntologyLoader.loadOntology(mondoPath.toFile(), "MONDO");
     List<String> xrefs =
@@ -106,7 +103,7 @@ public class OntologyLoaderTest {
   }
 
   @Test
-  void testLoadEctoSubset() throws Exception {
+  void testLoadEctoSubset() {
     Path ectoPath = Paths.get("src/test/resources/ecto.obo");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here (the PURL isn't correct)
@@ -133,7 +130,7 @@ public class OntologyLoaderTest {
   }
 
   @Test
-  void testLoadEctoAll() throws Exception {
+  void testLoadEctoAll() {
     Path ectoPath = Paths.get("src/test/resources/ecto.obo");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here

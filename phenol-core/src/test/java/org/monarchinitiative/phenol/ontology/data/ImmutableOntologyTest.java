@@ -4,13 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.TestOntology;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public class ImmutableOntologyTest {
+class ImmutableOntologyTest {
 
   private final Ontology ontology = TestOntology.ontology();
 
 //  @Disabled("Currently failing on a string comparison")
   @Test
-  public void test() {
+  void test() {
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     assertEquals(ImmutableMap.of(), ontology.getMetaInfo());
@@ -112,8 +110,8 @@ public class ImmutableOntologyTest {
   }
 
   /**
-   * The parent ontology has six relations 
-   * 1 Relationship [source=HP:0000001, dest=HP:0000002, id=1] 
+   * The parent ontology has six relations
+   * 1 Relationship [source=HP:0000001, dest=HP:0000002, id=1]
    * 2 Relationship [source=HP:0000001, dest=HP:0000003, id=2]
    * 3 Relationship [source=HP:0000001, dest=HP:0000004, id=3]
    * 4 Relationship [source=HP:0000002, dest=HP:0000005, id=4]
@@ -123,7 +121,7 @@ public class ImmutableOntologyTest {
    * Relationship [source=HP:0000001, dest=HP:0000004, id=3]
    */
   @Test
-  public void testSubontologyRelations() {
+  void testSubontologyRelations() {
     Ontology subontology = ontology.subOntology(TestOntology.TERM_ID_4);
     assertEquals(6, ontology.getRelationMap().size());
     assertEquals(1, subontology.getRelationMap().size());

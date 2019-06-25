@@ -10,19 +10,17 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HpoAnnotationLineTest {
+class HpoAnnotationLineTest {
 
   private final static double EPSILON = 0.00001;
 
   private final Ontology ontology;
 
-  public HpoAnnotationLineTest() throws PhenolException {
+  HpoAnnotationLineTest() throws PhenolException {
     this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp_head.obo").toFile());
   }
 
@@ -32,7 +30,7 @@ public class HpoAnnotationLineTest {
   }
 
   @Test
-  public void test1() throws PhenolException{
+  void test1() throws PhenolException{
     String items[]={"OMIM:269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
@@ -67,7 +65,7 @@ public class HpoAnnotationLineTest {
    * @throws PhenolException expected to throw because prefix is malformed
    */
   @Test
-  public void malformedDiseaseDatabasePrefix() throws PhenolException {
+  void malformedDiseaseDatabasePrefix() throws PhenolException {
     String[] items = {"BadPrefix",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
@@ -92,7 +90,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.8+0.99)/2=0.895
    */
   @Test
-  public void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
+  void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -123,7 +121,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.01+0.04)/2=0.025
    */
   @Test
-  public void testGetFrequencyFromVeryRareTerm() throws PhenolException{
+  void testGetFrequencyFromVeryRareTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -151,7 +149,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.05+0.29)/2=0.17
    */
   @Test
-  public void testGetFrequencyFromOccassionalTerm() throws PhenolException{
+  void testGetFrequencyFromOccassionalTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -180,7 +178,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.30+0.79)/2=0.545
    */
   @Test
-  public void testGetFrequencyFromFrequentTerm() throws PhenolException{
+  void testGetFrequencyFromFrequentTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -208,7 +206,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is 1.0
    */
   @Test
-  public void testGetFrequencyFromObligateTerm() throws PhenolException{
+  void testGetFrequencyFromObligateTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -236,7 +234,7 @@ public class HpoAnnotationLineTest {
    * The expected mean is 0.0
    */
   @Test
-  public void testGetFrequencyFromExcludedTerm() throws PhenolException{
+  void testGetFrequencyFromExcludedTerm() throws PhenolException{
     String items[]={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName

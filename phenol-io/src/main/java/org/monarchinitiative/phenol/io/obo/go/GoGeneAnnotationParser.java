@@ -114,8 +114,7 @@ public final class GoGeneAnnotationParser  {
    * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
    */
   public  List<TermAnnotation> getTermAnnotations() {
-    List<TermAnnotation> talist = new ArrayList<>(this.annotations);
-    return talist;
+    return new ArrayList<>(this.annotations);
   }
 
   /** Use an iterator paradigm internally to parse the file. */

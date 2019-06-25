@@ -87,7 +87,7 @@ public class MpGeneParser {
       // all simple models that have a knockout of the corresponding gene
       for (TermId geneId : gene2simpleMap.keySet()) {
         List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
-          MpGeneModel genemod = new MpGeneModel(geneId, ontology, true, modCollection);
+          MpGeneModel genemod = new MpGeneModel(geneId, modCollection);
           builder.put(geneId,genemod);
       }
     } catch (PhenolException e) {

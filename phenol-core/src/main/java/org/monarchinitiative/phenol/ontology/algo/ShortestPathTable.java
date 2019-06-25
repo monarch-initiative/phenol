@@ -35,8 +35,10 @@ public final class ShortestPathTable {
   /** Mapping from term ID to term index. */
   private final HashMap<TermId, Integer> termIdToIdx;
 
-  /** Precomputed distances between all terms. */
-  private final int distances[];
+  /**
+   * Precomputed distances between all terms.
+   */
+  private final int[] distances;
 
   /**
    * Constructor.

@@ -1,8 +1,7 @@
 /**
  * Loading the HPO from OBO files.
  *
- * <p>Use {@link org.monarchinitiative.phenol.io.obo.hpo.HpoOboParserOLD} for loading the HPO from OBO
- * format.
+ * <p>Utilities for phenol related I/O
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */

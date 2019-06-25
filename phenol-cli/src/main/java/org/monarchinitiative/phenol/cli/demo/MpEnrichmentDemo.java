@@ -48,7 +48,7 @@ public class MpEnrichmentDemo {
     this.targetgenefile = options.getInputGeneList();
     String markerFile = options.getMarkerFile();
     try {
-      MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, pathObo );
+      MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, pathObo);
       markermap = gmp.parseMarkers();
       System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
       mpgenemap = gmp.parseMpGeneModels();
@@ -63,7 +63,7 @@ public class MpEnrichmentDemo {
 
   private List<TermAnnotation> getTermAnnotations() {
     ImmutableList.Builder<TermAnnotation> builder = new ImmutableList.Builder<>();
-    for  (MpGeneModel model : mpgenemap.values()) {
+    for (MpGeneModel model : mpgenemap.values()) {
       TermId markerId = model.getMarkerId();
       String symbol;
       if (markermap.containsKey(markerId)) {

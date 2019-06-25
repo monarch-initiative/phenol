@@ -4,17 +4,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.ontology.TestOntology;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TermAnnotationsTest {
+class TermAnnotationsTest {
 
   private final Ontology ontology = TestOntology.ontology();
   private final List<TestTermAnnotation> annotations = Lists.newArrayList(

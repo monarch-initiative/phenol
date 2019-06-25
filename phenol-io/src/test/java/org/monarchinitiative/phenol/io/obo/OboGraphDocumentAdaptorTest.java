@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.*;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -48,7 +47,7 @@ class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testRemovesUnknownCurie() throws Exception {
+  void testRemovesUnknownCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -76,7 +75,7 @@ class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testCanManuallyAddUnknownCurie() throws Exception {
+  void testCanManuallyAddUnknownCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -107,7 +106,7 @@ class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testPropertyNodesAreNotIncluded() throws Exception {
+  void testPropertyNodesAreNotIncluded() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -140,7 +139,7 @@ class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testCanManuallyFilterForCurie() throws Exception {
+  void testCanManuallyFilterForCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -210,7 +209,7 @@ class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void happyPath() throws Exception {
+  void happyPath() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")

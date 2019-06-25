@@ -122,7 +122,7 @@ public class MpAnnotationParser {
     }
     while ((line=br.readLine())!=null) {
       //System.out.println(line);
-      String A[] = line.split("\t");
+      String[] A = line.split("\t");
       if (A.length < EXPECTED_NUMBER_SEXSPECIFIC_FIELDS) {
         if (verbose) {
           //throw new PhenolException("Unexpected number of fields (" + A.length + ") in line " + line);
@@ -154,7 +154,7 @@ public class MpAnnotationParser {
     String line;
     while ((line = br.readLine()) != null) {
       //System.out.println(line);
-      String A[] = line.split("\t");
+      String[] A = line.split("\t");
       /* Expected number of fields of the MGI_GenePheno.rpt file (note -- there
          appears to be a stray tab  between the penultimate and last column) */
       int EXPECTED_NUMBER_OF_FIELDS = 8;
@@ -363,7 +363,7 @@ public class MpAnnotationParser {
       sexSpecificNormal = A[5].equals("Y");
       String pmids=A[6];
       ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-      String B[]=pmids.split(Pattern.quote("|"));
+      String[] B = pmids.split(Pattern.quote("|"));
       for (String b: B) {
         builder.add(b);
       }

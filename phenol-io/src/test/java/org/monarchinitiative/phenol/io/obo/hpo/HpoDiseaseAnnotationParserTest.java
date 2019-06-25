@@ -3,14 +3,13 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.IOException;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -24,35 +23,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * These tests were constructed with a mini hpo file and a mini annotation file -- look at them to
  * figure out the logic!
  */
-public class HpoDiseaseAnnotationParserTest {
+class HpoDiseaseAnnotationParserTest {
 
   private static Map<TermId, HpoDisease> diseaseMap;
-  private static String annotationPath;
-  private static Ontology hpoOntology;
 
   @BeforeAll
-  public static void init() throws  PhenolException {
+  static void init()  {
     Path testResources = Paths.get("src/test/resources");
     Path hpoHeadPath = testResources.resolve("hp_head.obo");
-    hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
 
     Path hpoAnnotationsHeadPath = testResources.resolve("annotations/phenotype_annotation_head.tab");
-    annotationPath=hpoAnnotationsHeadPath.toFile().toString();
-    HpoDiseaseAnnotationParser hpoaParser = new HpoDiseaseAnnotationParser(annotationPath, hpoOntology);
-    diseaseMap = hpoaParser.parse();
+    String annotationPath=hpoAnnotationsHeadPath.toFile().toString();
+    diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
   }
 
   /**
    * There are three different diseases in "annotations/phenotype_annotation_head.tab"
    */
   @Test
-  public void testSizeOfDiseaseMap() {
+  void testSizeOfDiseaseMap() {
     assertEquals(diseaseMap.size(), 3);
   }
 
 
   @Test
-  public void testDiseaseOneInheritance() {
+  void testDiseaseOneInheritance() {
     // Test that the parser correctly parses disease Id and number of annotations (4) of disease 1
     HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:123456"));
     assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:123456"));
@@ -63,7 +59,7 @@ public class HpoDiseaseAnnotationParserTest {
   }
 
   @Test
-  public void testDiseaseOneAnnotationCount() {
+  void testDiseaseOneAnnotationCount() {
     // Test that the parser correctly parses disease Id and number of annotations (4) of disease 1
     HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:123456"));
     assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:123456"));
@@ -86,7 +82,7 @@ public class HpoDiseaseAnnotationParserTest {
   }
 
   @Test
-  public void testDiseaseTwoInheritance()  {
+  void testDiseaseTwoInheritance()  {
     // Test that the parser correctly parses disease Id and number of annotations (3) of disease 1
     HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:654321"));
     assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:654321"));
@@ -97,7 +93,7 @@ public class HpoDiseaseAnnotationParserTest {
   }
 
   @Test
-  public void testDiseaseTwoAnnotations() {
+  void testDiseaseTwoAnnotations() {
     // Test that the parser correctly parses disease Id and number of annotations (2) of disease 1
     HpoDisease testDisease = diseaseMap.get(TermId.of("OMIM:654321"));
     assertEquals(testDisease.getDiseaseDatabaseId(), TermId.of("OMIM:654321"));

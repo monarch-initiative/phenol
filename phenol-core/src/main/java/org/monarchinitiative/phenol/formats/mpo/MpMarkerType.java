@@ -14,11 +14,11 @@ public enum MpMarkerType {
   QTL("QTL"),
   TRANSGENE("Transgene");
 
-  private final String name;
+  private String name;
 
 
   MpMarkerType(String name) {
-    this.name=name;
+    this.name = name;
   }
 
   public static MpMarkerType string2enum(String marker) throws PhenolException {

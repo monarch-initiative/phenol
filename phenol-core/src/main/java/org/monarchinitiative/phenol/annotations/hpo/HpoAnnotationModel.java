@@ -9,7 +9,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * This class represents one disease-entity annotation consisting usually of multiple annotations lines, and using
@@ -29,7 +28,7 @@ public class HpoAnnotationModel {
   /**
    * List of {@link HpoAnnotationEntry} objects representing the original lines of the small file
    */
-  private final List<HpoAnnotationEntry> entryList;
+  private List<HpoAnnotationEntry> entryList;
 
   /**
    * These are the databases currently represented in our data resource.
@@ -74,6 +73,13 @@ public class HpoAnnotationModel {
     if (basename.contains("OMIM")) this.database = Database.OMIM;
     else if (basename.contains("DECIPHER")) this.database = Database.DECIPHER;
     else this.database = Database.UNKNOWN;
+  }
+
+  public HpoAnnotationModel mergeWithInheritanceAnnotations(Collection<HpoAnnotationEntry> inherit) {
+      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+      builder.addAll(this.entryList);
+      builder.addAll(inherit);
+      return new HpoAnnotationModel(this.basename,builder.build());
   }
 
   /**
@@ -211,7 +217,7 @@ public class HpoAnnotationModel {
     if (modifiers.isEmpty()) {
       return ""; // no modifiers, return empty string
     } else {
-      return modifiers.stream().collect(Collectors.joining(";"));
+      return String.join(";",modifiers);
     }
   }
 
@@ -226,7 +232,7 @@ public class HpoAnnotationModel {
     if (descriptions.isEmpty()) {
       return ""; // no modifiers, return empty string
     } else {
-      return descriptions.stream().collect(Collectors.joining(";"));
+      return String.join(";",descriptions);
     }
   }
 
@@ -235,7 +241,7 @@ public class HpoAnnotationModel {
     for (HpoAnnotationEntry entry : entrylist) {
       pubs.add(entry.getPublication());
     }
-    return pubs.stream().collect(Collectors.joining(";"));
+    return String.join(";",pubs);
   }
 
   private String getHighestEvidenceCode(final List<HpoAnnotationEntry> entrylist) {
@@ -255,7 +261,7 @@ public class HpoAnnotationModel {
     for (HpoAnnotationEntry entry : entrylist) {
       biocuration.add(entry.getBiocuration());
     }
-    return biocuration.stream().collect(Collectors.joining(";"));
+    return String.join(";",biocuration);
   }
 
 
@@ -331,6 +337,25 @@ public class HpoAnnotationModel {
       }
     }
     return new HpoAnnotationModel(this.basename,builder.build());
+  }
+
+  /**
+   * By construction, the disease ID field of each of the entries in this object must be the same
+   * Therefore, we return the first one. Also by construction, there must be at least one entry
+   * in ({@link #entryList} for this object to have been created
+   * @return The diseaseID of this model
+   */
+  public TermId getDiseaseId() {
+    HpoAnnotationEntry entry = entryList.iterator().next();
+    return TermId.of(entry.getDiseaseID());
+  }
+
+
+  public void addInheritanceEntryCollection(Collection<HpoAnnotationEntry> entries) {
+      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+      builder.addAll(this.entryList);
+      builder.addAll(entries);
+      this.entryList = builder.build();
   }
 
 

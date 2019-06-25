@@ -1,17 +1,9 @@
 package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.jupiter.api.BeforeEach;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.monarchinitiative.phenol.graph.IdLabeledEdge;
-import org.monarchinitiative.phenol.graph.util.GraphUtil;
-import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 

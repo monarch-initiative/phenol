@@ -5,7 +5,6 @@ import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.assoc.HpoAssociationParser;
@@ -229,11 +228,11 @@ public class PairwisePhenotypicSimilarityCalculator {
             continue;
           }
           if (i > n_diseases) {
-            System.err.println(String.format("i=%d but n_diseases=%", i, n_diseases));
+            System.err.println(String.format("i=%d but n_diseases=%d", i, n_diseases));
             continue;
           }
           if (j > n_diseases) {
-            System.err.println(String.format("j=%d but n_diseases=%", j, n_diseases));
+            System.err.println(String.format("j=%d but n_diseases=%d", j, n_diseases));
             continue;
           }
           double sim = getMaximumGeneGeneSimilarity(geneI, geneJ);
@@ -251,8 +250,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     double threshold = mean + 2.0*sd;
     System.out.println("[INFO] Writing pairwise gene similarity to file." );
     int aboveThreshold=0;
-    try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename));
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename))){
       String [] fields = {"gene1","symbol1","gene2","symbol2","similarity"};
       String header = String.join("\t",fields);
       writer.write(header + "\n");
@@ -265,13 +263,12 @@ public class PairwisePhenotypicSimilarityCalculator {
             String g2 = geneList.get(j).getValue();
             String symbol1 = this.geneIdToSymbolMap.get(geneId1);
             String symbol2 = this.geneIdToSymbolMap.get(geneId2);
+
             writer.write(g1 + "\t" + symbol1 + "\t" + g2+"\t"+symbol2+"\t"+geneSimilarityMatrix[i][j] + "\n");
             aboveThreshold++;
           }
         }
       }
-      writer.close();
-
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -282,7 +279,7 @@ public class PairwisePhenotypicSimilarityCalculator {
 
   /**
    * Calculate the pairwise disease-disease similarities.
-   * @param stats
+   * @param stats descriptive statices about the comparisons
    */
   private void performDiseaseBasedAnalysis(DescriptiveStatistics stats) {
     double mean = stats.getMean();
@@ -329,15 +326,8 @@ public class PairwisePhenotypicSimilarityCalculator {
     this.hpo = OntologyLoader.loadOntology(new File(pathHpObo));
     System.out.println("[INFO] DONE: Loading HPO");
 
-    try {
-      List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
-      HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(this.pathPhenotypeHpoa, hpo,databases);
-      this.diseaseMap = parser.parse();
-    } catch (PhenolException e) {
-      e.printStackTrace();
-      System.exit(1);
-      return; // javac complains otherwise
-    }
+    List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.pathPhenotypeHpoa, hpo,databases);
     System.out.println("[INFO] DONE: Loading phenotype.hpoa");
 
     // Compute list of annoations and mapping from OMIM ID to term IDs.
@@ -400,7 +390,7 @@ public class PairwisePhenotypicSimilarityCalculator {
         similarityScores[j][i]=similarity; // symmetric
         stats.addValue(similarity);
         if (++c%10000==0) {
-          System.out.print(String.format("Got %d/%d similarity counts \r",c,expectedTotal));
+          System.out.print(String.format("Got %d/%d similarity counts (%.1f%%)\r",c,expectedTotal,100.0*(double)c/expectedTotal));
         }
       }
     }
@@ -418,9 +408,9 @@ public class PairwisePhenotypicSimilarityCalculator {
 
   @Parameters(commandDescription = "Compute similarity demo")
   public static class Options {
-    @Parameter(names = {"-h"}, description = "path to hp.obo file")
+    @Parameter(names = {"-h"}, description = "path to hp.obo file", required = true)
     private String hpoPath;
-    @Parameter(names="-a", description = "path to phenotype.hpoa file")
+    @Parameter(names="-a", description = "path to phenotype.hpoa file", required = true)
     private String phenotypeDotHpoaPath;
     @Parameter(names="-o",description = "output file name")
     private String outname="pairwise_disease_similarity.tsv";
@@ -428,9 +418,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     private String geneInfoPath;
     @Parameter(names="--mimgene2medgen",description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
     private String mim2genMedgenPath;
-    String getHpoPath() {
-      return hpoPath;
-    }
+    String getHpoPath() { return hpoPath; }
 
     String getPhenotypeDotHpoaPath() {
       return phenotypeDotHpoaPath;

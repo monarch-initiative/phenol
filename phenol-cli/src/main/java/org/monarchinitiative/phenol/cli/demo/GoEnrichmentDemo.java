@@ -47,7 +47,7 @@ public final class GoEnrichmentDemo {
     try {
       System.out.println("[INFO] parsing  " + pathGoObo);
       Ontology gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
-      int n_terms=gontology.countAllTerms();
+      int n_terms = gontology.countAllTerms();
       System.out.println("[INFO] parsed " + n_terms + " GO terms.");
       System.out.println("[INFO] parsing  " + pathGoGaf);
       final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
@@ -74,18 +74,18 @@ public final class GoEnrichmentDemo {
 
       List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
       System.err.println("Total number of retrieved p values: " + pvals.size());
-      int n_sig=0;
-      double ALPHA=0.00005;
+      int n_sig = 0;
+      double ALPHA = 0.00005;
       System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
         gontology.getTermMap().get(targetGoTerm).getName(),targetGoTerm.getValue()));
       System.out.println(String.format("Study set: %d genes. Population set: %d genes",
         studysize,popsize));
       for (GoTerm2PValAndCounts item : pvals) {
-        double pval =item.getRawPValue();
+        double pval = item.getRawPValue();
         double pval_adj = item.getAdjustedPValue();
         TermId tid = item.getItem();
         Term term = gontology.getTermMap().get(tid);
-        if (term==null) {
+        if (term == null) {
           System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
           continue;
         }
@@ -94,11 +94,11 @@ public final class GoEnrichmentDemo {
           continue;
         }
         n_sig++;
-        double studypercentage=100.0*(double)item.getAnnotatedStudyGenes()/studysize;
-        double poppercentage=100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
+        double studypercentage = 100.0*(double)item.getAnnotatedStudyGenes()/studysize;
+        double poppercentage = 100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
         System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
-          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studypercentage,
-          item.getAnnotatedPopulationGenes(),poppercentage));
+          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(), studypercentage,
+          item.getAnnotatedPopulationGenes(), poppercentage));
       }
       System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
         n_sig,pvals.size(),ALPHA));
@@ -118,11 +118,11 @@ public final class GoEnrichmentDemo {
       }
     }
 
-    int N=genes.size();
+    int N = genes.size();
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d",focus.getValue(),N));
-    int M=N;
+    int M = N;
     if (N>20) {
-      M=N/3;
+      M = N/3;
     }
     Set<TermId> finalGenes=new HashSet<>();
     int i=0;
@@ -130,7 +130,7 @@ public final class GoEnrichmentDemo {
       if (i++>M) break;
       finalGenes.add(tid);
     }
-    i=0;
+    i = 0;
     M *= 3;
     for (TermAnnotation ann : annots) {
       TermId gene = ann.getLabel();

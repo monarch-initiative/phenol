@@ -5,14 +5,14 @@ import static org.monarchinitiative.phenol.ontology.algo.InformationContentCompu
 
 import java.util.Collection;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
-public class InformationContentComputationTest extends VegetableOntologyTestBase {
+class InformationContentComputationTest extends VegetableOntologyTestBase {
 
   private final InformationContentComputation computation = new InformationContentComputation(ontology);
 

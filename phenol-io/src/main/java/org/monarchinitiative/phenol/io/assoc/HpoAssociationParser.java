@@ -289,7 +289,7 @@ public class HpoAssociationParser {
     BufferedReader br = new BufferedReader(decoder);
     String line;
     while ((line=br.readLine())!=null) {
-      String a[] = line.split("\t");
+      String[] a = line.split("\t");
       String taxon=a[0];
       if (! taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
       if(!("unknown".equals(a[9]) | "tRNA".equals(a[9]) | "rRNA".equals(a[9]) | "pseudo".equals(a[9]))){

@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.hpo.*;
 
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -41,7 +42,30 @@ public class HpoDiseaseAnnotationParser {
   /** We will parse in disease models from the following databases. */
   private final Set<String> databasePrefixes;
 
-  public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
+
+
+  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology){
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology);
+    try {
+      return parser.parse();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile +": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
+  }
+
+  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology, List<String> databases){
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology,databases);
+    try {
+      return parser.parse();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile +": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
+  }
+
+
+  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
@@ -54,7 +78,7 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology reference to HPO Ontology object
    * @param databases list of databases we will keep for parsing (from OMIM, ORPHA, DECIPHER)
    */
-  public HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<String> databases) {
+  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<String> databases) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
@@ -63,7 +87,7 @@ public class HpoDiseaseAnnotationParser {
     databasePrefixes=builder.build();
   }
 
-  public HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology){
+  private HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology){
     this.annotationFilePath = annotationFile.getAbsolutePath();
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();

@@ -4,17 +4,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,12 +25,13 @@ class OrphanetXML2HpoDiseaseModelParserTest {
     static private TermId occasional  = TermId.of("HP:0040283");
 
     @BeforeAll
-    private static void init() throws PhenolException, FileNotFoundException {
+    private static void init()  {
       Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product4_HPO.small.xml");
       Path hpOboPath = Paths.get("src", "test", "resources", "annotations", "hp_head.obo");
       Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
       try {
         parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
+        //parser = new OrphanetXML2HpoDiseaseModelParser(orph, ontology, true);
       } catch (Exception e) {
         System.err.println("Could not parse Orpha " + e.getMessage());
         throw e;
@@ -46,18 +45,35 @@ class OrphanetXML2HpoDiseaseModelParserTest {
         assertNotNull(parser);
     }
 
-    @Test
+//    @Test
+//    void testIt() {
+//      List<HpoAnnotationModel> models =  parser.getOrphanetDiseaseModels();
+//    }
+
+
+
+  /**
+   * There are three disease entries:
+   * $ grep -c '<Disorder id' en_product4_HPO.small.xml
+   * 2
+   */
+  @Test
     void testTwoDiseases() {
         int expectedNumberOfDiseases=2;
-        List<HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseModels();
+        Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+        int N = 0;
+        for (HpoAnnotationModel m: diseaseModels.values()) {
+          N += m.getNumberOfAnnotations();
+        }
         assertEquals(expectedNumberOfDiseases,diseaseModels.size());
     }
 
     /** consult the XML file en_product4_HPO.small.xml for the source of the ground truth here. */
     @Test
     void  testPhenotypesAndFrequenciesOfDisease1() {
-        List<HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseModels();
-        HpoAnnotationModel file = diseaseModels.get(0);
+      Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+      TermId diseaseId = TermId.of("ORPHA:166024");
+        HpoAnnotationModel file = diseaseModels.get(diseaseId);
         List<HpoAnnotationEntry> entrylist = file.getEntryList();
         // the first disease has three annotations
         int expectNumberOfAnnotations=3;
@@ -83,8 +99,9 @@ class OrphanetXML2HpoDiseaseModelParserTest {
     /** consult the XML file en_product4_HPO.small.xml for the source of the ground truth here. */
     @Test
     void  testPhenotypesAndFrequenciesOfDisease2() {
-        List<HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseModels();
-        HpoAnnotationModel file = diseaseModels.get(1);
+      Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+      TermId diseaseId = TermId.of("ORPHA:58");
+        HpoAnnotationModel file = diseaseModels.get(diseaseId);
         List<HpoAnnotationEntry> entrylist = file.getEntryList();
         // the first disease has three annotations
         int expectNumberOfAnnotations = 2;
@@ -96,8 +113,6 @@ class OrphanetXML2HpoDiseaseModelParserTest {
         TermId AbnormalPupillaryFunction = TermId.of("HP:0007686");
         assertEquals(AbnormalPupillaryFunction,entry2.getPhenotypeId());
         assertEquals(occasional.getValue(),entry1.getFrequencyModifier());
-
     }
-
 
 }
