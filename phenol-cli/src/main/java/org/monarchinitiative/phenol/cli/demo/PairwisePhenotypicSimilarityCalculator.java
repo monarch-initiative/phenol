@@ -279,7 +279,7 @@ public class PairwisePhenotypicSimilarityCalculator {
 
   /**
    * Calculate the pairwise disease-disease similarities.
-   * @param stats
+   * @param stats descriptive statices about the comparisons
    */
   private void performDiseaseBasedAnalysis(DescriptiveStatistics stats) {
     double mean = stats.getMean();

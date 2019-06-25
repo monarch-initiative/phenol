@@ -5,22 +5,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 import com.google.common.collect.Lists;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
+class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
 
   private final TermOverlapSimilarity similarity = new TermOverlapSimilarity(ontology);
 
   @Test
-  public void testQueries() {
+  void testQueries() {
     assertEquals("TermI overlap similarity", similarity.getName());
-    assertEquals(true, similarity.isSymmetric());
+    assertTrue(similarity.isSymmetric());
     assertEquals("{normalized: true}", similarity.getParameters());
   }
 
   @Test
-  public void testComputeSimilarities() {
+  void testComputeSimilarities() {
     assertEquals(
         0.5,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

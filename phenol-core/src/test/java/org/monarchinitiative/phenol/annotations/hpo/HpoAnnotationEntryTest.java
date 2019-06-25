@@ -1,16 +1,8 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.io.FileNotFoundException;
@@ -20,11 +12,11 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class HpoAnnotationEntryTest {
+class HpoAnnotationEntryTest {
 
 
   @BeforeAll
-  static void init() throws PhenolException, FileNotFoundException {
+  static void init() {
     // Make a typical entry. All other fields are emtpy.
     String diseaseID="OMIM:123456";
     String diseaseName="MADE-UP SYNDROME";

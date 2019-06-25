@@ -1,22 +1,16 @@
 package org.monarchinitiative.phenol.io.obo.mpo;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.formats.mpo.MpMarkerType;
 import org.monarchinitiative.phenol.formats.mpo.MpSimpleModel;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  *
  */
-public class MpGeneParserTest {
+class MpGeneParserTest {
 
   private static Map<TermId, MpGene> mpgenemap;
   private static String MGI_genePhenoPath;
 
   @BeforeAll
-  public static void setup() throws IOException, PhenolException {
+  static void setup() throws IOException, PhenolException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MRK_List2.rpt.excerpt");
     if (url == null) {
@@ -56,7 +50,7 @@ public class MpGeneParserTest {
    * // MGI:1341858 is a 03B03F BAC/YAC
    */
   @Test
-  public void parseMarkersTest() {
+  void parseMarkersTest() {
     TermId tid = TermId.of("MGI:1341858");
     MpGene g = mpgenemap.get(tid);
     assertNotNull(g);
@@ -69,11 +63,11 @@ public class MpGeneParserTest {
    * We have two models for RB1. Both of them have an annotation for MP:0000961
    * and then they each have other (disjoint) annotations.
    *
-   * @throws PhenolException
+   * @throws PhenolException upon parsae problems
    */
 
   @Test
-  public void testMergeGetsCorrectGeneId() throws PhenolException {
+  void testMergeGetsCorrectGeneId() throws PhenolException {
     MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);
     Map<TermId, MpSimpleModel> modelmap = parser.getGenotypeAccessionToMpModelMap();
     List<MpSimpleModel> rb1Models = new ArrayList<>();

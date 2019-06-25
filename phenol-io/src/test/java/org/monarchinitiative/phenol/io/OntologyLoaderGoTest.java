@@ -23,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class OntologyLoaderGoTest {
+class OntologyLoaderGoTest {
 
   private final Ontology ontology;
 
-  public OntologyLoaderGoTest() throws PhenolException {
+  OntologyLoaderGoTest() throws PhenolException {
       this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/go/go_head.obo").toFile(), "GO");
   }
 
@@ -36,23 +36,23 @@ public class OntologyLoaderGoTest {
    * and thus we expect 3+3=6 edges.
    */
   @Test
-  public void testEdgeSetSize() {
+  void testEdgeSetSize() {
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
     assertEquals(6, graph.edgeSet().size());
   }
 
   @Test
-  public void testArtificialRootTerm() {
+  void testArtificialRootTerm() {
     assertEquals(TermId.of("owl:Thing"), ontology.getRootTermId());
   }
 
   /**
    * For local testing with the full Gene Ontology file. This does not need to run in a normal build
-   * @throws FileNotFoundException
-   * @throws PhenolException
+   * @throws FileNotFoundException if the test GO file cannot be found
+   * @throws PhenolException upon parse errors
    */
   @Disabled
-  @Test public void testReal() throws Exception {
+  @Test void testReal() throws Exception {
     String localpath = "src/test/resources/go.obo";
     String RO_PREFIX = "RO";
     Ontology goOntology = OntologyLoader.loadOntology(Paths.get(localpath).toFile(), "GO");

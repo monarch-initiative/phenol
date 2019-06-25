@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.io.obo.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -27,17 +26,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HpoDiseaseAnnotationParserTest {
 
   private static Map<TermId, HpoDisease> diseaseMap;
-  private static String annotationPath;
-  private static Ontology hpoOntology;
 
   @BeforeAll
   static void init()  {
     Path testResources = Paths.get("src/test/resources");
     Path hpoHeadPath = testResources.resolve("hp_head.obo");
-    hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
 
     Path hpoAnnotationsHeadPath = testResources.resolve("annotations/phenotype_annotation_head.tab");
-    annotationPath=hpoAnnotationsHeadPath.toFile().toString();
+    String annotationPath=hpoAnnotationsHeadPath.toFile().toString();
     diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
   }
 
