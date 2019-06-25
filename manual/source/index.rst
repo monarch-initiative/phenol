@@ -56,9 +56,13 @@ The best place to leave feedback, ask questions, and report bugs is the `Phenol 
    :name: tutorial
    :maxdepth: 1
 
-   install
-   input
-   tutorial
+    install
+    input
+    tutorial_io
+    tutorial_hpo
+    tutorial_go
+    tutorial_similarity
+
 
 .. toctree::
     :caption: Project Info

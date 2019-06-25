@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.3.3
+- **Version:** 1.4.0
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -25,6 +25,7 @@ associate phenotype annotation files.
     - HyeongSik Kim
     - Michael Gargano
     - Daniel Danis
+    - Jules Jacobsen
 
 - **Availability:**
     - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
@@ -39,7 +40,7 @@ phenol version in the properties section of the pom file of the application.
 ```
 <properties>
   (...)
-  <phenol.version>1.3.3</phenol.version>
+  <phenol.version>1.4.0</phenol.version>
 </properties>
 ```
 
