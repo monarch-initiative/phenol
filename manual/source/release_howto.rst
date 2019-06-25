@@ -27,12 +27,6 @@ Update the ``CHANGELOG.rst`` file
 - Create a new commit with this version.
 - Do not create a git tag as this will be done by Maven below.
 
---------------------------------
-Update the demo ``pom.xml`` file
---------------------------------
-
-- Ensure that the version phenol dependency is set to the non-``SNAPSHOT`` version.
-
 -------------------------------
 Prepare the Release using Maven
 -------------------------------
