@@ -31,7 +31,7 @@ Update the ``CHANGELOG.rst`` file
 Update the demo ``pom.xml`` file
 --------------------------------
 
-- Ensure that the version OntoLib dependency is set to the non-``SNAPSHOT`` version.
+- Ensure that the version phenol dependency is set to the non-``SNAPSHOT`` version.
 
 -------------------------------
 Prepare the Release using Maven

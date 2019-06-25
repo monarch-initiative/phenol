@@ -3,6 +3,14 @@ Changelog
 =========
 
 ------
+v1.4.0
+------
+- Added Orphanet inheritance parser
+- Aded several demonstration programs
+- refactored files for constructing the phenotype.hpoa file
+
+
+------
 v1.3.3
 ------
 - Various bug fixes
