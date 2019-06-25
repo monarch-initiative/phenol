@@ -61,6 +61,7 @@ The best place to leave feedback, ask questions, and report bugs is the `Phenol 
     input
     tutorial_io
     tutorial_hpo
+    tutorial_go
     tutorial_similarity
 
 .. toctree::
