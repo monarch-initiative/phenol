@@ -43,6 +43,14 @@ public class MondoDemo {
     return false;
   }
 
+  Optional<TermId> getOMIMid(Term term) {
+    for (Dbxref xref : term.getXrefs()) {
+      if (xref.getName().startsWith("OMIM") && ! xref.getName().startsWith("OMIMPS"))
+        return Optional.of(TermId.of(xref.getName()));
+    }
+    return Optional.empty();
+  }
+
 
   public void run() {
     File file = new File(mondoPath);
@@ -76,7 +84,14 @@ public class MondoDemo {
       Collection<TermId> coll = phenoseries2omimMap.get(psterm);
       for (TermId tid : coll) {
         Term omimentry = mondo.getTermMap().get(tid);
-        System.out.println(psterm.getName() + " -> " + omimentry.getName());
+        Optional<TermId> omimIdopt = getOMIMid(omimentry);
+        if (omimIdopt.isPresent()) {
+          TermId omimId = omimIdopt.get();
+          System.out.println(psterm.getId().getValue() + "\t" +
+            psterm.getName() + "\t" +
+            omimId.getValue() + "\t" +
+            omimentry.getName());
+        }
       }
     }
   }
