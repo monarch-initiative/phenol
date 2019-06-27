@@ -76,6 +76,8 @@ public class OboGraphTermFactory {
     List<TermId> altIds = convertToAltIds(meta.getBasicPropertyValues());
     termBuilder.altTermIds(altIds);
 
+
+
     return termBuilder.build();
   }
 
