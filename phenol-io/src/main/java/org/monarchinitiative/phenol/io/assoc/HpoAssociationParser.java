@@ -280,7 +280,11 @@ public class HpoAssociationParser {
     this.allGeneIdToSymbolMap = null;
   }
 
-
+  /**
+   * Parse the NCBI Homo_sapiens_gene_info.gz file
+   * Add the mappings to a Guava bimap, e.g., NCBIGene:150-ADRA2A
+   * @throws IOException if the file cannot be read
+   */
   private void parseGeneInfo() throws IOException {
     ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoPath);
@@ -288,6 +292,11 @@ public class HpoAssociationParser {
     Reader decoder = new InputStreamReader(gzipStream);
     BufferedReader br = new BufferedReader(decoder);
     String line;
+    // We have seen that occasionally the Homo_sapiens_gene_info.gz
+    // contains duplicate lines, which is an error but we do not want the code
+    // to crash, so we check for previously found term ids with the seen set.
+    // The TermId <-> symbol mapping is one to one.
+    Set<TermId> seen = new HashSet<>();
     while ((line=br.readLine())!=null) {
       String[] a = line.split("\t");
       String taxon=a[0];
@@ -296,6 +305,10 @@ public class HpoAssociationParser {
         String geneId=a[1];
         String symbol=a[2];
         TermId tid = TermId.of(ENTREZ_GENE_PREFIX,geneId);
+        if (seen.contains(tid)) {
+          continue;
+        }
+        seen.add(tid);
         builder.put(tid,symbol);
       }
     }

@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
 import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -32,7 +33,7 @@ public class PhenotypeDotHpoaFileWriter {
   private final List<HpoAnnotationModel> orphanetSmallFileList;
 
   private final Multimap<TermId, HpoAnnotationEntry> inheritanceMultiMap;
-  /** tolerant mode (update obsolte term ids if possible) */
+  /** tolerant mode (update obsolete term ids if possible) */
   private final boolean tolerant;
 
   /**
@@ -53,9 +54,11 @@ public class PhenotypeDotHpoaFileWriter {
   private int n_unknown;
 
   private Map<String, String> ontologyMetaInfo;
-
+  /** The path to the directory where the small files, e.g. OMIM-600301.tab, live. */
   private final File smallFileDirectory;
+  /** The en_product4_HPO.xml file .*/
   private final File orphaPhenotypeXMLfile;
+  /** The en_product9_ages.xml file. */
   private final File orphaInheritanceXMLfile;
 
 
@@ -100,21 +103,21 @@ public class PhenotypeDotHpoaFileWriter {
     this.outputFileName = outpath;
     smallFileDirectory = new File(smallFileDirectoryPath);
     if (!smallFileDirectory.exists()) {
-      throw new RuntimeException("Could not find " + smallFileDirectoryPath
+      throw new PhenolRuntimeException("Could not find " + smallFileDirectoryPath
         + " (We were expecting the directory with the HPO disease annotation files");
     }
     if (!smallFileDirectory.isDirectory()) {
-      throw new RuntimeException(smallFileDirectoryPath
+      throw new PhenolRuntimeException(smallFileDirectoryPath
         + " is not a directory (We were expecting the directory with the HPO disease annotation files");
     }
     orphaPhenotypeXMLfile = new File(orphaPhenotypeXMLpath);
     if (!orphaPhenotypeXMLfile.exists()) {
-      throw new RuntimeException("Could not find " + orphaPhenotypeXMLfile
+      throw new PhenolRuntimeException("Could not find " + orphaPhenotypeXMLfile
         + " (We were expecting the path to en_product4_HPO.xml");
     }
     orphaInheritanceXMLfile = new File(orphaInheritanceXMLpath);
     if (!orphaInheritanceXMLfile.exists()) {
-      throw new RuntimeException("Could not find " + orphaInheritanceXMLpath
+      throw new PhenolRuntimeException("Could not find " + orphaInheritanceXMLpath
         + " (We were expecting the path to en_product9_ages.xml");
     }
     this.tolerant = toler;
@@ -203,7 +206,7 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println(String.format("[ERROR] with entry (%S): %s", entry.toString(),e.getMessage()));
+          System.err.println(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
         }
         n++;
       }
@@ -218,7 +221,7 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println(String.format("[ERROR] Malformed line from  entry %s: ", entry.toString(),e.getMessage()));
+          System.err.println(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
         }
         m++;
       }
