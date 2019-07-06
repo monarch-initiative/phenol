@@ -20,11 +20,11 @@ import com.google.common.collect.Multimap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HpoAssociationParserTest {
+class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
   @BeforeEach
-  public void init() throws PhenolException {
+  void init() throws PhenolException {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
 	  ClassLoader classLoader = this.getClass().getClassLoader();
@@ -35,11 +35,10 @@ public class HpoAssociationParserTest {
     Ontology ontology = OntologyLoader.loadOntology(classLoader.getResourceAsStream("hp_head.obo"));
 
     parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
-    parser.parse();
   }
 
   @Test
-  public void testNotNull() {
+  void testNotNull() {
     assertNotNull(parser);
   }
 
@@ -48,7 +47,7 @@ public class HpoAssociationParserTest {
    * TBX5 is not associated with other diseases. TBX5 has the EntrezGene id 6910
    */
   @Test
-  public void testHoltOram() {
+  void testHoltOram() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
     TermId holtOramId = TermId.of("OMIM:142900");
     assertTrue(diseasemap.containsKey(holtOramId));
@@ -67,7 +66,7 @@ public class HpoAssociationParserTest {
    * ARHGAP31 is not associated with other diseases and it has the EntrezGene id 57514
    */
   @Test
-  public void testAdamsOliver() {
+  void testAdamsOliver() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
     TermId adamsOliver1Id = TermId.of("OMIM:100300");
     assertTrue(diseasemap.containsKey(adamsOliver1Id));
@@ -93,7 +92,7 @@ public class HpoAssociationParserTest {
    * 8. Weill-Marchesani syndrome 2, dominant 	OMIM:608328
    */
   @Test
-  public void testFbn1() {
+  void testFbn1() {
     Multimap<TermId, TermId> mmap = parser.getGeneToDiseaseIdMap();
     TermId Fbn1Id = TermId.of("NCBIGene:2200");
     assertTrue(mmap.containsKey(Fbn1Id));
@@ -139,7 +138,7 @@ public class HpoAssociationParserTest {
    * 143890	3700	phenotype	 GeneMap	C0020445	susceptibility
    */
   @Test
-  public void testSusceptibilityGenes() {
+  void testSusceptibilityGenes() {
     Map<TermId, DiseaseToGeneAssociation> diseasemap = parser.getDiseaseToAssociationsMap();
     TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
     assertTrue(diseasemap.containsKey(familialHypercholesterolemia));
@@ -163,7 +162,7 @@ public class HpoAssociationParserTest {
   }
 
   @Test
-  public void testTermToGene() throws PhenolException {
+  void testTermToGene() throws PhenolException {
     // This test map should come from {@link HpoDiseaseAnnotationParser}
     TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
     TermId fakePhenotype = TermId.of("HP:0000118");
@@ -174,7 +173,7 @@ public class HpoAssociationParserTest {
   }
 
   @Test
-  public void testDiseasetoGene() {
+  void testDiseasetoGene() {
     Multimap<TermId, TermId> diseaseMap = parser.getDiseaseToGeneIdMap();
     Collection<TermId> genes = diseaseMap.get(TermId.of("OMIM:143890"));
     assertEquals(genes.size(), 7);
@@ -182,7 +181,7 @@ public class HpoAssociationParserTest {
 
 
   @Test
-  public void testGeneIdToGeneSymbol(){
+  void testGeneIdToGeneSymbol(){
     Map<TermId, String> geneMap = parser.getGeneIdToSymbolMap();
     assertEquals(geneMap.get(TermId.of("NCBIGene:2690")),"GHR");
     assertEquals(geneMap.get(TermId.of("NCBIGene:2200")),"FBN1");

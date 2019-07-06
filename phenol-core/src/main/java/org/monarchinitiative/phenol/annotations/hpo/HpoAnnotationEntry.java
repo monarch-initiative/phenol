@@ -210,6 +210,10 @@ public class HpoAnnotationEntry {
     /** @return the row that will be written to the V2 file for this entry. */
     @Override public String toString() { return getRow();}
 
+    public String getLineNoTabs() {
+      return getRow().replaceAll("\\s+"," ");
+    }
+
     /**
      * Return the row that will be used to write the V2 small files entries to a file. Note that
      * we replace null strings (which are a signal for no data available) with the empty string

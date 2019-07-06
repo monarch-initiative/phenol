@@ -30,7 +30,7 @@ public class HpoAnnotationFileIngestor {
    */
   private final Ontology ontology;
   /**
-   * The paths to all of the v2 small files.
+   * The paths to all of the small files, e.g., OMIM-600301.tab.
    */
   private final List<File> smallFilePaths;
   /**
