@@ -205,7 +205,6 @@ public class PairwisePhenotypicSimilarityCalculator {
    */
   private void performGeneBasedAnalysis() {
     HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(this.geneInfoPath,this.mimgeneMedgenPath,this.hpo);
-    hpoAssociationParser.parse();
     this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
