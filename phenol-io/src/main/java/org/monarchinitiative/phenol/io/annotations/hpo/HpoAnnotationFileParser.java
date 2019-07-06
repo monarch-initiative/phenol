@@ -26,7 +26,7 @@ public class HpoAnnotationFileParser {
     /** A reference to the HPO Ontology object. */
     private final Ontology ontology;
     /** Path to a file such as "OMIM-600123.tab" containing data about the phenotypes of a disease. */
-    private final String pathToHpoAnnotationFile;
+    private final File hpoAnnotationFile;
     /** The column names of the small file. */
     private static final String[] expectedFields = {
             "#diseaseID",
@@ -56,9 +56,19 @@ public class HpoAnnotationFileParser {
      * @param ontology reference to HPO Ontology object
      */
     public HpoAnnotationFileParser(String path, Ontology ontology) {
-        pathToHpoAnnotationFile =path;
+        hpoAnnotationFile = new File(path);
         this.ontology=ontology;
     }
+
+  /**
+   * Set up parser for an individual HPO Annotation file ("small file")
+   * @param file File representing phenotype.hpoa
+   * @param ontology reference to HPO Ontology object
+   */
+  public HpoAnnotationFileParser(File file, Ontology ontology) {
+    hpoAnnotationFile = file;
+    this.ontology=ontology;
+  }
 
 
     /**
@@ -70,11 +80,11 @@ public class HpoAnnotationFileParser {
      * @throws HpoAnnotationModelException if faultTolerant is false, parse errors are not thrown, rather only IO exceptions are thrown
      */
     public HpoAnnotationModel parse(boolean faultTolerant) throws HpoAnnotationModelException {
-        String basename=(new File(pathToHpoAnnotationFile).getName());
+        String basename = hpoAnnotationFile.getName();
         List<HpoAnnotationEntry> entryList=new ArrayList<>();
         this.parseErrors=new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(pathToHpoAnnotationFile));
+            BufferedReader br = new BufferedReader(new FileReader(hpoAnnotationFile));
             String line=br.readLine();
             qcHeaderLine(line);
             while ((line=br.readLine())!=null) {
@@ -86,7 +96,7 @@ public class HpoAnnotationFileParser {
                     Optional<HpoAnnotationEntry> entryOpt = HpoAnnotationEntry.fromLineReplaceObsoletePhenotypeData(line, ontology);
                     entryOpt.ifPresent(entryList::add);
                 } catch (PhenolException e) {
-                    parseErrors.add(String.format("%s:%s", pathToHpoAnnotationFile,e.getMessage()));
+                    parseErrors.add(String.format("%s:%s", hpoAnnotationFile,e.getMessage()));
                 }
             }
             br.close();
@@ -94,16 +104,16 @@ public class HpoAnnotationFileParser {
               String errstr= String.join("\n",parseErrors);
               if (faultTolerant) {
                   System.err.println(String.format("234Errors encountered while parsing HPO Annotation file at %s.\n%s",
-                          pathToHpoAnnotationFile,errstr));
+                    hpoAnnotationFile,errstr));
                   System.err.println(errstr);
               } else {
                   throw new HpoAnnotationModelException(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
-                          pathToHpoAnnotationFile, errstr));
+                    hpoAnnotationFile, errstr));
               }
             }
             return new HpoAnnotationModel(basename,entryList);
         } catch (IOException e) {
-            throw new HpoAnnotationModelException(String.format("Error parsing %s: %s", pathToHpoAnnotationFile, e.getMessage()));
+            throw new HpoAnnotationModelException(String.format("Error parsing %s: %s", hpoAnnotationFile, e.getMessage()));
         }
     }
 

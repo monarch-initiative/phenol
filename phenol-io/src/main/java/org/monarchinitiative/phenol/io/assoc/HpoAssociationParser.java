@@ -2,8 +2,10 @@ package org.monarchinitiative.phenol.io.assoc;
 
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
+import org.monarchinitiative.phenol.io.annotations.hpo.HpoAnnotationFileParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;
@@ -22,7 +24,7 @@ import java.util.zip.GZIPInputStream;
  * mim2gene_medgen contains the MIM number of diseases and EntrezGene number of genes associated with the disease;
  * The relevant lines of the file are marked with "phenotype". The Homo_sapiens_gene_info.gz file contains the  entrez gene
  * number of genes as well as their gene symbol. </p>
- * <p>The goal of this class it to provide associations <br><br>
+ * <p>The goal of this class is to provide associations <br><br>
  *
  *   geneIdToSymbol - Key: EntrezGeneId [{@link TermId}] , Value: EntrezGeneSymbol-String <br>
  *   associationMap - Key: DiseaseId [{@link TermId}] , Value: GeneToAssociation [{@link GeneToAssociation}]<br>
@@ -40,12 +42,14 @@ import java.util.zip.GZIPInputStream;
 public class HpoAssociationParser {
 
   private final Ontology hpoOntology;
-
-  private final String homoSapiensGeneInfoPath;
-
-  private final String mim2geneMedgenPath;
-  private final File orphaToGenePath;
-
+  /** Path to Homo_sapiens.gene_info.gz */
+  private final File homoSapiensGeneInfoFile;
+  /** Path to mim2gene_medgen. */
+  private final File mim2geneMedgenFile;
+  /** File representing Orphanet's gene file, en_product6.xml.*/
+  private final File orphaToGeneFile;
+  /** File representing the phenotype.hpoa file */
+  private final File phenotypeDotHpoaFile;
   /** Key--an EntrezGene id; value--the corresponding symbol. all */
   private BiMap<TermId,String> allGeneIdToSymbolMap;
   private ImmutableMap<TermId, String> geneIdToSymbolMap;
@@ -70,27 +74,85 @@ public class HpoAssociationParser {
   private static final String OMIM_PREFIX = "OMIM";
 
 
-  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, File orphaToGenePath, Ontology hpoOntology){
+  public HpoAssociationParser(String geneInfoPath,
+                              String mim2geneMedgenPath,
+                              String orphaToGenePath,
+                              String phenotypeHpoaPath,
+                              Ontology hpoOntology){
     this.hpoOntology = hpoOntology;
-    this.homoSapiensGeneInfoPath = geneInfoPath;
-    this.mim2geneMedgenPath = mim2geneMedgenPath;
-    this.orphaToGenePath = orphaToGenePath;
+    this.homoSapiensGeneInfoFile = new File(geneInfoPath);
+    this.mim2geneMedgenFile = new File(mim2geneMedgenPath);
+    this.orphaToGeneFile = new File(orphaToGenePath);
+    this.phenotypeDotHpoaFile = new File(phenotypeHpoaPath);
+    checkCoreFiles();
+    checkOrphaFile();
+    parse();
+    ingestPhenotypeHpoaFile();
   }
 
-  public HpoAssociationParser(File geneInfoPath, File mim2geneMedgenPath, File  orphaToGenePath, Ontology hpoOntology){
+  public HpoAssociationParser(File geneInfoFile,
+                              File mim2geneMedgenFile,
+                              File orphaToGeneFile,
+                              File phenotypeHpoaFile,
+                              Ontology hpoOntology){
     this.hpoOntology = hpoOntology;
-    this.homoSapiensGeneInfoPath = geneInfoPath.getAbsolutePath();
-    this.mim2geneMedgenPath = mim2geneMedgenPath.getAbsolutePath();
-    this.orphaToGenePath = orphaToGenePath;
+    this.homoSapiensGeneInfoFile = geneInfoFile;
+    this.mim2geneMedgenFile = mim2geneMedgenFile;
+    this.orphaToGeneFile = orphaToGeneFile;
+    this.phenotypeDotHpoaFile = phenotypeHpoaFile;
+    checkCoreFiles();
+    checkOrphaFile();
+    parse();
+    ingestPhenotypeHpoaFile();
   }
 
   /** Parse everything except the Orphanet data!.*/
   public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, Ontology hpoOntology){
     this.hpoOntology = hpoOntology;
-    this.homoSapiensGeneInfoPath = geneInfoPath;
-    this.mim2geneMedgenPath = mim2geneMedgenPath;
-    this.orphaToGenePath = null;
+    this.homoSapiensGeneInfoFile = new File(geneInfoPath);
+    this.mim2geneMedgenFile = new File(mim2geneMedgenPath);
+    this.orphaToGeneFile = null;
+    this.phenotypeDotHpoaFile = null;
+    parse();
   }
+
+  private void checkCoreFiles() {
+    if (! homoSapiensGeneInfoFile.exists()) {
+      throw new PhenolRuntimeException("Cannot find Homo_sapiens.gene_info.gz file");
+    }
+    if (! mim2geneMedgenFile.exists()) {
+      throw new PhenolRuntimeException("Cannot find mim2gene_medgen file");
+    }
+  }
+
+  private void checkOrphaFile() {
+    if (! orphaToGeneFile.exists()) {
+      throw new PhenolRuntimeException("Cannot find en_product6.xml file");
+    }
+  }
+
+
+  /**
+   * Ingest the phenotype.hpoa file. This will population {@link #phenotypeToGeneList}.
+   */
+  private void ingestPhenotypeHpoaFile() {
+    if (! phenotypeDotHpoaFile.exists()) {
+      throw new PhenolRuntimeException("Cannot find phenotype.hpoa file");
+    }
+    List<String> desiredDatabasePrefixes=ImmutableList.of("OMIM");
+    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.phenotypeDotHpoaFile.getAbsolutePath(),
+      hpoOntology,
+      desiredDatabasePrefixes);
+    Multimap<TermId, TermId> phenotypeToDisease = ArrayListMultimap.create();
+    for (Map.Entry<TermId,HpoDisease> entry : diseaseMap.entrySet()) {
+      for (HpoAnnotation hpoAnnot : entry.getValue().getPhenotypicAbnormalities()) {
+        TermId hpoId = hpoAnnot.getTermId();
+        phenotypeToDisease.put(hpoId,entry.getKey()); // diseaseId to HPO id multimpa
+      }
+    }
+    setTermToGene(phenotypeToDisease);
+  }
+
 
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
@@ -113,21 +175,21 @@ public class HpoAssociationParser {
 
       @Parameter: Map of PhenotypeID's to DiseaseID's
    */
-  public void setTermToGene(Multimap<TermId, TermId> phenotypeToDisease) throws PhenolException{
+  public void setTermToGene(Multimap<TermId, TermId> phenotypeToDisease) {
 
     if(this.diseaseToGeneMap.isEmpty()){
-      throw new PhenolException("Error: Associations not parsed. Please call parse then set the term to gene mapping.");
+      throw new PhenolRuntimeException("Error: Associations not parsed. Please call parse then set the term to gene mapping.");
     }
 
     ImmutableList.Builder<HpoGeneAnnotation> builderGeneAnnotationList = new ImmutableList.Builder<>();
 
     for(TermId phenotype : phenotypeToDisease.keySet()){
-     Map<Integer, Boolean> mappedGenes = new HashMap<>();
+     Set<TermId> mappedGenes = new HashSet<>();
      phenotypeToDisease.get(phenotype).stream()
         .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList()).forEach((gene) -> {
           try {
             Integer entrezId = Integer.parseInt(gene.getId());
-            if(!mappedGenes.containsKey(entrezId)){
+            if(!mappedGenes.contains(gene)){
               String entrezGeneSymbol = this.geneIdToSymbolMap.get(gene);
               if(entrezGeneSymbol == null){
                 entrezGeneSymbol = "-";
@@ -135,7 +197,7 @@ public class HpoAssociationParser {
               String hpoTermName = hpoOntology.getTermMap().get(phenotype).getName();
               HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, hpoTermName, phenotype);
               builderGeneAnnotationList.add(geneAnnotation);
-              mappedGenes.put(entrezId, true);
+              mappedGenes.add(gene);
             }
           }catch(Exception e){
             return;
@@ -180,7 +242,7 @@ public class HpoAssociationParser {
   }
 
 
-  public void parse() {
+  private void parse() {
 
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
 
@@ -211,7 +273,7 @@ public class HpoAssociationParser {
     Multimap<TermId,String> orphaToGene;
     Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
     Map<TermId, String> geneMap = new HashMap<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenPath))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenFile))) {
       String line;
       while ((line = br.readLine()) != null) {
         if (line.startsWith("#")) continue;
@@ -248,10 +310,10 @@ public class HpoAssociationParser {
       }
     }
 
-    if(this.orphaToGenePath != null){
+    if(this.orphaToGeneFile != null){
       Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
       try{
-        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orphaToGenePath);
+        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orphaToGeneFile);
         orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
         for (Map.Entry<TermId, String> entry : orphaToGene.entries()) {
           TermId orpha = entry.getKey();
@@ -280,14 +342,23 @@ public class HpoAssociationParser {
     this.allGeneIdToSymbolMap = null;
   }
 
-
+  /**
+   * Parse the NCBI Homo_sapiens_gene_info.gz file
+   * Add the mappings to a Guava bimap, e.g., NCBIGene:150-ADRA2A
+   * @throws IOException if the file cannot be read
+   */
   private void parseGeneInfo() throws IOException {
     ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
-    InputStream fileStream = new FileInputStream(homoSapiensGeneInfoPath);
+    InputStream fileStream = new FileInputStream(homoSapiensGeneInfoFile);
     InputStream gzipStream = new GZIPInputStream(fileStream);
     Reader decoder = new InputStreamReader(gzipStream);
     BufferedReader br = new BufferedReader(decoder);
     String line;
+    // We have seen that occasionally the Homo_sapiens_gene_info.gz
+    // contains duplicate lines, which is an error but we do not want the code
+    // to crash, so we check for previously found term ids with the seen set.
+    // The TermId <-> symbol mapping is one to one.
+    Set<TermId> seen = new HashSet<>();
     while ((line=br.readLine())!=null) {
       String[] a = line.split("\t");
       String taxon=a[0];
@@ -296,6 +367,10 @@ public class HpoAssociationParser {
         String geneId=a[1];
         String symbol=a[2];
         TermId tid = TermId.of(ENTREZ_GENE_PREFIX,geneId);
+        if (seen.contains(tid)) {
+          continue;
+        }
+        seen.add(tid);
         builder.put(tid,symbol);
       }
     }

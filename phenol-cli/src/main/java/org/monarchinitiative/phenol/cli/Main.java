@@ -21,8 +21,9 @@ public class Main {
   private static final String GO_DEMO = "go-demo";
   private static final String HP_DEMO = "hp-demo";
   private static final String BENCHMARK = "benchmark";
-  private static final String HPO_SIM="hpo-sim";
-  private static final String MPO_ENRICH="mpo";
+  private static final String HPO_SIM = "hpo-sim";
+  private static final String MONDO_DEMO = "mondo";
+  private static final String MPO_ENRICH = "mpo";
 
   public static void main(String[] argv)  {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
@@ -31,6 +32,7 @@ public class Main {
     final MpEnrichmentDemo.Options mpo = new MpEnrichmentDemo.Options();
     final HpDemo.Options hpoDemo = new HpDemo.Options();
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
+    final MondoDemo.Options mondo = new MondoDemo.Options();
     final PairwisePhenotypicSimilarityCalculator.Options hpo_sim = new PairwisePhenotypicSimilarityCalculator.Options();
     final JCommander jc =
         JCommander.newBuilder()
@@ -41,6 +43,7 @@ public class Main {
           .addCommand(MPO_ENRICH,mpo)
           .addCommand(HPO_SIM, hpo_sim)
           .addCommand(HP_DEMO,hpoDemo)
+          .addCommand(MONDO_DEMO,mondo)
           .build();
     try {
       jc.parse(argv);
@@ -72,6 +75,8 @@ public class Main {
         new PairwisePhenotypicSimilarityCalculator(hpo_sim).run();
       case HP_DEMO:
         new HpDemo(hpoDemo).run();
+      case MONDO_DEMO:
+        new MondoDemo(mondo).run();
     }
   }
 }
