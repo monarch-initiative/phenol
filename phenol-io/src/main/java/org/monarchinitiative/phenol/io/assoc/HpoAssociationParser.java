@@ -22,7 +22,7 @@ import java.util.zip.GZIPInputStream;
  * mim2gene_medgen contains the MIM number of diseases and EntrezGene number of genes associated with the disease;
  * The relevant lines of the file are marked with "phenotype". The Homo_sapiens_gene_info.gz file contains the  entrez gene
  * number of genes as well as their gene symbol. </p>
- * <p>The goal of this class it to provide associations <br><br>
+ * <p>The goal of this class is to provide associations <br><br>
  *
  *   geneIdToSymbol - Key: EntrezGeneId [{@link TermId}] , Value: EntrezGeneSymbol-String <br>
  *   associationMap - Key: DiseaseId [{@link TermId}] , Value: GeneToAssociation [{@link GeneToAssociation}]<br>
@@ -75,6 +75,7 @@ public class HpoAssociationParser {
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2geneMedgenPath = mim2geneMedgenPath;
     this.orphaToGenePath = orphaToGenePath;
+    parse();
   }
 
   public HpoAssociationParser(File geneInfoPath, File mim2geneMedgenPath, File  orphaToGenePath, Ontology hpoOntology){
@@ -82,6 +83,7 @@ public class HpoAssociationParser {
     this.homoSapiensGeneInfoPath = geneInfoPath.getAbsolutePath();
     this.mim2geneMedgenPath = mim2geneMedgenPath.getAbsolutePath();
     this.orphaToGenePath = orphaToGenePath;
+    parse();
   }
 
   /** Parse everything except the Orphanet data!.*/
@@ -90,7 +92,9 @@ public class HpoAssociationParser {
     this.homoSapiensGeneInfoPath = geneInfoPath;
     this.mim2geneMedgenPath = mim2geneMedgenPath;
     this.orphaToGenePath = null;
+    parse();
   }
+
 
 
   public Map<TermId,DiseaseToGeneAssociation> getDiseaseToAssociationsMap() { return this.diseaseToAssociationsMap; }
@@ -180,7 +184,7 @@ public class HpoAssociationParser {
   }
 
 
-  public void parse() {
+  private void parse() {
 
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
 
