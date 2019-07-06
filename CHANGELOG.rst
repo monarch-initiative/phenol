@@ -3,6 +3,12 @@ Changelog
 =========
 
 ------
+v1.4.1
+------
+- Added workaround for duplicated lines in Homo_sapiens_gene_info file
+- Added phenotype to gene extraction
+
+------
 v1.4.0
 ------
 - Added Orphanet inheritance parser
