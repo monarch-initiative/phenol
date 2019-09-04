@@ -16,7 +16,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds.*;
 
@@ -69,10 +71,13 @@ public class OrphanetInheritanceXMLParser {
   private boolean isInAverageAgeOfDeathList = false;
   private boolean inDisorderType = false;
 
+  private final List<String> errorlist;
+
   public OrphanetInheritanceXMLParser(String xmlpath, Ontology onto) {
     orphanetXmlPath = xmlpath;
     this.ontology = onto;
     String todaysDate = getTodaysDate();
+    errorlist = new ArrayList<>();
     orphanetBiocurationString = String.format("ORPHA:orphadata[%s]", todaysDate);
     disease2inheritanceMultimap = ArrayListMultimap.create();
     parse(new File(orphanetXmlPath));
@@ -138,7 +143,7 @@ public class OrphanetInheritanceXMLParser {
               continue;
             }
             if (!ontology.getTermMap().containsKey(hpoInheritanceId)) {
-              System.err.println("[WARNING] Could not find HPO label for " + hpoInheritanceId.getValue());
+              this.errorlist.add("[WARNING] Could not find HPO label for Orphanet inheritance term" + hpoInheritanceId.getValue());
               continue;
             }
             String hpoLabel = ontology.getTermMap().get(hpoInheritanceId).getName();
@@ -205,11 +210,18 @@ public class OrphanetInheritanceXMLParser {
     } else if (orphaInheritanceId.equals("409936") && orphaLabel.equals("Oligogenic")) {
       return OLIGOGENIC;
     } else {
-      System.err.println("[WARNING] Could not find HPO id for " + orphaLabel + "(" + orphaInheritanceId + ")");
+      this.errorlist.add("[WARNING] Could not find HPO id for Orphanet inheritence entry: " + orphaLabel + "(" + orphaInheritanceId + ")");
       return null; // could not find correct id.
     }
   }
 
+  public boolean hasError() {
+    return this.errorlist.size() > 0;
+  }
+
+  public List<String> getErrorlist() {
+    return errorlist;
+  }
 
   /**
    * We are using this to supply a date created value for the Orphanet annotations.
