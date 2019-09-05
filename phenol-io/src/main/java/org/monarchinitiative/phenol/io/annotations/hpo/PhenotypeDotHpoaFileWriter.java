@@ -34,6 +34,10 @@ public class PhenotypeDotHpoaFileWriter {
   private final Multimap<TermId, HpoAnnotationEntry> inheritanceMultiMap;
   /** tolerant mode (update obsolete term ids if possible) */
   private final boolean tolerant;
+  /** Merge frequency data (e.g., 2/3 and 5/7 would be 7/10 if the same disease/HPO term hasa two annotations with
+   * these frequencies.
+   */
+  private final boolean merge_frequency;
 
   /**
    * Usually "phenotype.hpoa", but may also include path.
@@ -59,7 +63,7 @@ public class PhenotypeDotHpoaFileWriter {
   private final File orphaPhenotypeXMLfile;
   /** The en_product9_ages.xml file. */
   private final File orphaInheritanceXMLfile;
-
+  /** A list of messages and possibly errors to output after the parsing has run. */
   private final List<String> parseResultAndErrorSummaryLines;
 
 
@@ -69,20 +73,24 @@ public class PhenotypeDotHpoaFileWriter {
    * @param orphaPhenotypeXMLpath,  path to
    * @param orphaInheritanceXMLpath List of inheritance annotations for Orphanet data
    * @param outpath                 path of the outfile (usually {@code phenotype.hpoa})
+   * @param toler   If true, be tolerant of errors while parsing and do not terminate
+   * @param merge_fr   Merge frequency data
    */
   public static PhenotypeDotHpoaFileWriter factory(Ontology ont,
                                                    String smallFileDirectoryPath,
                                                    String orphaPhenotypeXMLpath,
                                                    String orphaInheritanceXMLpath,
                                                    String outpath,
-                                                   boolean toler) {
+                                                   boolean toler,
+                                                   boolean merge_fr) {
 
     return new PhenotypeDotHpoaFileWriter(ont,
       smallFileDirectoryPath,
       orphaPhenotypeXMLpath,
       orphaInheritanceXMLpath,
       outpath,
-      toler);
+      toler,
+      merge_fr);
 
   }
   /**
@@ -97,7 +105,8 @@ public class PhenotypeDotHpoaFileWriter {
                                      String orphaPhenotypeXMLpath,
                                      String orphaInheritanceXMLpath,
                                      String outpath,
-                                     boolean toler) {
+                                     boolean toler,
+                                     boolean merge_fr) {
     Objects.requireNonNull(ont);
     this.ontology = ont;
     Objects.requireNonNull(outpath);
@@ -123,12 +132,21 @@ public class PhenotypeDotHpoaFileWriter {
         + " (We were expecting the path to en_product9_ages.xml");
     }
     this.tolerant = toler;
+    this.merge_frequency = merge_fr;
 
     // 1. Get list of small files
     HpoAnnotationFileIngestor annotationFileIngestor =
-      new HpoAnnotationFileIngestor(smallFileDirectory.getAbsolutePath(), ont);
+      new HpoAnnotationFileIngestor(smallFileDirectory.getAbsolutePath(), ont, this.merge_frequency);
     this.internalAnnotationModelList = annotationFileIngestor.getSmallFileEntries();
+    int n_omitted = annotationFileIngestor.get_omitted_entry_count();
+    int n_valid_smallfile = annotationFileIngestor.get_valid_smallfile_count();
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] ommitted small files: %d, valid small files: %d, total: %d",
+      n_omitted,n_valid_smallfile,(n_omitted+n_valid_smallfile)));
     this.parseResultAndErrorSummaryLines.add(String.format("[INFO] We parsed %d small files/annotation models", this.internalAnnotationModelList.size()));
+    if (n_valid_smallfile > this.internalAnnotationModelList.size()) {
+      int missing = n_valid_smallfile - this.internalAnnotationModelList.size();
+      this.parseResultAndErrorSummaryLines.add(String.format("\n\n[WARNING] Not all valid small files successfully parsed (%d entries missing).\n\n",missing));
+    }
 
     // 2. Get the Orphanet Inheritance Annotations
     OrphanetInheritanceXMLParser inheritanceXMLParser =

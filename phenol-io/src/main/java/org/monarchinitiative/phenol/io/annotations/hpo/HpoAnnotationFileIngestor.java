@@ -54,7 +54,7 @@ public class HpoAnnotationFileIngestor {
 
   private final List<String> errors = new ArrayList<>();
 
-  public List<HpoAnnotationModel> getSmallFileEntries() {
+  List<HpoAnnotationModel> getSmallFileEntries() {
     return smallFileList;
   }
 
@@ -69,13 +69,18 @@ public class HpoAnnotationFileIngestor {
     this(directoryPath, omitFile, ontology, false);
   }
 
-  public HpoAnnotationFileIngestor(String directoryPath, Ontology ontology) {
+  HpoAnnotationFileIngestor(String directoryPath, Ontology ontology) {
     this(directoryPath,
       String.format("%s%s%s", directoryPath, File.separator, "omit-list.txt"),
       ontology,
       false);
   }
-
+  public HpoAnnotationFileIngestor(String directoryPath, Ontology ontology, boolean merge_fr) {
+    this(directoryPath,
+      String.format("%s%s%s", directoryPath, File.separator, "omit-list.txt"),
+      ontology,
+      merge_fr);
+  }
 
   /**
    * @param directoryPath path to the directory with HPO annotation "small files"
@@ -142,6 +147,14 @@ public class HpoAnnotationFileIngestor {
       errors.add(e.getMessage());
     }
     return entrylist;
+  }
+
+  int get_omitted_entry_count() {
+    return this.n_total_omitted_entries;
+  }
+
+  int get_valid_smallfile_count() {
+    return this.smallFilePaths.size();
   }
 
   /**
