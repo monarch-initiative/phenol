@@ -5,7 +5,6 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.formats.Gene;
 import org.monarchinitiative.phenol.formats.hpo.*;
-import org.monarchinitiative.phenol.io.annotations.hpo.HpoAnnotationFileParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.io.obo.hpo.HpoDiseaseAnnotationParser;

@@ -2,10 +2,8 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 
 
-import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

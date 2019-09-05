@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io.annotations.hpo;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
 import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
@@ -26,7 +25,7 @@ public class PhenotypeDotHpoaFileWriter {
   /**
    * List of all of the {@link HpoAnnotationModel} objects from our annotations (OMIM and DECIPHER).
    */
-  private final List<HpoAnnotationModel> internalAnnotFileList;
+  private final List<HpoAnnotationModel> internalAnnotationModelList;
   /**
    * List of all of the {@link HpoAnnotationModel} objects derived from the Orphanet XML file.
    */
@@ -35,6 +34,10 @@ public class PhenotypeDotHpoaFileWriter {
   private final Multimap<TermId, HpoAnnotationEntry> inheritanceMultiMap;
   /** tolerant mode (update obsolete term ids if possible) */
   private final boolean tolerant;
+  /** Merge frequency data (e.g., 2/3 and 5/7 would be 7/10 if the same disease/HPO term hasa two annotations with
+   * these frequencies.
+   */
+  private final boolean merge_frequency;
 
   /**
    * Usually "phenotype.hpoa", but may also include path.
@@ -60,6 +63,8 @@ public class PhenotypeDotHpoaFileWriter {
   private final File orphaPhenotypeXMLfile;
   /** The en_product9_ages.xml file. */
   private final File orphaInheritanceXMLfile;
+  /** A list of messages and possibly errors to output after the parsing has run. */
+  private final List<String> parseResultAndErrorSummaryLines;
 
 
   /**
@@ -68,20 +73,24 @@ public class PhenotypeDotHpoaFileWriter {
    * @param orphaPhenotypeXMLpath,  path to
    * @param orphaInheritanceXMLpath List of inheritance annotations for Orphanet data
    * @param outpath                 path of the outfile (usually {@code phenotype.hpoa})
+   * @param toler   If true, be tolerant of errors while parsing and do not terminate
+   * @param merge_fr   Merge frequency data
    */
   public static PhenotypeDotHpoaFileWriter factory(Ontology ont,
                                                    String smallFileDirectoryPath,
                                                    String orphaPhenotypeXMLpath,
                                                    String orphaInheritanceXMLpath,
                                                    String outpath,
-                                                   boolean toler) {
+                                                   boolean toler,
+                                                   boolean merge_fr) {
 
     return new PhenotypeDotHpoaFileWriter(ont,
       smallFileDirectoryPath,
       orphaPhenotypeXMLpath,
       orphaInheritanceXMLpath,
       outpath,
-      toler);
+      toler,
+      merge_fr);
 
   }
   /**
@@ -96,11 +105,13 @@ public class PhenotypeDotHpoaFileWriter {
                                      String orphaPhenotypeXMLpath,
                                      String orphaInheritanceXMLpath,
                                      String outpath,
-                                     boolean toler) {
+                                     boolean toler,
+                                     boolean merge_fr) {
     Objects.requireNonNull(ont);
     this.ontology = ont;
     Objects.requireNonNull(outpath);
     this.outputFileName = outpath;
+    this.parseResultAndErrorSummaryLines = new ArrayList<>();
     smallFileDirectory = new File(smallFileDirectoryPath);
     if (!smallFileDirectory.exists()) {
       throw new PhenolRuntimeException("Could not find " + smallFileDirectoryPath
@@ -121,28 +132,47 @@ public class PhenotypeDotHpoaFileWriter {
         + " (We were expecting the path to en_product9_ages.xml");
     }
     this.tolerant = toler;
+    this.merge_frequency = merge_fr;
+
+    // 1. Get list of small files
     HpoAnnotationFileIngestor annotationFileIngestor =
-      new HpoAnnotationFileIngestor(smallFileDirectory.getAbsolutePath(), ont);
-    this.internalAnnotFileList = annotationFileIngestor.getSmallFileEntries();
+      new HpoAnnotationFileIngestor(smallFileDirectory.getAbsolutePath(), ont, this.merge_frequency);
+    this.internalAnnotationModelList = annotationFileIngestor.getSmallFileEntries();
+    int n_omitted = annotationFileIngestor.get_omitted_entry_count();
+    int n_valid_smallfile = annotationFileIngestor.get_valid_smallfile_count();
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] ommitted small files: %d, valid small files: %d, total: %d",
+      n_omitted,n_valid_smallfile,(n_omitted+n_valid_smallfile)));
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] We parsed %d small files/annotation models", this.internalAnnotationModelList.size()));
+    if (n_valid_smallfile > this.internalAnnotationModelList.size()) {
+      int missing = n_valid_smallfile - this.internalAnnotationModelList.size();
+      this.parseResultAndErrorSummaryLines.add(String.format("\n\n[WARNING] Not all valid small files successfully parsed (%d entries missing).\n\n",missing));
+    }
+
     // 2. Get the Orphanet Inheritance Annotations
     OrphanetInheritanceXMLParser inheritanceXMLParser =
       new OrphanetInheritanceXMLParser(orphaInheritanceXMLfile.getAbsolutePath(), ontology);
     this.inheritanceMultiMap = inheritanceXMLParser.getDisease2inheritanceMultimap();
+    if (inheritanceXMLParser.hasError()) {
+      this.parseResultAndErrorSummaryLines.addAll(inheritanceXMLParser.getErrorlist());
+    }
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] We parsed %d Orphanet inheritance entries", inheritanceMultiMap.size()));
 
+    // 3. Get Orphanet disease models
     OrphanetXML2HpoDiseaseModelParser orphaParser =
       new OrphanetXML2HpoDiseaseModelParser(this.orphaPhenotypeXMLfile.getAbsolutePath(), ontology, tolerant);
-    //List<HpoAnnotationModel> prelimOrphaDiseaseList = orphaParser.getOrphanetDiseaseModels();
     Map<TermId,HpoAnnotationModel> prelimOrphaDiseaseMap = orphaParser.getOrphanetDiseaseMap();
-    ImmutableList.Builder<HpoAnnotationModel> builder = new ImmutableList.Builder<>();
-
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] We parsed %d Orphanet disease entries", prelimOrphaDiseaseMap.size()));
+    int c = 0;
     for (TermId diseaseId : prelimOrphaDiseaseMap.keySet()) {
       HpoAnnotationModel model = prelimOrphaDiseaseMap.get(diseaseId);
       if (this.inheritanceMultiMap.containsKey(diseaseId)) {
         Collection<HpoAnnotationEntry> inheritanceEntryList = this.inheritanceMultiMap.get(diseaseId);
         HpoAnnotationModel mergedModel = model.mergeWithInheritanceAnnotations(inheritanceEntryList);
         prelimOrphaDiseaseMap.put(diseaseId,mergedModel); // replace with model that has inheritance
+        c++;
       }
     }
+    this.parseResultAndErrorSummaryLines.add(String.format("[INFO] We were able to add inheritance information to %d Orphanet disease entries", c));
 
     this.orphanetSmallFileList = new ArrayList<>(prelimOrphaDiseaseMap.values());
     setOntologyMetadata(ont.getMetaInfo());
@@ -159,7 +189,7 @@ public class PhenotypeDotHpoaFileWriter {
     this.n_decipher = 0;
     this.n_omim = 0;
     this.n_unknown = 0;
-    for (HpoAnnotationModel diseaseModel : internalAnnotFileList) {
+    for (HpoAnnotationModel diseaseModel : internalAnnotationModelList) {
       if (diseaseModel.isOMIM()) n_omim++;
       else if (diseaseModel.isDECIPHER()) n_decipher++;
       else n_unknown++;
@@ -199,7 +229,7 @@ public class PhenotypeDotHpoaFileWriter {
     }
     int n = 0;
     writer.write(getHeaderLine() + "\n");
-    for (HpoAnnotationModel smallFile : this.internalAnnotFileList) {
+    for (HpoAnnotationModel smallFile : this.internalAnnotationModelList) {
       List<HpoAnnotationEntry> entryList = smallFile.getEntryList();
       for (HpoAnnotationEntry entry : entryList) {
         try {
@@ -228,6 +258,9 @@ public class PhenotypeDotHpoaFileWriter {
     }
     System.out.println("We output a total of " + m + " big file lines from the Orphanet Annotation files");
     System.out.println("Total output lines was " + (n + m));
+    for (String line : this.parseResultAndErrorSummaryLines) {
+      System.out.println(line);
+    }
     writer.close();
   }
 
