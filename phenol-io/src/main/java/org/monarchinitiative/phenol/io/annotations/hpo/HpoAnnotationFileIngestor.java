@@ -101,14 +101,14 @@ public class HpoAnnotationFileIngestor {
     for (File file : smallFilePaths) {
       HpoAnnotationFileParser parser = new HpoAnnotationFileParser(file.getAbsolutePath(), ontology);
       try {
-        HpoAnnotationModel smallFile = parser.parse();
+        HpoAnnotationModel smallFile = parser.parse(true);
         if (mergeEntries) {
           smallFile = smallFile.getMergedModel();
         }
         n_total_annotation_lines += smallFile.getNumberOfAnnotations();
         smallFileList.add(smallFile);
       } catch (HpoAnnotationModelException hafe) {
-        System.err.println(String.format("[ERROR] %s: {%s", file.getName(), hafe.getMessage()));
+        System.err.println(String.format("[ERROR] %s: (%s)", file.getName(), hafe.getMessage()));
       } catch (PhenolRuntimeException pre) {
         System.err.println(String.format("[ERROR] PhenolRuntimeException: with file %s: %s", file, pre.getMessage()));
         throw pre;

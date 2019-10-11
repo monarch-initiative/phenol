@@ -147,6 +147,9 @@ public class PhenotypeDotHpoaFileWriter {
       int missing = n_valid_smallfile - this.internalAnnotationModelList.size();
       this.parseResultAndErrorSummaryLines.add(String.format("\n\n[WARNING] Not all valid small files successfully parsed (%d entries missing).\n\n",missing));
     }
+    if (n_omitted>0) {
+      outputOmittedSmallFileNames();
+    }
 
     // 2. Get the Orphanet Inheritance Annotations
     OrphanetInheritanceXMLParser inheritanceXMLParser =
@@ -177,6 +180,11 @@ public class PhenotypeDotHpoaFileWriter {
     this.orphanetSmallFileList = new ArrayList<>(prelimOrphaDiseaseMap.values());
     setOntologyMetadata(ont.getMetaInfo());
     setNumberOfDiseasesForHeader();
+  }
+
+
+  private void outputOmittedSmallFileNames() {
+
   }
 
   /**
