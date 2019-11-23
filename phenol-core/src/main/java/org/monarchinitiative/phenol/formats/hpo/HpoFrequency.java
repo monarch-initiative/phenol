@@ -48,7 +48,7 @@ public enum HpoFrequency {
       case FREQUENT:
         return 0.05D;
       case OCCASIONAL:
-        return 0.01D;
+        return 0.05D;
       case VERY_FREQUENT:
         return 0.30D;
       case VERY_RARE:
