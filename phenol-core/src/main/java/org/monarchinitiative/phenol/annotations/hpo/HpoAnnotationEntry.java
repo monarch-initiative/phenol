@@ -2,8 +2,6 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 
 import com.google.common.collect.ImmutableSet;
-import org.monarchinitiative.phenol.base.HpoAnnotationModelException;
-import org.monarchinitiative.phenol.base.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

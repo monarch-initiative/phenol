@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.base;
+package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 

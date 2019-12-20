@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.base;
+package org.monarchinitiative.phenol.annotations.hpo;
 
 public class ObsoleteTermIdException extends HpoAnnotationModelException {
   private final static long serialVersionUID = 2;
