@@ -1,11 +1,11 @@
 package org.monarchinitiative.phenol.cli;
 
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.formats.hpo.HpoGeneAnnotation;
-import org.monarchinitiative.phenol.formats.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
-import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionWriter;
+import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionWriter;
+import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

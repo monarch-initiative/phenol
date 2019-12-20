@@ -11,6 +11,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
@@ -60,6 +61,16 @@ public class OntologyLoaderHpoTest {
     System.out.println(term1);
   }
 
+  @Disabled("Currently broken due to obographs JSON deserialisation")
+  @Test
+  void loadHpJson() {
+    System.out.println("Starting full HPO JSON load");
+    Instant start = Instant.now();
+    Path hpJsonPath = Paths.get("src/test/resources/hp.json");
+    Ontology ontology = OntologyLoader.loadOntology(hpJsonPath.toFile());
+    Instant end = Instant.now();
+    System.out.println("Finished in " + Duration.between(start, end).toMillis() + " ms");
+  }
 
   @Disabled
   @Test

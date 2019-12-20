@@ -1,0 +1,28 @@
+format-version: 1.2
+date: 20:01:2012 06:00
+default-namespace: uberpheno_yadda
+
+
+[Term]
+id: UBERPHENO:00000001
+name: UBERPHENO_ROOT
+
+[Term]
+id: MP:0000001
+name: mammalian phenotype
+is_a: UBERPHENO:00000001 ! UBERPHENO_ROOT
+
+[Term]
+id: HP:0000001
+name: All
+is_a: UBERPHENO:00000001 ! UBERPHENO_ROOT
+
+[Term]
+id: ZP:0000001
+name: abnormal(ly) quality zebrafish anatomical entity
+is_a: UBERPHENO:00000001 ! UBERPHENO_ROOT
+
+[Term]
+id: MP:0001186
+name: pigmentation phenotype
+is_a: MP:0000001 ! mammalian phenotype

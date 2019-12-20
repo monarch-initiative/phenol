@@ -57,7 +57,6 @@
       </exclusions>
     </dependency>
 
-    <!-- Apache Commons I/O for testing -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>

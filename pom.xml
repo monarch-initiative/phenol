@@ -29,10 +29,11 @@
   </properties>
 
   <modules>
-    <module>phenol-cli</module>
     <module>phenol-core</module>
     <module>phenol-io</module>
+    <module>phenol-annotations</module>
     <module>phenol-analysis</module>
+    <module>phenol-cli</module>
   </modules>
 
   <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
