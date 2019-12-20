@@ -102,8 +102,7 @@ public class OboGraphDocumentAdaptor {
       this.terms = convertNodesToTerms(oboGraph.getNodes());
       LOGGER.debug("Converting edges to relationships...");
       // Mapping edges in obographs to termIds in phenol
-      this.relationships = convertEdgesToRelationships(oboGraph.getEdges());
-//      this.relationships = convertEdgesToRelationships(oboGraph.getEdges(), oboGraph.getNodes());
+      this.relationships = convertEdgesToRelationships(oboGraph.getEdges(), oboGraph.getNodes());
 
       return new OboGraphDocumentAdaptor(this);
     }
@@ -169,7 +168,12 @@ public class OboGraphDocumentAdaptor {
       return termsList.build();
     }
 
-    private List<Relationship> convertEdgesToRelationships(List<Edge> edges) {
+    private List<Relationship> convertEdgesToRelationships(List<Edge> edges, List<Node> nodes) {
+      Map<String, String> propertyIdLabels = nodes.stream()
+        .filter(node -> node.getType() == Node.RDFTYPES.PROPERTY)
+        .filter(node -> node.getId() != null && node.getLabel() != null)
+        .collect(toMap(Node::getId, Node::getLabel));
+
       ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
       if (edges == null) {
         LOGGER.warn("No edges found in loaded ontology.");
@@ -181,38 +185,13 @@ public class OboGraphDocumentAdaptor {
         TermId objectTermId = getTermIdOrNull(edge.getObj());
 
         if (subjectTermId != null && objectTermId != null) {
-          RelationshipType reltype = RelationshipType.fromString(edge.getPred());
-          Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, reltype);
+          RelationshipType relType = RelationshipType.of(edge.getPred(), propertyIdLabels.getOrDefault(edge.getPred(), "unknown"));
+          Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, relType);
           relationshipsList.add(relationship);
         }
       }
       return relationshipsList.build();
     }
-
-//    private List<Relationship> convertEdgesToRelationships(List<Edge> edges, List<Node> nodes) {
-//      Map<String, String> propertyIdLabels = nodes.stream()
-//        .filter(node -> node.getType() == Node.RDFTYPES.PROPERTY)
-//        .filter(node -> node.getId() != null && node.getLabel() != null)
-//        .collect(toMap(Node::getId, Node::getLabel));
-//
-//      ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
-//      if (edges == null) {
-//        LOGGER.warn("No edges found in loaded ontology.");
-//        throw new PhenolRuntimeException("No edges found in loaded ontology.");
-//      }
-//      int edgeId = 1;
-//      for (Edge edge : edges) {
-//        TermId subjectTermId = getTermIdOrNull(edge.getSub());
-//        TermId objectTermId = getTermIdOrNull(edge.getObj());
-//
-//        if (subjectTermId != null && objectTermId != null) {
-//          RelationshipType relType = RelationshipType.of(edge.getPred(), propertyIdLabels.getOrDefault(edge.getPred(), "unknown"));
-//          Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, relType);
-//          relationshipsList.add(relationship);
-//        }
-//      }
-//      return relationshipsList.build();
-//    }
 
     private TermId getTermIdOrNull(String id) {
       Optional<String> curie = curieUtil.getCurie(id);

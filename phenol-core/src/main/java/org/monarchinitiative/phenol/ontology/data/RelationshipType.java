@@ -3,15 +3,21 @@ package org.monarchinitiative.phenol.ontology.data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Enumeration for describing relation qualifiers (forked from GoRelationQualifer in Ontolib).
  * A class that encapsulates the edge type in the ontology graph.
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class RelationshipType {
+
+  private static final Map<String, RelationshipType> cache = new ConcurrentHashMap<>();
+
   /** "Is-a" relation. */
   public static final RelationshipType IS_A = new RelationshipType("is_a", "is_a");
 //  /** "Intersection-of" relation. */
@@ -113,8 +119,7 @@ public class RelationshipType {
 //      case "http://purl.obolibrary.org/obo/RO_0004028":
 //        return REALIZED_IN_RESPONSE_TO_STIMULUS;
       default:
-        //make this a hash lookup
-        return new RelationshipType(id, label);
+        return cache.computeIfAbsent(id, key -> new RelationshipType(id, label));
     }
   }
 
@@ -123,14 +128,7 @@ public class RelationshipType {
    * @return true for IS_A and PART_OF, otherwise false
    */
   public boolean propagates() {
-    return id.equals(IS_A.id) || id.equals(PART_OF.id);
-//    switch (this) {
-//      case IS_A:
-//      case PART_OF:
-//        return true;
-//      default:
-//        return false;
-//    }
+    return this.equals(IS_A) || this.equals(PART_OF);
   }
 
   @Override
