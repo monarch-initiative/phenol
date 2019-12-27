@@ -1,13 +1,11 @@
 package org.monarchinitiative.phenol.io.scoredist;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import com.google.common.base.Joiner;
@@ -40,7 +38,7 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
 
   @Override
   public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution) {
-    for (int objectId : scoreDistribution.getObjectIds()) {
+    for (T objectId : scoreDistribution.getObjectIds()) {
       final ObjectScoreDistribution<T> dist = scoreDistribution.getObjectScoreDistribution(objectId);
       final List<Double> scores = dist.observedScores();
       final ArrayList<String> points = new ArrayList<>();
@@ -62,7 +60,11 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
 
       out.print(numTerms);
       out.print("\t");
-      out.print(objectId);
+      try {
+        out.print(ObjHexStringConverter.object2hex(objectId));
+      } catch (IOException e) {
+        throw new RuntimeException("Unable to write object as hexadecimal string: " + objectId.toString());
+      }
       out.print("\t");
       out.print(dist.getSampleSize());
       out.print("\t");

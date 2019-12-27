@@ -15,7 +15,7 @@ public class ObjectScoreDistributionTest {
   @BeforeEach
   public void setUp() {
     objDist =
-      (ObjectScoreDistribution<Integer>) new ObjectScoreDistribution(1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));
+      new ObjectScoreDistribution<>(1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));
 
     objDist2 =
       new ObjectScoreDistribution<>(TermId.of("HP:test"), 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));

@@ -1,15 +1,14 @@
 package org.monarchinitiative.phenol.io.scoredist;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.commons.codec.DecoderException;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
@@ -20,7 +19,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  * @see TextFileScoreDistributionWriter
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class TextFileScoreDistributionReader implements ScoreDistributionReader {
+public class TextFileScoreDistributionReader<T extends Serializable> implements ScoreDistributionReader<T> {
 
   /** Path to the file read from. */
   private final File inputFile;
@@ -63,8 +62,8 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
   }
 
   @Override
-  public ScoreDistribution readForTermCount(int termCount) throws PhenolException {
-    final Map<Integer, ScoreDistribution> allDists = readAll();
+  public ScoreDistribution<T> readForTermCount(int termCount) throws PhenolException {
+    final Map<Integer, ScoreDistribution<T>> allDists = readAll();
     if (!allDists.containsKey(termCount)) {
       throw new PhenolException("Distribution not found for term count: " + termCount);
     } else {
@@ -73,15 +72,21 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
   }
 
   @Override
-  public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
-    final Map<Integer, ScoreDistribution> result = new HashMap<>();
+  public Map<Integer, ScoreDistribution<T>> readAll() throws PhenolException {
+    final Map<Integer, ScoreDistribution<T>> result = new HashMap<>();
 
-    final Map<Integer, Map<Integer, ObjectScoreDistribution>> tmp = new HashMap<>();
+    final Map<Integer, Map<T, ObjectScoreDistribution<T>>> tmp = new HashMap<>();
 
     while (nextLine != null) {
       final String[] arr = nextLine.trim().split("\t");
       final int numTerms = Integer.parseInt(arr[0]);
-      final int entrezId = Integer.parseInt(arr[1]);
+      //final int entrezId = Integer.parseInt(arr[1]);
+      final T entrezId;
+      try {
+        entrezId = (T) ObjHexStringConverter.hex2obj(arr[1]);
+      } catch (DecoderException | IOException | ClassNotFoundException e) {
+        throw new PhenolException("Failed to parse hexadecimal string to object: " + arr[1]);
+      }
       final int sampleSize = Integer.parseInt(arr[2]);
       final String dist = arr[3];
 
@@ -91,8 +96,8 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
         cumFreqs.put(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
       }
 
-      final ObjectScoreDistribution scoreDist =
-          new ObjectScoreDistribution(entrezId, numTerms, sampleSize, cumFreqs);
+      final ObjectScoreDistribution<T> scoreDist =
+          new ObjectScoreDistribution<>(entrezId, numTerms, sampleSize, cumFreqs);
 
       if (!tmp.containsKey(numTerms)) {
         tmp.put(numTerms, new TreeMap<>());
@@ -106,20 +111,20 @@ public class TextFileScoreDistributionReader implements ScoreDistributionReader 
       }
     }
 
-    for (Entry<Integer, Map<Integer, ObjectScoreDistribution>> e : tmp.entrySet()) {
+    for (Entry<Integer, Map<T, ObjectScoreDistribution<T>>> e : tmp.entrySet()) {
       final int numTerms = e.getKey();
-      result.put(numTerms, new ScoreDistribution(numTerms, e.getValue()));
+      result.put(numTerms, new ScoreDistribution<>(numTerms, e.getValue()));
     }
 
     return result;
   }
 
   @Override
-  public ObjectScoreDistribution readForTermCountAndObject(int termCount, int objectId)
+  public ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, T objectId)
       throws PhenolException {
-    final ObjectScoreDistribution result =
+    final ObjectScoreDistribution<T> result =
         readForTermCount(termCount).getObjectScoreDistribution(objectId);
-    if (result != null) {
+    if (result == null) {
       throw new PhenolException(
           "Distribution not found for term count: " + termCount + " and object ID: " + objectId);
     } else {
