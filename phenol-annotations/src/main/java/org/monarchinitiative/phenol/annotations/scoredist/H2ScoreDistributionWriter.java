@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.scoredist;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -146,9 +145,9 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   }
 
   @Override
-  public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution)
+  public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution)
       throws PhenolException {
-    for (Integer objectId : scoreDistribution.getObjectIds()) {
+    for (int objectId : scoreDistribution.getObjectIds()) {
       final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
       writeObjectScoreDistribution(numTerms, dist, resolution);
     }
@@ -163,9 +162,9 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @throws PhenolException In case of problems when writing to database.
    */
   private void writeObjectScoreDistribution(
-      int numTerms, ObjectScoreDistribution<Integer> dist, int resolution) throws PhenolException {
-    final double[] scores;
-    final double[] pValues;
+    int numTerms, ObjectScoreDistribution dist, int resolution) throws PhenolException {
+    final double scores[];
+    final double pValues[];
 
     final List<Double> observedScores = dist.observedScores();
     if (resolution != 0) {

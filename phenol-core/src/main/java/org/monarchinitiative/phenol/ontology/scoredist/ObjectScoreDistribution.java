@@ -13,13 +13,13 @@ import java.util.TreeMap;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public final class ObjectScoreDistribution<T extends Serializable> implements Serializable {
+public final class ObjectScoreDistribution implements Serializable {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
 
   /** "World object" identifier. */
-  private final T objectId;
+  private final int objectId;
 
   /** Number of terms used for precomputing scores with. */
   private final int numTerms;
@@ -41,7 +41,7 @@ public final class ObjectScoreDistribution<T extends Serializable> implements Se
    * @param cumulativeFrequencies Cumulative frequencies of the scores.
    */
   public ObjectScoreDistribution(
-      T objectId, int numTerms, int sampleSize, SortedMap<Double, Double> cumulativeFrequencies) {
+      int objectId, int numTerms, int sampleSize, SortedMap<Double, Double> cumulativeFrequencies) {
     this.objectId = objectId;
     this.numTerms = numTerms;
     this.sampleSize = sampleSize;
@@ -82,7 +82,7 @@ public final class ObjectScoreDistribution<T extends Serializable> implements Se
   }
 
   /** @return The world object Id for which the score has been precomputed. */
-  public T getObjectId() {
+  public int getObjectId() {
     return objectId;
   }
 

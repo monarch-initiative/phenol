@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T> {
+public final class SimilarityScoreSampling {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
@@ -106,11 +106,11 @@ public final class SimilarityScoreSampling<T> {
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    final ConcurrentHashMap<Integer, ObjectScoreDistribution<Integer>> distributions = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<Integer, ObjectScoreDistribution> distributions = new ConcurrentHashMap<>();
     IntConsumer task =
       objectId -> {
           try {
-            final ObjectScoreDistribution<Integer> dist =
+            final ObjectScoreDistribution dist =
                 performComputation(objectId, labels.get(objectId), numTerms);
             distributions.put(dist.getObjectId(), dist);
             progressReport.incCurrent();
