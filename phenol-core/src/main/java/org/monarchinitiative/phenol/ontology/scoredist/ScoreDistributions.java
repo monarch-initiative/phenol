@@ -24,7 +24,7 @@ public final class ScoreDistributions {
    * @return Merge result.
    * @throws CannotMergeScoreDistributions In case of problems with {@code distributions}.
    */
-  public static <T extends Serializable> ScoreDistribution merge(Collection<? extends ScoreDistribution<T>> distributions) {
+  public static <T extends Serializable> ScoreDistribution merge(Collection<ScoreDistribution<T>> distributions) {
     if (distributions.isEmpty()) {
       throw new CannotMergeScoreDistributions("Cannot merge zero ScoreDistributions objects.");
     }
