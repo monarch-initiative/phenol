@@ -14,6 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
     <hamcrest.version>1.3</hamcrest.version>
     <junit.jupiter.version>5.4.2</junit.jupiter.version>
     <guava.version>22.0</guava.version>
@@ -28,10 +29,11 @@
   </properties>
 
   <modules>
-    <module>phenol-cli</module>
     <module>phenol-core</module>
     <module>phenol-io</module>
+    <module>phenol-annotations</module>
     <module>phenol-analysis</module>
+    <module>phenol-cli</module>
   </modules>
 
   <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
@@ -260,9 +262,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.0.1</version>
         <configuration>
-          <javadocVersion>8</javadocVersion>
-          <source>8</source>
-        <!--  <javadocExecutable>/usr/lib/jvm/java-8-oracle/bin/javadoc</javadocExecutable> -->
           <doclint>none</doclint>
         </configuration>
         <executions>
@@ -361,8 +360,8 @@
           <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
       </plugin>
 

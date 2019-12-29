@@ -33,14 +33,9 @@ buildNumber.properties
 .mvn/timing.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!maven-wrapper.jar
 .idea/
 *.checkstyle
 *.iml
-phenol-cli/target/
-phenol-core/target/
-phenol-io/target/
-phenol-core/src/test/java/com/
+target/
 phenol-io/src/test/resources/catalog-v001.xml
-demos/compute-similarities/target/
-demos/go-enrichment/target/
-phenol-analysis/target/

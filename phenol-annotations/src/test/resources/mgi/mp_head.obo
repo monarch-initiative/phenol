@@ -1,0 +1,58 @@
+format-version: 1.2
+data-version: releases/2017-06-05
+subsetdef: CvDC_Terms "NHLBI Cardiovascular Development Consortium (CvDC) Terms"
+subsetdef: Europhenome_Terms "Terms in use by Europhenome"
+subsetdef: IMPC "Terms in use by IMPC"
+subsetdef: IMPC_Prenatal "Terms in use by IMPC Early Viability Group"
+subsetdef: Sanger_Terms "Terms in use by Mouse Genetics Project, Sanger Institute, Wellcome Trust Genome Campus"
+default-namespace: MPheno.ontology
+ontology: mp
+property_value: http://purl.org/dc/elements/1.1/contributor "Alicia Valenzuela" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Anna Anagnostopolous" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Christopher Mungall" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Georgios V. Gkoutos" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Howard Dene" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Melissa Berry" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Michelle Knowlton" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Nicole Vasilevsky" xsd:string
+property_value: http://purl.org/dc/elements/1.1/contributor "Paul Schofield" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Carroll W. Goldsmith" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Cynthia L. Smith" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Janan T. Eppig" xsd:string
+property_value: http://purl.org/dc/elements/1.1/creator "Susan Bello" xsd:string
+property_value: http://purl.org/dc/elements/1.1/description "The Mammalian Phenotype Ontology is being developed by Cynthia L. Smith, Susan M. Bello, Carroll W. Goldsmith and Janan T. Eppig, as part of the Mouse Genome Database (MGD) Project, Mouse Genome Informatics (MGI), The Jackson Laboratory, Bar Harbor, ME. This file contains pre-coordinated phenotype terms, definitions and synonyms that can be used to describe mammalian phenotypes. The ontology is represented as a directed acyclic graph (DAG). It organizes phenotype terms into major biological system headers such as nervous system and respiratory system.  This ontology is currently under development. Weekly updates are available at the Mouse Genome Informatics (MGI) ftp site (ftp://ftp.informatics.jax.org/pub/reports/index.html#pheno) as well as the OBO Foundry site (http://obofoundry.org/). Questions, comments and suggestions are welcome, and should be directed to pheno@jax.org, Susan.Bello@jax.org or to GitHub tracker (https://github.com/obophenotype/mammalian-phenotype-ontology/issues) MGD is funded by NIH/NHGRI grant HG000330." xsd:string
+property_value: http://purl.org/dc/elements/1.1/language "English" xsd:string
+property_value: http://purl.org/dc/elements/1.1/title "The Mammalian Phenotype Ontology" xsd:string
+property_value: http://purl.org/dc/terms/license "Open source license is pending as of May 2016." xsd:string
+owl-axioms: Prefix(owl:=<http://www.w3.org/2002/07/owl#>)\nPrefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)\nPrefix(xml:=<http://www.w3.org/XML/1998/namespace>)\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)\nPrefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)\n\n\nOntology(\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#hasDbXref>))\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#hasExactSynonym>))\nDeclaration(AnnotationProperty(<http://www.geneontology.org/formats/oboInOwl#id>))\n\n\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> <http://purl.obolibrary.org/obo/MP_0001188> \"\"^^xsd:string)\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/MP_0014139> \"MP:014139\"^^xsd:string)\nAnnotationAssertion(Annotation(<http://www.geneontology.org/formats/oboInOwl#hasDbXref> \"GO:0019395\"^^xsd:string) <http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/MP_0014172> \"decreased rate or incidence of the process of removal of one or more electrons from a fatty acid, with or without the concomitant removal of a proton or protons, by reaction with an electron-accepting substance, by addition of oxygen or by removal of hydrogen\"^^xsd:string)\nAnnotationAssertion(<http://www.geneontology.org/formats/oboInOwl#id> <http://purl.obolibrary.org/obo/MP_0020142> \"MP:020142\"^^xsd:string)\n)
+logical-definition-view-relation: has_part
+
+[Term]
+id: MP:0000001
+name: mammalian phenotype
+def: "the observable morphological, physiological, behavioral and other characteristics of mammalian organisms that are manifested through development and lifespan" [MGI:csmith]
+
+[Term]
+id: MP:0001186
+name: pigmentation phenotype
+is_a: MP:0000001 ! mammalian phenotype
+
+[Term]
+id: MP:0001188
+name: hyperpigmentation
+def: "excess of pigment in any or all tissues or a part of a tissue" [ISBN:0-683-40008-8, PMID:9778510]
+is_a: MP:0001186 ! pigmentation phenotype
+
+[Term]
+id: MP:0002075
+name: abnormal coat/hair pigmentation
+alt_id: MP:0000368
+def: "irregular or unusual pigmentation of the hair" [MGI:csmith]
+subset: Europhenome_Terms
+subset: IMPC
+subset: Sanger_Terms
+synonym: "abnormal coat color" EXACT []
+synonym: "abnormal hair pigmentation" EXACT []
+synonym: "coat: color anomalies" EXACT []
+xref: MGI:2173541
+is_a: MP:0001186 ! pigmentation phenotype

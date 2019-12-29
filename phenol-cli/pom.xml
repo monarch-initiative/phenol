@@ -1,6 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.monarchinitiative.phenol</groupId>
+    <artifactId>phenol</artifactId>
+    <version>1.4.2-SNAPSHOT</version>
+  </parent>
+
   <artifactId>phenol-cli</artifactId>
   <packaging>jar</packaging>
 
@@ -8,12 +14,6 @@
 
   <description>phenol-cli gives command line access to phenol</description>
   <url>https://github.com/monarchinitiative/phenol</url>
-
-  <parent>
-    <groupId>org.monarchinitiative.phenol</groupId>
-    <artifactId>phenol</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
-  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,8 +33,11 @@
       <artifactId>phenol-io</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <!-- Phenol modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>phenol-annotations</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-analysis</artifactId>
