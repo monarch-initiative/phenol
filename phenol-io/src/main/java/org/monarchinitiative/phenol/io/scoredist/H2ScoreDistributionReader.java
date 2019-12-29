@@ -45,11 +45,11 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
 
   /** H2 query for selecting by term count. */
   private static final String H2_SELECT_BY_TERM_COUNT_STATEMENT =
-      "SELECT num_terms, object_id, scores, p_values FROM %s WHERE num_terms = ?";
+      "SELECT num_terms, object_id, sample_size, scores, p_values FROM %s WHERE num_terms = ?";
 
   /** H2 query for selecting by term count and object ID. */
   private static final String H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT =
-      "SELECT num_terms, object_id, scores, p_values FROM %s WHERE num_terms = ? AND object_id = ?";
+      "SELECT num_terms, object_id, sample_size, scores, p_values FROM %s WHERE num_terms = ? AND object_id = ?";
 
   /**
    * Create new reader object.
