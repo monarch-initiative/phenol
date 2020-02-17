@@ -39,6 +39,12 @@
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-annotations</artifactId>
+      <version>1.4.2-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
