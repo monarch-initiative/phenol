@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.PrettyPrinter;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.annotations.base.TermAnnotationParserException;
 import com.google.common.collect.ImmutableList;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 
 /**
@@ -35,104 +37,57 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
  */
 public final class GoGeneAnnotationParser  {
 
-  /** The {@link File} to read from. */
-  private final File file;
 
-  /** The {@link BufferedReader} to use for reading line-wise. */
-  private final BufferedReader reader;
 
-  /** The next line. */
-  private String nextLine;
+  private GoGeneAnnotationParser() {
+  }
 
-  private final List<GoGaf21Annotation> annotations;
 
-  /**
-   * Create new parser for GO gene annotation file.
-   *
-   * @param file The file to read from.
-   * @throws PhenolException In case of problems with opening and reading from <code>file</code>.
-   */
-  public GoGeneAnnotationParser(File file) throws PhenolException {
-    this.file = file;
-    try {
-      this.reader = new BufferedReader(new FileReader(file));
-      this.nextLine = reader.readLine();
-      skipHeaderAndCheckFirst();
-      ImmutableList.Builder<GoGaf21Annotation> builder = new ImmutableList.Builder<>();
-      while (hasNext()) {
-        GoGaf21Annotation annot = next();
-        builder.add(annot);
+  public static List<GoGaf21Annotation> loadAnnotations(String filename) {
+    File f = new File(filename);
+    return GoGeneAnnotationParser.loadAnnotations(f);
+  }
+
+  public static List<GoGaf21Annotation> loadAnnotations(File file) {
+    String nextLine;
+    ImmutableList.Builder<GoGaf21Annotation> builder = new ImmutableList.Builder<>();
+    try (BufferedReader br = new  BufferedReader(new FileReader(file))) {
+      nextLine =br.readLine();
+      // skip the comments, which start with exclamation marks
+      while (nextLine.isEmpty() || nextLine.startsWith("!")) {
+        nextLine = br.readLine();
       }
-      reader.close();
-      annotations=builder.build();
-    } catch (IOException | TermAnnotationParserException e) {
-      String msg=String.format("Could not parse GO annotation file: %s",e.getMessage());
-      throw new PhenolException(msg);
+      do {
+        final String[] arry = nextLine.split("\t");
+        try {
+          GoGaf21Annotation annot = new GoGaf21Annotation(arry);
+          builder.add(annot);
+        } catch (PhenolException e) {
+          System.err.printf("[ERROR] Could not parse GoGaf line (%s): %s", nextLine, e.getMessage());
+          // just skip this error. Should actually never happen
+        }
+      } while ((nextLine = br.readLine()) != null);
+    } catch (IOException e) {
+      throw new PhenolRuntimeException(e.getMessage());
     }
-  }
 
-  public GoGeneAnnotationParser(String absolutepath)throws PhenolException {
-    this(new File(absolutepath));
-  }
-
-  /**
-   * Skip all header lines and check next data line.
-   *
-   * @throws TermAnnotationParserException If the first line is not as expected.
-   * @throws IOException If there is a problem with reading from the file.
-   */
-  private void skipHeaderAndCheckFirst() throws TermAnnotationParserException, IOException {
-    skipUntilData();
-    if (nextLine == null) {
-      throw new TermAnnotationParserException("GAF2.1 file contained no data!");
-    }
-    final String[] arr = nextLine.split("\t");
-    if (arr.length < 15 || arr.length > 17) {
-      throw new TermAnnotationParserException(
-          "First line of file had "
-              + arr.length
-              + " columns, but expected between 15 and 17 entries.");
-    }
-  }
-
-  /*
-   * Skip comment lines until data
-   *
-   */
-
-  private void skipUntilData() throws IOException {
-    while (nextLine == null || nextLine.startsWith("!")) {
-      nextLine = reader.readLine();
-    }
-  }
-
-  public  List<GoGaf21Annotation> getAnnotations() {
-    return this.annotations;
+    return builder.build();
   }
 
   /**
    * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
    */
-  public  List<TermAnnotation> getTermAnnotations() {
-    return new ArrayList<>(this.annotations);
+  public static List<TermAnnotation> loadTermAnnotations(String filename) {
+    File f = new File(filename);
+    return GoGeneAnnotationParser.loadTermAnnotations(f);
   }
 
-  /** Use an iterator paradigm internally to parse the file. */
-  private boolean hasNext() {
-    return nextLine != null;
+  /**
+   * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
+   */
+  public static List<TermAnnotation> loadTermAnnotations(File file) {
+    List<GoGaf21Annotation> annots = GoGeneAnnotationParser.loadAnnotations(file);
+    return new ArrayList<>(annots);
   }
 
-  /** Use an iterator paradigm internally to parse the file. */
-  private GoGaf21Annotation next() throws IOException, PhenolException {
-    skipUntilData();
-    final String[] arr = nextLine.split("\t");
-    GoGaf21Annotation annot = new GoGaf21Annotation(arr);
-    nextLine = reader.readLine();
-    return annot;
-  }
-
-
-  public File getFile() {
-    return file;
-  }
 }
