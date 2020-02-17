@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.annotations.scoredist;
 
+import org.apache.commons.codec.DecoderException;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
 
 /**
  * Read score distributions from H2 database.
@@ -38,15 +41,15 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
   private final Connection conn;
 
   /** H2 query for selecting all term counts. */
-  private static final String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT (term_count) from %s";
+  private static final String H2_SELECT_TERM_COUNTS = "SELECT DISTINCT num_terms from %s";
 
   /** H2 query for selecting by term count. */
   private static final String H2_SELECT_BY_TERM_COUNT_STATEMENT =
-      "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ?)";
+      "SELECT num_terms, object_id, sample_size, scores, p_values FROM %s WHERE num_terms = ?";
 
   /** H2 query for selecting by term count and object ID. */
   private static final String H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT =
-      "SELECT (term_count, object_id, scores, p_values) FROM % WHERE (term_count = ? AND object_id = ?)";
+      "SELECT num_terms, object_id, sample_size, scores, p_values FROM %s WHERE num_terms = ? AND object_id = ?";
 
   /**
    * Create new reader object.
@@ -83,7 +86,7 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
     // Check whether the table already exists.
     final boolean tableExists;
     try (final ResultSet rs =
-        result.getMetaData().getTables(null, null, tableName, new String[] {"TABLE"})) {
+        result.getMetaData().getTables(null, null, "%", new String[] {"TABLE"})) {
       tableExists = rs.next();
       if (!tableExists) {
         throw new PhenolException("Table of name " + tableName + " does not exist in database!");
@@ -96,14 +99,17 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
   }
 
   @Override
-  public ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, int objectId)
-      throws PhenolException {
-    try (final PreparedStatement stmt =
+  public ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, T objectId) throws PhenolException {
+        try (final PreparedStatement stmt =
         conn.prepareStatement(
             String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
-      stmt.setInt(1, termCount);
-      stmt.setInt(2, objectId);
-      try (final ResultSet rs = stmt.executeQuery()) {
+          stmt.setInt(1, termCount);
+          try {
+            stmt.setString(2, ObjHexStringConverter.object2hex(objectId));
+          } catch (IOException e) {
+            throw new RuntimeException("Unable to convert object id to hexadecimal String: " + objectId.toString());
+          }
+          try (final ResultSet rs = stmt.executeQuery()) {
         while (rs.next()) {
           return objectScoreDistributionFromResultSet(rs);
         }
@@ -130,7 +136,12 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
   private ObjectScoreDistribution<T> objectScoreDistributionFromResultSet(ResultSet rs)
       throws SQLException {
     final int termCount = rs.getInt(1);
-    final int objectId = rs.getInt(2);
+    final T objectId;
+    try {
+      objectId = (T) ObjHexStringConverter.hex2obj(rs.getString(2));
+    } catch (DecoderException | IOException | ClassNotFoundException e) {
+      throw new SQLException();
+    }
     final int sampleSize = rs.getInt(3);
     final double[] scores = (double[]) rs.getObject(4);
     final double[] pValues = (double[]) rs.getObject(5);
@@ -138,8 +149,9 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
     for (int i = 0; i < scores.length; ++i) {
       scoreDist.put(scores[i], pValues[i]);
     }
-    return new ObjectScoreDistribution(termCount, objectId, sampleSize, scoreDist);
+    return new ObjectScoreDistribution<T>(objectId, termCount, sampleSize, scoreDist);
   }
+
 
   @Override
   public ScoreDistribution<T> readForTermCount(int termCount) throws PhenolException {
@@ -162,7 +174,7 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
     if (dists.size() == 0) {
       throw new PhenolException("Found no score distributions for termCount: " + termCount);
     } else {
-      return new ScoreDistribution(termCount, dists);
+      return new ScoreDistribution<>(termCount, dists);
     }
   }
 

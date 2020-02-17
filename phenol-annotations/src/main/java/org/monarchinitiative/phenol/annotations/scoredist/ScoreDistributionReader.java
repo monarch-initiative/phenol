@@ -24,7 +24,7 @@ public interface ScoreDistributionReader<T extends Serializable> extends Closeab
    * @return {@link ObjectScoreDistribution} with the empirical distribution for the query.
    * @throws PhenolException In the case of problems when reading and parsing.
    */
-  ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, int objectId)
+  ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, T objectId)
       throws PhenolException;
 
   /**

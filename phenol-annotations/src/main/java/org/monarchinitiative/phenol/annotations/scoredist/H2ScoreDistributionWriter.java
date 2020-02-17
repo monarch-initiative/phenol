@@ -2,13 +2,11 @@ package org.monarchinitiative.phenol.annotations.scoredist;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -48,14 +46,14 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   /** H2 statement for creating table. */
   private static final String[] H2_CREATE_TABLE_STATEMENTS =
       new String[] {
-        "CREATE TABLE %s (num_terms INT, entrez_id INT, sample_size INT, scores OTHER, p_values OTHER)",
+        "CREATE TABLE %s (num_terms INT, object_id VARCHAR, sample_size INT, scores OTHER, p_values OTHER)",
         "CREATE INDEX ON %s (num_terms)",
-        "CREATE UNIQUE INDEX ON %s (num_terms, entrez_id)"
+        "CREATE UNIQUE INDEX ON %s (num_terms, object_id)"
       };
 
   /** H2 statement for insterting into table. */
   private static final String H2_INSERT_STATEMENT =
-      "INSERT INTO %s (num_terms, entrez_id, sample_size, scores, p_values) VALUES (?, ?, ?, ?, ?)";
+      "INSERT INTO %s (num_terms, object_id, sample_size, scores, p_values) VALUES (?, ?, ?, ?, ?)";
 
   /**
    * Object constructor.
@@ -148,8 +146,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   @Override
   public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution)
       throws PhenolException {
-    for (Integer objectId : scoreDistribution.getObjectIds()) {
-      final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
+    for (T objectId : scoreDistribution.getObjectIds()) {
+      final ObjectScoreDistribution<T> dist = scoreDistribution.getObjectScoreDistribution(objectId);
       writeObjectScoreDistribution(numTerms, dist, resolution);
     }
   }
@@ -162,8 +160,8 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @param resolution The resolution, {@code 0} for no change.
    * @throws PhenolException In case of problems when writing to database.
    */
-  private void writeObjectScoreDistribution(
-      int numTerms, ObjectScoreDistribution<Integer> dist, int resolution) throws PhenolException {
+  private <T extends Serializable> void writeObjectScoreDistribution(
+      int numTerms, ObjectScoreDistribution<T> dist, int resolution) throws PhenolException {
     final double[] scores;
     final double[] pValues;
 
@@ -197,7 +195,11 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
     final String sqlStmt = String.format(H2_INSERT_STATEMENT, tableName);
     try (final PreparedStatement stmt = conn.prepareStatement(sqlStmt)) {
       stmt.setInt(1, numTerms);
-      stmt.setInt(2, dist.getObjectId());
+      try {
+        stmt.setString(2, ObjHexStringConverter.object2hex(dist.getObjectId()));
+      } catch (IOException e) {
+        throw new SQLException();
+      }
       stmt.setInt(3, dist.getSampleSize());
       stmt.setObject(4, scores);
       stmt.setObject(5, pValues);

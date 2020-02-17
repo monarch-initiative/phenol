@@ -18,7 +18,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
   private final int numTerms;
 
   /** Mapping from "world object" Id to score distribution. */
-  private final Map<Integer, ObjectScoreDistribution<T>> objectScoreDistributions;
+  private final Map<T, ObjectScoreDistribution<T>> objectScoreDistributions;
 
   /**
    * Constructor.
@@ -28,7 +28,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
    *     ObjectScoreDistribution}.
    */
   public ScoreDistribution(
-      int numTerms, Map<Integer, ObjectScoreDistribution<T>> objectScoreDistributions) {
+      int numTerms, Map<T, ObjectScoreDistribution<T>> objectScoreDistributions) {
     this.numTerms = numTerms;
     this.objectScoreDistributions = objectScoreDistributions;
   }
@@ -39,7 +39,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
   }
 
   /** Retrieve {@link Collection} of "world object" ids. */
-  public Collection<Integer> getObjectIds() {
+  public Collection<T> getObjectIds() {
     return objectScoreDistributions.keySet();
   }
 
@@ -49,7 +49,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
    * @param objectId "World object" Id to get {@link ObjectScoreDistribution} for.
    * @return The object score distributions for the given <code>objectId</code>.
    */
-  public ObjectScoreDistribution<T> getObjectScoreDistribution(int objectId) {
+  public ObjectScoreDistribution<T> getObjectScoreDistribution(T objectId) {
     return objectScoreDistributions.get(objectId);
   }
 
