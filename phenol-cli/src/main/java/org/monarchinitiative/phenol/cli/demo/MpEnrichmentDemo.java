@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpAnnotation;
@@ -97,8 +98,10 @@ public class MpEnrichmentDemo {
     Set<TermId> populationGenes = getPopulationSet(annots);
     System.out.println("[INFO] size of population set: " + populationGenes.size());
     Set<TermId> studyGenes = getStudySet();
-    StudySet studySet = new StudySet(studyGenes,"study",associationContainer,ontology);
-    StudySet populationSet = new StudySet(populationGenes,"population",associationContainer,ontology);
+
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, ontology);
+    StudySet studySet = new StudySet(studyGenes,"study",studyAssociations,ontology);
+    StudySet populationSet = new StudySet(populationGenes,"population",studyAssociations,ontology);
     System.out.println(String.format("[INFO] study: %d genes, population: %d genes",studyGenes.size(),populationGenes.size()));
 
     Hypergeometric hgeo = new Hypergeometric();

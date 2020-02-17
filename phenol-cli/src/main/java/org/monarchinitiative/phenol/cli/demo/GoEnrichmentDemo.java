@@ -57,9 +57,12 @@ public final class GoEnrichmentDemo {
       AssociationContainer associationContainer = new AssociationContainer(goAnnots);
 
       Set<TermId> populationGenes = getPopulationSet(goAnnots);
-      StudySet populationSet = new StudySet(populationGenes,"population",associationContainer,gontology);
+
       Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
-      StudySet studySet = new StudySet(studyGenes,"study",associationContainer,gontology);
+      Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
+      StudySet studySet = new StudySet(studyGenes,"study", studyAssociations, gontology);
+      Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
+      StudySet populationSet = new PopulationSet(populationGenes, populationAssociations, gontology);
       Hypergeometric hgeo = new Hypergeometric();
       MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni<>();
       TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,

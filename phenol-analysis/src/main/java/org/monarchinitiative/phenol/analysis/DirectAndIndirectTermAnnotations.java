@@ -8,11 +8,11 @@ import java.util.Set;
 
 /**
  * Instances of this class represent items (genes, represented by TermId objects) that are annotated to
- * the same term without any reference to that term.
+ * the same GO/HPO/etc Term. The GO/HPO/etc Term itself is not represented in this object.
  *
  * @author Sebastian Bauer
  */
-public class TermAnnotations
+public class DirectAndIndirectTermAnnotations
 {
     /** List of directly annotated genes */
     private Set<TermId> directAnnotated = new HashSet<>();
@@ -20,9 +20,10 @@ public class TermAnnotations
     /** List of genes annotated in total (direct or via annotation propagation) */
     private Set<TermId> totalAnnotated = new HashSet<>();
 
-    
+
     public void addGeneAnnotationDirect(TermId geneId) {
         directAnnotated.add(geneId);
+        totalAnnotated.add(geneId);
     }
 
     public void addGeneAnnotationTotal(TermId geneId) {
