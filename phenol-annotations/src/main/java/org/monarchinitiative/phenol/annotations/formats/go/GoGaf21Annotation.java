@@ -22,6 +22,28 @@ import java.util.Optional;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ *
+ *
+ * A GoGAF line can have 15 or 17 fields:
+ * <ol>
+ * <li>db Database source, e.g., <code>"UniProtKB"</code>.</li>
+ * <li>dbObjectId Id in database, e.g., <code>"P12345"</code>.</li>
+ * <li>dbObjectSymbol Symbol in database, e.g., <code>"PHO3"</code>.</li>
+ * <li>qualifier Optional, e.g., <code>"NOT"</code>; optional, <code>null</code> when missing.</li>
+ * <li>goId GO ID, e.g., <code>"GO:0003993"</code>.</li>
+ * <li>dbReference Reference of entry, e.g., <code>PMID:2676709</code>.</li>
+ * <li>evidenceCode Evidence code, e.g., <code>"IMP"</code>.</li>
+ * <li>with With (or) From, e.g., <code>"GO:0000346"</code>; optional, <code>null</code> when missing.</li>
+ * <li>aspect The annotated ontology, e.g., <code>"F"</code>.</li>
+ * <li>dbObjectName The DB object name; optional, <code>null</code> when missing.</li>
+ * <li>dbObjectSynonym The DB object synonym; optional, <code>null</code> when missing.</li>
+ * <li>dbObjectType The DB object type, e.g., <code>"protein"</code>.</li>
+ * <li>taxons Taxon(s), of cardinality 1 or 2.</li>
+ * <li>date Assignment date.</li>
+ * <li>assignedBy Assignment author.</li>
+ * <li>annotationExtension Annotation extension; optional, <code>null</code> when missing.</li>
+ * <li>geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.</li>
+ * </ol>
  */
 public final class GoGaf21Annotation implements TermAnnotation {
   /** Serial UID for serialization. */
@@ -43,11 +65,9 @@ public final class GoGaf21Annotation implements TermAnnotation {
   /** GO ID, e.g., <code>"GO:0003993"</code>. */
   private final TermId goId;
 
-  // TODO: list of String?
   /** Reference of entry, e.g., <code>PMID:2676709</code>. */
   private final String dbReference;
 
-  // TODO: What does that mean?
   /** Evidence code, e.g., <code>"IMP"</code>. */
   private final String evidenceCode;
 
@@ -60,7 +80,6 @@ public final class GoGaf21Annotation implements TermAnnotation {
   /** The DB object name; optional, <code>null</code> when missing. */
   private final String dbObjectName;
 
-  // TODO: convert to list?
   /** The DB object synonym; optional, <code>null</code> when missing. */
   private final String dbObjectSynonym;
 
@@ -83,83 +102,13 @@ public final class GoGaf21Annotation implements TermAnnotation {
   private final String geneProductFormId;
 
   /**
-   * Constructor.
-   *
-   * @param db Database source, e.g., <code>"UniProtKB"</code>.
-   * @param dbObjectId Id in database, e.g., <code>"P12345"</code>.
-   * @param dbObjectSymbol Symbol in database, e.g., <code>"PHO3"</code>.
-   * @param qualifier Optional, e.g., <code>"NOT"</code>; optional, <code>null</code> when missing.
-   * @param goId GO ID, e.g., <code>"GO:0003993"</code>.
-   * @param dbReference Reference of entry, e.g., <code>PMID:2676709</code>.
-   * @param evidenceCode Evidence code, e.g., <code>"IMP"</code>.
-   * @param with With (or) From, e.g., <code>"GO:0000346"</code>; optional, <code>null</code> when
-   *     missing.
-   * @param aspect The annotated ontology, e.g., <code>"F"</code>.
-   * @param dbObjectName The DB object name; optional, <code>null</code> when missing.
-   * @param dbObjectSynonym The DB object synonym; optional, <code>null</code> when missing.
-   * @param dbObjectType The DB object type, e.g., <code>"protein"</code>.
-   * @param taxons Taxon(s), of cardinality 1 or 2.
-   * @param date Assignment date.
-   * @param assignedBy Assignment author.
-   * @param annotationExtension Annotation extension; optional, <code>null</code> when missing.
-   * @param geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.
-   */
-  @Deprecated
-  public GoGaf21Annotation(
-      String db,
-      String dbObjectId,
-      String dbObjectSymbol,
-      String qualifier,
-      TermId goId,
-      String dbReference,
-      String evidenceCode,
-      String with,
-      String aspect,
-      String dbObjectName,
-      String dbObjectSynonym,
-      String dbObjectType,
-      List<String> taxons,
-      Date date,
-      String assignedBy,
-      String annotationExtension,
-      String geneProductFormId) {
-    if (dbObjectId.contains(":")) {
-      this.dbObjectTermId = TermId.of(dbObjectId);
-    } else {
-      this.dbObjectTermId = TermId.of(db, dbObjectId);
-    }
-    this.dbObjectSymbol = dbObjectSymbol;
-    this.qualifier = qualifier;
-    this.goId = goId;
-    this.dbReference = dbReference;
-    this.evidenceCode = evidenceCode;
-    this.with = with;
-    this.aspect = aspect;
-    this.dbObjectName = dbObjectName;
-    this.dbObjectSynonym = dbObjectSynonym;
-    this.dbObjectType = dbObjectType;
-    this.taxons = taxons;
-    this.date = date;
-    this.assignedBy = assignedBy;
-    this.annotationExtension = annotationExtension;
-    this.geneProductFormId = geneProductFormId;
-  }
-
-
-  /**
    * Construct an annotation from one Gene Ontology annotation line
    * Note that the lines can have 15 or 17 fields (the latter is the extended format).
    * @param arr Array containing the fields of a single GO annotation line
    * @throws PhenolException if the length of arr is not 15 or 17
    */
-  public GoGaf21Annotation(String [] arr) throws PhenolException {
-    if (arr.length < 15 || arr.length > 17) {
-      throw new PhenolException(
-        "GAF line had "
-          + arr.length
-          + " columns, but expected between 15 and 17 entries. \n Line was:"
-          + String.join("\t", arr));
-    }
+  private GoGaf21Annotation(String [] arr) throws PhenolException {
+
     if (arr[1].contains(":")) {
       this.dbObjectTermId = TermId.of(arr[1]);
     } else {
@@ -189,6 +138,19 @@ public final class GoGaf21Annotation implements TermAnnotation {
       throw new PhenolException(
         "There was a problem parsing the date value " + dateStr, e);
     }
+  }
+
+
+  public static GoGaf21Annotation parseAnnotation(String line) throws PhenolException {
+    final String[] arr = line.split("\t");
+    if (arr.length < 15 || arr.length > 17) {
+      throw new PhenolException(
+        "GAF line had "
+          + arr.length
+          + " columns, but expected between 15 and 17 entries. \n Line was:"
+          + String.join("\t", arr));
+    }
+    return new GoGaf21Annotation(arr);
   }
 
 

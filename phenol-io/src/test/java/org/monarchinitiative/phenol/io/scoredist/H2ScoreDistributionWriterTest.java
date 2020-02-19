@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.scoredist;
 
 import com.google.common.collect.ImmutableSortedMap;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+//import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

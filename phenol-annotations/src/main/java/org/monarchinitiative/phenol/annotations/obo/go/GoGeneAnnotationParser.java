@@ -55,9 +55,8 @@ public final class GoGeneAnnotationParser  {
         if (line.isEmpty() || line.startsWith("!")) {
           // no-op
         } else {
-          final String[] array = line.split("\t");
           try {
-            GoGaf21Annotation annot = new GoGaf21Annotation(array);
+            GoGaf21Annotation annot = GoGaf21Annotation.parseAnnotation(line);
             builder.add(annot);
           } catch (PhenolException e) {
             System.err.printf("[ERROR] Could not parse GoGaf line (%s): %s", line, e.getMessage());
