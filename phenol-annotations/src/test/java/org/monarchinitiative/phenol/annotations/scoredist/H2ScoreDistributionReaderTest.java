@@ -1,7 +1,8 @@
-package org.monarchinitiative.phenol.io.scoredist;
+package org.monarchinitiative.phenol.annotations.scoredist;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,20 +11,17 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-/*
-ScoreDistributionWriter -- not found on path. This class needed refacotring
-
 
 @ExtendWith(TempDirectory.class)
 class H2ScoreDistributionReaderTest {
-  private ScoreDistribution<TermId> objScoreDistribution;
-  private ScoreDistributionWriter dbWriter;
+
   private ScoreDistributionReader<TermId> objDbReader;
 
   @BeforeEach
@@ -32,17 +30,22 @@ class H2ScoreDistributionReaderTest {
     Path dbpath = tempDir.resolve("db.h2");
     System.out.println(dbpath.toFile().getAbsolutePath());
     String dataTableName = "TempTable";
-    dbWriter = new H2ScoreDistributionWriter(dbpath.toFile().getAbsolutePath(), dataTableName, true);
+    ScoreDistributionWriter dbWriter = new H2ScoreDistributionWriter(dbpath.toFile()
+      .getAbsolutePath(), dataTableName, true);
     objDbReader = new H2ScoreDistributionReader<>(dbpath.toFile().getAbsolutePath(), dataTableName);
 
     TermId termId = TermId.of("MONDO", "001");
-    objScoreDistribution = new ScoreDistribution<>(2, ImmutableMap.of(termId,
+    ScoreDistribution<TermId> objScoreDistribution = new ScoreDistribution<>(2, ImmutableMap.of(termId,
       new ObjectScoreDistribution<>(termId, 2, 3,
         ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0))));
 
     dbWriter.write(3, objScoreDistribution);
-
     dbWriter.close();
+  }
+
+  @AfterEach
+  void tearDown() throws IOException {
+    objDbReader.close();
   }
 
   @Test
@@ -70,4 +73,3 @@ class H2ScoreDistributionReaderTest {
   }
 
 }
- */
