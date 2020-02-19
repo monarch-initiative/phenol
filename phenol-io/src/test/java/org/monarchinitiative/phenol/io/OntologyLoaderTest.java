@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -20,6 +21,17 @@ import org.junit.jupiter.api.Test;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 class OntologyLoaderTest {
+
+  private static Ontology hpo;
+
+  @BeforeAll
+  static void init() {
+    Path hpoPath = Paths.get("src/test/resources/hp_head.obo");
+    hpo = OntologyLoader.loadOntology(hpoPath.toFile());
+
+  }
+
+
 
   @Test
   void testNCITLoad() throws Exception {
@@ -147,4 +159,25 @@ class OntologyLoaderTest {
       .map(TermId::getPrefix)
       .collect(toSet()));
   }
+
+  @Test
+  void ifHpoNotNull_thenOK() {
+    assertNotNull(hpo);
+  }
+
+  @Test
+  void ifHpoHas22Terms_thenOK() {
+    int expectedTermCount = 22; // hpo_small.obo
+    assertEquals(expectedTermCount, hpo.countAllTerms());
+  }
+
+  @Test
+  void testModeOfInheritanceTerm() {
+    TermId mode = TermId.of("HP:0000005");
+    Term moiTerm = hpo.getTermMap().get(mode);
+    assertNotNull(moiTerm);
+  }
+
+
+
 }

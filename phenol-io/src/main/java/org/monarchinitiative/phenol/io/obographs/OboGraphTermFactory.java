@@ -124,6 +124,7 @@ public class OboGraphTermFactory {
       } else if (pred.equals(SynonymPropertyValue.PREDS.hasRelatedSynonym.toString())) {
         scope = TermSynonymScope.RELATED;
       }
+      String synonymType = spv.getSynonymType();
 
       // Map the synonym's type name.
       String synonymTypeName = String.join(", ", spv.getTypes());
@@ -132,7 +133,7 @@ public class OboGraphTermFactory {
       List<String> xrefs = spv.getXrefs();
       List<TermXref> termXrefs = mapXref(xrefs);
 
-      TermSynonym its = new TermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs);
+      TermSynonym its = new TermSynonym(spv.getVal(), scope, synonymTypeName, termXrefs, synonymType);
       termSynonymBuilder.add(its);
     }
 

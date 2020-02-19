@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ImmutableTermSynonymTest {
+class TermSynonymTest {
 
   private TermSynonym termSynonym;
 
@@ -17,7 +17,8 @@ class ImmutableTermSynonymTest {
             "synonym",
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
-            ImmutableList.of(new TermXref(TermId.of("HP:0000001"),"term description")));
+            ImmutableList.of(new TermXref(TermId.of("HP:0000001"),"term description")),
+          "layperson term");
   }
 
   @Test
