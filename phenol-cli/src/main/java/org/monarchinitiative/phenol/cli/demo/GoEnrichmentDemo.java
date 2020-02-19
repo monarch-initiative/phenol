@@ -50,8 +50,8 @@ public final class GoEnrichmentDemo {
       int n_terms = gontology.countAllTerms();
       System.out.println("[INFO] parsed " + n_terms + " GO terms.");
       System.out.println("[INFO] parsing  " + pathGoGaf);
-      final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
-      List<TermAnnotation> goAnnots = annotparser.getTermAnnotations();
+     // final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
+      List<TermAnnotation> goAnnots = GoGeneAnnotationParser.loadTermAnnotations(pathGoGaf);
       System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
 
       AssociationContainer associationContainer = new AssociationContainer(goAnnots);
