@@ -160,24 +160,6 @@ class OntologyLoaderTest {
       .collect(toSet()));
   }
 
-  @Test
-  void ifHpoNotNull_thenOK() {
-    assertNotNull(hpo);
-  }
-
-  @Test
-  void ifHpoHas22Terms_thenOK() {
-    int expectedTermCount = 22; // hpo_small.obo
-    assertEquals(expectedTermCount, hpo.countAllTerms());
-  }
-
-  @Test
-  void testModeOfInheritanceTerm() {
-    TermId mode = TermId.of("HP:0000005");
-    Term moiTerm = hpo.getTermMap().get(mode);
-    assertNotNull(moiTerm);
-  }
-
 
 
 }
