@@ -1,0 +1,135 @@
+format-version: 1.2
+data-version: releases/2020-01-27/reasoned.owl.owl
+subsetdef: clingen "initial subset used by clingen"
+subsetdef: do_inheritance_inconsistent "classes where the corresponding DO term is both AR and AD https://github.com/monarch-initiative/monarch-disease-ontology/issues/406"
+subsetdef: gard_rare "GARD rare disease subset"
+subsetdef: historic_epidemic "classes representing a historic epidemic"
+subsetdef: implicit_genetic_in_ordo "in ORDO this is classified as genetic even though the class is used for non-genetic disorders"
+subsetdef: merged_class "this class merges distinct concepts in other resources"
+subsetdef: metaclass "A grouping of disease classes. Should be excluded from analysis"
+subsetdef: mostly_harmless "condition has no severe phenotypes and is harmless or mostly harmless"
+subsetdef: n_of_one "N of one"
+subsetdef: not_a_disease "classes that do not represent diseases"
+subsetdef: obsoletion_candidate "obsoletion candidate"
+subsetdef: ordo_biological_anomaly "biological anomaly"
+subsetdef: ordo_clinical_situation "particular clinical situation in a disease or syndrome"
+subsetdef: ordo_clinical_subtype "clinical subtype"
+subsetdef: ordo_clinical_syndrome "clinical syndrome"
+subsetdef: ordo_disease "disease"
+subsetdef: ordo_etiological_subtype "etiological subtype"
+subsetdef: ordo_group_of_disorders "group of disorders"
+subsetdef: ordo_histopathological_subtype "histopathological subtype"
+subsetdef: ordo_inheritance_inconsistent "classes where the corresponding ordo term is both AR and AD https://github.com/monarch-initiative/monarch-disease-ontology/issues/406"
+subsetdef: ordo_malformation_syndrome "malformation syndrome"
+subsetdef: ordo_morphological_anomaly "morphological anomaly"
+subsetdef: other_hierarchy "A bin for classes that are likely not diseases and may be moved to a separate hierarchy"
+subsetdef: predisposition "Diseases that are pre-dispositions to other diseases"
+subsetdef: prototype_pattern "Conforms to the prototype design pattern where the classic/type1 form may be confused with the grouping type. See https://github.com/monarch-initiative/monarch-disease-ontology/issues/149"
+subsetdef: speculative "A hypothesized disease whose existence is speculative"
+synonymtypedef: ABBREVIATION "abbreviation"
+synonymtypedef: AMBIGUOUS "ambiguous"
+synonymtypedef: DEPRECATED "A synonym that is historic and discouraged"
+synonymtypedef: DUBIOUS "dubious synonym"
+synonymtypedef: EXCLUDE "Synonym to be removed from public release but maintained in edit version as record of external usage"
+synonymtypedef: MISSPELLING "A synonym that is recorded for consistency with another source but is a misspelling"
+remark: Includes Ontology(OntologyID(Anonymous-31)) [Axioms: 86279 Logical Axioms: 0]
+remark: Includes Ontology(OntologyID(Anonymous-33)) [Axioms: 7236 Logical Axioms: 0]
+ontology: mondo
+property_value: http://purl.org/dc/elements/1.1/title "Mondo Disease Ontology" xsd:string
+property_value: http://purl.org/dc/terms/description "A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology." xsd:string
+property_value: http://purl.org/dc/terms/license http://creativecommons.org/licenses/by/4.0/
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/chebi.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/doid.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/envo.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/go.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/hp.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/mf.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/ncbitaxon.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/ncit.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/uberon.owl
+property_value: http://purl.org/dc/terms/source http://www.orpha.net/ontology/orphanet.owl
+property_value: http://purl.org/dc/terms/source https://id.nlm.nih.gov/mesh/
+property_value: http://purl.org/dc/terms/source https://rarediseases.info.nih.gov/
+property_value: http://xmlns.com/foaf/0.1/homepage http://obofoundry.org/ontology/mondo.html xsd:anyURI
+
+[Term]
+id: MONDO:0000001
+name: disease or disorder
+def: "A disease is a disposition to undergo pathological processes that exists in an organism because of one or more disorders in that organism." [OGMS:0000031]
+synonym: "condition" EXACT [NCIT:C2991]
+synonym: "disease" EXACT [NCIT:C2991]
+synonym: "disease or disorder" EXACT [NCIT:C2991]
+synonym: "disease or disorder, non-neoplastic" EXACT [NCIT:C2991]
+synonym: "diseases" EXACT [NCIT:C2991]
+synonym: "diseases and disorders" EXACT [NCIT:C2991]
+synonym: "disorder" EXACT [NCIT:C2991]
+synonym: "disorders" EXACT [NCIT:C2991]
+synonym: "medical condition" EXACT []
+synonym: "other disease" EXACT [NCIT:C2991]
+xref: DOID:4 {source="MONDO:equivalentTo", source="EFO:0000408"}
+xref: EFO:0000408 {source="MONDO:equivalentTo"}
+xref: ICD10:N18 {source="MONDO:equivalentTo"}
+xref: ICD9:799.9 {source="MONDO:relatedTo", source="i2s"}
+xref: MESH:D004194 {source="MONDO:equivalentTo", source="MONDO:ontobio", source="DOID:4", source="EFO:0000408"}
+xref: NCIT:C2991 {source="MONDO:equivalentTo", source="DOID:4"}
+xref: OGMS:0000031 {source="MONDO:equivalentTo"}
+xref: Orphanet:377788 {source="MONDO:equivalentTo"}
+xref: SCTID:64572001 {source="MONDO:equivalentTo", source="MONDO:kboom-pr-0.81/0.56/0.38", source="DOID:4", source="EFO:0000408"}
+xref: UMLS:C0012634 {source="MONDO:equivalentTo", source="NCIT:C2991", source="DOID:4"}
+property_value: exactMatch DOID:4
+property_value: exactMatch http://identifiers.org/mesh/D004194
+property_value: exactMatch http://identifiers.org/snomedct/64572001
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C0012634
+property_value: exactMatch NCIT:C2991
+property_value: exactMatch Orphanet:377788
+
+[Term]
+id: MONDO:0003847
+name: inherited genetic disease
+def: "A disease that is caused by genetic modifications where those modifications are inherited from a parent's genome." [MONDO:cjm]
+comment: Usage note: this is intended only for diseases with an inherited genetic etiology. Somatic genetic mutations are excluded. Some ontologies use the term 'genetic disease' in the sense of inherited disorders only, we are here careful to distinguish.
+synonym: "familial disorder" RELATED []
+synonym: "genetic condition" BROAD [NCIT:C3101]
+synonym: "genetic condition" EXACT [NCIT:C3101]
+synonym: "genetic disease" BROAD []
+synonym: "genetic disorder" BROAD [NCIT:C3101]
+synonym: "genetic disorder" EXACT [NCIT:C3101]
+synonym: "hereditary disease" EXACT [MONDO:patterns/hereditary, NCIT:C3101]
+synonym: "hereditary disease or disorder" EXACT [MONDO:patterns/hereditary]
+synonym: "hereditary diseases" EXACT [NCIT:C3101]
+synonym: "inborn disorder" RELATED []
+synonym: "inherited disease" EXACT [NCIT:C3101]
+synonym: "molecular disease" EXACT [NCIT:C3101]
+xref: DOID:630 {source="MONDO:equivalentTo"}
+xref: EFO:0000508 {source="MONDO:equivalentTo"}
+xref: ICD9:799.89 {source="MONDO:relatedTo", source="i2s"}
+xref: MESH:D030342 {source="EFO:0000508", source="MONDO:equivalentTo", source="DOID:630"}
+xref: NCIT:C3101 {source="EFO:0000508", source="MONDO:equivalentTo", source="DOID:630"}
+xref: SCTID:32895009 {source="MONDO:equivalentTo", source="DOID:630"}
+xref: UMLS:C0019247 {source="EFO:0000508", source="MONDO:equivalentTo", source="NCIT:C3101", source="DOID:630"}
+is_a: MONDO:0000001 {source="DOID:630", source="EFO:0000508", source="MONDO:Redundant", source="NCIT:C3101", source="linkedlifedata"} ! disease or disorder
+intersection_of: MONDO:0000001 ! disease or disorder
+intersection_of: has_modifier MONDO:0021152 ! inherited
+disjoint_from: MONDO:0016592 ! non-hereditary degenerative ataxia
+relationship: has_modifier MONDO:0021152 ! inherited
+property_value: closeMatch http://identifiers.org/snomedct/264530000
+property_value: exactMatch DOID:630
+property_value: exactMatch http://identifiers.org/mesh/D030342
+property_value: exactMatch http://identifiers.org/snomedct/32895009
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C0019247
+property_value: exactMatch NCIT:C3101
+
+[Term]
+id: MONDO:0007952
+name: maxillofacial dysostosis
+subset: gard_rare {source="GARD:0006991"}
+synonym: "maxillofacial dysostosis" EXACT [OMIM:155000]
+xref: GARD:0006991 {source="MONDO:equivalentTo"}
+xref: MESH:C563599 {source="MONDO:equivalentTo", source="MONDO:ontobio"}
+xref: OMIM:155000 {source="MONDO:equivalentTo"}
+xref: UMLS:C1835088 {source="NCBI:mim2gene_medline", source="MONDO:equivalentTo", source="OMIM:155000"}
+is_a: MONDO:0003847 ! inherited genetic disease
+property_value: exactMatch http://identifiers.org/mesh/C563599
+property_value: exactMatch http://identifiers.org/omim/155000
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C1835088
+property_value: seeAlso https://rarediseases.info.nih.gov/diseases/6991/maxillofacial-dysostosis xsd:anyURI {source="GARD:0006991"}
