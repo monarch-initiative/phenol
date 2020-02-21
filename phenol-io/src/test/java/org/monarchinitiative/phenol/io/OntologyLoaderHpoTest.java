@@ -8,8 +8,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.obolibrary.oboformat.model.OBODoc;
-import org.obolibrary.oboformat.parser.OBOFormatParser;
+
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,20 +84,5 @@ public class OntologyLoaderHpoTest {
 //    }
   }
 
-  @Disabled
-  @Test
-  public void testParseFullHpoWithOboFormatParser() throws Exception {
-//    for (int i = 0; i < 10; i++) {
-    System.out.println("Starting full HPO load");
-    Instant start = Instant.now();
-    OBOFormatParser oboFormatParser = new OBOFormatParser();
-    OBODoc oboDoc = oboFormatParser.parse(Paths.get("src/test/resources/hp.obo").toFile());
-//    OboDocConverter oboDocConverter = OboDocConverter.convert(oboDoc);
 
-//    System.out.println(oboDocConverter.getRelationships());
-
-    Instant end = Instant.now();
-    System.out.println("Finished in " + Duration.between(start, end).toMillis() + " ms");
-//    }
-  }
 }
