@@ -29,9 +29,34 @@ public class PrecomputingPairwiseResnikSimilarityTest extends VegetableOntologyT
 
   @Test
   public void testComputeSimilarities() {
+    assertEquals(0.405, similarity.computeScore(idBeet, idBeet), 0.01);
     assertEquals(0.0, similarity.computeScore(idBeet, idCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idBeet, idBlueCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idBeet, idPumpkin), 0.01);
+    assertEquals(0.405, similarity.computeScore(idBeet, idLeafVegetable), 0.01);
+
+    assertEquals(0.0, similarity.computeScore(idCarrot, idBeet), 0.01);
+    assertEquals(0.405, similarity.computeScore(idCarrot, idCarrot), 0.01);
+    assertEquals(0.405, similarity.computeScore(idCarrot, idBlueCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idCarrot, idPumpkin), 0.01);
+    assertEquals(0.0, similarity.computeScore(idCarrot, idLeafVegetable), 0.01);
+
+    assertEquals(1.098, similarity.computeScore(idBlueCarrot, idBlueCarrot), 0.01);
     assertEquals(0.405, similarity.computeScore(idBlueCarrot, idCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idBlueCarrot, idBeet), 0.01);
+    assertEquals(0.0, similarity.computeScore(idBlueCarrot, idPumpkin), 0.01);
+    assertEquals(0.0, similarity.computeScore(idBlueCarrot, idLeafVegetable), 0.01);
+
+    assertEquals(0.405, similarity.computeScore(idPumpkin, idPumpkin), 0.01);
     assertEquals(0.0, similarity.computeScore(idPumpkin, idCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idPumpkin, idBlueCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idPumpkin, idBeet), 0.01);
+    assertEquals(0.0, similarity.computeScore(idPumpkin, idLeafVegetable), 0.01);
+
+    assertEquals(0.405, similarity.computeScore(idLeafVegetable, idLeafVegetable), 0.01);
+    assertEquals(0.0, similarity.computeScore(idLeafVegetable, idPumpkin), 0.01);
     assertEquals(0.0, similarity.computeScore(idLeafVegetable, idCarrot), 0.01);
+    assertEquals(0.0, similarity.computeScore(idLeafVegetable, idBlueCarrot), 0.01);
+    assertEquals(0.405, similarity.computeScore(idLeafVegetable, idBeet), 0.01);
   }
 }

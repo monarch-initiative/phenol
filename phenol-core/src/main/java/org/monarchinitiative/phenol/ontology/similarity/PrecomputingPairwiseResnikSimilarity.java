@@ -162,15 +162,12 @@ public final class PrecomputingPairwiseResnikSimilarity
     /** Mapping from term ID to term index. */
     private final HashMap<TermId, Integer> termIdToIdx;
 
-    /** Internal storage of the similarity scores as array of floats. */
-    private final float[] data;
-
-    /** Number of known termIds. */
-    private final int termIdCount;
+    /** Internal storage of the similarity scores as matrix of floats. */
+    private final float[][] data;
 
     PrecomputedScores(Collection<TermId> termIds) {
-      termIdCount = termIds.size();
-      data = new float[termIdCount * termIdCount];
+      int termIdCount = termIds.size();
+      data = new float[termIdCount][termIdCount];
       termIdToIdx = new HashMap<>(termIdCount);
 
       int i = 0;
@@ -188,8 +185,8 @@ public final class PrecomputingPairwiseResnikSimilarity
     public void put(TermId lhs, TermId rhs, float value) {
       final int idxLhs = termIdToIdx.get(lhs);
       final int idxRhs = termIdToIdx.get(rhs);
-      data[idxLhs * termIdCount + idxRhs] = value;
-      data[idxRhs * termIdCount + idxLhs] = value;
+      data[idxLhs][idxRhs] = value;
+      data[idxRhs][idxLhs] = value;
     }
 
     /** Get score. */
@@ -199,7 +196,7 @@ public final class PrecomputingPairwiseResnikSimilarity
       if (idxLhs == null || idxRhs == null) {
         return 0.0f;
       } else {
-        return data[idxLhs * termIdCount + idxRhs];
+        return data[idxLhs][idxRhs];
       }
     }
   }
