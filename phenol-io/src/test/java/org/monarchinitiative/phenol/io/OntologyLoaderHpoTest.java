@@ -1,22 +1,19 @@
 package org.monarchinitiative.phenol.io;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.jupiter.api.Disabled;
+
+
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
+
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.obolibrary.oboformat.model.OBODoc;
-import org.obolibrary.oboformat.parser.OBOFormatParser;
 
 
-import java.nio.file.Path;
+
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -122,8 +119,6 @@ public class OntologyLoaderHpoTest {
     assertNotNull(syn3);
     assertEquals(RELATED, syn3.getScope());
     assertTrue(syn3.isLayperson());
-
-
   }
 
 }
