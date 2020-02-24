@@ -71,6 +71,8 @@ public class HpoAnnotationFileParser {
   }
 
 
+
+
     /**
      * Parse a single HPO Annotation file. If {@code faultTolerant} is set to true, then we will parse as
      * much as we can of an annotation file and return the {@link HpoAnnotationModel} object, even if one or more
