@@ -246,7 +246,7 @@ public class HpoAssociationParser {
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
 
     try {
-      parseGeneInfo();
+      this.allGeneIdToSymbolMap = parseGeneInfo(this.homoSapiensGeneInfoFile);
       parseDiseaseToGene();
       for (TermId omimCurie : associationMap.keySet()) {
         Collection<GeneToAssociation> g2aList = associationMap.get(omimCurie);
@@ -262,10 +262,78 @@ public class HpoAssociationParser {
   }
 
 
+  public static Multimap<TermId, GeneToAssociation>  parseMim2GeneMedgen(BiMap<TermId,String> allGeneIdToSymbolMap, File mim2geneMedgenFile) throws IOException {
+    Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
+    Map<TermId, String> geneMap = new HashMap<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenFile))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        if (line.startsWith("#")) continue;
+        String[] associations = line.split("\t");
+        if (associations[2].equals("phenotype")) {
+          String mimid = associations[0];
+          TermId omimCurie = TermId.of(OMIM_PREFIX, mimid);
+          String entrezGeneNumber = associations[1];
+          TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
+          String symbol = allGeneIdToSymbolMap.get(entrezId);
+          if (!"-".equals(entrezGeneNumber)) {
+            if (symbol == null) {
+              symbol = "-";
+            } else {
+              if (!geneMap.containsKey(entrezId)) {
+                geneMap.put(entrezId, symbol);
+              }
+            }
+            TermId geneId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
+            Gene gene = new Gene(geneId, symbol);
+            if (associations[5].contains("susceptibility")) {
+              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.POLYGENIC);
+              if (!associationMap.containsEntry(omimCurie, g2a)) {
+                associationMap.put(omimCurie, g2a);
+              }
+            } else {
+              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.MENDELIAN);
+              if (!associationMap.containsEntry(omimCurie, g2a)) {
+                associationMap.put(omimCurie, g2a);
+              }
+            }
+          }
+        }
+      }
+    }
+    return associationMap;
+  }
+
+  private void parseOrphaToGene() {
+    Multimap<TermId,String> orphaToGene;
+    if(this.orphaToGeneFile != null){
+      Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
+      try{
+        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orphaToGeneFile);
+        orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
+        for (Map.Entry<TermId, String> entry : orphaToGene.entries()) {
+          TermId orpha = entry.getKey();
+          String geneSymbol = entry.getValue();
+          if(geneSymbolToId.containsKey(geneSymbol)){
+            Gene gene = new Gene(geneSymbolToId.get(geneSymbol), geneSymbol);
+            GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.UNKNOWN);
+            if(!associationMap.containsEntry(orpha,g2a)){
+              associationMap.put(orpha, g2a);
+            }
+          }
+        }
+      }catch(PhenolException e){
+        System.err.println(e.toString());
+      }
+    }
+  }
+
+
+
   /**
    * Creates a multimap from the medgene_medgen file. We need a multimap because some
    * OMIM phenotype id's (the key of the multimap) are associated with more than one
-   * gene (EntrezGene id). This method must be called AFTER {@link #parseGeneInfo()}.
+   * gene (EntrezGene id). This method must be called AFTER parseGeneInfo.
    * @throws IOException if the mim2gene_medgen file cannot be read
    */
   private void parseDiseaseToGene() throws IOException {
@@ -346,7 +414,7 @@ public class HpoAssociationParser {
    * Add the mappings to a Guava bimap, e.g., NCBIGene:150-ADRA2A
    * @throws IOException if the file cannot be read
    */
-  private void parseGeneInfo() throws IOException {
+  private BiMap<TermId,String> parseGeneInfo(File homoSapiensGeneInfoFile) throws IOException {
     ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoFile);
     InputStream gzipStream = new GZIPInputStream(fileStream);
@@ -373,7 +441,7 @@ public class HpoAssociationParser {
         builder.put(tid,symbol);
       }
     }
-    this.allGeneIdToSymbolMap = builder.build();
+    return allGeneIdToSymbolMap = builder.build();
   }
 
 }
