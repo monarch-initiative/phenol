@@ -1,21 +1,19 @@
 package org.monarchinitiative.phenol.io;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.jupiter.api.Disabled;
+
+
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
+
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
-import org.obolibrary.oboformat.model.OBODoc;
-import org.obolibrary.oboformat.parser.OBOFormatParser;
 
-import java.nio.file.Path;
+
+
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,47 +62,6 @@ public class OntologyLoaderHpoTest {
     assertTrue(termMap.containsKey(tid4));
     Term term1 = termMap.get(tid1);
     System.out.println(term1);
-  }
-
-  @Disabled("Currently broken due to obographs JSON deserialisation")
-  @Test
-  void loadHpJson() {
-    System.out.println("Starting full HPO JSON load");
-    Instant start = Instant.now();
-    Path hpJsonPath = Paths.get("src/test/resources/hp.json");
-    Ontology ontology = OntologyLoader.loadOntology(hpJsonPath.toFile());
-    Instant end = Instant.now();
-    System.out.println("Finished in " + Duration.between(start, end).toMillis() + " ms");
-  }
-
- // @Disabled
-  @Test
-  public void testParseFullHpo() {
-//    for (int i = 0; i < 10; i++) {
-      System.out.println("Starting full HPO load");
-      Instant start = Instant.now();
-      Ontology ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp.obo").toFile());
-      Instant end = Instant.now();
-      System.out.println("Finished in " + Duration.between(start, end).toMillis() + " ms");
-//      ontology.getTerms().stream().limit(1240).forEach(System.out::println);
-//    }
-  }
-
-  @Disabled
-  @Test
-  public void testParseFullHpoWithOboFormatParser() throws Exception {
-//    for (int i = 0; i < 10; i++) {
-    System.out.println("Starting full HPO load");
-    Instant start = Instant.now();
-    OBOFormatParser oboFormatParser = new OBOFormatParser();
-    OBODoc oboDoc = oboFormatParser.parse(Paths.get("src/test/resources/hp.obo").toFile());
-//    OboDocConverter oboDocConverter = OboDocConverter.convert(oboDoc);
-
-//    System.out.println(oboDocConverter.getRelationships());
-
-    Instant end = Instant.now();
-    System.out.println("Finished in " + Duration.between(start, end).toMillis() + " ms");
-//    }
   }
 
   @Test
@@ -162,9 +119,6 @@ public class OntologyLoaderHpoTest {
     assertNotNull(syn3);
     assertEquals(RELATED, syn3.getScope());
     assertTrue(syn3.isLayperson());
-
-
   }
-
 
 }
