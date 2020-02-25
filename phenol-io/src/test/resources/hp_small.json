@@ -1,0 +1,206 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://purl.obolibrary.org/obo/HP_0000001",
+      "meta" : {
+        "definition" : {
+          "val" : "Definition for HP:0000001.",
+          "xrefs" : [ "HPO:fake1" ]
+        },
+        "xrefs" : [ {
+          "val" : "SNOMEDCT_US:78200003"
+        }, {
+          "val" : "UMLS:C0271858"
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "peter"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2012-04-22T04:38:20Z"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Fake term 1"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/HP_0000002",
+      "meta" : {
+        "definition" : {
+          "val" : "Definition for HP:0000002.",
+          "xrefs" : [ "HPO:fake2" ]
+        },
+        "xrefs" : [ {
+          "val" : "UMLS:C4024355"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Synonym of fake term 1",
+          "xrefs" : [ "ORCID:0000-0001-5208-3432" ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "doelkens"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2009-01-14T04:33:41Z"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Fake term 2"
+    } , {
+      "id" : "http://purl.obolibrary.org/obo/HP_0000003",
+      "meta" : {
+        "definition" : {
+          "val" : "Definition for HP:0000003.",
+          "xrefs" : [ "DDD:fake3", "PMID:19328421" ]
+        },
+        "xrefs" : [ {
+          "val" : "SNOMEDCT_US:75316000"
+        }, {
+          "val" : "UMLS:C0271865"
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "peter"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2012-04-22T04:54:37Z"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Fake term 3"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/HP_0000004",
+      "meta" : {
+        "definition" : {
+          "val" : "Definition for HP:0000004.",
+          "xrefs" : [ "DDD:fake4" ]
+        },
+        "xrefs" : [ {
+          "val" : "UMLS:C4023195"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Abnormal shape of thyroid gland",
+          "xrefs" : [ "ORCID:0000-0001-5208-3432" ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2012-04-22T05:54:57Z"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "peter"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Fake term 4"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/HP_0000005",
+      "meta" : {
+        "definition" : {
+          "val" : "Definition for HP:0000005.",
+          "xrefs" : [ "DDD:fake5" ]
+        },
+        "xrefs" : [ {
+          "val" : "UMLS:C0342205"
+        }, {
+          "val" : "SNOMEDCT_US:237569006"
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2012-04-22T05:56:30Z"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "peter"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Fake term 5"
+    } ],
+    "edges" : [  {
+      "sub" : "http://purl.obolibrary.org/obo/HP_0000002",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/HP_0000001"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/HP_0000003",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/HP_0000002"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/HP_0000004",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/HP_0000001"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/HP_0000005",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/HP_0000004"
+    }  ],
+    "id" : "http://purl.obolibrary.org/obo/hp.json",
+    "meta" : {
+      "subsets" : [ ],
+      "xrefs" : [ ],
+      "basicPropertyValues" : [ {
+        "pred" : "http://purl.org/dc/elements/1.1/creator",
+        "val" : "Human Phenotype Ontology Consortium"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/creator",
+        "val" : "Monarch Initiative"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/creator",
+        "val" : "Peter Robinson"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/creator",
+        "val" : "Sebastian Köhler"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/description",
+        "val" : "The Human Phenotype Ontology (HPO) provides a standardized vocabulary of phenotypic abnormalities and clinical features encountered in human disease."
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/license",
+        "val" : "https://hpo.jax.org/app/license"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/rights",
+        "val" : "Peter Robinson, Sebastian Koehler, The Human Phenotype Ontology Consortium, and The Monarch Initiative"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/subject",
+        "val" : "Phenotypic abnormalities encountered in human disease"
+      }, {
+        "pred" : "http://purl.org/dc/elements/1.1/title",
+        "val" : "Human Phenotype Ontology"
+      }, {
+        "pred" : "http://purl.org/dc/terms/license",
+        "val" : "https://hpo.jax.org/app/license"
+      }, {
+        "pred" : "http://www.geneontology.org/formats/oboInOwl#default-namespace",
+        "val" : "human_phenotype"
+      }, {
+        "pred" : "http://www.geneontology.org/formats/oboInOwl#logical-definition-view-relation",
+        "val" : "has_part"
+      }, {
+        "pred" : "http://www.geneontology.org/formats/oboInOwl#saved-by",
+        "val" : "Peter Robinson, Sebastian Koehler, Sandra Doelken, Chris Mungall, Melissa Haendel, Nicole Vasilevsky, Monarch Initiative, et al."
+      }, {
+        "pred" : "http://www.w3.org/2000/01/rdf-schema#comment",
+        "val" : "Please see license of HPO at http://www.human-phenotype-ontology.org"
+      } ],
+      "version" : "http://purl.obolibrary.org/obo/hp/releases/2019-09-06"
+    },
+    "equivalentNodesSets" : [ ],
+    "logicalDefinitionAxioms" : [ ],
+    "domainRangeAxioms" : [ ],
+    "propertyChainAxioms" : [ ]
+  } ]
+}

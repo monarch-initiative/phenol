@@ -1,15 +1,16 @@
 package org.monarchinitiative.phenol.io;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -22,16 +23,47 @@ import org.junit.jupiter.api.Test;
  */
 class OntologyLoaderTest {
 
-  private static Ontology hpo;
-
-  @BeforeAll
-  static void init() {
-    Path hpoPath = Paths.get("src/test/resources/hp_head.obo");
-    hpo = OntologyLoader.loadOntology(hpoPath.toFile());
-
+  @Test
+  void loadOwl() {
+    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
   }
 
+  @Test
+  void loadOwlStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
+  }
 
+  @Test
+  void loadObo() {
+    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadOboStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadJson() {
+    Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
+    // TODO: replace this when obographs can read in JSON
+    assertThrows(PhenolRuntimeException.class, () -> OntologyLoader.loadOntology(ontologyPath.toFile()));
+  }
+
+  @Test
+  void loadJsonStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
+    // TODO: replace this when obographs can read in JSON
+    assertThrows(PhenolRuntimeException.class, () -> OntologyLoader.loadOntology(Files.newInputStream(ontologyPath)));
+  }
 
   @Test
   void testNCITLoad() throws Exception {
