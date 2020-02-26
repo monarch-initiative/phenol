@@ -40,10 +40,13 @@ class HpoAssociationParserTest {
 
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
+    URL orphanetUrl = classLoader.getResource("orphanet_disease2gene_en_product6_head.xml");
+    URL phenotypeUrl = classLoader.getResource("annotations/phenotype_annotation_head.tab");
 
     Ontology ontology = OntologyLoader.loadOntology(classLoader.getResourceAsStream("hp_head.obo"));
 
-    parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
+    parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(),
+      orphanetUrl.getPath(),phenotypeUrl.getPath(),ontology);
   }
 
   @Test
@@ -196,44 +199,6 @@ class HpoAssociationParserTest {
     assertEquals(geneMap.get(TermId.of("NCBIGene:2200")),"FBN1");
   }
 
-
-  /*
-  * For this test, we extracted all mitochondrial genes associated with OMIM:540000 (MELAS syndrome) using
-  * a Python script and enter them by hand into the BiMap builder.
-   */
-
-  @Test
-  void testMim2GeneParser() throws IOException {
-    Path mim2geneMedgenPath = Paths.get("src/test/resources/mim2gene_medgen.excerpt");
-    ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
-    // 16 genes associated with OMIM:540000 are in the mim2gene_medgen.excerpt file
-    builder.put(TermId.of("NCBIGene:4511"), "TRNC");
-    builder.put(TermId.of("NCBIGene:4512"), "COX1");
-    builder.put(TermId.of("NCBIGene:4513"), "COX2");
-    builder.put(TermId.of("NCBIGene:4514"), "COX3");
-    builder.put(TermId.of("NCBIGene:4519"), "CYTB");
-    builder.put(TermId.of("NCBIGene:4535"), "ND1");
-    builder.put(TermId.of("NCBIGene:4540"), "ND5");
-    builder.put(TermId.of("NCBIGene:4541"), "ND6");
-    builder.put(TermId.of("NCBIGene:4558"), "TRNF");
-    builder.put(TermId.of("NCBIGene:4566"), "TRNK");
-    builder.put(TermId.of("NCBIGene:4567"), "TRNL1");
-    builder.put(TermId.of("NCBIGene:4572"), "TRNQ");
-    builder.put(TermId.of("NCBIGene:4574"), "TRNS1");
-    builder.put(TermId.of("NCBIGene:4575"), "TRNS2");
-    builder.put(TermId.of("NCBIGene:4577"), "TRNV");
-    builder.put(TermId.of("NCBIGene:4578"), "TRNW");
-    BiMap<TermId,String> allGeneIdToSymbolMap = builder.build();
-    Multimap<TermId, GeneToAssociation> assocs = HpoAssociationParser.parseMim2GeneMedgen(allGeneIdToSymbolMap, mim2geneMedgenPath.toFile());
-    TermId melas = TermId.of("OMIM:540000");
-    Collection<GeneToAssociation> g2a_collection = assocs.get(melas);
-    assertEquals(16, g2a_collection.size());
-    //for (GeneToAssociation g2a : g2a_collection) {
-    //  System.out.println(g2a);
-    //}
-    assertThat(g2a_collection, hasSize(16));
-
-  }
 
 
 }
