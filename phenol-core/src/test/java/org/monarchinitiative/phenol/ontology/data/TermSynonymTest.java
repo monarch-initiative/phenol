@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,5 +33,10 @@ class TermSynonymTest {
     assertEquals(
         "TermSynonym [value=synonym, scope=EXACT, synonymTypeName=BRITISH_ENGLISH, termXrefs=[ImmutableTermXref [id=HP:0000001, description=term description]]]",
         termSynonym.toString());
+  }
+
+  @Test
+  void testLaypersonLabel() {
+    assertTrue(termSynonym.isLayperson());
   }
 }
