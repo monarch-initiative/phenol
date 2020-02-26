@@ -4,7 +4,6 @@ import com.google.common.collect.*;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -12,7 +11,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
 
 /**
  * <p>This class parses the files {@code mim2gene_medgen}, available from
@@ -49,8 +47,7 @@ public class HpoAssociationParser {
   private final File orphaToGeneFile;
   /** File representing the phenotype.hpoa file */
   private final File phenotypeDotHpoaFile;
-  /** Key--an EntrezGene id; value--the corresponding symbol. all */
-  private BiMap<TermId,String> allGeneIdToSymbolMap;
+  /** Key--an EntrezGene id; value--the corresponding symbol. */
   private Map<TermId, String> geneIdToSymbolMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
    * MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 1; is associated to the gene VEGF as POLYGENIC,
@@ -69,10 +66,6 @@ public class HpoAssociationParser {
   /** List of all associations */
   private List<DiseaseToGeneAssociation> associationList;
 
-  private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
-  private static final String OMIM_PREFIX = "OMIM";
-
-
   public HpoAssociationParser(String geneInfoPath,
                               String mim2geneMedgenPath,
                               String orphaToGenePath,
@@ -84,8 +77,7 @@ public class HpoAssociationParser {
     this.orphaToGeneFile = new File(orphaToGenePath);
     this.phenotypeDotHpoaFile = new File(phenotypeHpoaPath);
 
-    checkOrphaFile();
-    parse();
+    ingestDisease2GeneAssociations();
     ingestPhenotypeHpoaFile();
   }
 
@@ -96,7 +88,7 @@ public class HpoAssociationParser {
     this.mim2geneMedgenFile = new File(mim2geneMedgenPath);
     this.orphaToGeneFile = null;
     this.phenotypeDotHpoaFile = null;
-    parse();
+    ingestDisease2GeneAssociations();
   }
 
 
@@ -112,28 +104,9 @@ public class HpoAssociationParser {
     this.orphaToGeneFile = orphaToGeneFile;
     this.phenotypeDotHpoaFile = phenotypeHpoaFile;
 
-    checkOrphaFile();
-    parse();
+    ingestDisease2GeneAssociations();
     ingestPhenotypeHpoaFile();
   }
-
-  /** Parse everything except the Orphanet data!.
-  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, Ontology hpoOntology){
-    this.hpoOntology = hpoOntology;
-    this.homoSapiensGeneInfoFile = new File(geneInfoPath);
-    this.mim2geneMedgenFile = new File(mim2geneMedgenPath);
-    this.orphaToGeneFile = null;
-    this.phenotypeDotHpoaFile = null;
-    parse();
-  }*/
-
-
-  private void checkOrphaFile() {
-    if (! orphaToGeneFile.exists()) {
-      throw new PhenolRuntimeException("Cannot find en_product6.xml file");
-    }
-  }
-
 
   /**
    * Ingest the phenotype.hpoa file. This will population {@link #phenotypeToGeneList}.
@@ -191,7 +164,7 @@ public class HpoAssociationParser {
      phenotypeToDisease.get(phenotype).stream()
         .flatMap(disease -> this.diseaseToGeneMap.get(disease).stream()).collect(Collectors.toList()).forEach((gene) -> {
           try {
-            Integer entrezId = Integer.parseInt(gene.getId());
+            int entrezId = Integer.parseInt(gene.getId());
             if(!mappedGenes.contains(gene)){
               String entrezGeneSymbol = this.geneIdToSymbolMap.get(gene);
               if(entrezGeneSymbol == null){
@@ -203,7 +176,8 @@ public class HpoAssociationParser {
               mappedGenes.add(gene);
             }
           }catch(Exception e){
-            return;
+            System.err.println("[ERROR] setTermToGene encountered an exception: " + e.getMessage() +
+              " for gene: " + gene.toString());
           }
         });
     }
@@ -244,8 +218,11 @@ public class HpoAssociationParser {
     this.diseaseToAssociationsMap = builderDiseasetoAssociation.build();
   }
 
-
-  private void parse() {
+  /**
+   * Parse data from mim2gene_medgen, Gene Info, and Orphanet to get a list of gene to symbol and
+   * gene to disease annotations.
+   */
+  private void ingestDisease2GeneAssociations() {
     Gene2DiseaseAssociationParser parser =
       new Gene2DiseaseAssociationParser(this.homoSapiensGeneInfoFile, this.mim2geneMedgenFile, this.orphaToGeneFile);
     Multimap<TermId, GeneToAssociation> associationMap = parser.getAssociationMap();
