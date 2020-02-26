@@ -89,6 +89,18 @@ public class HpoAssociationParser {
     ingestPhenotypeHpoaFile();
   }
 
+  /** Parse everything except the Orphanet data!.*/
+  public HpoAssociationParser(String geneInfoPath, String mim2geneMedgenPath, Ontology hpoOntology){
+    this.hpoOntology = hpoOntology;
+    this.homoSapiensGeneInfoFile = new File(geneInfoPath);
+    this.mim2geneMedgenFile = new File(mim2geneMedgenPath);
+    this.orphaToGeneFile = null;
+    this.phenotypeDotHpoaFile = null;
+    parse();
+  }
+
+
+
   public HpoAssociationParser(File geneInfoFile,
                               File mim2geneMedgenFile,
                               File orphaToGeneFile,
@@ -237,7 +249,6 @@ public class HpoAssociationParser {
     Gene2DiseaseAssociationParser parser =
       new Gene2DiseaseAssociationParser(this.homoSapiensGeneInfoFile, this.mim2geneMedgenFile, this.orphaToGeneFile);
     Multimap<TermId, GeneToAssociation> associationMap = parser.getAssociationMap();
-    //this.associationList = parser.getAssociationMap();
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
     for (TermId omimCurie : associationMap.keySet()) {
       Collection<GeneToAssociation> g2aList = associationMap.get(omimCurie);
@@ -248,89 +259,4 @@ public class HpoAssociationParser {
     this.geneIdToSymbolMap = parser.getGeneIdToSymbolMap();
     this.setAssociationMaps();
   }
-
-
-
-
-  /**
-   * Creates a multimap from the medgene_medgen file. We need a multimap because some
-   * OMIM phenotype id's (the key of the multimap) are associated with more than one
-   * gene (EntrezGene id). This method must be called AFTER parseGeneInfo.
-   * @throws IOException if the mim2gene_medgen file cannot be read
-   */
-  private void parseDiseaseToGene() throws IOException {
-    Multimap<TermId,String> orphaToGene;
-    Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
-    Map<TermId, String> geneMap = new HashMap<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneMedgenFile))) {
-      String line;
-      while ((line = br.readLine()) != null) {
-        if (line.startsWith("#")) continue;
-        String[] associations = line.split("\t");
-        if (associations[2].equals("phenotype")) {
-          String mimid = associations[0];
-          TermId omimCurie = TermId.of(OMIM_PREFIX, mimid);
-          String entrezGeneNumber = associations[1];
-          TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
-          String symbol = this.allGeneIdToSymbolMap.get(entrezId);
-          if (!"-".equals(entrezGeneNumber)) {
-            if (symbol == null) {
-              symbol = "-";
-            } else {
-              if (!geneMap.containsKey(entrezId)) {
-                geneMap.put(entrezId, symbol);
-              }
-            }
-            TermId geneId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
-            Gene gene = new Gene(geneId, symbol);
-            if (associations[5].contains("susceptibility")) {
-              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.POLYGENIC);
-              if (!associationMap.containsEntry(omimCurie, g2a)) {
-                associationMap.put(omimCurie, g2a);
-              }
-            } else {
-              GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.MENDELIAN);
-              if (!associationMap.containsEntry(omimCurie, g2a)) {
-                associationMap.put(omimCurie, g2a);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if(this.orphaToGeneFile != null){
-      Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
-      try{
-        OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(this.orphaToGeneFile);
-        orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
-        for (Map.Entry<TermId, String> entry : orphaToGene.entries()) {
-          TermId orpha = entry.getKey();
-          String geneSymbol = entry.getValue();
-          if(geneSymbolToId.containsKey(geneSymbol)){
-            Gene gene = new Gene(geneSymbolToId.get(geneSymbol), geneSymbol);
-            GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.UNKNOWN);
-            if(!associationMap.containsEntry(orpha,g2a)){
-              associationMap.put(orpha, g2a);
-            }
-          }
-        }
-      }catch(PhenolException e){
-        System.err.println(e.toString());
-      }
-    }
-
-    ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
-    associationBuilder.putAll(associationMap);
-    this.associationMap = associationBuilder.build();
-
-    ImmutableMap.Builder<TermId, String> geneBuilder = new ImmutableMap.Builder<>();
-    geneBuilder.putAll(geneMap);
-    geneIdToSymbolMap = geneBuilder.build();
-
-    this.allGeneIdToSymbolMap = null;
-  }
-
-
-
 }

@@ -29,26 +29,54 @@ public class Gene2DiseaseAssociationParser {
    * and MARFAN SYNDROME is associated to the gene FBN1 as MENDELIAN.*/
   private Multimap<TermId,GeneToAssociation> associationMap;
 
-
+  /**
+   * This constructor should be chosen to get data about disease links from mim2gene_medgen and
+   * Homo sapiens gene info but not from Orphanet.
+   * @param homoSapiensGeneInfo Path to Homo_sapiens.gene_info.gz
+   * @param mim2geneMedgen Path to mim2gene_medgen
+   */
+  Gene2DiseaseAssociationParser(String homoSapiensGeneInfo, String mim2geneMedgen) {
+    this(new File(homoSapiensGeneInfo), new File(mim2geneMedgen));
+  }
+  Gene2DiseaseAssociationParser(File homoSapiensGeneInfoFile, File mim2geneMedgenFile) {
+    parseMim2geneAndGeneInfo(homoSapiensGeneInfoFile, mim2geneMedgenFile);
+  }
+  /**
+   * This constructor should be chosen to get data about disease links from mim2gene_medgen and
+   * Homo sapiens gene info and Orphanet.
+   * @param homoSapiensGeneInfo Path to Homo_sapiens.gene_info.gz
+   * @param mim2geneMedgen Path to mim2gene_medgen
+   * @param orphanet2Gene Path to Orphanet's gene file, en_product6.xml.
+   */
   Gene2DiseaseAssociationParser(String homoSapiensGeneInfo, String mim2geneMedgen, String orphanet2Gene) {
     this(new File(homoSapiensGeneInfo), new File(mim2geneMedgen), new File(orphanet2Gene));
   }
 
   Gene2DiseaseAssociationParser(File homoSapiensGeneInfoFile, File mim2geneMedgenFile, File orphanet2GeneFile) {
+    parseMim2geneAndGeneInfo(homoSapiensGeneInfoFile, mim2geneMedgenFile);
+    if (! orphanet2GeneFile.exists()) {
+      throw new PhenolRuntimeException("Cannot find Orphanet en_product6.xml file");
+    }
+    parseOrphaToGene(orphanet2GeneFile);
+  }
+
+  /**
+   * Parse the Homo_sapiens.gene_info.gz and mim2gene_medgen files (needed by both constructors).
+   * @param homoSapiensGeneInfoFile
+   * @param mim2geneMedgenFile
+   */
+  private void parseMim2geneAndGeneInfo(File homoSapiensGeneInfoFile, File mim2geneMedgenFile) {
     if (! homoSapiensGeneInfoFile.exists()) {
       throw new PhenolRuntimeException("Cannot find Homo_sapiens.gene_info.gz file");
     }
     if (! mim2geneMedgenFile.exists()) {
       throw new PhenolRuntimeException("Cannot find mim2gene_medgen file");
     }
-    if (! orphanet2GeneFile.exists()) {
-      throw new PhenolRuntimeException("Cannot find Orphanet en_product6.xml file");
-    }
     try {
       parseGeneInfo(homoSapiensGeneInfoFile);
     } catch (IOException e) {
-        throw new PhenolRuntimeException("Could not parse Homo_sapiens.gene_info.gz: " +
-          homoSapiensGeneInfoFile.getAbsolutePath());
+      throw new PhenolRuntimeException("Could not parse Homo_sapiens.gene_info.gz: " +
+        homoSapiensGeneInfoFile.getAbsolutePath());
     }
     try {
       parseMim2GeneMedgen(mim2geneMedgenFile);
@@ -56,7 +84,6 @@ public class Gene2DiseaseAssociationParser {
       throw new PhenolRuntimeException("Could not parse mim2gene_medgen: " +
         mim2geneMedgenFile.getAbsolutePath());
     }
-    parseOrphaToGene(orphanet2GeneFile);
   }
 
 
