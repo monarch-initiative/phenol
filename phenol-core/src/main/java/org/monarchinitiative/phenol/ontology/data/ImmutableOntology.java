@@ -45,7 +45,7 @@ public class ImmutableOntology implements Ontology {
   /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
   private final ImmutableSet<TermId> nonObsoleteTermIds;
 
-  /** Set of obselete term ids, separate so maps can remain for sub ontology construction. */
+  /** Set of obselete term ids, separate so maps can remain for sub ontology construction. These are the alt_id entries */
   private final ImmutableSet<TermId> obsoleteTermIds;
 
   /** Set of all term IDs. */
