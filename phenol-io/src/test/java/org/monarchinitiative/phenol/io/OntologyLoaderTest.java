@@ -170,7 +170,7 @@ class OntologyLoaderTest {
     Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());
     System.out.println("ECTO termPrefixes" + termPrefixes);
     assertEquals(2271, ecto.countNonObsoleteTerms());
-    assertEquals(0, ecto.countObsoleteTerms());
+    assertEquals(0, ecto.countAlternateTermIds());
   }
 
   @Test
@@ -184,7 +184,7 @@ class OntologyLoaderTest {
 
     assertEquals(TermId.of("owl:Thing"), permissiveOntology.getRootTermId());
     assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
-    assertEquals(4, permissiveOntology.countObsoleteTerms());
+    assertEquals(4, permissiveOntology.countAlternateTermIds());
 
     System.out.println("All ECTO termPrefixes" + permissiveOntology.getAllTermIds()
       .stream()

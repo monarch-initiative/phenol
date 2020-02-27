@@ -37,7 +37,7 @@ public class MpGene {
    *                     Gene; Other Genome Feature; Pseudogene; QTL; Transgene
    * @return             MpGene object
    */
-  public static MpGene createMpGene(TermId mgiId, String geneSymbol, String markerType) throws PhenolException {
+  public static MpGene createMpGene(TermId mgiId, String geneSymbol, String markerType) {
     MpMarkerType marker = MpMarkerType.string2enum(markerType);
     return new MpGene(mgiId, geneSymbol, marker);
   }

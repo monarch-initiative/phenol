@@ -1,15 +1,20 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
-
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
+import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -18,7 +23,11 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.hamcrest.core.IsCollectionContaining.*;
 
 class HpoAssociationParserTest {
   private HpoAssociationParser parser;
@@ -31,10 +40,13 @@ class HpoAssociationParserTest {
 
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
+    URL orphanetUrl = classLoader.getResource("orphanet_disease2gene_en_product6_head.xml");
+    URL phenotypeUrl = classLoader.getResource("annotations/phenotype_annotation_head.tab");
 
     Ontology ontology = OntologyLoader.loadOntology(classLoader.getResourceAsStream("hp_head.obo"));
 
-    parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(), ontology);
+    parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(),
+      orphanetUrl.getPath(),phenotypeUrl.getPath(),ontology);
   }
 
   @Test
@@ -186,4 +198,7 @@ class HpoAssociationParserTest {
     assertEquals(geneMap.get(TermId.of("NCBIGene:2690")),"GHR");
     assertEquals(geneMap.get(TermId.of("NCBIGene:2200")),"FBN1");
   }
+
+
+
 }

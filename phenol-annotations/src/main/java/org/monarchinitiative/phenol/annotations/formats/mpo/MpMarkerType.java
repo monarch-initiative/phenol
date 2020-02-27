@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
-import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 public enum MpMarkerType {
 
@@ -21,7 +21,7 @@ public enum MpMarkerType {
     this.name = name;
   }
 
-  public static MpMarkerType string2enum(String marker) throws PhenolException {
+  public static MpMarkerType string2enum(String marker)  {
     switch (marker) {
       case "BAC/YAC end": return BAC_YAC_END;
       case "Complex/Cluster/Region": return COMPLEX_CLUSTER_REGION;
@@ -33,7 +33,8 @@ public enum MpMarkerType {
       case  "QTL": return QTL;
       case  "Transgene": return TRANSGENE;
       default:
-        throw new PhenolException("Did not recognize MpMarkerType "+marker);
+        // should never happen
+        throw new PhenolRuntimeException("MpMarkerType.string2enum: Did not recognize MpMarkerType "+marker);
     }
 
 

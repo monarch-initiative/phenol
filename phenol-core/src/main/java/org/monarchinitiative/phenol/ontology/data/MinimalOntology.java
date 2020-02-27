@@ -115,12 +115,12 @@ public interface MinimalOntology extends Serializable {
     return getNonObsoleteTermIds().size();
   }
 
-  /** @return The number of all terms in the ontology. */
-  default int countObsoleteTerms() {
+  /** @return The number of obsolete TermIds (alt_id in the OBO file). */
+  default int countAlternateTermIds() {
     return getObsoleteTermIds().size();
   }
 
-  /** @return The number of all terms in the ontology. */
+  /** @return The number of all primary term ids in the ontology (Should be equivalent to the number of non-obsolete terms). */
   default int countNonObsoleteTerms() {
     return getNonObsoleteTermIds().size();
   }

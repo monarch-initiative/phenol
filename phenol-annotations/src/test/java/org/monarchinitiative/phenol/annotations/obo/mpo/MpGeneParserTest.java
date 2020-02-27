@@ -41,7 +41,7 @@ class MpGeneParserTest {
       throw new IOException("Cannot find MGI_GenePheno.rpt.excerpt.obo");
     }
     MGI_genePhenoPath = url.getFile();
-    MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, ontologyPath);
+    MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath);
     mpgenemap = gmp.parseMarkers();
   }
 
