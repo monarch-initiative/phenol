@@ -6,8 +6,6 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpSimpleModel;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -18,7 +16,7 @@ import static org.monarchinitiative.phenol.annotations.formats.mpo.MpGene.create
 
 
 /**
- * Parses the MRK_List2.rpt, MGI_GenePheno.rpt, and mp.obo files.
+ * Parses the MRK_List2.rpt and MGI_GenePheno.rpt files.
  * MRK_List2.rpt is List of Mouse Genetic Markers (sorted alphabetically by marker symbol, tab-delimited)
  * The List2 version excludes withdrawn symbols
  */
@@ -31,24 +29,13 @@ public class MpGeneParser {
    * Path to the MGI_GenePheno.rpt file from MGI.
    */
   private final String mgiGenePhenoPath;
-  /**
-   * THe MPO ontology object.
-   */
-  private final Ontology ontology;
 
-  public MpGeneParser(String markerPath, String mgiGenePhenoPath, String ontologypath) {
-    this(markerPath, mgiGenePhenoPath, OntologyLoader.loadOntology(new File(ontologypath)));
-  }
 
-  public MpGeneParser(String markerPath, String mgiGenePhenoPath, Ontology mpo) {
+  public MpGeneParser(String markerPath, String mgiGenePhenoPath) {
     this.mgiMarkerPath = markerPath;
     this.mgiGenePhenoPath = mgiGenePhenoPath;
-    this.ontology = mpo;
   }
 
-  public Ontology getMpOntology() {
-    return ontology;
-  }
 
   /**
    * Reads the file of genetic markers. For each genetic marker, extracts the full MGI Accession ID,
@@ -101,9 +88,7 @@ public class MpGeneParser {
     } catch (PhenolException e) {
       e.printStackTrace();
     }
-
     return builder.build();
   }
-
 
 }

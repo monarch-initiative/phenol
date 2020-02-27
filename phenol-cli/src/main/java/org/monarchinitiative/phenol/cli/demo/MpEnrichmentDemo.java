@@ -13,6 +13,7 @@ import org.monarchinitiative.phenol.annotations.formats.mpo.MpGene;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpGeneParser;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
@@ -20,6 +21,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.stats.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -49,13 +51,13 @@ public class MpEnrichmentDemo {
     this.targetgenefile = options.getInputGeneList();
     String markerFile = options.getMarkerFile();
 
-    MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, pathObo);
+    MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath);
     markermap = gmp.parseMarkers();
     System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
     mpgenemap = gmp.parseMpGeneModels();
     System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
 
-    ontology = gmp.getMpOntology();
+    ontology = OntologyLoader.loadOntology(new File(pathObo));
     System.out.println("[INFO] Parsed phenotyped info associated with " + mpgenemap.size() + " genes.");
 
   }
