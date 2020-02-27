@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-annotations</artifactId>
-      <version>1.4.2-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
 
