@@ -3,6 +3,13 @@ Changelog
 =========
 
 ------
+v1.4.2
+------
+- Prototype ingest of JSON ontology files
+- flexible handling of relation types
+- bug fix of previously incorrect handling of tRNA genes
+
+------
 v1.4.1
 ------
 - Added workaround for duplicated lines in Homo_sapiens_gene_info file
