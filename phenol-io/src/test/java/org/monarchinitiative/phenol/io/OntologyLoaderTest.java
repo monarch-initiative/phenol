@@ -54,15 +54,15 @@ class OntologyLoaderTest {
   @Test
   void loadJson() {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
-    // TODO: replace this when obographs can read in JSON
-    assertThrows(PhenolRuntimeException.class, () -> OntologyLoader.loadOntology(ontologyPath.toFile()));
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
   }
 
   @Test
   void loadJsonStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
-    // TODO: replace this when obographs can read in JSON
-    assertThrows(PhenolRuntimeException.class, () -> OntologyLoader.loadOntology(Files.newInputStream(ontologyPath)));
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
   }
 
   @Test
