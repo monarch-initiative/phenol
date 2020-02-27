@@ -27,20 +27,20 @@ import java.util.*;
 /**
  * A simple application that tests for statistically significant enrichment of MP terms for
  * a given set of input genes.
+ *
  * @author Peter N Robinson
  */
 public class MpEnrichmentDemo {
 
   private Ontology ontology;
 
-  private  Map<TermId,MpGeneModel>  mpgenemap;
+  private Map<TermId, MpGeneModel> mpgenemap;
 
-  private Map<String,TermId> symbol2termidMap;
+  private Map<String, TermId> symbol2termidMap;
 
   private Map<TermId, MpGene> markermap;
 
   private final String targetgenefile;
-
 
 
   public MpEnrichmentDemo(MpEnrichmentDemo.Options options) {
@@ -48,18 +48,16 @@ public class MpEnrichmentDemo {
     String MGI_genePhenoPath = options.getAnnotPath();
     this.targetgenefile = options.getInputGeneList();
     String markerFile = options.getMarkerFile();
-    try {
-      MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, pathObo);
-      markermap = gmp.parseMarkers();
-      System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
-      mpgenemap = gmp.parseMpGeneModels();
-      System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
 
-      ontology = gmp.getMpOntology();
-      System.out.println("[INFO] Parsed phenotyped info associated with " + mpgenemap.size() + " genes.");
-    } catch (PhenolException | IOException e) {
-      e.printStackTrace();
-    }
+    MpGeneParser gmp = new MpGeneParser(markerFile, MGI_genePhenoPath, pathObo);
+    markermap = gmp.parseMarkers();
+    System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
+    mpgenemap = gmp.parseMpGeneModels();
+    System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
+
+    ontology = gmp.getMpOntology();
+    System.out.println("[INFO] Parsed phenotyped info associated with " + mpgenemap.size() + " genes.");
+
   }
 
   private List<TermAnnotation> getTermAnnotations() {
@@ -68,9 +66,9 @@ public class MpEnrichmentDemo {
       TermId markerId = model.getMarkerId();
       String symbol;
       if (markermap.containsKey(markerId)) {
-        symbol=markermap.get(markerId).getGeneSymbol();
+        symbol = markermap.get(markerId).getGeneSymbol();
       } else {
-        symbol="n/a"; // should never happen
+        symbol = "n/a"; // should never happen
       }
       for (MpAnnotation annot : model.getPhenotypicAbnormalities()) {
         TermId mpId = annot.getTermId();
@@ -82,15 +80,15 @@ public class MpEnrichmentDemo {
           MpoGeneAnnotation mpoGeneAnnotation = new MpoGeneAnnotation(markerId, symbol, label, mpId);
           builder.add(mpoGeneAnnotation);
         } catch (Exception e) {
-          System.err.println("[ERROR] copuld not find term for " +mpId);
+          System.err.println("[ERROR] copuld not find term for " + mpId);
         }
       }
     }
     return builder.build();
   }
 
-  public void run(){
-    int n_terms=ontology.countAllTerms();
+  public void run() {
+    int n_terms = ontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " MP terms.");
     List<TermAnnotation> annots = getTermAnnotations();
     System.out.println("[INFO] parsed " + annots.size() + " MP annotations.");
@@ -100,9 +98,9 @@ public class MpEnrichmentDemo {
     Set<TermId> studyGenes = getStudySet();
 
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, ontology);
-    StudySet studySet = new StudySet(studyGenes,"study",studyAssociations,ontology);
-    StudySet populationSet = new StudySet(populationGenes,"population",studyAssociations,ontology);
-    System.out.println(String.format("[INFO] study: %d genes, population: %d genes",studyGenes.size(),populationGenes.size()));
+    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations, ontology);
+    StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations, ontology);
+    System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
 
     Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni<>();
@@ -113,21 +111,21 @@ public class MpEnrichmentDemo {
       hgeo,
       bonf);
 
-    int popsize=populationGenes.size();
-    int studysize=studyGenes.size();
+    int popsize = populationGenes.size();
+    int studysize = studyGenes.size();
     List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
     System.err.println("Total number of retrieved p values: " + pvals.size());
-    int n_sig=0;
-    double ALPHA=0.05;
+    int n_sig = 0;
+    double ALPHA = 0.05;
     System.out.println("MPO TFT Enrichment");
     System.out.println(String.format("Study set: %d genes. Population set: %d genes",
-      studysize,popsize));
+      studysize, popsize));
     for (GoTerm2PValAndCounts item : pvals) {
-      double pval =item.getRawPValue();
+      double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
       TermId tid = item.getItem();
       Term term = ontology.getTermMap().get(tid);
-      if (term==null) {
+      if (term == null) {
         System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
         continue;
       }
@@ -136,14 +134,14 @@ public class MpEnrichmentDemo {
         continue;
       }
       n_sig++;
-      double studypercentage=100.0*(double)item.getAnnotatedStudyGenes()/studysize;
-      double poppercentage=100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
+      double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
+      double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
       System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d/%d (%.1f%%); population: N=%d/%d (%.1f%%)",
-        label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(),studysize,studypercentage,
-        item.getAnnotatedPopulationGenes(),popsize,poppercentage));
+        label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studysize, studypercentage,
+        item.getAnnotatedPopulationGenes(), popsize, poppercentage));
     }
     System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
-      n_sig,pvals.size(),ALPHA));
+      n_sig, pvals.size(), ALPHA));
 
 
   }
@@ -151,15 +149,16 @@ public class MpEnrichmentDemo {
 
   private void initSymbol2termidMap() {
     symbol2termidMap = new HashMap<>();
-    for (MpGene gene : this.markermap.values()){
+    for (MpGene gene : this.markermap.values()) {
       String symbol = gene.getGeneSymbol();
       TermId id = gene.getMgiGeneId();
-      symbol2termidMap.put(symbol,id);
+      symbol2termidMap.put(symbol, id);
     }
   }
 
   /**
    * Retrieve the study set from a file that has one gene symbol per line.
+   *
    * @return Set of TermIds representing the studu set.
    */
   private Set<TermId> getStudySet() {
@@ -168,7 +167,7 @@ public class MpEnrichmentDemo {
     try {
       BufferedReader br = new BufferedReader(new FileReader(targetgenefile));
       String line;
-      while ((line=br.readLine())!=null) {
+      while ((line = br.readLine()) != null) {
         //System.out.println(line);
         if (symbol2termidMap.containsKey(line.trim())) {
           TermId id = symbol2termidMap.get(line.trim());
@@ -185,6 +184,7 @@ public class MpEnrichmentDemo {
 
   /**
    * Get a list of all of the labeled genes in the population set.
+   *
    * @param annots List of annotations of genes/diseases to GO/HPO terms etc
    * @return an immutable set of TermIds representing the labeled genes/diseases
    */
@@ -198,20 +198,21 @@ public class MpEnrichmentDemo {
   }
 
 
-
   @Parameters(commandDescription = "Mammalian Phenotype Ontology Enrichment Analysis (demo)")
   public static class Options {
-    @Parameter(names = {"-o","--obo"}, description = "path to mp.obo file", required = true)
+    @Parameter(names = {"-o", "--obo"}, description = "path to mp.obo file", required = true)
     private String oboPath;
 
-    @Parameter(names = {"-a","--annot"}, description = "path to association file (MGI_GenePheno.rpt)", required = true)
+    @Parameter(names = {"-a", "--annot"}, description = "path to association file (MGI_GenePheno.rpt)", required = true)
     private String annotPath;
-    /** For the demo, We will create a study set that has 1/3 of the genes associated with this term
-     * and three times as many other terms. The default GO:0070997 is 'neuron death'.*/
-    @Parameter(names = {"-i","--input"},description = "list of gene symbols (study set)",required = true)
+    /**
+     * For the demo, We will create a study set that has 1/3 of the genes associated with this term
+     * and three times as many other terms. The default GO:0070997 is 'neuron death'.
+     */
+    @Parameter(names = {"-i", "--input"}, description = "list of gene symbols (study set)", required = true)
     private String inputGeneList;
 
-    @Parameter(names={"-m","--marker"},description="Marker file, MRK_List2.rpt")
+    @Parameter(names = {"-m", "--marker"}, description = "Marker file, MRK_List2.rpt")
     private String markerFile;
 
     String getMarkerFile() {
