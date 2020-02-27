@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;

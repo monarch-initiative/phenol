@@ -22,9 +22,7 @@ public class PValue implements Cloneable, Comparable<PValue>
 
     public int compareTo(PValue o)
     {
-        if (p < o.p) return -1;
-        if (p > o.p) return 1;
-        return 0;
+      return Double.compare(p, o.p);
     }
 
     /**

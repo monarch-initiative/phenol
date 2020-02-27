@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.Executors;
 
 /**
  * Read score distributions from H2 database.
@@ -149,7 +148,7 @@ public class H2ScoreDistributionReader<T extends Serializable> implements ScoreD
     for (int i = 0; i < scores.length; ++i) {
       scoreDist.put(scores[i], pValues[i]);
     }
-    return new ObjectScoreDistribution<T>(objectId, termCount, sampleSize, scoreDist);
+    return new ObjectScoreDistribution<>(objectId, termCount, sampleSize, scoreDist);
   }
 
 

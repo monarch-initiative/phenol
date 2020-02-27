@@ -2,17 +2,14 @@ package org.monarchinitiative.phenol.annotations.obo.go;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
-import org.monarchinitiative.phenol.annotations.base.TermAnnotationParserException;
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;

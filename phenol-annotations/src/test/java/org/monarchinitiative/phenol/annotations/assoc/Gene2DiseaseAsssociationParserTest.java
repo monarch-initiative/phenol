@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;

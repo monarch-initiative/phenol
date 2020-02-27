@@ -25,7 +25,7 @@ public abstract class MgsaScore extends MgsaScoreBase
     /**
      * This is a simple interface that provides values to the genes.
      */
-    public static interface IGeneValueProvider
+    public interface IGeneValueProvider
     {
         /**
          * Return the value that is associated with the given gene.

@@ -1,12 +1,10 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
-import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

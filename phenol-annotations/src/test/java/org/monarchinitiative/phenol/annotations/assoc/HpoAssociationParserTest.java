@@ -1,20 +1,14 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
-import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -23,11 +17,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
-
-import static org.hamcrest.core.IsCollectionContaining.*;
 
 class HpoAssociationParserTest {
   private HpoAssociationParser parser;

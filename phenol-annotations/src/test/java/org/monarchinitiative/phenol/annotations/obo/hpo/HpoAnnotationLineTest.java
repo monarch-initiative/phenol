@@ -24,14 +24,14 @@ class HpoAnnotationLineTest {
     this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp_head.obo").toFile());
   }
 
-  private HpoAnnotationLine makeLine(String items[]) throws PhenolException {
+  private HpoAnnotationLine makeLine(String[] items) throws PhenolException {
     String line = String.join("\t", items);
     return HpoAnnotationLine.constructFromString(line);
   }
 
   @Test
   void test1() throws PhenolException{
-    String items[]={"OMIM:269150",
+    String[] items ={"OMIM:269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
       "HP:0030736",
@@ -91,7 +91,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -122,7 +122,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromVeryRareTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -150,7 +150,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromOccassionalTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -179,7 +179,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromFrequentTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -207,7 +207,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromObligateTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -235,7 +235,7 @@ class HpoAnnotationLineTest {
    */
   @Test
   void testGetFrequencyFromExcludedTerm() throws PhenolException{
-    String items[]={
+    String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier

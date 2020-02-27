@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**

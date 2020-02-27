@@ -1,19 +1,12 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
 /**
  * This class holds all gene names of a study and their associated

@@ -50,7 +50,7 @@ class ImmutableTermIdTest {
   @Test
   void testEquals() {
     assertEquals(termId, termId);
-    assertFalse(termId.equals(termId2));
+    assertNotEquals(termId, termId2);
   }
 
   @Test

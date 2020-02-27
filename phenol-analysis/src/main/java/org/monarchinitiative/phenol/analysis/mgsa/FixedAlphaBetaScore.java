@@ -24,13 +24,13 @@ public class FixedAlphaBetaScore extends MgsaScore
     protected double [] BETA = ALPHA;
     private int betaIdx = 0;
     private int oldBetaIdx;
-    protected int totalBeta[] = new int[BETA.length];
+    protected int[] totalBeta = new int[BETA.length];
     private boolean doBetaMCMC = true;
 
     protected final int [] EXPECTED_NUMBER_OF_TERMS = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
     private int expIdx = 0;
     private int oldExpIdx;
-    protected int totalExp[] = new int[EXPECTED_NUMBER_OF_TERMS.length];
+    protected int[] totalExp = new int[EXPECTED_NUMBER_OF_TERMS.length];
     private boolean doExpMCMC = true;
 
     protected double alpha = Double.NaN;

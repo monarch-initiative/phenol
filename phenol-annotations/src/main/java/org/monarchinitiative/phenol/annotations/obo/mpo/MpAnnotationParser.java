@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.obo.mpo;
 
 import com.google.common.collect.*;
-import org.monarchinitiative.phenol.annotations.formats.mpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.mpo.*;

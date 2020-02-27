@@ -288,7 +288,7 @@ public class MgsaCalculation {
         int[][] term2Items = termToItemMatrix.getTermLinks();
         boolean[] observedItems = this.termToItemMatrix.getBooleanArrayobservedItems(studySet.getAnnotatedItemTermIds()); //geneMapper.getDense(studyEnumerator.getGenes());
         int numTerms = termToItemMatrix.getNumTerms();
-        MgsaGOTermProperties res[] = new MgsaGOTermProperties[numTerms];
+        MgsaGOTermProperties[] res = new MgsaGOTermProperties[numTerms];
         Random rnd;
         if (seed != 0) {
             rnd = new Random(seed);
