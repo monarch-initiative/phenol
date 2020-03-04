@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.mpo;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +68,13 @@ abstract class MpModel {
     return phenotypicAbnormalities.stream()
       .filter(MpAnnotation::sexSpecific)
       .map(MpAnnotation::getTermId)
+      .collect(Collectors.toList());
+  }
+
+  public List<TermId> getNonSexSpecificMpTermIds() {
+    return phenotypicAbnormalities.stream()
+      .filter(mpa -> ! mpa.sexSpecific())
+        .map(MpAnnotation::getTermId)
       .collect(Collectors.toList());
   }
 

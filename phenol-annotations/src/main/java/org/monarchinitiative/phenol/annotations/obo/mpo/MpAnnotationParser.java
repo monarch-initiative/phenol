@@ -382,10 +382,71 @@ public class MpAnnotationParser {
         return builder.build();
       }
     }
-
-
   }
 
+  public static Map<TermId, MpGeneModel> loadMpGeneModel(String genePhenoPath) {
+    Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
+    ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
+    try {
+      MpAnnotationParser annotParser = new MpAnnotationParser(genePhenoPath);
+      if (annotParser.getParsedAnnotationCount() == 0) {
+        for (String e : annotParser.getParseErrors()) {
+          System.err.println(e);
+        }
+        throw new PhenolRuntimeException("Could not parse " + genePhenoPath);
+      }
+      Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
+      for (MpSimpleModel simplemod : simpleModelMap.values()) {
+        TermId geneId = simplemod.getMarkerId();
+        gene2simpleMap.putIfAbsent(geneId, new ArrayList<>());
+        List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
+        lst.add(simplemod);
+      }
+      // when we get here, the simpleModelMap has key-a gene ID, value-collection of
+      // all simple models that have a knockout of the corresponding gene
+      for (TermId geneId : gene2simpleMap.keySet()) {
+        List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
+        MpGeneModel genemod = new MpGeneModel(geneId, modCollection);
+        builder.put(geneId, genemod);
+      }
+    } catch (PhenolException e) {
+      e.printStackTrace();
+    }
+    return builder.build();
+  }
+
+
+ public static  Map<TermId, MpGeneModel>
+ loadMpGeneModelsWithSexSpecificPhenotypes(String genePhenoPath, String phenoSexPath) {
+   Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
+   ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
+   try {
+     MpAnnotationParser annotParser = new MpAnnotationParser(genePhenoPath, phenoSexPath);
+     if (annotParser.getParsedAnnotationCount() == 0) {
+       for (String e : annotParser.getParseErrors()) {
+         System.err.println(e);
+       }
+       throw new PhenolRuntimeException("Could not parse " + genePhenoPath);
+     }
+     Map<TermId, MpSimpleModel> simpleModelMap = annotParser.getGenotypeAccessionToMpModelMap();
+     for (MpSimpleModel simplemod : simpleModelMap.values()) {
+       TermId geneId = simplemod.getMarkerId();
+       gene2simpleMap.putIfAbsent(geneId, new ArrayList<>());
+       List<MpSimpleModel> lst = gene2simpleMap.get(geneId);
+       lst.add(simplemod);
+     }
+     // when we get here, the simpleModelMap has key-a gene ID, value-collection of
+     // all simple models that have a knockout of the corresponding gene
+     for (TermId geneId : gene2simpleMap.keySet()) {
+       List<MpSimpleModel> modCollection = gene2simpleMap.get(geneId);
+       MpGeneModel genemod = new MpGeneModel(geneId, modCollection);
+       builder.put(geneId, genemod);
+     }
+   } catch (PhenolException e) {
+     e.printStackTrace();
+   }
+   return builder.build();
+ }
 
 
 }

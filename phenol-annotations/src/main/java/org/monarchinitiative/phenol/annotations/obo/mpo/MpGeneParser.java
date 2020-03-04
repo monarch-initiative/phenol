@@ -21,32 +21,21 @@ import static org.monarchinitiative.phenol.annotations.formats.mpo.MpGene.create
  * The List2 version excludes withdrawn symbols
  */
 public class MpGeneParser {
-  /**
-   * Path to the MRK_List2.rpt file from MGI.
-   */
-  private final String mgiMarkerPath;
-  /**
-   * Path to the MGI_GenePheno.rpt file from MGI.
-   */
-  private final String mgiGenePhenoPath;
 
-
-  public MpGeneParser(String markerPath, String mgiGenePhenoPath) {
-    this.mgiMarkerPath = markerPath;
-    this.mgiGenePhenoPath = mgiGenePhenoPath;
+  private MpGeneParser() {
+    // should not be used by client code
   }
-
 
   /**
    * Reads the file of genetic markers. For each genetic marker, extracts the full MGI Accession ID,
    * the Marker Symbol, and Marker Type.
-   *
+   * @param markerPath Path to the MRK_List2.rpt file from MGI.
    * @return ImmutableGenes object holding all the genes read from file
    * @throws IOException if the file cannot be read
    */
-  public Map<TermId, MpGene> parseMarkers()  {
+  public static Map<TermId, MpGene> loadMarkerMap(String markerPath) {
     ImmutableMap.Builder<TermId, MpGene> builder = ImmutableMap.builder();
-    try (BufferedReader br = new BufferedReader(new FileReader(mgiMarkerPath))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(markerPath))) {
       String line = br.readLine(); // skip header line
       while ((line = br.readLine()) != null) {
         String[] fields = line.split("\t");
@@ -55,11 +44,16 @@ public class MpGeneParser {
         builder.put(mgiId, createMpGene(mgiId, fields[6], fields[9]));
       }
     } catch (IOException e) {
-      System.err.println("Could not read MGI Marker file" + mgiMarkerPath);
+      System.err.println("Could not read MGI Marker file" + markerPath);
     }
     return builder.build();
   }
 
+
+
+
+/*
+refactor -- this belongs in the phenotype parser class
   public Map<TermId, MpGeneModel> parseMpGeneModels() {
     Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
     ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
@@ -89,6 +83,6 @@ public class MpGeneParser {
       e.printStackTrace();
     }
     return builder.build();
-  }
+  }*/
 
 }
