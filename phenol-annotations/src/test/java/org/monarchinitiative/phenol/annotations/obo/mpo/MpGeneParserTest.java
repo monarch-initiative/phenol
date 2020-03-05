@@ -24,7 +24,7 @@ class MpGeneParserTest {
   private static String MGI_genePhenoPath;
 
   @BeforeAll
-  static void setup() throws IOException, PhenolException {
+  static void setup() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MRK_List2.rpt.excerpt");
     if (url == null) {
@@ -62,13 +62,11 @@ class MpGeneParserTest {
    * We have two models for RB1. Both of them have an annotation for MP:0000961
    * and then they each have other (disjoint) annotations.
    *
-   * @throws PhenolException upon parsae problems
    */
 
   @Test
-  void testMergeGetsCorrectGeneId() throws PhenolException {
-    MpAnnotationParser parser = new MpAnnotationParser(MGI_genePhenoPath);
-    Map<TermId, MpSimpleModel> modelmap = parser.getGenotypeAccessionToMpModelMap();
+  void testMergeGetsCorrectGeneId() {
+    Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(MGI_genePhenoPath);
     List<MpSimpleModel> rb1Models = new ArrayList<>();
     TermId rb1Id = TermId.of("MGI:97874");
     for (MpSimpleModel mod : modelmap.values()) {

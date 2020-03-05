@@ -13,7 +13,6 @@ import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpAnnotationParser;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpGeneParser;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -35,13 +34,13 @@ import java.util.*;
  */
 public class MpEnrichmentDemo {
 
-  private Ontology ontology;
+  private final Ontology ontology;
 
-  private Map<TermId, MpGeneModel> mpgenemap;
+  private final Map<TermId, MpGeneModel> mpgenemap;
 
   private Map<String, TermId> symbol2termidMap;
 
-  private Map<TermId, MpGene> markermap;
+  private final Map<TermId, MpGene> markermap;
 
   private final String targetgenefile;
 
@@ -52,7 +51,7 @@ public class MpEnrichmentDemo {
     this.targetgenefile = options.getInputGeneList();
     String markerFile = options.getMarkerFile();
 
-    mpgenemap = MpAnnotationParser.loadMpGeneModel(MGI_genePhenoPath);
+    mpgenemap = MpAnnotationParser.loadMpGeneModels(MGI_genePhenoPath);
     markermap = MpGeneParser.loadMarkerMap(markerFile);
     System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
     System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
