@@ -99,8 +99,8 @@ public class MpEnrichmentDemo {
     Set<TermId> studyGenes = getStudySet();
 
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, ontology);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations, ontology);
-    StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations, ontology);
+    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
+    StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
     System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
 
     Hypergeometric hgeo = new Hypergeometric();

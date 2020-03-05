@@ -5,6 +5,7 @@ import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.PopulationSet;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -35,8 +36,6 @@ public class MgsaCalculation {
     private IntegerParam expectedNumberOfTerms = new IntegerParam(MgsaParam.Type.MCMC);
 
     private boolean takePopulationAsReference = false;
-    //private ICalculationProgress calculationProgress;
-
     private boolean randomStart = false;
     private final static int DEFAULT_MCMCSTEPS = 250_000;
     private final int mcmcSteps;
@@ -76,7 +75,7 @@ public class MgsaCalculation {
         }
         Set<TermId> allAnnotatedGenes = goAssociations.getAllAnnotatedGenes();
         Map<TermId, DirectAndIndirectTermAnnotations> assocs = goAssociations.getAssociationMap(allAnnotatedGenes, ontology);
-        this.populationSet = new PopulationSet(goAssociations.getAllAnnotatedGenes(), assocs, ontology);
+        this.populationSet = new PopulationSet(goAssociations.getAllAnnotatedGenes(), assocs);
     }
 
     /**
@@ -231,8 +230,7 @@ public class MgsaCalculation {
         try {
             calculateByMCMC(result, studySet);//, llr);
         } catch (PhenolException e) {
-            e.printStackTrace();
-            System.exit(1); // TODO make more robust
+            throw new PhenolRuntimeException(e.getMessage());
         }
         long end = System.currentTimeMillis();
         logger.log(INFO, (end - start) + "ms");

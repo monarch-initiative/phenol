@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+
 import java.util.Random;
 
 /**
@@ -35,6 +37,8 @@ public class FixedAlphaBetaScore extends MgsaScore
 
     protected double alpha = Double.NaN;
     protected double beta = Double.NaN;
+
+    private final double [] lGamma = new double[20000];
 
     /** True negative count */
     private int n00;
@@ -257,7 +261,7 @@ public class FixedAlphaBetaScore extends MgsaScore
             }
 
             if (!doExpMCMC)
-                throw new RuntimeException("MCMC requested proposal but no proposal is possible");
+                throw new PhenolRuntimeException("MCMC requested proposal but no proposal is possible");
 
             oldExpIdx = expIdx;
             expIdx = choose;
@@ -296,7 +300,7 @@ public class FixedAlphaBetaScore extends MgsaScore
         return p;
     }
 
-    private final double [] lGamma = new double[20000];
+
 
     private double logGamma(int a)
     {
@@ -369,7 +373,7 @@ public class FixedAlphaBetaScore extends MgsaScore
         else if (oldAlphaIdx != -1) alphaIdx = oldAlphaIdx;
         else if (oldBetaIdx != -1) betaIdx = oldBetaIdx;
         else if (oldExpIdx != -1) expIdx = oldExpIdx;
-        else throw new RuntimeException("Wanted to undo a proposal that wasn't proposed");
+        else throw new PhenolRuntimeException("Wanted to undo a proposal that wasn't proposed");
     }
 
     public long getNeighborhoodSize()

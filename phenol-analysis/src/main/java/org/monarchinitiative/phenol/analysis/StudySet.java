@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
@@ -24,32 +23,23 @@ public class StudySet {
    * ontology term annotates.
    */
   private final Map<TermId, DirectAndIndirectTermAnnotations> annotationMap;
-  /**
-   * List containing genes, diseases or other items of this set. These are the items that have been annotated
-   * with the terms of an ontology such as GO or HPO.
-   */
+  /** List containing genes, diseases or other items of this set. These are the items that
+   * have been annotated with the terms of an ontology such as GO or HPO. */
   private final Set<TermId> annotatedItemTermIds;
-  /**
-   * The name of the study set
-   */
+  /** The name of the study set. */
   private final String name;
-  /** Reference to Ontology object (e.g., GO, HPO). */
-  private final Ontology ontology;
 
   /**
    * @param genes                The genes (or other items) that make up this set.
    * @param name                 The name of this set, e.g., study1 or population
    * @param associationContainer Container of all Gene Ontology associations for all annotated genes
-   * @param ontology             reference to the Gene Ontology object
    */
   public StudySet(Set<TermId> genes,
                   String name,
-                  Map<TermId, DirectAndIndirectTermAnnotations> associationContainer,
-                  Ontology ontology) {
+                  Map<TermId, DirectAndIndirectTermAnnotations> associationContainer) {
     this.annotatedItemTermIds = genes;
     this.name = name;
     this.annotationMap = associationContainer;
-    this.ontology = ontology;
   }
 
   /**
