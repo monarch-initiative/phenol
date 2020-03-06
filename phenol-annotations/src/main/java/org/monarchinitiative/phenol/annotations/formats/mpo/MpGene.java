@@ -2,6 +2,8 @@ package org.monarchinitiative.phenol.annotations.formats.mpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import static org.monarchinitiative.phenol.annotations.formats.mpo.MpMarkerType.GENE;
+
 /**
  * A MpGene object corresponds to a genetic marker in MGI. It contains the MGI marker accession id,
  * the marker symbol, and the marker type (gene, transgene, etc.).
@@ -64,6 +66,8 @@ public class MpGene {
   public TermId getMgiGeneId() {
     return mgiId;
   }
+  /** @return true iff this marker is a gene (see MpMarkerType for other categories). */
+  public boolean isGene() { return this.markerType.equals(GENE); }
 
   /**
    * toString method of MpGene.
