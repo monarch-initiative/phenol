@@ -104,7 +104,7 @@ public class MpEnrichmentDemo {
     System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
 
     Hypergeometric hgeo = new Hypergeometric();
-    MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni<>();
+    MultipleTestingCorrection<PValue> bonf = new Bonferroni<>();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(ontology,
       associationContainer,
       populationSet,

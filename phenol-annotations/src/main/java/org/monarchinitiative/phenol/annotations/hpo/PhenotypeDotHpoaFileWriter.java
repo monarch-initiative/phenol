@@ -40,7 +40,8 @@ public class PhenotypeDotHpoaFileWriter {
    * Usually "phenotype.hpoa", but may also include path.
    */
   private final String outputFileName;
-  private final static String EMPTY_STRING = "";
+  //private final static String EMPTY_STRING = "";
+  /** Reference to human phenotype ontology object. */
   private final Ontology ontology;
   /**
    * Number of annotated Orphanet entries.

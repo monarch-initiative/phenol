@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BonferroniTest {
 
-  private static List<Item2PValue<TermId>> pvallist;
+  private static List<PValue> pvallist;
 
   private static final double EPSILON=0.00001;
 

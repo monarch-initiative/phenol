@@ -6,7 +6,7 @@ import java.util.List;
 public class BenjaminiYekutieli<T> implements MultipleTestingCorrection<T> {
 
   @Override
-  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends PValue> pvals) {
     Collections.sort(pvals);
     int N = pvals.size();
     double h = 0.0;
@@ -17,7 +17,7 @@ public class BenjaminiYekutieli<T> implements MultipleTestingCorrection<T> {
      * within relevantP also are objects within p!
      */
     for (int r = 0; r < N; r++) {
-      Item2PValue item = pvals.get(r);
+      PValue item = pvals.get(r);
       double raw_p = item.getRawPValue();
       double adj_p = raw_p * N * h / (r + 1);
       item.setAdjustedPValue(adj_p);

@@ -10,8 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 
-public class GoTerm2PValAndCounts extends Item2PValue<TermId>
-{
+public class GoTerm2PValAndCounts extends PValue {
 
   private final int annotatedStudyGenes;
   private final int annotatedPopulationGenes;

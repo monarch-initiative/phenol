@@ -64,7 +64,7 @@ public final class GoEnrichmentDemo {
       Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
       StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
       Hypergeometric hgeo = new Hypergeometric();
-      MultipleTestingCorrection<Item2PValue> bonf = new Bonferroni<>();
+      MultipleTestingCorrection<PValue> bonf = new Bonferroni<>();
       TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
         associationContainer,
         populationSet,

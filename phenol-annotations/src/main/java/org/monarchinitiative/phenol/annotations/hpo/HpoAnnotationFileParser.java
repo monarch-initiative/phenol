@@ -105,7 +105,7 @@ public class HpoAnnotationFileParser {
             if (parseErrors.size()>0) {
               String errstr= String.join("\n",parseErrors);
               if (faultTolerant) {
-                  System.err.println(String.format("234Errors encountered while parsing HPO Annotation file at %s.\n%s",
+                  System.err.println(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
                     hpoAnnotationFile,errstr));
                   System.err.println(errstr);
               } else {

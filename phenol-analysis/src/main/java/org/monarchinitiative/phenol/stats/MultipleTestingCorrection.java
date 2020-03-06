@@ -17,7 +17,7 @@ public interface MultipleTestingCorrection<T>
 	 *
 	 * @param pvals an object implementing the p value 	calculation.
 	 */
-  void adjustPvals(List<? extends Item2PValue<T>> pvals);
+  void adjustPvals(List<? extends PValue> pvals);
 
 
 	/**
@@ -35,7 +35,7 @@ public interface MultipleTestingCorrection<T>
    * @param pairs specifies the p values array which has to be already
    *        in sorted order!
    */
-  default void enforcePValueMonotony(List<? extends Item2PValue<T> > pairs)
+  default void enforcePValueMonotony(List<? extends PValue> pairs)
   {
     int m = pairs.size();
 

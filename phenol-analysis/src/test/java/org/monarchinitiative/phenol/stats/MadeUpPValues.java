@@ -29,29 +29,29 @@ class MadeUpPValues {
   public static final TermId O = TermId.of("FAKE:15");
 
 
-  private List<Item2PValue<TermId>> pvallist;
+  private List<PValue> pvallist;
 
   public MadeUpPValues() {
     pvallist=new ArrayList<>();
-    pvallist.add(new Item2PValue<>(A,0.0001));
-    pvallist.add(new Item2PValue<>(B,0.0004));
-    pvallist.add(new Item2PValue<>(C,0.0019));
-    pvallist.add(new Item2PValue<>(D,0.0095));
-    pvallist.add(new Item2PValue<>(E,0.0201));
-    pvallist.add(new Item2PValue<>(F,0.0278));
-    pvallist.add(new Item2PValue<>(G,0.0298));
-    pvallist.add(new Item2PValue<>(H,0.0344));
-    pvallist.add(new Item2PValue<>(I,0.0459));
-    pvallist.add(new Item2PValue<>(J,0.3240));
-    pvallist.add(new Item2PValue<>(K,0.4262));
-    pvallist.add(new Item2PValue<>(L,0.5719));
-    pvallist.add(new Item2PValue<>(M,0.6528));
-    pvallist.add(new Item2PValue<>(N,0.7590));
-    pvallist.add(new Item2PValue<>(O,1.000));
+    pvallist.add(new PValue(A,0.0001));
+    pvallist.add(new PValue(B,0.0004));
+    pvallist.add(new PValue(C,0.0019));
+    pvallist.add(new PValue(D,0.0095));
+    pvallist.add(new PValue(E,0.0201));
+    pvallist.add(new PValue(F,0.0278));
+    pvallist.add(new PValue(G,0.0298));
+    pvallist.add(new PValue(H,0.0344));
+    pvallist.add(new PValue(I,0.0459));
+    pvallist.add(new PValue(J,0.3240));
+    pvallist.add(new PValue(K,0.4262));
+    pvallist.add(new PValue(L,0.5719));
+    pvallist.add(new PValue(M,0.6528));
+    pvallist.add(new PValue(N,0.7590));
+    pvallist.add(new PValue(O,1.000));
   }
 
 
-  public List<Item2PValue<TermId>> getRawPValues() {
+  public List<PValue> getRawPValues() {
     return pvallist;
   }
 

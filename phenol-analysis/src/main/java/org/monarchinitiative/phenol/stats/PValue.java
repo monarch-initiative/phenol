@@ -1,12 +1,13 @@
 package org.monarchinitiative.phenol.stats;
 
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 /**
- * This class is used to store an item (such as an ontology TermId) and its associated
+ * This class is used to store an item (an ontology TermId) and its associated
  * raw and adjusted p values.
- * @param <T>
  */
-public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
-  private final T item;
+public class PValue implements Comparable<PValue> {
+  private final TermId item;
   /** The nominal (i.e., uncorrected) p-value for this item. */
   private double p_raw;
   /**
@@ -27,13 +28,13 @@ public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
    * @param item An item whose p value was calculated
    * @param p the corresponding p value
    */
-  public Item2PValue(T item, double p) {
+  public PValue(TermId item, double p) {
       this.item=item;
       this.p_raw =p;
       this.p_adjusted=p;
   }
 
-  public T getItem() {
+  public TermId getItem() {
     return this.item;
   }
 
@@ -55,7 +56,7 @@ public class Item2PValue<T> implements Comparable<Item2PValue<T>> {
 
 
   @Override
-  public int compareTo(Item2PValue o) {
+  public int compareTo(PValue o) {
     return Double.compare(p_raw,o.p_raw);
   }
 
