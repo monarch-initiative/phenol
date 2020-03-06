@@ -2,8 +2,7 @@ package org.monarchinitiative.phenol.annotations.obo.mpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.annotations.formats.mpo.MpGene;
+import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpMarkerType;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpSimpleModel;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class MpGeneParserTest {
 
-  private static Map<TermId, MpGene> mpgenemap;
+  private static Map<TermId, MpGeneticMarker> mpgenemap;
   private static String MGI_genePhenoPath;
 
   @BeforeAll
@@ -51,7 +50,7 @@ class MpGeneParserTest {
   @Test
   void parseMarkersTest() {
     TermId tid = TermId.of("MGI:1341858");
-    MpGene g = mpgenemap.get(tid);
+    MpGeneticMarker g = mpgenemap.get(tid);
     assertNotNull(g);
     assertEquals("03B03F", g.getGeneSymbol());
     assertSame(MpMarkerType.BAC_YAC_END, g.getMarkerType());

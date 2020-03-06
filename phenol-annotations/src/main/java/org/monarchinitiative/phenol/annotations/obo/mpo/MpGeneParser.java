@@ -1,18 +1,14 @@
 package org.monarchinitiative.phenol.annotations.obo.mpo;
 
 import com.google.common.collect.ImmutableMap;
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.annotations.formats.mpo.MpGene;
-import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
-import org.monarchinitiative.phenol.annotations.formats.mpo.MpSimpleModel;
+import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
 import java.io.*;
 import java.util.*;
 
-import static org.monarchinitiative.phenol.annotations.formats.mpo.MpGene.createMpGene;
+import static org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker.createMpGeneticMarker;
 
 
 /**
@@ -33,15 +29,15 @@ public class MpGeneParser {
    * @return ImmutableGenes object holding all the genes read from file
    * @throws IOException if the file cannot be read
    */
-  public static Map<TermId, MpGene> loadMarkerMap(String markerPath) {
-    ImmutableMap.Builder<TermId, MpGene> builder = ImmutableMap.builder();
+  public static Map<TermId, MpGeneticMarker> loadMarkerMap(String markerPath) {
+    ImmutableMap.Builder<TermId, MpGeneticMarker> builder = ImmutableMap.builder();
     try (BufferedReader br = new BufferedReader(new FileReader(markerPath))) {
       String line = br.readLine(); // skip header line
       while ((line = br.readLine()) != null) {
         String[] fields = line.split("\t");
         // first field is MGI Accession ID, seventh is Marker Symbol, tenth is Marker Type
         TermId mgiId = TermId.of(fields[0]);
-        builder.put(mgiId, createMpGene(mgiId, fields[6], fields[9]));
+        builder.put(mgiId, createMpGeneticMarker(mgiId, fields[6], fields[9]));
       }
     } catch (IOException e) {
       System.err.println("Could not read MGI Marker file" + markerPath);

@@ -8,7 +8,7 @@ import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpAnnotation;
-import org.monarchinitiative.phenol.annotations.formats.mpo.MpGene;
+import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpAnnotationParser;
@@ -40,7 +40,7 @@ public class MpEnrichmentDemo {
 
   private Map<String, TermId> symbol2termidMap;
 
-  private final Map<TermId, MpGene> markermap;
+  private final Map<TermId, MpGeneticMarker> markermap;
 
   private final String targetgenefile;
 
@@ -150,7 +150,7 @@ public class MpEnrichmentDemo {
 
   private void initSymbol2termidMap() {
     symbol2termidMap = new HashMap<>();
-    for (MpGene gene : this.markermap.values()) {
+    for (MpGeneticMarker gene : this.markermap.values()) {
       String symbol = gene.getGeneSymbol();
       TermId id = gene.getMgiGeneId();
       symbol2termidMap.put(symbol, id);

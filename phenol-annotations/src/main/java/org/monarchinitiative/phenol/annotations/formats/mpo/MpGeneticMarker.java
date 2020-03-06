@@ -11,26 +11,26 @@ import static org.monarchinitiative.phenol.annotations.formats.mpo.MpMarkerType.
  * @version 0.0.1
  * @since 12 Dec 2017
  */
-public class MpGene {
+public class MpGeneticMarker {
   private final String geneSymbol;
 
   private final MpMarkerType markerType;
   private final TermId mgiId;
 
   /**
-   * Private constructor for MpGene objects.
+   * Private constructor for MpGeneticMarker objects.
    * @param mgiId        MGI marker accession id, e.g., MGI:97874
    * @param geneSymbol   MGI gene symbol, e.g., Rb1
    * @param markerType   MGI marker type, one of those listed below
    */
-  private MpGene(TermId mgiId, String geneSymbol, MpMarkerType markerType) {
+  private MpGeneticMarker(TermId mgiId, String geneSymbol, MpMarkerType markerType) {
     this.mgiId = mgiId;
     this.geneSymbol = geneSymbol;
     this.markerType = markerType;
   }
 
   /**
-   * Factory method to construct an MpGene object.
+   * Factory method to construct an MpGeneticMarker object.
    * @param mgiId        MGI marker accession id, e.g., MGI:97874
    * @param geneSymbol   MGI gene symbol, e.g., Rb1
    * @param markerType   MGI marker type, one of:
@@ -38,9 +38,9 @@ public class MpGene {
    *                     Gene; Other Genome Feature; Pseudogene; QTL; Transgene
    * @return             MpGene object
    */
-  public static MpGene createMpGene(TermId mgiId, String geneSymbol, String markerType) {
+  public static MpGeneticMarker createMpGeneticMarker(TermId mgiId, String geneSymbol, String markerType) {
     MpMarkerType marker = MpMarkerType.string2enum(markerType);
-    return new MpGene(mgiId, geneSymbol, marker);
+    return new MpGeneticMarker(mgiId, geneSymbol, marker);
   }
 
   /**
@@ -75,7 +75,7 @@ public class MpGene {
    */
   @Override
   public String toString() {
-    return "MpGene{" +
+    return "MpGeneticMarker{" +
       "mgiId: " + mgiId +
       ", geneSymbol: " + geneSymbol +
       ", markerType: " + markerType +
