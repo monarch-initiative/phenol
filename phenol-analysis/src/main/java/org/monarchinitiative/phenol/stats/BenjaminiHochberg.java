@@ -20,7 +20,7 @@ import java.util.List;
  * @author Sebastian Bauer
  *
  */
-public class BenjaminiHochberg<T> implements MultipleTestingCorrection<T>
+public class BenjaminiHochberg implements MultipleTestingCorrection
 {
   @Override
   public void adjustPvals(List<? extends PValue> pvals) {

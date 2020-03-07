@@ -23,7 +23,7 @@ class BonferroniTest {
 
   @Test
   void testGet15Pvalues() {
-    MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
+    MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     int expectedNumberOfPValues=15;
     assertEquals(expectedNumberOfPValues,pvallist.size());
@@ -32,7 +32,7 @@ class BonferroniTest {
 
   @Test
   void testA() {
-    MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
+    MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     // index 0
     double adjustedPValue = pvallist.get(0).getAdjustedPValue(); // raw value was 0.0001
@@ -43,7 +43,7 @@ class BonferroniTest {
 
   @Test
   void testB() {
-    MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
+    MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     double adjustedPValue = pvallist.get(1).getAdjustedPValue();// raw value was 0.0004
     // Bonferoni is 15x0.0001
@@ -55,7 +55,7 @@ class BonferroniTest {
   @Test
   void testN() {
     //pvalmap.put(N,new PValue(0.7590));
-    MultipleTestingCorrection<TermId> bonf = new Bonferroni<>();
+    MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     // index of N is 14
     double adjustedPValue = pvallist.get(14).getAdjustedPValue(); // raw value was 0.7590

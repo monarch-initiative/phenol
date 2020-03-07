@@ -37,6 +37,7 @@ public class TermForTermPValueCalculation extends PValueCalculation {
    */
   public List<GoTerm2PValAndCounts> calculatePVals() {
     Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap = this.studySet.getAnnotationMap();
+    Map<TermId, DirectAndIndirectTermAnnotations> populationSetAnnotationMap = this.populationSet.getAnnotationMap();
     List<GoTerm2PValAndCounts> results = new ArrayList<>();
 
     int popGeneCount = populationSet.getAnnotatedItemCount();
@@ -49,7 +50,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
       if (!this.annotationMap.containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
       }
-      int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
+     // int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
+      int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
       int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
       if (goidAnnotatedStudyGeneCount != 0) {
         /* Imagine the following...

@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Sebastian Bauer
  */
-public class Bonferroni<T> implements MultipleTestingCorrection<T>
+public class Bonferroni implements MultipleTestingCorrection
 {
 	/** The name of the correction method */
 	private static final String NAME = "Bonferroni";

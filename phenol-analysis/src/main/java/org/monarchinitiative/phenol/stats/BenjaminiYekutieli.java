@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.stats;
 import java.util.Collections;
 import java.util.List;
 
-public class BenjaminiYekutieli<T> implements MultipleTestingCorrection<T> {
+public class BenjaminiYekutieli implements MultipleTestingCorrection {
 
   @Override
   public void adjustPvals(List<? extends PValue> pvals) {

@@ -9,7 +9,7 @@ import java.util.List;
  * @author Sebastian Bauer
  * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
  */
-public interface MultipleTestingCorrection<T>
+public interface MultipleTestingCorrection
 {
 	/**
 	 * Perform multiple test correction on p values originating

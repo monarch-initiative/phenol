@@ -11,7 +11,7 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
  */
 
-public class BonferroniHolm<T> implements MultipleTestingCorrection<T> {
+public class BonferroniHolm implements MultipleTestingCorrection {
   /** The name of the correction method. */
   private static final String NAME = "Bonferroni-Holm";
 

@@ -45,7 +45,7 @@ class BenjaminiYekutieliTest {
 
   @Test
   void testA() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiYekutieli<>();
+    MultipleTestingCorrection bonf = new BenjaminiYekutieli();
     bonf.adjustPvals(pvallist);
     // index 0
     PValue item = getResult(MadeUpPValues.A,pvallist);
@@ -57,7 +57,7 @@ class BenjaminiYekutieliTest {
 
   @Test
   void testB() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiYekutieli<>();
+    MultipleTestingCorrection bonf = new BenjaminiYekutieli();
     bonf.adjustPvals(pvallist);
     // index 0
     PValue item = getResult(MadeUpPValues.B,pvallist);

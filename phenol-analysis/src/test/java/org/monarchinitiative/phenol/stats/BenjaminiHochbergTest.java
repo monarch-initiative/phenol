@@ -45,7 +45,7 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testA() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
     PValue item = getResult(MadeUpPValues.A,pvallist);
@@ -57,7 +57,7 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testB() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
     double adjustedPValue = pvallist.get(1).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
@@ -67,7 +67,7 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testC() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
     double adjustedPValue = pvallist.get(2).getAdjustedPValue(); // raw value was 0.0001// raw value was 0.0001
