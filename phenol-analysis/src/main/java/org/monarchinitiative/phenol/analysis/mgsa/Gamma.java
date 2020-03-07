@@ -35,7 +35,7 @@ public class Gamma {
         return ""+ulps;
     }
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         double a, b, c, d, e;
         for (int i = 1; i < 171; ++i) {
             a = Math.log(factorial(i));
@@ -109,16 +109,16 @@ public class Gamma {
             SQRT2PI    = 2.50662827463100024157,
             LN_SQRT2PI = 0.9189385332046727418;
 
-    private static final int HI(double x) {
+    private static int HI(double x) {
         return (int)(Double.doubleToLongBits(x) >> 32);
     }
 
-    private static final int LO(double x) {
+    private static int LO(double x) {
         return (int)Double.doubleToLongBits(x);
     }
 
     // coefficients for gamma=7, kmax=8  Lanczos method
-    private static final double L9[] = {
+    private static double[] L9 = {
             0.99999999999980993227684700473478,
             676.520368121885098567009190444019,
             -1259.13921672240287047156078755283,
@@ -130,7 +130,7 @@ public class Gamma {
             1.50563273514931155834e-7
     };
     private static final double SQRT2PI_E7 = 0.0022857491179850424; //sqrt(2*pi)/e**7
-    static final double lanczosGamma9(double x) {
+    static double lanczosGamma9(double x) {
         if (x <= -1) return Double.NaN;
         double a = L9[0];
         for (int i = 1; i < 9; ++i) {
@@ -138,7 +138,7 @@ public class Gamma {
         }
         return (SQRT2PI_E7 * a) * Math.pow((x+7.5)/Math.E, x + .5);
     }
-    static final double lanczosLGamma9(double x) {
+    static double lanczosLGamma9(double x) {
         if (x <= -1) return Double.NaN;
         double a = L9[0];
         for (int i = 1; i < 9; ++i) {
@@ -166,7 +166,7 @@ public class Gamma {
     };
     private static final double G_PLUS_HALF = 607/128. + .5;
 
-    static public final double lanczosLGamma15(double x) {
+    static public double lanczosLGamma15(double x) {
         if (x <= -1) return Double.NaN;
         double a = L15[0];
         for (int i = 1; i < 15; ++i) {
@@ -177,7 +177,7 @@ public class Gamma {
         return (LN_SQRT2PI + Math.log(a)) + (x+.5)*Math.log(tmp) - tmp;
     }
 
-    static final double g(double x) {
+    static double g(double x) {
         if (x <= -1) return Double.NaN;
         double tmp = x + 5.2421875;
         return 0.9189385332046727418 +
@@ -202,7 +202,7 @@ public class Gamma {
                 - tmp;
     }
 
-    static final double f(double x) {
+    static double f(double x) {
         if (x <= -1) return Double.NaN;
         final double tmp = x + 5.2421875;
         //final double saveX = x;
@@ -238,7 +238,7 @@ public class Gamma {
             LC2 = -0.002777777777777778,
             LC3 = 7.936507936507937E-4,
             LC4 = -5.952380952380953E-4;
-    static final double stirlingGamma(double x) {
+    static double stirlingGamma(double x) {
         final double
                 r1 = 1./x,
                 r2 = r1*r1,
@@ -246,7 +246,7 @@ public class Gamma {
         return SQRT2PI * Math.sqrt(x) * (1 + SC1*r1 + SC2*r2 + SC3*r1*r2 + SC4*r4) * Math.pow(x/Math.E, x);
     }
 
-    static final double stirlingLGamma(double x) {
+    static double stirlingLGamma(double x) {
         final double
                 r1 = 1./x,
                 r2 = r1*r1,
@@ -256,7 +256,7 @@ public class Gamma {
         return (x+.5)*Math.log(x) -x + LN_SQRT2PI + LC1*r1 + LC2*r3 + LC3*r5 + LC4*r7;
     }
 
-    static final double FACT[] = {
+    static final double[] FACT = {
             1.0,
             40320.0,
             2.0922789888E13,
@@ -281,7 +281,7 @@ public class Gamma {
             2.5260757449731984E302,
     };
 
-    static final double factorial(double x) {
+    static double factorial(double x) {
         if (x <= -1) {
             return Double.NaN;
         }
@@ -367,7 +367,7 @@ public class Gamma {
             w5  =  8.36339918996282139126e-04,
             w6  = -1.63092934096575273989e-03;
 
-    static public final double lgamma(double x) {
+    static public double lgamma(double x) {
         double t,y,z,p,p1,p2,p3,q,r,w;
         int i;
 

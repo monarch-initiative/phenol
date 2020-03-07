@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.formats.mpo;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**

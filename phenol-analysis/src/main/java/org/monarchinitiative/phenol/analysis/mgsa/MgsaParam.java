@@ -9,7 +9,7 @@ package org.monarchinitiative.phenol.analysis.mgsa;
  */
 abstract public class MgsaParam
 {
-    static public enum Type
+    public enum Type
     {
         FIXED,
         EM,

@@ -88,7 +88,7 @@ public class MgsaCalculation {
     /**
      * Sets the seed of the random calculation.
      *
-     * @param seed
+     * @param seed random number seed
      */
     public void setSeed(long seed) {
         this.seed = seed;
@@ -368,8 +368,8 @@ public class MgsaCalculation {
             long now = System.currentTimeMillis();
             if (now - start > updateReportTime) {
                 logger.log(INFO, (t * 100 / maxSteps) + "% (score=" + score + " maxScore=" + maxScore + " #terms=" + fixedAlphaBetaScore.getActiveTerms().length +
-                        " accept/reject=" + Double.toString((double) numAccepts / (double) numRejects) +
-                        " accept/steps=" + Double.toString((double) numAccepts / (double) t) +
+                        " accept/reject=" + (double) numAccepts / (double) numRejects +
+                        " accept/steps=" + (double) numAccepts / (double) t +
                         " exp=" + expectedNumberOfTerms + " usePrior=" + usePrior + ")");
                 start = now;
 
@@ -406,7 +406,7 @@ public class MgsaCalculation {
             // studyEnumerator.getAnnotatedGenes(tid).totalAnnotatedCount();
             prop.annotatedPopulationGenes = getPopulationSetCount();
             //populationEnumerator.getAnnotatedGenes(tid).totalAnnotatedCount();
-            prop.marg = fixedAlphaBetaScore.termActivationCounts[t] / fixedAlphaBetaScore.numRecords;
+            prop.marg = (double)fixedAlphaBetaScore.termActivationCounts[t] / fixedAlphaBetaScore.numRecords;
         }
 
 
@@ -593,8 +593,8 @@ public class MgsaCalculation {
                 long now = System.currentTimeMillis();
                 if (now - start > updateReportTime) {
                     logger.log(INFO, (t * 100 / maxSteps) + "% (score=" + score + " maxScore=" + maxScore + " #terms=" + fixedAlphaBetaScore.getActiveTerms().length +
-                            " accept/reject=" + Double.toString((double) numAccepts / (double) numRejects) +
-                            " accept/steps=" + Double.toString((double) numAccepts / (double) t) +
+                            " accept/reject=" + (double) numAccepts / (double) numRejects +
+                            " accept/steps=" + (double) numAccepts / (double) t +
                             " exp=" + expectedNumberOfTerms + " usePrior=" + usePrior + ")");
                     start = now;
 
@@ -649,7 +649,7 @@ public class MgsaCalculation {
 
             if (i == maxIter - 1) {
                 for (int t = 0; t < numTerms; t++) {
-                    res[t] = fixedAlphaBetaScore.termActivationCounts[t] / fixedAlphaBetaScore.numRecords;
+                    res[t] = (double)fixedAlphaBetaScore.termActivationCounts[t] / fixedAlphaBetaScore.numRecords;
                 }
             }
 
@@ -695,8 +695,11 @@ public class MgsaCalculation {
 
     public double[] calculate(int[][] term2Items, int[] studyIds, int numItems) {
         boolean[] observedItems = new boolean[numItems];
-        for (int i = 0; i < studyIds.length; i++)
-            observedItems[studyIds[i]] = true;
+        for (int j : studyIds){
+          observedItems[j] = true;
+        }
+        //for (int i = 0; i < studyIds.length; i++)
+        //    observedItems[studyIds[i]] = true;
         return calculate(term2Items, observedItems);
     }
 }
