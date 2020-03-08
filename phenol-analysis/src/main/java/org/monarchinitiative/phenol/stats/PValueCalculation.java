@@ -4,7 +4,7 @@ package org.monarchinitiative.phenol.stats;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.ItemAssociations;
 import org.monarchinitiative.phenol.analysis.StudySet;
-import org.monarchinitiative.phenol.analysis.TermAnnotations;
+import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -37,9 +37,9 @@ public abstract class PValueCalculation {
     protected MultipleTestingCorrection testCorrection;
 
     /**
-     * Key: a GO id; value: a {@link TermAnnotations} object with the annotations of the GO Term.
+     * Key: a GO id; value: a {@link DirectAndIndirectTermAnnotations} object with the annotations of the GO Term.
      */
-    protected Map<TermId, TermAnnotations> annotationMap;
+    protected Map<TermId, DirectAndIndirectTermAnnotations> annotationMap;
 
 
     protected PValueCalculation() {
@@ -65,7 +65,7 @@ public abstract class PValueCalculation {
 
     /**
      * Initialize the {@link #annotationMap}, whose key is a GO Id and whose value is a
-     * {@link TermAnnotations} object that contains the genes that have
+     * {@link DirectAndIndirectTermAnnotations} object that contains the genes that have
      * GO annotations to the term. Note that the function also adds counts for direct and
      * direct and total (including propagated) annotations.
      *
@@ -91,15 +91,15 @@ public abstract class PValueCalculation {
                     // replace an alt_id with the primary id.
                     // if we already have the primary id, nothing is changed.
                     TermId primaryGoId = term.getId();
-                    annotationMap.putIfAbsent(goId, new TermAnnotations());
-                    TermAnnotations termAnnots = annotationMap.get(primaryGoId);
+                    annotationMap.putIfAbsent(goId, new DirectAndIndirectTermAnnotations());
+                    DirectAndIndirectTermAnnotations termAnnots = annotationMap.get(primaryGoId);
                     termAnnots.addGeneAnnotationDirect(geneId);
                     // In addition to the direct annotation, the gene is also indirectly annotated to all of the
                     // GO Term's ancestors
                     Set<TermId> ancs = getAncestorTerms(ontology, primaryGoId, true);
                     for (TermId ancestor : ancs) {
-                        annotationMap.putIfAbsent(ancestor, new TermAnnotations());
-                        TermAnnotations termAncAnnots = annotationMap.get(ancestor);
+                        annotationMap.putIfAbsent(ancestor, new DirectAndIndirectTermAnnotations());
+                        DirectAndIndirectTermAnnotations termAncAnnots = annotationMap.get(ancestor);
                         termAncAnnots.addGeneAnnotationTotal(geneId);
                     }
                 }

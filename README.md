@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.4.1
+- **Version:** 1.4.2
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -40,7 +40,7 @@ phenol version in the properties section of the pom file of the application.
 ```
 <properties>
   (...)
-  <phenol.version>1.4.0</phenol.version>
+  <phenol.version>1.4.2</phenol.version>
 </properties>
 ```
 

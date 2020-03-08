@@ -11,16 +11,16 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
  */
 
-public class BonferroniHolm<T> implements MultipleTestingCorrection<T> {
+public class BonferroniHolm implements MultipleTestingCorrection {
   /** The name of the correction method. */
   private static final String NAME = "Bonferroni-Holm";
 
   @Override
-  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends PValue> pvals) {
     Collections.sort(pvals);
     int N=pvals.size();
     for (int r=0;r<N;r++) {
-      Item2PValue item = pvals.get(r);
+      PValue item = pvals.get(r);
       double raw_p = item.getRawPValue();
       item.setAdjustedPValue(raw_p * N/(r+1));
     }

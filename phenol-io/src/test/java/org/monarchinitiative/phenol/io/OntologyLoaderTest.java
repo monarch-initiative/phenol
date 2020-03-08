@@ -1,8 +1,9 @@
 package org.monarchinitiative.phenol.io;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -20,6 +21,48 @@ import org.junit.jupiter.api.Test;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
 class OntologyLoaderTest {
+
+  @Test
+  void loadOwl() {
+    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadOwlStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadObo() {
+    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadOboStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadJson() {
+    Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
+    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
+    System.out.println(ontology.countAllTerms());
+  }
+
+  @Test
+  void loadJsonStream() throws Exception {
+    Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
+    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
+    System.out.println(ontology.countAllTerms());
+  }
 
   @Test
   void testNCITLoad() throws Exception {
@@ -126,7 +169,7 @@ class OntologyLoaderTest {
     Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());
     System.out.println("ECTO termPrefixes" + termPrefixes);
     assertEquals(2271, ecto.countNonObsoleteTerms());
-    assertEquals(0, ecto.countObsoleteTerms());
+    assertEquals(0, ecto.countAlternateTermIds());
   }
 
   @Test
@@ -140,11 +183,14 @@ class OntologyLoaderTest {
 
     assertEquals(TermId.of("owl:Thing"), permissiveOntology.getRootTermId());
     assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
-    assertEquals(4, permissiveOntology.countObsoleteTerms());
+    assertEquals(4, permissiveOntology.countAlternateTermIds());
 
     System.out.println("All ECTO termPrefixes" + permissiveOntology.getAllTermIds()
       .stream()
       .map(TermId::getPrefix)
       .collect(toSet()));
   }
+
+
+
 }

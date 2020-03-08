@@ -8,21 +8,27 @@ class RelationshipTypeTest {
 
   @Test
   void testHasModifier() {
-    RelationshipType hasMod = RelationshipType.fromString("http://purl.obolibrary.org/obo/RO_0002573");
+    RelationshipType hasMod = RelationshipType.of("http://purl.obolibrary.org/obo/RO_0002573", "has modifier");
     assertEquals(RelationshipType.HAS_MODIFIER, hasMod);
-    assertNotEquals(RelationshipType.PART_OF,hasMod);
+    assertNotEquals(RelationshipType.PART_OF, hasMod);
     assertFalse(hasMod.propagates());
   }
 
   @Test
-  void testPartOf() {
-    RelationshipType partOf = RelationshipType.fromString("http://purl.obolibrary.org/obo/BFO_0000050");
-    assertEquals(RelationshipType.PART_OF,partOf);
-    assertTrue(partOf.propagates());
+  void testIsA() {
+    assertEquals(RelationshipType.IS_A, RelationshipType.of("is_a", "is_a"));
+    assertTrue(RelationshipType.IS_A.propagates());
   }
 
   @Test
-  void returnsUnknownForUnknownRelationship() {
-    assertEquals(RelationshipType.UNKNOWN, RelationshipType.fromString("wibble"));
+  void testPartOf() {
+    assertEquals(RelationshipType.PART_OF, RelationshipType.of("http://purl.obolibrary.org/obo/BFO_0000050", "part of"));
+    assertEquals(RelationshipType.PART_OF, RelationshipType.of("part_of", "part of"));
+    assertTrue(RelationshipType.PART_OF.propagates());
+  }
+
+  @Test
+  void allowsForUndefinedRelationship() {
+    assertEquals(RelationshipType.of("wibble", "thing"), RelationshipType.of("wibble", "thing"));
   }
 }

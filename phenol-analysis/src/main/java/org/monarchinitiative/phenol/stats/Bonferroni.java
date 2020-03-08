@@ -14,15 +14,15 @@ import java.util.List;
  *
  * @author Sebastian Bauer
  */
-public class Bonferroni<T> implements MultipleTestingCorrection<T>
+public class Bonferroni implements MultipleTestingCorrection
 {
 	/** The name of the correction method */
 	private static final String NAME = "Bonferroni";
 
   @Override
-  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends PValue> pvals) {
     int N=pvals.size();
-    for (Item2PValue<T> item : pvals) {
+    for (PValue item : pvals) {
       double p_raw= item.getRawPValue();
       item.setAdjustedPValue(Math.min(1.0,N*p_raw));
     }

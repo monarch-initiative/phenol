@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://purl.obolibrary.org/obo/mondo.owl#"
+     xml:base="http://purl.obolibrary.org/obo/mondo.owl"
+     xmlns:mondo="http://purl.obolibrary.org/obo/mondo#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#"
+     xmlns:obo1="http://purl.obolibrary.org/obo/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:ncbitaxon="http://purl.obolibrary.org/obo/ncbitaxon#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:ace_lexicon="http://attempto.ifi.uzh.ch/ace_lexicon#"
+     xmlns:obo="http://www.geneontology.org/formats/oboInOwl#http://purl.obolibrary.org/obo/"
+     xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/mondo-module.owl">
+        <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/mondo/releases/2018-03-16/mondo.owl"/>
+        <terms:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
+        <foaf:homepage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">obofoundry.org/ontology/mondo.html</foaf:homepage>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Includes Ontology(OntologyID(OntologyIRI(&lt;http://purl.obolibrary.org/obo/mondo/imports/equivalencies.owl&gt;) VersionIRI(&lt;null&gt;))) [Axioms: 142991 Logical Axioms: 61249]</rdfs:comment>
+        <dc:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONDO: Monarch Disease Ontology</dc:title>
+        <oboInOwl:hasOBOFormatVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.2</oboInOwl:hasOBOFormatVersion>
+        <terms:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology.</terms:description>
+    </owl:Ontology>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/MONDO_0000645">
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/NCIT_C4517"/>
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/SCTID_92100009"/>
+        <owl:equivalentClass rdf:resource="http://www.orpha.net/ORDO/Orphanet_180237"/>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/MONDO_0005165"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0004026"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/UBERON_0003889"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0000624"/>
+        <obo1:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A non-metastasizing neoplasm that arises from the fallopian tube. Representative examples include papilloma, adenofibroma, and leiomyoma.</obo1:IAO_0000115>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOID:0060111</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICD10:D28.2</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MedDRA:10053865</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCIT:C4517</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Orphanet:180237</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SCTID:92100009</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UMLS:C0346190</oboInOwl:hasDbXref>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Fallopian Tube Neoplasm</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Fallopian Tube Tumor</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Neoplasm of Fallopian Tube</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Neoplasm of the Fallopian Tube</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Tumor of Fallopian Tube</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Benign Tumor of the Fallopian Tube</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fallopian Tube Neoplasm, Benign</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fallopian Tube Tumor, Benign</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">benign tumor of fallopian tubes</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fallopian tube benign neoplasm</oboInOwl:hasExactSynonym>
+        <oboInOwl:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONDO:0000645</oboInOwl:id>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/mondo#ordo_disease"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fallopian tube benign neoplasm</rdfs:label>
+    </owl:Class>
+</rdf:RDF>

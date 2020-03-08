@@ -1,19 +1,11 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
 /**
  * This class holds all gene names of a study and their associated
@@ -27,36 +19,33 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  */
 public class StudySet {
   /**
-   * Key: an Ontology id (usually GO or HP); value: a {@link TermAnnotations} object with the items that the
+   * Key: an Ontology id (usually GO or HP); value: a {@link DirectAndIndirectTermAnnotations} object with the items that the
    * ontology term annotates.
    */
-  private Map<TermId, TermAnnotations> annotationMap;
-  /**
-   * List containing genes, diseases or other items of this set. These are the items that have been annotated
-   * with the terms of an ontology such as GO or HPO.
-   */
+  private final Map<TermId, DirectAndIndirectTermAnnotations> annotationMap;
+  /** List containing genes, diseases or other items of this set. These are the items that
+   * have been annotated with the terms of an ontology such as GO or HPO. */
   private final Set<TermId> annotatedItemTermIds;
-  /**
-   * The name of the study set
-   */
+  /** The name of the study set. */
   private final String name;
 
   /**
    * @param genes                The genes (or other items) that make up this set.
    * @param name                 The name of this set, e.g., study1 or population
    * @param associationContainer Container of all Gene Ontology associations for all annotated genes
-   * @param ontology             reference to the Gene Ontology object
    */
-  public StudySet(Set<TermId> genes, String name, AssociationContainer associationContainer, Ontology ontology) {
+  public StudySet(Set<TermId> genes,
+                  String name,
+                  Map<TermId, DirectAndIndirectTermAnnotations> associationContainer) {
     this.annotatedItemTermIds = genes;
     this.name = name;
-    initAssociationMap(associationContainer, ontology);
+    this.annotationMap = associationContainer;
   }
 
   /**
    * @return a map with key: a GO id; value: an object with all annotated gene ids.
    */
-  public Map<TermId, TermAnnotations> getAnnotationMap() {
+  public Map<TermId, DirectAndIndirectTermAnnotations> getAnnotationMap() {
     return annotationMap;
   }
 
@@ -80,44 +69,11 @@ public class StudySet {
    * @param goId a GO or HP id
    * @return TermAnnotations object with all of the items (genes or diseases) that annotate to goId
    */
-  public TermAnnotations getAnnotatedGenes(TermId goId) {
+  public DirectAndIndirectTermAnnotations getAnnotatedGenes(TermId goId) {
     return this.annotationMap.get(goId);
   }
 
-  private void initAssociationMap(AssociationContainer associationContainer, Ontology ontology) {
-    this.annotationMap = new HashMap<>();
-    for (TermId domainTermId : this.annotatedItemTermIds) {
-      try {
-        ItemAssociations assocs = associationContainer.get(domainTermId);
-        for (TermAnnotation termAnnotation : assocs) {
-          /* At first add the direct counts and remember the terms */
-          TermId ontologyTermId = termAnnotation.getTermId();
-          // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
-          Term term = ontology.getTermMap().get(ontologyTermId);
-          if (term == null) {
-            System.err.println("Unable to retrieve term for id=" + ontologyTermId.getValue());
-            continue;
-          }
-          // replace an alt_id with the primary id.
-          // if we already have the primary id, nothing is changed.
-          TermId primaryGoId = term.getId();
-          annotationMap.putIfAbsent(ontologyTermId, new TermAnnotations());
-          TermAnnotations termAnnots = annotationMap.get(primaryGoId);
-          termAnnots.addGeneAnnotationDirect(domainTermId);
-          // In addition to the direct annotation, the gene is also indirectly annotated to all of the
-          // GO Term's ancestors
-          Set<TermId> ancs = getAncestorTerms(ontology, primaryGoId, true);
-          for (TermId ancestor : ancs) {
-            annotationMap.putIfAbsent(ancestor, new TermAnnotations());
-            TermAnnotations termAncAnnots = annotationMap.get(ancestor);
-            termAncAnnots.addGeneAnnotationTotal(domainTermId);
-          }
-        }
-      } catch (PhenolException e) {
-        System.err.println("[ERROR (StudySet.java)] " + e.getMessage());
-      }
-    }
-  }
+
 
 
   /**
@@ -149,6 +105,5 @@ public class StudySet {
   public boolean contains(TermId geneName) {
     return annotatedItemTermIds.contains(geneName);
   }
-
 
 }

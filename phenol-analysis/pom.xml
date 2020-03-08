@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
   </parent>
 
   <properties>
@@ -38,6 +38,12 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-annotations</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

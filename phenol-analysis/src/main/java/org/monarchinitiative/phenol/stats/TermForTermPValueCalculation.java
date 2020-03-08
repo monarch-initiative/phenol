@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.stats;
 
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
-import org.monarchinitiative.phenol.analysis.TermAnnotations;
+import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -36,12 +36,13 @@ public class TermForTermPValueCalculation extends PValueCalculation {
    * @return List of results with p values and study/population counts for each term.
    */
   public List<GoTerm2PValAndCounts> calculatePVals() {
-    Map<TermId, TermAnnotations> studySetAnnotationMap = this.studySet.getAnnotationMap();
+    Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap = this.studySet.getAnnotationMap();
+    Map<TermId, DirectAndIndirectTermAnnotations> populationSetAnnotationMap = this.populationSet.getAnnotationMap();
     List<GoTerm2PValAndCounts> results = new ArrayList<>();
 
     int popGeneCount = populationSet.getAnnotatedItemCount();
     int studyGeneCount = studySet.getAnnotatedItemCount();
-    for (Map.Entry<TermId, TermAnnotations> entry : studySetAnnotationMap.entrySet()) {
+    for (Map.Entry<TermId, DirectAndIndirectTermAnnotations> entry : studySetAnnotationMap.entrySet()) {
       if (entry.getValue().totalAnnotatedCount() < 2) {
         continue; // only a single annotated entry -- do not perform a statistical test
       }
@@ -49,7 +50,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
       if (!this.annotationMap.containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
       }
-      int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
+     // int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
+      int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
       int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
       if (goidAnnotatedStudyGeneCount != 0) {
         /* Imagine the following...

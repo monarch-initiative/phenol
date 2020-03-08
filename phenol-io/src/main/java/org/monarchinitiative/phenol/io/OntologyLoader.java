@@ -3,18 +3,15 @@ package org.monarchinitiative.phenol.io;
 import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.obo.OboGraphDocumentAdaptor;
-import org.monarchinitiative.phenol.io.obo.OboGraphDocumentLoader;
+import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
+import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Entry class for loading an ontology from a File or InputStream. Files can be in OWL, OBO or JSON format and will be
@@ -43,11 +40,8 @@ public class OntologyLoader {
   }
 
   public static Ontology loadOntology(File file, CurieUtil curieUtil, String... termIdPrefixes) {
-    try {
-      return loadOntology(new FileInputStream(file), curieUtil, termIdPrefixes);
-    } catch (FileNotFoundException e) {
-      throw new PhenolRuntimeException("Unable to load ontology", e);
-    }
+    GraphDocument graphDocument = loadGraphDocument(file);
+    return loadOntology(graphDocument, curieUtil, termIdPrefixes);
   }
 
   public static Ontology loadOntology(InputStream inputStream) {
@@ -59,10 +53,12 @@ public class OntologyLoader {
   }
 
   public static Ontology loadOntology(InputStream inputStream, CurieUtil curieUtil, String... termIdPrefixes) {
-
     GraphDocument graphDocument = loadGraphDocument(inputStream);
-    logger.debug("Finished loading ontology");
+    return loadOntology(graphDocument, curieUtil, termIdPrefixes);
+  }
 
+  public static Ontology loadOntology(GraphDocument graphDocument, CurieUtil curieUtil, String... termIdPrefixes) {
+    logger.debug("Finished loading ontology");
     logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
@@ -74,18 +70,52 @@ public class OntologyLoader {
     return ontology;
   }
 
-  private static GraphDocument loadGraphDocument(InputStream inputStream) {
-    // The input file might be json or obo/owl
+  private static GraphDocument loadGraphDocument(File file) {
     try {
-      return OboGraphDocumentLoader.loadObo(inputStream);
-    } catch (Exception e) {
-      logger.debug("Error loading OBO", e);
-    }
-
-    try {
-      return OboGraphDocumentLoader.loadJson(inputStream);
-    } catch (Exception e) {
+      return loadGraphDocument(new FileInputStream(file));
+    } catch (IOException e) {
       throw new PhenolRuntimeException("Unable to load ontology", e);
     }
+  }
+
+  private static GraphDocument loadGraphDocument(InputStream inputStream) {
+    // The input file might be json or obo/owl. Try to make an educated guess.
+    try (InputStream bufferedStream = new BufferedInputStream(inputStream)) {
+      int readlimit = 16;
+      bufferedStream.mark(readlimit);
+      String firstBytes = readBytes(bufferedStream, readlimit);
+      logger.debug("Read first bytes: " + firstBytes);
+      if (isJsonGraphDoc(firstBytes)) {
+        logger.debug("Looks like a JSON file...");
+        try {
+          bufferedStream.reset();
+          return OboGraphDocumentLoader.loadJson(bufferedStream);
+        } catch (Exception e) {
+          throw new PhenolRuntimeException("Error loading JSON", e);
+        }
+      }
+
+      logger.debug("Looks like a OBO/OWL file...");
+      try {
+        bufferedStream.reset();
+        return OboGraphDocumentLoader.loadObo(bufferedStream);
+      } catch (Exception e) {
+        throw new PhenolRuntimeException("Error loading OBO/OWL", e);
+      }
+    } catch (IOException e) {
+      throw new PhenolRuntimeException("Unable to load ontology", e);
+    }
+  }
+
+  private static String readBytes(InputStream bufferedStream, int readlimit) throws IOException {
+    byte[] firstFewBytes = new byte[readlimit];
+    if (bufferedStream.read(firstFewBytes) == readlimit) {
+      return new String(firstFewBytes);
+    }
+    return null;
+  }
+
+  private static boolean isJsonGraphDoc(String firstBytes) {
+    return firstBytes != null && firstBytes.replace("\\W+", "").startsWith("{");
   }
 }

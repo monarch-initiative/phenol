@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.scoredist.H2ScoreDistributionWriter;
-import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionReader;
-import org.monarchinitiative.phenol.io.scoredist.ScoreDistributionWriter;
-import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionReader;
-import org.monarchinitiative.phenol.io.scoredist.TextFileScoreDistributionWriter;
+import org.monarchinitiative.phenol.annotations.scoredist.H2ScoreDistributionWriter;
+import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionReader;
+import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionWriter;
+import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionReader;
+import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistributions;
 

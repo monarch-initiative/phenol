@@ -22,7 +22,7 @@ class BenjaminiHochbergTest {
 
   private static final double EPSILON=0.00001;
 
-  private static List<Item2PValue<TermId>> pvallist;
+  private static List<PValue> pvallist;
 
 
 
@@ -32,8 +32,8 @@ class BenjaminiHochbergTest {
   }
 
   /** Convenience method to retrieve the correct item for testing. */
-  private Item2PValue<TermId> getResult(TermId tid, List<Item2PValue<TermId>> lst) {
-    for (Item2PValue<TermId> item : lst) {
+  private PValue getResult(TermId tid, List<PValue> lst) {
+    for (PValue item : lst) {
       if (item.getItem().equals(tid)) {
         return item;
       }
@@ -45,10 +45,10 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testA() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
-    Item2PValue<TermId> item = getResult(MadeUpPValues.A,pvallist);
+    PValue item = getResult(MadeUpPValues.A,pvallist);
     assertNotNull(item);
     double adjpval = item.getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
     assertEquals(0.00150000,adjpval,EPSILON);
@@ -57,7 +57,7 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testB() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
     double adjustedPValue = pvallist.get(1).getAdjustedPValue(); // raw value was 0.0001 // raw value was 0.0001
@@ -67,7 +67,7 @@ class BenjaminiHochbergTest {
   /** 0.0001 and  0.00150000 */
   @Test
   void testC() {
-    MultipleTestingCorrection<TermId> bonf = new BenjaminiHochberg<>();
+    MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
     double adjustedPValue = pvallist.get(2).getAdjustedPValue(); // raw value was 0.0001// raw value was 0.0001

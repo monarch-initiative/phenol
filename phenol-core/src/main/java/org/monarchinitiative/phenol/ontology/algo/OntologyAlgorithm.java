@@ -1,9 +1,5 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import org.monarchinitiative.phenol.formats.hpo.HpoFrequency;
-import org.monarchinitiative.phenol.formats.hpo.HpoFrequencyTermIds;
-import org.monarchinitiative.phenol.formats.hpo.HpoModeOfInheritanceTermIds;
-import org.monarchinitiative.phenol.formats.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -20,10 +16,6 @@ import java.util.*;
  * Implementation of several commonly needed algorithms for traversing and searching in and {@link
  * Ontology}.
  *
- * @see HpoFrequency
- * @see HpoFrequencyTermIds
- * @see HpoModeOfInheritanceTermIds
- * @see HpoSubOntologyRootTermIds
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @author <a href="mailto:HyeongSikKIm@lbl.gov">HyeongSik Kim</a>
  */

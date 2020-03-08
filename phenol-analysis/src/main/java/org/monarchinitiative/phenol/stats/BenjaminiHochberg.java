@@ -20,14 +20,14 @@ import java.util.List;
  * @author Sebastian Bauer
  *
  */
-public class BenjaminiHochberg<T> implements MultipleTestingCorrection<T>
+public class BenjaminiHochberg implements MultipleTestingCorrection
 {
   @Override
-  public void adjustPvals(List<? extends Item2PValue<T>> pvals) {
+  public void adjustPvals(List<? extends PValue> pvals) {
     Collections.sort(pvals);
     int N=pvals.size();
     for (int r=0;r<N;r++) {
-      Item2PValue item = pvals.get(r);
+      PValue item = pvals.get(r);
       double raw_p = item.getRawPValue();
       item.setAdjustedPValue(raw_p * N/(r+1));
     }

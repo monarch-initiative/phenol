@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
   </parent>
 
   <properties>
@@ -57,7 +57,6 @@
       </exclusions>
     </dependency>
 
-    <!-- Apache Commons I/O for testing -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -67,7 +66,7 @@
     <dependency>
        <groupId>org.geneontology</groupId>
        <artifactId>obographs</artifactId>
-       <version>0.1.1</version>
+       <version>0.2.1</version>
        <exclusions>
           <exclusion>
               <groupId>com.fasterxml.jackson.core</groupId>
@@ -249,6 +248,15 @@
           </exclusion>
         </exclusions>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.199</version>
+      <!--<scope>test</scope>-->
+    </dependency>
+
   </dependencies>
 
   <build>

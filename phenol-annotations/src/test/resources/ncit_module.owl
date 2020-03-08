@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://purl.obolibrary.org/obo/ncit.owl#"
+     xml:base="http://purl.obolibrary.org/obo/ncit.owl"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:obo="http://purl.obolibrary.org/obo/">
+    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/ncit-module.owl"/>
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000115"/>
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasExactSynonym"/>
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#inSubset"/>
+
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/NCIT_R115">
+    </owl:ObjectProperty>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C2919">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/NCIT_C2852"/>
+                    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/NCIT_C48596"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/NCIT_R115"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/NCIT_C60312"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/NCIT_C2852"/>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/NCIT_C48596"/>
+        <obo:IAO_0000115>An adenocarcinoma arising from the prostate gland.  It is one of the most common malignant tumors afflicting men.  The majority of adenocarcinomas arise in the peripheral zone and a minority occurs in the central or the transitional zone of the prostate gland.  Grading of prostatic adenocarcinoma predicts disease progression and correlates with survival.  Several grading systems have been proposed, of which the Gleason system is the most commonly used.  Gleason sums of 2 to 4 represent well-differentiated disease, 5 to 7 moderately differentiated disease and 8 to 10 poorly differentiated disease.  Prostatic-specific antigen (PSA) serum test is widely used as a screening test for the early detection of prostatic adenocarcinoma.  Treatment options include radical prostatectomy, radiation therapy, androgen ablation and cryotherapy.  Watchful waiting or surveillance alone is an option for older patients with low-grade or low-stage disease.</obo:IAO_0000115>
+        <oboInOwl:hasExactSynonym>Adenocarcinoma of Prostate</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Adenocarcinoma of the Prostate</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Prostate Adenocarcinoma</oboInOwl:hasExactSynonym>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C116977"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C126659"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/ncit#oncotree_slim"/>
+        <rdfs:label>Prostate Adenocarcinoma</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C2852">
+        <obo:IAO_0000115>A common cancer characterized by the presence of malignant glandular cells.  Morphologically, adenocarcinomas are classified according to the growth pattern (e.g., papillary, alveolar) or according to the secreting product (e.g., mucinous, serous).  Representative examples of adenocarcinoma are ductal and lobular breast carcinoma, lung adenocarcinoma, renal cell carcinoma, hepatocellular carcinoma (hepatoma), colon adenocarcinoma, and prostate adenocarcinoma.</obo:IAO_0000115>
+        <oboInOwl:hasExactSynonym>ADENOCARCINOMA, MALIGNANT</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Adenocarcinoma</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Adenocarcinoma, NOS</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>adenocarcinoma</oboInOwl:hasExactSynonym>
+        <rdfs:label>Adenocarcinoma</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C60312">
+        <oboInOwl:hasExactSynonym>Serum PSA Increased</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Serum Prostate Specific Antigen Increased</oboInOwl:hasExactSynonym>
+        <rdfs:label>Serum Prostate Specific Antigen Increased</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C48596">
+		<oboInOwl:hasExactSynonym>Infiltrating Prostate Carcinoma</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Invasive Prostate Cancer</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Invasive Prostate Carcinoma</oboInOwl:hasExactSynonym>
+        <rdfs:label>Invasive Prostate Carcinoma</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C116977">
+        <rdfs:label>L1</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C126659">
+    </owl:Class>
+</rdf:RDF>

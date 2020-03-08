@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T> {
+public final class SimilarityScoreSampling<T extends Serializable> {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
@@ -76,8 +77,8 @@ public final class SimilarityScoreSampling<T> {
    *     labels.
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
-  public Map<Integer, ScoreDistribution> performSampling(Map<Integer, ? extends Collection<TermId>> labels) {
-    Map<Integer, ScoreDistribution> result = new HashMap<>();
+  public Map<Integer, ScoreDistribution<T>> performSampling(Map<Integer, ? extends Collection<TermId>> labels) {
+    Map<Integer, ScoreDistribution<T>> result = new HashMap<>();
     for (int numTerms = options.getMinNumTerms();
         numTerms <= options.getMaxNumTerms();
         ++numTerms) {
@@ -98,7 +99,7 @@ public final class SimilarityScoreSampling<T> {
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.
    */
-  public ScoreDistribution performSamplingForTermCount(Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
+  public ScoreDistribution<T> performSamplingForTermCount(Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
     LOGGER.info("Running precomputation for {} world objects using {} query terms...", labels.size(), numTerms);
 
     // Setup progress reporting.
@@ -106,11 +107,11 @@ public final class SimilarityScoreSampling<T> {
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    final ConcurrentHashMap<Integer, ObjectScoreDistribution<Integer>> distributions = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<T, ObjectScoreDistribution<T>> distributions = new ConcurrentHashMap<>();
     IntConsumer task =
       objectId -> {
           try {
-            final ObjectScoreDistribution<Integer> dist =
+            final ObjectScoreDistribution<T> dist =
                 performComputation(objectId, labels.get(objectId), numTerms);
             distributions.put(dist.getObjectId(), dist);
             progressReport.incCurrent();
