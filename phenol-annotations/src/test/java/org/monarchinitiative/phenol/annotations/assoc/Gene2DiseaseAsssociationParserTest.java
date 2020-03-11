@@ -37,9 +37,6 @@ public class Gene2DiseaseAsssociationParserTest {
     TermId melas = TermId.of("OMIM:540000");
     Collection<GeneToAssociation> g2a_collection = assocs.get(melas);
     assertEquals(16, g2a_collection.size());
-    //for (GeneToAssociation g2a : g2a_collection) {
-    //  System.out.println(g2a);
-    //}
     assertThat(g2a_collection, hasSize(16));
   }
 
