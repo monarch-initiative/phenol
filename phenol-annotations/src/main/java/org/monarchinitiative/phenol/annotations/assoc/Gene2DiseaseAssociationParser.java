@@ -27,33 +27,43 @@ public class Gene2DiseaseAssociationParser {
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
   private static final String OMIM_PREFIX = "OMIM";
 
-  /** Key--an EntrezGene id; value--the corresponding symbol. */
-  private Map<TermId,String> allGeneIdToSymbolMap;
-  /** Key--an EntrezGene id; value--the corresponding symbol. */
+  /**
+   * Key--an EntrezGene id; value--the corresponding symbol.
+   */
+  private Map<TermId, String> allGeneIdToSymbolMap;
+  /**
+   * Key--an EntrezGene id; value--the corresponding symbol.
+   */
   private ImmutableMap<TermId, String> geneIdToSymbolMap;
-  /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
+  /**
+   * Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
    * MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 1; is associated to the gene VEGF as POLYGENIC,
-   * and MARFAN SYNDROME is associated to the gene FBN1 as MENDELIAN.*/
-  private Multimap<TermId,GeneToAssociation> associationMap;
+   * and MARFAN SYNDROME is associated to the gene FBN1 as MENDELIAN.
+   */
+  private Multimap<TermId, GeneToAssociation> associationMap;
 
   /**
    * This constructor should be chosen to get data about disease links from mim2gene_medgen and
    * Homo sapiens gene info but not from Orphanet.
+   *
    * @param homoSapiensGeneInfo Path to Homo_sapiens.gene_info.gz
-   * @param mim2geneMedgen Path to mim2gene_medgen
+   * @param mim2geneMedgen      Path to mim2gene_medgen
    */
   Gene2DiseaseAssociationParser(String homoSapiensGeneInfo, String mim2geneMedgen) {
     this(new File(homoSapiensGeneInfo), new File(mim2geneMedgen));
   }
+
   Gene2DiseaseAssociationParser(File homoSapiensGeneInfoFile, File mim2geneMedgenFile) {
     parseMim2geneAndGeneInfo(homoSapiensGeneInfoFile, mim2geneMedgenFile);
   }
+
   /**
    * This constructor should be chosen to get data about disease links from mim2gene_medgen and
    * Homo sapiens gene info and Orphanet.
+   *
    * @param homoSapiensGeneInfo Path to Homo_sapiens.gene_info.gz
-   * @param mim2geneMedgen Path to mim2gene_medgen
-   * @param orphanet2Gene Path to Orphanet's gene file, en_product6.xml.
+   * @param mim2geneMedgen      Path to mim2gene_medgen
+   * @param orphanet2Gene       Path to Orphanet's gene file, en_product6.xml.
    */
   Gene2DiseaseAssociationParser(String homoSapiensGeneInfo, String mim2geneMedgen, String orphanet2Gene) {
     this(new File(homoSapiensGeneInfo), new File(mim2geneMedgen), new File(orphanet2Gene));
@@ -61,7 +71,7 @@ public class Gene2DiseaseAssociationParser {
 
   Gene2DiseaseAssociationParser(File homoSapiensGeneInfoFile, File mim2geneMedgenFile, File orphanet2GeneFile) {
     parseMim2geneAndGeneInfo(homoSapiensGeneInfoFile, mim2geneMedgenFile);
-    if (! orphanet2GeneFile.exists()) {
+    if (!orphanet2GeneFile.exists()) {
       throw new PhenolRuntimeException("Cannot find Orphanet en_product6.xml file");
     }
     parseOrphaToGene(orphanet2GeneFile, mim2geneMedgenFile);
@@ -69,14 +79,15 @@ public class Gene2DiseaseAssociationParser {
 
   /**
    * Parse the Homo_sapiens.gene_info.gz and mim2gene_medgen files (needed by both constructors).
+   *
    * @param homoSapiensGeneInfoFile
    * @param mim2geneMedgenFile
    */
   private void parseMim2geneAndGeneInfo(File homoSapiensGeneInfoFile, File mim2geneMedgenFile) {
-    if (! homoSapiensGeneInfoFile.exists()) {
+    if (!homoSapiensGeneInfoFile.exists()) {
       throw new PhenolRuntimeException("Cannot find Homo_sapiens.gene_info.gz file");
     }
-    if (! mim2geneMedgenFile.exists()) {
+    if (!mim2geneMedgenFile.exists()) {
       throw new PhenolRuntimeException("Cannot find mim2gene_medgen file");
     }
     try {
@@ -94,14 +105,15 @@ public class Gene2DiseaseAssociationParser {
   }
 
 
-
-  public Multimap<TermId,GeneToAssociation> getAssociationMap() {
-    ImmutableMultimap.Builder<TermId,GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
+  public Multimap<TermId, GeneToAssociation> getAssociationMap() {
+    ImmutableMultimap.Builder<TermId, GeneToAssociation> associationBuilder = new ImmutableMultimap.Builder<>();
     associationBuilder.putAll(associationMap);
     return associationBuilder.build();
   }
 
-  public Map<TermId,String> getGeneIdToSymbolMap() { return this.geneIdToSymbolMap;}
+  public Map<TermId, String> getGeneIdToSymbolMap() {
+    return this.geneIdToSymbolMap;
+  }
 
 
   private void parseOrphaToGene(File orphaToGeneFile, File mim2geneMedgenFile) {
@@ -112,10 +124,8 @@ public class Gene2DiseaseAssociationParser {
       TermId orpha = entry.getKey();
       Gene gene = entry.getValue();
       GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.UNKNOWN);
-      //if (!associationMap.containsEntry(orpha, g2a)) {
       // add to multimap
       associationMap.put(orpha, g2a);
-     // }
     }
     int size_after = associationMap.size();
     int added = size_after - size_before;
@@ -123,14 +133,14 @@ public class Gene2DiseaseAssociationParser {
   }
 
 
-
   /**
    * Parse the NCBI Homo_sapiens_gene_info.gz file
    * Add the mappings to a Guava bimap, e.g., NCBIGene:150-ADRA2A
+   *
    * @throws IOException if the file cannot be read
    */
   private void parseGeneInfo(File homoSapiensGeneInfoFile) throws IOException {
-    ImmutableMap.Builder<TermId,String> builder=new ImmutableMap.Builder<>();
+    ImmutableMap.Builder<TermId, String> builder = new ImmutableMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoFile);
     InputStream gzipStream = new GZIPInputStream(fileStream);
     Reader decoder = new InputStreamReader(gzipStream);
@@ -141,19 +151,19 @@ public class Gene2DiseaseAssociationParser {
     // to crash, so we check for previously found term ids with the seen set.
     // The TermId <-> symbol mapping is one to one.
     Set<TermId> seen = new HashSet<>();
-    while ((line=br.readLine())!=null) {
+    while ((line = br.readLine()) != null) {
       String[] a = line.split("\t");
-      String taxon=a[0];
-      if (! taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
-      if(!("unknown".equals(a[9]))){
-        String geneId=a[1];
-        String symbol=a[2];
-        TermId tid = TermId.of(ENTREZ_GENE_PREFIX,geneId);
+      String taxon = a[0];
+      if (!taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
+      if (!("unknown".equals(a[9]))) {
+        String geneId = a[1];
+        String symbol = a[2];
+        TermId tid = TermId.of(ENTREZ_GENE_PREFIX, geneId);
         if (seen.contains(tid)) {
           continue;
         }
         seen.add(tid);
-        builder.put(tid,symbol);
+        builder.put(tid, symbol);
       }
     }
     this.allGeneIdToSymbolMap = builder.build();
@@ -198,12 +208,12 @@ public class Gene2DiseaseAssociationParser {
         }
       }
     }
-    this.associationMap =  associationMap;
+    this.associationMap = associationMap;
     ImmutableMap.Builder<TermId, String> geneBuilder = new ImmutableMap.Builder<>();
     geneBuilder.putAll(geneMap);
     geneIdToSymbolMap = geneBuilder.build();
 
-   // this.allGeneIdToSymbolMap = null;
+    // this.allGeneIdToSymbolMap = null;
   }
 
 
