@@ -104,18 +104,21 @@ public class OrphaGeneToDiseaseParserTest {
    // assertTrue(genes.contains("HCN4"));
    // assertTrue(genes.contains("MYH6"));
     assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("SCN5A")).findFirst().isPresent());
+    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("HCN4")).findFirst().isPresent());
+    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("MYH6")).findFirst().isPresent());
   }
 
 
-
+/*
   @Test
   void testLocal() throws PhenolException {
-    Path orphaPath = Paths.get("/home/peter/data/phenolfiles/en_product6.xml");
-    Path mim2genePath = Paths.get("/home/peter/data/phenolfiles/mim2gene_medgen");
-    Path ginfoPath = Paths.get("/home/peter/data/phenolfiles/Homo_sapiens_gene_info.gz");
+    Path orphaPath = Paths.get("/home/robinp/data/phenoldata/en_product6.xml");
+    Path mim2genePath = Paths.get("/home/robinp/data/phenoldata/mim2gene_medgen");
+    Path ginfoPath = Paths.get("/home/robinp/data/phenoldata/Homo_sapiens.gene_info.gz");
+
     //OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile(), mim2genePath.toFile());
     Gene2DiseaseAssociationParser gp = new Gene2DiseaseAssociationParser(ginfoPath.toFile(), mim2genePath.toFile(), orphaPath.toFile());
   }
-
+*/
 
 }
