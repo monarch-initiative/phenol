@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.obo.mpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpSimpleModel;
 import org.monarchinitiative.phenol.ontology.data.TermId;

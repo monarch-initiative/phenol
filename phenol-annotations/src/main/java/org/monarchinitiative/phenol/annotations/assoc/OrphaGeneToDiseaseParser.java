@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.assoc;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

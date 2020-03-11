@@ -5,7 +5,6 @@ import com.google.common.collect.*;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AssociationType;
 import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
