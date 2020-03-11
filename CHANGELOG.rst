@@ -3,6 +3,12 @@ Changelog
 =========
 
 ------
+v1.4.3
+------
+- fixing bug in parsing of MGI Genetic Marker file
+- fixing bug in parsing of orphanet genes file, en_product6.xml
+
+------
 v1.4.2
 ------
 - Prototype ingest of JSON ontology files

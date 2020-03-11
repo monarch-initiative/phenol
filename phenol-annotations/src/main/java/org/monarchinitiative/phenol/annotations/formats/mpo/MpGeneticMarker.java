@@ -38,8 +38,8 @@ public class MpGeneticMarker {
    *                     Gene; Other Genome Feature; Pseudogene; QTL; Transgene
    * @return             MpGene object
    */
-  public static MpGeneticMarker createMpGeneticMarker(TermId mgiId, String geneSymbol, String markerType) {
-    MpMarkerType marker = MpMarkerType.string2enum(markerType);
+  public static MpGeneticMarker createMpGeneticMarker(TermId mgiId, String geneSymbol, String markerType, String featureType) {
+    MpMarkerType marker = MpMarkerType.string2enum(markerType, featureType);
     return new MpGeneticMarker(mgiId, geneSymbol, marker);
   }
 

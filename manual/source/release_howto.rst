@@ -4,7 +4,7 @@
 How-To: Release on Maven Central
 ================================
 
-This page describes the steps to release Phenol on Maven Central. TODO update me
+This page describes the steps to release Phenol on Maven Central.
 
 ------------------------
 Read the following first

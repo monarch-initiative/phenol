@@ -80,5 +80,13 @@ class MpGeneParserTest {
     assertEquals(genemod.getMarkerId(),rb1Id);
   }
 
+  @Test
+  void ifHeritablePhenotypicMarker_isNotGene_thenOK() {
+    TermId tid = TermId.of("MGI:3578159"); // marker is Gene	heritable phenotypic marker
+    MpGeneticMarker g = mpgenemap.get(tid);
+    assertNotNull(g);
+    assertFalse(g.isGene());
+  }
+
 
 }
