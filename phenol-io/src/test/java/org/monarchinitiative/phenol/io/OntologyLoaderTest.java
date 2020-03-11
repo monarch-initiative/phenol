@@ -26,14 +26,16 @@ class OntologyLoaderTest {
   void loadOwl() {
     Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
-    System.out.println(ontology.countAllTerms());
+    // the ncit_module.owl has 6 classes
+    assertEquals(6, ontology.countAllTerms());
   }
 
   @Test
   void loadOwlStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    System.out.println(ontology.countAllTerms());
+    // the ncit_module.owl has 6 classes
+    assertEquals(6, ontology.countAllTerms());
   }
 
   @Test
@@ -54,7 +56,8 @@ class OntologyLoaderTest {
   void loadJson() {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
-    System.out.println(ontology.countAllTerms());
+    // this file has 5 example HP terms
+    assertEquals(5, ontology.countAllTerms());
   }
 
   @Test
@@ -65,7 +68,7 @@ class OntologyLoaderTest {
   }
 
   @Test
-  void testNCITLoad() throws Exception {
+  void testNCITLoad() {
     Path ncitPath = Paths.get("src/test/resources/ncit_module.owl");
     Ontology ontology = OntologyLoader.loadOntology(ncitPath.toFile(), "NCIT");
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
@@ -162,12 +165,12 @@ class OntologyLoaderTest {
     ecto.getRelationMap()
       .values()
       .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.getRelationshipType()));
-    System.out.println("Root term: " + ecto.getTermMap().get(ecto.getRootTermId()));
-
+    Term rootT = ecto.getTermMap().get(ecto.getRootTermId());
+    assertEquals("artificial root term", rootT.getName());
     assertEquals(TermId.of("owl:Thing"), ecto.getRootTermId());
 
     Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());
-    System.out.println("ECTO termPrefixes" + termPrefixes);
+    //System.out.println("ECTO termPrefixes" + termPrefixes);
     assertEquals(2271, ecto.countNonObsoleteTerms());
     assertEquals(0, ecto.countAlternateTermIds());
   }
@@ -185,10 +188,20 @@ class OntologyLoaderTest {
     assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
     assertEquals(4, permissiveOntology.countAlternateTermIds());
 
-    System.out.println("All ECTO termPrefixes" + permissiveOntology.getAllTermIds()
+    Set<String> prefixes = permissiveOntology.getAllTermIds()
+      .stream()
+      .map(TermId::getPrefix)
+      .collect(toSet());
+
+    assertTrue(prefixes.contains("NCIT"));
+    assertTrue(prefixes.contains("CHEBI"));
+    assertTrue(prefixes.contains("GO"));
+
+   /* System.out.println("All ECTO termPrefixes" + permissiveOntology.getAllTermIds()
       .stream()
       .map(TermId::getPrefix)
       .collect(toSet()));
+    */
   }
 
 

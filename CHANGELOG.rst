@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v1.4.3
+------
+- fixing bug in parsing of MGI Genetic Marker file
+
+------
 v1.4.2
 ------
 - Prototype ingest of JSON ontology files
