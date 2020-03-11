@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.assoc;
 
 import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class OrphaGeneToDiseaseParserTest {
 
   // Get XML file from
-  //http://www.orphadata.org/cgi-bin/inc/product6.inc.php
+  //http://www.orphadata.org/data/xml/en_product6.xml
   // Our test file has the first three entries
   // <OrphaNumber>166024</OrphaNumber>
   //      <Name lang="en">Multiple epiphyseal dysplasia, Al-Gazali type</Name>
@@ -43,64 +44,79 @@ public class OrphaGeneToDiseaseParserTest {
   // with SCN5A, HCN4 and MYH6
   private static final String ORPHA_PREFIX = "ORPHA";
 
-  private static Multimap<TermId, String> orphaId2GeneMultimap;
+  private static Multimap<TermId, Gene> orphaId2GeneMultimap;
 
-  public OrphaGeneToDiseaseParserTest() throws IOException, PhenolException{
+  public OrphaGeneToDiseaseParserTest() {
     Path orphaPath = Paths.get("src/test/resources/orphanet_disease2gene_en_product6_head.xml");
-    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile());
+    Path mim2genePath = Paths.get("src/test/resources/mim2gene_medgen.excerpt");
+    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile(), mim2genePath.toFile());
     orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
   }
 
   /**
+   *
    * There are four diseases in our test file (we get the set of disease Ids with keySet).
    */
   @Test
-  public void testDiseaseCount() {
+  void testDiseaseCount() {
     int expected = 4;
     assertEquals(expected, orphaId2GeneMultimap.keySet().size());
   }
 
   @Test
-  public void testMultipleEpiphysealDysplasia() {
+  void testMultipleEpiphysealDysplasia() {
     TermId medId = TermId.of(ORPHA_PREFIX, "166024");
     assertTrue(orphaId2GeneMultimap.containsKey(medId));
-    Collection<String> genes = orphaId2GeneMultimap.get(medId);
+    Collection<Gene> genes = orphaId2GeneMultimap.get(medId);
     assertEquals(1, genes.size());
     String expectedGeneSymbol = "KIF7";
-    assertEquals(expectedGeneSymbol, genes.iterator().next());
+    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
   }
 
   @Test
-  public void testBrachydactyly() {
+  void testBrachydactyly() {
     TermId brachydactylyId = TermId.of(ORPHA_PREFIX, "166035");
     assertTrue(orphaId2GeneMultimap.containsKey(brachydactylyId));
-    Collection<String> genes = orphaId2GeneMultimap.get(brachydactylyId);
+    Collection<Gene> genes = orphaId2GeneMultimap.get(brachydactylyId);
     assertEquals(1, genes.size());
     String expectedGeneSymbol = "CWC27";
-    assertEquals(expectedGeneSymbol, genes.iterator().next());
+    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
   }
 
   @Test
-  public void testAspartylglucosaminuria() {
+  void testAspartylglucosaminuria() {
     TermId aspartylglucosaminuriaId = TermId.of(ORPHA_PREFIX, "93");
     assertTrue(orphaId2GeneMultimap.containsKey(aspartylglucosaminuriaId));
-    Collection<String> genes = orphaId2GeneMultimap.get(aspartylglucosaminuriaId);
+    Collection<Gene> genes = orphaId2GeneMultimap.get(aspartylglucosaminuriaId);
     assertEquals(1, genes.size());
     String expectedGeneSymbol = "AGA";
-    assertEquals(expectedGeneSymbol, genes.iterator().next());
+    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
   }
 
 
   @Test
-  public void testFamilialSickSinusSyndrome() {
+  void testFamilialSickSinusSyndrome() {
     TermId familialSSS = TermId.of(ORPHA_PREFIX, "166282");
     assertTrue(orphaId2GeneMultimap.containsKey(familialSSS));
-    Collection<String> genes = orphaId2GeneMultimap.get(familialSSS);
+    Collection<Gene> genes = orphaId2GeneMultimap.get(familialSSS);
     assertEquals(3, genes.size());
     // This disease is associated with the following three genes
-    assertTrue(genes.contains("SCN5A"));
-    assertTrue(genes.contains("HCN4"));
-    assertTrue(genes.contains("MYH6"));
+   // assertTrue(genes.contains("SCN5A"));
+   // assertTrue(genes.contains("HCN4"));
+   // assertTrue(genes.contains("MYH6"));
+    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("SCN5A")).findFirst().isPresent());
   }
+
+
+
+  @Test
+  void testLocal() throws PhenolException {
+    Path orphaPath = Paths.get("/home/peter/data/phenolfiles/en_product6.xml");
+    Path mim2genePath = Paths.get("/home/peter/data/phenolfiles/mim2gene_medgen");
+    Path ginfoPath = Paths.get("/home/peter/data/phenolfiles/Homo_sapiens_gene_info.gz");
+    //OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile(), mim2genePath.toFile());
+    Gene2DiseaseAssociationParser gp = new Gene2DiseaseAssociationParser(ginfoPath.toFile(), mim2genePath.toFile(), orphaPath.toFile());
+  }
+
 
 }

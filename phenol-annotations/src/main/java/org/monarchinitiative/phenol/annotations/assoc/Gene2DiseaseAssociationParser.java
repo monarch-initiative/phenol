@@ -16,12 +16,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * This class parses
+ * <ol>
+ *   <li>Homo_sapiens.gene_info.gz (has links between NCBIGene ids and gene symbols)</li>
+ *   <li>mim2gene_medgen (has links between OMIM disease ids and genes/NCBIGene ids</li>
+ *   <li>Optionally, Orphanet's gene file, en_product6.xml (has links between Orphanet diseases and genes)</li>
+ * </ol>
+ */
 public class Gene2DiseaseAssociationParser {
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
   private static final String OMIM_PREFIX = "OMIM";
 
   /** Key--an EntrezGene id; value--the corresponding symbol. */
-  private BiMap<TermId,String> allGeneIdToSymbolMap;
+  private Map<TermId,String> allGeneIdToSymbolMap;
   /** Key--an EntrezGene id; value--the corresponding symbol. */
   private ImmutableMap<TermId, String> geneIdToSymbolMap;
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
@@ -57,7 +65,7 @@ public class Gene2DiseaseAssociationParser {
     if (! orphanet2GeneFile.exists()) {
       throw new PhenolRuntimeException("Cannot find Orphanet en_product6.xml file");
     }
-    parseOrphaToGene(orphanet2GeneFile);
+    parseOrphaToGene(orphanet2GeneFile, mim2geneMedgenFile);
   }
 
   /**
@@ -97,26 +105,22 @@ public class Gene2DiseaseAssociationParser {
   public Map<TermId,String> getGeneIdToSymbolMap() { return this.geneIdToSymbolMap;}
 
 
-  private void parseOrphaToGene(File orphaToGeneFile) {
-    Multimap<TermId, String> orphaToGene;
-    Map<String, TermId> geneSymbolToId = this.allGeneIdToSymbolMap.inverse();
-    try {
-      OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaToGeneFile);
-      orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
-      for (Map.Entry<TermId, String> entry : orphaToGene.entries()) {
-        TermId orpha = entry.getKey();
-        String geneSymbol = entry.getValue();
-        if (geneSymbolToId.containsKey(geneSymbol)) {
-          Gene gene = new Gene(geneSymbolToId.get(geneSymbol), geneSymbol);
-          GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.UNKNOWN);
-          if (!associationMap.containsEntry(orpha, g2a)) {
-            associationMap.put(orpha, g2a);
-          }
-        }
-      }
-    } catch (PhenolException e) {
-      System.err.println(e.toString());
+  private void parseOrphaToGene(File orphaToGeneFile, File mim2geneMedgenFile) {
+    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaToGeneFile, mim2geneMedgenFile);
+    Multimap<TermId, Gene> orphaToGene = parser.getOrphaDiseaseToGeneSymbolMap();
+    int size_before = associationMap.size();
+    for (Map.Entry<TermId, Gene> entry : orphaToGene.entries()) {
+      TermId orpha = entry.getKey();
+      Gene gene = entry.getValue();
+      GeneToAssociation g2a = new GeneToAssociation(gene, AssociationType.UNKNOWN);
+      //if (!associationMap.containsEntry(orpha, g2a)) {
+      // add to multimap
+      associationMap.put(orpha, g2a);
+     // }
     }
+    int size_after = associationMap.size();
+    int added = size_after - size_before;
+    System.out.printf("Added %d Orphanet entries to association map (total size: %d).\n", added, size_after);
   }
 
 
@@ -127,7 +131,7 @@ public class Gene2DiseaseAssociationParser {
    * @throws IOException if the file cannot be read
    */
   private void parseGeneInfo(File homoSapiensGeneInfoFile) throws IOException {
-    ImmutableBiMap.Builder<TermId,String> builder=new ImmutableBiMap.Builder<>();
+    ImmutableMap.Builder<TermId,String> builder=new ImmutableMap.Builder<>();
     InputStream fileStream = new FileInputStream(homoSapiensGeneInfoFile);
     InputStream gzipStream = new GZIPInputStream(fileStream);
     Reader decoder = new InputStreamReader(gzipStream);
