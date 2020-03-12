@@ -24,9 +24,8 @@ import java.util.Map;
  * @author Peter Robinson (refactor)
  *
  */
-abstract class ParentChildPValuesCalculation extends PValueCalculation
-{
-	//protected SlimDirectedGraphView<Term> slimGraph;
+abstract class ParentChildPValuesCalculation extends PValueCalculation {
+
 
 	/**
 	 * Return value type for getCounts().
@@ -48,12 +47,12 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation
 	}
 
 	public ParentChildPValuesCalculation(Ontology graph,
-                                       AssociationContainer goAssociations, PopulationSet populationSet,
-                                       StudySet studySet, Hypergeometric hyperg, MultipleTestingCorrection mtc)
-	{
+                                       AssociationContainer goAssociations,
+                                       PopulationSet populationSet,
+                                       StudySet studySet,
+                                       Hypergeometric hyperg,
+                                       MultipleTestingCorrection mtc) {
 		super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
-
-		//slimGraph = graph.getSlimGraphView();
 	}
 
 	public List<GoTerm2PValAndCounts> calculatePValues(StudySet studySet)
@@ -72,8 +71,8 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation
       TermId goId = entry.getKey();
       if (!this.annotationMap.containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
+        continue;
       }
-      // int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
       int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
       int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
       if (goidAnnotatedStudyGeneCount != 0) {
@@ -121,10 +120,10 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation
 		return p;
 	} */
 
-	/*
-	private ParentChildGOTermProperties calculateTerm(int [] studyIds, int termIndex)
+/*
+	private GoTerm2PValAndCounts calculateTerm(int [] studyIds, TermId termId)
 	{
-		TermID termId = termIds[termIndex];
+
 		// counts annotated to term
 		int studyTermCount = Util.commonInts(studyIds, term2Items[termIndex]);
 		int popTermCount = term2Items[termIndex].length;
@@ -188,7 +187,9 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation
 
 		return prop;
 	}
-	 */
+
+ */
+
 
 	/**
 	 * Calculate the counts for the given study set ids for the term.
