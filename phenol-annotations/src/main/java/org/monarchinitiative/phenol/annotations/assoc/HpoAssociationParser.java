@@ -60,7 +60,7 @@ public class HpoAssociationParser {
   /** Key: a disease Id; Value:  disease obj, all gene associations. */
   private ImmutableMap<TermId, DiseaseToGeneAssociation> diseaseToAssociationsMap;
   /** Key: an phenotype Id Value: disease obj, HpoDisease, Immutable. */
-  private Map<TermId, HpoDisease> termToDisease;
+  //private Map<TermId, HpoDisease> termToDisease;
   /** Key: a phenotype Id; Value: geneId */
   private ImmutableList<HpoGeneAnnotation> phenotypeToGeneList;
   /** List of all associations */
@@ -127,6 +127,7 @@ public class HpoAssociationParser {
       }
     }
     setTermToGene(phenotypeToDisease);
+   // setTermToDisease(diseaseMap);
   }
 
 
@@ -140,8 +141,6 @@ public class HpoAssociationParser {
   public Multimap<TermId,TermId> getGeneToDiseaseIdMap() { return this.geneToDiseaseMap; }
 
   public List<HpoGeneAnnotation> getPhenotypeToGene() { return this.phenotypeToGeneList; }
-
-  public Map<TermId, HpoDisease> getTermToDisease() { return this.termToDisease; }
 
   public Multimap<TermId, GeneToAssociation> getDiseasetoGeneAssociation(){ return this.associationMap; }
 
@@ -182,11 +181,6 @@ public class HpoAssociationParser {
         });
     }
     this.phenotypeToGeneList = builderGeneAnnotationList.build();
-  }
-
-  public void setTermToDisease(Map<TermId, HpoDisease> termToDisease){
-
-    this.termToDisease = termToDisease;
   }
 
   /*
