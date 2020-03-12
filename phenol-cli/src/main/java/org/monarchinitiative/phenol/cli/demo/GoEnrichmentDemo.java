@@ -16,6 +16,8 @@ import java.io.File;
 import java.util.*;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
+import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
+import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 
 /**
  * This demo app shows how Gene Ontology enrichtment analysis is performed using the

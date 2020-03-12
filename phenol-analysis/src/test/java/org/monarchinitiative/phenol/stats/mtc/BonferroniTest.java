@@ -1,7 +1,11 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.stats.mtc.MadeUpPValues;
+import org.monarchinitiative.phenol.stats.PValue;
+import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
+import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 
 
 import java.util.List;
