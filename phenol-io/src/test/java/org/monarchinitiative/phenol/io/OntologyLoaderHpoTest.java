@@ -44,6 +44,7 @@ public class OntologyLoaderHpoTest {
 
   @Test
   public void testGetRootTerm() {
+    hpo = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp.obo").toFile());
     TermId rootId = TermId.of("HP:0000001");
     assertEquals(rootId, hpo.getRootTermId());
   }

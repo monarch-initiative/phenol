@@ -19,7 +19,7 @@ class TermSynonymTest {
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
             ImmutableList.of(new TermXref(TermId.of("HP:0000001"),"term description")),
-          "layperson term");
+          "http://purl.obolibrary.org/obo/hp.obo#layperson");
   }
 
   @Test
