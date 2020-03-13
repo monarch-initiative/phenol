@@ -6,14 +6,12 @@ import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.PopulationSet;
 import org.monarchinitiative.phenol.analysis.StudySet;
+import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -76,25 +74,45 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation {
       int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
       int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
       if (goidAnnotatedStudyGeneCount != 0) {
-        /* Imagine the following...
-         *
-         * In an urn you put popGeneCount number of balls where a color of a
-         * ball can be white or black. The number of balls having white color
-         * is goidAnnontatedPopGeneCount (all genes of the population which
-         * are annotated by the current GOID).
-         *
-         * You choose to draw studyGeneCount number of balls without replacement.
-         * How big is the probability, that you got goidAnnotatedStudyGeneCount
-         * white balls after the whole drawing process?
+        /*
+         * The parent child calculation is a one-sided Fisher exact test where the population is defined based not
+         * on the entire set of genes in an experiment but instead on the set of genes that annotate the parent(s) of
+         * the GO term of interest (t). If we denote pa(t) as the parent term(s) of t, then pa(t) will have some
+         * direct annotations to pa(t) and will also include annotations from distinct children of pa(t). It is possible
+         * that t has more than one parent term. In this case, parent-child union takes the set of all genes that
+         * annotate any term in pa(t), and parent-child intersect takes the set of genes that are annotated to all of
+         * the terms in pa(t). The latter tends to be more conservative.
+         * The study gene count is identical as with term for term, but we need to substitution the counts for the population
          */
-        double raw_pval = hyperg.phypergeometric(popGeneCount,
-          (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
-          studyGeneCount,
-          goidAnnotatedStudyGeneCount);
+
+        // get parents of current GO term. Do not include original term in this set
+        Set<TermId> parents = OntologyAlgorithm.getParentTerms(ontology, goId, false);
+        // methodology for Term for Term was like this:
+        //        double raw_pval = hyperg.phypergeometric(popGeneCount,
+        //          (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
+        //          studyGeneCount,
+        //          goidAnnotatedStudyGeneCount);
+        double raw_pval = 1;
+        if (parents.size() == 1) {
+          // in this case, PC union and PC intersect are identical
+          // get m_pa(t), the number of genes annotated to the parent of t in the population
+          TermId pa_t_id = parents.iterator().next(); // get the first and only element of the set
+          int m_pa_t = populationSetAnnotationMap.get(pa_t_id).totalAnnotatedCount();
+          // get n_pa(t), the number of genes annotation to pa(t) in the study set
+          int n_pa_t = studySetAnnotationMap.get(pa_t_id).totalAnnotatedCount();
+          raw_pval = hyperg.phypergeometric(m_pa_t,
+            (double) n_pa_t / (double) m_pa_t,
+            studyGeneCount,
+            goidAnnotatedStudyGeneCount);
+        } else {
+          Counts count = getCounts(goId, parents);
+        }
+
+
+
         GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
         results.add(goPval);
       }
-      // If desired we could record the SKIPPED TESTS (Terms) HERE
     }
     // Now do multiple testing correction
     this.testCorrection.adjustPvals(results);
@@ -194,11 +212,10 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation {
 	/**
 	 * Calculate the counts for the given study set ids for the term.
 	 *
-	 * @param studyIds the study sets
-	 * @param term the term for which the counts shall be determined.
+
 	 * @return the count structure.
 	 */
-	protected abstract Counts getCounts(int[] studyIds, TermId term);
+	protected abstract Counts getCounts(TermId goId, Set<TermId> parents);
 
   /**
    * Determine the number of integer values that are common in the given sorted arrays.

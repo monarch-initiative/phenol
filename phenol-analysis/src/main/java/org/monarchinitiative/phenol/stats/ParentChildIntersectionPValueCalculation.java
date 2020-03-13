@@ -9,6 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 
 import java.util.List;
+import java.util.Set;
 
 public class ParentChildIntersectionPValueCalculation extends ParentChildPValuesCalculation
 {
@@ -19,30 +20,12 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
 		super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
 	}
 
-	@Override
-	protected Counts getCounts(int[] studyIds, TermId term)
-	{
-		//int slimIndex = slimGraph.getVertexIndex(term);
-	//	int [] parents = slimGraph.vertexParents[slimIndex];
-	//	int [][] parentItems = new int[parents.length][];
+  @Override
+  protected Counts getCounts(TermId goId, Set<TermId> parents) {
+    return null;
+  }
 
-		int i = 0;
-	//	for (int parent : parents)
-	//	{
-			//parentItems[i++] = term2Items[getIndex(slimGraph.getVertex(parent).getID())];
-	//	}
 
-	//	int [][] allItems = new int[parents.length + 1][];
-	//	for (i=0;i<parents.length;i++)
-		//{
-	//		allItems[i] =  parentItems[i];
-	//	}
-	//	allItems[i] = studyIds;
-
-		/* number of genes annotated to family (term and parents) */
-		//Counts counts = new Counts(parents.length, commonInts(allItems), commonInts(parentItems));
-		return null; // counts;
-	}
 
   @Override
   public List<GoTerm2PValAndCounts> calculatePVals() {
