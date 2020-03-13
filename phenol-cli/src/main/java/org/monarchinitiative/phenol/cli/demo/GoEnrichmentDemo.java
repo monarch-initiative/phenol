@@ -127,7 +127,7 @@ public final class GoEnrichmentDemo {
     StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection bonf = new Bonferroni();
-    ParentChildIntersectionPValueCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
+    ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
@@ -167,8 +167,6 @@ public final class GoEnrichmentDemo {
     }
     System.out.println(String.format("PCI: %d of %d terms were significant at alpha %.7f", n_sig,pvals.size(),ALPHA));
   }
-
-
 
 
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {

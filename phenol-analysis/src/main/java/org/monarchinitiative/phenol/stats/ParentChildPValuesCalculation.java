@@ -18,7 +18,7 @@ import java.util.*;
  * @author Sebastian Bauer
  * @author Peter Robinson (refactor)
  */
-abstract class ParentChildPValuesCalculation extends PValueCalculation {
+public abstract class ParentChildPValuesCalculation extends PValueCalculation {
 
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
@@ -79,7 +79,7 @@ abstract class ParentChildPValuesCalculation extends PValueCalculation {
         //          (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
         //          studyGeneCount,
         //          goidAnnotatedStudyGeneCount);
-        double raw_pval = 1;
+        double raw_pval;
         if (parents.size() == 1) {
           // in this case, PC union and PC intersect are identical
           // get m_pa(t), the number of genes annotated to the parent of t in the population
