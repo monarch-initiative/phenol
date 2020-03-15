@@ -1,6 +1,7 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.stats.mtc;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.stats.PValue;
 
 import java.util.ArrayList;
 import java.util.List;

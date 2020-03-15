@@ -1,8 +1,9 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.stats.PValue;
 
 import java.util.List;
 

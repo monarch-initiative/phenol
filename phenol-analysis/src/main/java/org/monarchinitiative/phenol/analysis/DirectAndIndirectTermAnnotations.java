@@ -11,34 +11,45 @@ import java.util.Set;
  * the same GO/HPO/etc Term. The GO/HPO/etc Term itself is not represented in this object.
  *
  * @author Sebastian Bauer
+ * @author Peter Robinson (refactor)
  */
-public class DirectAndIndirectTermAnnotations
-{
-    /** List of directly annotated genes */
-    private Set<TermId> directAnnotated = new HashSet<>();
+public class DirectAndIndirectTermAnnotations {
+  /**
+   * List of directly annotated genes
+   */
+  private final Set<TermId> directAnnotated = new HashSet<>();
 
-    /** List of genes annotated in total (direct or via annotation propagation) */
-    private Set<TermId> totalAnnotated = new HashSet<>();
-
-
-    public void addGeneAnnotationDirect(TermId geneId) {
-        directAnnotated.add(geneId);
-        totalAnnotated.add(geneId);
-    }
-
-    public void addGeneAnnotationTotal(TermId geneId) {
-        totalAnnotated.add(geneId);
-    }
+  /**
+   * List of genes annotated in total (direct or via annotation propagation)
+   */
+  private final Set<TermId> totalAnnotated = new HashSet<>();
 
 
-    public int directAnnotatedCount()
-    {
-        return directAnnotated.size();
-    }
+  public void addGeneAnnotationDirect(TermId geneId) {
+    directAnnotated.add(geneId);
+    totalAnnotated.add(geneId);
+  }
 
-    public int totalAnnotatedCount()
-    {
-        return totalAnnotated.size();
-    }
+  public void addGeneAnnotationTotal(TermId geneId) {
+    totalAnnotated.add(geneId);
+  }
+
+
+  public int directAnnotatedCount() {
+    return directAnnotated.size();
+  }
+
+  public int totalAnnotatedCount() {
+    return totalAnnotated.size();
+  }
+
+  public Set<TermId> getDirectAnnotated() {
+    return directAnnotated;
+  }
+
+  /** @return Set of all genes directly or indirectly annotated to a GO/HPO term. */
+  public Set<TermId> getTotalAnnotated() {
+    return totalAnnotated;
+  }
 }
 
