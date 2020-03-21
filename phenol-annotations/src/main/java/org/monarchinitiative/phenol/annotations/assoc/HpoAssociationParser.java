@@ -52,15 +52,13 @@ public class HpoAssociationParser {
   /** Key: an OMIM curie (e.g., OMIM:600100); value--corresponding GeneToAssociation object). For instance,
    * MICROVASCULAR COMPLICATIONS OF DIABETES, SUSCEPTIBILITY TO, 1; is associated to the gene VEGF as POLYGENIC,
    * and MARFAN SYNDROME is associated to the gene FBN1 as MENDELIAN.*/
-  private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
+  //private ImmutableMultimap<TermId,GeneToAssociation> associationMap;
   /** Key: a disease Id; Value: a geneId */
   private ImmutableMultimap<TermId,TermId> diseaseToGeneMap;
   /** Key: a gene Id; Value: a diseaseId */
   private ImmutableMultimap<TermId,TermId> geneToDiseaseMap;
   /** Key: a disease Id; Value:  disease obj, all gene associations. */
   private ImmutableMap<TermId, DiseaseToGeneAssociation> diseaseToAssociationsMap;
-  /** Key: an phenotype Id Value: disease obj, HpoDisease, Immutable. */
-  //private Map<TermId, HpoDisease> termToDisease;
   /** Key: a phenotype Id; Value: geneId */
   private ImmutableList<HpoGeneAnnotation> phenotypeToGeneList;
   /** List of all associations */
@@ -127,7 +125,6 @@ public class HpoAssociationParser {
       }
     }
     setTermToGene(phenotypeToDisease);
-   // setTermToDisease(diseaseMap);
   }
 
 
@@ -142,13 +139,10 @@ public class HpoAssociationParser {
 
   public List<HpoGeneAnnotation> getPhenotypeToGene() { return this.phenotypeToGeneList; }
 
-  public Multimap<TermId, GeneToAssociation> getDiseasetoGeneAssociation(){ return this.associationMap; }
-
   /*
-      Builds a list of HpoGeneAnnotations, which are just an object that represents a relationship
-      from Gene to HP Term.
-
-      @Parameter: Map of PhenotypeID's to DiseaseID's
+   * Builds a list of HpoGeneAnnotations, which are just an object that represents a relationship
+   * from Gene to HP Term.
+   *  @param phenotypeToDisease: Map of PhenotypeID's to DiseaseID's
    */
   public void setTermToGene(Multimap<TermId, TermId> phenotypeToDisease) {
 
@@ -217,8 +211,15 @@ public class HpoAssociationParser {
    * gene to disease annotations.
    */
   private void ingestDisease2GeneAssociations() {
-    Gene2DiseaseAssociationParser parser =
-      new Gene2DiseaseAssociationParser(this.homoSapiensGeneInfoFile, this.mim2geneMedgenFile, this.orphaToGeneFile);
+    Gene2DiseaseAssociationParser parser;
+    if (this.orphaToGeneFile != null) {
+      parser = new Gene2DiseaseAssociationParser(this.homoSapiensGeneInfoFile,
+        this.mim2geneMedgenFile,
+        this.orphaToGeneFile);
+    } else {
+      parser = new Gene2DiseaseAssociationParser(this.homoSapiensGeneInfoFile,
+        this.mim2geneMedgenFile);
+    }
     Multimap<TermId, GeneToAssociation> associationMap = parser.getAssociationMap();
     ImmutableList.Builder<DiseaseToGeneAssociation> builder = new ImmutableList.Builder<>();
     for (TermId omimCurie : associationMap.keySet()) {
