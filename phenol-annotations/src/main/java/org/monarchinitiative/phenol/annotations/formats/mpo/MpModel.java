@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * phenotypes at the gene level for one or more mouse models). It implements methods for accessing the set
  * of phenotypes.
  */
-abstract class MpModel {
+public abstract class MpModel {
   /** Genetic marker id */
   protected TermId markerId;
 
