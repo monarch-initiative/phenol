@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 import com.google.common.collect.ImmutableSet;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@Ignore
+
 public class MgsaLocalTest {
 
   private final String goTermId = "GO:0070997";

@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
 
 /**
  * This class is used to store an item (an ontology TermId) and its associated

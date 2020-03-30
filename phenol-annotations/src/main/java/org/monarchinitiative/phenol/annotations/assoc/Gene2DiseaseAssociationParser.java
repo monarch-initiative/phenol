@@ -90,12 +90,7 @@ public class Gene2DiseaseAssociationParser {
     if (!mim2geneMedgenFile.exists()) {
       throw new PhenolRuntimeException("Cannot find mim2gene_medgen file");
     }
-    try {
-      parseGeneInfo(homoSapiensGeneInfoFile);
-    } catch (IOException e) {
-      throw new PhenolRuntimeException("Could not parse Homo_sapiens.gene_info.gz: " +
-        homoSapiensGeneInfoFile.getAbsolutePath());
-    }
+    this.allGeneIdToSymbolMap = GeneInfoParser.loadGeneIdToSymbolMap(homoSapiensGeneInfoFile);
     try {
       parseMim2GeneMedgen(mim2geneMedgenFile);
     } catch (IOException e) {
@@ -133,41 +128,6 @@ public class Gene2DiseaseAssociationParser {
   }
 
 
-  /**
-   * Parse the NCBI Homo_sapiens_gene_info.gz file
-   * Add the mappings to a Guava bimap, e.g., NCBIGene:150-ADRA2A
-   *
-   * @throws IOException if the file cannot be read
-   */
-  private void parseGeneInfo(File homoSapiensGeneInfoFile) throws IOException {
-    ImmutableMap.Builder<TermId, String> builder = new ImmutableMap.Builder<>();
-    InputStream fileStream = new FileInputStream(homoSapiensGeneInfoFile);
-    InputStream gzipStream = new GZIPInputStream(fileStream);
-    Reader decoder = new InputStreamReader(gzipStream);
-    BufferedReader br = new BufferedReader(decoder);
-    String line;
-    // We have seen that occasionally the Homo_sapiens_gene_info.gz
-    // contains duplicate lines, which is an error but we do not want the code
-    // to crash, so we check for previously found term ids with the seen set.
-    // The TermId <-> symbol mapping is one to one.
-    Set<TermId> seen = new HashSet<>();
-    while ((line = br.readLine()) != null) {
-      String[] a = line.split("\t");
-      String taxon = a[0];
-      if (!taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
-      if (!("unknown".equals(a[9]))) {
-        String geneId = a[1];
-        String symbol = a[2];
-        TermId tid = TermId.of(ENTREZ_GENE_PREFIX, geneId);
-        if (seen.contains(tid)) {
-          continue;
-        }
-        seen.add(tid);
-        builder.put(tid, symbol);
-      }
-    }
-    this.allGeneIdToSymbolMap = builder.build();
-  }
 
   public void parseMim2GeneMedgen(File mim2geneMedgenFile) throws IOException {
     Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();

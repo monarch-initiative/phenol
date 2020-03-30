@@ -76,4 +76,12 @@ public class MpGeneModel extends MpModel {
     modelsByGene.forEach((k, v) -> returnListBuilder.add(new MpGeneModel(k, v)));
     return returnListBuilder.build();
   }
+
+  public List<TermId> getGenotypes() {
+    return genotypes;
+  }
+
+  public int getGenotypesCount() {
+    return genotypes.size();
+  }
 }
