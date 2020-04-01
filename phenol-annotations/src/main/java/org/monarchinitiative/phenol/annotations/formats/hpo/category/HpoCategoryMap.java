@@ -248,8 +248,7 @@ public class HpoCategoryMap {
   private HpoCategory getPrioritizedCategory(Set<TermId> catlist) {
     if (catlist.size() == 1) {
       return categorymap.get(catlist.iterator().next());
-    }
-    if (catlist.stream().filter(t -> t.equals(NEOPLASM_ID)).findAny().isPresent()) {
+    } else if (catlist.stream().filter(t -> t.equals(NEOPLASM_ID)).findAny().isPresent()) {
       return categorymap.get(NEOPLASM_ID); // top priority if a term is mapped to >1 category
     }
     // if we get here, there are multiple categories. We do not care which
