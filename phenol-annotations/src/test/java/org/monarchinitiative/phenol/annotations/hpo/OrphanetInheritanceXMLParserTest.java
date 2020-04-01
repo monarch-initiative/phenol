@@ -26,7 +26,7 @@ class OrphanetInheritanceXMLParserTest {
   private static void init()  {
     Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product9_ages-small.xml");
     //orphaXMLpath = Paths.get("..","en_product9_ages.xml");
-    Path hpOboPath = Paths.get("src", "test", "resources", "annotations", "hp_head.obo");
+    Path hpOboPath = Paths.get("src", "test", "resources",  "hp_head.obo");
     Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
     try {
       parser = new OrphanetInheritanceXMLParser(orphaXMLpath.toAbsolutePath().toString(), ontology);
@@ -134,9 +134,4 @@ class OrphanetInheritanceXMLParserTest {
     assertEquals(2,entrylist.size());
   }
 
-
-  @Test
-  void aufspueren() {
-
-  }
 }

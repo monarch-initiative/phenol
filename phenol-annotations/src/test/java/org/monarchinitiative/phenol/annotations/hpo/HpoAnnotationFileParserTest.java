@@ -29,7 +29,7 @@ class HpoAnnotationFileParserTest {
 
   @BeforeAll
   static void init() throws PhenolException {
-    Path hpOboPath = Paths.get("src","test","resources","annotations","hp_head.obo");
+    Path hpOboPath = Paths.get("src","test","resources","hp_head.obo");
     Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
     Path omim123456path = Paths.get("src","test","resources","annotations","OMIM-123456.tab");
     String omim123456file = omim123456path.toAbsolutePath().toString();
