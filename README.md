@@ -15,7 +15,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=8
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.4.2
+- **Version:** 1.5.0
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson

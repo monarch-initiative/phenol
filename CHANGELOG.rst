@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v1.5.0
+------
+- improved functions for display of upper level HPO categories
+
+------
 v1.4.3
 ------
 - fixing bug in parsing of MGI Genetic Marker file

@@ -18,14 +18,14 @@ class OrphanetXML2HpoDiseaseModelParserTest {
 
     static private OrphanetXML2HpoDiseaseModelParser parser;
 
-    static private TermId veryFrequent = TermId.of("HP:0040281");
+    static private final TermId veryFrequent = TermId.of("HP:0040281");
 
-    static private TermId occasional  = TermId.of("HP:0040283");
+    static private final TermId occasional  = TermId.of("HP:0040283");
 
     @BeforeAll
     private static void init()  {
       Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product4_HPO.small.xml");
-      Path hpOboPath = Paths.get("src", "test", "resources", "annotations", "hp_head.obo");
+      Path hpOboPath = Paths.get("src", "test", "resources", "hp_head.obo");
       Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
       try {
         parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
@@ -101,8 +101,6 @@ class OrphanetXML2HpoDiseaseModelParserTest {
       TermId diseaseId = TermId.of("ORPHA:58");
         HpoAnnotationModel file = diseaseModels.get(diseaseId);
         List<HpoAnnotationEntry> entrylist = file.getEntryList();
-        // the first disease has three annotations
-        int expectNumberOfAnnotations = 2;
         HpoAnnotationEntry entry1 = entrylist.get(0);
         TermId Anophthalmia = TermId.of("HP:0000528");
         assertEquals(Anophthalmia,entry1.getPhenotypeId());
