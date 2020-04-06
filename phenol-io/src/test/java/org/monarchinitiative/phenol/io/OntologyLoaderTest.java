@@ -42,14 +42,14 @@ class OntologyLoaderTest {
   void loadObo() {
     Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
-    System.out.println(ontology.countAllTerms());
+    assertNotNull(ontology);
   }
 
   @Test
   void loadOboStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    System.out.println(ontology.countAllTerms());
+    assertNotNull(ontology);
   }
 
   @Test
@@ -138,7 +138,10 @@ class OntologyLoaderTest {
       for (Dbxref xref : gt.getXrefs()) {
         boolean containFlag = false;
         for (String xrefStr : xrefs) {
-          if (xref.getName().contains(xrefStr)) containFlag = true;
+          if (xref.getName().contains(xrefStr)) {
+            containFlag = true;
+            break;
+          }
         }
         if (!containFlag) fail("Xref " + xref.getName() + " is not available.");
       }
@@ -170,11 +173,19 @@ class OntologyLoaderTest {
     assertEquals(TermId.of("owl:Thing"), ecto.getRootTermId());
 
     Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());
-    //System.out.println("ECTO termPrefixes" + termPrefixes);
+    assertFalse(termPrefixes.contains("NCIT"));
+    assertFalse(termPrefixes.contains("CHEBI"));
+    assertFalse(termPrefixes.contains("GO"));
+    // 2270 ECTO terms plus owl:thing
     assertEquals(2271, ecto.countNonObsoleteTerms());
     assertEquals(0, ecto.countAlternateTermIds());
   }
 
+  /**
+   * $ grep '\[Term\]' ecto.obo | wc -l
+   * 8346
+   * But four terms are obsolete and we add one term for owl:thing, so we arrive at 8343
+   */
   @Test
   void testLoadEctoAll() {
     Path ectoPath = Paths.get("src/test/resources/ecto.obo");
@@ -197,11 +208,14 @@ class OntologyLoaderTest {
     assertTrue(prefixes.contains("CHEBI"));
     assertTrue(prefixes.contains("GO"));
 
-   /* System.out.println("All ECTO termPrefixes" + permissiveOntology.getAllTermIds()
-      .stream()
-      .map(TermId::getPrefix)
-      .collect(toSet()));
-    */
+    // Only a subset of the terms are ECTO
+    // $ grep 'id: ECTO' phenol/phenol-io/src/test/resources/ecto.obo | wc -l
+    // 2270
+   long ectoTermCount = permissiveOntology.getTermMap().values().
+                        stream().
+                        filter(term -> term.getId().getPrefix().equals("ECTO")).
+                        count();
+   assertEquals(2270, ectoTermCount);
   }
 
 
