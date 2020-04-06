@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -14,6 +15,7 @@ import org.monarchinitiative.phenol.analysis.*;
 
 import java.io.File;
 import java.util.*;
+
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
 import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
@@ -26,18 +28,25 @@ import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
  * that has 1/3 of the genes associated with this term
  * and three times as many other terms. The enrichment analysis should identify this term
  * and may identify a few related terms.
+ *
  * @author Manuel Holtgrewe
  * @author Peter Robinson
  */
 public final class GoEnrichmentDemo {
-  /** Path to the go.obo file */
+  /**
+   * Path to the go.obo file
+   */
   private final String pathGoObo;
-  /** Path to the GoGaf file. */
+  /**
+   * Path to the GoGaf file.
+   */
   private final String pathGoGaf;
-  /** Term Id of a GO term we will investigate */
+  /**
+   * Term Id of a GO term we will investigate
+   */
   private final TermId targetGoTerm;
 
-  private  Ontology gontology;
+  private Ontology gontology;
 
   private List<TermAnnotation> goAnnots;
 
@@ -51,100 +60,54 @@ public final class GoEnrichmentDemo {
 
 
   public void run() {
-      System.out.println("[INFO] parsing  " + pathGoObo);
-      gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
-      int n_terms = gontology.countAllTerms();
-      System.out.println("[INFO] parsed " + n_terms + " GO terms.");
-      System.out.println("[INFO] parsing  " + pathGoGaf);
-     // final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
-      goAnnots = GoGeneAnnotationParser.loadTermAnnotations(pathGoGaf);
-      System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
-      associationContainer = new AssociationContainer(goAnnots);
+    System.out.println("[INFO] parsing  " + pathGoObo);
+    gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
+    int n_terms = gontology.countAllTerms();
+    System.out.println("[INFO] parsed " + n_terms + " GO terms.");
+    System.out.println("[INFO] parsing  " + pathGoGaf);
+    // final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
+    goAnnots = GoGeneAnnotationParser.loadTermAnnotations(pathGoGaf);
+    System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
+    associationContainer = new AssociationContainer(goAnnots);
 
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
   }
 
   private void performTermForTermAnalysis() {
-      Set<TermId> populationGenes = getPopulationSet(goAnnots);
-
-      Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
-      Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-      StudySet studySet = new StudySet(studyGenes,"study", studyAssociations);
-      Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-      StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
-      Hypergeometric hgeo = new Hypergeometric();
-      MultipleTestingCorrection bonf = new Bonferroni();
-      TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
-        associationContainer,
-        populationSet,
-        studySet,
-        hgeo,
-        bonf);
-
-      int popsize=populationGenes.size();
-      int studysize=studyGenes.size();
-
-      List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
-      System.err.println("Total number of retrieved p values: " + pvals.size());
-      int n_sig = 0;
-      double ALPHA = 0.00005;
-      System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
-        gontology.getTermMap().get(targetGoTerm).getName(),targetGoTerm.getValue()));
-      System.out.println(String.format("Study set: %d genes. Population set: %d genes",
-        studysize,popsize));
-      for (GoTerm2PValAndCounts item : pvals) {
-        double pval = item.getRawPValue();
-        double pval_adj = item.getAdjustedPValue();
-        TermId tid = item.getItem();
-        Term term = gontology.getTermMap().get(tid);
-        if (term == null) {
-          System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
-          continue;
-        }
-        String label = term.getName();
-        if (pval_adj > ALPHA) {
-          continue;
-        }
-        n_sig++;
-        double studypercentage = 100.0*(double)item.getAnnotatedStudyGenes()/studysize;
-        double poppercentage = 100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
-        System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
-          label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(), studypercentage,
-          item.getAnnotatedPopulationGenes(), poppercentage));
-      }
-      System.out.println(String.format("%d of %d terms were significant at alpha %.7f", n_sig,pvals.size(),ALPHA));
-  }
-
-
-  private void performParentChildIntersectionAnalysis() {
+    System.out.println();
+    System.out.println("[INFO] Demo: Term-for-term analysis");
+    System.out.println();
     Set<TermId> populationGenes = getPopulationSet(goAnnots);
 
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots,targetGoTerm);
+    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-    StudySet studySet = new StudySet(studyGenes,"study", studyAssociations);
+    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
     Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
     StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection bonf = new Bonferroni();
-    ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
+    TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
       hgeo,
       bonf);
 
-    int popsize=populationGenes.size();
-    int studysize=studyGenes.size();
+    int popsize = populationGenes.size();
+    int studysize = studyGenes.size();
 
-    List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
-    System.err.println("Total number of retrieved p values: " + pvals.size());
+    List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
+    System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
     double ALPHA = 0.00005;
-    System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
-      gontology.getTermMap().get(targetGoTerm).getName(),targetGoTerm.getValue()));
-    System.out.println(String.format("Study set: %d genes. Population set: %d genes",
-      studysize,popsize));
+    System.out.println(String.format("[INFO] Target term %s [%s]",
+      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
+    for (TermId g : studyGenes) {
+      System.out.println("\t" + g.getValue());
+    }
+    System.out.println(String.format("[INFO] Study set: %d genes. Population set: %d genes",
+      studysize, popsize));
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
@@ -159,13 +122,68 @@ public final class GoEnrichmentDemo {
         continue;
       }
       n_sig++;
-      double studypercentage = 100.0*(double)item.getAnnotatedStudyGenes()/studysize;
-      double poppercentage = 100.0*(double)item.getAnnotatedPopulationGenes()/popsize;
-      System.out.println(String.format("PCI: %s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
-        label, tid.getValue(), pval, pval_adj,item.getAnnotatedStudyGenes(), studypercentage,
+      double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
+      double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
+      System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+        label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studypercentage,
         item.getAnnotatedPopulationGenes(), poppercentage));
     }
-    System.out.println(String.format("PCI: %d of %d terms were significant at alpha %.7f", n_sig,pvals.size(),ALPHA));
+    System.out.println(String.format("%d of %d terms were significant at alpha %.7f", n_sig, pvals.size(), ALPHA));
+  }
+
+
+  private void performParentChildIntersectionAnalysis() {
+    System.out.println();
+    System.out.println("[INFO] Demo: parent child intersection analysis");
+    System.out.println();
+    Set<TermId> populationGenes = getPopulationSet(goAnnots);
+
+    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
+    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
+    StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
+    Hypergeometric hgeo = new Hypergeometric();
+    MultipleTestingCorrection bonf = new Bonferroni();
+    ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
+      associationContainer,
+      populationSet,
+      studySet,
+      hgeo,
+      bonf);
+
+    int popsize = populationGenes.size();
+    int studysize = studyGenes.size();
+
+    List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
+    System.err.println("Total number of retrieved p values: " + pvals.size());
+    int n_sig = 0;
+    double ALPHA = 0.00005;
+    System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
+      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
+    System.out.println(String.format("Study set: %d genes. Population set: %d genes",
+      studysize, popsize));
+    for (GoTerm2PValAndCounts item : pvals) {
+      double pval = item.getRawPValue();
+      double pval_adj = item.getAdjustedPValue();
+      TermId tid = item.getItem();
+      Term term = gontology.getTermMap().get(tid);
+      if (term == null) {
+        System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
+        continue;
+      }
+      String label = term.getName();
+      if (pval_adj > ALPHA) {
+        continue;
+      }
+      n_sig++;
+      double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
+      double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
+      System.out.println(String.format("PCI: %s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+        label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studypercentage,
+        item.getAnnotatedPopulationGenes(), poppercentage));
+    }
+    System.out.println(String.format("PCI: %d of %d terms were significant at alpha %.7f", n_sig, pvals.size(), ALPHA));
   }
 
 
@@ -179,26 +197,26 @@ public final class GoEnrichmentDemo {
     }
 
     int N = genes.size();
-    System.out.println(String.format("[INFO] Genes annotated to %s: n=%d",focus.getValue(),N));
+    System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
     int M = N;
-    if (N>20) {
-      M = N/3;
+    if (N > 20) {
+      M = N / 3;
     }
-    Set<TermId> finalGenes=new HashSet<>();
-    int i=0;
-    for (TermId tid: genes) {
-      if (i++>M) break;
+    Set<TermId> finalGenes = new HashSet<>();
+    int i = 0;
+    for (TermId tid : genes) {
+      if (i++ > M) break;
       finalGenes.add(tid);
     }
     i = 0;
     M *= 3;
     for (TermAnnotation ann : annots) {
       TermId gene = ann.getLabel();
-      if (! genes.contains(gene)) {
+      if (!genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
       }
-      if (i>M) break;
+      if (i > M) break;
     }
 
     return ImmutableSet.copyOf(finalGenes);
@@ -206,6 +224,7 @@ public final class GoEnrichmentDemo {
 
   /**
    * Get a list of all of the labeled genes in the population set.
+   *
    * @param annots List of annotations of genes/diseases to GO/HPO terms etc
    * @return an immutable set of TermIds representing the labeled genes/diseases
    */
@@ -219,18 +238,19 @@ public final class GoEnrichmentDemo {
   }
 
 
-
   @Parameters(commandDescription = "Gene Ontology Enrichment Analysis (demo)")
   public static class Options {
-    @Parameter(names = {"-o","--obo"}, description = "path to go.obo file", required = true)
+    @Parameter(names = {"-o", "--obo"}, description = "path to go.obo file", required = true)
     private String goPath;
 
-    @Parameter(names = {"-a","--annot"}, description = "path to go association file (e.g., goa_human.gaf", required = true)
+    @Parameter(names = {"-a", "--annot"}, description = "path to go association file (e.g., goa_human.gaf", required = true)
     private String gafPath;
-    /** For the demo, We will create a study set that has 1/3 of the genes associated with this term
-      * and three times as many other terms. The default GO:0070997 is 'neuron death'.*/
-    @Parameter(names = {"-i","--id"},description = "term ID to search for enrichment")
-    private String goTermId="GO:0070997";
+    /**
+     * For the demo, We will create a study set that has 1/3 of the genes associated with this term
+     * and three times as many other terms. The default GO:0070997 is 'neuron death'.
+     */
+    @Parameter(names = {"-i", "--id"}, description = "term ID to search for enrichment")
+    private String goTermId = "GO:0070997";
 
     String getGoPath() {
       return goPath;
@@ -244,9 +264,6 @@ public final class GoEnrichmentDemo {
       return goTermId;
     }
   }
-
-
-
 
 
 }
