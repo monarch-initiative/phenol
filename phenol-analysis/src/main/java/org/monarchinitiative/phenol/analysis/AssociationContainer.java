@@ -48,7 +48,6 @@ public class AssociationContainer {
 
     public Multimap<TermId, TermId> getTermToItemMultimap() {
       Multimap<TermId, TermId> mp = ArrayListMultimap.create();
-      //Map<TermId, ItemAssociations> gene2associationMap;
       for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
         TermId gene = entry.getKey();
         for (TermId ontologyTermId : entry.getValue().getAssociations()) {
@@ -113,9 +112,16 @@ public class AssociationContainer {
     }
 
 
-
   public Map<TermId, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds, Ontology ontology) {
+      return getAssociationMap(annotatedItemTermIds, ontology, false);
+  }
+
+
+  public Map<TermId, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds,
+                                                                         Ontology ontology,
+                                                                         boolean verbose) {
     Map<TermId, DirectAndIndirectTermAnnotations> annotationMap = new HashMap<>();
+    int not_found = 0;
     for (TermId domainTermId : annotatedItemTermIds) {
       try {
         ItemAssociations assocs = get(domainTermId);
@@ -125,8 +131,11 @@ public class AssociationContainer {
           // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
           Term term = ontology.getTermMap().get(ontologyTermId);
           if (term == null) {
-            System.err.println("[WARNING(phenol:AssociationContainer)] Unable to retrieve term "
-              + ontologyTermId.getValue() + ", omitting.");
+            not_found++;
+            if (verbose) {
+              System.err.println("[WARNING(phenol:AssociationContainer)] Unable to retrieve term "
+                + ontologyTermId.getValue() + ", omitting.");
+            }
             continue;
           }
           // replace an alt_id with the primary id.
@@ -147,6 +156,10 @@ public class AssociationContainer {
       } catch (PhenolException e) {
         System.err.println("[ERROR (StudySet.java)] " + e.getMessage());
       }
+    }
+    if (not_found>0) {
+      System.err.printf("[WARNING (AssociationContainer)] Cound not find annotations for %d ontology term ids" +
+        " (are versions of the GAF and obo file compatible?).\n", not_found);
     }
     return annotationMap;
   }
