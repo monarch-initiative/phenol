@@ -51,12 +51,12 @@ public abstract class PValueCalculation {
                              AssociationContainer goAssociations,
                              StudySet populationSet,
                              StudySet studySet,
-                             Hypergeometric hyperg,MultipleTestingCorrection mtc) {
+                             MultipleTestingCorrection mtc) {
         this.ontology = graph;
         this.goAssociations = goAssociations;
         this.populationSet = populationSet;
         this.studySet=studySet;
-        this.hyperg = hyperg;
+        this.hyperg = new Hypergeometric();
         this.testCorrection=mtc;
         initAssociationMap(goAssociations, graph);
     }

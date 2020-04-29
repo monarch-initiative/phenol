@@ -118,7 +118,7 @@ public abstract class MgsaScore extends MgsaScoreBase
 
     public void setExpectedNumberOfTerms(double terms)
     {
-        p = (double)terms / numTerms;
+        p = terms / numTerms;
     }
 
     /**

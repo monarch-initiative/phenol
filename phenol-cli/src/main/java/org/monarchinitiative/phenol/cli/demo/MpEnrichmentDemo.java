@@ -95,7 +95,7 @@ public class MpEnrichmentDemo {
     System.out.println("[INFO] parsed " + n_terms + " MP terms.");
     List<TermAnnotation> annots = getTermAnnotations();
     System.out.println("[INFO] parsed " + annots.size() + " MP annotations.");
-    AssociationContainer associationContainer = new AssociationContainer(annots);
+    AssociationContainer associationContainer =  AssociationContainer.fromGoTermAnnotations(annots);
     Set<TermId> populationGenes = getPopulationSet(annots);
     System.out.println("[INFO] size of population set: " + populationGenes.size());
     Set<TermId> studyGenes = getStudySet();
@@ -105,13 +105,11 @@ public class MpEnrichmentDemo {
     StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
     System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
 
-    Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(ontology,
       associationContainer,
       populationSet,
       studySet,
-      hgeo,
       bonf);
 
     int popsize = populationGenes.size();

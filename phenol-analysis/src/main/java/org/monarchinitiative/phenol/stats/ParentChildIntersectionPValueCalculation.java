@@ -15,9 +15,8 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
                                                   AssociationContainer goAssociations,
                                                   StudySet populationSet,
                                                   StudySet studySet,
-                                                  Hypergeometric hyperg,
                                                   MultipleTestingCorrection mtc) {
-		super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
+		super(graph, goAssociations, populationSet, studySet, mtc);
 	}
 
   @Override
@@ -29,6 +28,7 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
       if (parentsIntersection.isEmpty()) {
         parentsIntersection.addAll(annotedGeneIds);
       } else {
+        // the following is set intersection
         parentsIntersection.retainAll(annotedGeneIds);
       }
     }

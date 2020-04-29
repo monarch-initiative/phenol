@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+v1.6.0
+------
+- Simplified interface to GO overrepresentation analysis classes.
+
+------
 v1.5.0
 ------
 - improved functions for display of upper level HPO categories

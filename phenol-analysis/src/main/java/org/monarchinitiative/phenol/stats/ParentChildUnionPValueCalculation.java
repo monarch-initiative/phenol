@@ -9,14 +9,13 @@ import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ParentChildUnonPValueCalculation extends ParentChildPValuesCalculation {
-  public ParentChildUnonPValueCalculation(Ontology graph,
-                                                  AssociationContainer goAssociations,
-                                                  StudySet populationSet,
-                                                  StudySet studySet,
-                                                  Hypergeometric hyperg,
-                                                  MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
+public class ParentChildUnionPValueCalculation extends ParentChildPValuesCalculation {
+  public ParentChildUnionPValueCalculation(Ontology graph,
+                                           AssociationContainer goAssociations,
+                                           StudySet populationSet,
+                                           StudySet studySet,
+                                           MultipleTestingCorrection mtc) {
+    super(graph, goAssociations, populationSet, studySet, mtc);
   }
   @Override
   protected Counts getCounts(TermId goId, Set<TermId> parents) {

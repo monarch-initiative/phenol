@@ -19,6 +19,13 @@ import java.util.*;
  * @author Peter Robinson (refactor)
  */
 public abstract class ParentChildPValuesCalculation extends PValueCalculation {
+  /**
+   * For GO analysis, the parent term of cellular component, biological process, and molecular function
+   * is owl:Thing. If we do a statistical test for parent-child with respect to this parent, artefactual
+   * results are produced, because owl:Thing is added as an "artificial root" by phenol. We can just skip
+   * these tests.
+   */
+  private final TermId OWL_THING = TermId.of("owl:Thing");
 
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
@@ -39,9 +46,8 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
                                        AssociationContainer goAssociations,
                                        StudySet populationSet,
                                        StudySet studySet,
-                                       Hypergeometric hyperg,
                                        MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
+    super(graph, goAssociations, populationSet, studySet, mtc);
     this.studySetAnnotationMap = this.studySet.getAnnotationMap();
   }
 
@@ -84,6 +90,10 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
           // in this case, PC union and PC intersect are identical
           // get m_pa(t), the number of genes annotated to the parent of t in the population
           TermId pa_t_id = parents.iterator().next(); // get the first and only element of the set
+          if (pa_t_id.equals(OWL_THING)) {
+            continue; // we are at a root of the ontology, owl:Thing is added as an artificial root by phenol
+            // if the original ontology has multiple roots.
+          }
           int m_pa_t = populationSetAnnotationMap.get(pa_t_id).totalAnnotatedCount();
           // get n_pa(t), the number of genes annotation to pa(t) in the study set
           int n_pa_t = studySetAnnotationMap.get(pa_t_id).totalAnnotatedCount();

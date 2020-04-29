@@ -3,12 +3,14 @@ package org.monarchinitiative.phenol.analysis;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.File;
 import java.util.*;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
@@ -34,7 +36,7 @@ public class AssociationContainer {
      *
      * @param assocs gene ontology associations (annotations)
      */
-    public AssociationContainer(List<TermAnnotation> assocs) {
+    private AssociationContainer(List<TermAnnotation> assocs) {
         gene2associationMap=new HashMap<>();
         for (TermAnnotation a : assocs) {
           TermId tid = a.getLabel();
@@ -147,6 +149,35 @@ public class AssociationContainer {
       }
     }
     return annotationMap;
+  }
+
+  /**
+   * Create an AssociationContainer from list of {@link TermAnnotation} objects representing the data in a Gene
+   * Ontology annocation file, e.g., human_goa.gaf
+   * @param goAnnots List of ontology term annotations
+   * @return an AssociationContainer
+   */
+  public static AssociationContainer fromGoTermAnnotations(List<TermAnnotation> goAnnots) {
+      return new AssociationContainer(goAnnots);
+  }
+
+  /**
+   * Create and return an {@link AssociationContainer} object from a Gene Ontology goa_human.gaf annotation file
+   * @param goGafFile File object representing the GO annotation file
+   * @return An {@link AssociationContainer} object representing GO associations
+   */
+  public static AssociationContainer loadGoGafAssociationContainer(File goGafFile) {
+    List<TermAnnotation> goAnnots = GoGeneAnnotationParser.loadTermAnnotations(goGafFile);
+    return AssociationContainer.fromGoTermAnnotations(goAnnots);
+  }
+
+  /**
+   * Create and return an {@link AssociationContainer} object from a Gene Ontology goa_human.gaf annotation file
+   * @param goGafPath Path to the GO annotation file
+   * @return An {@link AssociationContainer} object representing GO associations
+   */
+  public static AssociationContainer loadGoGafAssociationContainer(String goGafPath) {
+    return loadGoGafAssociationContainer(new File(goGafPath));
   }
 
 }

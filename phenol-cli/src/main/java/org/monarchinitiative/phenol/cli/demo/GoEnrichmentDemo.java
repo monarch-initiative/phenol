@@ -3,9 +3,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
@@ -65,11 +63,7 @@ public final class GoEnrichmentDemo {
     int n_terms = gontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     System.out.println("[INFO] parsing  " + pathGoGaf);
-    // final GoGeneAnnotationParser annotparser = new GoGeneAnnotationParser(pathGoGaf);
-    goAnnots = GoGeneAnnotationParser.loadTermAnnotations(pathGoGaf);
-    System.out.println("[INFO] parsed " + goAnnots.size() + " GO annotations.");
-    associationContainer = new AssociationContainer(goAnnots);
-
+    associationContainer = AssociationContainer.loadGoGafAssociationContainer(pathGoGaf);
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
   }
@@ -85,13 +79,11 @@ public final class GoEnrichmentDemo {
     StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
     Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
     StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
-    Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
-      hgeo,
       bonf);
 
     int popsize = populationGenes.size();
@@ -143,13 +135,11 @@ public final class GoEnrichmentDemo {
     StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
     Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
     StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
-    Hypergeometric hgeo = new Hypergeometric();
     MultipleTestingCorrection bonf = new Bonferroni();
     ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
-      hgeo,
       bonf);
 
     int popsize = populationGenes.size();
