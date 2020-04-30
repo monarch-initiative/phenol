@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.analysis;
 
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -19,101 +20,103 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
 /**
  * After AssociationParser was used to parse the gene_association.XXX file, this
  * class is used to store and process the information about Associations.
+ *
  * @author Peter Robinson, Sebastian Bauer
  */
 public class AssociationContainer {
-    /** Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene. */
-    private final Map<TermId, ItemAssociations> gene2associationMap;
-    /** The total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
-     * This variable is initialzed only if needed. The getter first checks if it is null, and if so
-     * calculates the required count. */
-    private Integer annotatingTermCount = null;
+  /**
+   * Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene.
+   */
+  private final Map<TermId, ItemAssociations> gene2associationMap;
+  /**
+   * The total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   * This variable is initialzed only if needed. The getter first checks if it is null, and if so
+   * calculates the required count.
+   */
+  private final int annotatingTermCount;
 
-
-    /**
-     * Constructs the container using a list of TermAnnitations (for instance, a
-     * TermAnnotation can be one line of the GO GAF file).
-     *
-     * @param assocs gene ontology associations (annotations)
-     */
-    private AssociationContainer(List<TermAnnotation> assocs) {
-        gene2associationMap=new HashMap<>();
-        for (TermAnnotation a : assocs) {
-          TermId tid = a.getLabel();
-          this.gene2associationMap.putIfAbsent(tid,new ItemAssociations(tid));
-          ItemAssociations g2a = gene2associationMap.get(tid);
-          g2a.add(a);
-        }
-    }
-
-    public Multimap<TermId, TermId> getTermToItemMultimap() {
-      Multimap<TermId, TermId> mp = ArrayListMultimap.create();
-      for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
-        TermId gene = entry.getKey();
-        for (TermId ontologyTermId : entry.getValue().getAssociations()) {
-          mp.put(ontologyTermId,gene);
-        }
-      }
-      return mp;
-    }
 
   /**
-   * Calculates the number of unique ontology terms (e.g., GO, HP) used to annotated the
-   * items in this container
-   * @return total GO/HP term count
+   * Constructs the container using a list of TermAnnitations (for instance, a
+   * TermAnnotation can be one line of the GO GAF file).
+   *
+   * @param assocs gene ontology associations (annotations)
+   */
+  private AssociationContainer(List<TermAnnotation> assocs) {
+    Map<TermId, ItemAssociations> tempMap = new HashMap<>();
+    for (TermAnnotation a : assocs) {
+      TermId tid = a.getLabel();
+      tempMap.putIfAbsent(tid, new ItemAssociations(tid));
+      ItemAssociations g2a = tempMap.get(tid);
+      g2a.add(a);
+    }
+    this.gene2associationMap = ImmutableMap.copyOf(tempMap);
+    Set<TermId> tidset = new HashSet<>();
+    for (ItemAssociations a : this.gene2associationMap.values()) {
+      List<TermId> tidlist = a.getAssociations();
+      tidset.addAll(tidlist);
+    }
+    this.annotatingTermCount = tidset.size();
+  }
+
+  public Multimap<TermId, TermId> getTermToItemMultimap() {
+    Multimap<TermId, TermId> mp = ArrayListMultimap.create();
+    for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
+      TermId gene = entry.getKey();
+      for (TermId ontologyTermId : entry.getValue().getAssociations()) {
+        mp.put(ontologyTermId, gene);
+      }
+    }
+    return mp;
+  }
+
+  /**
+   * @return total GO/HP term count used to annotated the items in this container
    */
   public int getOntologyTermCount() {
-      if (this.annotatingTermCount == null) {
-        Set<TermId> tidset = new HashSet<>();
-        for (ItemAssociations a : this.gene2associationMap.values()) {
-          List<TermId> tidlist = a.getAssociations();
-          tidset.addAll(tidlist);
-        }
-        this.annotatingTermCount = tidset.size();
-      }
-      return this.annotatingTermCount;
+    return this.annotatingTermCount;
+  }
+
+
+  /**
+   * get a ItemAssociations object corresponding to a given gene name. If the
+   * name is not initially found as dbObject Symbol, (which is usually a
+   * database name with meaning to a biologist), try dbObject (which may be an
+   * accession number or some other term from the bla32 database), and
+   * finally, look for a synonym (another entry in the gene_association file
+   * that will have been parsed into the present object).
+   *
+   * @param dbObjectId id (e.g., MGI:12345) of the gene whose goAssociations are interesting
+   * @return goAssociations for the given gene
+   */
+  public ItemAssociations get(TermId dbObjectId) throws PhenolException {
+    if (!this.gene2associationMap.containsKey(dbObjectId)) {
+      throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());
+    } else {
+      return this.gene2associationMap.get(dbObjectId);
     }
+  }
 
 
+  /**
+   * * A way to get all annotated genes in the container
+   *
+   * @return The annotated genes as a Set
+   */
+  public Set<TermId> getAllAnnotatedGenes() {
+    return this.gene2associationMap.keySet();
+  }
 
-    /**
-     * get a ItemAssociations object corresponding to a given gene name. If the
-     * name is not initially found as dbObject Symbol, (which is usually a
-     * database name with meaning to a biologist), try dbObject (which may be an
-     * accession number or some other term from the bla32 database), and
-     * finally, look for a synonym (another entry in the gene_association file
-     * that will have been parsed into the present object).
-     *
-     * @param dbObjectId id (e.g., MGI:12345) of the gene whose goAssociations are interesting
-     * @return goAssociations for the given gene
-     */
-    public ItemAssociations get(TermId dbObjectId) throws PhenolException {
-       if (! this.gene2associationMap.containsKey(dbObjectId)) {
-           throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());
-       } else {
-           return this.gene2associationMap.get(dbObjectId);
-       }
-    }
-
-
-   /**
-    * * A way to get all annotated genes in the container
-     *
-     * @return The annotated genes as a Set
-     */
-    public Set<TermId> getAllAnnotatedGenes()
-    {
-        return this.gene2associationMap.keySet();
-    }
-
-
-    public int getTotalNumberOfAnnotatedTerms(){
-        return gene2associationMap.size();
-    }
+  /**
+   * @return number of genes (or items) represented in this association container.
+   */
+  public int getTotalNumberOfAnnotatedItems() {
+    return gene2associationMap.size();
+  }
 
 
   public Map<TermId, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds, Ontology ontology) {
-      return getAssociationMap(annotatedItemTermIds, ontology, false);
+    return getAssociationMap(annotatedItemTermIds, ontology, false);
   }
 
 
@@ -157,7 +160,7 @@ public class AssociationContainer {
         System.err.println("[ERROR (StudySet.java)] " + e.getMessage());
       }
     }
-    if (not_found>0) {
+    if (not_found > 0) {
       System.err.printf("[WARNING (AssociationContainer)] Cound not find annotations for %d ontology term ids" +
         " (are versions of the GAF and obo file compatible?).\n", not_found);
     }
@@ -167,15 +170,17 @@ public class AssociationContainer {
   /**
    * Create an AssociationContainer from list of {@link TermAnnotation} objects representing the data in a Gene
    * Ontology annocation file, e.g., human_goa.gaf
+   *
    * @param goAnnots List of ontology term annotations
    * @return an AssociationContainer
    */
   public static AssociationContainer fromGoTermAnnotations(List<TermAnnotation> goAnnots) {
-      return new AssociationContainer(goAnnots);
+    return new AssociationContainer(goAnnots);
   }
 
   /**
    * Create and return an {@link AssociationContainer} object from a Gene Ontology goa_human.gaf annotation file
+   *
    * @param goGafFile File object representing the GO annotation file
    * @return An {@link AssociationContainer} object representing GO associations
    */
@@ -186,6 +191,7 @@ public class AssociationContainer {
 
   /**
    * Create and return an {@link AssociationContainer} object from a Gene Ontology goa_human.gaf annotation file
+   *
    * @param goGafPath Path to the GO annotation file
    * @return An {@link AssociationContainer} object representing GO associations
    */
