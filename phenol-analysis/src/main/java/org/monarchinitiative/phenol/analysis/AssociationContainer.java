@@ -24,6 +24,10 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * @author Peter Robinson, Sebastian Bauer
  */
 public class AssociationContainer {
+
+
+
+  private final List<TermAnnotation> rawAssociations;
   /**
    * Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene.
    */
@@ -43,6 +47,7 @@ public class AssociationContainer {
    * @param assocs gene ontology associations (annotations)
    */
   private AssociationContainer(List<TermAnnotation> assocs) {
+    rawAssociations = assocs;
     Map<TermId, ItemAssociations> tempMap = new HashMap<>();
     for (TermAnnotation a : assocs) {
       TermId tid = a.getLabel();
@@ -77,6 +82,9 @@ public class AssociationContainer {
     return this.annotatingTermCount;
   }
 
+  public List<TermAnnotation> getRawAssociations() {
+    return rawAssociations;
+  }
 
   /**
    * get a ItemAssociations object corresponding to a given gene name. If the

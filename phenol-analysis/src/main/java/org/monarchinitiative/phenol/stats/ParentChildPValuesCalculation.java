@@ -29,19 +29,6 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
 
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
-  /**
-   * Return value type for getCounts().
-   */
-  protected static class Counts {
-    public final int m_pa_t;
-    public final int n_pa_t;
-
-    public Counts(int m, int n) {
-      this.m_pa_t = m;
-      this.n_pa_t = n;
-    }
-  }
-
   public ParentChildPValuesCalculation(Ontology graph,
                                        AssociationContainer goAssociations,
                                        StudySet populationSet,
@@ -60,7 +47,9 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
         continue; // only a single annotated entry -- do not perform a statistical test
       }
       TermId goId = entry.getKey();
-      if (!this.annotationMap.containsKey(goId)) {
+      if (goId.equals(OWL_THING)) {
+        continue;
+      } else if (!this.annotationMap.containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
         continue;
       }
@@ -75,7 +64,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
          * that t has more than one parent term. In this case, parent-child union takes the set of all genes that
          * annotate any term in pa(t), and parent-child intersect takes the set of genes that are annotated to all of
          * the terms in pa(t). The latter tends to be more conservative.
-         * The study gene count is identical as with term for term, but we need to substitution the counts for the population
+         * The study gene count is identical as with term for term, but we need to substitute the counts for the population
          */
 
         // get parents of current GO term. Do not include original term in this set
@@ -86,28 +75,18 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
         //          studyGeneCount,
         //          goidAnnotatedStudyGeneCount);
         double raw_pval;
-        if (parents.size() == 1) {
-          // in this case, PC union and PC intersect are identical
-          // get m_pa(t), the number of genes annotated to the parent of t in the population
-          TermId pa_t_id = parents.iterator().next(); // get the first and only element of the set
-          if (pa_t_id.equals(OWL_THING)) {
-            continue; // we are at a root of the ontology, owl:Thing is added as an artificial root by phenol
-            // if the original ontology has multiple roots.
-          }
-          int m_pa_t = populationSetAnnotationMap.get(pa_t_id).totalAnnotatedCount();
-          // get n_pa(t), the number of genes annotation to pa(t) in the study set
-          int n_pa_t = studySetAnnotationMap.get(pa_t_id).totalAnnotatedCount();
-          double proportion = (double) goidAnnotatedPopGeneCount / (double) m_pa_t;
+        Counts count = getCounts(goId, parents);
+        int m_pa_t = count.m_pa_t;
+        int n_pa_t = count.n_pa_t;
+        int m_t = count.m_t;
+        if (m_t == m_pa_t) {
+          // this can (rarely) happen if the parent of term t is not annotated to
+          // any additional genes.
+          raw_pval = 1.0;
+        } else {
+          double proportion = count.get_proportion();
           raw_pval = hyperg.phypergeometric(m_pa_t,
             proportion,
-            n_pa_t,
-            goidAnnotatedStudyGeneCount);
-        } else {
-          Counts count = getCounts(goId, parents);
-          int m_pa_t = count.m_pa_t;
-          int n_pa_t = count.n_pa_t;
-          raw_pval = hyperg.phypergeometric(m_pa_t,
-            (double) goidAnnotatedPopGeneCount / (double) m_pa_t,
             n_pa_t,
             goidAnnotatedStudyGeneCount);
         }
@@ -119,6 +98,26 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
     // Now do multiple testing correction
     this.testCorrection.adjustPvals(results);
     return results;
+  }
+
+
+  /**
+   * Return value type for getCounts().
+   */
+  protected static class Counts {
+    public final int m_pa_t;
+    public final int n_pa_t;
+    public final int m_t;
+
+    public Counts(int m, int n, int m_t) {
+      this.m_pa_t = m;
+      this.n_pa_t = n;
+      this.m_t = m_t;
+    }
+
+    public double get_proportion() {
+      return (double) m_t / (double) m_pa_t;
+    }
   }
 
   /**

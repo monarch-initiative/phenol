@@ -20,7 +20,7 @@ import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 
 /**
- * This demo app shows how Gene Ontology enrichtment analysis is performed using the
+ * This demo app shows how Gene Ontology enrichment analysis is performed using the
  * Fisher Exact test. The app inputs the GO file and the GAF annotation file and the
  * name of a GO term (default: GO:0070997, 'neuron death'). It then creates a study set
  * that has 1/3 of the genes associated with this term
@@ -48,7 +48,9 @@ public final class GoEnrichmentDemo {
 
   private List<TermAnnotation> goAnnots;
 
-  AssociationContainer associationContainer;
+  private AssociationContainer associationContainer;
+
+  private static final double ALPHA = 0.05;
 
   public GoEnrichmentDemo(GoEnrichmentDemo.Options options) {
     this.pathGoObo = options.getGoPath();
@@ -64,6 +66,7 @@ public final class GoEnrichmentDemo {
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     System.out.println("[INFO] parsing  " + pathGoGaf);
     associationContainer = AssociationContainer.loadGoGafAssociationContainer(pathGoGaf);
+    goAnnots = associationContainer.getRawAssociations();
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
   }
@@ -92,7 +95,6 @@ public final class GoEnrichmentDemo {
     List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
     System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
-    double ALPHA = 0.00005;
     System.out.println(String.format("[INFO] Target term %s [%s]",
       gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
     for (TermId g : studyGenes) {
@@ -148,8 +150,7 @@ public final class GoEnrichmentDemo {
     List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
     System.err.println("Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
-    double ALPHA = 0.00005;
-    System.out.println(String.format("GO TFT Enrichment Demo for target term %s [%s]",
+    System.out.println(String.format("GO Parent Child Intersection Enrichment Demo for target term %s [%s]",
       gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
     System.out.println(String.format("Study set: %d genes. Population set: %d genes",
       studysize, popsize));
@@ -190,7 +191,7 @@ public final class GoEnrichmentDemo {
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
     int M = N;
     if (N > 20) {
-      M = N / 3;
+      M = N / 2;
     }
     Set<TermId> finalGenes = new HashSet<>();
     int i = 0;
@@ -240,7 +241,7 @@ public final class GoEnrichmentDemo {
      * and three times as many other terms. The default GO:0070997 is 'neuron death'.
      */
     @Parameter(names = {"-i", "--id"}, description = "term ID to search for enrichment")
-    private String goTermId = "GO:0070997";
+    private String goTermId = "GO:0019814";
 
     String getGoPath() {
       return goPath;
