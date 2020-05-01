@@ -29,7 +29,11 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
   @Override
   protected Counts getCounts(TermId goId, Set<TermId> parents) {
     Set<TermId> parentsIntersection = new HashSet<>();
-    int m_t = annotationMap.get(goId).getTotalAnnotated().size();
+    Set<TermId> genesAnnotatedToGoId = annotationMap.get(goId).getTotalAnnotated();
+    int m_t = genesAnnotatedToGoId.size(); // number of genes in population annotated to t
+    // the following step performs an intersection with the study set genes
+    genesAnnotatedToGoId.retainAll(studySet.getAnnotatedItemTermIds());
+    int n_t = genesAnnotatedToGoId.size(); // number of genes in study set annotated to t
     for (TermId par : parents) {
       Set<TermId>  annotedGeneIds = annotationMap.get(par).getTotalAnnotated();
       if (parentsIntersection.isEmpty()) {
@@ -42,12 +46,7 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
     int m_pa_t = parentsIntersection.size();
     parentsIntersection.retainAll(studySet.getAnnotatedItemTermIds());
     int n_pa_t = parentsIntersection.size();
-
-
-//    Set<TermId> studyAnnotated = studySetAnnotationMap.get(goId).getTotalAnnotated();
-//    studyAnnotated.retainAll(parentsIntersection);
-//    int n_pa_t = studyAnnotated.size();
-    return new Counts(m_t, m_pa_t, n_pa_t);
+    return new Counts(n_pa_t, m_pa_t, n_t, m_t);
   }
 
 

@@ -52,6 +52,10 @@ public final class GoEnrichmentDemo {
 
   private static final double ALPHA = 0.05;
 
+  private static final int STUDYSET_SIZE = 100;
+
+
+
   public GoEnrichmentDemo(GoEnrichmentDemo.Options options) {
     this.pathGoObo = options.getGoPath();
     this.pathGoGaf = options.getGafPath();
@@ -165,7 +169,7 @@ public final class GoEnrichmentDemo {
       }
       String label = term.getName();
       if (pval_adj > ALPHA) {
-        continue;
+        //continue;
       }
       n_sig++;
       double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
@@ -179,35 +183,30 @@ public final class GoEnrichmentDemo {
 
 
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
-    Set<TermId> genes = new HashSet<>();
+    Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
         TermId geneId = ann.getLabel();
-        genes.add(geneId);
+        targetGenes.add(geneId);
       }
     }
 
-    int N = genes.size();
+    int N = targetGenes.size();
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
-    int M = N;
-    if (N > 20) {
-      M = N / 2;
-    }
+    int M = N / 2; // take one fourth of the target genes
+
     Set<TermId> finalGenes = new HashSet<>();
     int i = 0;
-    for (TermId tid : genes) {
+    for (TermId tid : targetGenes) {
       if (i++ > M) break;
       finalGenes.add(tid);
     }
-    i = 0;
-    M *= 3;
     for (TermAnnotation ann : annots) {
       TermId gene = ann.getLabel();
-      if (!genes.contains(gene)) {
+      if (!targetGenes.contains(gene)) {
         finalGenes.add(gene);
-        i++;
       }
-      if (i > M) break;
+      if (finalGenes.size() > STUDYSET_SIZE) break;
     }
 
     return ImmutableSet.copyOf(finalGenes);

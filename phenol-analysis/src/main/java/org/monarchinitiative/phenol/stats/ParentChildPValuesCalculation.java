@@ -12,8 +12,9 @@ import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 import java.util.*;
 
 /**
- * This class hides all the details about how the p values are calculated
- * from the multiple test correction.
+ * Grossmann S, Bauer S, Robinson PN, Vingron M. Improved detection of overrepresentation of Gene-Ontology
+ * annotations with parent child analysis. Bioinformatics. 2007;23(22):3024‐3031.
+ * PMID:17848398
  *
  * @author Sebastian Bauer
  * @author Peter Robinson (refactor)
@@ -69,11 +70,6 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
 
         // get parents of current GO term. Do not include original term in this set
         Set<TermId> parents = OntologyAlgorithm.getParentTerms(ontology, goId, false);
-        // methodology for Term for Term was like this:
-        //        double raw_pval = hyperg.phypergeometric(popGeneCount,
-        //          (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
-        //          studyGeneCount,
-        //          goidAnnotatedStudyGeneCount);
         double raw_pval;
         Counts count = getCounts(goId, parents);
         int m_pa_t = count.m_pa_t;
@@ -85,10 +81,11 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
           raw_pval = 1.0;
         } else {
           double proportion = count.get_proportion();
+          // hypergeometric.phypergeometric(m_pa_t, m_t, n_pa_t, n_t);
           raw_pval = hyperg.phypergeometric(m_pa_t,
-            proportion,
+            m_t,
             n_pa_t,
-            goidAnnotatedStudyGeneCount);
+            count.n_t);
         }
 
         GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
@@ -102,21 +99,50 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
 
 
   /**
-   * Return value type for getCounts().
+   * Counts is a convenience class used to help calculate the hypergeometric p values for the Parent
+   * Child meethods. We need to have n_t: the number of terms in the study set annotated to GO Term t,
+   * n_pa_t, the number of terms in the study set annotated to the parents of t.
    */
   protected static class Counts {
-    public final int m_pa_t;
+    /**
+     * The original study set consists, say, of all differentially expressed genes.
+     * For the PC approaches, the study set is redefined as the intersection of the
+     * original study-set and m_pa_t. This variable stores the size of that set.
+     * For the PC approaches, this is the size of the intersection of the study set and m_pa(t).
+     * See Figure 1B of Improved detection of overrepresentation of Gene-Ontology annotations with parent
+     * child analysis (PMID:17848398)
+     *  n_pa_t refers to the terms in the study set that are annotated to the parent(s) of t
+     */
     public final int n_pa_t;
+    /**
+     * Size of the set of terms annotated to the parent(s) of Term t.
+     * The set is calculated differently for the PC Union/Intersection methods
+     */
+    public final int m_pa_t;
+    /**
+     * Number of terms in population annotated to t
+     */
     public final int m_t;
 
-    public Counts(int m, int n, int m_t) {
-      this.m_pa_t = m;
-      this.n_pa_t = n;
-      this.m_t = m_t;
-    }
+    /**
+     * Number of terms in study set annotated to t
+     */
+    public final int n_t;
 
+
+    public Counts(int n_pa_t,  int m_pa_t, int n_t, int m_t) {
+      this.n_pa_t = n_pa_t;
+      this.m_pa_t = m_pa_t;
+      this.n_t = n_t;
+      this.m_t = m_t;
+
+    }
+    /** For the PC approaches, this is the size of the intersection of the study set and m_pa(t).
+     * See Figure 1B of Improved detection of overrepresentation of Gene-Ontology annotations with parent
+     *  * child analysis (PMID:17848398)
+     */
     public double get_proportion() {
-      return (double) m_t / (double) m_pa_t;
+      return (double)m_t/(double)m_pa_t;
     }
   }
 

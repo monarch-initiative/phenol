@@ -147,14 +147,106 @@ class HypergeometricTest {
   @Test
   void testHypergeometric() {
     int pop=324;
-    int popAnnot=82;
+    int m_t=82; // population terms annotated to t
     int study=74;
     int studyAnnot=38;
-    double raw_pval = hypergeometric.phypergeometric(pop, popAnnot, study, studyAnnot);
+    double raw_pval = hypergeometric.phypergeometric(pop, m_t, study, studyAnnot);
     double expected = 2.253392e-08;
     assertEquals(expected, raw_pval, EPSILON);
   }
 
+  @Test
+  void compareTermForTerm1() {
+    // Pop.total	Pop.term	Study.total	Study.term
+    // 13668	184	1757	59	3.81343996188218E-11
+    int m = 13668;
+    int m_t = 184;
+    int n = 1757;
+    int n_t = 59;
+    double expected = 3.81343996188218E-11;
+    assertEquals(expected, hypergeometric.phypergeometric(m, m_t, n, n_t), EPSILON);
+  }
+
+
+  @Test
+  void compareTermForTerm2() {
+    // Pop.total	Pop.term	Study.total	Study.term
+    // 13668	46	1757	18	1.170702787001301E-5
+    int m = 13668;
+    int m_t = 46;
+    int n = 1757;
+    int n_t = 18;
+    double expected = 1.170702787001301E-5;
+    assertEquals(expected, hypergeometric.phypergeometric(m, m_t, n, n_t), EPSILON);
+  }
+
+  @Test
+  void compareTermForTerm3() {
+    // Pop.total	Pop.term	Study.total	Study.term
+    // 13668	360	1757	82	5.610055205824117E-7
+    int m = 13668;
+    int m_t = 360;
+    int n = 1757;
+    int n_t = 82;
+    double expected = 5.610055205824117E-7;
+    assertEquals(expected, hypergeometric.phypergeometric(m, m_t, n, n_t), EPSILON);
+  }
+
+  /**
+   * m<-13668
+   * n<-1757
+   * m_t <-70
+   * n_t <- 19
+   * h3 <-phyper(n_t-1, n, m-n, m_t, lower.tail=FALSE)
+   * 0.001022299
+   */
+  @Test
+  void compareTermForTerm4() {
+    int m = 13668;
+    int m_t = 70;
+    int n = 1757;
+    int n_t = 19;
+    double expected = 0.001022299;
+    assertEquals(expected, hypergeometric.phypergeometric(m, m_t, n, n_t), EPSILON);
+  }
+
+  /**
+   * m<-13668
+   * n<-1757
+   * m_t <-19
+   * n_t <- 8
+   * phyper(n_t-1, n, m-n, m_t, lower.tail=FALSE)
+   * 0.0002578227
+   */
+  @Test
+  void compareTermForTerm5() {
+    int m = 13668;
+    int m_t = 19;
+    int n = 1757;
+    int n_t = 8;
+    double expected = 0.001488453;
+    assertEquals(expected, hypergeometric.phypergeometric(m, m_t, n, n_t), EPSILON);
+  }
+
+  // Now test Parent Child Intersection
+  /**
+   *ID	Pop.total	Pop.term	Study.total	Study.term	Pop.family	Study.family	nparents	is.trivial	p	p.adjusted	p.min	name
+   * 13668	344	116	13	5651	60	1	false	4.7583683370433105E-5
+   */
+  @Test
+  void compareParentChildIntersection1() {
+    int m = 1366;
+    int m_t = 344;
+    int n = 116;
+    int n_t = 13;
+    int m_pa_t = 5651; //Pop.family
+    int n_pa_t = 60; //Study.family
+    double proportion = (double) m_t/m_pa_t;
+    double result = hypergeometric.phypergeometric(m_pa_t, m_t, n_pa_t, n_t);
+    double expected = 4.7583683370433105E-5;
+    System.out.printf("%e", result);
+    assertEquals(expected,result, EPSILON);
+  }
 
 }
 
