@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
+import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
-import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -31,15 +31,14 @@ public class ParentChildUnionPValueCalculation extends ParentChildPValuesCalcula
     Set<TermId> genesAnnotatedToGoId = annotationMap.get(goId).getTotalAnnotated();
     int m_t = genesAnnotatedToGoId.size(); // number of genes in population annotated to t
     // the following step performs an intersection with the study set genes
-    genesAnnotatedToGoId.retainAll(studySet.getAnnotatedItemTermIds());
-    int n_t = genesAnnotatedToGoId.size(); // number of genes in study set annotated to t
+    Set<TermId> studs = studySet.getGeneSet();
+    int n_t = Sets.intersection(studs, genesAnnotatedToGoId).size();// number of genes in study set annotated to t
     for (TermId par : parents) {
       Set<TermId>  annotedGeneIds = annotationMap.get(par).getTotalAnnotated();
       parentsUnion.addAll(annotedGeneIds);
     }
     int m_pa_t = parentsUnion.size();
-    parentsUnion.retainAll(studySet.getAnnotatedItemTermIds());
-    int n_pa_t = parentsUnion.size();
+    int n_pa_t = Sets.intersection(studs, parentsUnion).size();
     return new Counts(n_pa_t, m_pa_t, n_t, m_t);
   }
 }

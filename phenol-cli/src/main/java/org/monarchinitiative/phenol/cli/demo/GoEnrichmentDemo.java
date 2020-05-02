@@ -52,7 +52,7 @@ public final class GoEnrichmentDemo {
 
   private static final double ALPHA = 0.05;
 
-  private static final int STUDYSET_SIZE = 100;
+  private static final int STUDYSET_SIZE = 400;
 
 
 
@@ -101,9 +101,6 @@ public final class GoEnrichmentDemo {
     int n_sig = 0;
     System.out.println(String.format("[INFO] Target term %s [%s]",
       gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
-    for (TermId g : studyGenes) {
-      System.out.println("\t" + g.getValue());
-    }
     System.out.println(String.format("[INFO] Study set: %d genes. Population set: %d genes",
       studysize, popsize));
     for (GoTerm2PValAndCounts item : pvals) {
@@ -169,7 +166,7 @@ public final class GoEnrichmentDemo {
       }
       String label = term.getName();
       if (pval_adj > ALPHA) {
-        //continue;
+        continue;
       }
       n_sig++;
       double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
@@ -193,7 +190,7 @@ public final class GoEnrichmentDemo {
 
     int N = targetGenes.size();
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
-    int M = N / 2; // take one fourth of the target genes
+    int M = N / 10; // take one fourth of the target genes
 
     Set<TermId> finalGenes = new HashSet<>();
     int i = 0;
@@ -240,7 +237,7 @@ public final class GoEnrichmentDemo {
      * and three times as many other terms. The default GO:0070997 is 'neuron death'.
      */
     @Parameter(names = {"-i", "--id"}, description = "term ID to search for enrichment")
-    private String goTermId = "GO:0019814";
+    private String goTermId = "GO:0097190";
 
     String getGoPath() {
       return goPath;

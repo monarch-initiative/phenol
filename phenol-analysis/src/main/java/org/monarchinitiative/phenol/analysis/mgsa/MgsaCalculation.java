@@ -244,12 +244,12 @@ public class MgsaCalculation {
 
     private void calculateByMCMC(MgsaEnrichedGOTermsResult result,
                                  StudySet studySet) throws PhenolException {
-        List<TermId> relevantTermList = new ArrayList<>(populationSet.getAnnotatingTermIds());// graph.filterRelevant(populationEnumerator.getAllAnnotatedTermsAsList());
+        List<TermId> relevantTermList = new ArrayList<>(populationSet.getOntologyTermIds());// graph.filterRelevant(populationEnumerator.getAllAnnotatedTermsAsList());
         //IntMapper<TermId> termMapper = IntMapper.create(relevantTermList);
         // IntMapper<ByteString> geneMapper = IntMapper.create(populationEnumerator.getGenesAsList());
         TermToItemMatrix calcUtils = new TermToItemMatrix(goAssociations);
         int[][] termLinks = calcUtils.getTermLinks();
-        boolean[] observedItems = calcUtils.getBooleanArrayobservedItems(studySet.getAnnotatedItemTermIds()); //geneMapper.getDense(studyEnumerator.getGenes());
+        boolean[] observedItems = calcUtils.getBooleanArrayobservedItems(studySet.getGeneSet()); //geneMapper.getDense(studyEnumerator.getGenes());
         double[] r = calculate(termLinks, observedItems);
 
         for (int i = 0; i < r.length; i++) {
@@ -284,7 +284,7 @@ public class MgsaCalculation {
 
     private MgsaGOTermProperties[] calculate2(StudySet studySet) {
         int[][] term2Items = termToItemMatrix.getTermLinks();
-        boolean[] observedItems = this.termToItemMatrix.getBooleanArrayobservedItems(studySet.getAnnotatedItemTermIds()); //geneMapper.getDense(studyEnumerator.getGenes());
+        boolean[] observedItems = this.termToItemMatrix.getBooleanArrayobservedItems(studySet.getGeneSet()); //geneMapper.getDense(studyEnumerator.getGenes());
         int numTerms = termToItemMatrix.getNumTerms();
         MgsaGOTermProperties[] res = new MgsaGOTermProperties[numTerms];
         Random rnd;

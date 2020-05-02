@@ -1,6 +1,9 @@
 package org.monarchinitiative.phenol.stats;
 
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -246,6 +249,24 @@ class HypergeometricTest {
     double expected = 4.7583683370433105E-5;
     System.out.printf("%e", result);
     assertEquals(expected,result, EPSILON);
+  }
+
+
+  @Test
+  void bla() {
+    Set<Integer>
+      set1 = Sets.newHashSet(10, 20, 30, 40, 50);
+
+    // Creating second set
+    Set<Integer>
+      set2 = Sets.newHashSet(30, 50, 70, 90);
+
+    // Using Guava's Sets.intersection() method
+    Set<Integer>
+      answer = Sets.intersection(set1, set2);
+    System.out.println(answer);
+    set2.retainAll(set1);
+    System.out.println(set2);
   }
 
 }
