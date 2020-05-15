@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class SimilarityScoreSampling<T extends Serializable> {
+public final class SimilarityScoreSampling {
 
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
@@ -53,7 +52,7 @@ public final class SimilarityScoreSampling<T extends Serializable> {
   /** Configuration for score sampling. */
   private final ScoreSamplingOptions options;
 
-  // TODO: ontology already is in similarity?
+
   /**
    * Constructor.
    *
@@ -77,8 +76,8 @@ public final class SimilarityScoreSampling<T extends Serializable> {
    *     labels.
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
-  public Map<Integer, ScoreDistribution<T>> performSampling(Map<Integer, ? extends Collection<TermId>> labels) {
-    Map<Integer, ScoreDistribution<T>> result = new HashMap<>();
+  public Map<Integer, ScoreDistribution> performSampling(Map<TermId, ? extends Collection<TermId>> labels) {
+    Map<Integer, ScoreDistribution> result = new HashMap<>();
     for (int numTerms = options.getMinNumTerms();
         numTerms <= options.getMaxNumTerms();
         ++numTerms) {
@@ -99,7 +98,7 @@ public final class SimilarityScoreSampling<T extends Serializable> {
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ScoreDistribution}.
    */
-  public ScoreDistribution<T> performSamplingForTermCount(Map<Integer, ? extends Collection<TermId>> labels, int numTerms) {
+  public ScoreDistribution performSamplingForTermCount(Map<TermId, ? extends Collection<TermId>> labels, int numTerms) {
     LOGGER.info("Running precomputation for {} world objects using {} query terms...", labels.size(), numTerms);
 
     // Setup progress reporting.
@@ -107,11 +106,12 @@ public final class SimilarityScoreSampling<T extends Serializable> {
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    final ConcurrentHashMap<T, ObjectScoreDistribution<T>> distributions = new ConcurrentHashMap<>();
-    IntConsumer task =
+    final ConcurrentHashMap<TermId, ObjectScoreDistribution> distributions = new ConcurrentHashMap<>();
+   // IntConsumer task =
+    Consumer<TermId> task =
       objectId -> {
           try {
-            final ObjectScoreDistribution<T> dist =
+            final ObjectScoreDistribution dist =
                 performComputation(objectId, labels.get(objectId), numTerms);
             distributions.put(dist.getObjectId(), dist);
             progressReport.incCurrent();
@@ -131,9 +131,9 @@ public final class SimilarityScoreSampling<T extends Serializable> {
         new ThreadPoolExecutor(
             numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Submit all chunks into the executor.
-    final Iterator<Integer> objectIdIter = labels.keySet().stream().filter(this::selectObject).iterator();
+    final Iterator<TermId> objectIdIter = labels.keySet().stream().iterator();
     while (objectIdIter.hasNext()) {
-      final int objectId = objectIdIter.next();
+      final TermId objectId = objectIdIter.next();
       threadPoolExecutor.submit(() -> task.accept(objectId));
     }
     // Shutdown executor and wait for all tasks being completed.
@@ -172,13 +172,12 @@ public final class SimilarityScoreSampling<T extends Serializable> {
    * @param numTerms Number of query terms to compute score distributions for.
    * @return Resulting {@link ObjectScoreDistribution}.
    */
-  private ObjectScoreDistribution performComputation(
-    int objectId, Collection<TermId> terms, int numTerms) {
+  private ObjectScoreDistribution performComputation(TermId objectId, Collection<TermId> terms, int numTerms) {
     LOGGER.info("Running precomputation for world object {}.", objectId);
 
     // Create and seed MersenneTwister
     final MersenneTwister rng = new MersenneTwister();
-    rng.setSeed(options.getSeed() + objectId);
+    rng.setSeed(options.getSeed() + objectId.hashCode());
 
     // Sample per-object score distribution
     ObjectScoreDistribution result =
@@ -205,7 +204,7 @@ public final class SimilarityScoreSampling<T extends Serializable> {
    *     computation).
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
-    int objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
+    TermId objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
     final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute

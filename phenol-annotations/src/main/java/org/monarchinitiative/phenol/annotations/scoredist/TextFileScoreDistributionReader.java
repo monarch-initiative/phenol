@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import org.apache.commons.codec.DecoderException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
@@ -19,7 +20,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  * @see TextFileScoreDistributionWriter
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class TextFileScoreDistributionReader<T extends Serializable> implements ScoreDistributionReader<T> {
+public class TextFileScoreDistributionReader implements ScoreDistributionReader {
 
   /** Path to the file read from. */
   private final File inputFile;
@@ -62,8 +63,8 @@ public class TextFileScoreDistributionReader<T extends Serializable> implements 
   }
 
   @Override
-  public ScoreDistribution<T> readForTermCount(int termCount) throws PhenolException {
-    final Map<Integer, ScoreDistribution<T>> allDists = readAll();
+  public ScoreDistribution readForTermCount(int termCount) throws PhenolException {
+    final Map<Integer, ScoreDistribution> allDists = readAll();
     if (!allDists.containsKey(termCount)) {
       throw new PhenolException("Distribution not found for term count: " + termCount);
     } else {
@@ -72,18 +73,18 @@ public class TextFileScoreDistributionReader<T extends Serializable> implements 
   }
 
   @Override
-  public Map<Integer, ScoreDistribution<T>> readAll() throws PhenolException {
-    final Map<Integer, ScoreDistribution<T>> result = new HashMap<>();
+  public Map<Integer, ScoreDistribution> readAll() throws PhenolException {
+    final Map<Integer, ScoreDistribution> result = new HashMap<>();
 
-    final Map<Integer, Map<T, ObjectScoreDistribution<T>>> tmp = new HashMap<>();
+    final Map<Integer, Map<TermId, ObjectScoreDistribution>> tmp = new HashMap<>();
 
     while (nextLine != null) {
       final String[] arr = nextLine.trim().split("\t");
       final int numTerms = Integer.parseInt(arr[0]);
       //final int entrezId = Integer.parseInt(arr[1]);
-      final T entrezId;
+      final TermId entrezId;
       try {
-        entrezId = (T) ObjHexStringConverter.hex2obj(arr[1]);
+        entrezId = (TermId) ObjHexStringConverter.hex2obj(arr[1]);
       } catch (DecoderException | IOException | ClassNotFoundException e) {
         throw new PhenolException("Failed to parse hexadecimal string to object: " + arr[1]);
       }
@@ -96,8 +97,8 @@ public class TextFileScoreDistributionReader<T extends Serializable> implements 
         cumFreqs.put(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
       }
 
-      final ObjectScoreDistribution<T> scoreDist =
-          new ObjectScoreDistribution<>(entrezId, numTerms, sampleSize, cumFreqs);
+      final ObjectScoreDistribution scoreDist =
+          new ObjectScoreDistribution(entrezId, numTerms, sampleSize, cumFreqs);
 
       if (!tmp.containsKey(numTerms)) {
         tmp.put(numTerms, new TreeMap<>());
@@ -111,18 +112,18 @@ public class TextFileScoreDistributionReader<T extends Serializable> implements 
       }
     }
 
-    for (Entry<Integer, Map<T, ObjectScoreDistribution<T>>> e : tmp.entrySet()) {
+    for (Entry<Integer, Map<TermId, ObjectScoreDistribution>> e : tmp.entrySet()) {
       final int numTerms = e.getKey();
-      result.put(numTerms, new ScoreDistribution<>(numTerms, e.getValue()));
+      result.put(numTerms, new ScoreDistribution(numTerms, e.getValue()));
     }
 
     return result;
   }
 
   @Override
-  public ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, T objectId)
+  public ObjectScoreDistribution readForTermCountAndObject(int termCount, TermId objectId)
       throws PhenolException {
-    final ObjectScoreDistribution<T> result =
+    final ObjectScoreDistribution result =
         readForTermCount(termCount).getObjectScoreDistribution(objectId);
     if (result == null) {
       throw new PhenolException(

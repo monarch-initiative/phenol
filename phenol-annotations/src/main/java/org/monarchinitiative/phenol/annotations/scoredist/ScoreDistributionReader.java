@@ -2,10 +2,10 @@ package org.monarchinitiative.phenol.annotations.scoredist;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Map;
 
 import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
@@ -14,7 +14,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface ScoreDistributionReader<T extends Serializable> extends Closeable {
+public interface ScoreDistributionReader extends Closeable {
 
   /**
    * Read for the given {@code termCount} and {@code objectId}.
@@ -24,7 +24,7 @@ public interface ScoreDistributionReader<T extends Serializable> extends Closeab
    * @return {@link ObjectScoreDistribution} with the empirical distribution for the query.
    * @throws PhenolException In the case of problems when reading and parsing.
    */
-  ObjectScoreDistribution<T> readForTermCountAndObject(int termCount, T objectId)
+  ObjectScoreDistribution readForTermCountAndObject(int termCount, TermId objectId)
       throws PhenolException;
 
   /**
@@ -34,7 +34,7 @@ public interface ScoreDistributionReader<T extends Serializable> extends Closeab
    * @return {@link ScoreDistribution} for the given {@code termCount}.
    * @throws PhenolException In the case of problems when reading or parsing.
    */
-  ScoreDistribution<T> readForTermCount(int termCount) throws PhenolException;
+  ScoreDistribution readForTermCount(int termCount) throws PhenolException;
 
   /**
    * Read all entries and return mapping from term count to {@link ScoreDistribution} object.
@@ -42,7 +42,7 @@ public interface ScoreDistributionReader<T extends Serializable> extends Closeab
    * @return Resulting score distributions from the file.
    * @throws PhenolException In the case of problems when reading or parsing.
    */
-  Map<Integer, ScoreDistribution<T>> readAll() throws PhenolException;
+  Map<Integer, ScoreDistribution> readAll() throws PhenolException;
 
   void close() throws IOException;
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -144,10 +145,10 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
   }
 
   @Override
-  public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution)
+  public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution)
       throws PhenolException {
-    for (T objectId : scoreDistribution.getObjectIds()) {
-      final ObjectScoreDistribution<T> dist = scoreDistribution.getObjectScoreDistribution(objectId);
+    for (TermId objectId : scoreDistribution.getObjectIds()) {
+      final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
       writeObjectScoreDistribution(numTerms, dist, resolution);
     }
   }
@@ -161,7 +162,7 @@ public final class H2ScoreDistributionWriter implements ScoreDistributionWriter 
    * @throws PhenolException In case of problems when writing to database.
    */
   private <T extends Serializable> void writeObjectScoreDistribution(
-      int numTerms, ObjectScoreDistribution<T> dist, int resolution) throws PhenolException {
+      int numTerms, ObjectScoreDistribution dist, int resolution) throws PhenolException {
     final double[] scores;
     final double[] pValues;
 
