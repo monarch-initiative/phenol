@@ -22,7 +22,6 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
-import org.monarchinitiative.phenol.utils.MersenneTwister;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,18 +51,21 @@ public final class SimilarityScoreSampling {
   /** Configuration for score sampling. */
   private final ScoreSamplingOptions options;
 
+  private final Map<TermId, ? extends Collection<TermId>> labels;
 
   /**
    * Constructor.
    *
    * @param options Configuration for score sampling.
+   *
+   * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId} labels.
    */
-  public SimilarityScoreSampling(Ontology ontology, Similarity similarity, ScoreSamplingOptions options) {
+  public SimilarityScoreSampling(Ontology ontology, Similarity similarity, ScoreSamplingOptions options, Map<TermId, ? extends Collection<TermId>> labels) {
     this.ontology = ontology;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
     this.options = (ScoreSamplingOptions) options.clone();
-
+    this.labels = labels;
   }
 
   /**
@@ -72,11 +74,10 @@ public final class SimilarityScoreSampling {
    * <p>Note that in general, this will be too slow and it will be required to split the work both
    * by term count and by world object Id and distribute this to a parallel (cluster) computer.
    *
-   * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId}
-   *     labels.
+
    * @return Resulting {@link Map} from query term count to precomputed {@link ScoreDistribution}.
    */
-  public Map<Integer, ScoreDistribution> performSampling(Map<TermId, ? extends Collection<TermId>> labels) {
+  public Map<Integer, ScoreDistribution> performSampling() {
     Map<Integer, ScoreDistribution> result = new HashMap<>();
     for (int numTerms = options.getMinNumTerms();
         numTerms <= options.getMaxNumTerms();
@@ -101,8 +102,7 @@ public final class SimilarityScoreSampling {
   public ScoreDistribution performSamplingForTermCount(Map<TermId, ? extends Collection<TermId>> labels, int numTerms) {
     LOGGER.info("Running precomputation for {} world objects using {} query terms...", labels.size(), numTerms);
 
-    // Setup progress reporting.
-    final ProgressReporter progressReport = new ProgressReporter(LOGGER, "objects", labels.size());
+    final ProgressReporter progressReport = new ProgressReporter("objects", labels.size());
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.
@@ -151,19 +151,6 @@ public final class SimilarityScoreSampling {
   }
 
   /**
-   * Select world object ids that are in the range selected by options.
-   *
-   * @param objectId Integer world object id.
-   * @return Whether or not to select this world object.
-   */
-  private boolean selectObject(Integer objectId) {
-    if (options.getMinObjectId() != null && objectId < options.getMinObjectId()) {
-      return false;
-    }
-    return options.getMaxObjectId() == null || objectId <= options.getMaxObjectId();
-  }
-
-  /**
    * Perform the sampling using the configuration, given "world object" <code>objectId</code> and
    * the given <code>terms</code> for this object.
    *
@@ -173,38 +160,24 @@ public final class SimilarityScoreSampling {
    * @return Resulting {@link ObjectScoreDistribution}.
    */
   private ObjectScoreDistribution performComputation(TermId objectId, Collection<TermId> terms, int numTerms) {
-    LOGGER.info("Running precomputation for world object {}.", objectId);
-
-    // Create and seed MersenneTwister
-    final MersenneTwister rng = new MersenneTwister();
-    rng.setSeed(options.getSeed() + objectId.hashCode());
-
     // Sample per-object score distribution
-    ObjectScoreDistribution result =
-        new ObjectScoreDistribution(
-            objectId,
-            numTerms,
-            options.getNumIterations(),
-            sampleScoreCumulativeRelFreq(
-                objectId, terms, numTerms, options.getNumIterations(), rng));
-
-    LOGGER.info("Done computing precomputation for world object {}.", objectId);
-    return result;
+    return new ObjectScoreDistribution(
+        objectId,
+        numTerms,
+        options.getNumIterations(),
+        sampleScoreCumulativeRelFreq(terms, numTerms, options.getNumIterations()));
   }
 
   /**
    * Compute cumulative relative frequencies for the gene with the given "world object Id, number of
    * terms, iterations, and RNG using sampling.
    *
-   * @param objectId World object Id to compute for.
    * @param terms The {@link TermId}s that this object is labeled with.
    * @param numTerms Number of query terms to use for the computation.
-   * @param rng Random number generator to use.
    * @return Mapping between score and cumulative relative frequency (to use for p value
    *     computation).
    */
-  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(
-    TermId objectId, Collection<TermId> terms, int numTerms, int numIterations, Random rng) {
+  private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(Collection<TermId> terms, int numTerms, int numIterations) {
     final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
 
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
@@ -215,7 +188,7 @@ public final class SimilarityScoreSampling {
             .map(
                 i -> {
                   // Sample numTerms TermI objects from ontology.
-                  final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms, rng);
+                  final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms);
                   final double score = similarity.computeScore(randomTerms, terms);
                   // Round to four decimal places.
                   return Math.round(score * 1000.) / 1000.0;
@@ -245,10 +218,9 @@ public final class SimilarityScoreSampling {
    *
    * @param src {@link List} to sample random elements from.
    * @param count Number of elements to sample.
-   * @param rng PRNG to use for random number generation.
    * @return List of sampled elements.
    */
-  private static <E> List<E> selectRandomElements(List<E> src, int count, Random rng) {
+  private static <E> List<E> selectRandomElements(List<E> src, int count) {
     // Avoid running infinitely
     if (count >= src.size()) {
       return src;

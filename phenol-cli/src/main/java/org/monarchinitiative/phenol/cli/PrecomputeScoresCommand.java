@@ -8,6 +8,7 @@ import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionWrite
 import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreSamplingOptions;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code precompute-scores} command.
+ * Needs testing after refactor
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
@@ -39,6 +41,8 @@ public class PrecomputeScoresCommand {
 
   /** The TermId to object ID mapping. */
   private final HashMap<TermId, Collection<TermId>> termIdToObjectId = new HashMap<>();
+
+  private final Map<TermId, Collection<TermId>> objectIdToTermId = new HashMap<>();
 
   /** The Resnik similarity. */
   private ResnikSimilarity resnikSimilarity;
@@ -84,39 +88,9 @@ public class PrecomputeScoresCommand {
 
     LOGGER.info("Loading gene-to-term link file...");
     final ArrayList<HpoGeneAnnotation> termAnnotations = new ArrayList<>();
-    final File inputFile = new File(options.getGeneToTermLinkFile());
-//    try (HpoGeneAnnotationParser parser = new HpoGeneAnnotationParser(inputFile)) {
-//      while (parser.hasNext()) {
-//        final HpoGeneAnnotation anno = parser.next();
-//        if (phenotypicAbnormalitySubOntology.getNonObsoleteTermIds().contains(anno.getTermId())) {
-//          termAnnotations.add(anno);
-//        }
-//      }
-//    } catch (IOException e) {
-//      LOGGER.error(e.getMessage(), e);
-//      LOGGER.error("Problem reading from file.");
-//    } catch (TermAnnotationParserException e) {
-//      e.printStackTrace();
-//      LOGGER.error(e.getMessage(), e);
-//      LOGGER.error("Problem reading from file.");
-//    }
 
-//    TermAnnotations.constructTermLabelToAnnotationsMap(
-//            phenotypicAbnormalitySubOntology, termAnnotations)
-//        .forEach(
-//            (geneId, termIds) -> objectIdToTermId.put(geneId, termIds));
-//    //TODO we probably do not need these maps
-//    TermAnnotations.constructTermAnnotationToLabelsMap(
-//            phenotypicAbnormalitySubOntology, termAnnotations)
-//        .forEach(
-//            (termId, geneIds) -> {
-//              termIdToObjectId.put(
-//                  termId,
-//                  geneIds
-//                      .stream()
-//                      .map(termId1 -> geneIds)))
-//                      .collect(Collectors.toList()));
-//            });
+    TermAnnotations.constructTermLabelToAnnotationsMap(phenotypicAbnormalitySubOntology, termAnnotations)
+        .forEach((diseaseId, termIds) -> objectIdToTermId.put(diseaseId, termIds));
 
     LOGGER.info("Done loading gene-phenotype links.");
   }
@@ -151,8 +125,8 @@ public class PrecomputeScoresCommand {
 
     final SimilarityScoreSampling sampling =
         new SimilarityScoreSampling(
-            phenotypicAbnormalitySubOntology, resnikSimilarity, samplingOptions);
-    scoreDistribution = null;// TODO sampling.performSampling(objectIdToTermId);
+            phenotypicAbnormalitySubOntology, resnikSimilarity, samplingOptions,objectIdToTermId);
+    scoreDistribution = sampling.performSampling();
 
     LOGGER.info("Done with sampling.");
   }
