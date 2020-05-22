@@ -1,15 +1,18 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Precomputed score distribution for all "world objects" and a fixed number of terms.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public final class ScoreDistribution<T extends Serializable> implements Serializable {
+public final class ScoreDistribution implements Serializable {
 
   /** Serial UId for serialization. */
   private static final long serialVersionUID = 1L;
@@ -18,7 +21,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
   private final int numTerms;
 
   /** Mapping from "world object" Id to score distribution. */
-  private final Map<T, ObjectScoreDistribution<T>> objectScoreDistributions;
+  private final Map<TermId, ObjectScoreDistribution> objectScoreDistributions;
 
   /**
    * Constructor.
@@ -27,8 +30,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
    * @param objectScoreDistributions {@link Map} from "world object" Id to {@link
    *     ObjectScoreDistribution}.
    */
-  public ScoreDistribution(
-      int numTerms, Map<T, ObjectScoreDistribution<T>> objectScoreDistributions) {
+  public ScoreDistribution(int numTerms, Map<TermId, ObjectScoreDistribution> objectScoreDistributions) {
     this.numTerms = numTerms;
     this.objectScoreDistributions = objectScoreDistributions;
   }
@@ -39,7 +41,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
   }
 
   /** Retrieve {@link Collection} of "world object" ids. */
-  public Collection<T> getObjectIds() {
+  public Set<TermId> getObjectIds() {
     return objectScoreDistributions.keySet();
   }
 
@@ -49,7 +51,7 @@ public final class ScoreDistribution<T extends Serializable> implements Serializ
    * @param objectId "World object" Id to get {@link ObjectScoreDistribution} for.
    * @return The object score distributions for the given <code>objectId</code>.
    */
-  public ObjectScoreDistribution<T> getObjectScoreDistribution(T objectId) {
+  public ObjectScoreDistribution getObjectScoreDistribution(TermId objectId) {
     return objectScoreDistributions.get(objectId);
   }
 

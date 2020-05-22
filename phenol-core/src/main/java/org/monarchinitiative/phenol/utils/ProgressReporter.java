@@ -1,16 +1,11 @@
 package org.monarchinitiative.phenol.utils;
 
-import org.slf4j.Logger;
-
 /**
  * Helper class for reporting.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
 public final class ProgressReporter {
-
-  /** Logger to use. */
-  private final Logger logger;
 
   /** Label for elements, plural. */
   private final String elementsLabel;
@@ -33,12 +28,10 @@ public final class ProgressReporter {
   /**
    * Constructor.
    *
-   * @param logger {@link Logger} to write to
    * @param elementsLabel Label for element type (plural).
    * @param totalCount Total number of elements to process.
    */
-  public ProgressReporter(Logger logger, String elementsLabel, int totalCount) {
-    this.logger = logger;
+  public ProgressReporter(String elementsLabel, int totalCount) {
     this.elementsLabel = elementsLabel;
     this.totalCount = totalCount;
     this.current = 0;
@@ -72,10 +65,9 @@ public final class ProgressReporter {
     final double estimatedToGoSec = (totalCount - current) / elementsPerSec;
     this.lastStepTime = now;
     this.stepCount = current;
-
-    logger.info(
-        "Resnik precomputation done by {}% ({} of {} done, step elapsed: {} s, elapsed: "
-            + "{} s, processing {} {}/s, estimated to go: {} s",
+    System.out.printf(
+        "Resnik precomputation done by %d%% (%d of %d done, step elapsed: %.1f s, elapsed: "
+            + "%.1f s, processing \"%.1f %s/s, estimated to go: %.1f s).\n",
           ((int) (100.0 * current / totalCount)),
           current,
           totalCount,

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.monarchinitiative.phenol.io.utils.ObjHexStringConverter;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import com.google.common.base.Joiner;
@@ -37,9 +38,9 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
   }
 
   @Override
-  public <T extends Serializable> void write(int numTerms, ScoreDistribution<T> scoreDistribution, int resolution) {
-    for (T objectId : scoreDistribution.getObjectIds()) {
-      final ObjectScoreDistribution<T> dist = scoreDistribution.getObjectScoreDistribution(objectId);
+  public void write(int numTerms, ScoreDistribution scoreDistribution, int resolution) {
+    for (TermId objectId : scoreDistribution.getObjectIds()) {
+      final ObjectScoreDistribution dist = scoreDistribution.getObjectScoreDistribution(objectId);
       final List<Double> scores = dist.observedScores();
       final ArrayList<String> points = new ArrayList<>();
       if (resolution != 0) {
