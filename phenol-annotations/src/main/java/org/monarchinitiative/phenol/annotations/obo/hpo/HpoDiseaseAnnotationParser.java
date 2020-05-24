@@ -144,12 +144,7 @@ public class HpoDiseaseAnnotationParser {
       String line = br.readLine();
       while (line.startsWith("#")) {
         line = br.readLine();
-      } // this skips the comments. The next line has the definition of the header
-      if (!HpoAnnotationLine.isValidHeaderLine(line)) {
-        throw new PhenolException(
-          String.format(
-            "Annotation file at %s has invalid header (%s)", annotationFilePath, line));
-      }
+      } // this skips the comments (including the definition of the header)
       while ((line = br.readLine()) != null) {
         HpoAnnotationLine aline = HpoAnnotationLine.constructFromString(line);
         if (!aline.hasValidNumberOfFields()) {

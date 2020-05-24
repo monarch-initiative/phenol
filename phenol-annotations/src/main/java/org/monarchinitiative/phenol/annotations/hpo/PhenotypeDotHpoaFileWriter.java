@@ -266,6 +266,7 @@ public class PhenotypeDotHpoaFileWriter {
   }
 
   /**
+   * Create header line with all of the fields. Prepend a '#' symbol
    * @return Header line for the big file (indicating column names for the data).
    */
   static String getHeaderLine() {
@@ -281,7 +282,7 @@ public class PhenotypeDotHpoaFileWriter {
       "Modifier",
       "Aspect",
       "Biocuration"};
-    return String.join("\t", fields);
+    return "#" + String.join("\t", fields);
   }
 
 
