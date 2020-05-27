@@ -1,9 +1,12 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import com.google.common.collect.Multimap;
+import org.monarchinitiative.phenol.annotations.assoc.OrphaGeneToDiseaseParser;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +22,7 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class PhenotypeDotHpoaFileWriter {
+  private final static Logger logger = LoggerFactory.getLogger(PhenotypeDotHpoaFileWriter.class);
   /**
    * List of all of the {@link HpoAnnotationModel} objects from our annotations (OMIM and DECIPHER).
    */
@@ -146,7 +150,7 @@ public class PhenotypeDotHpoaFileWriter {
       this.parseResultAndErrorSummaryLines.add(String.format("\n\n[WARNING] Not all valid small files successfully parsed (%d entries missing).\n\n",missing));
     }
     if (n_omitted>0) {
-      System.out.printf("%d small files were omitted.", n_omitted);
+      logger.trace("%d small files were omitted.", n_omitted);
     }
 
     // 2. Get the Orphanet Inheritance Annotations
@@ -237,12 +241,12 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
+          logger.warn(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
         }
         n++;
       }
     }
-    System.out.println("[INFO] We output a total of " + n + " big file lines from internal HPO Annotation files");
+    logger.info("[INFO] We output a total of " + n + " big file lines from internal HPO Annotation files");
     int m = 0;
     Set<TermId> seenInheritance = new HashSet<>();
     for (HpoAnnotationModel smallFile : this.orphanetSmallFileList) {
@@ -252,15 +256,15 @@ public class PhenotypeDotHpoaFileWriter {
           String bigfileLine = entry.toBigFileLine(ontology);
           writer.write(bigfileLine + "\n");
         } catch (HpoAnnotationModelException e) {
-          System.err.println(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
+         logger.warn(String.format("[ERROR] with entry (%s) skipping line: %s",e.getMessage(),entry.getLineNoTabs()));
         }
         m++;
       }
     }
-    System.out.println("We output a total of " + m + " big file lines from the Orphanet Annotation files");
-    System.out.println("Total output lines was " + (n + m));
+    logger.info("We output a total of " + m + " big file lines from the Orphanet Annotation files");
+    logger.info("Total output lines was " + (n + m));
     for (String line : this.parseResultAndErrorSummaryLines) {
-      System.out.println(line);
+      logger.warn(line);
     }
     writer.close();
   }

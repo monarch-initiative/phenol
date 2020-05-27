@@ -9,12 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PhenotypeDotHpoaFileWriterTest {
 
-    /** Note that the header should NOT have a #, which is used for the
-     * preceding comment lines.
+    /** Note that the header should have a #
      */
     @Test
     void testV2Header() {
-        String expected="DatabaseID\tDiseaseName\tQualifier\tHPO_ID\tReference\tEvidence\tOnset\tFrequency\tSex\tModifier\tAspect\tBiocuration";
+        String expected="#DatabaseID\tDiseaseName\tQualifier\tHPO_ID\tReference\tEvidence\tOnset\tFrequency\tSex\tModifier\tAspect\tBiocuration";
         assertEquals(expected,PhenotypeDotHpoaFileWriter.getHeaderLine());
     }
 

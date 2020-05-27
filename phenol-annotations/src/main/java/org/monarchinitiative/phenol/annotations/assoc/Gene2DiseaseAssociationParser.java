@@ -128,7 +128,12 @@ public class Gene2DiseaseAssociationParser {
   }
 
 
-
+  /**
+   * Parse the medgen file that contains disease to gene links.
+   * https://ftp.ncbi.nih.gov/gene/DATA/mim2gene_medgen
+   * @param mim2geneMedgenFile Path to mim2gene_medgen file
+   * @throws IOException if the mim2gene_medgen cannot be parsed.
+   */
   public void parseMim2GeneMedgen(File mim2geneMedgenFile) throws IOException {
     Multimap<TermId, GeneToAssociation> associationMap = ArrayListMultimap.create();
     Map<TermId, String> geneMap = new HashMap<>();
@@ -172,8 +177,6 @@ public class Gene2DiseaseAssociationParser {
     ImmutableMap.Builder<TermId, String> geneBuilder = new ImmutableMap.Builder<>();
     geneBuilder.putAll(geneMap);
     geneIdToSymbolMap = geneBuilder.build();
-
-    // this.allGeneIdToSymbolMap = null;
   }
 
 

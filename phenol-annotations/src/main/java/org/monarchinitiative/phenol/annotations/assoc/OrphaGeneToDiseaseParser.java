@@ -3,8 +3,11 @@ package org.monarchinitiative.phenol.annotations.assoc;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
+import org.monarchinitiative.phenol.annotations.hpo.OrphanetXML2HpoDiseaseModelParser;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -22,7 +25,7 @@ import java.util.Map;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class OrphaGeneToDiseaseParser {
-
+  private final static Logger logger = LoggerFactory.getLogger(OrphaGeneToDiseaseParser.class);
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaNumber";
   private static final String GENE_LIST = "GeneList";
@@ -95,7 +98,7 @@ public class OrphaGeneToDiseaseParser {
     } catch (IOException e) {
       throw new PhenolRuntimeException("Could not parse mim2gene file because of I/O exception: " + e.getMessage());
     }
-    System.out.printf("[INFO] Parsed %d OMIM id to NCBI Gene id mappings.\n", this.mimIdToGeneIdMap.size());
+    logger.info("Parsed %d OMIM id to NCBI Gene id mappings.\n", this.mimIdToGeneIdMap.size());
   }
 
 

@@ -13,7 +13,7 @@ import java.util.List;
  * <p>The main use case for this class is to display a set of Terms that descend from this Category. The class
  * is intended to be used with HpoCategoryMap to display a set of terms that can belong to </p>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
- * @version 0.1.13
+ * @version 0.1.14
  */
 public class HpoCategory {
   /** The TermId of the HPO term that corresponds to this category. For example, the HPO Term Abnormality of the

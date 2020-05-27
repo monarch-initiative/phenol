@@ -38,6 +38,8 @@ public class HpoCategoryMap {
   private final ImmutableMap<TermId, HpoCategory> categorymap;
 
   private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
+  /** Clinical course includes ONSET, Mortality, temporal, and pace of progression. */
+  private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
   private static final TermId ABNORMAL_CELLULAR_ID = TermId.of("HP:0025354");
   private static final TermId BLOOD_ID = TermId.of("HP:0001871");
   private static final TermId CONNECTIVE_TISSUE_ID = TermId.of("HP:0003549");
@@ -66,7 +68,7 @@ public class HpoCategoryMap {
 
   public HpoCategoryMap() {
     termIdList = new TermId[]{INHERITANCE_ID, ABNORMAL_CELLULAR_ID, BLOOD_ID, CONNECTIVE_TISSUE_ID, HEAD_AND_NECK_ID,
-      LIMBS_ID, METABOLISM_ID, PRENATAL_ID, BREAST_ID, CARDIOVASCULAR_ID, DIGESTIVE_ID,
+      LIMBS_ID, METABOLISM_ID, PRENATAL_ID, BREAST_ID, CARDIOVASCULAR_ID, DIGESTIVE_ID,CLINICAL_COURSE_ID,
       EAR_ID, ENDOCRINE_ID, EYE_ID, GENITOURINARY_ID, IMMUNOLOGY_ID, INTEGUMENT_ID,
       MUSCLE_ID, NERVOUS_SYSTEM_ID, RESPIRATORY_ID, SKELETAL_ID, THORACIC_CAVITY_ID,
       VOICE_ID, GROWTH_ID, CONSTITUTIONAL_ID, NEOPLASM_ID};
@@ -149,6 +151,9 @@ public class HpoCategoryMap {
     // neoplasm
     HpoCategory neoplasmCat = new HpoCategory(NEOPLASM_ID, "Neoplasm");
     mapbuilder.put(NEOPLASM_ID, neoplasmCat);
+
+    HpoCategory clinicalCourseCat = new HpoCategory(CLINICAL_COURSE_ID, "Clinical course");
+    mapbuilder.put(CLINICAL_COURSE_ID, clinicalCourseCat);
     // Finally, build the map!
     categorymap = mapbuilder.build();
   }
@@ -243,12 +248,12 @@ public class HpoCategoryMap {
    * calling code.
    *
    * @param catlist A list of HPO TermIds that correspond to the top level categories (see
-   * @return
+   * @return The highest-priority {@link HpoCategory}
    */
   private HpoCategory getPrioritizedCategory(Set<TermId> catlist) {
     if (catlist.size() == 1) {
       return categorymap.get(catlist.iterator().next());
-    } else if (catlist.stream().filter(t -> t.equals(NEOPLASM_ID)).findAny().isPresent()) {
+    } else if (catlist.stream().anyMatch(t -> t.equals(NEOPLASM_ID))) {
       return categorymap.get(NEOPLASM_ID); // top priority if a term is mapped to >1 category
     }
     // if we get here, there are multiple categories. We do not care which

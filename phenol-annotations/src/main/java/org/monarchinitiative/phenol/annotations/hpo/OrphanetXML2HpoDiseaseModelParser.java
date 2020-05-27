@@ -4,6 +4,8 @@ import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,6 +52,7 @@ import javax.xml.stream.events.XMLEvent;
  * @author Peter Robinson
  */
 public class OrphanetXML2HpoDiseaseModelParser {
+  private final static Logger logger = LoggerFactory.getLogger(OrphanetXML2HpoDiseaseModelParser.class);
     /** Path to {@code en_product4_HPO.xml} file. */
     private final String orphanetXmlPath;
     /** Reference to the HPO Ontology. */
@@ -201,7 +204,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
                         currentFrequencyTermId = null;// reset
                         currentAnnotationEntryList.add(entry);
                     } catch (HpoAnnotationModelException e) {
-                        System.err.println(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
+                        logger.warn(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
                                 currentDiseaseName != null ? currentDiseaseName : "n/a",
                                 currentOrphanumber != null ? currentOrphanumber : "n/a",
                                 currentHpoId != null ? currentHpoId : "n/a",

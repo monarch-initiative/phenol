@@ -338,7 +338,7 @@ public class HpoAnnotationEntry {
     try {
       performQualityControl(entry, ontology);
     } catch (HpoAnnotationModelException e) {
-      e.printStackTrace();
+      logger.warn(e.getMessage());
       return Optional.empty();
     }
     return Optional.of(entry);
