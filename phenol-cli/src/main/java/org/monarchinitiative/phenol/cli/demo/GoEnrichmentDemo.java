@@ -46,9 +46,19 @@ public final class GoEnrichmentDemo {
 
   private Ontology gontology;
 
-  private List<TermAnnotation> goAnnots;
+  private final List<TermAnnotation> goAnnots;
 
-  private AssociationContainer associationContainer;
+  private final Set<TermId> populationGenes;
+
+  private final StudySet studySet;
+
+  private final StudySet populationSet;
+
+  private final int popsize;
+
+  private final int studysize;
+
+  private final AssociationContainer associationContainer;
 
   private static final double ALPHA = 0.05;
 
@@ -60,10 +70,6 @@ public final class GoEnrichmentDemo {
     this.pathGoObo = options.getGoPath();
     this.pathGoGaf = options.getGafPath();
     this.targetGoTerm = TermId.of(options.getGoTermId());
-  }
-
-
-  public void run() {
     System.out.println("[INFO] parsing  " + pathGoObo);
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
     int n_terms = gontology.countAllTerms();
@@ -71,31 +77,43 @@ public final class GoEnrichmentDemo {
     System.out.println("[INFO] parsing  " + pathGoGaf);
     associationContainer = AssociationContainer.loadGoGafAssociationContainer(pathGoGaf);
     goAnnots = associationContainer.getRawAssociations();
+    populationGenes = getPopulationSet(goAnnots);
+    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
+    studySet = new StudySet(studyGenes, "study", studyAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
+    populationSet = new PopulationSet(populationGenes, populationAssociations);
+    popsize = populationGenes.size();
+    studysize = studyGenes.size();
+  }
+
+
+  public void run() {
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
+    performMgsaAnalysis();
   }
+
+  private void performMgsaAnalysis() {
+    System.out.println();
+    System.out.println("[INFO] Demo: MGSA analysis");
+    System.out.println();
+
+  }
+
+
 
   private void performTermForTermAnalysis() {
     System.out.println();
     System.out.println("[INFO] Demo: Term-for-term analysis");
     System.out.println();
-    Set<TermId> populationGenes = getPopulationSet(goAnnots);
 
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-    StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
       bonf);
-
-    int popsize = populationGenes.size();
-    int studysize = studyGenes.size();
-
     List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
     System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
@@ -131,22 +149,12 @@ public final class GoEnrichmentDemo {
     System.out.println();
     System.out.println("[INFO] Demo: parent child intersection analysis");
     System.out.println();
-    Set<TermId> populationGenes = getPopulationSet(goAnnots);
-
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-    StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     MultipleTestingCorrection bonf = new Bonferroni();
     ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
       bonf);
-
-    int popsize = populationGenes.size();
-    int studysize = studyGenes.size();
 
     List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
     System.err.println("Total number of retrieved p values: " + pvals.size());
