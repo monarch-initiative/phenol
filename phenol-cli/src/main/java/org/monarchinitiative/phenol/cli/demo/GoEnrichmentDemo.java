@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
+import org.monarchinitiative.phenol.analysis.mgsa.MgsaEnrichedGOTermsResult;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -89,8 +91,8 @@ public final class GoEnrichmentDemo {
 
 
   public void run() {
-    performTermForTermAnalysis();
-    performParentChildIntersectionAnalysis();
+    //performTermForTermAnalysis();
+   // performParentChildIntersectionAnalysis();
     performMgsaAnalysis();
   }
 
@@ -98,7 +100,10 @@ public final class GoEnrichmentDemo {
     System.out.println();
     System.out.println("[INFO] Demo: MGSA analysis");
     System.out.println();
-
+    int mcmcSteps = 5000;
+    MgsaCalculation mgsa = new MgsaCalculation(this.gontology, this.associationContainer, mcmcSteps);
+    MgsaEnrichedGOTermsResult result = mgsa.calculateStudySet(studySet);
+    System.out.println(result);
   }
 
 

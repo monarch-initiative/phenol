@@ -30,14 +30,14 @@ class TermToItemMatrix {
     private final int [][] termLinks;
 
 
-    TermToItemMatrix(AssociationContainer assocs) throws PhenolException {
-      System.err.println("TermToItemMatrix, top");
+    TermToItemMatrix(AssociationContainer assocs) {
         Objects.requireNonNull(assocs);
-      System.err.println("TermToItemMatrix, assocs OK");
         Multimap<TermId, TermId> termToGeneMultimap = assocs.getTermToItemMultimap();
         Set<TermId> genes = assocs.getAllAnnotatedGenes();
         n_genes = genes.size();
-        n_annotated_terms = termToGeneMultimap.size();
+        //In Multimap, size() returns an actual number of values stored in a Map,
+      // but keySet().size() returns the number of distinct keys.
+        n_annotated_terms = termToGeneMultimap.keySet().size();
         // First get list and indices of the Terms
         int i = 0;
         ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
