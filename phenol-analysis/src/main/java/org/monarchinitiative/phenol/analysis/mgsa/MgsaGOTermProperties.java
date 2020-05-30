@@ -1,61 +1,43 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 /**
  * GO Properties for term for term approach.
  *
  * @author Sebastian Bauer
  */
 
-public class MgsaGOTermProperties extends AbstractGOTermProperties
-{
-    private static final String[] propertyNames = new String[]{
-            "ID","Pop.total","Pop.term","Study.total","Study.term","marg"
-    };
+public class MgsaGOTermProperties {
 
-    public double marg;
 
-    @Override
-    public int getNumberOfProperties()
-    {
-        return propertyNames.length;
-    }
+  private final double marg;
+  private final TermId termId;
+  private final int annotatedStudyGenes;
+  private final int annotatedPopulationGenes;
 
-    @Override
-    public String getPropertyName(int propNumber)
-    {
-        return propertyNames[propNumber];
-    }
+  public MgsaGOTermProperties(TermId tid, int annotatedStudy, int annotatedPopulation, double marg) {
+    this.termId = tid;
+    this.annotatedStudyGenes = annotatedStudy;
+    this.annotatedPopulationGenes = annotatedPopulation;
+    this.marg = marg;
 
-    @Override
-    public String getProperty(int propNumber)
-    {
-        switch (propNumber)
-        {
-            case	0: return term.toString();
-            case	1: return null; /* population gene count */
-            case	2: return Integer.toString(annotatedPopulationGenes);
-            case	3: return null; /* study gene count */
-            case 	4: return Integer.toString(annotatedStudyGenes);
-            case	5: return Double.toString(marg);
-        }
-        return null;
-    }
+  }
 
-    @Override
-    public boolean isPropertyPopulationGeneCount(int propNumber)
-    {
-        return propNumber == 1;
-    }
+  public double getMarg() {
+    return marg;
+  }
 
-    @Override
-    public boolean isPropertyStudyGeneCount(int propNumber)
-    {
-        return propNumber == 3;
-    }
+  public TermId getTermId() {
+    return termId;
+  }
 
-    @Override
-    public boolean isSignificant(double thresh) {
-        return marg > thresh;
-    }
+  public int getAnnotatedStudyGenes() {
+    return annotatedStudyGenes;
+  }
+
+  public int getAnnotatedPopulationGenes() {
+    return annotatedPopulationGenes;
+  }
 }

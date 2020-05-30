@@ -4,12 +4,9 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -22,36 +19,18 @@ public class MgsaEnrichedGOTermsResult
     private MgsaScore score;
 
     /** A linear list containing properties for go terms */
-    protected List<AbstractGOTermProperties> list = new ArrayList<>();
-
-    /** Maps the go term to an integer (for accesses in constant time) */
-    private Map<TermId, Integer> term2Index = new HashMap<>();
-
-    /** The current index for adding a new go term property */
-    private int index = 0;
+    protected final List<MgsaGOTermProperties> list = new ArrayList<>();
 
     /** The GO Graph */
-    protected Ontology go;
+    protected final Ontology go;
 
     /** The association container */
-    private AssociationContainer associations;
+    private final AssociationContainer associations;
 
     private final int populationGeneCount;
 
     private final StudySet studySet;
 
-    double p;
-    double p_adjusted;
-    double p_min;
-    double marg;
-
-    TermId goTerm;
-    int annotatedStudyGenes;
-    int annotatedPopulationGenes;
-
-
-    /* FIXME: Remove this */
-   // private IntMapper<TermId> termMapper;
 
     public MgsaEnrichedGOTermsResult(Ontology go,
                                      AssociationContainer associations, StudySet studySet,
@@ -63,39 +42,36 @@ public class MgsaEnrichedGOTermsResult
         this.populationGeneCount = populationGeneCount;
     }
 
-    public void setScore(MgsaScore score)
-    {
-        this.score = score;
-    }
-
-    public MgsaScore getScore()
-    {
-        return score;
-    }
-
-//    public void setTermMapper(IntMapper<TermID> termMapper)
-//    {
-//        this.termMapper = termMapper;
-//    }
-//
-//    public IntMapper<TermID> getTermMapper()
-//    {
-//        return termMapper;
-//    }\
-
 
     /**
-     *
-     * @param prop
+     * @param prop Result of an MGSA calculaton for on GO term.
      */
-    public void addGOTermProperties(AbstractGOTermProperties prop)
-    {
-        if (prop.term == null)
+    public void addGOTermProperties(MgsaGOTermProperties prop) {
+        if (prop.getTermId() == null)
             throw new IllegalArgumentException("prop.term mustn't be null");
-
         list.add(prop);
-        term2Index.put(prop.term, index);
-        index++;
+    }
+
+    public void dumpToShell() {
+      System.out.println("[INFO] Terms with marginal probability above 0.1%");
+      for (MgsaGOTermProperties agtp : this.list) {
+        double d = agtp.getMarg();
+        if (agtp.getAnnotatedStudyGenes()<2) {
+          continue;
+        }
+        if (d <0.001) {
+          continue;
+        }
+        List<String> items = new ArrayList<>();
+        items.add(agtp.getTermId().getValue());
+        items.add(go.getTermMap().get(agtp.getTermId()).getName());
+        items.add(String.format("%d/%d (%.1f%%)",
+          agtp.getAnnotatedStudyGenes(),
+          agtp.getAnnotatedPopulationGenes(),
+          100.0*(double)agtp.getAnnotatedStudyGenes()/agtp.getAnnotatedPopulationGenes()));
+        items.add(String.format("%f",agtp.getMarg()));
+        System.out.println(String.join("\t",items));
+      }
     }
 
 }

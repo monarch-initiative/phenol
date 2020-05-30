@@ -91,8 +91,10 @@ public final class GoEnrichmentDemo {
 
 
   public void run() {
+    System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
     //performTermForTermAnalysis();
    // performParentChildIntersectionAnalysis();
+    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm,1.0);
     performMgsaAnalysis();
   }
 
@@ -100,10 +102,10 @@ public final class GoEnrichmentDemo {
     System.out.println();
     System.out.println("[INFO] Demo: MGSA analysis");
     System.out.println();
-    int mcmcSteps = 5000;
+    int mcmcSteps = 500000;
     MgsaCalculation mgsa = new MgsaCalculation(this.gontology, this.associationContainer, mcmcSteps);
     MgsaEnrichedGOTermsResult result = mgsa.calculateStudySet(studySet);
-    System.out.println(result);
+    result.dumpToShell();
   }
 
 
@@ -192,7 +194,12 @@ public final class GoEnrichmentDemo {
   }
 
 
+
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
+    return getFocusedStudySet(annots, focus, 0.5); // default proportion of 50%
+  }
+
+  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
@@ -203,7 +210,7 @@ public final class GoEnrichmentDemo {
 
     int N = targetGenes.size();
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
-    int M = N / 10; // take one fourth of the target genes
+    int M = (int)( (proportion*N) / 2.0); // take one third of the target genes
 
     Set<TermId> finalGenes = new HashSet<>();
     int i = 0;
