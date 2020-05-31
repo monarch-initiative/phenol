@@ -14,12 +14,12 @@ import java.util.List;
  *
  * @author Sebastian Bauer
  */
-public class MgsaEnrichedGOTermsResult
+public class MgsaGOTermsResultContainer
 {
     private MgsaScore score;
 
     /** A linear list containing properties for go terms */
-    protected final List<MgsaGOTermProperties> list = new ArrayList<>();
+    protected final List<MgsaGOTermResult> list = new ArrayList<>();
 
     /** The GO Graph */
     protected final Ontology go;
@@ -32,9 +32,9 @@ public class MgsaEnrichedGOTermsResult
     private final StudySet studySet;
 
 
-    public MgsaEnrichedGOTermsResult(Ontology go,
-                                     AssociationContainer associations, StudySet studySet,
-                                     int populationGeneCount)
+    public MgsaGOTermsResultContainer(Ontology go,
+                                      AssociationContainer associations, StudySet studySet,
+                                      int populationGeneCount)
     {
         this.go = go;
         this.associations = associations;
@@ -46,20 +46,20 @@ public class MgsaEnrichedGOTermsResult
     /**
      * @param prop Result of an MGSA calculaton for on GO term.
      */
-    public void addGOTermProperties(MgsaGOTermProperties prop) {
+    public void addGOTermProperties(MgsaGOTermResult prop) {
         if (prop.getTermId() == null)
             throw new IllegalArgumentException("prop.term mustn't be null");
         list.add(prop);
     }
 
     public void dumpToShell() {
-      System.out.println("[INFO] Terms with marginal probability above 0.1%");
-      for (MgsaGOTermProperties agtp : this.list) {
+      System.out.println("[INFO] Terms with marginal probability above 1%");
+      for (MgsaGOTermResult agtp : this.list) {
         double d = agtp.getMarg();
         if (agtp.getAnnotatedStudyGenes()<2) {
           continue;
         }
-        if (d <0.001) {
+        if (d <0.01) {
           continue;
         }
         List<String> items = new ArrayList<>();

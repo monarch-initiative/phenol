@@ -78,9 +78,9 @@ public class MgsaCalculation {
 
   /**
    * This constructor will generate a new random seed.
-   * @param ontology
-   * @param goAssociations
-   * @param mcmcSteps
+   * @param ontology reference to target ontology, usually GO
+   * @param goAssociations Container of associations to items, usually genes
+   * @param mcmcSteps Number of MCMC steps to take
    */
   public MgsaCalculation(Ontology ontology,
                          AssociationContainer goAssociations,
@@ -99,7 +99,7 @@ public class MgsaCalculation {
   /**
    * Sets a fixed value for the alpha parameter.
    *
-   * @param alpha
+   * @param alpha false-positive rate of MGSA
    */
   public void setAlpha(double alpha) {
     if (alpha < 0.000001) alpha = 0.000001;
@@ -110,7 +110,7 @@ public class MgsaCalculation {
   /**
    * Sets a fixed value for the beta parameter.
    *
-   * @param beta
+   * @param beta false-negative rate of MGSA
    */
   public void setBeta(double beta) {
     if (beta < 0.000001) beta = 0.000001;
@@ -130,8 +130,8 @@ public class MgsaCalculation {
   /**
    * Sets the bounds of the alpha parameter.
    *
-   * @param min
-   * @param max
+   * @param min minimum value of the false-positive rate of MGSA
+   * @param max maximum value of the false-positive rate of MGSA
    */
   public void setAlphaBounds(double min, double max) {
     this.alpha.setMin(min);
@@ -150,8 +150,8 @@ public class MgsaCalculation {
   /**
    * Sets the bounds of the beta parameter.
    *
-   * @param min
-   * @param max
+   * @param min minimum value of the false-negative rate of MGSA
+   * @param max maximum value of the false-negative rate of MGSA
    */
   public void setBetaBounds(double min, double max) {
     this.beta.setMin(min);
@@ -209,8 +209,8 @@ public class MgsaCalculation {
     this.updateReportTime = updateReportTime;
   }
 
-  public MgsaEnrichedGOTermsResult calculateStudySet(StudySet studySet) {
-    MgsaEnrichedGOTermsResult result = new MgsaEnrichedGOTermsResult(ontology,
+  public MgsaGOTermsResultContainer calculateStudySet(StudySet studySet) {
+    MgsaGOTermsResultContainer result = new MgsaGOTermsResultContainer(ontology,
       goAssociations,
       studySet,
       getPopulationSetCount());
@@ -238,7 +238,7 @@ public class MgsaCalculation {
     this.usePrior = usePrior;
   }
 
-  private void calculateByMCMC(MgsaEnrichedGOTermsResult result,
+  private void calculateByMCMC(MgsaGOTermsResultContainer result,
                                StudySet studySet) {
     Objects.requireNonNull(goAssociations);
     TermToItemMatrix calcUtils = new TermToItemMatrix(goAssociations);
@@ -248,7 +248,7 @@ public class MgsaCalculation {
 
     for (int i = 0; i < marginalProbabilities.length; i++) {
       TermId tid = calcUtils.getGoTermAtIndex(i);
-      MgsaGOTermProperties prop = new MgsaGOTermProperties(tid,
+      MgsaGOTermResult prop = new MgsaGOTermResult(tid,
         calcUtils.getAnnotatedGeneCount(tid),
         populationSet.getAnnotatedItemCount(),
         marginalProbabilities[i]);
@@ -272,27 +272,16 @@ public class MgsaCalculation {
   /**
    * Perform the calculation.
    *
-   * @param term2Items
-   * @param observedItems
+   * @param term2Items rows: indices of terms; columns: indices of genes
+   * @param observedItems true if a gene is observed
    * @return a vector of marginal probabilities for each term.
    */
   private double[] calculate(int[][] term2Items, boolean[] observedItems) {
     int numTerms = term2Items.length;
     double[] res = new double[numTerms];
 
-    Random rnd;
-    if (seed != 0) {
-      rnd = new Random(seed);
-      logger.log(INFO, "Using random seed of: " + seed);
-    } else {
-      long newSeed = new Random().nextLong();
-      logger.log(INFO, "Using random seed of: " + newSeed);
-      rnd = new Random(newSeed);
-    }
-
-    boolean doAlphaEm = false;
-    boolean doBetaEm = false;
-    boolean doPEm = false;
+    Random rnd = new Random(seed);
+    logger.log(INFO, "Using random seed of: " + seed);
 
     int maxIter;
 
@@ -302,8 +291,6 @@ public class MgsaCalculation {
     alpha = Double.NaN;
     beta = Double.NaN;
     expectedNumberOfTerms = Double.NaN;
-
-
 
     maxIter = 1;
 

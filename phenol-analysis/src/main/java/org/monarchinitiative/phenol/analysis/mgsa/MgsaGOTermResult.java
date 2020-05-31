@@ -4,12 +4,13 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
- * GO Properties for term for term approach.
+ * MGSA Result for one GO Term
  *
  * @author Sebastian Bauer
+ * @author Peter Robinson
  */
 
-public class MgsaGOTermProperties {
+public class MgsaGOTermResult {
 
 
   private final double marg;
@@ -17,7 +18,7 @@ public class MgsaGOTermProperties {
   private final int annotatedStudyGenes;
   private final int annotatedPopulationGenes;
 
-  public MgsaGOTermProperties(TermId tid, int annotatedStudy, int annotatedPopulation, double marg) {
+  public MgsaGOTermResult(TermId tid, int annotatedStudy, int annotatedPopulation, double marg) {
     this.termId = tid;
     this.annotatedStudyGenes = annotatedStudy;
     this.annotatedPopulationGenes = annotatedPopulation;

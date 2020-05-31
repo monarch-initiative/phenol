@@ -4,7 +4,7 @@ package org.monarchinitiative.phenol.cli.demo;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
-import org.monarchinitiative.phenol.analysis.mgsa.MgsaEnrichedGOTermsResult;
+import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -92,9 +92,8 @@ public final class GoEnrichmentDemo {
 
   public void run() {
     System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
-    //performTermForTermAnalysis();
-   // performParentChildIntersectionAnalysis();
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm,1.0);
+    performTermForTermAnalysis();
+    performParentChildIntersectionAnalysis();
     performMgsaAnalysis();
   }
 
@@ -104,7 +103,7 @@ public final class GoEnrichmentDemo {
     System.out.println();
     int mcmcSteps = 500000;
     MgsaCalculation mgsa = new MgsaCalculation(this.gontology, this.associationContainer, mcmcSteps);
-    MgsaEnrichedGOTermsResult result = mgsa.calculateStudySet(studySet);
+    MgsaGOTermsResultContainer result = mgsa.calculateStudySet(studySet);
     result.dumpToShell();
   }
 
