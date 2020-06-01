@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
 
   <name>Phenol</name>
 
@@ -292,34 +292,32 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.0.0-M3</version>
         <executions>
           <execution>
-            <id>enforce</id>
-            <configuration>
-              <rules>
-                <!-- <DependencyConvergence /> -->
-                <bannedPlugins>
-                  <!-- will only display a warning but does not fail the build. -->
-                  <level>ERROR</level>
-                  <excludes>
-                    <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
-                  </excludes>
-                  <message>Please consider using the maven-invoker-plugin
-                    (http://maven.apache.org/plugins/maven-invoker-plugin/)!
-                  </message>
-                </bannedPlugins>
-                <requireMavenVersion>
-                  <version>3.0</version>
-                </requireMavenVersion>
-                <requireJavaVersion>
-                  <version>1.8</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
+            <id>default-cli</id>
+            <phase>validate</phase>
             <goals>
               <goal>enforce</goal>
             </goals>
+            <configuration>
+              <rules>
+                <banDuplicateClasses/>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.4</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
           </execution>
         </executions>
       </plugin>

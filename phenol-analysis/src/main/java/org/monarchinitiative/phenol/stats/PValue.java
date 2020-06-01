@@ -8,14 +8,14 @@ import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
  * raw and adjusted p values.
  */
 public class PValue implements Comparable<PValue> {
-  private final TermId item;
+  protected final TermId item;
   /** The nominal (i.e., uncorrected) p-value for this item. */
-  private double p_raw;
+  protected double p_raw;
   /**
    * The adjusted p_raw value of a test (adjusted according to a method such as Bonferoni
    * or Bejamini Holm).
    */
-  private double p_adjusted;
+  protected double p_adjusted;
 
 
 

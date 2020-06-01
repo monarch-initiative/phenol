@@ -3,6 +3,13 @@ Changelog
 =========
 
 ------
+v1.6.0
+------
+- Simplified interface to GO overrepresentation analysis classes.
+- Parent-Child Gene Ontology overrepresentation analysis with unit tests
+- MGSA bugfix
+
+------
 v1.5.0
 ------
 - improved functions for display of upper level HPO categories

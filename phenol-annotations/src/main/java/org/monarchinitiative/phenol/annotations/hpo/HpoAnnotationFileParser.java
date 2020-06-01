@@ -6,6 +6,8 @@ import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.annotations.hpo.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.util.*;
  * Created by peter on 2/05/2018.
  */
 public class HpoAnnotationFileParser {
+  private final static Logger logger = LoggerFactory.getLogger(OrphanetXML2HpoDiseaseModelParser.class);
     /** A reference to the HPO Ontology object. */
     private final Ontology ontology;
     /** Path to a file such as "OMIM-600123.tab" containing data about the phenotypes of a disease. */
@@ -105,9 +108,8 @@ public class HpoAnnotationFileParser {
             if (parseErrors.size()>0) {
               String errstr= String.join("\n",parseErrors);
               if (faultTolerant) {
-                  System.err.println(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
+                  logger.warn(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
                     hpoAnnotationFile,errstr));
-                  System.err.println(errstr);
               } else {
                   throw new HpoAnnotationModelException(String.format("Errors encountered while parsing HPO Annotation file at %s.\n%s",
                     hpoAnnotationFile, errstr));

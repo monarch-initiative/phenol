@@ -49,7 +49,7 @@ public final class PrecomputingPairwiseResnikSimilarity
       LoggerFactory.getLogger(PrecomputingPairwiseResnikSimilarity.class);
 
   /** Precomputed data. */
-  private PrecomputedScores precomputedScores;
+  private final PrecomputedScores precomputedScores;
 
   /** Number of threads to use for precomputation. */
   private final int numThreads;
@@ -92,8 +92,7 @@ public final class PrecomputingPairwiseResnikSimilarity
         new PairwiseResnikSimilarity(ontology, termToIc);
 
     // Setup progress reporting.
-    final ProgressReporter progressReport =
-        new ProgressReporter(LOGGER, "objects", ontology.countAllTerms());
+    final ProgressReporter progressReport = new ProgressReporter("objects", ontology.countAllTerms());
     progressReport.start();
 
     // Setup the task to execute in parallel, with concurrent hash map for collecting results.

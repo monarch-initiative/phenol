@@ -55,6 +55,7 @@
 'KEGG-ds' : 'http://purl.obolibrary.org/KEGG-ds_'  # KEGG-ds: KEGG Disease Ontology
 'LPT': 'http://purl.obolibrary.org/obo/LPT_'  # LPT: Livestock Phenotypic Trait Ontology
 'MA': 'http://purl.obolibrary.org/obo/MA_'  # MA: Mouse Anatomy Ontology [y]
+'MAXO': 'http://purl.obolibrary.org/obo/MAXO_' # MAXO: Medical Action Ontology [y]
 'MedGen' : 'http://www.ncbi.nlm.nih.gov/medgen/'  # a vocabulary - should this be in purl?
 'MESH': 'http://purl.obolibrary.org/obo/MESH_'  # MeSH: Medical Subject Headings (medical diseases, phenotypes, and drugs)
 'MP': 'http://purl.obolibrary.org/obo/MP_'  # MP: Mammalian Phenotype Ontology [y]

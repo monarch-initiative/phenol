@@ -45,19 +45,20 @@ class H2ScoreDistributionWriterTest {
   }
 
   @Test
-  void close() throws Exception {
+  void close() {
     assertDoesNotThrow(() -> dbWriter.close());
   }
 
   @Test
   void write_int_key_scoredistribution() throws Exception{
 
-    Map<Integer, ObjectScoreDistribution<Integer>> scoreDistributionMap = new HashMap<>();
+    Map<TermId, ObjectScoreDistribution> scoreDistributionMap = new HashMap<>();
+    TermId tid1 = TermId.of("HP:1");
 
     SortedMap<Double, Double> sortedMap = ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0);
-    scoreDistributionMap.put(1, new ObjectScoreDistribution<>((Integer) 1, 2, 3, sortedMap));
+    scoreDistributionMap.put(tid1, new ObjectScoreDistribution(tid1, 2, 3, sortedMap));
 
-    ScoreDistribution<Integer> integerScoreDistribution = new ScoreDistribution<>(2, scoreDistributionMap);
+    ScoreDistribution integerScoreDistribution = new ScoreDistribution(2, scoreDistributionMap);
 
     Assertions.assertDoesNotThrow(() -> dbWriter.write(2, integerScoreDistribution));
 
@@ -67,12 +68,12 @@ class H2ScoreDistributionWriterTest {
   void write_obj_key_scoredistribution() throws Exception{
 
     TermId termId = TermId.of("MONDO", "001");
-    Map<TermId, ObjectScoreDistribution<TermId>> scoreDistributionMap = new HashMap<>();
+    Map<TermId, ObjectScoreDistribution> scoreDistributionMap = new HashMap<>();
 
     SortedMap<Double, Double> sortedMap = ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0);
-    scoreDistributionMap.put(termId, new ObjectScoreDistribution<>(termId, 2, 3, sortedMap));
+    scoreDistributionMap.put(termId, new ObjectScoreDistribution(termId, 2, 3, sortedMap));
 
-    ScoreDistribution<TermId> objScoreDistribution = new ScoreDistribution<>(2, scoreDistributionMap);
+    ScoreDistribution objScoreDistribution = new ScoreDistribution(2, scoreDistributionMap);
 
     Assertions.assertDoesNotThrow(() -> dbWriter.write(2, objScoreDistribution));
   }

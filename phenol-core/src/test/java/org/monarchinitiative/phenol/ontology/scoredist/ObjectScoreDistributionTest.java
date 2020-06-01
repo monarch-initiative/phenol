@@ -9,24 +9,22 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 public class ObjectScoreDistributionTest {
 
-  ObjectScoreDistribution<Integer> objDist;
-  ObjectScoreDistribution<TermId> objDist2;
+  private ObjectScoreDistribution objDist;
+  private final int numTerms = 2;
+  private final int sampleSize = 10;
 
   @BeforeEach
   public void setUp() {
     objDist =
-      new ObjectScoreDistribution<>(1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));
-
-    objDist2 =
-      new ObjectScoreDistribution<>(TermId.of("HP:test"), 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));
+      new ObjectScoreDistribution(TermId.of("HP:test"), numTerms, sampleSize, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9));
 
   }
 
   @Test
   public void testQueries() {
-    assertEquals(2, objDist.getNumTerms());
-    assertEquals(1, objDist.getObjectId().intValue());
-    assertEquals(10, objDist.getSampleSize());
+    assertEquals(numTerms, objDist.getNumTerms());
+    assertEquals(TermId.of("HP:test"), objDist.getObjectId());
+    assertEquals(sampleSize, objDist.getSampleSize());
   }
 
   @Test
@@ -40,9 +38,5 @@ public class ObjectScoreDistributionTest {
     assertEquals(0.0, objDist.estimatePValue(0.99), 0.01);
   }
 
-  @Test
-  public void testGenericId() {
-    assertEquals("HP:test", objDist2.getObjectId().getValue());
-  }
 
 }

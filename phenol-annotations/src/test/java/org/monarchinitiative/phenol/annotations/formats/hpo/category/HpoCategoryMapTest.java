@@ -18,7 +18,7 @@ public class HpoCategoryMapTest {
   private static final Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
   private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
   private static final TermId EYE_ID = TermId.of("HP:0000478");
-
+  private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
   /**
    * If we add the term for autosomal dominant, there should be only one category
    * INHERITANCE_ID
@@ -100,7 +100,7 @@ public class HpoCategoryMapTest {
     TermId veryFrequent = TermId.of("HP:0040281");
     categoryMap.addAnnotatedTerm(veryFrequent, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
-    // Both terms should go to the same HpoCategory
+    // This term is invalid and should not be mapped
     assertEquals(0, catlist.size());
   }
 
@@ -117,11 +117,29 @@ public class HpoCategoryMapTest {
     categoryMap.addAnnotatedTerm(autosomalRecessive, ontology);
     categoryMap.addAnnotatedTerm(abnGlobeSize, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
-    // Both terms should go to the same HpoCategory
+    // The terms should go to two different HpoCategory objects
     assertEquals(2, catlist.size());
     // Check that we have both EYE and INHERITANCE
     assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(EYE_ID)));
     assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(INHERITANCE_ID)));
+  }
+
+  /**
+   * Add an onset terms. It should map to the category CLINICAL_COURSE
+   */
+  @Test
+  void testOnsetTerm() {
+    HpoCategoryMap categoryMap = new HpoCategoryMap();
+    TermId antenatalOnset = TermId.of("HP:0030674");  //Antenatal onset HP:
+    TermId abnGlobeSize = TermId.of("HP:0100887");
+    categoryMap.addAnnotatedTerm(abnGlobeSize, ontology);
+    categoryMap.addAnnotatedTerm(antenatalOnset, ontology);
+    List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
+    // The terms should go to two different HpoCategory objects
+    assertEquals(2, catlist.size());
+    // Check that we have both EYE and CLINICAL_COURSE
+    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(EYE_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(CLINICAL_COURSE_ID)));
   }
 
 

@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.analysis.mgsa;
+package org.monarchinitiative.phenol.analysis;
 
 /**
  *

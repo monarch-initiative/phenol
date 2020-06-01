@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
   </parent>
 
   <properties>
@@ -26,10 +26,14 @@
       <artifactId>phenol-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-io</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.monarchinitiative.phenol</groupId>
+      <artifactId>phenol-annotations</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -39,12 +43,7 @@
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.monarchinitiative.phenol</groupId>
-      <artifactId>phenol-annotations</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
+
 
   </dependencies>
 

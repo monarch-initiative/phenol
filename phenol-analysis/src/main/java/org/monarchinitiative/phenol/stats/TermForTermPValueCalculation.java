@@ -25,9 +25,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
                                       AssociationContainer goAssociations,
                                       StudySet populationSet,
                                       StudySet studySet,
-                                      Hypergeometric hyperg,
                                       MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, hyperg, mtc);
+    super(graph, goAssociations, populationSet, studySet, mtc);
   }
 
   /**

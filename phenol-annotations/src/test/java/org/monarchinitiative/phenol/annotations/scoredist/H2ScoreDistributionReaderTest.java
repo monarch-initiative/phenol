@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(TempDirectory.class)
 class H2ScoreDistributionReaderTest {
 
-  private ScoreDistributionReader<TermId> objDbReader;
+  private ScoreDistributionReader objDbReader;
 
   @BeforeEach
   void setUp(@TempDirectory.TempDir Path tempDir) throws Exception {
@@ -32,11 +32,11 @@ class H2ScoreDistributionReaderTest {
     String dataTableName = "TempTable";
     ScoreDistributionWriter dbWriter = new H2ScoreDistributionWriter(dbpath.toFile()
       .getAbsolutePath(), dataTableName, true);
-    objDbReader = new H2ScoreDistributionReader<>(dbpath.toFile().getAbsolutePath(), dataTableName);
+    objDbReader = new H2ScoreDistributionReader(dbpath.toFile().getAbsolutePath(), dataTableName);
 
     TermId termId = TermId.of("MONDO", "001");
-    ScoreDistribution<TermId> objScoreDistribution = new ScoreDistribution<>(2, ImmutableMap.of(termId,
-      new ObjectScoreDistribution<>(termId, 2, 3,
+    ScoreDistribution objScoreDistribution = new ScoreDistribution(2, ImmutableMap.of(termId,
+      new ObjectScoreDistribution(termId, 2, 3,
         ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0))));
 
     dbWriter.write(3, objScoreDistribution);
@@ -51,19 +51,19 @@ class H2ScoreDistributionReaderTest {
   @Test
   void readForTermCountAndObject() throws Exception {
     TermId termId = TermId.of("MONDO", "001");
-    ObjectScoreDistribution<TermId> objScoreDist = objDbReader.readForTermCountAndObject(3, termId);
+    ObjectScoreDistribution objScoreDist = objDbReader.readForTermCountAndObject(3, termId);
     assertEquals(objScoreDist.getObjectId(), termId);
   }
 
   @Test
   void readForTermCount() throws Exception {
-    ScoreDistribution<TermId> objScoreDist = objDbReader.readForTermCount(3);
+    ScoreDistribution objScoreDist = objDbReader.readForTermCount(3);
     assertEquals(objScoreDist.getObjectIds().size(), 1);
   }
 
   @Test
   void readAll() throws Exception{
-    Map<Integer, ScoreDistribution<TermId>> results = objDbReader.readAll();
+    Map<Integer, ScoreDistribution> results = objDbReader.readAll();
     assertEquals(results.size(), 1);
   }
 

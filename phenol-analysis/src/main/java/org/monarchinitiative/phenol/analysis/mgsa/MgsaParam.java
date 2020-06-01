@@ -12,7 +12,6 @@ abstract public class MgsaParam
     public enum Type
     {
         FIXED,
-        EM,
         MCMC
     }
 
@@ -41,11 +40,6 @@ abstract public class MgsaParam
     public boolean isMCMC()
     {
         return type == Type.MCMC;
-    }
-
-    public boolean isEM()
-    {
-        return type == Type.EM;
     }
 
     public void setType(Type type)

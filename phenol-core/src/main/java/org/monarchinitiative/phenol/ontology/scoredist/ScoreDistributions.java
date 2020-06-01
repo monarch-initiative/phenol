@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
-import java.io.Serializable;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,18 +25,18 @@ public final class ScoreDistributions {
    * @return Merge result.
    * @throws CannotMergeScoreDistributions In case of problems with {@code distributions}.
    */
-  public static <T extends Serializable> ScoreDistribution<T> merge(Collection<? extends ScoreDistribution<T>> distributions) {
+  public static ScoreDistribution merge(Collection<? extends ScoreDistribution> distributions) {
     if (distributions.isEmpty()) {
       throw new CannotMergeScoreDistributions("Cannot merge zero ScoreDistributions objects.");
     }
-    if (distributions.stream().map(ScoreDistribution<T>::getNumTerms).collect(Collectors.toSet()).size() != 1) {
+    if (distributions.stream().map(ScoreDistribution::getNumTerms).collect(Collectors.toSet()).size() != 1) {
       throw new CannotMergeScoreDistributions("Different numbers of terms used for precomputation");
     }
 
-    Map<T, ObjectScoreDistribution<T>> mapping = new HashMap<>();
-    for (ScoreDistribution<T> d : distributions) {
-      for (T objectId : d.getObjectIds()) {
-        final ObjectScoreDistribution<T> dist = d.getObjectScoreDistribution(objectId);
+    Map<TermId, ObjectScoreDistribution> mapping = new HashMap<>();
+    for (ScoreDistribution d : distributions) {
+      for (TermId objectId : d.getObjectIds()) {
+        final ObjectScoreDistribution dist = d.getObjectScoreDistribution(objectId);
         if (mapping.containsKey(objectId)) {
           throw new CannotMergeScoreDistributions("Duplicate object ID " + objectId + " detected");
         } else {
@@ -44,7 +45,7 @@ public final class ScoreDistributions {
       }
     }
 
-    return new ScoreDistribution<>(distributions.stream().findAny().get().getNumTerms(), mapping);
+    return new ScoreDistribution(distributions.stream().findAny().get().getNumTerms(), mapping);
   }
 
   /**
@@ -53,7 +54,7 @@ public final class ScoreDistributions {
    * @param distributions {@link ScoreDistribution}s to merge.
    * @return Merge result.
    */
-  public static <T extends Serializable> ScoreDistribution<T> merge(ScoreDistribution<T>... distributions) {
+  public static ScoreDistribution merge(ScoreDistribution... distributions) {
     return merge(Arrays.asList(distributions));
   }
 }
