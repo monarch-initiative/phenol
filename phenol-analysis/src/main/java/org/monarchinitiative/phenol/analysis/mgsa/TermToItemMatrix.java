@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.analysis.AssociationContainer;
-import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -30,14 +30,15 @@ class TermToItemMatrix {
     private final int [][] termLinks;
 
 
-    TermToItemMatrix(AssociationContainer assocs) throws PhenolException {
-      System.err.println("TermToItemMatrix, top");
+    TermToItemMatrix(AssociationContainer assocs) {
         Objects.requireNonNull(assocs);
-      System.err.println("TermToItemMatrix, assocs OK");
+        // termToGeneMultimap->key: A GO TermId; value: A Collection of Genes
         Multimap<TermId, TermId> termToGeneMultimap = assocs.getTermToItemMultimap();
         Set<TermId> genes = assocs.getAllAnnotatedGenes();
         n_genes = genes.size();
-        n_annotated_terms = termToGeneMultimap.size();
+        //In Multimap, size() returns an actual number of values stored in a Map,
+        // but keySet().size() returns the number of distinct keys.
+        n_annotated_terms = termToGeneMultimap.keySet().size();
         // First get list and indices of the Terms
         int i = 0;
         ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
@@ -56,23 +57,25 @@ class TermToItemMatrix {
         for (TermId gene : genes) {
           builder.add(gene);
           mapBuilder.put(gene, i);
+          i++;
         }
         this.annotatedItemList = builder.build();
         this.annotatedItemToIndexMap = mapBuilder.build();
         termLinks = new int[n_annotated_terms][];
         i = 0;
-        for (TermId tid : goTermList) {
-            Collection<TermId> annotatedsItems = termToGeneMultimap.get(tid);
-            termLinks[i] = new int[annotatedsItems.size()];
-
+        for (TermId goTermId : goTermList) {
+            Collection<TermId> annotatedsItems = termToGeneMultimap.get(goTermId);
+            int goTermIndex = this.goTermToIndexMap.get(goTermId);
+            termLinks[goTermIndex] = new int[annotatedsItems.size()];
             int j = 0;
-            for (TermId ontTerm : annotatedsItems) {
-              Integer idx = annotatedItemToIndexMap.get(ontTerm);
+            for (TermId geneIdx : annotatedsItems) {
+              Integer idx = annotatedItemToIndexMap.get(geneIdx);
               if (idx == null || idx < 0) {
-                System.err.println("[ERROR] Could not find index of annotated item: " + ontTerm.getValue());
-                System.exit(1);
+                // should never happen
+                throw new PhenolRuntimeException("Could not find index of annotated item: " + geneIdx.getValue());
               }
-              termLinks[i][j] = idx;
+              termLinks[goTermIndex][j] = idx;
+              j++;
             }
           i++;
         }

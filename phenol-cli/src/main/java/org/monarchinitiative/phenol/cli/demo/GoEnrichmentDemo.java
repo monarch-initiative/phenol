@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
+import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -46,9 +48,19 @@ public final class GoEnrichmentDemo {
 
   private Ontology gontology;
 
-  private List<TermAnnotation> goAnnots;
+  private final List<TermAnnotation> goAnnots;
 
-  private AssociationContainer associationContainer;
+  private final Set<TermId> populationGenes;
+
+  private final StudySet studySet;
+
+  private final StudySet populationSet;
+
+  private final int popsize;
+
+  private final int studysize;
+
+  private final AssociationContainer associationContainer;
 
   private static final double ALPHA = 0.05;
 
@@ -60,10 +72,6 @@ public final class GoEnrichmentDemo {
     this.pathGoObo = options.getGoPath();
     this.pathGoGaf = options.getGafPath();
     this.targetGoTerm = TermId.of(options.getGoTermId());
-  }
-
-
-  public void run() {
     System.out.println("[INFO] parsing  " + pathGoObo);
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
     int n_terms = gontology.countAllTerms();
@@ -71,31 +79,47 @@ public final class GoEnrichmentDemo {
     System.out.println("[INFO] parsing  " + pathGoGaf);
     associationContainer = AssociationContainer.loadGoGafAssociationContainer(pathGoGaf);
     goAnnots = associationContainer.getRawAssociations();
+    populationGenes = getPopulationSet(goAnnots);
+    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
+    studySet = new StudySet(studyGenes, "study", studyAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
+    populationSet = new PopulationSet(populationGenes, populationAssociations);
+    popsize = populationGenes.size();
+    studysize = studyGenes.size();
+  }
+
+
+  public void run() {
+    System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
+    performMgsaAnalysis();
   }
+
+  private void performMgsaAnalysis() {
+    System.out.println();
+    System.out.println("[INFO] Demo: MGSA analysis");
+    System.out.println();
+    int mcmcSteps = 500000;
+    MgsaCalculation mgsa = new MgsaCalculation(this.gontology, this.associationContainer, mcmcSteps);
+    MgsaGOTermsResultContainer result = mgsa.calculateStudySet(studySet);
+    result.dumpToShell();
+  }
+
+
 
   private void performTermForTermAnalysis() {
     System.out.println();
     System.out.println("[INFO] Demo: Term-for-term analysis");
     System.out.println();
-    Set<TermId> populationGenes = getPopulationSet(goAnnots);
 
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-    StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
       bonf);
-
-    int popsize = populationGenes.size();
-    int studysize = studyGenes.size();
-
     List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
     System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
@@ -131,22 +155,12 @@ public final class GoEnrichmentDemo {
     System.out.println();
     System.out.println("[INFO] Demo: parent child intersection analysis");
     System.out.println();
-    Set<TermId> populationGenes = getPopulationSet(goAnnots);
-
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-    StudySet populationSet = new PopulationSet(populationGenes, populationAssociations);
     MultipleTestingCorrection bonf = new Bonferroni();
     ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
       associationContainer,
       populationSet,
       studySet,
       bonf);
-
-    int popsize = populationGenes.size();
-    int studysize = studyGenes.size();
 
     List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
     System.err.println("Total number of retrieved p values: " + pvals.size());
@@ -179,7 +193,12 @@ public final class GoEnrichmentDemo {
   }
 
 
+
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
+    return getFocusedStudySet(annots, focus, 0.5); // default proportion of 50%
+  }
+
+  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
@@ -190,7 +209,7 @@ public final class GoEnrichmentDemo {
 
     int N = targetGenes.size();
     System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
-    int M = N / 10; // take one fourth of the target genes
+    int M = (int)( (proportion*N) / 2.0); // take one third of the target genes
 
     Set<TermId> finalGenes = new HashSet<>();
     int i = 0;
