@@ -7,108 +7,111 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test the Orphanet HPO file parser.
+ * Oprhanet switched its format from the en_product4_HPO.xml to en_product4.xml file.
+ * This class was updated in July 2020 accordingly.
+ *
+ * @author Peter N Robinson
+ */
 class OrphanetXML2HpoDiseaseModelParserTest {
 
-    static private OrphanetXML2HpoDiseaseModelParser parser;
+  static private OrphanetXML2HpoDiseaseModelParser parser;
 
-    static private final TermId veryFrequent = TermId.of("HP:0040281");
+  static private final TermId veryFrequent = TermId.of("HP:0040281");
 
-    static private final TermId occasional  = TermId.of("HP:0040283");
+  static private final TermId frequent = TermId.of("HP:0040282");
 
-    @BeforeAll
-    private static void init()  {
-      Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product4_HPO.small.xml");
-      Path hpOboPath = Paths.get("src", "test", "resources", "hp_head.obo");
-      Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
-      try {
-        parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
-        //parser = new OrphanetXML2HpoDiseaseModelParser(orph, ontology, true);
-      } catch (Exception e) {
-        System.err.println("Could not parse Orpha " + e.getMessage());
-        throw e;
-      }
+  @BeforeAll
+  private static void init() {
+    Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product4_small.xml");
+    Path hpOboPath = Paths.get("src", "test", "resources", "hp_head.obo");
+    Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
+    try {
+      parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
+    } catch (Exception e) {
+      System.err.println("Could not parse Orpha " + e.getMessage());
+      throw e;
     }
+  }
 
 
-
-    @Test
-    void testNotNull() {
-        assertNotNull(parser);
-    }
-
-//    @Test
-//    void testIt() {
-//      List<HpoAnnotationModel> models =  parser.getOrphanetDiseaseModels();
-//    }
-
-
+  @Test
+  void testNotNull() {
+    assertNotNull(parser);
+  }
 
   /**
    * There are three disease entries:
-   * $ grep -c '<Disorder id' en_product4_HPO.small.xml
-   * 2
+   * $ grep -c '<Disorder id' en_product4_small.xml
+   * 3
    */
   @Test
-    void testTwoDiseases() {
-        int expectedNumberOfDiseases=2;
-        Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
-        int N = 0;
-        for (HpoAnnotationModel m: diseaseModels.values()) {
-          N += m.getNumberOfAnnotations();
-        }
-        assertEquals(expectedNumberOfDiseases,diseaseModels.size());
-    }
+  void ifThreeDiseaseModelsRetrieved_thenOk() {
+    Map<TermId, HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+    assertEquals(3, diseaseModels.size());
+  }
 
-    /** consult the XML file en_product4_HPO.small.xml for the source of the ground truth here. */
-    @Test
-    void  testPhenotypesAndFrequenciesOfDisease1() {
-      Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
-      TermId diseaseId = TermId.of("ORPHA:166024");
-        HpoAnnotationModel file = diseaseModels.get(diseaseId);
-        List<HpoAnnotationEntry> entrylist = file.getEntryList();
-        // the first disease has three annotations
-        int expectNumberOfAnnotations=3;
-        assertEquals(expectNumberOfAnnotations,entrylist.size());
-        // first HPO is HP:0100886</HPOId>
-        //                        <HPOTerm>Abnormality of globe location
-        TermId AbnGlobeLoc = TermId.of("HP:0100886");
-        HpoAnnotationEntry entry1 = entrylist.get(0);
-        assertEquals(AbnGlobeLoc,entry1.getPhenotypeId());
-        assertEquals(veryFrequent.getValue(),entry1.getFrequencyModifier());
 
-        HpoAnnotationEntry entry2 = entrylist.get(1);
-        TermId Anophthalmia = TermId.of("HP:0000528");
-        assertEquals(Anophthalmia,entry2.getPhenotypeId());
-        assertEquals(veryFrequent.getValue(),entry2.getFrequencyModifier());
+  /**
+   * consult the XML file en_product4_HPO.small.xml for the source of the ground truth here.
+   */
+  @Test
+  void testPhenotypesAndFrequenciesOfDisease1() {
+    Map<TermId, HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+    TermId diseaseId = TermId.of("ORPHA:61");
+    HpoAnnotationModel file = diseaseModels.get(diseaseId);
+    List<HpoAnnotationEntry> entrylist = file.getEntryList();
+    // the first disease has two annotations
+    int expectNumberOfAnnotations = 2;
+    assertEquals(expectNumberOfAnnotations, entrylist.size());
+    // Lacrimation abnormality = "HP:0000632")
+    TermId AbnGlobeLoc = TermId.of("HP:0000632");
+    Optional<HpoAnnotationEntry> entryOpt = entrylist.stream().
+        filter(e -> e.getPhenotypeId().
+        equals(AbnGlobeLoc)).
+        findFirst();
+    assertTrue(entryOpt.isPresent());
+    assertEquals(veryFrequent.getValue(), entryOpt.get().getFrequencyModifier());
+    // Anophthalmia = HP:0000528
+    TermId Anophthalmia = TermId.of("HP:0000528");
+    entryOpt = entrylist.stream().
+      filter(e -> e.getPhenotypeId().
+        equals(Anophthalmia)).
+      findFirst();
+    assertTrue(entryOpt.isPresent());
+    assertEquals(veryFrequent.getValue(), entryOpt.get().getFrequencyModifier());
+  }
 
-        HpoAnnotationEntry entry3 = entrylist.get(2);
-        TermId LacrimationAbnormality = TermId.of("HP:0000632");
-        assertEquals(LacrimationAbnormality,entry3.getPhenotypeId());
-        assertEquals(veryFrequent.getValue(),entry3.getFrequencyModifier());
-    }
+  /**
+   * consult the XML file en_product4_small.xml for the source of the ground truth here.
+   */
+  @Test
+  void testPhenotypesAndFrequenciesOfDisease3() {
+    Map<TermId, HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
+    TermId diseaseId = TermId.of("ORPHA:585");
+    HpoAnnotationModel file = diseaseModels.get(diseaseId);
+    List<HpoAnnotationEntry> entrylist = file.getEntryList();
+    int expectNumberOfAnnotations = 1;
+    assertEquals(expectNumberOfAnnotations, entrylist.size());
+    // Abnormal pupillary function = HP:0007686
+    TermId AbnPupillaryFunction = TermId.of("HP:0007686");
+    Optional<HpoAnnotationEntry> entryOpt = entrylist.stream().
+      filter(e -> e.getPhenotypeId().
+        equals(AbnPupillaryFunction)).
+      findFirst();
+    assertTrue(entryOpt.isPresent());
+    assertEquals(frequent.getValue(), entryOpt.get().getFrequencyModifier());
+  }
 
-    /** consult the XML file en_product4_HPO.small.xml for the source of the ground truth here. */
-    @Test
-    void  testPhenotypesAndFrequenciesOfDisease2() {
-      Map<TermId,HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
-      TermId diseaseId = TermId.of("ORPHA:58");
-        HpoAnnotationModel file = diseaseModels.get(diseaseId);
-        List<HpoAnnotationEntry> entrylist = file.getEntryList();
-        HpoAnnotationEntry entry1 = entrylist.get(0);
-        TermId Anophthalmia = TermId.of("HP:0000528");
-        assertEquals(Anophthalmia,entry1.getPhenotypeId());
-        assertEquals(occasional.getValue(),entry1.getFrequencyModifier());
-        HpoAnnotationEntry entry2 = entrylist.get(1);
-        TermId AbnormalPupillaryFunction = TermId.of("HP:0007686");
-        assertEquals(AbnormalPupillaryFunction,entry2.getPhenotypeId());
-        assertEquals(occasional.getValue(),entry1.getFrequencyModifier());
-    }
 
 }
