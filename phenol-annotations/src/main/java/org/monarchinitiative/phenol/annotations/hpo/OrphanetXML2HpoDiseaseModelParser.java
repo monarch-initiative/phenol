@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -76,7 +75,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
   /**
    * If true, replace obsolete term ids without throwing Exception.
    */
-  private boolean replaceObsoleteTermId;
+  private final boolean replaceObsoleteTermId;
 
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaNumber";
@@ -111,7 +110,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
   /**
    * These are the local names of the Orphanet product4.xml file.
    */
-  private Set<String> allowableXmlNodeNames = Stream.of(AVAILABILITY,
+  private final Set<String> allowableXmlNodeNames = Stream.of(AVAILABILITY,
     DIAGNOSTIC_CRITERIA,
     DISORDER,
     DISORDER_GROUP,
@@ -207,6 +206,8 @@ public class OrphanetXML2HpoDiseaseModelParser {
 
     boolean inFrequency = false;
     boolean inDiagnosticCriterion = false;
+    boolean inDisorderType = false;
+    boolean inDisorderGroup = false;
     String currentHpoId = null;
     String currentHpoTermLabel = null;
     TermId currentFrequencyTermId = null;
@@ -222,8 +223,8 @@ public class OrphanetXML2HpoDiseaseModelParser {
           throw new PhenolRuntimeException("Unexpected XML Node in Orphanet product_4 XML: " + localName);
         }
         switch (localName) {
-          case DISORDER:
-            // no op
+          case DISORDER_TYPE:
+            inDisorderType = true;
             break;
           case ORPHA_CODE:
             if (inFrequency || inDiagnosticCriterion) {
@@ -233,12 +234,18 @@ public class OrphanetXML2HpoDiseaseModelParser {
             currentOrphanumber = xmlEvent.asCharacters().getData();
             break;
           case NAME:
-            if (inFrequency || inDiagnosticCriterion) {
+            if (inFrequency || inDiagnosticCriterion || inDisorderGroup || inDisorderType) {
               continue;
-            } // skip, we have no need to parse the name of the frequency element
-            // since we get the class from the attribute "id"
-            xmlEvent = xmlEventReader.nextEvent();
-            currentDiseaseName = xmlEvent.asCharacters().getData();
+            }
+
+              // skip, we have no need to parse the name of the frequency element
+              // since we get the class from the attribute "id"
+              xmlEvent = xmlEventReader.nextEvent();
+              currentDiseaseName = xmlEvent.asCharacters().getData();
+
+            break;
+          case DISORDER_GROUP:
+            inDisorderGroup = true;
             break;
           case HPO_ID:
             xmlEvent = xmlEventReader.nextEvent();
@@ -271,45 +278,53 @@ public class OrphanetXML2HpoDiseaseModelParser {
         }
       } else if (xmlEvent.isEndElement()) {
         EndElement endElement = xmlEvent.asEndElement();
-        String endElementName = endElement.getName().getLocalPart();
-        if (endElementName.equals(HPO_FREQUENCY)) {
-          inFrequency = false;
-        } else if (endElementName.equals(DIAGNOSTIC_CRITERIA)) {
-          inDiagnosticCriterion = false;
-        } else if (endElementName.equals(HPO_DISORDER_ASSOCIATION)) {
-          // We should have data for HPO Id, HPo Label, and a Frequency term
-          try {
-            HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaData(
-              String.format("ORPHA:%s", currentOrphanumber),
-              currentDiseaseName,
-              currentHpoId,
-              currentHpoTermLabel,
-              currentFrequencyTermId,
-              ontology,
-              orphanetBiocurationString,
-              replaceObsoleteTermId);
-            currentHpoId = null;
-            currentHpoTermLabel = null;
-            currentFrequencyTermId = null;// reset
-            currentAnnotationEntryList.add(entry);
-          } catch (HpoAnnotationModelException e) {
-            logger.warn(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
-              currentDiseaseName != null ? currentDiseaseName : "n/a",
-              currentOrphanumber != null ? currentOrphanumber : "n/a",
-              currentHpoId != null ? currentHpoId : "n/a",
-              e.getMessage())
-            );
-          }
-        } else if (endElementName.equals(DISORDER)) {
-          TermId orphaDiseaseId = TermId.of(String.format("ORPHA:%s", currentOrphanumber));
-          HpoAnnotationModel model = new HpoAnnotationModel(String.format("ORPHA:%s", currentOrphanumber),
-            currentAnnotationEntryList);
-          orphanetDiseaseMap.put(orphaDiseaseId, model);
-          currentOrphanumber = null;
-          currentDiseaseName = null;
-          currentAnnotationEntryList.clear();
-        } else if (endElementName.equals(JDBOR)) {
-          // no-op all done
+        String localPart = endElement.getName().getLocalPart();
+        switch (localPart) {
+          case HPO_FREQUENCY:
+            inFrequency = false;
+            break;
+          case DIAGNOSTIC_CRITERIA:
+            inDiagnosticCriterion = false;
+            break;
+          case HPO_DISORDER_ASSOCIATION:
+            try {
+              HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaData(
+                String.format("ORPHA:%s", currentOrphanumber),
+                currentDiseaseName,
+                currentHpoId,
+                currentHpoTermLabel,
+                currentFrequencyTermId,
+                ontology,
+                orphanetBiocurationString,
+                replaceObsoleteTermId);
+              currentHpoId = null;
+              currentHpoTermLabel = null;
+              currentFrequencyTermId = null;// reset
+              currentAnnotationEntryList.add(entry);
+            } catch (HpoAnnotationModelException e) {
+              logger.warn(String.format("Parse error for %s [ORPHA:%s] HPOid: %s (%s)",
+                currentDiseaseName != null ? currentDiseaseName : "n/a",
+                currentOrphanumber != null ? currentOrphanumber : "n/a",
+                currentHpoId != null ? currentHpoId : "n/a",
+                e.getMessage())
+              );
+            }
+            break;
+          case DISORDER_GROUP:
+            inDisorderGroup = false;
+            break;
+          case DISORDER_TYPE:
+            inDisorderType = false;
+            break;
+          case DISORDER:
+            TermId orphaDiseaseId = TermId.of(String.format("ORPHA:%s", currentOrphanumber));
+            HpoAnnotationModel model = new HpoAnnotationModel(String.format("ORPHA:%s", currentOrphanumber),
+              currentAnnotationEntryList);
+            orphanetDiseaseMap.put(orphaDiseaseId, model);
+            inDisorderType = false;
+            currentOrphanumber = null;
+            currentDiseaseName = null;
+            currentAnnotationEntryList.clear();
         }
       }
     }

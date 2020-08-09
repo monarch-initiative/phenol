@@ -3,6 +3,10 @@ Changelog
 =========
 
 ------
+v1.6.1
+------
+- Fixed issue with parsing Orphanet en_product4.xml
+------
 v1.6.0
 ------
 - Simplified interface to GO overrepresentation analysis classes.

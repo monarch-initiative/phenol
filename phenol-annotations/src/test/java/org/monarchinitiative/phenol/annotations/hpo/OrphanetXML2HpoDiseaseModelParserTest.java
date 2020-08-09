@@ -7,7 +7,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -27,6 +26,8 @@ class OrphanetXML2HpoDiseaseModelParserTest {
 
   static private OrphanetXML2HpoDiseaseModelParser parser;
 
+  static private Map<TermId, HpoAnnotationModel> diseaseModels;
+
   static private final TermId veryFrequent = TermId.of("HP:0040281");
 
   static private final TermId frequent = TermId.of("HP:0040282");
@@ -42,6 +43,7 @@ class OrphanetXML2HpoDiseaseModelParserTest {
       System.err.println("Could not parse Orpha " + e.getMessage());
       throw e;
     }
+    diseaseModels = parser.getOrphanetDiseaseMap();
   }
 
 
@@ -67,7 +69,6 @@ class OrphanetXML2HpoDiseaseModelParserTest {
    */
   @Test
   void testPhenotypesAndFrequenciesOfDisease1() {
-    Map<TermId, HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
     TermId diseaseId = TermId.of("ORPHA:61");
     HpoAnnotationModel file = diseaseModels.get(diseaseId);
     List<HpoAnnotationEntry> entrylist = file.getEntryList();
@@ -97,7 +98,6 @@ class OrphanetXML2HpoDiseaseModelParserTest {
    */
   @Test
   void testPhenotypesAndFrequenciesOfDisease3() {
-    Map<TermId, HpoAnnotationModel> diseaseModels = parser.getOrphanetDiseaseMap();
     TermId diseaseId = TermId.of("ORPHA:585");
     HpoAnnotationModel file = diseaseModels.get(diseaseId);
     List<HpoAnnotationEntry> entrylist = file.getEntryList();
@@ -111,6 +111,31 @@ class OrphanetXML2HpoDiseaseModelParserTest {
       findFirst();
     assertTrue(entryOpt.isPresent());
     assertEquals(frequent.getValue(), entryOpt.get().getFrequencyModifier());
+  }
+
+
+  @Test
+  void testGetDiseaseName1() {
+    String diseaseName = "Alpha-mannosidosis";
+    TermId diseaseId = TermId.of("ORPHA:61");
+    HpoAnnotationModel file = diseaseModels.get(diseaseId);
+    assertEquals(diseaseName, file.getDiseaseName());
+  }
+
+  @Test
+  void testGetDiseaseName2() {
+    String diseaseName = "Aspartylglucosaminuria";
+    TermId diseaseId = TermId.of("ORPHA:93");
+    HpoAnnotationModel file = diseaseModels.get(diseaseId);
+    assertEquals(diseaseName, file.getDiseaseName());
+  }
+
+  @Test
+  void testGetDiseaseName3() {
+    String diseaseName = "Multiple sulfatase deficiency";
+    TermId diseaseId = TermId.of("ORPHA:585");
+    HpoAnnotationModel file = diseaseModels.get(diseaseId);
+    assertEquals(diseaseName, file.getDiseaseName());
   }
 
 
