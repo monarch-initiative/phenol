@@ -27,7 +27,7 @@ import java.util.Map;
 public class OrphaGeneToDiseaseParser {
   private final static Logger logger = LoggerFactory.getLogger(OrphaGeneToDiseaseParser.class);
   private static final String DISORDER = "Disorder";
-  private static final String ORPHA_NUMBER = "OrphaNumber";
+  private static final String ORPHA_NUMBER = "OrphaCode";
   private static final String GENE_LIST = "GeneList";
   private static final String GENE = "Gene";
   private static final String NAME = "Name";
