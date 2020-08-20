@@ -180,14 +180,14 @@ public class HpoAnnotationModel {
         String n_str=matcher.group(1);
         String m_str=matcher.group(2);
         // if we match the regex, the following "must" work.
-        Integer n=Integer.parseInt(n_str);
-        Integer m=Integer.parseInt(m_str);
+        int n=Integer.parseInt(n_str);
+        int m=Integer.parseInt(m_str);
         sum_of_numerators += n;
         sum_of_denominators += m;
       } else if (percentageMatcher.matches()) {
         String p_str=percentageMatcher.group(1);
         // If we match the regex, the following "must" work
-        Double d = Double.parseDouble(p_str);
+        double d = Double.parseDouble(p_str);
         int n = (int)Math.round(d/10.0);
         sum_of_numerators += n;
         sum_of_denominators += DEFAULT_NUMBER_OF_OBSERVATIONS;
@@ -348,6 +348,14 @@ public class HpoAnnotationModel {
   public TermId getDiseaseId() {
     HpoAnnotationEntry entry = entryList.iterator().next();
     return TermId.of(entry.getDiseaseID());
+  }
+
+  public String getDiseaseName() {
+    return entryList
+      .stream()
+      .map(HpoAnnotationEntry::getDiseaseName)
+      .findAny()
+      .orElse("n/a");
   }
 
 
