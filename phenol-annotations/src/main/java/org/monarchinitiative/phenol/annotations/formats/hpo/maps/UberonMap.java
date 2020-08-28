@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo.uberon;
+package org.monarchinitiative.phenol.annotations.formats.hpo.maps;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -7,16 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UberonMap {
-
+public class UberonMap extends HpoTermsForMap{
 
 
   private static final TermId ADIPOSE_TISSUE = TermId.of("UBERON:0001013");
-  private static final TermId ABNORMAL_ADIPOSE_TISSUE_MORPHOLOGY = TermId.of("HP:0009124");
   private static final TermId BLOOD = TermId.of("UBERON:0000178");
   private static final TermId ABNORMALITY_BLOOD_AND_BLOOD_FORMING_TISSUES = TermId.of("HP:0001871");
   private static final TermId BLOOD_VESSEL = TermId.of("UBERON:0001981");
-  private static final TermId ABNORMAL_VASCULAR_MORPHOLOGY = TermId.of("HP:0025015");
+
   private static final TermId BRAIN = TermId.of("UBERON:0000955");
   private static final TermId ABNORMAL_BRAIN_MORPHOLOGY = TermId.of("HP:0012443");
   private static final TermId ESOPHAGUS = TermId.of("UBERON:0001043");
@@ -32,11 +30,11 @@ public class UberonMap {
   private static final TermId INTERNAL_MALE_GENITALIA = TermId.of("UBERON:0004054");
   private static final TermId ABNORMAL_INTERNAL_MALE_GENITALIA_MORPHOLOGY = TermId.of("HP:0000022");
   private static final TermId KIDNEY = TermId.of("UBERON:0002113");
-  private static final TermId ABNORMAL_RENAL_MORPHOLOGY = TermId.of("HP:0012210");
+
   private static final TermId LARGE_INTESTINE = TermId.of("UBERON:0000059");
   private static final TermId ABNORMAL_LARGE_INTESTINE_MORPHOLOGY = TermId.of("HP:0002250");
   private static final TermId LIVER = TermId.of("UBERON:0002107");
-  private static final TermId ABNORMAL_LIVER_MORPHOLOGY = TermId.of("HP:0410042");
+
   private static final TermId LUNG = TermId.of("UBERON:0002048");
   private static final TermId ABNORMAL_LUNG_MORPHOLOGY = TermId.of("HP:0002088");
   private static final TermId LYMPH_NODE = TermId.of("UBERON:0000029");
@@ -54,13 +52,10 @@ public class UberonMap {
   private static final TermId PLACENTA = TermId.of("UBERON:0001987");
   private static final TermId ABNORMAL_PLACENTA_MORPHOLOGY = TermId.of("HP:0100767");
   private static final TermId PROSTATE_GLAND = TermId.of("UBERON:0002367");
-  private static final TermId ABNORMAL_PROSTATE_GLAND_MORPHOLOGY = TermId.of("HP:0008775");
   private static final TermId SALIVARY_GLAND = TermId.of("UBERON:0001044");
   private static final TermId ABNORMAL_SALIVARY_GLAND_MORPHOLOGY = TermId.of("HP:0010286");
   private static final TermId SKELETAL_MUSCLE_TISSUE = TermId.of("UBERON:0001134");
-  private static final TermId ABNORMAL_SKELETAL_MUSCLE_MORPHOLOGY = TermId.of("HP:0011805");
   private static final TermId SKIN_OF_BODY = TermId.of("UBERON:0002097");
-  private static final TermId ABNORMAL_SKIN_MORPHOLOGY = TermId.of("HP:0011121");
   private static final TermId SMALL_INTESTINE = TermId.of("UBERON:0002108");
   private static final TermId ABNORMAL_SMALL_INTESTINE_MORPHOLOGY = TermId.of("HP:0002244");
   private static final TermId SMOOTH_MUSCLE_TISSUE = TermId.of("UBERON:0001135");
@@ -92,7 +87,6 @@ public class UberonMap {
   private static final TermId ABNORMAL_BLADDER_MORPHOLOGY = TermId.of("HP:0025487");
 
   private static final TermId UTERUS = TermId.of("UBERON:0000995");
-  private static final TermId ABNORMAL_UTERUS_MORPHOLOGY = TermId.of("HP:0031105");
   private static final TermId VAGINA = TermId.of("UBERON:0000996");
   private static final TermId ABNORMAL_VAGINA_MORPHOLOGY = TermId.of("HP:0000142");
 
@@ -122,7 +116,7 @@ public class UberonMap {
     uberonMap.put(PAROTID_GLAND, ABNORMAL_PAROTID_GLAND_MORPHOLOGY);
     uberonMap.put(PENIS, ABNORMAL_PENIS_MORPHOLOGY);
     uberonMap.put(PLACENTA, ABNORMAL_PLACENTA_MORPHOLOGY);
-    uberonMap.put(PROSTATE_GLAND, ABNORMAL_PROSTATE_GLAND_MORPHOLOGY);
+    uberonMap.put(PROSTATE_GLAND, ABNORMAL_PROSTATE_MORPHOLOGY);
     uberonMap.put(SALIVARY_GLAND, ABNORMAL_SALIVARY_GLAND_MORPHOLOGY);
     uberonMap.put(SKELETAL_MUSCLE_TISSUE, ABNORMAL_SKELETAL_MUSCLE_MORPHOLOGY);
     uberonMap.put(SKIN_OF_BODY, ABNORMAL_SKIN_MORPHOLOGY);
