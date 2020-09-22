@@ -125,8 +125,25 @@ public class HpoDiseaseAnnotationParser {
     return errors;
   }
 
-  public ImmutableMultimap<TermId, TermId> getTermToDiseaseMap() {
+  private ImmutableMultimap<TermId, TermId> getTermToDiseaseMap() {
     return this.phenotypeToDiseaseMap;
+  }
+
+  /**
+   * Get a map from HPO terms to diseases. This function includes OMIM, ORPHA, and DECIPHER references.
+   * @param annotationFile path to the the {@code phenotype.hpoa} file
+   * @param ontology reference to HPO Ontology object
+   * @return map with key being an HPO TermId object, and value being a list of TermIds representing diseases.
+   */
+  public static Multimap<TermId, TermId> loadTermToDiseaseMap(String annotationFile, Ontology ontology) {
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology);
+    try {
+      parser.parse(); // ignore return value for this
+      return parser.getTermToDiseaseMap();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile + ": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
   }
 
   /**
