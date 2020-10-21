@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.obo.hpo;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
+import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequency;
@@ -236,7 +237,8 @@ class HpoAnnotationLine {
       frequencyString,
       onset,
       getModifiers(line.getModifierList()),
-      line.getPublication());
+      line.getPublication(),
+      EvidenceCode.fromString(line.evidence));
   }
 
   /**
