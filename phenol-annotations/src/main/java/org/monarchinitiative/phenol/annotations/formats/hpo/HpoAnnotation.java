@@ -16,7 +16,7 @@ import java.util.Objects;
  * @version 0.1.3 (2018-03-12)
  */
 public class HpoAnnotation implements  Comparable<HpoAnnotation> {
-  /** Note that we still do not have valid freuqency information for all of the annotations; the default
+  /** Note that we still do not have valid frequency information for all of the annotations; the default
    * is to show "n/a"*/
   private static final String DEFAULT_FREQUENCY_STRING = "n/a";
   /** The annotated {@link TermId}. */
@@ -129,9 +129,9 @@ public class HpoAnnotation implements  Comparable<HpoAnnotation> {
         && modifiers.equals(otherHpoAnnotation.modifiers);
   }
 
-  public boolean isPCS() { return this.evidence.equals(EvidenceCode.PCS); }
-  public boolean isIEA() { return this.evidence.equals(EvidenceCode.IEA); }
-  public boolean isTAS() { return this.evidence.equals(EvidenceCode.TAS); }
+  public boolean isPCS() { return this.evidence == EvidenceCode.PCS; }
+  public boolean isIEA() { return this.evidence == EvidenceCode.IEA; }
+  public boolean isTAS() { return this.evidence == EvidenceCode.TAS; }
   public String getEvidenceCodeString() { return this.evidence.toString(); }
 
   @Override
