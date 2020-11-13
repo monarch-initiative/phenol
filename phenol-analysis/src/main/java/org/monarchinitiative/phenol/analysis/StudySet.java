@@ -74,6 +74,29 @@ public class StudySet {
   }
 
 
+  /**
+   * @param tid a GO or HP id
+   * @return the number of items directly annotated to this ontology term.
+   */
+  public int getDirectAnnotationCount(TermId tid) {
+    if (this.annotationMap.containsKey(tid)) {
+      return this.annotationMap.get(tid).directAnnotatedCount();
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * @param tid a GO or HP id
+   * @return the number of items directly or indirectly annotated to this ontology term.
+   */
+  public int getTotalAnnotationCount(TermId tid) {
+    if (this.annotationMap.containsKey(tid)) {
+      return this.annotationMap.get(tid).totalAnnotatedCount();
+    } else {
+      return 0;
+    }
+  }
 
 
   /**
