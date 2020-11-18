@@ -50,9 +50,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
       if (!this.annotationMap.containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
       }
-     // int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
-      int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
-      int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
+      int goidAnnotatedPopGeneCount = populationSet.getTotalAnnotationCount(goId);
+      int goidAnnotatedStudyGeneCount = studySet.getTotalAnnotationCount(goId);
       if (goidAnnotatedStudyGeneCount != 0) {
         /* Imagine the following...
          *
