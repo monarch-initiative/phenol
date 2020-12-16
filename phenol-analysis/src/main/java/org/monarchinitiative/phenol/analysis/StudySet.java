@@ -129,4 +129,11 @@ public class StudySet {
     return geneSet.contains(geneName);
   }
 
+
+  static public StudySet populationSet(Set<TermId> genes,
+                                       Map<TermId, DirectAndIndirectTermAnnotations> associationContainer) {
+    return new StudySet(genes, "population", associationContainer);
+
+  }
+
 }

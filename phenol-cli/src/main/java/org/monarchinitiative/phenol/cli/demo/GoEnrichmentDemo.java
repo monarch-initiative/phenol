@@ -60,7 +60,7 @@ public final class GoEnrichmentDemo {
 
   private final int studysize;
 
-  private final AssociationContainer associationContainer;
+  private final TermAssociationContainer associationContainer;
 
   private static final double ALPHA = 0.05;
 
@@ -77,14 +77,14 @@ public final class GoEnrichmentDemo {
     int n_terms = gontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     System.out.println("[INFO] parsing  " + pathGoGaf);
-    associationContainer = AssociationContainer.loadGoGafAssociationContainer(pathGoGaf);
+    associationContainer = TermAssociationContainer.loadGoGafAssociationContainer(pathGoGaf, gontology);
     goAnnots = associationContainer.getRawAssociations();
     populationGenes = getPopulationSet(goAnnots);
     Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, gontology);
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
     studySet = new StudySet(studyGenes, "study", studyAssociations);
-    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes, gontology);
-    populationSet = new PopulationSet(populationGenes, populationAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes);
+    populationSet = StudySet.populationSet(populationGenes, populationAssociations);
     popsize = populationGenes.size();
     studysize = studyGenes.size();
   }

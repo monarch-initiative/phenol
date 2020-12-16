@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 import com.google.common.collect.Sets;
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class ParentChildUnionPValueCalculation extends ParentChildPValuesCalculation {
   public ParentChildUnionPValueCalculation(Ontology graph,
-                                           AssociationContainer goAssociations,
+                                           TermAssociationContainer goAssociations,
                                            StudySet populationSet,
                                            StudySet studySet,
                                            MultipleTestingCorrection mtc) {

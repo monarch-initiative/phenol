@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
@@ -31,7 +31,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
   public ParentChildPValuesCalculation(Ontology graph,
-                                       AssociationContainer goAssociations,
+                                       TermAssociationContainer goAssociations,
                                        StudySet populationSet,
                                        StudySet studySet,
                                        MultipleTestingCorrection mtc) {
