@@ -79,15 +79,15 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
           // any additional genes.
           raw_pval = 1.0;
         } else {
-          double proportion = count.get_proportion();
-          // hypergeometric.phypergeometric(m_pa_t, m_t, n_pa_t, n_t);
           raw_pval = hyperg.phypergeometric(m_pa_t,
             m_t,
             n_pa_t,
             count.n_t);
         }
 
-        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
+        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval,
+          goidAnnotatedStudyGeneCount, this.studySet.getAnnotatedItemCount(),
+          goidAnnotatedPopGeneCount, this.populationSet.getAnnotatedItemCount());
         results.add(goPval);
       }
     }

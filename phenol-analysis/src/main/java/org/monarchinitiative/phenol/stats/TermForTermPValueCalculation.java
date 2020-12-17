@@ -67,7 +67,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
           (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
           studyGeneCount,
           goidAnnotatedStudyGeneCount);
-        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
+        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, studyGeneCount,
+          goidAnnotatedPopGeneCount, popGeneCount);
         results.add(goPval);
       }
       // If desired we could record the SKIPPED TESTS (Terms) HERE
