@@ -31,11 +31,10 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
   public ParentChildPValuesCalculation(Ontology graph,
-                                       TermAssociationContainer goAssociations,
                                        StudySet populationSet,
                                        StudySet studySet,
                                        MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, mtc);
+    super(graph, populationSet, studySet, mtc);
     this.studySetAnnotationMap = this.studySet.getAnnotationMap();
   }
 
@@ -50,7 +49,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
       TermId goId = entry.getKey();
       if (goId.equals(OWL_THING)) {
         continue;
-      } else if (!this.annotationMap.containsKey(goId)) {
+      } else if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
         continue;
       }

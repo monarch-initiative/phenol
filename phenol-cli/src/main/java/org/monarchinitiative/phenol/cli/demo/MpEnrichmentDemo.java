@@ -107,7 +107,6 @@ public class MpEnrichmentDemo {
 
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(ontology,
-      associationContainer,
       populationSet,
       studySet,
       bonf);

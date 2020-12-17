@@ -116,7 +116,6 @@ public final class GoEnrichmentDemo {
 
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(gontology,
-      associationContainer,
       populationSet,
       studySet,
       bonf);
@@ -157,7 +156,6 @@ public final class GoEnrichmentDemo {
     System.out.println();
     MultipleTestingCorrection bonf = new Bonferroni();
     ParentChildPValuesCalculation pcPvalCalc = new ParentChildIntersectionPValueCalculation(gontology,
-      associationContainer,
       populationSet,
       studySet,
       bonf);

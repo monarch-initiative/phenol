@@ -22,11 +22,10 @@ import java.util.Map;
  */
 public class TermForTermPValueCalculation extends PValueCalculation {
   public TermForTermPValueCalculation(Ontology graph,
-                                      AssociationContainer goAssociations,
                                       StudySet populationSet,
                                       StudySet studySet,
                                       MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, mtc);
+    super(graph, populationSet, studySet, mtc);
   }
 
   /**
@@ -47,7 +46,7 @@ public class TermForTermPValueCalculation extends PValueCalculation {
         continue; // only a single annotated entry -- do not perform a statistical test
       }
       TermId goId = entry.getKey();
-      if (!this.annotationMap.containsKey(goId)) {
+      if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
       }
       int goidAnnotatedPopGeneCount = populationSet.getTotalAnnotationCount(goId);
