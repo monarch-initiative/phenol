@@ -30,7 +30,7 @@ public class GoAssociationContainer implements AssociationContainer {
    * calculates the required count.
    */
   private final int annotatingTermCount;
-
+  /** Gene Ontology object. */
   private final Ontology ontology;
 
   /**
@@ -179,7 +179,7 @@ public class GoAssociationContainer implements AssociationContainer {
    * @param geneSymbols
    * @return
    */
-  public StudySet fromGeneSymbols(Set<String> geneSymbols, String label, Ontology ontology) {
+  public StudySet fromGeneSymbols(Set<String> geneSymbols, String label) {
     Map<String, TermId> symbolToTermIdMap = new HashMap<>();
     for (GoGaf21Annotation annot : this.rawAssociations) {
       String symbol = annot.getDbObjectSymbol();
@@ -193,6 +193,10 @@ public class GoAssociationContainer implements AssociationContainer {
       }
     }
     return new StudySet(studyTermIds, label, getAssociationMap(studyTermIds));
+  }
+
+  public StudySet fromGeneIds(Set<TermId> geneIds, String label) {
+    return new StudySet(geneIds, label, getAssociationMap(geneIds));
   }
 
 
