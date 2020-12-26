@@ -4,8 +4,9 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.util.Map;
-import java.util.Set;
+import java.io.BufferedWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class holds all gene names of a study and their associated
@@ -29,6 +30,11 @@ public class StudySet {
   /** The name of the study set. */
   private final String name;
 
+  /** A list of gene symbols for which we could not identify the TermIds. This is used when we create a study set
+   * from gene symbols rather than Gene Ids in order to give the user feedback about symbols that couldn't be mapped.
+   */
+  private final Set<String> unmappedGeneSymbols;
+
   /**
    * @param genes                The genes (or other items) that make up this set.
    * @param name                 The name of this set, e.g., study1 or population
@@ -40,6 +46,22 @@ public class StudySet {
     this.geneSet = genes;
     this.name = name;
     this.annotationMap = associationContainer;
+    this.unmappedGeneSymbols = new HashSet<>(); // empty set
+  }
+
+  /**
+   * @param genes                The genes (or other items) that make up this set.
+   * @param name                 The name of this set, e.g., study1 or population
+   * @param associationContainer Container of all Gene Ontology associations for all annotated genes
+   */
+  public StudySet(Set<TermId> genes,
+                  String name,
+                  Map<TermId, DirectAndIndirectTermAnnotations> associationContainer,
+                  Set<String> unmappedGenes) {
+    this.geneSet = genes;
+    this.name = name;
+    this.annotationMap = associationContainer;
+    this.unmappedGeneSymbols = unmappedGenes;
   }
 
   /**
@@ -54,6 +76,18 @@ public class StudySet {
    */
   public Set<TermId> getGeneSet() {
     return this.geneSet;
+  }
+
+  public int getUnmappedGeneSymbolCount() { return this.unmappedGeneSymbols.size(); }
+
+  public List<String> getSortedUnmappedGeneSymbols() {
+    List<String> unmapped = new ArrayList<>(this.unmappedGeneSymbols);
+    Collections.sort(unmapped);
+    return unmapped;
+  }
+
+  public Set<String> getUnmappedGeneSymbolSet() {
+    return this.unmappedGeneSymbols;
   }
 
   /**
@@ -135,5 +169,7 @@ public class StudySet {
     return new StudySet(genes, "population", associationContainer);
 
   }
+
+
 
 }

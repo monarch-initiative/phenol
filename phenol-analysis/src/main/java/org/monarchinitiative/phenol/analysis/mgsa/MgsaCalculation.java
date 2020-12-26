@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
+import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
 import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
@@ -40,7 +41,7 @@ public class MgsaCalculation {
   private final int burnin = 20000;
   private int updateReportTime = 1000; /* Update report time in ms */
 
-  private final TermAssociationContainer goAssociations;
+  private final GoAssociationContainer goAssociations;
 
   private final TermToItemMatrix termToItemMatrix;
   /**
@@ -59,7 +60,7 @@ public class MgsaCalculation {
    * @param mcmcSteps      Number of iterations of MCMC to perform
    */
   public MgsaCalculation(Ontology ontology,
-                         TermAssociationContainer goAssociations,
+                         GoAssociationContainer goAssociations,
                          int mcmcSteps,
                          long seed) {
     this.ontology = ontology;
@@ -82,7 +83,7 @@ public class MgsaCalculation {
    * @param mcmcSteps Number of MCMC steps to take
    */
   public MgsaCalculation(Ontology ontology,
-                         TermAssociationContainer goAssociations,
+                         GoAssociationContainer goAssociations,
                          int mcmcSteps) {
       this(ontology,goAssociations,mcmcSteps,new Random().nextLong());
   }

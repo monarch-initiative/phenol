@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 
+import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
 import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -25,7 +26,7 @@ public class MgsaGOTermsResultContainer
     protected final Ontology go;
 
     /** The association container */
-    private final TermAssociationContainer associations;
+    private final GoAssociationContainer associations;
 
     private final int populationGeneCount;
 
@@ -33,7 +34,7 @@ public class MgsaGOTermsResultContainer
 
 
     public MgsaGOTermsResultContainer(Ontology go,
-                                      TermAssociationContainer associations, StudySet studySet,
+                                      GoAssociationContainer associations, StudySet studySet,
                                       int populationGeneCount)
     {
         this.go = go;

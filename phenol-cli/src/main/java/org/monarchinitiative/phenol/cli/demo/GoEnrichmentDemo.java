@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
+import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -48,7 +49,7 @@ public final class GoEnrichmentDemo {
 
   private Ontology gontology;
 
-  private final List<TermAnnotation> goAnnots;
+  private final List<GoGaf21Annotation> goAnnots;
 
   private final Set<TermId> populationGenes;
 
@@ -60,7 +61,7 @@ public final class GoEnrichmentDemo {
 
   private final int studysize;
 
-  private final TermAssociationContainer associationContainer;
+  private final GoAssociationContainer associationContainer;
 
   private static final double ALPHA = 0.05;
 
@@ -77,14 +78,14 @@ public final class GoEnrichmentDemo {
     int n_terms = gontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     System.out.println("[INFO] parsing  " + pathGoGaf);
-    associationContainer = TermAssociationContainer.loadGoGafAssociationContainer(pathGoGaf, gontology);
+    associationContainer = GoAssociationContainer.loadGoGafAssociationContainer(pathGoGaf, gontology);
     goAnnots = associationContainer.getRawAssociations();
-    populationGenes = getPopulationSet(goAnnots);
-    Set<TermId> studyGenes = getFocusedStudySet(goAnnots, targetGoTerm);
+    populationGenes = getPopulationGenes(goAnnots);
+    Set<TermId> studyGenes = getFocusedStudyGenes(goAnnots, targetGoTerm);
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
-    studySet = new StudySet(studyGenes, "study", studyAssociations);
+    studySet = associationContainer.fromGeneIds(studyGenes, "study");
     Map<TermId, DirectAndIndirectTermAnnotations> populationAssociations = associationContainer.getAssociationMap(populationGenes);
-    populationSet = StudySet.populationSet(populationGenes, populationAssociations);
+    populationSet = associationContainer.fromGeneIds(populationGenes, "population");
     popsize = populationGenes.size();
     studysize = studyGenes.size();
   }
@@ -192,11 +193,11 @@ public final class GoEnrichmentDemo {
 
 
 
-  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
-    return getFocusedStudySet(annots, focus, 0.5); // default proportion of 50%
+  private Set<TermId> getFocusedStudyGenes(List<GoGaf21Annotation> annots, TermId focus) {
+    return getFocusedStudyGenes(annots, focus, 0.5); // default proportion of 50%
   }
 
-  private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus, double proportion) {
+  private Set<TermId> getFocusedStudyGenes(List<GoGaf21Annotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
@@ -232,7 +233,7 @@ public final class GoEnrichmentDemo {
    * @param annots List of annotations of genes/diseases to GO/HPO terms etc
    * @return an immutable set of TermIds representing the labeled genes/diseases
    */
-  private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
+  private Set<TermId> getPopulationGenes(List<GoGaf21Annotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
       TermId geneId = ann.getLabel();

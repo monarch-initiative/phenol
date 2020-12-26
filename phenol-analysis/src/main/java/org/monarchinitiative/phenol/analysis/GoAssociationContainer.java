@@ -187,12 +187,15 @@ public class GoAssociationContainer implements AssociationContainer {
       symbolToTermIdMap.putIfAbsent(symbol, tid);
     }
     Set<TermId> studyTermIds = new HashSet<>();
+    Set<String> unmappableSymbols = new HashSet<>();
     for (String symbol : geneSymbols) {
       if (symbolToTermIdMap.containsKey(symbol)) {
         studyTermIds.add(symbolToTermIdMap.get(symbol));
+      } else {
+        unmappableSymbols.add(symbol);
       }
     }
-    return new StudySet(studyTermIds, label, getAssociationMap(studyTermIds));
+    return new StudySet(studyTermIds, label, getAssociationMap(studyTermIds), unmappableSymbols);
   }
 
   public StudySet fromGeneIds(Set<TermId> geneIds, String label) {
@@ -209,6 +212,16 @@ public class GoAssociationContainer implements AssociationContainer {
   public static GoAssociationContainer loadGoGafAssociationContainer(File goGafFile, Ontology ontology) {
     List<GoGaf21Annotation> goAnnots = GoGeneAnnotationParser.loadAnnotations(goGafFile);
     return GoAssociationContainer.fromGoTermAnnotations(goAnnots, ontology);
+  }
+
+  /**
+   * Create and return an {@link TermAssociationContainer} object from a Gene Ontology goa_human.gaf annotation file
+   *
+   * @param goGafFile File object representing the GO annotation file
+   * @return An {@link TermAssociationContainer} object representing GO associations
+   */
+  public static GoAssociationContainer loadGoGafAssociationContainer(String goGafFile, Ontology ontology) {
+    return loadGoGafAssociationContainer(new File(goGafFile), ontology);
   }
 
   /**
