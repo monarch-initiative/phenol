@@ -18,6 +18,8 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
 
 public class GoAssociationContainer implements AssociationContainer {
 
+  /** Fake root added for GO that we do not want to add to the associations. */
+  private final static TermId fakeRoot = TermId.of("owl:Thing");
 
   private final List<GoGaf21Annotation> rawAssociations;
   /**
@@ -45,6 +47,9 @@ public class GoAssociationContainer implements AssociationContainer {
     Map<TermId, ItemAssociations> tempMap = new HashMap<>();
     for (TermAnnotation a : assocs) {
       TermId tid = a.getLabel();
+      if (tid.equals(fakeRoot)) {
+        continue; // skip owl:Thing
+      }
       tempMap.putIfAbsent(tid, new ItemAssociations(tid));
       ItemAssociations g2a = tempMap.get(tid);
       g2a.add(a);
