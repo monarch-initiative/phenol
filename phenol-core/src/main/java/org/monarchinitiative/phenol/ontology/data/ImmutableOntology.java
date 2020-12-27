@@ -231,6 +231,15 @@ public class ImmutableOntology implements Ontology {
         relationBuilder.build());
   }
 
+  @Override
+  public Optional<String> getTermLabel(TermId tid) {
+    if (this.termMap.containsKey(tid)) {
+      return Optional.of(this.termMap.get(tid).getName());
+    } else {
+      return Optional.empty();
+    }
+  }
+
   public static Builder builder() {
     return new Builder();
   }
