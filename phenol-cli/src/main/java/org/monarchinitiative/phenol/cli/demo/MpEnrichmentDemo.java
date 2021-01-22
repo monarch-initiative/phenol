@@ -4,7 +4,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpAnnotation;
@@ -95,19 +95,18 @@ public class MpEnrichmentDemo {
     System.out.println("[INFO] parsed " + n_terms + " MP terms.");
     List<TermAnnotation> annots = getTermAnnotations();
     System.out.println("[INFO] parsed " + annots.size() + " MP annotations.");
-    AssociationContainer associationContainer =  AssociationContainer.fromGoTermAnnotations(annots);
+    TermAssociationContainer associationContainer =  TermAssociationContainer.fromGoTermAnnotations(annots, ontology);
     Set<TermId> populationGenes = getPopulationSet(annots);
     System.out.println("[INFO] size of population set: " + populationGenes.size());
     Set<TermId> studyGenes = getStudySet();
 
-    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes, ontology);
+    Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
     StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
     StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
     System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
 
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(ontology,
-      associationContainer,
       populationSet,
       studySet,
       bonf);

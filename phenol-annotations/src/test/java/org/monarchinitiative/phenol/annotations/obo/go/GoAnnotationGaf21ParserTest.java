@@ -9,6 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,6 +68,7 @@ public class GoAnnotationGaf21ParserTest {
     assertNotNull(firstRecord.getEvidenceCode().get());
     assertEquals("IEA",firstRecord.getEvidenceCode().get());
   }
+
 
 
 

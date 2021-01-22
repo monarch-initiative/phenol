@@ -15,35 +15,45 @@ public class GoTerm2PValAndCounts extends PValue {
 
   private final int annotatedStudyGenes;
   private final int annotatedPopulationGenes;
+  private final int totalStudyGenes;
+  private final int totalPopulationGenes;
 
-  public GoTerm2PValAndCounts(TermId goId, double raw_pval, int annotatedStudyGenes, int annotatedPopulationGenes){
+  public GoTerm2PValAndCounts(TermId goId, double raw_pval, int annotatedStudyGenes, int totalStudyGenes,
+                              int annotatedPopulationGenes, int totalPopulationGenes){
     super(goId,raw_pval);
-    this.annotatedPopulationGenes=annotatedPopulationGenes;
-    this.annotatedStudyGenes=annotatedStudyGenes;
+    this.annotatedStudyGenes = annotatedStudyGenes;
+    this.totalStudyGenes = totalStudyGenes;
+    this.annotatedPopulationGenes = annotatedPopulationGenes;
+    this.totalPopulationGenes = totalPopulationGenes;
   }
 
   public int getAnnotatedStudyGenes() {
     return annotatedStudyGenes;
   }
 
+  public int getTotalStudyGenes() { return totalStudyGenes; }
+
   public int getAnnotatedPopulationGenes() {
     return annotatedPopulationGenes;
   }
+
+  public int getTotalPopulationGenes() { return totalPopulationGenes; }
+
 
   /**
    * A convenience method to get an array of fields that can be used to display the results
    * The fields are identical to those in {@link #header()}.
    * @param ontology reference to Gene (or other) Ontology
-   * @param totalStudy total count of genes in the study set
-   * @param totalPopulation total count of genes in the population set
    * @return array of fields with data about this
    */
-  public  String[] getRowData(Ontology ontology, int totalStudy, int totalPopulation) {
+  public  String[] getRowData(Ontology ontology) {
     String label = ontology.getTermMap().get(this.item).getName();
     String study = String.format("%d/%d(%.1f%%)",
-      this.annotatedStudyGenes, totalStudy, 100.0*(double)this.annotatedStudyGenes/totalStudy);
+      this.annotatedStudyGenes, this.totalStudyGenes,
+      100.0*(double)this.annotatedStudyGenes/this.totalStudyGenes);
     String population = String.format("%d/%d(%.1f%%)",
-      this.annotatedPopulationGenes, totalPopulation, 100.0*(double)this.annotatedPopulationGenes/totalPopulation);
+      this.annotatedPopulationGenes, this.totalPopulationGenes,
+      100.0*(double)this.annotatedPopulationGenes/this.totalPopulationGenes);
     String[] vals = {label,
       this.item.getValue(),
       study,
@@ -59,8 +69,8 @@ public class GoTerm2PValAndCounts extends PValue {
     return (this.p_adjusted <= alphaThreshold);
   }
 
-  public  String getRow(Ontology ontology, int totalStudy, int totalPopulation) {
-    return String.join("\t", getRowData(ontology, totalStudy, totalPopulation));
+  public  String getRow(Ontology ontology) {
+    return String.join("\t", getRowData(ontology));
   }
 
 

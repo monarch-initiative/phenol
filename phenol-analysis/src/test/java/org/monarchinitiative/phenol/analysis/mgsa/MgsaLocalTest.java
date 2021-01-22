@@ -2,22 +2,12 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
-import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
-import org.monarchinitiative.phenol.analysis.PopulationSet;
-import org.monarchinitiative.phenol.analysis.StudySet;
-import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
