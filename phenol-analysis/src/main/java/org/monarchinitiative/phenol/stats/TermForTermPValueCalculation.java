@@ -22,11 +22,10 @@ import java.util.Map;
  */
 public class TermForTermPValueCalculation extends PValueCalculation {
   public TermForTermPValueCalculation(Ontology graph,
-                                      AssociationContainer goAssociations,
                                       StudySet populationSet,
                                       StudySet studySet,
                                       MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, mtc);
+    super(graph, populationSet, studySet, mtc);
   }
 
   /**
@@ -47,12 +46,11 @@ public class TermForTermPValueCalculation extends PValueCalculation {
         continue; // only a single annotated entry -- do not perform a statistical test
       }
       TermId goId = entry.getKey();
-      if (!this.annotationMap.containsKey(goId)) {
+      if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
       }
-     // int goidAnnotatedPopGeneCount = this.annotationMap.get(goId).totalAnnotatedCount();
-      int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();
-      int goidAnnotatedStudyGeneCount = studySetAnnotationMap.get(goId).totalAnnotatedCount();
+      int goidAnnotatedPopGeneCount = populationSet.getTotalAnnotationCount(goId);
+      int goidAnnotatedStudyGeneCount = studySet.getTotalAnnotationCount(goId);
       if (goidAnnotatedStudyGeneCount != 0) {
         /* Imagine the following...
          *
@@ -69,7 +67,8 @@ public class TermForTermPValueCalculation extends PValueCalculation {
           (double) goidAnnotatedPopGeneCount / (double) popGeneCount,
           studyGeneCount,
           goidAnnotatedStudyGeneCount);
-        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
+        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, studyGeneCount,
+          goidAnnotatedPopGeneCount, popGeneCount);
         results.add(goPval);
       }
       // If desired we could record the SKIPPED TESTS (Terms) HERE

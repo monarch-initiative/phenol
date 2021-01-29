@@ -89,7 +89,27 @@ public class HpoAssociationParser {
     ingestDisease2GeneAssociations();
   }
 
-
+  /**
+   * Use this constructor to parse everything except the Orphanet to gene file.
+   * @param geneInfoFile
+   * @param mim2geneMedgenFile
+   * @param phenotypeHpoaFile
+   * @param hpoOntology
+   */
+  public HpoAssociationParser(File geneInfoFile,
+                              File mim2geneMedgenFile,
+                              File phenotypeHpoaFile,
+                              Ontology hpoOntology){
+    this.hpoOntology = hpoOntology;
+    this.homoSapiensGeneInfoFile = geneInfoFile;
+    this.mim2geneMedgenFile = mim2geneMedgenFile;
+    this.orphaToGeneFile = null;
+    this.phenotypeDotHpoaFile = phenotypeHpoaFile;
+    // The following skips the orphaToGeneFile to gene file because it is null
+    // TODO this class is not elegant, it needs refactoring.
+    ingestDisease2GeneAssociations();
+    ingestPhenotypeHpoaFile();
+  }
 
   public HpoAssociationParser(File geneInfoFile,
                               File mim2geneMedgenFile,

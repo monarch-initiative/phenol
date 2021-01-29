@@ -1,10 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 
@@ -111,4 +108,8 @@ public interface Ontology extends MinimalOntology, Serializable {
    * @return Freshly created sub ontology.
    */
   Ontology subOntology(TermId subOntologyRoot);
+
+  Optional<String> getTermLabel(TermId tid);
+
+
 }

@@ -57,6 +57,11 @@ public class Gene2DiseaseAssociationParser {
     parseMim2geneAndGeneInfo(homoSapiensGeneInfoFile, mim2geneMedgenFile);
   }
 
+
+
+
+
+
   /**
    * This constructor should be chosen to get data about disease links from mim2gene_medgen and
    * Homo sapiens gene info and Orphanet.
@@ -126,6 +131,10 @@ public class Gene2DiseaseAssociationParser {
     int added = size_after - size_before;
     System.out.printf("Added %d Orphanet entries to association map (total size: %d).\n", added, size_after);
   }
+
+
+
+
 
 
   /**

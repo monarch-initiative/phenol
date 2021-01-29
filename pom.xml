@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>1.6.1</version>
+  <version>1.6.2-SNAPSHOT</version>
 
   <name>Phenol</name>
 
@@ -275,17 +275,11 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M5</version>
         <configuration>
-          <forkCount>3</forkCount>
-          <reuseForks>true</reuseForks>
-          <systemPropertyVariables>
-            <user.language>en</user.language>
-            <user.region>US</user.region>
-            <user.timezone>UTC</user.timezone>
-          </systemPropertyVariables>
+          <!-- Activate the use of TCP to transmit events to the plugin -->
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
         </configuration>
       </plugin>
 

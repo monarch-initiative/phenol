@@ -4,7 +4,8 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -30,7 +31,7 @@ class TermToItemMatrix {
     private final int [][] termLinks;
 
 
-    TermToItemMatrix(AssociationContainer assocs) {
+    TermToItemMatrix(GoAssociationContainer assocs) {
         Objects.requireNonNull(assocs);
         // termToGeneMultimap->key: A GO TermId; value: A Collection of Genes
         Multimap<TermId, TermId> termToGeneMultimap = assocs.getTermToItemMultimap();

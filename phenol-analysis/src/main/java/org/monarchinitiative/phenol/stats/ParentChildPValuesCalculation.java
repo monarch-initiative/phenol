@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.stats;
 
 
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
@@ -31,11 +31,10 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
   protected final Map<TermId, DirectAndIndirectTermAnnotations> studySetAnnotationMap;
 
   public ParentChildPValuesCalculation(Ontology graph,
-                                       AssociationContainer goAssociations,
                                        StudySet populationSet,
                                        StudySet studySet,
                                        MultipleTestingCorrection mtc) {
-    super(graph, goAssociations, populationSet, studySet, mtc);
+    super(graph, populationSet, studySet, mtc);
     this.studySetAnnotationMap = this.studySet.getAnnotationMap();
   }
 
@@ -50,7 +49,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
       TermId goId = entry.getKey();
       if (goId.equals(OWL_THING)) {
         continue;
-      } else if (!this.annotationMap.containsKey(goId)) {
+      } else if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
         System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
         continue;
       }
@@ -80,15 +79,15 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
           // any additional genes.
           raw_pval = 1.0;
         } else {
-          double proportion = count.get_proportion();
-          // hypergeometric.phypergeometric(m_pa_t, m_t, n_pa_t, n_t);
           raw_pval = hyperg.phypergeometric(m_pa_t,
             m_t,
             n_pa_t,
             count.n_t);
         }
 
-        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval, goidAnnotatedStudyGeneCount, goidAnnotatedPopGeneCount);
+        GoTerm2PValAndCounts goPval = new GoTerm2PValAndCounts(goId, raw_pval,
+          goidAnnotatedStudyGeneCount, this.studySet.getAnnotatedItemCount(),
+          goidAnnotatedPopGeneCount, this.populationSet.getAnnotatedItemCount());
         results.add(goPval);
       }
     }

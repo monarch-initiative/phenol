@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
-import org.monarchinitiative.phenol.analysis.AssociationContainer;
+import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
+import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
-import org.monarchinitiative.phenol.analysis.PopulationSet;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -41,7 +41,7 @@ public class MgsaCalculation {
   private final int burnin = 20000;
   private int updateReportTime = 1000; /* Update report time in ms */
 
-  private final AssociationContainer goAssociations;
+  private final GoAssociationContainer goAssociations;
 
   private final TermToItemMatrix termToItemMatrix;
   /**
@@ -60,7 +60,7 @@ public class MgsaCalculation {
    * @param mcmcSteps      Number of iterations of MCMC to perform
    */
   public MgsaCalculation(Ontology ontology,
-                         AssociationContainer goAssociations,
+                         GoAssociationContainer goAssociations,
                          int mcmcSteps,
                          long seed) {
     this.ontology = ontology;
@@ -72,8 +72,8 @@ public class MgsaCalculation {
     this.termToItemMatrix = new TermToItemMatrix(goAssociations);
 
     Set<TermId> allAnnotatedGenes = goAssociations.getAllAnnotatedGenes();
-    Map<TermId, DirectAndIndirectTermAnnotations> assocs = goAssociations.getAssociationMap(allAnnotatedGenes, ontology);
-    this.populationSet = new PopulationSet(goAssociations.getAllAnnotatedGenes(), assocs);
+    Map<TermId, DirectAndIndirectTermAnnotations> assocs = goAssociations.getAssociationMap(allAnnotatedGenes);
+    this.populationSet =  StudySet.populationSet(goAssociations.getAllAnnotatedGenes(), assocs);
   }
 
   /**
@@ -83,7 +83,7 @@ public class MgsaCalculation {
    * @param mcmcSteps Number of MCMC steps to take
    */
   public MgsaCalculation(Ontology ontology,
-                         AssociationContainer goAssociations,
+                         GoAssociationContainer goAssociations,
                          int mcmcSteps) {
       this(ontology,goAssociations,mcmcSteps,new Random().nextLong());
   }
