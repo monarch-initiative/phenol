@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.stats;
 
-
-import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;

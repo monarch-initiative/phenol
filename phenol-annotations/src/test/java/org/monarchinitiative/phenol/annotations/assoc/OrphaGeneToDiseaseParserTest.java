@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.assoc;
 import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.nio.file.Path;
@@ -100,9 +99,9 @@ public class OrphaGeneToDiseaseParserTest {
     Collection<Gene> genes = orphaId2GeneMultimap.get(familialSSS);
     assertEquals(3, genes.size());
     // This disease is associated with the following three genes
-    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("SCN5A")).findFirst().isPresent());
-    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("HCN4")).findFirst().isPresent());
-    assertTrue(genes.stream().map(Gene::getSymbol).filter(s -> s.equals("MYH6")).findFirst().isPresent());
+    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("SCN5A")));
+    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("HCN4")));
+    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("MYH6")));
   }
 
 }

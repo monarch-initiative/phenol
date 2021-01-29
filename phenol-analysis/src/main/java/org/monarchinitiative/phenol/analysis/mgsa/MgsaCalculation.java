@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
-import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

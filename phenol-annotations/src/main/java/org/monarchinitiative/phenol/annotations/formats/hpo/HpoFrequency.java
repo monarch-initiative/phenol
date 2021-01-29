@@ -36,7 +36,7 @@ public enum HpoFrequency {
 
   /**
    * @return Lower (inclusive) bound of {@code this} frequency category. Our default value for terms
-   *     with no frequency will be always present since this applies to the majoriry for data for
+   *     with no frequency will be always present since this applies to the majority of data for
    *     which we have no frequency data.
    */
   public double lowerBound() {
@@ -46,11 +46,11 @@ public enum HpoFrequency {
       case EXCLUDED:
         return 0D;
       case FREQUENT:
-        return 0.05D;
+        return 0.30D;
       case OCCASIONAL:
         return 0.05D;
       case VERY_FREQUENT:
-        return 0.30D;
+        return 0.80D;
       case VERY_RARE:
         return 0.01D;
       default:
@@ -94,11 +94,11 @@ public enum HpoFrequency {
       case EXCLUDED:
         return 0D;
       case FREQUENT:
-        return 0.29D;
-      case OCCASIONAL:
-        return 0.04D;
-      case VERY_FREQUENT:
         return 0.79D;
+      case OCCASIONAL:
+        return 0.29D;
+      case VERY_FREQUENT:
+        return 0.99D;
       case VERY_RARE:
         return 0.04D;
       default:

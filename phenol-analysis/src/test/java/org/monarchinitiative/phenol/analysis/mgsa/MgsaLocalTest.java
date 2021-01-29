@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class MgsaLocalTest {
 
   private final String goTermId = "GO:0070997";
@@ -43,7 +41,7 @@ public class MgsaLocalTest {
     }
 
     int N = genes.size();
-    System.out.println(String.format("[INFO] Genes annotated to %s: n=%d",focus.getValue(),N));
+    System.out.printf("[INFO] Genes annotated to %s: n=%d\n",focus.getValue(),N);
     int M = N;
     if (N>20) {
       M = N/3;

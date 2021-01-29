@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.stats;
 
 import com.google.common.collect.Sets;
-import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

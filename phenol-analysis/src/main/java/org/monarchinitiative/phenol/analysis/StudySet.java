@@ -4,9 +4,7 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.io.BufferedWriter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class holds all gene names of a study and their associated

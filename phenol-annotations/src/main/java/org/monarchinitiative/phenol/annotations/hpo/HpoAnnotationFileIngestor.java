@@ -106,9 +106,9 @@ public class HpoAnnotationFileIngestor {
         n_total_annotation_lines += smallFile.getNumberOfAnnotations();
         smallFileList.add(smallFile);
       } catch (HpoAnnotationModelException hafe) {
-        System.err.println(String.format("[ERROR] %s: (%s)", file.getName(), hafe.getMessage()));
+        System.err.printf("[ERROR] %s: (%s)\n", file.getName(), hafe.getMessage());
       } catch (PhenolRuntimeException pre) {
-        System.err.println(String.format("[ERROR] PhenolRuntimeException: with file %s: %s", file, pre.getMessage()));
+        System.err.printf("[ERROR] PhenolRuntimeException: with file %s: %s", file, pre.getMessage());
         throw pre;
 
       }
