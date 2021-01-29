@@ -227,11 +227,11 @@ public class PairwisePhenotypicSimilarityCalculator {
             continue;
           }
           if (i > n_diseases) {
-            System.err.println(String.format("i=%d but n_diseases=%d", i, n_diseases));
+            System.err.printf("i=%d but n_diseases=%d\n", i, n_diseases);
             continue;
           }
           if (j > n_diseases) {
-            System.err.println(String.format("j=%d but n_diseases=%d", j, n_diseases));
+            System.err.printf("j=%d but n_diseases=%d\n", j, n_diseases);
             continue;
           }
           double sim = getMaximumGeneGeneSimilarity(geneI, geneJ);
@@ -271,8 +271,8 @@ public class PairwisePhenotypicSimilarityCalculator {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.println(String.format("[INFO] skipped vales: %d, good values %d",stats.skippedNanValue,stats.goodValue));
-    System.out.println(String.format("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.",aboveThreshold,threshold) );
+    System.out.printf("[INFO] skipped vales: %d, good values %d\n",stats.skippedNanValue,stats.goodValue);
+    System.out.printf("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.\n",aboveThreshold,threshold);
   }
 
 
@@ -309,7 +309,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.println(String.format("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.",aboveThreshold,threshold) );
+    System.out.printf("[INFO] Wrote %d above threshold (%.3f) pairwise interactions.\n",aboveThreshold,threshold);
   }
 
 
@@ -362,9 +362,9 @@ public class PairwisePhenotypicSimilarityCalculator {
     System.out.println("[INFO] DONE: Performing Resnik precomputation");
     this.resnikSimilarity =
       new ResnikSimilarity(pairwiseResnikSimilarity, false);
-    System.out.println(String.format("name: %s  params %s",
+    System.out.printf("name: %s  params %s\n",
       resnikSimilarity.getName(),
-      resnikSimilarity.getParameters()));
+      resnikSimilarity.getParameters());
     System.out.println("[INFO] Calculating pairwise phenotype similarity for " + diseaseMap.size() + " diseases." );
 
     this.diseaseList = new ArrayList<>(diseaseMap.values());
@@ -389,12 +389,12 @@ public class PairwisePhenotypicSimilarityCalculator {
         similarityScores[j][i]=similarity; // symmetric
         stats.addValue(similarity);
         if (++c%10000==0) {
-          System.out.print(String.format("Got %d/%d similarity counts (%.1f%%)\r",c,expectedTotal,100.0*(double)c/expectedTotal));
+          System.out.printf("Got %d/%d similarity counts (%.1f%%)\r",c,expectedTotal,100.0*(double)c/expectedTotal);
         }
       }
     }
 
-    System.out.println(String.format("[INFO] Disease analysis: skipped vales: %d, good values %d",stats.skippedNanValue,stats.goodValue));
+    System.out.printf("[INFO] Disease analysis: skipped vales: %d, good values %d\n",stats.skippedNanValue,stats.goodValue);
     if (doGeneBasedAnalysis) {
       performGeneBasedAnalysis();
     } else {

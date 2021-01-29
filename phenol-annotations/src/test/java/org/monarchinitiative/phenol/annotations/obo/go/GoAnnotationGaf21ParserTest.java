@@ -9,7 +9,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,7 +23,7 @@ public class GoAnnotationGaf21ParserTest {
   private static List<GoGaf21Annotation> annotations;
 
   @BeforeAll
-  static void init() throws PhenolException {
+  static void init() {
     final File goGeneAnnotationHeadFile = Paths.get("src/test/resources/go/goa_human_head.gav21.gaf").toFile();
     annotations = GoGeneAnnotationParser.loadAnnotations(goGeneAnnotationHeadFile);
   }

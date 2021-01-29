@@ -10,10 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
 
 /**
  * This class parses
@@ -85,8 +82,8 @@ public class Gene2DiseaseAssociationParser {
   /**
    * Parse the Homo_sapiens.gene_info.gz and mim2gene_medgen files (needed by both constructors).
    *
-   * @param homoSapiensGeneInfoFile
-   * @param mim2geneMedgenFile
+   * @param homoSapiensGeneInfoFile Path to the NCBI Gene Info file for h.sapiens
+   * @param mim2geneMedgenFile Path to the medgen mim2gene file
    */
   private void parseMim2geneAndGeneInfo(File homoSapiensGeneInfoFile, File mim2geneMedgenFile) {
     if (!homoSapiensGeneInfoFile.exists()) {

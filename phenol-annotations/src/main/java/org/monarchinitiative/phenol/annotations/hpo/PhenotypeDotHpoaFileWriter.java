@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import com.google.common.collect.Multimap;
-import org.monarchinitiative.phenol.annotations.assoc.OrphaGeneToDiseaseParser;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -150,7 +149,7 @@ public class PhenotypeDotHpoaFileWriter {
       this.parseResultAndErrorSummaryLines.add(String.format("\n\n[WARNING] Not all valid small files successfully parsed (%d entries missing).\n\n",missing));
     }
     if (n_omitted>0) {
-      logger.trace("%d small files were omitted.", n_omitted);
+      logger.trace("{} small files were omitted.", n_omitted);
     }
 
     // 2. Get the Orphanet Inheritance Annotations

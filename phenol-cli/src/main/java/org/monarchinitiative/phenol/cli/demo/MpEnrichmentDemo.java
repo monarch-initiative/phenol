@@ -103,7 +103,7 @@ public class MpEnrichmentDemo {
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
     StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
     StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
-    System.out.println(String.format("[INFO] study: %d genes, population: %d genes", studyGenes.size(), populationGenes.size()));
+    System.out.printf("[INFO] study: %d genes, population: %d genes\n", studyGenes.size(), populationGenes.size());
 
     MultipleTestingCorrection bonf = new Bonferroni();
     TermForTermPValueCalculation tftpvalcal = new TermForTermPValueCalculation(ontology,
@@ -118,8 +118,8 @@ public class MpEnrichmentDemo {
     int n_sig = 0;
     double ALPHA = 0.05;
     System.out.println("MPO TFT Enrichment");
-    System.out.println(String.format("Study set: %d genes. Population set: %d genes",
-      studysize, popsize));
+    System.out.printf("Study set: %d genes. Population set: %d genes\n",
+      studysize, popsize);
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
@@ -136,12 +136,12 @@ public class MpEnrichmentDemo {
       n_sig++;
       double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
       double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
-      System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d/%d (%.1f%%); population: N=%d/%d (%.1f%%)",
+      System.out.printf("%s [%s]: %.2e (adjusted %.2e). Study: n=%d/%d (%.1f%%); population: N=%d/%d (%.1f%%)\n",
         label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studysize, studypercentage,
-        item.getAnnotatedPopulationGenes(), popsize, poppercentage));
+        item.getAnnotatedPopulationGenes(), popsize, poppercentage);
     }
-    System.out.println(String.format("%d of %d terms were significant at alpha %.7f",
-      n_sig, pvals.size(), ALPHA));
+    System.out.printf("%d of %d terms were significant at alpha %.7f\n",
+      n_sig, pvals.size(), ALPHA);
 
 
   }

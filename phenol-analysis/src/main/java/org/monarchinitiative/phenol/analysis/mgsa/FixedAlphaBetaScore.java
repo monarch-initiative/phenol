@@ -378,8 +378,7 @@ public class FixedAlphaBetaScore extends MgsaScore
 
     public long getNeighborhoodSize()
     {
-        long size = numTerms + (numTerms - numInactiveTerms) * numInactiveTerms;
-        return size;
+      return numTerms + (numTerms - numInactiveTerms) * numInactiveTerms;
     }
 
     @Override

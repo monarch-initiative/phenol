@@ -54,15 +54,14 @@ public class GoTerm2PValAndCounts extends PValue {
     String population = String.format("%d/%d(%.1f%%)",
       this.annotatedPopulationGenes, this.totalPopulationGenes,
       100.0*(double)this.annotatedPopulationGenes/this.totalPopulationGenes);
-    String[] vals = {label,
+
+    return new String[]{label,
       this.item.getValue(),
       study,
       population,
       String.format("%.2e", this.p_raw),
       String.format("%.2e", this.p_adjusted)
     };
-
-    return vals;
   }
 
   public boolean passesThreshold(double alphaThreshold) {

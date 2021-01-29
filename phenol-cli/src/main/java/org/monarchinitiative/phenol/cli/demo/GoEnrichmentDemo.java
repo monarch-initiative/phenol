@@ -47,7 +47,7 @@ public final class GoEnrichmentDemo {
    */
   private final TermId targetGoTerm;
 
-  private Ontology gontology;
+  private final Ontology gontology;
 
   private final List<GoGaf21Annotation> goAnnots;
 
@@ -123,10 +123,9 @@ public final class GoEnrichmentDemo {
     List<GoTerm2PValAndCounts> pvals = tftpvalcal.calculatePVals();
     System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
-    System.out.println(String.format("[INFO] Target term %s [%s]",
-      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
-    System.out.println(String.format("[INFO] Study set: %d genes. Population set: %d genes",
-      studysize, popsize));
+    System.out.printf("[INFO] Target term %s [%s]\n",
+      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue());
+    System.out.printf("[INFO] Study set: %d genes. Population set: %d genes\n", studysize, popsize);
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
@@ -143,11 +142,11 @@ public final class GoEnrichmentDemo {
       n_sig++;
       double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
       double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
-      System.out.println(String.format("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+      System.out.printf("%s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)\n",
         label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studypercentage,
-        item.getAnnotatedPopulationGenes(), poppercentage));
+        item.getAnnotatedPopulationGenes(), poppercentage);
     }
-    System.out.println(String.format("%d of %d terms were significant at alpha %.7f", n_sig, pvals.size(), ALPHA));
+    System.out.printf("%d of %d terms were significant at alpha %.7f\n", n_sig, pvals.size(), ALPHA);
   }
 
 
@@ -164,10 +163,10 @@ public final class GoEnrichmentDemo {
     List<GoTerm2PValAndCounts> pvals = pcPvalCalc.calculatePVals();
     System.err.println("Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
-    System.out.println(String.format("GO Parent Child Intersection Enrichment Demo for target term %s [%s]",
-      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue()));
-    System.out.println(String.format("Study set: %d genes. Population set: %d genes",
-      studysize, popsize));
+    System.out.printf("GO Parent Child Intersection Enrichment Demo for target term %s [%s]\n",
+      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue());
+    System.out.printf("Study set: %d genes. Population set: %d genes\n",
+      studysize, popsize);
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
@@ -184,11 +183,11 @@ public final class GoEnrichmentDemo {
       n_sig++;
       double studypercentage = 100.0 * (double) item.getAnnotatedStudyGenes() / studysize;
       double poppercentage = 100.0 * (double) item.getAnnotatedPopulationGenes() / popsize;
-      System.out.println(String.format("PCI: %s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)",
+      System.out.printf("PCI: %s [%s]: %.2e (adjusted %.2e). Study: n=%d (%.1f%%); population: N=%d (%.1f%%)\n",
         label, tid.getValue(), pval, pval_adj, item.getAnnotatedStudyGenes(), studypercentage,
-        item.getAnnotatedPopulationGenes(), poppercentage));
+        item.getAnnotatedPopulationGenes(), poppercentage);
     }
-    System.out.println(String.format("PCI: %d of %d terms were significant at alpha %.7f", n_sig, pvals.size(), ALPHA));
+    System.out.printf("PCI: %d of %d terms were significant at alpha %.7f\n", n_sig, pvals.size(), ALPHA);
   }
 
 
@@ -207,7 +206,7 @@ public final class GoEnrichmentDemo {
     }
 
     int N = targetGenes.size();
-    System.out.println(String.format("[INFO] Genes annotated to %s: n=%d", focus.getValue(), N));
+    System.out.printf("[INFO] Genes annotated to %s: n=%d\n", focus.getValue(), N);
     int M = (int)( (proportion*N) / 2.0); // take one third of the target genes
 
     Set<TermId> finalGenes = new HashSet<>();

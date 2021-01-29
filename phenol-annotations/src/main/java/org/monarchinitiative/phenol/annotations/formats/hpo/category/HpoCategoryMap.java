@@ -177,8 +177,8 @@ public class HpoCategoryMap {
       }
       cat.addAnnotatedTerm(tid);
     } catch (Exception e) { // should never happen
-      System.err.println(String.format("Exception trying to find category for %s",
-        ontology.getTermMap().get(tid).getName()));
+      System.err.printf("Exception trying to find category for %s\n",
+        ontology.getTermMap().get(tid).getName());
       e.printStackTrace();
     }
   }
