@@ -83,4 +83,9 @@ public class Relationship {
         + relationshipType
         + "]";
   }
+
+
+  public static Relationship IS_A(TermId source, TermId target, int id) {
+    return new Relationship(source, target, id, RelationshipType.IS_A);
+  }
 }

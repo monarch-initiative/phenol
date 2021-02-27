@@ -67,6 +67,8 @@ public interface Ontology extends MinimalOntology, Serializable {
 
   Set<TermId> getCommonAncestors(TermId a, TermId b);
 
+  boolean containsTerm(TermId tid);
+
   /**
    * Return all the {@link TermId}s of all ancestors from {@code termIds}, including root.
    *

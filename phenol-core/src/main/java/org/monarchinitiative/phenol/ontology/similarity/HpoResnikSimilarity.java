@@ -51,20 +51,27 @@ public class HpoResnikSimilarity {
 
 
   public HpoResnikSimilarity(Ontology hpo, Map<TermId, Double> termToIc) {
-    //new PrecomputingPairwiseResnikSimilarity(ontology, termToIc)
     termPairResnikSimilarityMap = new HashMap<>();
     // Compute for relevant subontologies in HPO
     for (TermId topTerm : toplevelTerms()) {
+      if (! hpo.containsTerm(topTerm)) {
+        continue; // should never happen, but avoid crash in testing.
+      }
       Ontology subontology = hpo.subOntology(topTerm);
       final Set<TermId> terms = subontology.getNonObsoleteTermIds();
       List<TermId> list = new ArrayList<>(terms);
       for (int i = 0; i < list .size(); i++) {
-        for (int j = i + 1; j < list.size(); j++) {
+        // start the second interation at i to get self-similarity
+        for (int j = i; j < list.size(); j++) {
           TermId a = list.get(i);
           TermId b = list.get(j);
           double similarity = computeResnikSimilarity(a, b, termToIc, subontology);
           TermPair tpair = TermPair.symmetric(a, b);
-          this.termPairResnikSimilarityMap.put(tpair, similarity);
+          // a few terms belong to multiple subontologies. This will take the maximum similarity.
+          double d = this.termPairResnikSimilarityMap.getOrDefault(tpair, 0.0);
+          if (similarity > d) {
+            this.termPairResnikSimilarityMap.put(tpair, similarity);
+          }
         }
       }
     }
@@ -106,7 +113,7 @@ public class HpoResnikSimilarity {
    * List of top level terms that with a few rare exceptions which we will ignore, do
    * not have multiple parentage relations with each other.
    * TODO we can refactor this if we move the annotation module here.
-   * @return
+   * @return list of top-level HPO terms (i.e., children of Phenotype abnormality)
    */
   private TermId[] toplevelTerms() {
     TermId ABNORMAL_CELLULAR_ID = TermId.of("HP:0025354");
