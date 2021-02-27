@@ -164,6 +164,14 @@ public class ImmutableOntology implements Ontology {
   }
 
   @Override
+  public Set<TermId> getCommonAncestors(TermId a, TermId b) {
+    Set<TermId> ancA = getAncestorTermIds(a, false);
+    Set<TermId> ancB = getAncestorTermIds(b, false);
+    ancA.retainAll(ancB); // set intersection
+    return ancA;
+  }
+
+  @Override
   public TermId getRootTermId() {
     return rootTermId;
   }
