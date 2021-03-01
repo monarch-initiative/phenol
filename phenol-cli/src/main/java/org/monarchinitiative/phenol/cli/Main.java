@@ -24,6 +24,7 @@ public class Main {
   private static final String HPO_SIM = "hpo-sim";
   private static final String MONDO_DEMO = "mondo";
   private static final String MPO_ENRICH = "mpo";
+  private static final String RESNIK_GENEBASED = "resnik-gene";
 
   public static void main(String[] argv)  {
     final PrecomputeScoresOptions precomputeScoresOptions = new PrecomputeScoresOptions();
@@ -34,6 +35,7 @@ public class Main {
     final ParsingBenchmark.Options bench = new ParsingBenchmark.Options();
     final MondoDemo.Options mondo = new MondoDemo.Options();
     final PairwisePhenotypicSimilarityCalculator.Options hpo_sim = new PairwisePhenotypicSimilarityCalculator.Options();
+    final ResnikGenebasedHpoDemo.Options resnikGeneOptions = new ResnikGenebasedHpoDemo.Options();
     final JCommander jc =
         JCommander.newBuilder()
           .addCommand(PRECOMPUTE_SCORES, precomputeScoresOptions)
@@ -44,6 +46,7 @@ public class Main {
           .addCommand(HPO_SIM, hpo_sim)
           .addCommand(HP_DEMO,hpoDemo)
           .addCommand(MONDO_DEMO,mondo)
+          .addCommand(RESNIK_GENEBASED, resnikGeneOptions)
           .build();
     try {
       jc.parse(argv);
@@ -77,6 +80,8 @@ public class Main {
         new HpDemo(hpoDemo).run();
       case MONDO_DEMO:
         new MondoDemo(mondo).run();
+      case RESNIK_GENEBASED:
+        new ResnikGenebasedHpoDemo(resnikGeneOptions).run();
     }
   }
 }
