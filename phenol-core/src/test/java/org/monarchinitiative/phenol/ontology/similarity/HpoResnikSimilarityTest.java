@@ -37,7 +37,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
   @Test
   public void testMicaAtRoot() {
     // These two terms have their MICA at the root, the similaroty is zero
-    double sim = similarity.getResnik(GALLOP_RHYTHM, HYPERTELORISM);
+    double sim = similarity.getResnikSymmetric(GALLOP_RHYTHM, HYPERTELORISM);
     assertEquals(0.0, sim, EPSILON);
   }
 
@@ -46,7 +46,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
     // HYPERTELORISM - disease1
     //PROPTOSIS - disease1, disease7
     // MICA -- ABN_GLOBE_LOCATION -- disease1, disease7, frequency 2/8
-    double sim = similarity.getResnik(HYPERTELORISM, PROPTOSIS);
+    double sim = similarity.getResnikSymmetric(HYPERTELORISM, PROPTOSIS);
     double expected = -1 * Math.log(0.25);
     assertEquals(expected, sim, EPSILON);
   }
@@ -54,14 +54,14 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
   @Test
   public void testHYPERTELORISM() {
     // HYPERTELORISM - disease1
-    double sim = similarity.getResnik(HYPERTELORISM, HYPERTELORISM);
+    double sim = similarity.getResnikSymmetric(HYPERTELORISM, HYPERTELORISM);
     double expected = -1 * Math.log(0.125);  // 1 in 8
     assertEquals(expected, sim, EPSILON);
   }
   @Test
   public void testIRIS_COLOBOMA() {
     // IRIS_COLOBOMA - 4 of 8 diseases
-    double sim = similarity.getResnik(IRIS_COLOBOMA, IRIS_COLOBOMA);
+    double sim = similarity.getResnikSymmetric(IRIS_COLOBOMA, IRIS_COLOBOMA);
     double expected = -1 * Math.log(0.5);  // 1 in 2
     assertEquals(expected, sim, EPSILON);
   }
@@ -70,7 +70,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
   @Test
   public void testHEART_MURMUR() {
     // HEART_MURMUR - 3 of 8 diseases
-    double sim = similarity.getResnik(HEART_MURMUR, HEART_MURMUR);
+    double sim = similarity.getResnikSymmetric(HEART_MURMUR, HEART_MURMUR);
     double expected = -1 * Math.log(0.375);  // 1 in 2
     assertEquals(expected, sim, EPSILON);
   }
@@ -78,7 +78,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
   @Test
   public void testHEART_MURMUR_vs_ROOT() {
     //  No term has similarity with the root
-    double sim = similarity.getResnik(HEART_MURMUR, PHENOTYPIC_ABNORMALITY);
+    double sim = similarity.getResnikSymmetric(HEART_MURMUR, PHENOTYPIC_ABNORMALITY);
     double expected = 0.0;  // 1 in 2
     assertEquals(expected, sim, EPSILON);
   }
@@ -87,14 +87,14 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
     //IRIS_COLOBOMA disease 1,2,3,4
     //RETINAL_COLOBOMA disease 4, 6
     // MICA -- COLOBOMA, disease 1,2,3,4,6
-    double sim = similarity.getResnik(IRIS_COLOBOMA, RETINAL_COLOBOMA);
+    double sim = similarity.getResnikSymmetric(IRIS_COLOBOMA, RETINAL_COLOBOMA);
     double expected = -1 * Math.log(0.625);  // 1 in 2
     assertEquals(expected, sim, EPSILON);
   }
 
   @Test
   public void testSymmetric() {
-    assertEquals(similarity.getResnik(IRIS_COLOBOMA, RETINAL_COLOBOMA), similarity.getResnik(RETINAL_COLOBOMA,IRIS_COLOBOMA));
+    assertEquals(similarity.getResnikSymmetric(IRIS_COLOBOMA, RETINAL_COLOBOMA), similarity.getResnikSymmetric(RETINAL_COLOBOMA,IRIS_COLOBOMA));
   }
 
 

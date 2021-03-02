@@ -102,9 +102,39 @@ public class HpoResnikSimilarity {
    * @param b The second TermId
    * @return the Resnik similarity
    */
-  public double getResnik(TermId a, TermId b) {
+  public double getResnikSymmetric(TermId a, TermId b) {
     TermPair tpair = TermPair.symmetric(a,b);
     return this.termPairResnikSimilarityMap.getOrDefault(tpair, 0.0);
+  }
+
+
+  public double computeScoreSymmetric(Collection<TermId> query, Collection<TermId> target) {
+    return 0.5 * (computeScoreImpl(query, target) + computeScoreImpl(target, query));
+
+  }
+
+  public double computeScoreAsymmetric(Collection<TermId> query, Collection<TermId> target) {
+    return computeScoreImpl(query, target);
+  }
+
+
+  /**
+   * Compute directed score between a query and a target set of {@link TermId}s.
+   *
+   * @param query Query set of {@link TermId}s.
+   * @param target Target set of {@link TermId}s
+   * @return Symmetric similarity score between <code>query</code> and <code>target</code>.
+   */
+  private double computeScoreImpl(Collection<TermId> query, Collection<TermId> target) {
+    double sum = 0;
+    for (TermId q : query) {
+      double maxValue = 0.0;
+      for (TermId t : target) {
+        maxValue = Math.max(maxValue, getResnikSymmetric(q, t));
+      }
+      sum += maxValue;
+    }
+    return sum / query.size();
   }
 
 
