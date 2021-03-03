@@ -87,6 +87,7 @@ public class ResnikGenebasedHpoDemo {
     double duration = (double)(now-start)/1000.0;
     System.out.printf("[INFO] Calculated pairwise Resnik similarity in %.3f seconds.\n",duration);
     // Now check a few diagnoses
+    // 1. Marfan
     TermId arachnodactyly = TermId.of("HP:0001166");
     TermId dolichocephaly = TermId.of("HP:0000268");
     TermId ectopiaLentis = TermId.of("HP:0001083");
@@ -100,16 +101,37 @@ public class ResnikGenebasedHpoDemo {
     marfanFeatures.add(striaeDistensae);
     TermId marfan = TermId.of("OMIM:154700");
     differential(marfanFeatures, marfan);
+    // 2. Neurofibromatosis type 2
+    TermId tinnitus =TermId.of("HP:0000360");
+    TermId sensorineuralHearingImpairment = TermId.of("HP:0000407");
+    TermId bilateralVestibularSchwannoma = TermId.of("HP:0009589");
+    TermId epiretinalMembrane = TermId.of("HP:0100014");
+    TermId type2neurofibromatosis = TermId.of("OMIM:101000");
+    List<TermId> nf2Features = new ArrayList<>();
+    nf2Features.add(tinnitus);
+    nf2Features.add(sensorineuralHearingImpairment);
+    nf2Features.add(bilateralVestibularSchwannoma);
+    nf2Features.add(epiretinalMembrane);
+    differential(nf2Features, type2neurofibromatosis);
   }
 
   private void differential(List<TermId> hpoIds, TermId expectedDiseaseDiagnosis) {
     HashMap<String, Double> results = new HashMap<>();
-    for (TermId diseaseId : this.diseaseIdToTermIds.keySet()) {
-      Collection<TermId> diseasehpoIds = this.diseaseIdToTermIds.get(diseaseId);
-      double resnikScore = this.resnikSimilarity.computeScoreSymmetric(hpoIds, diseasehpoIds);
-      String name = this.diseaseMap.get(diseaseId).getName();
-      String entry = String.format("%s (%s)", name, diseaseId.getValue());
-      results.put(entry, resnikScore);
+    for (TermId geneId : geneToDiseaseMap.keys()) {
+      for (TermId diseaseId : this.geneToDiseaseMap.get(geneId)) {
+        Collection<TermId> diseasehpoIds = this.diseaseIdToTermIds.getOrDefault(diseaseId, new ArrayList<>());
+        double resnikScore = this.resnikSimilarity.computeScoreSymmetric(hpoIds, diseasehpoIds);
+        String geneSymbol = this.geneIdToSymbolMap.get(geneId);
+        String gene = String.format("%s - %s", geneSymbol, geneId.getValue());
+        if (! this.diseaseMap.containsKey(diseaseId)) {
+          // These are things like OMIM:612560, Bone mineral density QTL 12, osteoporosis
+          // for which we do not have HPO terms because it is not a disease
+          continue;
+        }
+        String name = this.diseaseMap.get(diseaseId).getName();
+        String entry = String.format("%s (%s)", name, gene, diseaseId.getValue());
+        results.put(entry, resnikScore);
+      }
     }
     List<String> top10 = topNKeys(results, 10);
     System.out.println("[INFO] Differential diagnosis for HPO terms:");
@@ -151,8 +173,6 @@ public class ResnikGenebasedHpoDemo {
     private String hpoPath;
     @Parameter(names="-a", description = "path to phenotype.hpoa file", required = true)
     private String phenotypeDotHpoaPath;
-    @Parameter(names="-o",description = "output file name")
-    private final String outname="pairwise_disease_similarity.tsv";
     @Parameter(names="--geneinfo",description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz")
     private String geneInfoPath;
     @Parameter(names="--mimgene2medgen",description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
@@ -163,7 +183,6 @@ public class ResnikGenebasedHpoDemo {
       return phenotypeDotHpoaPath;
     }
 
-    String getOutname() { return outname; }
   }
 
 
