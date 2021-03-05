@@ -32,15 +32,16 @@ public class HpoOntologyTestBase {
   protected static final TermId PROPTOSIS = TermId.of("HP:0000520");
   protected static final TermId HYPERTELORISM = TermId.of("HP:0000316");
 
-  protected static final ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
-
-  protected static final ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-
   protected static final List<ToyHpoAnnotation> hpoAnnotations;
 
-  protected static final AtomicInteger counter = new AtomicInteger(0);
+  protected static final List<TermId> disease1annotations;
+  protected static final List<TermId> disease2annotations;
+
+  private static final AtomicInteger counter = new AtomicInteger(0);
 
   static {
+    final ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
+    final ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
     termMapBuilder.put(createTerm(PHENOTYPIC_ABNORMALITY, "Phenotypic abnormality"));
     termMapBuilder.put(createTerm(CARDIOVASCULAR_ID, "Abnormality of the cardiovascular system"));
     termMapBuilder.put(createTerm(ABN_CARDIOVASCULAR_PHYSIOLOGY,"Abnormal cardiovascular system physiology"));
@@ -102,6 +103,9 @@ public class HpoOntologyTestBase {
         new ToyHpoAnnotation(HEART_MURMUR, "disease2"),
         new ToyHpoAnnotation(HEART_MURMUR, "disease5"),
         new ToyHpoAnnotation(HEART_MURMUR, "disease7"));
+
+    disease1annotations = Lists.newArrayList(IRIS_COLOBOMA, HYPERTELORISM, PROPTOSIS, GALLOP_RHYTHM);
+    disease2annotations = Lists.newArrayList(IRIS_COLOBOMA, HEART_MURMUR);
 
   }
 

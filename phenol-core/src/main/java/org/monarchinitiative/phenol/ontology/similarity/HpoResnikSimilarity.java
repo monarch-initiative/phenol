@@ -102,7 +102,7 @@ public class HpoResnikSimilarity {
    * @param b The second TermId
    * @return the Resnik similarity
    */
-  public double getResnikSymmetric(TermId a, TermId b) {
+  public double getResnikTermSimilarity(TermId a, TermId b) {
     TermPair tpair = TermPair.symmetric(a,b);
     return this.termPairResnikSimilarityMap.getOrDefault(tpair, 0.0);
   }
@@ -130,7 +130,7 @@ public class HpoResnikSimilarity {
     for (TermId q : query) {
       double maxValue = 0.0;
       for (TermId t : target) {
-        maxValue = Math.max(maxValue, getResnikSymmetric(q, t));
+        maxValue = Math.max(maxValue, getResnikTermSimilarity(q, t));
       }
       sum += maxValue;
     }

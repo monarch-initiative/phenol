@@ -15,6 +15,8 @@ import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 public class ResnikGenebasedHpoDemo {
@@ -28,19 +30,17 @@ public class ResnikGenebasedHpoDemo {
   private final Map<TermId, Collection<TermId>> diseaseIdToTermIds;
 
   public ResnikGenebasedHpoDemo(ResnikGenebasedHpoDemo.Options options) {
-    long start = System.currentTimeMillis();
+    Instant t1 = Instant.now();
     this.hpo = OntologyLoader.loadOntology(new File(options.hpoPath));
-    long now = System.currentTimeMillis();
-    double duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",duration);
-    start = now;
+    Instant t2 = Instant.now();
+    System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+    t1 = Instant.now();
     List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
     this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(options.getPhenotypeDotHpoaPath(), hpo,databases);
-    now = System.currentTimeMillis();
-    duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",duration);
+    t2 = Instant.now();
+    System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
-    start = now;
+    t1 = Instant.now();
     this.diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
@@ -56,36 +56,35 @@ public class ResnikGenebasedHpoDemo {
         diseaseIdToTermIds.get(diseaseId).add(tid);
       }
     }
-    now = System.currentTimeMillis();
-    duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n",duration);
+    t2 = Instant.now();
+    System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
+    t1 = Instant.now();
     HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(options.geneInfoPath,options.mim2genMedgenPath,this.hpo);
     this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
-    now = System.currentTimeMillis();
-    duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n",duration);
+    t2 = Instant.now();
+    System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     TermId ROOT_HPO = TermId.of("HP:0000118");//Phenotypic abnormality
     int totalPopulationHpoTerms = termIdToDiseaseIds.get(ROOT_HPO).size();
+    t1 = Instant.now();
     termToIc = new HashMap<>();
     for (TermId tid : termIdToDiseaseIds.keySet()) {
       int annotatedCount = termIdToDiseaseIds.get(tid).size();
       double ic = -1*Math.log((double)annotatedCount/totalPopulationHpoTerms);
       termToIc.put(tid, ic);
     }
-    now = System.currentTimeMillis();
-    duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Calculated information content in %.3f seconds.\n",duration);
+    t2 = Instant.now();
+    System.out.printf("[INFO] Calculated information content in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
   }
 
   public void run() {
-    long start = System.currentTimeMillis();
+    Instant t1 = Instant.now();
     this.resnikSimilarity = new HpoResnikSimilarity(this.hpo, this.termToIc);
-    long now = System.currentTimeMillis();
-    double duration = (double)(now-start)/1000.0;
-    System.out.printf("[INFO] Calculated pairwise Resnik similarity in %.3f seconds.\n",duration);
+    Instant t2 = Instant.now();
+    System.out.printf("[INFO] Calculated pairwise Resnik similarity in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+    System.out.println("bla" + Duration.between(t2,t1));
     // Now check a few diagnoses
     // 1. Marfan
     TermId arachnodactyly = TermId.of("HP:0001166");
@@ -129,7 +128,7 @@ public class ResnikGenebasedHpoDemo {
           continue;
         }
         String name = this.diseaseMap.get(diseaseId).getName();
-        String entry = String.format("%s (%s)", name, gene, diseaseId.getValue());
+        String entry = String.format("%s - %s (%s)", name, diseaseId.getValue(), gene);
         results.put(entry, resnikScore);
       }
     }
