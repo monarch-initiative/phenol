@@ -90,7 +90,7 @@ public class Gene2DiseaseAssociationParser {
       throw new PhenolRuntimeException("Cannot find Homo_sapiens.gene_info.gz file at \"" + homoSapiensGeneInfoFile + "\"");
     }
     if (!mim2geneMedgenFile.exists()) {
-      throw new PhenolRuntimeException("Cannot find mim2gene_medgen file at \"" + homoSapiensGeneInfoFile + "\"");
+      throw new PhenolRuntimeException("Cannot find mim2gene_medgen file at \"" + mim2geneMedgenFile + "\"");
     }
     this.allGeneIdToSymbolMap = GeneInfoParser.loadGeneIdToSymbolMap(homoSapiensGeneInfoFile);
     try {
