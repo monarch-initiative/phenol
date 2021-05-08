@@ -9,6 +9,20 @@ provides full support for working with the
 annotations.
 
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   authors
+   contributing
+   history
+   hpo-tutorial
+   go-tutorial
+   input
+   install
+   license
+   release_howto
+
 
 -------------
 Quick Example

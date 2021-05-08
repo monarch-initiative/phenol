@@ -1,8 +1,9 @@
 .. _tutorial_go:
 
-===============
-Working with GO
-===============
+==============================
+Using phenol for Gene Ontology
+==============================
+
 phenol supports working with the GO in several following ways including some GO term enrichment analysis approaches.
 
 
