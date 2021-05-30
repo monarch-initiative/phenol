@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -29,14 +27,14 @@ public class ResnikGenebasedHpoDemo {
   private final Map<TermId,String> geneIdToSymbolMap;
   private final Map<TermId, Collection<TermId>> diseaseIdToTermIds;
 
-  public ResnikGenebasedHpoDemo(ResnikGenebasedHpoDemo.Options options) {
+  public ResnikGenebasedHpoDemo(String hpoPath, String hpoaPath, String geneInfoPath, String mim2genMedgenPath) {
     Instant t1 = Instant.now();
-    this.hpo = OntologyLoader.loadOntology(new File(options.hpoPath));
+    this.hpo = OntologyLoader.loadOntology(new File(hpoPath));
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
     List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(options.getPhenotypeDotHpoaPath(), hpo,databases);
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(hpoaPath, hpo,databases);
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
@@ -59,7 +57,7 @@ public class ResnikGenebasedHpoDemo {
     t2 = Instant.now();
     System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(options.geneInfoPath,options.mim2genMedgenPath,this.hpo);
+    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(geneInfoPath,mim2genMedgenPath,this.hpo);
     this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
@@ -164,25 +162,6 @@ public class ResnikGenebasedHpoDemo {
     return new ArrayList<>(topN);
   }
 
-
-
-  @Parameters(commandDescription = "Resnik gene-based similarity demo")
-  public static class Options {
-    @Parameter(names = {"-h"}, description = "path to hp.obo file", required = true)
-    private String hpoPath;
-    @Parameter(names="-a", description = "path to phenotype.hpoa file", required = true)
-    private String phenotypeDotHpoaPath;
-    @Parameter(names="--geneinfo",description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz")
-    private String geneInfoPath;
-    @Parameter(names="--mimgene2medgen",description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
-    private String mim2genMedgenPath;
-    String getHpoPath() { return hpoPath; }
-
-    String getPhenotypeDotHpoaPath() {
-      return phenotypeDotHpoaPath;
-    }
-
-  }
 
 
 }
