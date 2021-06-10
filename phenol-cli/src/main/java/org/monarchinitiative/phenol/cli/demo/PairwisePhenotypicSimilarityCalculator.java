@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -120,16 +118,17 @@ public class PairwisePhenotypicSimilarityCalculator {
 
 
   /**
-   * Construct with argument list.
-   *
-
    */
-  public PairwisePhenotypicSimilarityCalculator(Options options) {
-    this.pathHpObo=options.getHpoPath();
-    this.pathPhenotypeHpoa=options.getPhenotypeDotHpoaPath();
-    this.output_filename=options.getOutname();
-    this.geneInfoPath=options.geneInfoPath;
-    this.mimgeneMedgenPath=options.mim2genMedgenPath;
+  public PairwisePhenotypicSimilarityCalculator(String hpoPath,
+                                                String hpoaPath,
+                                                String outname,
+                                                String geneInfoPath,
+                                                String mim2genMedgenPath) {
+    this.pathHpObo=hpoPath;
+    this.pathPhenotypeHpoa=hpoaPath;
+    this.output_filename=outname;
+    this.geneInfoPath=geneInfoPath;
+    this.mimgeneMedgenPath=mim2genMedgenPath;
     if (geneInfoPath==null || mimgeneMedgenPath==null){
       doGeneBasedAnalysis=false;
       System.out.println("[INFO] We will perform disease-based phenotypic similarity analysis");
@@ -404,27 +403,6 @@ public class PairwisePhenotypicSimilarityCalculator {
 
   }
 
-
-  @Parameters(commandDescription = "Compute similarity demo")
-  public static class Options {
-    @Parameter(names = {"-h"}, description = "path to hp.obo file", required = true)
-    private String hpoPath;
-    @Parameter(names="-a", description = "path to phenotype.hpoa file", required = true)
-    private String phenotypeDotHpoaPath;
-    @Parameter(names="-o",description = "output file name")
-    private String outname="pairwise_disease_similarity.tsv";
-    @Parameter(names="--geneinfo",description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz")
-    private String geneInfoPath;
-    @Parameter(names="--mimgene2medgen",description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
-    private String mim2genMedgenPath;
-    String getHpoPath() { return hpoPath; }
-
-    String getPhenotypeDotHpoaPath() {
-      return phenotypeDotHpoaPath;
-    }
-
-    String getOutname() { return outname; }
-  }
 
 
 }

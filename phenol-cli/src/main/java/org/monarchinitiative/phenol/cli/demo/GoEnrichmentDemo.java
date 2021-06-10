@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.cli.demo;
 
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
@@ -21,6 +19,7 @@ import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.stats.*;
 import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import picocli.CommandLine;
 
 /**
  * This demo app shows how Gene Ontology enrichment analysis is performed using the
@@ -33,15 +32,14 @@ import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
  * @author Manuel Holtgrewe
  * @author Peter Robinson
  */
+
+
+@CommandLine.Command(name = "download", aliases = {"D"},
+  mixinStandardHelpOptions = true,
+  description = "Download files for fenominal")
 public final class GoEnrichmentDemo {
-  /**
-   * Path to the go.obo file
-   */
-  private final String pathGoObo;
-  /**
-   * Path to the GoGaf file.
-   */
-  private final String pathGoGaf;
+
+
   /**
    * Term Id of a GO term we will investigate
    */
@@ -68,11 +66,8 @@ public final class GoEnrichmentDemo {
   private static final int STUDYSET_SIZE = 400;
 
 
-
-  public GoEnrichmentDemo(GoEnrichmentDemo.Options options) {
-    this.pathGoObo = options.getGoPath();
-    this.pathGoGaf = options.getGafPath();
-    this.targetGoTerm = TermId.of(options.getGoTermId());
+  public GoEnrichmentDemo(String pathGoObo, String pathGoGaf, String goTermId) {
+    this.targetGoTerm = TermId.of(goTermId);
     System.out.println("[INFO] parsing  " + pathGoObo);
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
     int n_terms = gontology.countAllTerms();
@@ -91,12 +86,6 @@ public final class GoEnrichmentDemo {
   }
 
 
-  public void run() {
-    System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
-    performTermForTermAnalysis();
-    performParentChildIntersectionAnalysis();
-    performMgsaAnalysis();
-  }
 
   private void performMgsaAnalysis() {
     System.out.println();
@@ -242,31 +231,12 @@ public final class GoEnrichmentDemo {
   }
 
 
-  @Parameters(commandDescription = "Gene Ontology Enrichment Analysis (demo)")
-  public static class Options {
-    @Parameter(names = {"-o", "--obo"}, description = "path to go.obo file", required = true)
-    private String goPath;
 
-    @Parameter(names = {"-a", "--annot"}, description = "path to go association file (e.g., goa_human.gaf", required = true)
-    private String gafPath;
-    /**
-     * For the demo, We will create a study set that has 1/3 of the genes associated with this term
-     * and three times as many other terms. The default GO:0070997 is 'neuron death'.
-     */
-    @Parameter(names = {"-i", "--id"}, description = "term ID to search for enrichment")
-    private String goTermId = "GO:0097190";
-
-    String getGoPath() {
-      return goPath;
-    }
-
-    String getGafPath() {
-      return gafPath;
-    }
-
-    String getGoTermId() {
-      return goTermId;
-    }
+  public void run()  {
+    System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
+    performTermForTermAnalysis();
+    performParentChildIntersectionAnalysis();
+    performMgsaAnalysis();
   }
 
 

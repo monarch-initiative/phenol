@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
@@ -26,9 +24,9 @@ public class HpDemo {
 
 
 
-  public HpDemo(HpDemo.Options options) {
-    this.hpoPath = options.getHpoPath();
-    this.annotPath = options.getAnnotationPath();
+  public HpDemo(String hpoPath, String annotPath) {
+    this.hpoPath = hpoPath;
+    this.annotPath = annotPath;
   }
 
 
@@ -81,30 +79,8 @@ public class HpDemo {
       System.out.println("\t" + sset);
     }
 
-
     Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotPath,hpo);
     System.out.println("Imported " + diseaseMap.size() + " disease models");
-
-  }
-
-
-
-
-  @Parameters(commandDescription = "Human Phenotype Ontology demo")
-  public static class Options {
-    @Parameter(names = {"-o","--obo"}, description = "path to hp.obo file", required = true)
-    private String hpoPath;
-    @Parameter(names = {"-a","--annot"}, description = "path to HPO annotation file (phenotyoe.hpoa", required = true)
-    private String annotPath;
-
-
-    String getHpoPath() {
-      return hpoPath;
-    }
-
-    String getAnnotationPath() {
-      return annotPath;
-    }
 
   }
 

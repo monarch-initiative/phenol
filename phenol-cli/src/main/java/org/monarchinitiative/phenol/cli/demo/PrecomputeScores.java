@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.cli;
+package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
@@ -28,16 +28,22 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class PrecomputeScoresCommand {
+public class PrecomputeScores {
 
   /** {@link Logger} object to use. */
-  private static final Logger LOGGER = LoggerFactory.getLogger(PrecomputeScoresCommand.class);
-
-  /** Configuration parsed from command line. */
-  private final PrecomputeScoresOptions options;
+  private static final Logger LOGGER = LoggerFactory.getLogger(PrecomputeScores.class);
 
   /** The phenotypic abnormality sub ontology. */
-  private Ontology phenotypicAbnormalitySubOntology;
+  private final Ontology phenotypicAbnormalitySubOntology;
+
+  private final int numIterations;
+
+  private final int seed;
+
+  private final int numThreads;
+
+  private final String outputScoreDistFile;
+
 
   /** The TermId to object ID mapping. */
   private final HashMap<TermId, Collection<TermId>> termIdToObjectId = new HashMap<>();
@@ -56,8 +62,15 @@ public class PrecomputeScoresCommand {
   private Map<Integer, ScoreDistribution> scoreDistribution;
 
   /** Constructor. */
-  public PrecomputeScoresCommand(PrecomputeScoresOptions options) {
-    this.options = options;
+  public PrecomputeScores(String hpOboPath, int numIter, int seed,int numThreads, String outfile) {
+    LOGGER.info("Loading ontology from OBO...");
+      Ontology hpo = OntologyLoader.loadOntology(new File(hpOboPath));
+    phenotypicAbnormalitySubOntology = hpo.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
+    LOGGER.info("Done loading ontology.");
+    this.numIterations = numIter;
+    this.seed = seed;
+    this.numThreads = numThreads;
+    this.outputScoreDistFile = outfile;
   }
 
   /** Execute the command. */
@@ -71,26 +84,22 @@ public class PrecomputeScoresCommand {
   }
 
   private void printHeader() {
-    LOGGER.info("OntoLib CLI -- Precomputing Scores");
+    LOGGER.info("Precomputing Scores");
     LOGGER.info("");
     LOGGER.info("Options");
     LOGGER.info("=======");
     LOGGER.info("");
-    LOGGER.info(options.toString());
+
   }
 
   private void loadOntology() {
-    LOGGER.info("Loading ontology from OBO...");
-    Ontology hpoOntology = OntologyLoader.loadOntology(new File(options.getOboFile()));
-    phenotypicAbnormalitySubOntology = hpoOntology.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
 
-    LOGGER.info("Done loading ontology.");
 
     LOGGER.info("Loading gene-to-term link file...");
     final ArrayList<HpoGeneAnnotation> termAnnotations = new ArrayList<>();
 
     TermAnnotations.constructTermLabelToAnnotationsMap(phenotypicAbnormalitySubOntology, termAnnotations)
-        .forEach((diseaseId, termIds) -> objectIdToTermId.put(diseaseId, termIds));
+        .forEach(objectIdToTermId::put);
 
     LOGGER.info("Done loading gene-phenotype links.");
   }
@@ -115,13 +124,13 @@ public class PrecomputeScoresCommand {
 
     final ScoreSamplingOptions samplingOptions =
         new ScoreSamplingOptions(
-            options.getNumThreads(),
-            options.getMinObjectId(),
-            options.getMaxObjectId(),
-            options.getMinNumTerms(),
-            options.getMaxNumTerms(),
-            options.getSeed(),
-            options.getNumIterations());
+            numThreads,
+            null, // MinObjectId(),
+            null, // MaxObjectId(),
+            1,
+            20,
+            this.seed,
+            this.numIterations);
 
     final SimilarityScoreSampling sampling =
         new SimilarityScoreSampling(
@@ -134,10 +143,10 @@ public class PrecomputeScoresCommand {
   private void writeDistribution() {
     LOGGER.info("Writing out score distribution...");
 
-    final int resolution = Math.min(1000, Math.max(100, options.getNumIterations() / 100));
+    final int resolution = Math.min(1000, Math.max(100, numIterations / 100));
 
     try (final ScoreDistributionWriter writer =
-        new TextFileScoreDistributionWriter(new File(options.getOutputScoreDistFile()))) {
+        new TextFileScoreDistributionWriter(new File(this.outputScoreDistFile))) {
       for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
         writer.write(e.getKey(), e.getValue(), resolution);
       }

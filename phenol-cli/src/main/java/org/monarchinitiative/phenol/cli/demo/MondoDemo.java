@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -32,9 +30,9 @@ public class MondoDemo {
   private Multimap<Term, TermId> phenoseries2omimMap;
 
 
-  public MondoDemo(MondoDemo.Options options) {
-    mondoPath = options.getMondoPath();
-    outPath = options.getOutPath();
+  public MondoDemo(String mondoPath, String out) {
+    this.mondoPath = mondoPath;
+    this.outPath = out;
     phenoseriesRoots = new ArrayList<>();
     phenoseries2omimMap = ArrayListMultimap.create();
   }
@@ -111,21 +109,4 @@ public class MondoDemo {
     }
   }
 
-  @Parameters(commandDescription = "MONDO demo")
-  public static class Options {
-    @Parameter(names = {"-m", "--mondo"}, description = "path to mondo.obo file", required = true)
-    private String mondoPath;
-    @Parameter(names = {"-o", "--outfile"}, description = "name/path of output file", required = true)
-    private String outPath;
-
-
-    String getOutPath() {
-      return outPath;
-    }
-
-    String getMondoPath() {
-      return mondoPath;
-    }
-
-  }
 }

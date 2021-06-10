@@ -20,11 +20,11 @@
   </properties>
 
   <dependencies>
-    <!-- Command line argument parsing using JCommander -->
+
     <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <version>${jcommander.version}</version>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>4.5.2</version>
     </dependency>
 
     <!-- Phenol modules -->
@@ -77,7 +77,7 @@
               <!-- set useUniqueVersions=false in order that the classpath
                 has the SNAPSHOT instead of the build number prefixed to the dependency -->
               <useUniqueVersions>false</useUniqueVersions>
-              <mainClass>org.monarchinitiative.phenol.cli.Main</mainClass>
+              <mainClass>org.monarchinitiative.phenol.cli.MainOld</mainClass>
             </manifest>
           </archive>
           <!-- <compilerArgument>-Xlint:all</compilerArgument>
@@ -99,7 +99,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.monarchinitiative.phenol.cli.Main</mainClass>
+                  <mainClass>org.monarchinitiative.phenol.cli.MainOld</mainClass>
                 </transformer>
               </transformers>
             </configuration>

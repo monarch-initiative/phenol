@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
@@ -47,18 +45,16 @@ public class MpEnrichmentDemo {
   private final String targetgenefile;
 
 
-  public MpEnrichmentDemo(MpEnrichmentDemo.Options options) {
-    String pathObo = options.getOboPath();
-    String MGI_genePhenoPath = options.getAnnotPath();
-    this.targetgenefile = options.getInputGeneList();
-    String markerFile = options.getMarkerFile();
+  public MpEnrichmentDemo(String mpPath, String MGIgenePhenoPath, String targetGeneFile, String markerFile) {
+    this.targetgenefile = targetGeneFile;
 
-    mpgenemap = MpAnnotationParser.loadMpGeneModels(MGI_genePhenoPath);
+
+    mpgenemap = MpAnnotationParser.loadMpGeneModels(MGIgenePhenoPath);
     markermap = MpGeneParser.loadMarkerMap(markerFile);
     System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
     System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
 
-    ontology = OntologyLoader.loadOntology(new File(pathObo));
+    ontology = OntologyLoader.loadOntology(new File(mpPath));
     System.out.println("[INFO] Parsed phenotyped info associated with " + mpgenemap.size() + " genes.");
 
   }
@@ -197,39 +193,5 @@ public class MpEnrichmentDemo {
     return ImmutableSet.copyOf(st);
   }
 
-
-  @Parameters(commandDescription = "Mammalian Phenotype Ontology Enrichment Analysis (demo)")
-  public static class Options {
-    @Parameter(names = {"-o", "--obo"}, description = "path to mp.obo file", required = true)
-    private String oboPath;
-
-    @Parameter(names = {"-a", "--annot"}, description = "path to association file (MGI_GenePheno.rpt)", required = true)
-    private String annotPath;
-    /**
-     * For the demo, We will create a study set that has 1/3 of the genes associated with this term
-     * and three times as many other terms. The default GO:0070997 is 'neuron death'.
-     */
-    @Parameter(names = {"-i", "--input"}, description = "list of gene symbols (study set)", required = true)
-    private String inputGeneList;
-
-    @Parameter(names = {"-m", "--marker"}, description = "Marker file, MRK_List2.rpt")
-    private String markerFile;
-
-    String getMarkerFile() {
-      return markerFile;
-    }
-
-    String getOboPath() {
-      return oboPath;
-    }
-
-    String getAnnotPath() {
-      return annotPath;
-    }
-
-    String getInputGeneList() {
-      return inputGeneList;
-    }
-  }
 
 }

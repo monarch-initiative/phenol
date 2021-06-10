@@ -1,4 +1,5 @@
-.. _rsthpoannotations:
+.. _rsttutorial:
+
 
 ============================
 Working with HPO Annotations
