@@ -4,6 +4,8 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -168,19 +170,11 @@ public class HpoCategoryMap {
    * @param ontology reference to HPO ontology object
    */
   public void addAnnotatedTerm(TermId tid, Ontology ontology) {
-    try {
-      HpoCategory cat = getCategory(tid, ontology);
-      if (cat == null) {
-        System.err.println("Could not get upper level HPO category for "
-          + ontology.getTermMap().get(tid).getName());
-        return;
-      }
-      cat.addAnnotatedTerm(tid);
-    } catch (Exception e) { // should never happen
-      System.err.printf("Exception trying to find category for %s\n",
-        ontology.getTermMap().get(tid).getName());
-      e.printStackTrace();
+    HpoCategory cat = getCategory(tid, ontology);
+    if (cat == null) {
+      return;
     }
+    cat.addAnnotatedTerm(tid);
   }
 
   /**

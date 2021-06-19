@@ -64,7 +64,7 @@ class OntologyLoaderTest {
   void loadJsonStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    System.out.println(ontology.countAllTerms());
+    assertNotNull(ontology);
   }
 
   @Test

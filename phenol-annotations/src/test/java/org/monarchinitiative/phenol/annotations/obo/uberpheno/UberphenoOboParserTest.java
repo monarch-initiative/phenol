@@ -1,17 +1,14 @@
 package org.monarchinitiative.phenol.annotations.obo.uberpheno;
 
-import com.google.common.collect.ImmutableMap;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.PhenolCurieUtil;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Relationship;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.prefixcommons.CurieUtil;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -26,11 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class UberphenoOboParserTest {
 
-  private Ontology ontology;
+  private final Ontology ontology;
 
-  public UberphenoOboParserTest() throws PhenolException {
+  public UberphenoOboParserTest() {
     File uberPhenoFile = Paths.get("src/test/resources/crossSpeciesPheno_head.obo").toFile();
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("UBERPHENO", "http://purl.obolibrary.org/obo/UBERPHENO_"));
+   // CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("UBERPHENO", "http://purl.obolibrary.org/obo/UBERPHENO_"));
+    PhenolCurieUtil curieUtil = PhenolCurieUtil.defaultCurieUtil();
     this.ontology = OntologyLoader.loadOntology(uberPhenoFile, curieUtil);
   }
 

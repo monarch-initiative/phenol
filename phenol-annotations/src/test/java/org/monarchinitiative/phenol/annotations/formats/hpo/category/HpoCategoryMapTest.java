@@ -8,9 +8,9 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoCategoryMapTest {
 
@@ -98,10 +98,14 @@ public class HpoCategoryMapTest {
   void testAddingInvalidModifierTerm() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
     TermId veryFrequent = TermId.of("HP:0040281");
-    categoryMap.addAnnotatedTerm(veryFrequent, ontology);
-    List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
+    assertThrows(NoSuchElementException.class, () ->{
+      categoryMap.addAnnotatedTerm(veryFrequent, ontology);
+      List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
+      assertEquals(0, catlist.size());
+    });
+    //
     // This term is invalid and should not be mapped
-    assertEquals(0, catlist.size());
+    //
   }
 
   /**

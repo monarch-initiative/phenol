@@ -6,9 +6,8 @@ import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.model.*;
 import org.geneontology.obographs.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.PhenolCurieUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,15 +62,15 @@ public class OboGraphDocumentAdaptor {
 
   public static class Builder {
     // Factory object that adds OBO-typical data to each term.
-    private OboGraphTermFactory factory = new OboGraphTermFactory();
-    private CurieUtil curieUtil = CurieUtilBuilder.defaultCurieUtil();
+    private final OboGraphTermFactory factory = new OboGraphTermFactory();
+    private PhenolCurieUtil curieUtil = PhenolCurieUtil.defaultCurieUtil();
     private Set<String> wantedTermIdPrefixes = Collections.emptySet();
 
     private Map<String, String> metaInfo;
     private List<Term> terms;
     private List<Relationship> relationships;
 
-    public Builder curieUtil(CurieUtil curieUtil) {
+    public Builder curieUtil(PhenolCurieUtil curieUtil) {
       Objects.requireNonNull(curieUtil);
       this.curieUtil = curieUtil;
       return this;
@@ -121,7 +120,7 @@ public class OboGraphDocumentAdaptor {
       List<String> unmappedIdPrefixes = new ArrayList<>();
       if(!wantedTermIdPrefixes.isEmpty()) {
         for (String prefix : wantedTermIdPrefixes) {
-          if (!curieUtil.getCurieMap().containsKey(prefix)) {
+          if (!curieUtil.containsKey(prefix)) {
             unmappedIdPrefixes.add(prefix);
           }
         }
@@ -193,6 +192,11 @@ public class OboGraphDocumentAdaptor {
       return relationshipsList.build();
     }
 
+    /**
+     * transform a URI into the corresponding CURIE, if possible.
+     * @param id http://purl.obolibrary.org/obo/HP_0100886
+     * @return HP:100886
+     */
     private TermId getTermIdOrNull(String id) {
       Optional<String> curie = curieUtil.getCurie(id);
       if (!curie.isPresent()) {

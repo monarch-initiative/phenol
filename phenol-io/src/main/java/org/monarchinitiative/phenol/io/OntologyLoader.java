@@ -5,9 +5,8 @@ import org.geneontology.obographs.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
-import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.PhenolCurieUtil;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,32 +31,32 @@ public class OntologyLoader {
   }
 
   public static Ontology loadOntology(File file) {
-    return loadOntology(file, CurieUtilBuilder.defaultCurieUtil());
+    return loadOntology(file, PhenolCurieUtil.defaultCurieUtil());
   }
 
   public static Ontology loadOntology(File file, String... termIdPrefixes) {
-    return loadOntology(file, CurieUtilBuilder.defaultCurieUtil(), termIdPrefixes);
+    return loadOntology(file, PhenolCurieUtil.defaultCurieUtil(), termIdPrefixes);
   }
 
-  public static Ontology loadOntology(File file, CurieUtil curieUtil, String... termIdPrefixes) {
+  public static Ontology loadOntology(File file, PhenolCurieUtil curieUtil, String... termIdPrefixes) {
     GraphDocument graphDocument = loadGraphDocument(file);
     return loadOntology(graphDocument, curieUtil, termIdPrefixes);
   }
 
   public static Ontology loadOntology(InputStream inputStream) {
-    return loadOntology(inputStream, CurieUtilBuilder.defaultCurieUtil());
+    return loadOntology(inputStream, PhenolCurieUtil.defaultCurieUtil());
   }
 
   public static Ontology loadOntology(InputStream inputStream, String... termIdPrefixes) {
-    return loadOntology(inputStream, CurieUtilBuilder.defaultCurieUtil(), termIdPrefixes);
+    return loadOntology(inputStream, PhenolCurieUtil.defaultCurieUtil(), termIdPrefixes);
   }
 
-  public static Ontology loadOntology(InputStream inputStream, CurieUtil curieUtil, String... termIdPrefixes) {
+  public static Ontology loadOntology(InputStream inputStream, PhenolCurieUtil curieUtil, String... termIdPrefixes) {
     GraphDocument graphDocument = loadGraphDocument(inputStream);
     return loadOntology(graphDocument, curieUtil, termIdPrefixes);
   }
 
-  public static Ontology loadOntology(GraphDocument graphDocument, CurieUtil curieUtil, String... termIdPrefixes) {
+  public static Ontology loadOntology(GraphDocument graphDocument, PhenolCurieUtil curieUtil, String... termIdPrefixes) {
     logger.debug("Finished loading ontology");
     logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()

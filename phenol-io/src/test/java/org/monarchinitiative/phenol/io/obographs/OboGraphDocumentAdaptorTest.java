@@ -6,9 +6,9 @@ import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.model.*;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.PhenolCurieUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.prefixcommons.CurieUtil;
+
 
 import java.util.List;
 
@@ -98,7 +98,7 @@ class OboGraphDocumentAdaptorTest {
     GraphDocument graphDocument = new GraphDocument.Builder().graphs(ImmutableList.of(graph)).build();
 
     // WIBBLE id prefix is not in the default list, so add it here so that nodes and edges with this idspace are included
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
+    PhenolCurieUtil curieUtil = PhenolCurieUtil.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
 
     OboGraphDocumentAdaptor instance = OboGraphDocumentAdaptor.builder().curieUtil(curieUtil).build(graphDocument);
     assertEquals(2, instance.getTerms().size());
@@ -162,8 +162,7 @@ class OboGraphDocumentAdaptorTest {
     GraphDocument graphDocument = new GraphDocument.Builder().graphs(ImmutableList.of(graph)).build();
 
     // WIBBLE id prefix is not in the default list, so add it here so that nodes and edges with this idspace are included
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
-
+    PhenolCurieUtil curieUtil = PhenolCurieUtil.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
     OboGraphDocumentAdaptor instance = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
       .wantedTermIdPrefixes(ImmutableSet.of("WIBBLE"))
@@ -198,7 +197,7 @@ class OboGraphDocumentAdaptorTest {
     GraphDocument graphDocument = new GraphDocument.Builder().graphs(ImmutableList.of(graph)).build();
 
     // WIBBLE id prefix is not in the default list, so add it here so that nodes and edges with this idspace are included
-    CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
+    PhenolCurieUtil curieUtil = PhenolCurieUtil.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://wibble.org/WIBBLE_"));
 
     assertThrows(PhenolRuntimeException.class,
       () -> OboGraphDocumentAdaptor.builder()
