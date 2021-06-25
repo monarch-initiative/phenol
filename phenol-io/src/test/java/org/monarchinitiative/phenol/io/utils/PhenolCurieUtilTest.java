@@ -25,13 +25,24 @@ class PhenolCurieUtilTest {
   void defaultCurieUtilWithDefaultsAndUserDefinedResource() {
     PhenolCurieUtil defaultCurieUtil = PhenolCurieUtil.defaultCurieUtil();
     assertFalse(defaultCurieUtil.containsKey("WIBBLE"));
-
     PhenolCurieUtil instance = PhenolCurieUtil.withDefaultsAnd(ImmutableMap.of("WIBBLE", "http://purl.obolibrary.org/obo/WIBBLE_"));
     assertTrue(instance.containsKey("WIBBLE"));
     assertEquals(Optional.of("WIBBLE:0000001"), instance.getCurie("http://purl.obolibrary.org/obo/WIBBLE_0000001"));
    // The following items are not needed in phenol
     // assertEquals("http://purl.obolibrary.org/obo/WIBBLE_", instance.getExpansion("WIBBLE"));
     //assertEquals(Optional.of("http://purl.obolibrary.org/obo/WIBBLE_0000001"), instance.getIri("WIBBLE:0000001"));
+  }
+
+  @Test
+  public void testHpoCurie() {
+    PhenolCurieUtil defaultCurieUtil = PhenolCurieUtil.defaultCurieUtil();
+    assertEquals(Optional.of("HPO:1234567"), defaultCurieUtil.getCurie("http://purl.obolibrary.org/obo/HPO_1234567"));
+  }
+
+  @Test
+  public void testMondoCurie() {
+    PhenolCurieUtil defaultCurieUtil = PhenolCurieUtil.defaultCurieUtil();
+    assertEquals(Optional.of("MONDO:1234567"), defaultCurieUtil.getCurie("http://purl.obolibrary.org/obo/MONDO_1234567"));
   }
 
 }
