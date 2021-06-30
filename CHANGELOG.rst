@@ -3,7 +3,7 @@ Changelog
 =========
 
 ------
-v1.6.2
+v1.6.3
 ------
 - added class for efficient precalculation of Resnik scores for HPO
 - various bug fixes
