@@ -3,9 +3,16 @@ Changelog
 =========
 
 ------
+v1.6.3
+------
+- added class for efficient precalculation of Resnik scores for HPO
+- various bug fixes
+
+------
 v1.6.1
 ------
 - Fixed issue with parsing Orphanet en_product4.xml
+
 ------
 v1.6.0
 ------
