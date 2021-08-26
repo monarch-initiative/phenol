@@ -145,6 +145,16 @@ public class HpoCategoryMapTest {
 
 
 
+  @Test
+  public void testConnectiveTissue() {
+    HpoCategoryMap categoryMap = new HpoCategoryMap();
+    TermId abnConnectiveTissue = TermId.of("HP:0003549");  //Abnormality of connective tissue
+    TermId increasedConnectiveTissue = TermId.of("HP:0009025"); //Increased connective tissue
+    categoryMap.addAnnotatedTerm(increasedConnectiveTissue, ontology);
+    List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
+    assertEquals(1, catlist.size());
+    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(abnConnectiveTissue)));
+  }
 
 
 }
