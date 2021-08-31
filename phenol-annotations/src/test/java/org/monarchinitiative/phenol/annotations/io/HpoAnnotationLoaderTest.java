@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.io;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.monarchinitiative.phenol.annotations.formats.Aspect;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;

@@ -1,15 +1,15 @@
-package org.monarchinitiative.phenol.annotations.formats;
+package org.monarchinitiative.phenol.annotations.io;
 
 import java.util.Optional;
 
-public enum Aspect {
+enum Aspect {
 
   PHENOTYPIC_ABNORMALITY,
   INHERITANCE,
   ONSET_AND_CLINICAL_COURSE,
   CLINICAL_MODIFIER;
 
-  public static Optional<Aspect> fromString(String value) {
+  static Optional<Aspect> fromString(String value) {
     switch (value.toUpperCase()) {
       case "P":
         return Optional.of(PHENOTYPIC_ABNORMALITY);

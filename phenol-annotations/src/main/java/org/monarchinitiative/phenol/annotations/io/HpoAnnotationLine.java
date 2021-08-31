@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.io;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.annotations.formats.Aspect;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.Sex;
 import org.monarchinitiative.phenol.annotations.formats.hpo.Frequency;

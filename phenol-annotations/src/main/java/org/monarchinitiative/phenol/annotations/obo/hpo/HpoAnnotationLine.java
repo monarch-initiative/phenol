@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.obo.hpo;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.annotations.formats.Aspect;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.Sex;
 import org.monarchinitiative.phenol.annotations.formats.hpo.Frequency;
@@ -44,7 +43,7 @@ class HpoAnnotationLine {
   /** 11. Modifier terms (0..n) */
   private final List<TermId> modifiers;
   /** 12. aspect */
-  private final Aspect aspect;
+  private final String aspect;
   /** 13. the biocurator/date, e.g., HPO:skoehler[2018-02-17] */
   private final String biocuration;
 
@@ -58,7 +57,7 @@ class HpoAnnotationLine {
                               Frequency frequency,
                               Sex sex,
                               List<TermId> modifierList,
-                              Aspect aspect,
+                              String aspect,
                               String biocuration) {
     return new HpoAnnotationLine(databaseId, dbObjectName, isNegated, phenotypeId, publication, evidence, onset, frequency, sex, modifierList, aspect, biocuration);
   }
@@ -73,7 +72,7 @@ class HpoAnnotationLine {
                             Frequency frequency,
                             Sex sex,
                             List<TermId> modifiers,
-                            Aspect aspect,
+                            String aspect,
                             String biocuration) {
     this.diseaseId = databaseId;
     this.dbObjectName = dbObjectName;
@@ -158,7 +157,7 @@ class HpoAnnotationLine {
     return dbObjectName;
   }
 
-  Aspect getAspect() { return this.aspect;}
+  String getAspect() { return this.aspect;}
 
   /** @return true if this annotation is negated. */
   boolean isNegated() {
