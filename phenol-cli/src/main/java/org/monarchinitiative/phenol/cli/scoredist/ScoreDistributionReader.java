@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.scoredist;
+package org.monarchinitiative.phenol.cli.scoredist;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO - do we need this?
 public interface ScoreDistributionReader extends Closeable {
 
   /**

@@ -12,7 +12,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public final class HpoFrequencyTermIds {
 
   /** {@link TermId} for "always present (100% of the cases)". */
-  public static final TermId ALWAYS_PRESENT = TermId.of("HP:0040280");
+  public static final TermId OBLIGATE = TermId.of("HP:0040280");
 
   /** {@link TermId} for "very frequent (80-99% of the cases)". */
   public static final TermId VERY_FREQUENT = TermId.of("HP:0040281");

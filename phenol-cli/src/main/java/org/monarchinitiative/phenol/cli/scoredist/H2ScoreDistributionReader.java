@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.scoredist;
+package org.monarchinitiative.phenol.cli.scoredist;
 
 import org.apache.commons.codec.DecoderException;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -28,6 +28,7 @@ import java.util.TreeMap;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO - do we need this?
 public class H2ScoreDistributionReader implements ScoreDistributionReader {
 
   /** Path to database. */

@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.scoredist;
+package org.monarchinitiative.phenol.cli.scoredist;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import com.google.common.base.Joiner;
  * @see TextFileScoreDistributionReader
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO - do we need this?
 public class TextFileScoreDistributionWriter implements ScoreDistributionWriter {
 
   /** Path to the file to write to. */

@@ -6,6 +6,7 @@ import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationPars
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,7 +80,7 @@ public class HpDemo {
       System.out.println("\t" + sset);
     }
 
-    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotPath,hpo);
+    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(annotPath), hpo);
     System.out.println("Imported " + diseaseMap.size() + " disease models");
 
   }

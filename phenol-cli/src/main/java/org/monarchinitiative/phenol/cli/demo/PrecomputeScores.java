@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.cli.demo;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.cli.scoredist.ScoreDistributionWriter;
+import org.monarchinitiative.phenol.cli.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionWriter;
-import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO - do we need this?
 public class PrecomputeScores {
 
   /** {@link Logger} object to use. */

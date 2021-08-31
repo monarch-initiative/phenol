@@ -193,7 +193,7 @@ public class HpoAnnotationModel {
         sum_of_denominators += DEFAULT_NUMBER_OF_OBSERVATIONS;
       } else if (termMatcher.matches()){
         TermId freqid = TermId.of(q);
-        HpoFrequency hpofreq=HpoFrequency.fromTermId(freqid);
+        HpoFrequency hpofreq = HpoFrequency.fromTermId(freqid).get();
         double proportion = hpofreq.mean();
         int n=(int)Math.round(proportion*10.0);
         sum_of_numerators += n;

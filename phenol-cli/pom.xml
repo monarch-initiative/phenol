@@ -15,10 +15,6 @@
   <description>phenol-cli gives command line access to phenol</description>
   <url>https://github.com/monarchinitiative/phenol</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
 
     <dependency>
@@ -44,16 +40,11 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math3</artifactId>
-      <version>3.6.1</version>
-    </dependency>
-
   </dependencies>
 
   <build>
+
+    <!-- TODO - clean up the build section, remove redundant plugins, configurations, etc... -->
     <finalName>phenol-cli</finalName>
     <resources>
       <resource>

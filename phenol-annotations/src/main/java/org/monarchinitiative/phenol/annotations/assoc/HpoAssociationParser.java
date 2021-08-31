@@ -133,16 +133,16 @@ public class HpoAssociationParser {
     if (! phenotypeDotHpoaFile.exists()) {
       throw new PhenolRuntimeException("Cannot find phenotype.hpoa file");
     }
-    List<String> desiredDatabasePrefixes=ImmutableList.of("OMIM");
-    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.phenotypeDotHpoaFile.getAbsolutePath(),
+    Set<String> desiredDatabasePrefixes=ImmutableSet.of("OMIM");
+    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.phenotypeDotHpoaFile.toPath(),
       hpoOntology,
       desiredDatabasePrefixes);
     Multimap<TermId, TermId> phenotypeToDisease = ArrayListMultimap.create();
-    for (Map.Entry<TermId,HpoDisease> entry : diseaseMap.entrySet()) {
-      for (HpoAnnotation hpoAnnot : entry.getValue().getPhenotypicAbnormalities()) {
-        TermId hpoId = hpoAnnot.getTermId();
-        phenotypeToDisease.put(hpoId,entry.getKey()); // diseaseId to HPO id multimpa
-      }
+    for (Map.Entry<TermId, HpoDisease> entry : diseaseMap.entrySet()) {
+      entry.getValue().phenotypicAbnormalities().forEach( hpoAnnot -> {
+        TermId hpoId = hpoAnnot.termId();
+        phenotypeToDisease.put(hpoId,entry.getKey()); // diseaseId to HPO id multimap
+      });
     }
     setTermToGene(phenotypeToDisease);
   }

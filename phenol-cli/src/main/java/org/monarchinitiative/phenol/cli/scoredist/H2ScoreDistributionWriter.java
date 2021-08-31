@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.scoredist;
+package org.monarchinitiative.phenol.cli.scoredist;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -27,6 +27,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
+// TODO - do we need this?
 public final class H2ScoreDistributionWriter implements ScoreDistributionWriter {
 
   /** {@link Logger} object to use. */

@@ -5,6 +5,7 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
@@ -29,12 +30,11 @@ public class HpoAnnotationAlgorithms {
                                                                  boolean propagate) {
     Map<TermId,Integer> annotationCounts = new HashMap<>();
     for (HpoDisease disease : diseaseSet) {
-      List<TermId> termlist= disease.getPhenotypicAbnormalityTermIdList();
-      Set<TermId> termset = new HashSet<>(termlist);
+      Set<TermId> termIds = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toSet());
       if (propagate) {
-        termset.addAll(getAncestorTerms(ontology,termset,false));
+        termIds.addAll(getAncestorTerms(ontology,termIds,false));
       }
-      for (TermId tid : termset) {
+      for (TermId tid : termIds) {
         annotationCounts.putIfAbsent(tid,0);
         int current = annotationCounts.get(tid);
         annotationCounts.put(tid,current+1);

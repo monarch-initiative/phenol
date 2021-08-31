@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
@@ -13,9 +13,11 @@ import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ResnikGenebasedHpoDemo {
 
@@ -33,8 +35,8 @@ public class ResnikGenebasedHpoDemo {
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(hpoaPath, hpo,databases);
+    Set<String> databases = ImmutableSet.of("OMIM"); // restrict ourselves to OMIM entries
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(hpoaPath), hpo, databases);
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
@@ -43,7 +45,7 @@ public class ResnikGenebasedHpoDemo {
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
       // add term anscestors
       final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
@@ -125,7 +127,7 @@ public class ResnikGenebasedHpoDemo {
           // for which we do not have HPO terms because it is not a disease
           continue;
         }
-        String name = this.diseaseMap.get(diseaseId).getName();
+        String name = this.diseaseMap.get(diseaseId).diseaseName();
         String entry = String.format("%s - %s (%s)", name, diseaseId.getValue(), gene);
         results.put(entry, resnikScore);
       }
@@ -140,7 +142,7 @@ public class ResnikGenebasedHpoDemo {
         System.err.println("[ERROR] Could not find label for " + tid.getValue());
       }
     }
-    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).getName();
+    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).diseaseName();
     System.out.printf("[INFO] Expected diagnosis: %s\n", name);
     int c = 0;
     for (String dd : top10) {
