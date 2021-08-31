@@ -8,10 +8,8 @@
   </parent>
 
   <artifactId>phenol-cli</artifactId>
-  <packaging>jar</packaging>
 
   <name>phenol-cli</name>
-
   <description>phenol-cli gives command line access to phenol</description>
   <url>https://github.com/monarchinitiative/phenol</url>
 
@@ -38,6 +36,11 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-analysis</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
 
   </dependencies>
