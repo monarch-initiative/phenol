@@ -45,7 +45,7 @@ public class HpoAnnotationLoaderTest {
   public void load() throws Exception {
     Path path = Paths.get("src", "test", "resources", "small.hpoa");
     Ontology ontology = Mockito.mock(Ontology.class);
-    Map<TermId, HpoDisease> termIdHpoDiseaseMap = HpoAnnotationLoader.loadDiseaseMap(path, ontology);
+    Map<TermId, HpoDisease> termIdHpoDiseaseMap = HpoAnnotationLoader.loadDiseaseMap(path.toFile(), ontology);
 
 
     TermId marfanId = TermId.of("OMIM:154700");

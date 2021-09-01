@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -56,11 +56,11 @@ public class HpoAnnotationLoader {
   private HpoAnnotationLoader() {
   }
 
-  public static Map<TermId, HpoDisease> loadDiseaseMap(Path annotationFile, Ontology ontology) throws PhenolException {
+  public static Map<TermId, HpoDisease> loadDiseaseMap(File annotationFile, Ontology ontology) throws PhenolException {
     return loadDiseaseMap(annotationFile, ontology, DEFAULT_DATABASE_PREFIXES);
   }
 
-  public static Map<TermId, HpoDisease> loadDiseaseMap(Path annotationFile, Ontology ontology, Set<String> databases) throws PhenolException {
+  public static Map<TermId, HpoDisease> loadDiseaseMap(File annotationFile, Ontology ontology, Set<String> databases) throws PhenolException {
     // TODO(pnrobinson) - do we actually need to check if a term that we find in the Frequency column is a descendant
     //  of Frequency HP:0040279? Isn't this taken care of during HPOA release process?
     //  If no, we do not require to have the Ontology here.
@@ -68,7 +68,7 @@ public class HpoAnnotationLoader {
     // First stage of parsing is to get the lines parsed and sorted according to disease ID.
     Map<TermId, List<HpoAnnotationLine>> diseaseToAnnotationLines;
 
-    try (BufferedReader br = Files.newBufferedReader(annotationFile)) {
+    try (BufferedReader br = Files.newBufferedReader(annotationFile.toPath())) {
       diseaseToAnnotationLines = br.lines()
         .filter(line -> !line.startsWith("#"))
         .map(toHpoAnnotationLine(databases))
