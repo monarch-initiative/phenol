@@ -138,7 +138,7 @@ public class HpoAnnotationLoader {
 
       HpoOnset onset = parseOnset(fields[6]);
 
-      Frequency frequency = parseFrequency(fields[7]);
+      FrequencyBin frequency = parseFrequency(fields[7]);
       List<TermId> modifierList = parseModifiers(fields[9]);
       String publication = fields[4];
       EvidenceCode evidence = EvidenceCode.fromString(fields[5]);
@@ -179,7 +179,7 @@ public class HpoAnnotationLoader {
       .collect(Collectors.toList());
   }
 
-  private static Frequency parseFrequency(String value) {
+  private static FrequencyBin parseFrequency(String value) {
     // Might be absent ...
     if (value.equals(""))
       return null;

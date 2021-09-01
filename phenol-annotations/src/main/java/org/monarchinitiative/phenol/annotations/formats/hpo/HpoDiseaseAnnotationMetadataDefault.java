@@ -9,19 +9,19 @@ import java.util.Objects;
 class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadata {
 
   private final HpoOnset onset;
-  private final Frequency frequency;
+  private final FrequencyBin frequency;
   private final Collection<TermId> modifiers;
   private final Sex sex;
 
-  static HpoDiseaseAnnotationMetadataDefault of(HpoOnset onset, Frequency frequency, Collection<TermId> modifiers, Sex sex) {
+  static HpoDiseaseAnnotationMetadataDefault of(HpoOnset onset, FrequencyBin frequency, Collection<TermId> modifiers, Sex sex) {
     return new HpoDiseaseAnnotationMetadataDefault(onset, frequency, modifiers, sex);
   }
 
-  private HpoDiseaseAnnotationMetadataDefault(HpoOnset onset, Frequency frequency, Collection<TermId> modifiers, Sex sex) {
-    this.onset = Objects.requireNonNull(onset);
-    this.frequency = frequency;
-    this.modifiers = Objects.requireNonNull(modifiers);
-    this.sex = sex;
+  private HpoDiseaseAnnotationMetadataDefault(HpoOnset onset, FrequencyBin frequency, Collection<TermId> modifiers, Sex sex) {
+    this.onset = Objects.requireNonNull(onset, "Onset cannot be null");
+    this.frequency = Objects.requireNonNull(frequency, "Frequency cannot be null");
+    this.modifiers = Objects.requireNonNull(modifiers, "Modifiers collection cannot be null");
+    this.sex = Objects.requireNonNull(sex, "Sex cannot be null");
   }
 
   @Override
@@ -30,7 +30,7 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
   }
 
   @Override
-  public Frequency frequency() {
+  public FrequencyBin frequency() {
     return frequency;
   }
 
@@ -59,10 +59,10 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
 
   @Override
   public String toString() {
-    return "DiseaseFeatureOnsetDefault{" +
+    return "HpoDiseaseAnnotationMetadataDefault{" +
       "onset=" + onset +
       ", frequency=" + frequency +
-      ", modififiers=" + modifiers +
+      ", modifiers=" + modifiers +
       ", sex=" + sex +
       '}';
   }

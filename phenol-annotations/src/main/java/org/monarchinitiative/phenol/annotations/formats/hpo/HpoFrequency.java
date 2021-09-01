@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 @InProgress
-public enum HpoFrequency implements Frequency {
+public enum HpoFrequency implements FrequencyBin {
 
   /** Always present (100% of the cases). */
   OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate"),
@@ -45,10 +45,6 @@ public enum HpoFrequency implements Frequency {
     this.label =label;
   }
 
-  public String label() {
-    return label;
-  }
-
   /**
    * Return the {@link TermId} that corresponds to this HpoFrequency Our default is ALWAYS_PRESENT.
    *
@@ -56,6 +52,10 @@ public enum HpoFrequency implements Frequency {
    */
   public TermId termId() {
     return this.termId;
+  }
+
+  public String label() {
+    return label;
   }
 
   @Override

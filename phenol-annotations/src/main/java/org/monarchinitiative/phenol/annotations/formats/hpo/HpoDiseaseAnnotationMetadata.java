@@ -9,13 +9,13 @@ import java.util.Collection;
 @InProgress
 public interface HpoDiseaseAnnotationMetadata {
 
-  static HpoDiseaseAnnotationMetadata of(HpoOnset onset, Frequency frequency, Collection<TermId> modifiers, Sex sex) {
+  static HpoDiseaseAnnotationMetadata of(HpoOnset onset, FrequencyBin frequency, Collection<TermId> modifiers, Sex sex) {
     return HpoDiseaseAnnotationMetadataDefault.of(onset, frequency, modifiers, sex);
   }
 
   HpoOnset onset();
 
-  Frequency frequency();
+  FrequencyBin frequency();
 
   Collection<TermId> modifiers();
 

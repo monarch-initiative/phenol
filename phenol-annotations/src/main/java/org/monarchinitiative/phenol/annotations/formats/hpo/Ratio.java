@@ -5,7 +5,7 @@ import org.monarchinitiative.phenol.annotations.InProgress;
 import java.util.Objects;
 
 @InProgress
-public class Ratio implements Frequency {
+public class Ratio implements FrequencyBin {
 
   private final int numerator;
   private final int denominator;
@@ -55,7 +55,7 @@ public class Ratio implements Frequency {
 
   @Override
   public String toString() {
-    return "FrequencyDefault{" +
+    return "Ratio{" +
       "numerator=" + numerator +
       ", denominator=" + denominator +
       '}';

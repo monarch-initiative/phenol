@@ -38,10 +38,19 @@ public interface HpoDiseaseAnnotation extends Comparable<HpoDiseaseAnnotation> {
   // TODO - implement aggregator methods for onset, frequency, etc.
 
   default double frequency() {
-    // TODO - implement getting the frequency based on `onsets()`.
-    return metadata().stream()
-      .mapToDouble(dfm -> dfm.frequency().frequency())
-      .sum();
+    /*
+    Frequency of the annotation based on multiple
+     */
+//    int n = 0, m = 0;
+//    for (HpoDiseaseAnnotationMetadata meta : metadata()) {
+//      if (!meta.onset().available())
+//        continue;
+//      n += meta.frequency().numerator();
+//      m += meta.frequency().denominator();
+//    }
+//    return ((double) n) / m;
+    // TODO - implement
+    throw new RuntimeException("Not implemented");
   }
 
   default HpoOnset earliestOnset() {

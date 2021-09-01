@@ -1,9 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.InProgress;
-
-@InProgress
-public interface Frequency {
+public interface FrequencyBin {
 
   /**
    * @return frequency value represented by a double precision number in bounds <code>[0,1]</code>
