@@ -1,14 +1,16 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.InProgress;
-
 import java.util.Objects;
 
-@InProgress
-public class Ratio implements FrequencyBin {
+public class Ratio {
 
   private final int numerator;
   private final int denominator;
+
+  private Ratio(int numerator, int denominator) {
+    this.numerator = numerator;
+    this.denominator = denominator;
+  }
 
   public static Ratio of(int numerator, int denominator) {
     if (numerator < 0)
@@ -22,11 +24,6 @@ public class Ratio implements FrequencyBin {
     return new Ratio(numerator, denominator);
   }
 
-  private Ratio(int numerator, int denominator) {
-    this.numerator = numerator;
-    this.denominator = denominator;
-  }
-
   public int numerator() {
     return numerator;
   }
@@ -35,7 +32,6 @@ public class Ratio implements FrequencyBin {
     return denominator;
   }
 
-  @Override
   public double frequency() {
     return ((double) numerator) / denominator;
   }
@@ -44,8 +40,8 @@ public class Ratio implements FrequencyBin {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Ratio that = (Ratio) o;
-    return numerator == that.numerator && denominator == that.denominator;
+    Ratio ratio = (Ratio) o;
+    return numerator == ratio.numerator && denominator == ratio.denominator;
   }
 
   @Override

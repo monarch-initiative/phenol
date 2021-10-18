@@ -9,17 +9,17 @@ import java.util.Objects;
 class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadata {
 
   private final HpoOnset onset;
-  private final FrequencyBin frequency;
+  private final DiseaseAnnotationFrequency diseaseAnnotationFrequency;
   private final Collection<TermId> modifiers;
   private final Sex sex;
 
-  static HpoDiseaseAnnotationMetadataDefault of(HpoOnset onset, FrequencyBin frequency, Collection<TermId> modifiers, Sex sex) {
-    return new HpoDiseaseAnnotationMetadataDefault(onset, frequency, modifiers, sex);
+  static HpoDiseaseAnnotationMetadataDefault of(HpoOnset onset, DiseaseAnnotationFrequency diseaseAnnotationFrequency, Collection<TermId> modifiers, Sex sex) {
+    return new HpoDiseaseAnnotationMetadataDefault(onset, diseaseAnnotationFrequency, modifiers, sex);
   }
 
-  private HpoDiseaseAnnotationMetadataDefault(HpoOnset onset, FrequencyBin frequency, Collection<TermId> modifiers, Sex sex) {
+  private HpoDiseaseAnnotationMetadataDefault(HpoOnset onset, DiseaseAnnotationFrequency diseaseAnnotationFrequency, Collection<TermId> modifiers, Sex sex) {
     this.onset = Objects.requireNonNull(onset, "Onset cannot be null");
-    this.frequency = Objects.requireNonNull(frequency, "Frequency cannot be null");
+    this.diseaseAnnotationFrequency = Objects.requireNonNull(diseaseAnnotationFrequency, "Frequency cannot be null");
     this.modifiers = Objects.requireNonNull(modifiers, "Modifiers collection cannot be null");
     this.sex = Objects.requireNonNull(sex, "Sex cannot be null");
   }
@@ -30,8 +30,8 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
   }
 
   @Override
-  public FrequencyBin frequency() {
-    return frequency;
+  public DiseaseAnnotationFrequency frequency() {
+    return diseaseAnnotationFrequency;
   }
 
   @Override
@@ -49,19 +49,19 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HpoDiseaseAnnotationMetadataDefault that = (HpoDiseaseAnnotationMetadataDefault) o;
-    return Objects.equals(onset, that.onset) && Objects.equals(frequency, that.frequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
+    return Objects.equals(onset, that.onset) && Objects.equals(diseaseAnnotationFrequency, that.diseaseAnnotationFrequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(onset, frequency, modifiers, sex);
+    return Objects.hash(onset, diseaseAnnotationFrequency, modifiers, sex);
   }
 
   @Override
   public String toString() {
     return "HpoDiseaseAnnotationMetadataDefault{" +
       "onset=" + onset +
-      ", frequency=" + frequency +
+      ", frequency=" + diseaseAnnotationFrequency +
       ", modifiers=" + modifiers +
       ", sex=" + sex +
       '}';

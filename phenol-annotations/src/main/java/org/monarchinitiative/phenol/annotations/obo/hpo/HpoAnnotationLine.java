@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.annotations.obo.hpo;
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.Sex;
-import org.monarchinitiative.phenol.annotations.formats.hpo.Ratio;
+import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseAnnotationFrequency;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -37,7 +37,7 @@ class HpoAnnotationLine {
   /** 8. The onset (can be null) */
   private final HpoOnset onset;
   /** 9. The frequency (can be null) */
-  private final Ratio frequency;
+  private final DiseaseAnnotationFrequency frequency;
   /** 10. Male, female */
   private final Sex sex;
   /** 11. Modifier terms (0..n) */
@@ -54,7 +54,7 @@ class HpoAnnotationLine {
                               String publication,
                               EvidenceCode evidence,
                               HpoOnset onset,
-                              Ratio frequency,
+                              DiseaseAnnotationFrequency frequency,
                               Sex sex,
                               List<TermId> modifierList,
                               String aspect,
@@ -69,7 +69,7 @@ class HpoAnnotationLine {
                             String publication,
                             EvidenceCode evidence,
                             HpoOnset onset,
-                            Ratio frequency,
+                            DiseaseAnnotationFrequency frequency,
                             Sex sex,
                             List<TermId> modifiers,
                             String aspect,
@@ -123,7 +123,7 @@ class HpoAnnotationLine {
     return Optional.ofNullable(onset);
   }
 
-  Optional<Ratio> frequency() {
+  Optional<DiseaseAnnotationFrequency> frequency() {
     return Optional.ofNullable(frequency);
   }
 

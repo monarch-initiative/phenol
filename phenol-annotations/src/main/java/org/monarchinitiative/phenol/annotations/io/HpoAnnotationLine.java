@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.annotations.io;
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.Sex;
-import org.monarchinitiative.phenol.annotations.formats.hpo.FrequencyBin;
+import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseAnnotationFrequency;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -13,9 +13,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
- * (phenotype.hpoa). It is intended to be used as part of the processing of the big file.
- * A convenience class that allows us to collect the annotation lines for each disease that we
+ * This POJO represents the state of a well-formatted line of the V2 (post 2018) HPO annotation file
+ * (a.k.a. "big file", phenotype.hpoa).
+ * <p>
+ * The class is intended to be used as part of the processing of the big file.
+ * It is a convenience class, that allows us to collect the annotation lines for each disease that we
  * want to parse; from these data, we will construct the {@link HpoDisease}.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
@@ -33,12 +35,12 @@ class HpoAnnotationLine {
   private final TermId phenotypeId;
   /** 6. Publication (not null) */
   private final String publication;
-  /** 7. Evidence about assertion (can be null) */
+  /** 7. Evidence about assertion */
   private final EvidenceCode evidence;
   /** 8. The onset (can be null) */
   private final HpoOnset onset;
   /** 9. The frequency (can be null) */
-  private final FrequencyBin frequency;
+  private final DiseaseAnnotationFrequency diseaseAnnotationFrequency;
   /** 10. Male, female */
   private final Sex sex;
   /** 11. Modifier terms (0..n) */
@@ -55,12 +57,12 @@ class HpoAnnotationLine {
                               String publication,
                               EvidenceCode evidence,
                               HpoOnset onset,
-                              FrequencyBin frequency,
+                              DiseaseAnnotationFrequency diseaseAnnotationFrequency,
                               Sex sex,
                               List<TermId> modifierList,
                               Aspect aspect,
                               String biocuration) {
-    return new HpoAnnotationLine(databaseId, dbObjectName, isNegated, phenotypeId, publication, evidence, onset, frequency, sex, modifierList, aspect, biocuration);
+    return new HpoAnnotationLine(databaseId, dbObjectName, isNegated, phenotypeId, publication, evidence, onset, diseaseAnnotationFrequency, sex, modifierList, aspect, biocuration);
   }
 
   private HpoAnnotationLine(TermId databaseId,
@@ -70,7 +72,7 @@ class HpoAnnotationLine {
                             String publication,
                             EvidenceCode evidence,
                             HpoOnset onset,
-                            FrequencyBin frequency,
+                            DiseaseAnnotationFrequency diseaseAnnotationFrequency,
                             Sex sex,
                             List<TermId> modifiers,
                             Aspect aspect,
@@ -80,9 +82,9 @@ class HpoAnnotationLine {
     this.isNegated = isNegated;
     this.phenotypeId = Objects.requireNonNull(phenotypeId);
     this.publication = Objects.requireNonNull(publication);
-    this.evidence = evidence;
+    this.evidence = Objects.requireNonNull(evidence);
     this.onset = onset;
-    this.frequency = frequency;
+    this.diseaseAnnotationFrequency = diseaseAnnotationFrequency;
     this.sex = Objects.requireNonNull(sex);
     this.modifiers = Objects.requireNonNull(modifiers);
     this.aspect = Objects.requireNonNull(aspect);
@@ -112,7 +114,7 @@ class HpoAnnotationLine {
 
   List<String> publication() {
     ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-    if (publication == null || publication.isEmpty()) return builder.build();
+    if (publication.isEmpty()) return builder.build();
     String[] A = publication.split(";") ;
     for (String a : A ){
       builder.add(a.trim());
@@ -120,20 +122,20 @@ class HpoAnnotationLine {
     return builder.build();
   }
 
-  Optional<EvidenceCode> evidence() {
-    return Optional.ofNullable(evidence);
+  EvidenceCode evidence() {
+    return evidence;
   }
 
   Optional<HpoOnset> onset() {
     return Optional.ofNullable(onset);
   }
 
-  Optional<FrequencyBin> frequency() {
-    return Optional.ofNullable(frequency);
+  Optional<DiseaseAnnotationFrequency> frequency() {
+    return Optional.ofNullable(diseaseAnnotationFrequency);
   }
 
-  Optional<Sex> sex() {
-    return Optional.ofNullable(sex);
+  Sex sex() {
+    return sex;
   }
 
   List<TermId> modifiers() {
@@ -153,12 +155,12 @@ class HpoAnnotationLine {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HpoAnnotationLine that = (HpoAnnotationLine) o;
-    return isNegated == that.isNegated && Objects.equals(diseaseId, that.diseaseId) && Objects.equals(dbObjectName, that.dbObjectName) && Objects.equals(phenotypeId, that.phenotypeId) && Objects.equals(publication, that.publication) && evidence == that.evidence && onset == that.onset && Objects.equals(frequency, that.frequency) && sex == that.sex && Objects.equals(modifiers, that.modifiers) && aspect == that.aspect && Objects.equals(biocuration, that.biocuration);
+    return isNegated == that.isNegated && Objects.equals(diseaseId, that.diseaseId) && Objects.equals(dbObjectName, that.dbObjectName) && Objects.equals(phenotypeId, that.phenotypeId) && Objects.equals(publication, that.publication) && evidence == that.evidence && onset == that.onset && Objects.equals(diseaseAnnotationFrequency, that.diseaseAnnotationFrequency) && sex == that.sex && Objects.equals(modifiers, that.modifiers) && aspect == that.aspect && Objects.equals(biocuration, that.biocuration);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(diseaseId, dbObjectName, isNegated, phenotypeId, publication, evidence, onset, frequency, sex, modifiers, aspect, biocuration);
+    return Objects.hash(diseaseId, dbObjectName, isNegated, phenotypeId, publication, evidence, onset, diseaseAnnotationFrequency, sex, modifiers, aspect, biocuration);
   }
 
   @Override
@@ -171,7 +173,7 @@ class HpoAnnotationLine {
       ", publication='" + publication + '\'' +
       ", evidence=" + evidence +
       ", onset=" + onset +
-      ", frequency=" + frequency +
+      ", frequency=" + diseaseAnnotationFrequency +
       ", sex=" + sex +
       ", modifiers=" + modifiers +
       ", aspect=" + aspect +

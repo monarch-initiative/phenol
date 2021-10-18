@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 @InProgress
-public enum HpoFrequency implements FrequencyBin {
+public enum HpoFrequency implements DiseaseAnnotationFrequency {
 
   /** Always present (100% of the cases). */
   OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate"),
@@ -61,6 +61,11 @@ public enum HpoFrequency implements FrequencyBin {
   @Override
   public double frequency() {
     return this.mean();
+  }
+
+  @Override
+  public Optional<Ratio> nOfMProbands() {
+    return Optional.empty();
   }
 
   /**

@@ -15,7 +15,7 @@ public interface HpoDiseaseAnnotationMetadata {
 
   HpoOnset onset();
 
-  FrequencyBin frequency();
+  DiseaseAnnotationFrequency frequency();
 
   Collection<TermId> modifiers();
 

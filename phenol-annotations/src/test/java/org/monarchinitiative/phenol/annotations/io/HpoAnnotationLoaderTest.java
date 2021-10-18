@@ -35,7 +35,7 @@ public class HpoAnnotationLoaderTest {
     assertThat(annotationLine.getDbObjectName(), equalTo("SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME"));
     assertThat(annotationLine.phenotypeId(), equalTo(TermId.of("HP:0030736")));
 
-    assertThat(annotationLine.evidence().get(), equalTo(EvidenceCode.TAS));
+    assertThat(annotationLine.evidence(), equalTo(EvidenceCode.TAS));
     assertThat(annotationLine.aspect(), equalTo(Aspect.PHENOTYPIC_ABNORMALITY));
     assertThat(annotationLine.isNegated(), equalTo(false));
     assertThat(annotationLine.frequency().isPresent(), equalTo(false));

@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.InProgress;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.time.*;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -29,11 +30,15 @@ public interface HpoDiseaseAnnotation extends Comparable<HpoDiseaseAnnotation> {
 
   TermId termId();
 
-  // TODO - do we really have to to expose this?
+  // TODO - do we really have to to expose this? Probably not.
+  //  Let's make several methods for data that we need to get out of the annotation, i.e. frequencies, onsets, etc.
 
   Collection<HpoDiseaseAnnotationMetadata> metadata();
 
-
+  default double observedInPeriod(Period period) {
+    // TODO - implement
+    return Double.NaN;
+  }
 
   // TODO - implement aggregator methods for onset, frequency, etc.
 

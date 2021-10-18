@@ -138,7 +138,7 @@ public class HpoAnnotationLoader {
 
       HpoOnset onset = parseOnset(fields[6]);
 
-      FrequencyBin frequency = parseFrequency(fields[7]);
+      DiseaseAnnotationFrequency diseaseAnnotationFrequency = parseFrequency(fields[7]);
       List<TermId> modifierList = parseModifiers(fields[9]);
       String publication = fields[4];
       EvidenceCode evidence = EvidenceCode.fromString(fields[5]);
@@ -157,7 +157,7 @@ public class HpoAnnotationLoader {
 
       HpoAnnotationLine hpoAnnotationLine = HpoAnnotationLine.of(databaseId, dbObjectName, isNegated,
         phenotypeId, publication, evidence,
-        onset, frequency, sex, modifierList, aspect.get(), curationInfo);
+        onset, diseaseAnnotationFrequency, sex, modifierList, aspect.get(), curationInfo);
       return Optional.of(hpoAnnotationLine);
     };
   }
@@ -179,7 +179,15 @@ public class HpoAnnotationLoader {
       .collect(Collectors.toList());
   }
 
-  private static FrequencyBin parseFrequency(String value) {
+  private static Optional<TermId> parseTermOrEmpty(String value) {
+    try {
+      return Optional.of(TermId.of(value));
+    } catch (PhenolRuntimeException ignored) {
+      return Optional.empty();
+    }
+  }
+
+  private static DiseaseAnnotationFrequency parseFrequency(String value) {
     // Might be absent ...
     if (value.equals(""))
       return null;
@@ -198,7 +206,8 @@ public class HpoAnnotationLoader {
     if (matcher.matches()) {
       int numerator = Integer.parseInt(matcher.group("numerator"));
       int denominator = Integer.parseInt(matcher.group("denominator"));
-      return Ratio.of(numerator, denominator);
+      Ratio ratio = Ratio.of(numerator, denominator);
+      return ExactDiseaseAnnotationFrequency.of(ratio);
     }
 
     return null;
@@ -223,6 +232,9 @@ public class HpoAnnotationLoader {
         negatedAnnotations.add(line.phenotypeId());
         continue;
       }
+
+
+      // check if the `line.phenotypeId()` is a member of the phenotypic abnormality subgraph,
 
       switch (line.aspect()) {
         case PHENOTYPIC_ABNORMALITY:
@@ -250,41 +262,51 @@ public class HpoAnnotationLoader {
       .min(HpoOnset::compareTo)
       .orElse(HpoOnset.UNKNOWN);
 
-    List<HpoDiseaseAnnotation> metadata = processAnnotations(phenotypes, globalDiseaseOnset);
+    List<HpoDiseaseAnnotation> metadata = processDiseaseAnnotations(phenotypes, globalDiseaseOnset);
     return Optional.of(HpoDisease.of(diseaseName, diseaseTermId, metadata, modesOfInheritance, negatedAnnotations));
   }
 
-  private static List<HpoDiseaseAnnotation> processAnnotations(List<HpoAnnotationLine> phenotypes, HpoOnset globalDiseaseOnset) {
+  private static List<HpoDiseaseAnnotation> processDiseaseAnnotations(List<HpoAnnotationLine> phenotypes, HpoOnset globalDiseaseOnset) {
+    // Process the annotations available for a single disease.
+    /*
+    Group all lines for a single annotation/phenotype term.
+    The annotations may describe different onsets, they may come from multiple publications, etc.
+    */
     Map<TermId, List<HpoAnnotationLine>> lineByPhenotype = phenotypes.stream()
       .collect(Collectors.groupingBy(HpoAnnotationLine::phenotypeId));
 
     List<HpoDiseaseAnnotation> annotations = new LinkedList<>();
     for (Map.Entry<TermId, List<HpoAnnotationLine>> entry : lineByPhenotype.entrySet()) {
+      TermId annotationId = entry.getKey();
+      List<HpoAnnotationLine> annotationLines = entry.getValue();
 
-      List<HpoDiseaseAnnotationMetadata> metadata = new LinkedList<>();
-      for (HpoAnnotationLine line : entry.getValue()) {
+      List<HpoDiseaseAnnotationMetadata> metadata = processSingleAnnotation(annotationLines, globalDiseaseOnset);
 
-        HpoDiseaseAnnotationMetadata datum = HpoDiseaseAnnotationMetadata.of(
-          line.onset().orElse(globalDiseaseOnset),
-          line.frequency().orElse(HpoFrequency.OBLIGATE),
-          line.modifiers(),
-          line.sex().orElse(Sex.UNKNOWN));
-
-        metadata.add(datum);
-      }
-
-      annotations.add(HpoDiseaseAnnotation.of(entry.getKey(), metadata));
+      annotations.add(HpoDiseaseAnnotation.of(annotationId, metadata));
     }
 
     return annotations;
   }
 
-  private static Optional<TermId> parseTermOrEmpty(String value) {
-    try {
-      return Optional.of(TermId.of(value));
-    } catch (PhenolRuntimeException ignored) {
-      return Optional.empty();
+  private static List<HpoDiseaseAnnotationMetadata> processSingleAnnotation(List<HpoAnnotationLine> annotationLines, HpoOnset globalDiseaseOnset) {
+    // Process the lines available for a single annotation/phenotype term.
+    // The lines may represent different onsets, frequencies of occurrence of the phenotype term, or just the same term
+    // reported in multiple publications
+
+    // TODO - think about this
+    //  we may aggregate multiple publications?
+    List<HpoDiseaseAnnotationMetadata> metadata = new ArrayList<>(annotationLines.size());
+    for (HpoAnnotationLine line : annotationLines) {
+
+      HpoDiseaseAnnotationMetadata meta = HpoDiseaseAnnotationMetadata.of(
+        line.onset().orElse(globalDiseaseOnset),
+        line.frequency().orElse(HpoFrequency.OBLIGATE),
+        line.modifiers(),
+        line.sex());
+
+      metadata.add(meta);
     }
+    return metadata;
   }
 
   /*
