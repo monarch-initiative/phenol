@@ -1,105 +1,105 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.InProgress;
+import org.monarchinitiative.phenol.annotations.base.Age;
+import org.monarchinitiative.phenol.annotations.base.Lifetimes;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.time.Period;
 import java.util.Optional;
 
 import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnsetTermIds.ONSET_TERMID;
 
-// TODO - encode term IDs and upper/lower onset bounds as enum fields
-@InProgress
-public enum HpoOnset {
+public enum HpoOnset implements Age {
   /** Age at which there is onset of a disease */
-  ONSET,
+  ONSET(Lifetimes.HUMAN.conception(), Lifetimes.HUMAN.death()),
+
   /**
    * Onset prior to birth.
    */
-  ANTENATAL_ONSET,
-  EMBRYONAL_ONSET,
-  FETAL_ONSET,
+  ANTENATAL_ONSET(Lifetimes.HUMAN.conception(), Lifetimes.HUMAN.birth()),
+  /**
+   * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
+   */
+  // (40 - 10) * 7
+  EMBRYONAL_ONSET(Lifetimes.HUMAN.conception(), Period.of(0, 0, -210).normalized()),
+  /**
+   * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
+   */
+  // 40 gestational weeks - 10 embryonal weeks - 30 weeks (210 days)
+  FETAL_ONSET(Period.of(0, 0, -210).normalized(), Lifetimes.HUMAN.birth()),
   /**
    * Onset at birth
    */
-  CONGENITAL_ONSET,
+  CONGENITAL_ONSET(Lifetimes.HUMAN.birth(), Lifetimes.HUMAN.birth()),
   /**
    * Onset in the first 28 days of life
    */
-  NEONATAL_ONSET,
+  NEONATAL_ONSET(Lifetimes.HUMAN.birth(), Period.of(0, 0, 28)),
   /**
    * Onset within the first 12 months of life
    */
-  INFANTILE_ONSET,
+  INFANTILE_ONSET(Period.of(0, 0, 28), Period.of(1, 0, 0)),
   /**
    * Onset between the ages of one and five years: at least one but less than 5 years
    */
-  CHILDHOOD_ONSET,
+  CHILDHOOD_ONSET(Period.of(1, 0, 0), Period.of(5, 0, 0)),
   /**
    * Onset between 5 and 15 years
    */
-  JUVENILE_ONSET,
+  JUVENILE_ONSET(Period.of(5, 0, 0), Period.of(16, 0, 0)),
   /**
    * Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.
    */
-  ADULT_ONSET,
+  ADULT_ONSET(Period.of(16, 0, 0), Lifetimes.HUMAN.death()),
   /**
    * Onset of disease at the age of between 16 and 40 years
    */
-  YOUNG_ADULT_ONSET,
+  YOUNG_ADULT_ONSET(Period.of(16, 0, 0), Period.of(40, 0, 0)),
   /**
    * Onset of symptoms at the age of 40 to 60 years.
    */
-  MIDDLE_AGE_ONSET,
+  MIDDLE_AGE_ONSET(Period.of(40, 0, 0), Period.of(60, 0, 0)),
   /**
    * Onset of symptoms after 60 years
    */
-  LATE_ONSET,
-  /**
-   * Age of onset not known or not available (should be used if there is no data in the annotation file).
-   */
-  UNKNOWN;
+  LATE_ONSET(Period.of(60, 0, 0), Lifetimes.HUMAN.death());
 
-  public static final double ONSET_LOWER_BOUND = 0D;
+  private final Period lowerBound;
+  private final Period upperBound;
 
-  public static final double ONSET_UPPER_BOUND = 100.0;
+  HpoOnset(Period lowerBound, Period upperBound) {
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
+  }
+
+  @Override
+  public Optional<Period> age() {
+    return Optional.empty();
+  }
+
+  @Override
+  public boolean isPrecise() {
+    return false;
+  }
+
+  @Override
+  public Period lowerBound() {
+    return lowerBound;
+  }
+
+  @Override
+  public Period upperBound() {
+    return upperBound;
+  }
 
   /**
    * Convert HPO {@link TermId} in the HPO to {@link HpoFrequency}.
    *
    * @param termId The {@link TermId} to convert.
-   * @return Corresponding {@link HpoFrequency} (if not available, return {@link #UNKNOWN}).
+   * @return Corresponding {@link HpoFrequency} (if not available, return empty optional).
    */
-  public static HpoOnset fromTermId(TermId termId) {
-    switch (termId.getValue()) {
-      case "HP:0003674":
-        return ONSET;
-      case "HP:0003577":
-        return CONGENITAL_ONSET;
-      case "HP:0003581":
-        return ADULT_ONSET;
-      case "HP:0003584":
-        return LATE_ONSET;
-      case "HP:0011462":
-        return YOUNG_ADULT_ONSET;
-      case "HP:0003596":
-        return MIDDLE_AGE_ONSET;
-      case "HP:0003593":
-        return INFANTILE_ONSET;
-      case "HP:0030674":
-        return ANTENATAL_ONSET;
-      case "HP:0011460":
-        return EMBRYONAL_ONSET;
-      case "HP:0011461":
-        return FETAL_ONSET;
-      case "HP:0003621":
-        return JUVENILE_ONSET;
-      case "HP:0003623":
-        return NEONATAL_ONSET;
-      case "HP:0011463":
-        return CHILDHOOD_ONSET;
-      default:
-        return UNKNOWN;
-    }
+  public static Optional<HpoOnset> fromTermId(TermId termId) {
+    return fromHpoIdString(termId.getId());
   }
 
   /**
@@ -142,62 +142,10 @@ public enum HpoOnset {
   }
 
   /**
-   * @return Lower (inclusive) bound of {@code this} onset category in years.
-   */
-  public double lowerBound() {
-    switch (this) {
-      case ANTENATAL_ONSET:
-      case CONGENITAL_ONSET:
-      case NEONATAL_ONSET:
-      case INFANTILE_ONSET:
-        return 0;
-      case CHILDHOOD_ONSET:
-        return 1.0;
-      case JUVENILE_ONSET:
-        return 5.0;
-      case YOUNG_ADULT_ONSET:
-        return 40.0;
-      case MIDDLE_AGE_ONSET:
-        return 60.0;
-      case ADULT_ONSET:
-      case LATE_ONSET:
-      default:
-        return ONSET_UPPER_BOUND;
-    }
-  }
-
-  /**
-   * @return Upper (exclusive) bound of {@code this} frequency category.
-   */
-  public double upperBound() {
-    switch (this) {
-      case LATE_ONSET:
-        return 60.0;
-      case MIDDLE_AGE_ONSET:
-        return 40.0;
-      case ADULT_ONSET:
-      case YOUNG_ADULT_ONSET:
-        return 16.0;
-      case JUVENILE_ONSET:
-        return 15.0;
-      case CHILDHOOD_ONSET:
-        return 5.0;
-      case INFANTILE_ONSET:
-        return 1.0;
-      case NEONATAL_ONSET:
-        return 28.0 / 365;
-      case ANTENATAL_ONSET:
-      case CONGENITAL_ONSET:
-      default:
-        return 0.0;
-    }
-  }
-
-  /**
    * @return true if information is available (i.e., if not UNKNOWN).
    */
   public boolean available() {
-    return (this != UNKNOWN && this != ONSET);
+    return this != ONSET;
   }
 
   /**
@@ -238,6 +186,7 @@ public enum HpoOnset {
    * @param days   number of completed days of age
    * @return Corresponding {@link HpoOnset}.
    */
+  @Deprecated // should not be necessary as the enum itself implements age
   public static HpoOnset fromAge(int years, int months, int days) {
     if (years >= 60) {
       return LATE_ONSET;

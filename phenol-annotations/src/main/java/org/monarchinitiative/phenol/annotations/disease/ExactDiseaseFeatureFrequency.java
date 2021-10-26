@@ -1,20 +1,25 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo;
+package org.monarchinitiative.phenol.annotations.disease;
 
-import org.monarchinitiative.phenol.annotations.InProgress;
+import org.monarchinitiative.phenol.annotations.base.Ratio;
 
 import java.util.Objects;
 import java.util.Optional;
 
-@InProgress
-public class ExactDiseaseAnnotationFrequency implements DiseaseAnnotationFrequency {
+class ExactDiseaseFeatureFrequency implements DiseaseFeatureFrequency {
+
+  private static final ExactDiseaseFeatureFrequency CASE_REPORT = new ExactDiseaseFeatureFrequency(Ratio.of(1, 1));
 
   private final Ratio ratio;
 
-  public static ExactDiseaseAnnotationFrequency of(Ratio ratio) {
-    return new ExactDiseaseAnnotationFrequency(ratio);
+  static ExactDiseaseFeatureFrequency getCaseReport() {
+    return CASE_REPORT;
   }
 
-  private ExactDiseaseAnnotationFrequency(Ratio ratio) {
+  static ExactDiseaseFeatureFrequency of(Ratio ratio) {
+    return new ExactDiseaseFeatureFrequency(ratio);
+  }
+
+  private ExactDiseaseFeatureFrequency(Ratio ratio) {
     this.ratio = Objects.requireNonNull(ratio, "Ratio must not be null.");
   }
 
@@ -32,7 +37,7 @@ public class ExactDiseaseAnnotationFrequency implements DiseaseAnnotationFrequen
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    ExactDiseaseAnnotationFrequency that = (ExactDiseaseAnnotationFrequency) o;
+    ExactDiseaseFeatureFrequency that = (ExactDiseaseFeatureFrequency) o;
     return Objects.equals(ratio, that.ratio);
   }
 

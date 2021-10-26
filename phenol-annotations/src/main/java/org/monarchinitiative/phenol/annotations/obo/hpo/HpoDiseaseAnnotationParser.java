@@ -177,8 +177,8 @@ public class HpoDiseaseAnnotationParser {
    * @param ons The {@link TermId} of an HPO Onset
    * @return The {@link HpoOnset} object corresponding to the {@link TermId} in the argument
    */
-  private static HpoOnset getOnset(TermId ons) {
-    if (ons == null) return HpoOnset.UNKNOWN;
+  private static Optional<HpoOnset> getOnset(TermId ons) {
+    if (ons == null) return Optional.empty();
     return HpoOnset.fromTermId(ons);
   }
 

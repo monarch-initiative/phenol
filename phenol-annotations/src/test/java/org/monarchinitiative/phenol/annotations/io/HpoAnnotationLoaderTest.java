@@ -27,7 +27,7 @@ public class HpoAnnotationLoaderTest {
   void toHpoAnnotationLine() {
     String line ="OMIM:269150\tSCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME\t\tHP:0030736\tOMIM:269150\tTAS\t\t\t\t\tP\tHPO:skoehler[2017-07-13]";
 
-    Optional<HpoAnnotationLine> lineOpt = HpoAnnotationLoader.toHpoAnnotationLine(DEFAULT_DATABASE_PREFIXES).apply(line);
+    Optional<HpoAnnotationLine> lineOpt = HpoAnnotationLoader.toHpoAnnotationLine(line, DEFAULT_DATABASE_PREFIXES);
     assertThat(lineOpt.isPresent(), is(true));
 
     HpoAnnotationLine annotationLine = lineOpt.get();

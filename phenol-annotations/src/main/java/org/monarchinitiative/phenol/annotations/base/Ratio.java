@@ -1,17 +1,22 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo;
+package org.monarchinitiative.phenol.annotations.base;
 
 import java.util.Objects;
 
+/**
+ * Ratio to represent a proportion in range <code>[0, 1]</code>.
+ */
 public class Ratio {
 
   private final int numerator;
   private final int denominator;
 
-  private Ratio(int numerator, int denominator) {
-    this.numerator = numerator;
-    this.denominator = denominator;
-  }
-
+  /**
+   * @param numerator   non-negative numerator
+   * @param denominator positive denominator
+   * @return ratio
+   * @throws IllegalArgumentException if the numerator or denominator do not meet the above requirements,
+   *                                  or if the numerator is greater than denominator
+   */
   public static Ratio of(int numerator, int denominator) {
     if (numerator < 0)
       throw new IllegalArgumentException("Numerator must be non-negative");
@@ -22,6 +27,11 @@ public class Ratio {
       throw new IllegalArgumentException("Numerator " + numerator + " must be less than or equal to denominator " + denominator);
 
     return new Ratio(numerator, denominator);
+  }
+
+  private Ratio(int numerator, int denominator) {
+    this.numerator = numerator;
+    this.denominator = denominator;
   }
 
   public int numerator() {

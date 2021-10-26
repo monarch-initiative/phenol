@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.annotations.io;
 
 import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
-import org.monarchinitiative.phenol.annotations.formats.Sex;
-import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseAnnotationFrequency;
+import org.monarchinitiative.phenol.annotations.base.Sex;
+import org.monarchinitiative.phenol.annotations.disease.DiseaseFeatureFrequency;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -40,7 +40,7 @@ class HpoAnnotationLine {
   /** 8. The onset (can be null) */
   private final HpoOnset onset;
   /** 9. The frequency (can be null) */
-  private final DiseaseAnnotationFrequency diseaseAnnotationFrequency;
+  private final DiseaseFeatureFrequency diseaseAnnotationFrequency;
   /** 10. Male, female */
   private final Sex sex;
   /** 11. Modifier terms (0..n) */
@@ -57,7 +57,7 @@ class HpoAnnotationLine {
                               String publication,
                               EvidenceCode evidence,
                               HpoOnset onset,
-                              DiseaseAnnotationFrequency diseaseAnnotationFrequency,
+                              DiseaseFeatureFrequency diseaseAnnotationFrequency,
                               Sex sex,
                               List<TermId> modifierList,
                               Aspect aspect,
@@ -72,7 +72,7 @@ class HpoAnnotationLine {
                             String publication,
                             EvidenceCode evidence,
                             HpoOnset onset,
-                            DiseaseAnnotationFrequency diseaseAnnotationFrequency,
+                            DiseaseFeatureFrequency diseaseFeatureFrequency,
                             Sex sex,
                             List<TermId> modifiers,
                             Aspect aspect,
@@ -84,8 +84,8 @@ class HpoAnnotationLine {
     this.publication = Objects.requireNonNull(publication);
     this.evidence = Objects.requireNonNull(evidence);
     this.onset = onset;
-    this.diseaseAnnotationFrequency = diseaseAnnotationFrequency;
-    this.sex = Objects.requireNonNull(sex);
+    this.diseaseAnnotationFrequency = diseaseFeatureFrequency;
+    this.sex = sex;
     this.modifiers = Objects.requireNonNull(modifiers);
     this.aspect = Objects.requireNonNull(aspect);
     this.biocuration = Objects.requireNonNull(biocuration);
@@ -130,12 +130,12 @@ class HpoAnnotationLine {
     return Optional.ofNullable(onset);
   }
 
-  Optional<DiseaseAnnotationFrequency> frequency() {
+  Optional<DiseaseFeatureFrequency> frequency() {
     return Optional.ofNullable(diseaseAnnotationFrequency);
   }
 
-  Sex sex() {
-    return sex;
+  Optional<Sex> sex() {
+    return Optional.ofNullable(sex);
   }
 
   List<TermId> modifiers() {

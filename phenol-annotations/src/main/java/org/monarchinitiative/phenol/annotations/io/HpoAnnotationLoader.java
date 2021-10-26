@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.io;
 
-import com.google.common.collect.ImmutableSet;
+import org.monarchinitiative.phenol.annotations.disease.DiseaseFeatureFrequency;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
-import org.monarchinitiative.phenol.annotations.formats.Sex;
+import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -51,7 +51,7 @@ public class HpoAnnotationLoader {
   /**
    * We will, by default, parse in disease models from the following databases.
    */
-  private static final Set<String> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of("OMIM", "ORPHA", "DECIPHER");
+  private static final Set<String> DEFAULT_DATABASE_PREFIXES = Set.of("OMIM", "ORPHA", "DECIPHER");
 
   private HpoAnnotationLoader() {
   }
@@ -60,24 +60,45 @@ public class HpoAnnotationLoader {
     return loadDiseaseMap(annotationFile, ontology, DEFAULT_DATABASE_PREFIXES);
   }
 
+  public static List<HpoAnnotationLine> loadAnnotations(BufferedReader reader, Set<String> databasePrefixes) throws IOException {
+    List<HpoAnnotationLine> lines = new LinkedList<>();
+
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.startsWith("#")) {
+        // header
+        if (line.startsWith("#DatabaseID")) {
+          List<String> errors = isValidHeaderLine(line.substring(1)); // remove leading #
+          if (!errors.isEmpty()) {
+            throw new IOException(String.format("Errors: %s", String.join(", ", errors)));
+          }
+        }
+      } else {
+        // body
+        toHpoAnnotationLine(line, databasePrefixes)
+          .ifPresent(lines::add);
+      }
+    }
+
+    return lines;
+  }
+
   public static Map<TermId, HpoDisease> loadDiseaseMap(File annotationFile, Ontology ontology, Set<String> databases) throws PhenolException {
     // TODO(pnrobinson) - do we actually need to check if a term that we find in the Frequency column is a descendant
     //  of Frequency HP:0040279? Isn't this taken care of during HPOA release process?
     //  If no, we do not require to have the Ontology here.
 
-    // First stage of parsing is to get the lines parsed and sorted according to disease ID.
-    Map<TermId, List<HpoAnnotationLine>> diseaseToAnnotationLines;
-
+    // First stage of parsing is to get the lines parsed.
+    List<HpoAnnotationLine> annotationLines;
     try (BufferedReader br = Files.newBufferedReader(annotationFile.toPath())) {
-      diseaseToAnnotationLines = br.lines()
-        .filter(line -> !line.startsWith("#"))
-        .map(toHpoAnnotationLine(databases))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.groupingBy(HpoAnnotationLine::diseaseId));
+      annotationLines = loadAnnotations(br, databases);
     } catch (IOException e) {
       throw new PhenolException(String.format("Could not read annotation file: %s", e.getMessage()));
     }
+
+    // Then we group the lines by disease ID
+    Map<TermId, List<HpoAnnotationLine>> diseaseToAnnotationLines = annotationLines.stream()
+      .collect(Collectors.groupingBy(HpoAnnotationLine::diseaseId));
 
     // When we get down here, we have added all the disease annotations to the diseaseToAnnotationLines
     // Now we want to transform them into HpoDisease objects
@@ -89,86 +110,80 @@ public class HpoAnnotationLoader {
   }
 
 
-//   TODO - do we need to check the header?
-//  /**
-//   * @param line The header line of a V2 small file
-//   * @return true iff the fields of the line exactly match {@link #headerFields}.
-//   */
-//  static boolean isValidHeaderLine(String line) throws PhenolException {
-//    String[] fields = line.split("\t");
-//    if (fields.length != headerFields.length) {
-//      String msg = String.format("Expected %d fields in header line but got %d",headerFields.length, fields.length);
-//      throw new PhenolException(msg);
-//    }
-//    for (int i = 0; i < headerFields.length; i++) {
-//      if (!fields[i].equals(headerFields[i])) {
-//        String msg = String.format("Expected header field %d to be %s but got %s",i, headerFields[i], fields[i]);
-//        throw new PhenolException(msg);
-//      }
-//    }
-//    return true;
-//  }
+  /**
+   * @param line The header line of a V2 small file
+   * @return true if the fields of the line exactly match {@link #HEADER_FIELDS}.
+   */
+  private static List<String> isValidHeaderLine(String line) {
+    String[] fields = line.split("\t");
+    if (fields.length != HEADER_FIELDS.length) {
+      return List.of(String.format("Expected %d fields in header line but got %d", HEADER_FIELDS.length, fields.length));
+    }
+    for (int i = 0; i < HEADER_FIELDS.length; i++) {
+      if (!fields[i].equals(HEADER_FIELDS[i])) {
+        return List.of(String.format("Expected header field %d to be %s but got %s", i, HEADER_FIELDS[i], fields[i]));
 
-
-
-  static Function<String, Optional<HpoAnnotationLine>> toHpoAnnotationLine(Set<String> databasePrefixes) {
-    return line -> {
-      String[] fields = line.split("\t");
-      if (fields.length != HEADER_FIELDS.length) {
-        LOGGER.warn("Annotation line with " + fields.length + " fields: \"" + line + "\"");
-        return Optional.empty();
       }
-
-      // parse columns denoting TermIds
-      TermId databaseId, phenotypeId;
-      try {
-        // these fields are mandatory
-        databaseId = TermId.of(fields[0]);
-        phenotypeId = TermId.of(fields[3]);
-      } catch (PhenolRuntimeException e) {
-        LOGGER.warn("Invalid DatabaseID or HPO_ID field in line `{}`", line);
-        return Optional.empty();
-      }
-
-      if (!databasePrefixes.contains(databaseId.getPrefix())) {
-        return Optional.empty();
-      }
-
-      String dbObjectName = fields[1]; // diseaseName
-
-      HpoOnset onset = parseOnset(fields[6]);
-
-      DiseaseAnnotationFrequency diseaseAnnotationFrequency = parseFrequency(fields[7]);
-      List<TermId> modifierList = parseModifiers(fields[9]);
-      String publication = fields[4];
-      EvidenceCode evidence = EvidenceCode.fromString(fields[5]);
-      Sex sex = Sex.fromString(fields[8]);
-      String isNegatedString = fields[2];
-      boolean isNegated = (isNegatedString != null && isNegatedString.equalsIgnoreCase("NOT"));
-
-      Optional<Aspect> aspect = Aspect.fromString(fields[10]);
-      if (!aspect.isPresent()) {
-        // Aspect must be valid
-        LOGGER.warn("Invalid aspect field in line `{}`", line);
-        return Optional.empty();
-      }
-
-      String curationInfo = fields[11];
-
-      HpoAnnotationLine hpoAnnotationLine = HpoAnnotationLine.of(databaseId, dbObjectName, isNegated,
-        phenotypeId, publication, evidence,
-        onset, diseaseAnnotationFrequency, sex, modifierList, aspect.get(), curationInfo);
-      return Optional.of(hpoAnnotationLine);
-    };
+    }
+    return List.of();
   }
 
-  private static HpoOnset parseOnset(String field) {
-    // Onset and frequency may be null, and modifiers may be empty
-    if (!field.equals("")) {
-      return HpoOnset.fromHpoIdString(field)
-        .orElse(HpoOnset.UNKNOWN);
+
+  static Optional<HpoAnnotationLine> toHpoAnnotationLine(String line, Set<String> databasePrefixes) {
+    String[] fields = line.split("\t");
+    if (fields.length != HEADER_FIELDS.length) {
+      LOGGER.warn("Annotation line with " + fields.length + " fields: \"" + line + "\"");
+      return Optional.empty();
     }
-    return HpoOnset.UNKNOWN;
+
+    // parse columns denoting TermIds
+    TermId databaseId, phenotypeId;
+    try {
+      // these fields are mandatory
+      databaseId = TermId.of(fields[0]);
+      phenotypeId = TermId.of(fields[3]);
+    } catch (PhenolRuntimeException e) {
+      LOGGER.warn("Invalid DatabaseID or HPO_ID field in line `{}`", line);
+      return Optional.empty();
+    }
+
+    if (!databasePrefixes.contains(databaseId.getPrefix())) {
+      return Optional.empty();
+    }
+
+    String dbObjectName = fields[1]; // diseaseName
+
+    // Onset and frequency may be null, and modifiers may be empty
+    HpoOnset onset = parseOnset(fields[6]).orElse(null);
+    DiseaseFeatureFrequency diseaseFeatureFrequency = parseFrequency(fields[7]);
+    List<TermId> modifierList = parseModifiers(fields[9]);
+
+    String publication = fields[4];
+    EvidenceCode evidence = EvidenceCode.fromString(fields[5]);
+    Sex sex = Sex.fromString(fields[8]).orElse(null);
+    String isNegatedString = fields[2];
+    boolean isNegated = (isNegatedString != null && isNegatedString.equalsIgnoreCase("NOT"));
+
+    Optional<Aspect> aspect = Aspect.fromString(fields[10]);
+    if (aspect.isEmpty()) {
+      // Aspect must be valid
+      LOGGER.warn("Invalid aspect field in line `{}`", line);
+      return Optional.empty();
+    }
+
+    String curationInfo = fields[11];
+
+    HpoAnnotationLine hpoAnnotationLine = HpoAnnotationLine.of(databaseId, dbObjectName, isNegated,
+      phenotypeId, publication, evidence,
+      onset, diseaseFeatureFrequency, sex, modifierList, aspect.get(), curationInfo);
+    return Optional.of(hpoAnnotationLine);
+  }
+
+  private static Optional<HpoOnset> parseOnset(String field) {
+    if (!field.equals("")) {
+      return HpoOnset.fromHpoIdString(field);
+    }
+    return Optional.empty();
   }
 
   private static List<TermId> parseModifiers(String field) {
@@ -187,7 +202,7 @@ public class HpoAnnotationLoader {
     }
   }
 
-  private static DiseaseAnnotationFrequency parseFrequency(String value) {
+  private static DiseaseFeatureFrequency parseFrequency(String value) {
     // Might be absent ...
     if (value.equals(""))
       return null;
@@ -206,8 +221,7 @@ public class HpoAnnotationLoader {
     if (matcher.matches()) {
       int numerator = Integer.parseInt(matcher.group("numerator"));
       int denominator = Integer.parseInt(matcher.group("denominator"));
-      Ratio ratio = Ratio.of(numerator, denominator);
-      return ExactDiseaseAnnotationFrequency.of(ratio);
+      return DiseaseFeatureFrequency.exact(numerator, denominator);
     }
 
     return null;
@@ -258,9 +272,10 @@ public class HpoAnnotationLoader {
 
     HpoOnset globalDiseaseOnset = globalOnsets.stream()
       .map(HpoOnset::fromTermId)
-      .filter(HpoOnset::available)
+      .filter(Optional::isPresent)
+      .map(Optional::get)
       .min(HpoOnset::compareTo)
-      .orElse(HpoOnset.UNKNOWN);
+      .orElse(HpoOnset.ONSET);
 
     List<HpoDiseaseAnnotation> metadata = processDiseaseAnnotations(phenotypes, globalDiseaseOnset);
     return Optional.of(HpoDisease.of(diseaseName, diseaseTermId, metadata, modesOfInheritance, negatedAnnotations));
@@ -302,7 +317,7 @@ public class HpoAnnotationLoader {
         line.onset().orElse(globalDiseaseOnset),
         line.frequency().orElse(HpoFrequency.OBLIGATE),
         line.modifiers(),
-        line.sex());
+        line.sex().orElse(null));
 
       metadata.add(meta);
     }

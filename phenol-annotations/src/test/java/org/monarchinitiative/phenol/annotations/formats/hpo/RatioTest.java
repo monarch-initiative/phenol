@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.monarchinitiative.phenol.annotations.base.Ratio;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;

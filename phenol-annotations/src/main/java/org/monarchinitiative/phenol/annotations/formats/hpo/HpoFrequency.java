@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.InProgress;
+import org.monarchinitiative.phenol.annotations.disease.DiseaseFeatureFrequency;
+import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -18,8 +19,7 @@ import java.util.Optional;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-@InProgress
-public enum HpoFrequency implements DiseaseAnnotationFrequency {
+public enum HpoFrequency implements DiseaseFeatureFrequency {
 
   /** Always present (100% of the cases). */
   OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate"),
@@ -42,7 +42,7 @@ public enum HpoFrequency implements DiseaseAnnotationFrequency {
 
   HpoFrequency(TermId termId, String label) {
     this.termId = termId;
-    this.label =label;
+    this.label = label;
   }
 
   /**
