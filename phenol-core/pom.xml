@@ -1,25 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>phenol-core</artifactId>
-  <packaging>jar</packaging>
-
-  <name>phenol-core</name>
-
-  <description>phenol-core contains the core functionality for representing ontologies</description>
-  <url>https://github.com/monarchinitiative/phenol</url>
-
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
     <version>1.6.4-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  <artifactId>phenol-core</artifactId>
+
+  <name>phenol-core</name>
+
+  <description>phenol-core contains the core functionality for representing ontologies</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
@@ -34,72 +36,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <!--Use filtering so that maven will replace placeholders with values
-          from the pom e.g. ${project.version} -->
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-
-    <plugins>
-      <!-- Specify the dependencies to copy -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.2</version>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>false</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-              <includeScope>runtime</includeScope>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Specify the resources which need to be made accessible to the
-        user -->
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/resources</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources</directory>
-                  <!--Use filtering so that maven will replace placeholders
-                    with values from the pom e.g. ${project.version} -->
-                  <filtering>true</filtering>
-                  <includes>
-                    <include>application.properties</include>
-                    <include>example.settings</include>
-                    <include>test.settings</include>
-                    <include>log4j2.xml</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

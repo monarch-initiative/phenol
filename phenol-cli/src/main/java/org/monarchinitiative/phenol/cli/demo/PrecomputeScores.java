@@ -4,8 +4,6 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.scoredist.ScoreDistributionWriter;
-import org.monarchinitiative.phenol.annotations.scoredist.TextFileScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
@@ -145,14 +143,14 @@ public class PrecomputeScores {
 
     final int resolution = Math.min(1000, Math.max(100, numIterations / 100));
 
-    try (final ScoreDistributionWriter writer =
-        new TextFileScoreDistributionWriter(new File(this.outputScoreDistFile))) {
-      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
-        writer.write(e.getKey(), e.getValue(), resolution);
-      }
-    } catch (IOException | PhenolException e) {
-      throw new RuntimeException("Problem writing to file", e);
-    }
+//    try (final ScoreDistributionWriter writer =
+//        new TextFileScoreDistributionWriter(new File(this.outputScoreDistFile))) {
+//      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
+//        writer.write(e.getKey(), e.getValue(), resolution);
+//      }
+//    } catch (IOException | PhenolException e) {
+//      throw new RuntimeException("Problem writing to file", e);
+//    }
 
     LOGGER.info("Done writing out distribution.");
   }
