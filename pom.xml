@@ -25,6 +25,8 @@
     <logback.version>1.2.3</logback.version>
     <slf4j.version>1.7.25</slf4j.version>
 
+    <commons-csv.version>1.9.0</commons-csv.version>
+
     <hamcrest.version>1.3</hamcrest.version>
     <junit.jupiter.version>5.7.0</junit.jupiter.version>
     <mockito.version>3.7.7</mockito.version>

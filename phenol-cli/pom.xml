@@ -25,17 +25,23 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-io</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-annotations</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>phenol-analysis</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>${commons-csv.version}</version>
     </dependency>
 
     <dependency>
