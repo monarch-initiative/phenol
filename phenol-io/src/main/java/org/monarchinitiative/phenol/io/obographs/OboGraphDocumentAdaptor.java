@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.io.obographs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
-import org.geneontology.obographs.model.*;
-import org.geneontology.obographs.model.meta.BasicPropertyValue;
+import org.geneontology.obographs.core.model.*;
+import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toMap;
 
 
 /**
- * Adaptor class for converting {@link org.geneontology.obographs.model.GraphDocument} instances to
+ * Adaptor class for converting {@link GraphDocument} instances to
  * {@link org.monarchinitiative.phenol.ontology.data.Ontology} instances.
  *
  * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
@@ -149,7 +149,7 @@ public class OboGraphDocumentAdaptor {
 
     private List<Term> convertNodesToTerms(List<Node> nodes) {
       ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
-      if (nodes == null) {
+      if (nodes == null || nodes.isEmpty()) {
         LOGGER.warn("No nodes found in loaded ontology.");
         throw new PhenolRuntimeException("PhenolException: No nodes found in loaded ontology.");
       }
@@ -175,7 +175,7 @@ public class OboGraphDocumentAdaptor {
         .collect(toMap(Node::getId, Node::getLabel));
 
       ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
-      if (edges == null) {
+      if (edges == null || edges.isEmpty()) {
         LOGGER.warn("No edges found in loaded ontology.");
         throw new PhenolRuntimeException("No edges found in loaded ontology.");
       }

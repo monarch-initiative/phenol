@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Disabled("OBO/OWL IO is not supported anymore")
 public class OntologyLoaderMondoTest {
 
   private static Ontology mondo;

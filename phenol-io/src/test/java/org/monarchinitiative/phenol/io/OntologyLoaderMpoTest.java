@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io;
 
 import com.google.common.collect.ImmutableMap;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
+@Disabled("OBO/OWL IO is not supported anymore")
 public class OntologyLoaderMpoTest {
 
   private Ontology ontology;

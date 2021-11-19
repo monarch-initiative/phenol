@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Disabled("Disabled until we have a toy hpo.json")
 class HpoAnnotationModelTest {
     private static HpoAnnotationModel v2sf=null;
 

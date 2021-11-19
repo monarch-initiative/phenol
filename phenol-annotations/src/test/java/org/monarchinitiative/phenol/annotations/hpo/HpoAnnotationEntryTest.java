@@ -3,9 +3,8 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModelException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -14,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
+@Disabled("Disabled until we have a toy hpo.json")
 class HpoAnnotationEntryTest {
 
     private static Ontology ontology;

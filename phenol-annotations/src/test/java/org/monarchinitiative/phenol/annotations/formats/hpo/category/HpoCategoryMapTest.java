@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -12,6 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled("Disabled until we have a toy hpo.json")
 public class HpoCategoryMapTest {
 
   private static final Path hpOboPath = Paths.get("src","test","resources","hp_head.obo");

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@Disabled("OBO/OWL IO is not supported anymore")
 class OntologyLoaderGoTest {
 
   private final Ontology ontology;

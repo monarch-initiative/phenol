@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.obo.uberpheno;
 
 import com.google.common.collect.ImmutableMap;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
+@Disabled("Disabled until we have a toy crossSpeciesPheno_head.json")
 public class UberphenoOboParserTest {
 
   private Ontology ontology;

@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.io;
 
 
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.monarchinitiative.phenol.ontology.data.TermSynonymScope.EXACT;
 import static org.monarchinitiative.phenol.ontology.data.TermSynonymScope.RELATED;
 
+@Disabled("OBO/OWL IO is not supported anymore")
 public class OntologyLoaderHpoTest {
 
   private Ontology hpo;

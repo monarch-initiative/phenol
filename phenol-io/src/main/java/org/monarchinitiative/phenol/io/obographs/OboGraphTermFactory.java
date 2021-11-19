@@ -4,12 +4,12 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import org.geneontology.obographs.model.Meta;
-import org.geneontology.obographs.model.Node;
-import org.geneontology.obographs.model.meta.BasicPropertyValue;
-import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
-import org.geneontology.obographs.model.meta.SynonymPropertyValue;
-import org.geneontology.obographs.model.meta.XrefPropertyValue;
+import org.geneontology.obographs.core.model.Meta;
+import org.geneontology.obographs.core.model.Node;
+import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
+import org.geneontology.obographs.core.model.meta.DefinitionPropertyValue;
+import org.geneontology.obographs.core.model.meta.SynonymPropertyValue;
+import org.geneontology.obographs.core.model.meta.XrefPropertyValue;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,14 +114,13 @@ public class OboGraphTermFactory {
 
       // Map the scope of Synonym
       TermSynonymScope scope = null;
-      String pred = spv.getPred();
-      if (pred.equals(SynonymPropertyValue.PREDS.hasExactSynonym.toString())) {
+      if (spv.isExact()) {
         scope = TermSynonymScope.EXACT;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasBroadSynonym.toString())) {
+      } else if (spv.isBroad()) {
         scope = TermSynonymScope.BROAD;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasNarrowSynonym.toString())) {
+      } else if (spv.isNarrow()) {
         scope = TermSynonymScope.NARROW;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasRelatedSynonym.toString())) {
+      } else if (spv.isRelated()) {
         scope = TermSynonymScope.RELATED;
       }
       String synonymType = spv.getSynonymType();

@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.io.obographs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.geneontology.obographs.model.*;
+import org.geneontology.obographs.core.model.*;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
