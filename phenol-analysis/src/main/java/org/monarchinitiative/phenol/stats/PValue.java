@@ -8,6 +8,7 @@ import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
  * raw and adjusted p values.
  */
 public class PValue implements Comparable<PValue> {
+  /** The Ontology TermId whose overrepresentation hasw been assessed to have this p-value. */
   protected final TermId item;
   /** The nominal (i.e., uncorrected) p-value for this item. */
   protected double p_raw;

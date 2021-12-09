@@ -1,30 +1,26 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
-
-class DoubleParam extends MgsaParam
-{
+/**
+ * A class that encapsulates a parameter value that is adjusted by MGSA's MCMC procedure, together with minimum
+ * and maximum allowable values.
+ */
+class DoubleParam extends MgsaParam {
     private double min = Double.NaN;
     private double max = Double.NaN;
     private double val;
 
-    public DoubleParam(Type type, double val)
-    {
+    public DoubleParam(Type type, double val) {
         super(type);
-
         this.val = val;
     }
 
-    public DoubleParam(DoubleParam p)
-    {
+    public DoubleParam(DoubleParam p) {
         super(p);
-
         this.val = p.val;
     }
 
-    public DoubleParam(Type type)
-    {
+    public DoubleParam(Type type) {
         super(type);
-
         if (type == Type.FIXED) throw new IllegalArgumentException("Parameter could not be instanciated of type Fixed.");
     }
 
@@ -33,8 +29,7 @@ class DoubleParam extends MgsaParam
         return val;
     }
 
-    void setValue(double newVal)
-    {
+    void setValue(double newVal) {
         this.val = newVal;
         setType(Type.FIXED);
     }

@@ -143,11 +143,10 @@ public class FixedAlphaBetaScore extends MgsaScore
         setMaxBeta(1.);
 
         /* At this state, all terms are inactive, hence all observed genes are false positive */
-        for (int i=0; i < observedGenes.length; i++)
-        {
-            if (observedGenes[i])
-                n10++;
-        }
+      for (boolean observedGene : observedGenes) {
+        if (observedGene)
+          n10++;
+      }
 
         n00 = observedGenes.length - n10;
     }
@@ -343,8 +342,7 @@ public class FixedAlphaBetaScore extends MgsaScore
 
             if (usePrior)
                 newScore2 += Math.log(p)*(numTerms - numInactiveTerms) + Math.log(1-p)*numInactiveTerms;
-        } else
-        {
+        } else {
             /* Prior */
             int alpha1 = 1; /* Psedocounts, false positive */
             int alpha2 = 1; /* Psedocounts, true negative */
@@ -366,8 +364,7 @@ public class FixedAlphaBetaScore extends MgsaScore
         return newScore2;
     }
 
-    public void undoProposal()
-    {
+    public void undoProposal() {
         if (proposalSwitch != -1)	switchState(proposalSwitch);
         else if (proposalT1 != -1) exchange(proposalT2, proposalT1);
         else if (oldAlphaIdx != -1) alphaIdx = oldAlphaIdx;
@@ -376,8 +373,7 @@ public class FixedAlphaBetaScore extends MgsaScore
         else throw new PhenolRuntimeException("Wanted to undo a proposal that wasn't proposed");
     }
 
-    public long getNeighborhoodSize()
-    {
+    public long getNeighborhoodSize() {
       return numTerms + (numTerms - numInactiveTerms) * numInactiveTerms;
     }
 

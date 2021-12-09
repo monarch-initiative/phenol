@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.obo.go;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

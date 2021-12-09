@@ -29,7 +29,7 @@ public class Gene2DiseaseAsssociationParserTest {
    */
 
   @Test
-  void testMim2GeneParser() throws IOException {
+  void testMim2GeneParser() {
     // 16 genes associated with OMIM:540000 are in the mim2gene_medgen.excerpt file
     // TRNC,COX1,COX2,COX3,CYTB,ND1,ND5,ND6,TRNF,TRNK,TRNL1,TRNQ,TRNS1,TRNS2,TRNV,TRNW
     // All of these genes were put into the gene info excerpt
