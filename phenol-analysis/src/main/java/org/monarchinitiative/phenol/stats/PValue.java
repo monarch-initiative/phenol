@@ -11,7 +11,7 @@ public class PValue implements Comparable<PValue> {
   /** The Ontology TermId whose overrepresentation hasw been assessed to have this p-value. */
   protected final TermId item;
   /** The nominal (i.e., uncorrected) p-value for this item. */
-  protected double p_raw;
+  protected final double p_raw;
   /**
    * The adjusted p_raw value of a test (adjusted according to a method such as Bonferoni
    * or Bejamini Holm).
@@ -40,9 +40,6 @@ public class PValue implements Comparable<PValue> {
     return this.item;
   }
 
-  public void setRawPValue(double pv) {
-    this.p_raw = pv;
-  }
 
   public double getRawPValue() {
     return this.p_raw;

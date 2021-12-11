@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author Peter Robinson, Sebastian Bauer
  */
-public class StudySet {
+public class StudySet implements ItemSet {
   /**
    * Key: an Ontology id (usually GO or HP); value: a {@link DirectAndIndirectTermAnnotations} object with the items that the
    * ontology term annotates.
