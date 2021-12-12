@@ -66,12 +66,13 @@ public class TermAssociationContainer implements AssociationContainer {
   }
 
   @Override
-  public Multimap<TermId, TermId> getTermToItemMultimap() {
-    Multimap<TermId, TermId> mp = ArrayListMultimap.create();
+  public Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap() {
+    Map<TermId, List<TermId>> mp = new HashMap<>();
     for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
+      mp.putIfAbsent(gene, new ArrayList<>());
       for (TermId ontologyTermId : entry.getValue().getAssociations()) {
-        mp.put(ontologyTermId, gene);
+        mp.get(ontologyTermId).add(gene);
       }
     }
     return mp;
@@ -92,7 +93,7 @@ public class TermAssociationContainer implements AssociationContainer {
    * @param dbObjectId id (e.g., MGI:12345) of the gene whose goAssociations are interesting
    * @return goAssociations for the given gene
    */
-  @Override
+
   public ItemAssociations get(TermId dbObjectId) throws PhenolException {
     if (!this.gene2associationMap.containsKey(dbObjectId)) {
       throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());

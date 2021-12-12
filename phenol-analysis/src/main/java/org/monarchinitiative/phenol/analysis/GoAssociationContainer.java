@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
@@ -33,7 +32,7 @@ public class GoAssociationContainer implements AssociationContainer {
    * This variable is initialzed only if needed. The getter first checks if it is null, and if so
    * calculates the required count.
    */
-  private final int annotatingTermCount;
+ // private final int annotatingTermCount;
   /**
    * Gene Ontology object.
    */
@@ -63,16 +62,17 @@ public class GoAssociationContainer implements AssociationContainer {
       List<TermId> tidlist = a.getAssociations();
       tidset.addAll(tidlist);
     }
-    this.annotatingTermCount = tidset.size();
+   // this.annotatingTermCount = tidset.size();
   }
 
   @Override
-  public Multimap<TermId, TermId> getTermToItemMultimap() {
-    Multimap<TermId, TermId> mp = ArrayListMultimap.create();
+  public Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap() {
+    Map<TermId, List<TermId>> mp = new HashMap<>();
     for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
+      mp.putIfAbsent(gene, new ArrayList<>());
       for (TermId ontologyTermId : entry.getValue().getAssociations()) {
-        mp.put(ontologyTermId, gene);
+        mp.get(ontologyTermId).add(gene);
       }
     }
     return mp;
@@ -80,26 +80,6 @@ public class GoAssociationContainer implements AssociationContainer {
 
   public List<GoGaf21Annotation> getRawAssociations() {
     return rawAssociations;
-  }
-
-  /**
-   * get a ItemAssociations object corresponding to a given gene name. If the
-   * name is not initially found as dbObject Symbol, (which is usually a
-   * database name with meaning to a biologist), try dbObject (which may be an
-   * accession number or some other term from the bla32 database), and
-   * finally, look for a synonym (another entry in the gene_association file
-   * that will have been parsed into the present object).
-   *
-   * @param dbObjectId id (e.g., MGI:12345) of the gene whose goAssociations are interesting
-   * @return goAssociations for the given gene
-   */
-  @Override
-  public ItemAssociations get(TermId dbObjectId) throws PhenolException {
-    if (!this.gene2associationMap.containsKey(dbObjectId)) {
-      throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());
-    } else {
-      return this.gene2associationMap.get(dbObjectId);
-    }
   }
 
   /**
