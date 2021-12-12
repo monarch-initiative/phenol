@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Peter Robinson, Sebastian Bauer
  */
-public class TermAssociationContainer implements AssociationContainer {
+public class TermAssociationContainer implements AssociationContainer<TermId> {
   private static final Logger LOGGER = LoggerFactory.getLogger(TermAssociationContainer.class);
   private final List<TermAnnotation> rawAssociations;
   /**

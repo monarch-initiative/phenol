@@ -23,12 +23,12 @@ import java.util.Set;
  * {@link DirectAndIndirectTermAnnotations} objects.
  * @author Peter N Robinson
  */
-public interface AssociationContainer {
+public interface AssociationContainer<T> {
 
-  Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap();
+  Map<TermId, List<T>> getOntologyTermToDomainItemsMap();
 
-  Map<TermId, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds);
+  Map<T, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds);
 
-  Set<TermId> getAllAnnotatedGenes();
+  Set<T> getAllAnnotatedGenes();
 
 }

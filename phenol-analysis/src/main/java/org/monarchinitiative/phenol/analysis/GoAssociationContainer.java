@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.*;
 
-public class GoAssociationContainer implements AssociationContainer {
+public class GoAssociationContainer implements AssociationContainer<TermId> {
   private final Logger LOGGER = LoggerFactory.getLogger(GoAssociationContainer.class);
   /**
    * Fake root added for GO that we do not want to add to the associations.

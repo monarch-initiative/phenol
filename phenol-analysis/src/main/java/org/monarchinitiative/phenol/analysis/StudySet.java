@@ -74,17 +74,7 @@ public class StudySet implements ItemSet<TermId> {
     return this.getAnnotationMap().keySet();
   }
 
-  public int getUnmappedGeneSymbolCount() { return this.unmappedGeneSymbols.size(); }
 
-  public List<String> getSortedUnmappedGeneSymbols() {
-    List<String> unmapped = new ArrayList<>(this.unmappedGeneSymbols);
-    Collections.sort(unmapped);
-    return unmapped;
-  }
-
-  public Set<String> getUnmappedGeneSymbolSet() {
-    return this.unmappedGeneSymbols;
-  }
 
   /**
    * @return set of all GO/HP ids used to annotate the genes in this study set.
