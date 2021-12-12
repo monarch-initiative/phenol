@@ -72,7 +72,7 @@ public class MgsaCalculation {
 
     Set<TermId> allAnnotatedGenes = goAssociations.getAllAnnotatedGenes();
     Map<TermId, DirectAndIndirectTermAnnotations> assocs = goAssociations.getAssociationMap(allAnnotatedGenes);
-    this.populationSet =  StudySet.populationSet(goAssociations.getAllAnnotatedGenes(), assocs);
+    this.populationSet =  StudySet.populationSet(assocs);
   }
 
   /**
@@ -120,7 +120,7 @@ public class MgsaCalculation {
   /**
    * Sets the type of the alpha parameter.
    *
-   * @param alpha
+   * @param alpha false-positive parameter for MGSA algorithm
    */
   public void setAlpha(MgsaParam.Type alpha) {
     this.alpha.setType(alpha);
@@ -140,7 +140,7 @@ public class MgsaCalculation {
   /**
    * Sets the type of the beta parameter.
    *
-   * @param beta
+   * @param beta false-negative parameter for MGSA algorithm
    */
   public void setBeta(MgsaParam.Type beta) {
     this.beta.setType(beta);
@@ -172,9 +172,7 @@ public class MgsaCalculation {
   }
 
   /**
-   * Set whether the parameter should be integrated.
-   *
-   * @param integrateParams
+   * @param integrateParams flag to set whether the parameter should be integrated.
    */
   public void setIntegrateParams(boolean integrateParams) {
     this.integrateParams = integrateParams;
@@ -191,9 +189,7 @@ public class MgsaCalculation {
   }
 
   /**
-   * Sets whether a random start should be used.
-   *
-   * @param randomStart
+   * @param randomStart true if a random start should be used.
    */
   public void useRandomStart(boolean randomStart) {
     this.randomStart = randomStart;

@@ -28,12 +28,6 @@ public class GoAssociationContainer implements AssociationContainer {
    */
   private final Map<TermId, ItemAssociations> gene2associationMap;
   /**
-   * The total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
-   * This variable is initialzed only if needed. The getter first checks if it is null, and if so
-   * calculates the required count.
-   */
- // private final int annotatingTermCount;
-  /**
    * Gene Ontology object.
    */
   private final Ontology ontology;
@@ -170,11 +164,11 @@ public class GoAssociationContainer implements AssociationContainer {
         unmappableSymbols.add(symbol);
       }
     }
-    return new StudySet(studyTermIds, label, getAssociationMap(studyTermIds), unmappableSymbols);
+    return new StudySet(label, getAssociationMap(studyTermIds), unmappableSymbols);
   }
 
   public StudySet fromGeneIds(Set<TermId> geneIds, String label) {
-    return new StudySet(geneIds, label, getAssociationMap(geneIds));
+    return new StudySet(label, getAssociationMap(geneIds));
   }
 
 
