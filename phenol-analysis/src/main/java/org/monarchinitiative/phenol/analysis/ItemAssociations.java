@@ -4,7 +4,6 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +12,8 @@ import java.util.stream.Collectors;
 
 /**
  * <P>
- * ItemAssociations objects store all the goAssociations for one single item.
+ * ItemAssociations objects store all the annotations for one single item.
+ * For instance, we might store all of the GO annotations for one gene/protein.
  * </P>
  * <P>
  * Note that duplicate entries are possible in the bla32 files. For this
@@ -27,36 +27,33 @@ import java.util.stream.Collectors;
  * @author Peter Robinson, Sebastian Bauer
  */
 
-public class ItemAssociations implements Iterable<TermAnnotation>, Serializable
-{
-    private static final long serialVersionUID = 1L;
+public class ItemAssociations implements Iterable<TermAnnotation> {
 
     /** TermId of the item (e.g., gene) for which this object stores 0 - n Associations (e.g., GO associations). */
-    private TermId  gene;
+    private final TermId  gene;
 
     /** List of GO functional annotations */
-    private ArrayList<TermAnnotation> associations;
+    private final List<TermAnnotation> associations;
 
     /**
      *
      * @param itemId name of the gene or other item being annotated
      */
-    public ItemAssociations(TermId itemId)
-    {
+    public ItemAssociations(TermId itemId) {
         associations = new ArrayList<>();
         gene = itemId;
     }
 
     /**
-     * Add a new bla32 to the gene.
+     * Add a new {@link TermAnnotation} to the item.
      *
-     * @param a defines the bla32 to be added.
+     * @param a defines the {@link TermAnnotation} to be added.
      */
     public void add(TermAnnotation a) {
         associations.add(a);
     }
 
-    public TermId name()
+    public TermId item()
     {
         return gene;
     }
@@ -71,7 +68,7 @@ public class ItemAssociations implements Iterable<TermAnnotation>, Serializable
     }
 
     /**
-     * Returns the iterator to iterate over all goAssociations.
+     * Returns the iterator to iterate over all {@link TermAnnotation} objects associated with this item.
      */
     public Iterator<TermAnnotation> iterator()
     {

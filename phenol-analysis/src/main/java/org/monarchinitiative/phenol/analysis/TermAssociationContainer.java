@@ -10,11 +10,11 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
-
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
 
 
 /**
@@ -24,10 +24,7 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * @author Peter Robinson, Sebastian Bauer
  */
 public class TermAssociationContainer implements AssociationContainer {
-
-
-
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(TermAssociationContainer.class);
   private final List<TermAnnotation> rawAssociations;
   /**
    * Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene.
@@ -80,14 +77,6 @@ public class TermAssociationContainer implements AssociationContainer {
     return mp;
   }
 
-  /**
-   * @return total GO/HP term count used to annotated the items in this container
-   */
-  @Override
-  public int getOntologyTermCount() {
-    return this.annotatingTermCount;
-  }
-
   public List<TermAnnotation> getRawAssociations() {
     return rawAssociations;
   }
@@ -138,46 +127,41 @@ public class TermAssociationContainer implements AssociationContainer {
 
   public Map<TermId, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds,
                                                                          boolean verbose) {
-    Map<TermId, DirectAndIndirectTermAnnotations> annotationMap = new HashMap<>();
+    Map<TermId, Set<TermId>> directAnnotationMap = new HashMap<>();
     int not_found = 0;
     for (TermId domainTermId : annotatedItemTermIds) {
-      try {
-        ItemAssociations assocs = get(domainTermId);
-        for (TermAnnotation termAnnotation : assocs) {
-          /* At first add the direct counts and remember the terms */
-          TermId ontologyTermId = termAnnotation.getTermId();
-          // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
-          Term term = this.ontology.getTermMap().get(ontologyTermId);
-          if (term == null) {
-            not_found++;
-            if (verbose) {
-              System.err.println("[WARNING(phenol:AssociationContainer)] Unable to retrieve term "
-                + ontologyTermId.getValue() + ", omitting.");
-            }
-            continue;
+      if (!this.gene2associationMap.containsKey(domainTermId)) {
+        LOGGER.error("Could not find annotations for  {}", domainTermId.getValue());
+        continue;
+      }
+      ItemAssociations assocs = this.gene2associationMap.get(domainTermId);
+      for (TermAnnotation termAnnotation : assocs) {
+        /* At first add the direct counts and remember the terms */
+        TermId ontologyTermId = termAnnotation.getTermId();
+        // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
+        Term term = this.ontology.getTermMap().get(ontologyTermId);
+        if (term == null) {
+          not_found++;
+          if (verbose) {
+            LOGGER.warn("[WARNING(phenol:AssociationContainer)] Unable to retrieve term {} (omitted).",
+              ontologyTermId.getValue());
           }
-          // replace an alt_id with the primary id.
-          // if we already have the primary id, nothing is changed.
-          TermId primaryGoId = term.getId();
-          annotationMap.putIfAbsent(primaryGoId, new DirectAndIndirectTermAnnotations());
-          DirectAndIndirectTermAnnotations termAnnots = annotationMap.get(primaryGoId);
-          termAnnots.addGeneAnnotationDirect(domainTermId);
-          // In addition to the direct annotation, the gene is also indirectly annotated to all of the
-          // GO Term's ancestors
-          Set<TermId> ancs = getAncestorTerms(ontology, primaryGoId, true);
-          for (TermId ancestor : ancs) {
-            annotationMap.putIfAbsent(ancestor, new DirectAndIndirectTermAnnotations());
-            DirectAndIndirectTermAnnotations termAncAnnots = annotationMap.get(ancestor);
-            termAncAnnots.addGeneAnnotationTotal(domainTermId);
-          }
+          continue;
         }
-      } catch (PhenolException e) {
-        System.err.println("[ERROR (StudySet.java)] " + e.getMessage());
+        // if necessary, replace with the latest primary term id
+        ontologyTermId = this.ontology.getPrimaryTermId(ontologyTermId);
+        directAnnotationMap.putIfAbsent(domainTermId, new HashSet<>());
+        directAnnotationMap.get(domainTermId).add(ontologyTermId);
       }
     }
     if (not_found > 0) {
-      System.err.printf("[WARNING (AssociationContainer)] Cound not find annotations for %d ontology term ids" +
-        " (are versions of the GAF and obo file compatible?).\n", not_found);
+      LOGGER.warn("Cound not find annotations for {} ontology term ids (are versions in synch?)", not_found);
+    }
+    Map<TermId, DirectAndIndirectTermAnnotations> annotationMap = new HashMap<>();
+    for (Map.Entry<TermId, Set<TermId>> e : directAnnotationMap.entrySet()) {
+      TermId itemTermId = e.getKey();
+      DirectAndIndirectTermAnnotations daiAnnots =
+        new DirectAndIndirectTermAnnotations(e.getValue(), ontology);
     }
     return annotationMap;
   }

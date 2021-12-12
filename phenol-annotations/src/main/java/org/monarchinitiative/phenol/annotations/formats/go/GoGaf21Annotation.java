@@ -46,8 +46,6 @@ import java.util.Optional;
  * </ol>
  */
 public final class GoGaf21Annotation implements TermAnnotation {
-  /** Serial UID for serialization. */
-  private static final long serialVersionUID = 2L;
   /** The {@link TermId} of the database object being annotated. Includes both the "db" (which is the
    * first column of the GO annotation file) as well as the dbObjectId (which is the second column in
    * the GO annotation file). Note that GO is inconsistent, and sometimes the dbObjectId column
@@ -320,7 +318,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (! (obj instanceof GoGaf21Annotation)) {
       return false;
     }
     GoGaf21Annotation other = (GoGaf21Annotation) obj;

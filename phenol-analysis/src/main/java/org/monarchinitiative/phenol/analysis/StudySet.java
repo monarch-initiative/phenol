@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author Peter Robinson, Sebastian Bauer
  */
-public class StudySet implements ItemSet {
+public class StudySet implements ItemSet<TermId> {
   /**
    * Key: an Ontology id (usually GO or HP); value: a {@link DirectAndIndirectTermAnnotations} object with the items that the
    * ontology term annotates.
@@ -65,6 +65,7 @@ public class StudySet implements ItemSet {
   /**
    * @return a map with key: a GO id; value: an object with all annotated gene ids.
    */
+  @Override
   public Map<TermId, DirectAndIndirectTermAnnotations> getAnnotationMap() {
     return annotationMap;
   }
@@ -72,6 +73,7 @@ public class StudySet implements ItemSet {
   /**
    * @return set of all genes in this StudySet.
    */
+  @Override
   public Set<TermId> getGeneSet() {
     return this.geneSet;
   }
