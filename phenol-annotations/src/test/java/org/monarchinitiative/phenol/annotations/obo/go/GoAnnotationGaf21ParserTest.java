@@ -6,6 +6,8 @@ import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -22,8 +24,14 @@ public class GoAnnotationGaf21ParserTest {
   private static List<GoGaf21Annotation> annotations;
 
   @BeforeAll
-  static void init() {
-    final File goGeneAnnotationHeadFile = Paths.get("src/test/resources/go/goa_human_head.gav21.gaf").toFile();
+  static void init() throws IOException {
+    final String goGaf = "go" + File.separator + "goa_human_head.gav21.gaf";
+    ClassLoader classLoader = GoAnnotationGaf21ParserTest.class.getClassLoader();
+    URL goGafURL = classLoader.getResource(goGaf);
+    if (goGafURL == null) {
+      throw new IOException("Could not find goa_human_head.gav21.gaf " + goGafURL);
+    }
+    final File goGeneAnnotationHeadFile = new File(goGafURL.getFile());
     annotations = GoGeneAnnotationParser.loadAnnotations(goGeneAnnotationHeadFile);
   }
 

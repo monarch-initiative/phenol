@@ -35,9 +35,9 @@ class HpoAnnotationModelTest {
         }
         File file = new File(hpOboURL.getFile());
         Ontology ontology = OntologyLoader.loadOntology(file);
-        Path omim123456path = Paths.get("src","test","resources","annotations","OMIM-123456.tab");
-        String omim123456file = omim123456path.toAbsolutePath().toString();
-        HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456file,ontology);
+        String omim123456path =  "annotations" + File.separator + "OMIM-123456.tab";
+        URL omim123456URL = classLoader.getResource(omim123456path);
+        HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456URL.getFile(),ontology);
         v2sf = parser.parse();
     }
 
