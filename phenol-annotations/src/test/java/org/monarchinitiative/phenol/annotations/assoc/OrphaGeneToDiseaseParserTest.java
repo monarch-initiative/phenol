@@ -1,10 +1,14 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
 import com.google.common.collect.Multimap;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -44,10 +48,21 @@ public class OrphaGeneToDiseaseParserTest {
 
   private static Multimap<TermId, Gene> orphaId2GeneMultimap;
 
-  public OrphaGeneToDiseaseParserTest() {
-    Path orphaPath = Paths.get("src/test/resources/orphanet_disease2gene_en_product6_head.xml");
-    Path mim2genePath = Paths.get("src/test/resources/mim2gene_medgen.excerpt");
-    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile(), mim2genePath.toFile());
+  @BeforeAll
+  private static void init() throws IOException {
+    final String mim2genePath = "mim2gene_medgen.excerpt";
+    ClassLoader classLoader = Gene2DiseaseAsssociationParserTest.class.getClassLoader();
+    URL mim2geneURL = classLoader.getResource(mim2genePath);
+    if (mim2geneURL == null) {
+      throw new IOException("Could not find mim2gene_medgen at " + mim2genePath);
+    }
+    final String orphanetPath = "orphanet_disease2gene_en_product6_head.xml";
+    URL orphanetURL = classLoader.getResource(orphanetPath);
+    if (orphanetURL == null) {
+      throw new IOException("Could not find orphanet_disease2gene_en_product6_head.xml at " + orphanetPath);
+    }
+    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(new File(orphanetURL.getFile()),
+            new File(mim2geneURL.getFile()));
     orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
   }
 

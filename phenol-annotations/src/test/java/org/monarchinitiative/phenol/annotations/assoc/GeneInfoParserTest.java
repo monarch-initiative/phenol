@@ -1,8 +1,11 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -11,8 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GeneInfoParserTest {
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
-  final Path homoSapiensGeneInfoPath = Paths.get("src/test/resources/Homo_sapiens.gene_info.excerpt.gz");
-  private final Map<TermId, String> id2symMap = GeneInfoParser.loadGeneIdToSymbolMap(homoSapiensGeneInfoPath.toFile());
+  private static Map<TermId, String> id2symMap;
+
+
+  @BeforeAll
+  private static void init() throws IOException {
+    final String homoSapiensGeneInfoPath = "Homo_sapiens.gene_info.excerpt.gz";
+    ClassLoader classLoader = Gene2DiseaseAsssociationParserTest.class.getClassLoader();
+    URL homoSapiensGeneInfoURL = classLoader.getResource(homoSapiensGeneInfoPath);
+    if (homoSapiensGeneInfoURL == null) {
+      throw new IOException("Could not find Homo_sapiens.gene_info.excerpt.gz at " + homoSapiensGeneInfoPath);
+    }
+    id2symMap = GeneInfoParser.loadGeneIdToSymbolMap(homoSapiensGeneInfoURL.getFile());
+  }
 
   @Test
   void testNumberOfGeneIdsParsed() {
