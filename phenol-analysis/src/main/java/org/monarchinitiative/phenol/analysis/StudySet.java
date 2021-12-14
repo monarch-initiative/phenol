@@ -40,9 +40,7 @@ public class StudySet implements ItemSet<TermId> {
    */
   public StudySet(String name,
                   Map<TermId, DirectAndIndirectTermAnnotations> associationContainer) {
-    this.name = name;
-    this.annotationMap = associationContainer;
-    this.unmappedGeneSymbols = new HashSet<>(); // empty set
+    this(name, associationContainer, new HashSet<>());
   }
 
   /**

@@ -47,16 +47,9 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
       if (tid.equals(fakeRoot)) {
         continue; // skip owl:Thing
       }
-      tempMap.putIfAbsent(tid, new ItemAssociations(tid));
-      tempMap.get(tid).add(a);
+      tempMap.computeIfAbsent(tid, k -> new ItemAssociations(k)).add(a);
     }
     this.gene2associationMap = ImmutableMap.copyOf(tempMap);
-    Set<TermId> tidset = new HashSet<>();
-    for (ItemAssociations a : this.gene2associationMap.values()) {
-      List<TermId> tidlist = a.getAssociations();
-      tidset.addAll(tidlist);
-    }
-   // this.annotatingTermCount = tidset.size();
   }
 
   @Override
@@ -124,8 +117,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
         }
         // if necessary, replace with the latest primary term id
         ontologyTermId = this.ontology.getPrimaryTermId(ontologyTermId);
-        directAnnotationMap.putIfAbsent(domainTermId, new HashSet<>());
-        directAnnotationMap.get(domainTermId).add(ontologyTermId);
+        directAnnotationMap.computeIfAbsent(domainTermId, k -> new HashSet<>()).add(ontologyTermId);
       }
     }
     if (not_found > 0) {

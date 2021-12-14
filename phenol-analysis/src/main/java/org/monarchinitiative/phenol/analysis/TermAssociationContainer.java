@@ -151,8 +151,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         }
         // if necessary, replace with the latest primary term id
         ontologyTermId = this.ontology.getPrimaryTermId(ontologyTermId);
-        directAnnotationMap.putIfAbsent(domainTermId, new HashSet<>());
-        directAnnotationMap.get(domainTermId).add(ontologyTermId);
+        directAnnotationMap.computeIfAbsent(domainTermId, k -> new HashSet<>()).add(ontologyTermId);
       }
     }
     if (not_found > 0) {
