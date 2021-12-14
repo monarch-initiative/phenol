@@ -32,17 +32,16 @@ class HpoDiseaseAnnotationParserTest {
   private static Map<TermId, HpoDisease> diseaseMap;
 
   @BeforeAll
-  static void init() throws IOException {
-    final String hpOboPath = "hp_head.obo";
-    ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-    URL hpOboURL = classLoader.getResource(hpOboPath);
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
-    String phenoAnnot = "annotations" + File.separator + "phenotype_annotation_head.tab";
-    URL annotURL = classLoader.getResource(phenoAnnot);
+    String phenoAnnot = "/annotations/phenotype_annotation_head.tab";
+    URL annotURL = HpoCategoryMapTest.class.getResource(phenoAnnot);
     String annotationPath = annotURL.getFile();
     diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
   }

@@ -31,22 +31,21 @@ class HpoAnnotationFileParserTest {
 
 
   @BeforeAll
-  static void init() throws PhenolException, IOException {
-    final String hpOboPath = "hp_head.obo";
-    ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-    URL hpOboURL = classLoader.getResource(hpOboPath);
+  public static void init() throws PhenolException, IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }
     File file = new File(hpOboURL.getFile());
     Ontology ontology = OntologyLoader.loadOntology(file);
-    String omimPath =  "annotations" + File.separator + "OMIM-123456.tab";
-    URL omimURL = classLoader.getResource(omimPath);
+    String omimPath =  "/annotations/OMIM-123456.tab";
+    URL omimURL = HpoCategoryMapTest.class.getResource(omimPath);
     HpoAnnotationFileParser parser = new HpoAnnotationFileParser(new File(omimURL.getFile()),ontology);
     smallFileOmim123456 = parser.parse();
     // get small file 2
-    String omim614114path ="annotations" + File.separator + "OMIM-614114.tab";
-    URL omim614114URL = classLoader.getResource(omim614114path);
+    String omim614114path ="/annotations/OMIM-614114.tab";
+    URL omim614114URL = HpoCategoryMapTest.class.getResource(omim614114path);
     // TODO there is some error here, but we need to refactor to JSON anyway
 //    HpoAnnotationFileParser parser2 = new HpoAnnotationFileParser(new File(omim614114URL.getFile()),ontology);
 //    smallFileOmim614114 = parser2.parse();

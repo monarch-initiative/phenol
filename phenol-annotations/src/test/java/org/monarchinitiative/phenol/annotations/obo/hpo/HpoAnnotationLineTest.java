@@ -25,9 +25,8 @@ class HpoAnnotationLineTest {
   private final Ontology ontology;
 
   HpoAnnotationLineTest() throws PhenolException, IOException {
-    final String hpOboPath = "hp_head.obo";
-    ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-    URL hpOboURL = classLoader.getResource(hpOboPath);
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }

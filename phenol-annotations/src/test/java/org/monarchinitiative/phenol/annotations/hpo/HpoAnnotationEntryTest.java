@@ -24,15 +24,10 @@ class HpoAnnotationEntryTest {
 
 
     @BeforeAll
-    static void init() throws IOException {
-        final String hpOboPath = "hp_head.obo";
-        ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-        URL hpOboURL = classLoader.getResource(hpOboPath);
-        if (hpOboURL == null) {
-            throw new IOException("Could not find hpOboPath at " + hpOboPath);
-        }
-        File file = new File(hpOboURL.getFile());
-        ontology = OntologyLoader.loadOntology(file);
+    public static void init() throws IOException {
+      URL hpOboURL = HpoCategoryMapTest.class.getResource("/hp_head.obo");
+      File file = new File(hpOboURL.getFile());
+      ontology = OntologyLoader.loadOntology(file);
     }
 
     @Test

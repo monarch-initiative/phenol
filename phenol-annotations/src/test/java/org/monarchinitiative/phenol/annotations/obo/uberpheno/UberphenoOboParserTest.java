@@ -30,9 +30,8 @@ public class UberphenoOboParserTest {
   private Ontology ontology;
 
   public UberphenoOboParserTest() throws IOException {
-    final String uberPhenoPath = "crossSpeciesPheno_head.obo";
-    ClassLoader classLoader = UberphenoOboParserTest.class.getClassLoader();
-    URL uberphenoURL = classLoader.getResource(uberPhenoPath);
+    final String uberPhenoPath = "/crossSpeciesPheno_head.obo";
+    URL uberphenoURL = UberphenoOboParserTest.class.getResource(uberPhenoPath);
     if (uberphenoURL == null) {
       throw new IOException("Could not find uber pheno at " + uberPhenoPath);
     }

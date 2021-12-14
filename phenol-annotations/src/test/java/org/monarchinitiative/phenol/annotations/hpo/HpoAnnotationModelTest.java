@@ -26,17 +26,11 @@ class HpoAnnotationModelTest {
 
 
     @BeforeAll
-    static void init() throws PhenolException, IOException {
-        final String hpOboPath = "hp_head.obo";
-        ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-        URL hpOboURL = classLoader.getResource(hpOboPath);
-        if (hpOboURL == null) {
-            throw new IOException("Could not find hpOboPath at " + hpOboPath);
-        }
+    public static void init() throws PhenolException, IOException {
+      URL hpOboURL = HpoCategoryMapTest.class.getResource("/hp_head.obo");
         File file = new File(hpOboURL.getFile());
         Ontology ontology = OntologyLoader.loadOntology(file);
-        String omim123456path =  "annotations" + File.separator + "OMIM-123456.tab";
-        URL omim123456URL = classLoader.getResource(omim123456path);
+      URL omim123456URL = HpoCategoryMapTest.class.getResource("/annotations/OMIM-123456.tab");
         HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456URL.getFile(),ontology);
         v2sf = parser.parse();
     }

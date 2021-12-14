@@ -27,18 +27,17 @@ class OrphanetInheritanceXMLParserTest {
   static private OrphanetInheritanceXMLParser parser;
 
   @BeforeAll
-  private static void init() throws IOException {
-    final String hpOboPath = "hp_head.obo";
-    ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-    URL hpOboURL = classLoader.getResource(hpOboPath);
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
 
-    String orphaXMLpath =  "annotations" + File.separator + "en_product9_ages-small.xml";
-    URL orphaURL = classLoader.getResource(orphaXMLpath);
+    String orphaXMLpath =  "/annotations/en_product9_ages-small.xml";
+    URL orphaURL = HpoCategoryMapTest.class.getResource(orphaXMLpath);
     if (orphaURL == null) {
       throw new IOException("Could not find en_product9_ages-small.xml at " + orphaURL);
     }

@@ -37,18 +37,17 @@ class OrphanetXML2HpoDiseaseModelParserTest {
   static private final TermId frequent = TermId.of("HP:0040282");
 
   @BeforeAll
-  private static void init() throws IOException {
-    final String hpOboPath = "hp_head.obo";
-    ClassLoader classLoader = HpoCategoryMapTest.class.getClassLoader();
-    URL hpOboURL = classLoader.getResource(hpOboPath);
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
 
-    String orphaXMLpath =  "annotations" + File.separator + "en_product4_small.xml";
-    URL orphaURL = classLoader.getResource(orphaXMLpath);
+    String orphaXMLpath =  "/annotations/en_product4_small.xml";
+    URL orphaURL = HpoCategoryMapTest.class.getResource(orphaXMLpath);
     if (orphaURL == null) {
       throw new IOException("Could not find en_product4_small.xml at " + orphaURL);
     }

@@ -24,10 +24,8 @@ public class GoAnnotationGaf21ParserTest {
   private static List<GoGaf21Annotation> annotations;
 
   @BeforeAll
-  static void init() throws IOException {
-    final String goGaf = "go" + File.separator + "goa_human_head.gav21.gaf";
-    ClassLoader classLoader = GoAnnotationGaf21ParserTest.class.getClassLoader();
-    URL goGafURL = classLoader.getResource(goGaf);
+  public static void init() throws IOException {
+    URL goGafURL = GoAnnotationGaf21ParserTest.class.getResource("/go/goa_human_head.gav21.gaf");
     if (goGafURL == null) {
       throw new IOException("Could not find goa_human_head.gav21.gaf " + goGafURL);
     }

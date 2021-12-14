@@ -49,15 +49,14 @@ public class OrphaGeneToDiseaseParserTest {
   private static Multimap<TermId, Gene> orphaId2GeneMultimap;
 
   @BeforeAll
-  private static void init() throws IOException {
-    final String mim2genePath = "mim2gene_medgen.excerpt";
-    ClassLoader classLoader = Gene2DiseaseAsssociationParserTest.class.getClassLoader();
-    URL mim2geneURL = classLoader.getResource(mim2genePath);
+  public static void init() throws IOException {
+    final String mim2genePath = "/mim2gene_medgen.excerpt";
+    URL mim2geneURL = Gene2DiseaseAsssociationParserTest.class.getResource(mim2genePath);
     if (mim2geneURL == null) {
       throw new IOException("Could not find mim2gene_medgen at " + mim2genePath);
     }
-    final String orphanetPath = "orphanet_disease2gene_en_product6_head.xml";
-    URL orphanetURL = classLoader.getResource(orphanetPath);
+    final String orphanetPath = "/orphanet_disease2gene_en_product6_head.xml";
+    URL orphanetURL = Gene2DiseaseAsssociationParserTest.class.getResource(orphanetPath);
     if (orphanetURL == null) {
       throw new IOException("Could not find orphanet_disease2gene_en_product6_head.xml at " + orphanetPath);
     }

@@ -18,10 +18,9 @@ public class GeneInfoParserTest {
 
 
   @BeforeAll
-  private static void init() throws IOException {
-    final String homoSapiensGeneInfoPath = "Homo_sapiens.gene_info.excerpt.gz";
-    ClassLoader classLoader = Gene2DiseaseAsssociationParserTest.class.getClassLoader();
-    URL homoSapiensGeneInfoURL = classLoader.getResource(homoSapiensGeneInfoPath);
+  public static void init() throws IOException {
+    final String homoSapiensGeneInfoPath = "/Homo_sapiens.gene_info.excerpt.gz";
+    URL homoSapiensGeneInfoURL = Gene2DiseaseAsssociationParserTest.class.getResource(homoSapiensGeneInfoPath);
     if (homoSapiensGeneInfoURL == null) {
       throw new IOException("Could not find Homo_sapiens.gene_info.excerpt.gz at " + homoSapiensGeneInfoPath);
     }
