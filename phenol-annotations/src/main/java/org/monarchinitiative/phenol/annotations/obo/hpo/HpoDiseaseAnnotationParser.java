@@ -104,7 +104,7 @@ public class HpoDiseaseAnnotationParser {
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
     Set<DiseaseDatabase> dabaseSet = new HashSet<>(databases);
-    databasePrefixes = dabaseSet; // TODO make immutable copy
+    databasePrefixes = Set.copyOf(dabaseSet); // immutable copy
   }
 
   private HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology) {
@@ -188,7 +188,7 @@ public class HpoDiseaseAnnotationParser {
     // Now we want to transform them into HpoDisease objects
     for (TermId diseaseId : disease2AnnotLineMap.keySet()) {
       String diseaseDatabasePrefix = diseaseId.getPrefix();
-      DiseaseDatabase diseaseDb = DiseaseDatabase.fromString(diseaseDatabasePrefix);
+      DiseaseDatabase diseaseDb = fromString(diseaseDatabasePrefix);
       if (!databasePrefixes.contains(diseaseDb)) {
         continue; // skip unless we want to keep this database
       }

@@ -29,7 +29,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    */
   private final Map<TermId, GeneAnnotations> gene2associationMap;
   /**
-   * @return the total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   * The total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
    */
   private final int annotatingTermCount;
 
@@ -163,6 +163,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
       TermId itemTermId = e.getKey();
       DirectAndIndirectTermAnnotations daiAnnots =
         new DirectAndIndirectTermAnnotations(e.getValue(), ontology);
+      annotationMap.put(itemTermId, daiAnnots);
     }
     return annotationMap;
   }

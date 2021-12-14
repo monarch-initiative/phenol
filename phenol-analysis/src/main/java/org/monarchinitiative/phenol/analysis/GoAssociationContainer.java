@@ -31,7 +31,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
   private final Ontology ontology;
 
   /**
-   * @return total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   * total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
    */
   private final int annotatingTermCount;
 
@@ -143,6 +143,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
       TermId itemTermId = e.getKey();
       DirectAndIndirectTermAnnotations daiAnnots =
         new DirectAndIndirectTermAnnotations(e.getValue(), ontology);
+      annotationMap.put(itemTermId, daiAnnots);
     }
     return annotationMap;
   }

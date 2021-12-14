@@ -1,12 +1,9 @@
 package org.monarchinitiative.phenol.analysis;
 
-import com.google.common.collect.Multimap;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
