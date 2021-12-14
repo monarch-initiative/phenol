@@ -50,7 +50,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
       if (tid.equals(fakeRoot)) {
         continue; // skip owl:Thing
       }
-      tempMap.computeIfAbsent(tid, k -> new GeneAnnotations(k)).add(a);
+      tempMap.computeIfAbsent(tid, GeneAnnotations::new).addAnnotation(a);
     }
     this.gene2associationMap = ImmutableMap.copyOf(tempMap);
     Set<TermId> tidset = new HashSet<>();
