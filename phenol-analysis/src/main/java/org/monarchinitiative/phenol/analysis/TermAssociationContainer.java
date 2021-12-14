@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -27,13 +25,11 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
   private static final Logger LOGGER = LoggerFactory.getLogger(TermAssociationContainer.class);
   private final List<TermAnnotation> rawAssociations;
   /**
-   * Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene.
+   * Key -- TermId for a gene. Value: {@link ItemAnnotations} object with GO annotations for the gene.
    */
-  private final Map<TermId, ItemAssociations> gene2associationMap;
+  private final Map<TermId, GeneAnnotations> gene2associationMap;
   /**
    * The total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
-   * This variable is initialzed only if needed. The getter first checks if it is null, and if so
-   * calculates the required count.
    */
   private final int annotatingTermCount;
 
@@ -49,17 +45,17 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
   private TermAssociationContainer(List<TermAnnotation> assocs, Ontology ontology) {
     this.rawAssociations = assocs;
     this.ontology = ontology;
-    Map<TermId, ItemAssociations> tempMap = new HashMap<>();
+    Map<TermId, GeneAnnotations> tempMap = new HashMap<>();
     for (TermAnnotation a : assocs) {
       TermId tid = a.getLabel();
-      tempMap.putIfAbsent(tid, new ItemAssociations(tid));
-      ItemAssociations g2a = tempMap.get(tid);
-      g2a.add(a);
+      tempMap.putIfAbsent(tid, new GeneAnnotations(tid));
+      GeneAnnotations g2a = tempMap.get(tid);
+      g2a.addAnnotation(a);
     }
     this.gene2associationMap = ImmutableMap.copyOf(tempMap);
     Set<TermId> tidset = new HashSet<>();
-    for (ItemAssociations a : this.gene2associationMap.values()) {
-      List<TermId> tidlist = a.getAssociations();
+    for (GeneAnnotations a : this.gene2associationMap.values()) {
+      List<TermId> tidlist = a.getAnnotatingTermIds();
       tidset.addAll(tidlist);
     }
     this.annotatingTermCount = tidset.size();
@@ -68,14 +64,18 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
   @Override
   public Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap() {
     Map<TermId, List<TermId>> mp = new HashMap<>();
-    for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
+    for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
       mp.putIfAbsent(gene, new ArrayList<>());
-      for (TermId ontologyTermId : entry.getValue().getAssociations()) {
+      for (TermId ontologyTermId : entry.getValue().getAnnotatingTermIds()) {
         mp.get(ontologyTermId).add(gene);
       }
     }
     return mp;
+  }
+
+  public int getAnnotatingTermCount() {
+    return this.annotatingTermCount;
   }
 
   public List<TermAnnotation> getRawAssociations() {
@@ -94,7 +94,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @return goAssociations for the given gene
    */
 
-  public ItemAssociations get(TermId dbObjectId) throws PhenolException {
+  public GeneAnnotations get(TermId dbObjectId) throws PhenolException {
     if (!this.gene2associationMap.containsKey(dbObjectId)) {
       throw new PhenolException("Could not find annotations for " + dbObjectId.getValue());
     } else {
@@ -135,7 +135,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         LOGGER.error("Could not find annotations for  {}", domainTermId.getValue());
         continue;
       }
-      ItemAssociations assocs = this.gene2associationMap.get(domainTermId);
+      GeneAnnotations assocs = this.gene2associationMap.get(domainTermId);
       for (TermAnnotation termAnnotation : assocs) {
         /* At first add the direct counts and remember the terms */
         TermId ontologyTermId = termAnnotation.getTermId();
@@ -162,6 +162,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
       TermId itemTermId = e.getKey();
       DirectAndIndirectTermAnnotations daiAnnots =
         new DirectAndIndirectTermAnnotations(e.getValue(), ontology);
+      annotationMap.put(itemTermId, daiAnnots);
     }
     return annotationMap;
   }

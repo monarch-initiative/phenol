@@ -4,12 +4,12 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -23,7 +23,7 @@ class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 
   @BeforeEach
-  void init() throws PhenolException {
+  void init() {
     System.setProperty("user.timezone", "UTC"); // Somehow setting in pom.xml does not work :(
 
 	  ClassLoader classLoader = this.getClass().getClassLoader();
@@ -31,8 +31,11 @@ class HpoAssociationParserTest {
     URL mim2GeneUrl = classLoader.getResource("mim2gene_medgen.excerpt");
     URL geneInfoUrl = classLoader.getResource("Homo_sapiens.gene_info.excerpt.gz");
     URL orphanetUrl = classLoader.getResource("orphanet_disease2gene_en_product6_head.xml");
-    URL phenotypeUrl = classLoader.getResource("annotations/phenotype_annotation_head.tab");
-
+    URL phenotypeUrl = classLoader.getResource("annotations/phenotype_hpoa_head.tab");
+    Objects.requireNonNull(mim2GeneUrl, "Could not retrieve mim2gene_medgen.excerpt");
+    Objects.requireNonNull(geneInfoUrl, "Could not retrieve Homo_sapiens.gene_info.excerpt.gz");
+    Objects.requireNonNull(orphanetUrl, "Could not retrieve orphanet_disease2gene_en_product6_head.xml");
+    Objects.requireNonNull(phenotypeUrl, "Could not retrieve annotations/phenotype_hpoa_head.tab");
     Ontology ontology = OntologyLoader.loadOntology(classLoader.getResourceAsStream("hp_head.obo"));
 
     parser = new HpoAssociationParser(geneInfoUrl.getPath(), mim2GeneUrl.getPath(),
@@ -164,7 +167,7 @@ class HpoAssociationParserTest {
   }
 
   @Test
-  void testTermToGene() throws PhenolException {
+  void testTermToGene() {
     // This test map should come from {@link HpoDiseaseAnnotationParser}
     TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
     TermId fakePhenotype = TermId.of("HP:0000118");

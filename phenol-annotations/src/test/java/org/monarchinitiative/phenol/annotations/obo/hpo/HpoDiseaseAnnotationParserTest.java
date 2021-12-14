@@ -14,8 +14,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,14 +38,14 @@ class HpoDiseaseAnnotationParserTest {
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
-    String phenoAnnot = "/annotations/phenotype_annotation_head.tab";
+    String phenoAnnot = "/annotations/phenotype_hpoa_head.tab";
     URL annotURL = HpoCategoryMapTest.class.getResource(phenoAnnot);
     String annotationPath = annotURL.getFile();
     diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
   }
 
   /**
-   * There are three different diseases in "annotations/phenotype_annotation_head.tab"
+   * There are three different diseases in "annotations/phenotype_hpoa_head.tab"
    */
   @Test
   void testSizeOfDiseaseMap() {

@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.assoc;
 import com.google.common.collect.*;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
+import org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -11,6 +12,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.OMIM;
 
 /**
  * <p>This class parses the files {@code mim2gene_medgen}, available from
@@ -91,10 +94,10 @@ public class HpoAssociationParser {
 
   /**
    * Use this constructor to parse everything except the Orphanet to gene file.
-   * @param geneInfoFile
-   * @param mim2geneMedgenFile
-   * @param phenotypeHpoaFile
-   * @param hpoOntology
+   * @param geneInfoFile path to Homo_sapiens_gene_info.gz
+   * @param mim2geneMedgenFile path to mim2gene_medgen
+   * @param phenotypeHpoaFile path to phenotype.hpoa
+   * @param hpoOntology path to hp.json/obo
    */
   public HpoAssociationParser(File geneInfoFile,
                               File mim2geneMedgenFile,
@@ -133,7 +136,7 @@ public class HpoAssociationParser {
     if (! phenotypeDotHpoaFile.exists()) {
       throw new PhenolRuntimeException("Cannot find phenotype.hpoa file");
     }
-    List<String> desiredDatabasePrefixes=ImmutableList.of("OMIM");
+    List<DiseaseDatabase> desiredDatabasePrefixes=ImmutableList.of(OMIM);
     Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.phenotypeDotHpoaFile.getAbsolutePath(),
       hpoOntology,
       desiredDatabasePrefixes);

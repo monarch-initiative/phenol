@@ -62,18 +62,10 @@ public class HpoAnnotationFileParser {
    */
   private List<String> parseErrors;
 
-  private final boolean verbose;
-
-  public HpoAnnotationFileParser(File file, Ontology ontology, boolean v) {
+  public HpoAnnotationFileParser(File file, Ontology ontology) {
     this.hpoAnnotationFile = file;
     this.ontology = ontology;
-    this.verbose = v;
   }
-
-  public HpoAnnotationFileParser(String path, Ontology ontology, boolean v) {
-    this(new File(path), ontology, v);
-  }
-
   /**
    * Set up parser for an individual HPO Annotation file ("small file") with verbosity false
    *
@@ -81,17 +73,7 @@ public class HpoAnnotationFileParser {
    * @param ontology reference to HPO Ontology object
    */
   public HpoAnnotationFileParser(String path, Ontology ontology) {
-    this(path, ontology, false);
-  }
-
-  /**
-   * Set up parser for an individual HPO Annotation file ("small file")
-   *
-   * @param file     File representing phenotype.hpoa
-   * @param ontology reference to HPO Ontology object
-   */
-  public HpoAnnotationFileParser(File file, Ontology ontology) {
-    this(file, ontology, false);
+    this(new File(path), ontology);
   }
 
 

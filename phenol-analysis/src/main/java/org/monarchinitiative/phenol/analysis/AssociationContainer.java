@@ -1,12 +1,9 @@
 package org.monarchinitiative.phenol.analysis;
 
-import com.google.common.collect.Multimap;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,5 +27,9 @@ public interface AssociationContainer<T> {
   Map<T, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds);
 
   Set<T> getAllAnnotatedGenes();
+  /**
+   * @return total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   */
+  int getAnnotatingTermCount();
 
 }
