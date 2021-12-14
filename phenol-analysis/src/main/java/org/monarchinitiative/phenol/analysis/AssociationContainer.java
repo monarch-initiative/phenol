@@ -11,8 +11,8 @@ import java.util.Set;
 
 /**
  * This is the interface for the Ontology (usually: Gene Ontology) annotations.
- * It organizes the relationships netween the annotated items (e.g., genes/proteins)
- * and the ontology terms that annotate them (e.g., GO terms). It also allows bot
+ * It organizes the relationships between the annotated items (e.g., genes/proteins)
+ * and the ontology terms that annotate them (e.g., GO terms). It also allows both
  * explicit (direct) and inferred (indirect) annotations to be retrieved. The
  * {@link GoAssociationContainer} is the implementation that we use mainly for
  * Gene Ontology annotations. Other implementations are made for isopret.
