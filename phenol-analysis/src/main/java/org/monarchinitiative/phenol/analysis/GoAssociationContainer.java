@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.analysis;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -24,13 +22,18 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
 
   private final List<GoGaf21Annotation> rawAssociations;
   /**
-   * Key -- TermId for a gene. Value: {@link ItemAssociations} object with GO annotations for the gene.
+   * Key -- TermId for a gene. Value: {@link ItemAnnotations} object with GO annotations for the gene.
    */
-  private final Map<TermId, ItemAssociations> gene2associationMap;
+  private final Map<TermId, GeneAnnotations> gene2associationMap;
   /**
    * Gene Ontology object.
    */
   private final Ontology ontology;
+
+  /**
+   * @return total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   */
+  private final int annotatingTermCount;
 
   /**
    * Constructs the container using a list of TermAnnotations (for instance, a
@@ -41,31 +44,35 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
   private GoAssociationContainer(List<GoGaf21Annotation> assocs, Ontology ontology) {
     rawAssociations = assocs;
     this.ontology = ontology;
-    Map<TermId, ItemAssociations> tempMap = new HashMap<>();
+    Map<TermId, GeneAnnotations> tempMap = new HashMap<>();
     for (TermAnnotation a : assocs) {
       TermId tid = a.getLabel();
       if (tid.equals(fakeRoot)) {
         continue; // skip owl:Thing
       }
-      tempMap.putIfAbsent(tid, new ItemAssociations(tid));
-      tempMap.get(tid).add(a);
+      tempMap.putIfAbsent(tid, new GeneAnnotations(tid));
+      tempMap.get(tid).addAnnotation(a);
     }
     this.gene2associationMap = ImmutableMap.copyOf(tempMap);
     Set<TermId> tidset = new HashSet<>();
-    for (ItemAssociations a : this.gene2associationMap.values()) {
-      List<TermId> tidlist = a.getAssociations();
+    for (GeneAnnotations a : this.gene2associationMap.values()) {
+      List<TermId> tidlist = a.getAnnotatingTermIds();
       tidset.addAll(tidlist);
     }
-   // this.annotatingTermCount = tidset.size();
+   this.annotatingTermCount = tidset.size();
+  }
+
+  public int getAnnotatingTermCount() {
+    return this.annotatingTermCount;
   }
 
   @Override
   public Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap() {
     Map<TermId, List<TermId>> mp = new HashMap<>();
-    for (Map.Entry<TermId, ItemAssociations> entry : gene2associationMap.entrySet()) {
+    for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
       mp.putIfAbsent(gene, new ArrayList<>());
-      for (TermId ontologyTermId : entry.getValue().getAssociations()) {
+      for (TermId ontologyTermId : entry.getValue().getAnnotatingTermIds()) {
         mp.get(ontologyTermId).add(gene);
       }
     }
@@ -108,7 +115,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
         LOGGER.error("Could not find annotations for  {}", domainTermId.getValue());
         continue;
       }
-      ItemAssociations assocs = this.gene2associationMap.get(domainTermId);
+      GeneAnnotations assocs = this.gene2associationMap.get(domainTermId);
       for (TermAnnotation termAnnotation : assocs) {
         /* At first add the direct counts and remember the terms */
         TermId ontologyTermId = termAnnotation.getTermId();

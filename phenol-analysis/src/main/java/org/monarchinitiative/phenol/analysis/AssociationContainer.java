@@ -30,5 +30,9 @@ public interface AssociationContainer<T> {
   Map<T, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds);
 
   Set<T> getAllAnnotatedGenes();
+  /**
+   * @return total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
+   */
+  int getAnnotatingTermCount();
 
 }
