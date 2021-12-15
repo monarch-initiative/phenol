@@ -1,9 +1,10 @@
 package org.monarchinitiative.phenol.analysis;
 
 
+import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,23 +18,28 @@ public class DirectAndIndirectTermAnnotations {
   /**
    * List of directly annotated genes
    */
-  private final Set<TermId> directAnnotated = new HashSet<>();
+  private final Set<TermId> directAnnotated;
 
   /**
    * List of genes annotated in total (direct or via annotation propagation)
    */
-  private final Set<TermId> totalAnnotated = new HashSet<>();
+  private final Set<TermId> totalAnnotated;
 
-
-  public void addGeneAnnotationDirect(TermId geneId) {
-    directAnnotated.add(geneId);
-    totalAnnotated.add(geneId);
+  /**
+   * Constructs set of direct annotations (which is equivalent to the annotations
+   * in ontologyIdSet), and the total (direct and indirect) annotations using
+   * {@link OntologyAlgorithm#getAncestorTerms(Ontology, Set, boolean)}.
+   * In addition to the direct annotation, the gene is also indirectly
+   * annotated to all of the GO Term's ancestors -- whiach are calculated here.
+   * @param ontologyIdSet set of directly annotation terms
+   * @param ontology reference to relevant {@link Ontology} object
+   */
+  public DirectAndIndirectTermAnnotations(Set<TermId> ontologyIdSet, Ontology ontology) {
+    directAnnotated = ontologyIdSet;
+    totalAnnotated = OntologyAlgorithm.getAncestorTerms(ontology,
+      ontologyIdSet,
+      true);
   }
-
-  public void addGeneAnnotationTotal(TermId geneId) {
-    totalAnnotated.add(geneId);
-  }
-
 
   public int directAnnotatedCount() {
     return directAnnotated.size();

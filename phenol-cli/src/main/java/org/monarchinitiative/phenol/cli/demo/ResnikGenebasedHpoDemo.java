@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -16,6 +17,8 @@ import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
+import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.OMIM;
 
 public class ResnikGenebasedHpoDemo {
 
@@ -33,7 +36,7 @@ public class ResnikGenebasedHpoDemo {
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    List<String> databases = ImmutableList.of("OMIM"); // restrict ourselves to OMIM entries
+    List<DiseaseDatabase> databases = ImmutableList.of(OMIM); // restrict ourselves to OMIM entries
     this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(hpoaPath, hpo,databases);
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);

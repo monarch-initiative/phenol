@@ -2,11 +2,15 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -33,12 +37,22 @@ class OrphanetXML2HpoDiseaseModelParserTest {
   static private final TermId frequent = TermId.of("HP:0040282");
 
   @BeforeAll
-  private static void init() {
-    Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product4_small.xml");
-    Path hpOboPath = Paths.get("src", "test", "resources", "hp_head.obo");
-    Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    if (hpOboURL == null) {
+      throw new IOException("Could not find hpOboPath at " + hpOboPath);
+    }
+    File file = new File(hpOboURL.getFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(file);
+
+    String orphaXMLpath =  "/annotations/en_product4_small.xml";
+    URL orphaURL = HpoCategoryMapTest.class.getResource(orphaXMLpath);
+    if (orphaURL == null) {
+      throw new IOException("Could not find en_product4_small.xml at " + orphaURL);
+    }
     try {
-      parser = new OrphanetXML2HpoDiseaseModelParser(orphaXMLpath.toAbsolutePath().toString(), ontology, false);
+      parser = new OrphanetXML2HpoDiseaseModelParser(orphaURL.getFile(), hpoOntology, false);
     } catch (Exception e) {
       System.err.println("Could not parse Orpha " + e.getMessage());
       throw e;

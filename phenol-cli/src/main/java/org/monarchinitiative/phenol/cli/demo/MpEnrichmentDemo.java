@@ -97,8 +97,9 @@ public class MpEnrichmentDemo {
     Set<TermId> studyGenes = getStudySet();
 
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
+    StudySet studySet = new StudySet("study", studyAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> popAssociations = associationContainer.getAssociationMap(populationGenes);
+    StudySet populationSet = new StudySet("population", popAssociations);
     System.out.printf("[INFO] study: %d genes, population: %d genes\n", studyGenes.size(), populationGenes.size());
 
     MultipleTestingCorrection bonf = new Bonferroni();
