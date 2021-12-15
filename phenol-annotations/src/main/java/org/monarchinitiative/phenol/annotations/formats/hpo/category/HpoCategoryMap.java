@@ -4,8 +4,11 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -26,6 +29,7 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getPa
  * @version 0.1.7
  */
 public class HpoCategoryMap {
+  Logger LOGGER = LoggerFactory.getLogger(HpoCategoryMap.class);
   /**
    * An array containing all of the {@link TermId} objects that correspond to the categories.
    */
@@ -166,21 +170,16 @@ public class HpoCategoryMap {
    *
    * @param tid      HPO term to be added
    * @param ontology reference to HPO ontology object
+   * @throws PhenolRuntimeException if we try to add an invalid term (i.e., that does not correspond to a category).
    */
-  public void addAnnotatedTerm(TermId tid, Ontology ontology) {
-    try {
+  public void addAnnotatedTerm(TermId tid, Ontology ontology) throws PhenolRuntimeException {
       HpoCategory cat = getCategory(tid, ontology);
       if (cat == null) {
-        System.err.println("Could not get upper level HPO category for "
+        LOGGER.warn("Could not get upper level HPO category for "
           + ontology.getTermMap().get(tid).getName());
         return;
       }
       cat.addAnnotatedTerm(tid);
-    } catch (Exception e) { // should never happen
-      System.err.printf("Exception trying to find category for %s\n",
-        ontology.getTermMap().get(tid).getName());
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -227,7 +226,7 @@ public class HpoCategoryMap {
    */
   private HpoCategory getCategory(TermId tid, Ontology ontology) {
     if (tid == null) {
-      System.err.println("Warning, tid was null...");
+      LOGGER.warn("Trying to get HPO Category but input TermId was null...");
       return null;
     }
     Set<TermId> ancs = getAncestorCategories(ontology, tid);
@@ -255,6 +254,10 @@ public class HpoCategoryMap {
       return categorymap.get(catlist.iterator().next());
     } else if (catlist.stream().anyMatch(t -> t.equals(NEOPLASM_ID))) {
       return categorymap.get(NEOPLASM_ID); // top priority if a term is mapped to >1 category
+    }
+    if (catlist.size() == 0) {
+      LOGGER.warn("Could not find category for {}", catlist);
+      return null;
     }
     // if we get here, there are multiple categories. We do not care which
     // and so we choose first one (should rarely happen).

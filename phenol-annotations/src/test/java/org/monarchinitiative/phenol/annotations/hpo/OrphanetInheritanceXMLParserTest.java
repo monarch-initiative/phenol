@@ -2,11 +2,15 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,13 +27,22 @@ class OrphanetInheritanceXMLParserTest {
   static private OrphanetInheritanceXMLParser parser;
 
   @BeforeAll
-  private static void init()  {
-    Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product9_ages-small.xml");
-    //orphaXMLpath = Paths.get("..","en_product9_ages.xml");
-    Path hpOboPath = Paths.get("src", "test", "resources",  "hp_head.obo");
-    Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    if (hpOboURL == null) {
+      throw new IOException("Could not find hpOboPath at " + hpOboPath);
+    }
+    File file = new File(hpOboURL.getFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(file);
+
+    String orphaXMLpath =  "/annotations/en_product9_ages-small.xml";
+    URL orphaURL = HpoCategoryMapTest.class.getResource(orphaXMLpath);
+    if (orphaURL == null) {
+      throw new IOException("Could not find en_product9_ages-small.xml at " + orphaURL);
+    }
     try {
-      parser = new OrphanetInheritanceXMLParser(orphaXMLpath.toAbsolutePath().toString(), ontology);
+      parser = new OrphanetInheritanceXMLParser(orphaURL.getFile(), hpoOntology);
     } catch (Exception e) {
       System.err.println("Could not parse Orpha " + e.getMessage());
       throw e;

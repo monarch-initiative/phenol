@@ -5,11 +5,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -22,12 +26,12 @@ class HpoAnnotationModelTest {
 
 
     @BeforeAll
-    static void init() throws PhenolException {
-        Path hpOboPath = Paths.get("src","test","resources","hp_head.obo");
-        Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
-        Path omim123456path = Paths.get("src","test","resources","annotations","OMIM-123456.tab");
-        String omim123456file = omim123456path.toAbsolutePath().toString();
-        HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456file,ontology);
+    public static void init() throws PhenolException, IOException {
+      URL hpOboURL = HpoCategoryMapTest.class.getResource("/hp_head.obo");
+        File file = new File(hpOboURL.getFile());
+        Ontology ontology = OntologyLoader.loadOntology(file);
+      URL omim123456URL = HpoCategoryMapTest.class.getResource("/annotations/OMIM-123456.tab");
+        HpoAnnotationFileParser parser = new HpoAnnotationFileParser(omim123456URL.getFile(),ontology);
         v2sf = parser.parse();
     }
 

@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.3 (2018-03-12)
  */
-public class HpoAnnotation implements  Comparable<HpoAnnotation> {
+public class HpoAnnotation implements Comparable<HpoAnnotation> {
   /** Note that we still do not have valid frequency information for all of the annotations; the default
    * is to show "n/a"*/
   private static final String DEFAULT_FREQUENCY_STRING = "n/a";

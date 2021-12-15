@@ -8,6 +8,8 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 import org.monarchinitiative.phenol.ontology.data.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 
@@ -16,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.*;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 /**
@@ -28,6 +31,9 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  * @author <a href="mailto:michael.gargano@jax.org">Michael Gargano</a>
  */
 public class HpoDiseaseAnnotationParser {
+  Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseAnnotationParser.class);
+
+
   /**
    * Path to the phenotype.hpoa annotation file.
    */
@@ -51,11 +57,11 @@ public class HpoDiseaseAnnotationParser {
   /**
    * We will, by default, parse in disease models from the following databases.
    */
-  private final Set<String> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of("OMIM", "ORPHA", "DECIPHER");
+  private final Set<DiseaseDatabase> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of(OMIM, ORPHANET, DECIPHER);
   /**
    * We will parse in disease models from the following databases.
    */
-  private final Set<String> databasePrefixes;
+  private final Set<DiseaseDatabase> databasePrefixes;
 
 
   public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology) {
@@ -68,7 +74,7 @@ public class HpoDiseaseAnnotationParser {
     throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
   }
 
-  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology, List<String> databases) {
+  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology, List<DiseaseDatabase> databases) {
     HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology, databases);
     try {
       return parser.parse();
@@ -83,7 +89,7 @@ public class HpoDiseaseAnnotationParser {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
-    databasePrefixes = DEFAULT_DATABASE_PREFIXES;
+    this.databasePrefixes = DEFAULT_DATABASE_PREFIXES;
   }
 
   /**
@@ -93,15 +99,12 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology       reference to HPO Ontology object
    * @param databases      list of databases we will keep for parsing (from OMIM, ORPHA, DECIPHER)
    */
-  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<String> databases) {
+  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<DiseaseDatabase> databases) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
     this.diseaseMap = new HashMap<>();
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-    for (String database : databases) {
-      builder.add(database);
-    }
-    databasePrefixes = builder.build();
+    Set<DiseaseDatabase> dabaseSet = new HashSet<>(databases);
+    databasePrefixes = Set.copyOf(dabaseSet); // immutable copy
   }
 
   private HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology) {
@@ -155,8 +158,7 @@ public class HpoDiseaseAnnotationParser {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
     Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
-    ImmutableList.Builder<String> errorbuilder = new ImmutableList.Builder<>();
-
+    this.errors = new ArrayList<>();
     try (BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath))) {
       String line = br.readLine();
       while (line.startsWith("#")) {
@@ -165,18 +167,16 @@ public class HpoDiseaseAnnotationParser {
       while ((line = br.readLine()) != null) {
         HpoAnnotationLine aline = HpoAnnotationLine.constructFromString(line);
         if (!aline.hasValidNumberOfFields()) {
-          errorbuilder.add(String.format("Invalid number of fields: %s", line));
+          this.errors.add(String.format("Invalid number of fields: %s", line));
           continue;
         }
         if (!termToDisease.containsEntry(aline.getPhenotypeId(), aline.getDiseaseTermId())) {
           termToDisease.put(aline.getPhenotypeId(), aline.getDiseaseTermId());
         }
-
         TermId diseaseId = aline.getDiseaseTermId();
         disease2AnnotLineMap.putIfAbsent(diseaseId, new ArrayList<>());
         List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
         annots.add(aline);
-
       }
       ImmutableMultimap.Builder<TermId, TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
       builderTermToDisease.putAll(termToDisease);
@@ -188,7 +188,8 @@ public class HpoDiseaseAnnotationParser {
     // Now we want to transform them into HpoDisease objects
     for (TermId diseaseId : disease2AnnotLineMap.keySet()) {
       String diseaseDatabasePrefix = diseaseId.getPrefix();
-      if (!databasePrefixes.contains(diseaseDatabasePrefix)) {
+      DiseaseDatabase diseaseDb = fromString(diseaseDatabasePrefix);
+      if (!databasePrefixes.contains(diseaseDb)) {
         continue; // skip unless we want to keep this database
       }
       List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
@@ -214,7 +215,7 @@ public class HpoDiseaseAnnotationParser {
           }
           if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
         } catch (Exception e) {
-          errorbuilder.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: %s ",
+          this.errors.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: %s ",
             line.toString(), e.getMessage()));
         }
       }
@@ -229,7 +230,6 @@ public class HpoDiseaseAnnotationParser {
           clinicalCourseListBuilder.build());
       this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
-    this.errors = errorbuilder.build();
     return diseaseMap;
   }
 

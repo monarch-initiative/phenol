@@ -1,11 +1,11 @@
 package org.monarchinitiative.phenol.stats;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class HypergeometricTest {
@@ -247,26 +247,30 @@ class HypergeometricTest {
     double proportion = (double) m_t/m_pa_t;
     double result = hypergeometric.phypergeometric(m_pa_t, m_t, n_pa_t, n_t);
     double expected = 4.7583683370433105E-5;
-    System.out.printf("%e", result);
     assertEquals(expected,result, EPSILON);
   }
 
 
   @Test
   void bla() {
-    Set<Integer>
-      set1 = Sets.newHashSet(10, 20, 30, 40, 50);
-
-    // Creating second set
-    Set<Integer>
-      set2 = Sets.newHashSet(30, 50, 70, 90);
-
-    // Using Guava's Sets.intersection() method
-    Set<Integer>
-      answer = Sets.intersection(set1, set2);
-    System.out.println(answer);
-    set2.retainAll(set1);
-    System.out.println(set2);
+    Set<Integer> set1 = new HashSet<>();
+    set1.add(10);
+    set1.add(20);
+    set1.add(30);
+    set1.add(40);
+    set1.add(50);
+    Set<Integer> set2 = new HashSet<>();
+    set2.add(30);
+    set2.add(50);
+    set2.add(70);
+    set2.add(90);
+    // interset should be 30, 50
+    Set<Integer> set3 = new HashSet<>(set1);
+    set3.retainAll(set2); // intersection
+    assertEquals(2, set3.size());
+    assertTrue(set3.contains(30));
+    assertTrue(set3.contains(50));
+    assertFalse(set3.contains(10));
   }
 
 }
