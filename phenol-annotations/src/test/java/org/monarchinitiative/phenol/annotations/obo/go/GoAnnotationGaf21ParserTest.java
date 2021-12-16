@@ -2,11 +2,12 @@ package org.monarchinitiative.phenol.annotations.obo.go;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -23,8 +24,12 @@ public class GoAnnotationGaf21ParserTest {
   private static List<GoGaf21Annotation> annotations;
 
   @BeforeAll
-  static void init() {
-    final File goGeneAnnotationHeadFile = Paths.get("src/test/resources/go/goa_human_head.gav21.gaf").toFile();
+  public static void init() throws IOException {
+    URL goGafURL = GoAnnotationGaf21ParserTest.class.getResource("/go/goa_human_head.gav21.gaf");
+    if (goGafURL == null) {
+      throw new IOException("Could not find goa_human_head.gav21.gaf " + goGafURL);
+    }
+    final File goGeneAnnotationHeadFile = new File(goGafURL.getFile());
     annotations = GoGeneAnnotationParser.loadAnnotations(goGeneAnnotationHeadFile);
   }
 

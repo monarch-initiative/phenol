@@ -1,13 +1,15 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,11 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Disabled("Disabled until we have a toy hpo.json")
 public class HpoCategoryMapTest {
 
-  private static final Path hpOboPath = Paths.get("src","test","resources","hp_head.obo");
-  private static final Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
+  private static Ontology ontology;
   private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
   private static final TermId EYE_ID = TermId.of("HP:0000478");
   private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
+
+  @BeforeAll
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    if (hpOboURL == null) {
+      throw new IOException("Could not find hpOboPath at " + hpOboPath);
+    }
+    ontology = OntologyLoader.loadOntology(new File(hpOboURL.getFile()));
+  }
+
+
   /**
    * If we add the term for autosomal dominant, there should be only one category
    * INHERITANCE_ID

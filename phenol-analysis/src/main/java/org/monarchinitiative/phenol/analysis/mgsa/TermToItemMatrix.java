@@ -33,7 +33,7 @@ class TermToItemMatrix {
     TermToItemMatrix(GoAssociationContainer assocs) {
         Objects.requireNonNull(assocs);
         // termToGeneMultimap->key: A GO TermId; value: A Collection of Genes
-        Multimap<TermId, TermId> termToGeneMultimap = assocs.getTermToItemMultimap();
+        Map<TermId, List<TermId>> termToGeneMultimap = assocs.getOntologyTermToDomainItemsMap();
         Set<TermId> genes = assocs.getAllAnnotatedGenes();
         n_genes = genes.size();
         //In Multimap, size() returns an actual number of values stored in a Map,

@@ -6,13 +6,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,18 +32,22 @@ class HpoDiseaseAnnotationParserTest {
   private static Map<TermId, HpoDisease> diseaseMap;
 
   @BeforeAll
-  static void init()  {
-    Path testResources = Paths.get("src/test/resources");
-    Path hpoHeadPath = testResources.resolve("hp_head.obo");
-    Ontology hpoOntology = OntologyLoader.loadOntology(hpoHeadPath.toFile());
-
-    Path hpoAnnotationsHeadPath = testResources.resolve("annotations/phenotype_annotation_head.tab");
-    String annotationPath=hpoAnnotationsHeadPath.toFile().toString();
+  public static void init() throws IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    if (hpOboURL == null) {
+      throw new IOException("Could not find hpOboPath at " + hpOboPath);
+    }
+    File file = new File(hpOboURL.getFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(file);
+    String phenoAnnot = "/annotations/phenotype_hpoa_head.tab";
+    URL annotURL = HpoCategoryMapTest.class.getResource(phenoAnnot);
+    String annotationPath = annotURL.getFile();
     diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
   }
 
   /**
-   * There are three different diseases in "annotations/phenotype_annotation_head.tab"
+   * There are three different diseases in "annotations/phenotype_hpoa_head.tab"
    */
   @Test
   void testSizeOfDiseaseMap() {

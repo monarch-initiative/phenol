@@ -2,15 +2,13 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 
 /**
  * A basic class to represent different settings parameter.
- * TODO is this needed for MCMC only?
+ *
  *
  * @author sba
  *
  */
-abstract public class MgsaParam
-{
-    public enum Type
-    {
+abstract public class MgsaParam {
+    public enum Type {
         FIXED,
         MCMC
     }

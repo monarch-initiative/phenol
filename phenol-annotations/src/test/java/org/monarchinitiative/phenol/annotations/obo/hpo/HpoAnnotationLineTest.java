@@ -3,12 +3,16 @@ package org.monarchinitiative.phenol.annotations.obo.hpo;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +26,14 @@ class HpoAnnotationLineTest {
 
   private final Ontology ontology;
 
-  HpoAnnotationLineTest() throws PhenolException {
-    this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp_head.obo").toFile());
+  HpoAnnotationLineTest() throws PhenolException, IOException {
+    final String hpOboPath = "/hp_head.obo";
+    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    if (hpOboURL == null) {
+      throw new IOException("Could not find hpOboPath at " + hpOboPath);
+    }
+    File file = new File(hpOboURL.getFile());
+    this.ontology = OntologyLoader.loadOntology(file);
   }
 
   private HpoAnnotationLine makeLine(String[] items) throws PhenolException {

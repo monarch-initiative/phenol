@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 
 @Disabled("Disabled until we have a toy hpo.json")
@@ -20,9 +22,10 @@ class HpoAnnotationEntryTest {
 
 
     @BeforeAll
-    static void init()  {
-        Path resourceDirectory = Paths.get("src","test","resources","hp_head.obo");
-        ontology = OntologyLoader.loadOntology(resourceDirectory.toFile());
+    public static void init() throws IOException {
+      URL hpOboURL = HpoCategoryMapTest.class.getResource("/hp_head.obo");
+      File file = new File(hpOboURL.getFile());
+      ontology = OntologyLoader.loadOntology(file);
     }
 
     @Test
