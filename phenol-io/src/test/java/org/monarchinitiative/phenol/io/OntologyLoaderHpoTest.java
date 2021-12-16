@@ -64,18 +64,18 @@ public class OntologyLoaderHpoTest {
   }
 
   @Test
-  void ifHpoNotNull_thenOK() {
+  public void ifHpoNotNull_thenOK() {
     assertNotNull(hpo);
   }
 
   @Test
-  void ifHpoHas265Terms_thenOK() {
+  public void ifHpoHas265Terms_thenOK() {
     int expectedTermCount = 265; // hpo_toy.json
     assertEquals(expectedTermCount, hpo.countAllTerms());
   }
 
   @Test
-  void testModeOfInheritanceTerm() {
+  public void testModeOfInheritanceTerm() {
     TermId mode = TermId.of("HP:0000005");
     Term moiTerm = hpo.getTermMap().get(mode);
     assertNotNull(moiTerm);
@@ -88,7 +88,7 @@ public class OntologyLoaderHpoTest {
   }
 
   @Test
-  void testArachnodactyly() {
+  public void testArachnodactyly() {
     TermId arachnodactylyId = TermId.of("HP:0001166");
     Term arachnodactyly = hpo.getTermMap().get(arachnodactylyId);
     assertNotNull(arachnodactyly);
