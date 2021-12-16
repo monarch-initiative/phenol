@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.io.obographs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import org.geneontology.obographs.core.model.GraphDocument;
 
 import java.io.IOException;
@@ -15,6 +16,12 @@ import java.nio.file.Path;
  */
 public class OboGraphDocumentLoader {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  static {
+    OBJECT_MAPPER.registerModule(new GuavaModule());
+  }
+
   private OboGraphDocumentLoader() {
   }
 
@@ -25,8 +32,7 @@ public class OboGraphDocumentLoader {
   }
 
   public static GraphDocument loadJson(InputStream inputStream) throws IOException {
-      ObjectMapper objectMapper = new ObjectMapper();
-      return objectMapper.readValue(inputStream, GraphDocument.class);
+      return OBJECT_MAPPER.readValue(inputStream, GraphDocument.class);
   }
 
 }
