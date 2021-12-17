@@ -15,6 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ class HpoDiseaseAnnotationParserTest {
   private static Map<TermId, HpoDisease> diseaseMap;
 
   @BeforeAll
-  public static void init() throws IOException {
+  public static void init() throws Exception {
     final String hpOboPath = "/hp_head.obo";
     URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
@@ -40,10 +41,8 @@ class HpoDiseaseAnnotationParserTest {
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
-    String phenoAnnot = "/annotations/phenotype_hpoa_head.tab";
-    URL annotURL = HpoCategoryMapTest.class.getResource(phenoAnnot);
-    String annotationPath = annotURL.getFile();
-    diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotationPath, hpoOntology);
+    URL annotURL = HpoCategoryMapTest.class.getResource("/annotations/phenotype_hpoa_head.tab");
+    diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(annotURL.toURI()), hpoOntology);
   }
 
   /**

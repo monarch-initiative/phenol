@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.OMIM;
@@ -326,8 +327,9 @@ public class PairwisePhenotypicSimilarityCalculator {
     this.hpo = OntologyLoader.loadOntology(new File(pathHpObo));
     System.out.println("[INFO] DONE: Loading HPO");
 
-    List<DiseaseDatabase> databases = ImmutableList.of(OMIM); // restrict ourselves to OMIM entries
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.pathPhenotypeHpoa, hpo,databases);
+    Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
+    databases.add(OMIM);
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(pathPhenotypeHpoa), hpo, databases);
     System.out.println("[INFO] DONE: Loading phenotype.hpoa");
 
     // Compute list of annoations and mapping from OMIM ID to term IDs.

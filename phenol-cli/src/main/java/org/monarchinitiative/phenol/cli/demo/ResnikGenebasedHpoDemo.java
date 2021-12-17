@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
@@ -14,6 +13,7 @@ import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -36,8 +36,9 @@ public class ResnikGenebasedHpoDemo {
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    List<DiseaseDatabase> databases = ImmutableList.of(OMIM); // restrict ourselves to OMIM entries
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(hpoaPath, hpo,databases);
+    Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
+    databases.add(OMIM);
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(hpoaPath), hpo,databases);
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
