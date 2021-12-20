@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.scoredist;
 
 import com.google.common.collect.ImmutableSortedMap;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
@@ -19,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class H2ScoreDistributionWriterTest {
 
-  private static final Path TMP_DIR = Paths.get("target");
+  @TempDir
+  public Path tempDir;
 
   private ScoreDistributionWriter dbWriter;
 
   @BeforeEach
   public void setUp() throws Exception {
-    Path dbpath = TMP_DIR.resolve("db.h2");
-    System.out.println(dbpath.toFile().getAbsolutePath());
+    Path dbpath = tempDir.resolve("db.h2");
     String dataTableName = "tempTable";
     dbWriter = new H2ScoreDistributionWriter(dbpath.toFile().getAbsolutePath(), dataTableName, true);
   }
