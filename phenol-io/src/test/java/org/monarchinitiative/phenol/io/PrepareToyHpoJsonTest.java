@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.io;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -23,14 +25,11 @@ import java.util.Set;
  *   <li>Blood group</li>
  *   <li>Frequency</li>
  * </ul>
- *
- * <p>
- * As Surefire warns regarding disabled tests during build, the JUnit test annotation is commented out to disable
- * the warning. Run the test manually if necessary.
  */
+@Disabled("To be run manually when necessary")
 public class PrepareToyHpoJsonTest {
 
-//  @Test
+  @Test
   public void name() throws Exception {
     // this must be replaced with path to a proper HPO json file
     File hpoJsonFile = null;
