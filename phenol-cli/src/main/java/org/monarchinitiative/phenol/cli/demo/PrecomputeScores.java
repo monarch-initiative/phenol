@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.monarchinitiative.phenol.scoredist.ScoreDistributionWriter;
+import org.monarchinitiative.phenol.scoredist.TextFileScoreDistributionWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,14 +145,13 @@ public class PrecomputeScores {
 
     final int resolution = Math.min(1000, Math.max(100, numIterations / 100));
 
-//    try (final ScoreDistributionWriter writer =
-//        new TextFileScoreDistributionWriter(new File(this.outputScoreDistFile))) {
-//      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
-//        writer.write(e.getKey(), e.getValue(), resolution);
-//      }
-//    } catch (IOException | PhenolException e) {
-//      throw new RuntimeException("Problem writing to file", e);
-//    }
+    try (ScoreDistributionWriter writer = new TextFileScoreDistributionWriter(new File(outputScoreDistFile))) {
+      for (Entry<Integer, ScoreDistribution> e : scoreDistribution.entrySet()) {
+        writer.write(e.getKey(), e.getValue(), resolution);
+      }
+    } catch (IOException | PhenolException e) {
+      throw new RuntimeException("Problem writing to file", e);
+    }
 
     LOGGER.info("Done writing out distribution.");
   }
