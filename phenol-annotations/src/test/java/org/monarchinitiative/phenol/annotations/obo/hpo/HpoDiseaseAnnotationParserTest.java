@@ -35,13 +35,13 @@ class HpoDiseaseAnnotationParserTest {
   @BeforeAll
   public static void init() throws Exception {
     final String hpOboPath = "/hp_head.obo";
-    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
+    URL hpOboURL = HpoDiseaseAnnotationParserTest.class.getResource(hpOboPath);
     if (hpOboURL == null) {
       throw new IOException("Could not find hpOboPath at " + hpOboPath);
     }
     File file = new File(hpOboURL.getFile());
     Ontology hpoOntology = OntologyLoader.loadOntology(file);
-    URL annotURL = HpoCategoryMapTest.class.getResource("/annotations/phenotype_hpoa_head.tab");
+    URL annotURL = HpoDiseaseAnnotationParserTest.class.getResource("/annotations/phenotype_hpoa_head.tab");
     diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(annotURL.toURI()), hpoOntology);
   }
 
