@@ -7,12 +7,12 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class TermSynonymTest {
+public class TermSynonymTest {
 
   private TermSynonym termSynonym;
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     termSynonym =
         new TermSynonym(
             "synonym",
@@ -23,7 +23,7 @@ class TermSynonymTest {
   }
 
   @Test
-  void testQueryFunctions() {
+  public void testQueryFunctions() {
     assertEquals("synonym", termSynonym.getValue());
     assertEquals(TermSynonymScope.EXACT, termSynonym.getScope());
     assertEquals("BRITISH_ENGLISH", termSynonym.getSynonymTypeName());
@@ -36,7 +36,7 @@ class TermSynonymTest {
   }
 
   @Test
-  void testLaypersonLabel() {
+  public void testLaypersonLabel() {
     assertTrue(termSynonym.isLayperson());
   }
 }

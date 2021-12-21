@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.ontology.algo;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
 
@@ -14,16 +15,16 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
 
 public class OntologyAlgorithmTest {
 
-  private final ImmutableOntology ontology;
+  private ImmutableOntology ontology;
 
-  private final TermId id1;
-  private final TermId id2;
-  private final TermId id3;
-  private final TermId id4;
-  private final TermId id5;
+  private TermId id1;
+  private TermId id2;
+  private TermId id3;
+  private TermId id4;
+  private TermId id5;
 
-  OntologyAlgorithmTest() {
-
+  @BeforeEach
+  public void setUp() {
     id1 = TermId.of("HP:0000001");
     id2 = TermId.of("HP:0000002");
     id3 = TermId.of("HP:0000003");

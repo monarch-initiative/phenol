@@ -20,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Unknowns
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-class ImmutableOntologyTest {
+public class ImmutableOntologyTest {
 
   private final Ontology ontology = TestOntology.ontology();
 
 //  @Disabled("Currently failing on a string comparison")
   @Test
-  void test() {
+  public void test() {
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     assertEquals(ImmutableMap.of(), ontology.getMetaInfo());
@@ -121,14 +121,14 @@ class ImmutableOntologyTest {
    * Relationship [source=HP:0000001, dest=HP:0000004, id=3]
    */
   @Test
-  void testSubontologyRelations() {
+  public void testSubontologyRelations() {
     Ontology subontology = ontology.subOntology(TestOntology.TERM_ID_4);
     assertEquals(6, ontology.getRelationMap().size());
     assertEquals(1, subontology.getRelationMap().size());
   }
 
   @Test
-  void testBuilder() {
+  public void testBuilder() {
     TermId rootId = TermId.of("owl:Thing");
     Term root = Term.of(rootId, "root");
 
@@ -188,7 +188,7 @@ class ImmutableOntologyTest {
   }
 
   @Test
-  void testBuilderMultipleRoots() {
+  public void testBuilderMultipleRoots() {
 
     TermId childId = TermId.of("HP:0000001");
     Term child = Term.of(childId, "child");
@@ -226,7 +226,7 @@ class ImmutableOntologyTest {
   }
 
   @Test
-  void testBuilderSingleRootCandidate() {
+  public void testBuilderSingleRootCandidate() {
 
     TermId rootId = TermId.of("HP:0000000");
     Term root = Term.of(rootId, "root");
@@ -247,7 +247,7 @@ class ImmutableOntologyTest {
 
 
   @Test
-  void testBuilderNoRoot() {
+  public void testBuilderNoRoot() {
 
     TermId childId = TermId.of("HP:0000001");
     Term child = Term.of(childId, "child");

@@ -10,19 +10,19 @@ import com.google.common.collect.Lists;
 
 import org.junit.jupiter.api.Test;
 
-class CosineSimilarityTest extends VegetableOntologyTestBase {
+public class CosineSimilarityTest extends VegetableOntologyTestBase {
 
   private final CosineSimilarity similarity = new CosineSimilarity(ontology);
 
   @Test
-  void testQueries() {
+  public void testQueries() {
     assertEquals("Cosine similarity", similarity.getName());
     assertTrue(similarity.isSymmetric());
     assertEquals("{oppositeAware: false}", similarity.getParameters());
   }
 
   @Test
-  void testComputeSimilarities() {
+  public void testComputeSimilarities() {
     assertEquals(
         0.408,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

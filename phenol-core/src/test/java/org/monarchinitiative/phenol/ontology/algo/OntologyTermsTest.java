@@ -12,10 +12,10 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
 
-class OntologyTermsTest extends VegetableOntologyTestBase {
+public class OntologyTermsTest extends VegetableOntologyTestBase {
 
   @Test
-  void testVisitChildrenOf() {
+  public void testVisitChildrenOf() {
     Set<TermId> children = new TreeSet<>();
 
     OntologyTerms.visitChildrenOf(
@@ -37,7 +37,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testChildrenOf() {
+  public void testChildrenOf() {
     assertEquals(
       ImmutableSet.of(
         TermId.of("VO:0000004"),
@@ -49,7 +49,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testVisitParentsOf() {
+  public void testVisitParentsOf() {
     Set<TermId> parents = new TreeSet<>();
 
     OntologyTerms.visitParentsOf(
@@ -70,7 +70,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testParentsOf() {
+  public void testParentsOf() {
     assertEquals(ImmutableSet.of(
       TermId.of("VO:0000004"),
       TermId.of("VO:0000007"),

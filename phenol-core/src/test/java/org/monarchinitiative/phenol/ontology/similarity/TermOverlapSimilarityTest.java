@@ -7,19 +7,19 @@ import com.google.common.collect.Lists;
 
 import org.junit.jupiter.api.Test;
 
-class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
+public class TermOverlapSimilarityTest extends VegetableOntologyTestBase {
 
   private final TermOverlapSimilarity similarity = new TermOverlapSimilarity(ontology);
 
   @Test
-  void testQueries() {
+  public void testQueries() {
     assertEquals("TermI overlap similarity", similarity.getName());
     assertTrue(similarity.isSymmetric());
     assertEquals("{normalized: true}", similarity.getParameters());
   }
 
   @Test
-  void testComputeSimilarities() {
+  public void testComputeSimilarities() {
     assertEquals(
         0.5,
         similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),

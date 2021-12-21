@@ -12,7 +12,7 @@ import org.monarchinitiative.phenol.ontology.TestOntology;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TermAnnotationsTest {
+public class TermAnnotationsTest {
 
   private final Ontology ontology = TestOntology.ontology();
   private final List<TestTermAnnotation> annotations = Lists.newArrayList(
@@ -22,14 +22,14 @@ class TermAnnotationsTest {
       new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of("TEST","three")));
 
   @Test
-  void testConstructTermAnnotationToLabelsMap() {
+  public void testConstructTermAnnotationToLabelsMap() {
     Map<TermId, Collection<TermId>> map = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, annotations);
     // 5 annotation classes (to four labels), thus we expect 5 keys
     assertEquals(5, map.size());
   }
 
   @Test
-  void testConstructTermLabelToAnnotationsMap() {
+  public void testConstructTermLabelToAnnotationsMap() {
     Map<TermId, Collection<TermId>> map = TermAnnotations.constructTermLabelToAnnotationsMap(ontology, annotations);
     TermId test1 = TermId.of("TEST:one");
     assertTrue(map.containsKey(test1));
