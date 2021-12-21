@@ -1,12 +1,10 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
+import com.google.common.collect.Sets;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.data.*;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +24,11 @@ public class OntologyAlgorithm {
   private OntologyAlgorithm() {
   }
 
-  public static boolean existsPath(
-      Ontology ontology,
-      final TermId sourceID,
-      TermId destID) {
+  public static boolean existsPath(Ontology ontology, TermId sourceID, TermId destID) {
     // special case -- a term cannot have a path to itself in an ontology (DAG)
     if (sourceID.equals(destID)) return false;
-    final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
+
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
     List<TermId> visited = new ArrayList<>();
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
     bfs.startFromForward(
@@ -53,8 +49,7 @@ public class OntologyAlgorithm {
    * @param parentTermId The term whose children were are seeking
    * @return A set of all child terms of parentTermId (including parentTermId itself)
    */
-  public static Set<TermId> getChildTerms(
-    Ontology ontology, TermId parentTermId) {
+  public static Set<TermId> getChildTerms(Ontology ontology, TermId parentTermId) {
     return getChildTerms(ontology, parentTermId, true);
   }
 
@@ -62,39 +57,35 @@ public class OntologyAlgorithm {
    * Find all of the direct children of parentTermId (do not include "grandchildren" and other
    * descendents).
    *
-   * @param ontology The ontology to which parentTermId belongs
-   * @param parentTermId The term whose children were are seeking
+   * @param ontology            The ontology to which parentTermId belongs
+   * @param parentTermId        The term whose children were are seeking
    * @param includeOriginalTerm true if we should include the term itself in the set of returned
-   *     child terms
+   *                            child terms
    * @return A set of all child terms of parentTermId
    */
-  public static Set<TermId> getChildTerms(
-      Ontology ontology,
-      TermId parentTermId,
-      boolean includeOriginalTerm) {
-    ImmutableSet.Builder<TermId> kids = new ImmutableSet.Builder<>();
+  public static Set<TermId> getChildTerms(Ontology ontology, TermId parentTermId, boolean includeOriginalTerm) {
+    Set<TermId> kids = new HashSet<>();
     if (includeOriginalTerm) kids.add(parentTermId);
     for (IdLabeledEdge edge : ontology.getGraph().incomingEdgesOf(parentTermId)) {
       TermId sourceId = (TermId) edge.getSource();
       kids.add(sourceId);
     }
-    return kids.build();
+    return Set.copyOf(kids);
   }
 
   /**
    * Finds the direct child terms of a set of parent terms.
    *
-   * @param ontology The ontology to which the set of parentTermIds belong
+   * @param ontology        The ontology to which the set of parentTermIds belong
    * @param parentTermIdSet The terms whose children were are seeking
    * @return set of children of parentTermIdSet
    */
-  public static Set<TermId> getChildTerms(
-    Ontology ontology, Set<TermId> parentTermIdSet) {
-    ImmutableSet.Builder<TermId> kids = new ImmutableSet.Builder<>();
+  public static Set<TermId> getChildTerms(Ontology ontology, Set<TermId> parentTermIdSet) {
+    Set<TermId> kids = new HashSet<>();
     for (TermId tid : parentTermIdSet) {
       kids.addAll(getChildTerms(ontology, tid));
     }
-    return kids.build();
+    return Set.copyOf(kids);
   }
 
   /**
@@ -104,24 +95,21 @@ public class OntologyAlgorithm {
    * @param childTermIdSet The terms whose parents we are seeking
    * @return set of parents of childTermIdSet
    */
-  public static Set<TermId> getParentTerms(
-    Ontology ontology, Set<TermId> childTermIdSet) {
-    ImmutableSet.Builder<TermId> parents = new ImmutableSet.Builder<>();
+  public static Set<TermId> getParentTerms(Ontology ontology, Set<TermId> childTermIdSet) {
+    Set<TermId> parents = new HashSet<>();
     for (TermId tid : childTermIdSet) {
       parents.addAll(getParentTerms(ontology, tid));
     }
-    return parents.build();
+    return Set.copyOf(parents);
   }
 
-  public static Set<TermId> getParentTerms(
-      Ontology ontology,
-      Set<TermId> childTermIdSet,
-      boolean includeOriginalTerm) {
-    ImmutableSet.Builder<TermId> parents = new ImmutableSet.Builder<>();
+  public static Set<TermId> getParentTerms(Ontology ontology, Set<TermId> childTermIdSet, boolean includeOriginalTerm) {
+    Set<TermId> parents = new HashSet<>();
+
     for (TermId tid : childTermIdSet) {
-      parents.addAll(getParentTerms(ontology, tid, false));
+      parents.addAll(getParentTerms(ontology, tid, includeOriginalTerm));
     }
-    return parents.build();
+    return Set.copyOf(parents);
   }
 
   /**
@@ -132,9 +120,8 @@ public class OntologyAlgorithm {
    * @param parentTermId The term whose descendents were are seeking
    * @return A set of all descendents of parentTermId (including the parentTermId itself)
    */
-  public static Set<TermId> getDescendents(
-    Ontology ontology, TermId parentTermId) {
-    ImmutableSet.Builder<TermId> descset = new ImmutableSet.Builder<>();
+  public static Set<TermId> getDescendents(Ontology ontology, TermId parentTermId) {
+    Set<TermId> descset = new HashSet<>();
     Deque<TermId> stack = new ArrayDeque<>();
     stack.push(parentTermId);
     while (!stack.isEmpty()) {
@@ -143,7 +130,7 @@ public class OntologyAlgorithm {
       Set<TermId> directChildrenSet = getChildTerms(ontology, tid, false);
       directChildrenSet.forEach(stack::push);
     }
-    return descset.build();
+    return Set.copyOf(descset);
   }
 
   /**
@@ -156,11 +143,8 @@ public class OntologyAlgorithm {
    *     parent terms
    * @return A set of all parent terms of childTermId
    */
-  public static Set<TermId> getParentTerms(
-      Ontology ontology,
-      TermId childTermId,
-      boolean includeOriginalTerm) {
-    ImmutableSet.Builder<TermId> anccset = new ImmutableSet.Builder<>();
+  public static Set<TermId> getParentTerms(Ontology ontology, TermId childTermId, boolean includeOriginalTerm) {
+    Set<TermId> anccset = new HashSet<>();
     if (includeOriginalTerm) anccset.add(childTermId);
     for (IdLabeledEdge edge : ontology.getGraph().outgoingEdgesOf(childTermId)) {
       int edgeId = edge.getId();
@@ -176,36 +160,24 @@ public class OntologyAlgorithm {
       TermId destId = (TermId) edge.getTarget();
       anccset.add(destId);
     }
-    return anccset.build();
+    return Set.copyOf(anccset);
   }
 
   // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm.
   // All nodes above that root node in the original ontology will be ignored.
-  public static Set<TermId> getAncestorTerms(
-      Ontology ontology,
-      TermId rootTerm,
-      Set<TermId> children,
-      boolean includeOriginalTerm) {
-    ImmutableOntology subontology =
-        (ImmutableOntology) ontology.subOntology(rootTerm);
+  public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, Set<TermId> children, boolean includeOriginalTerm) {
+    Ontology subontology = ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, children, includeOriginalTerm);
   }
 
-  public static Set<TermId> getAncestorTerms(
-      Ontology ontology,
-      TermId rootTerm,
-      TermId child,
-      boolean includeOriginalTerm) {
+  public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, TermId child, boolean includeOriginalTerm) {
     ImmutableOntology subontology =
-        (ImmutableOntology) ontology.subOntology(rootTerm);
+      (ImmutableOntology) ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, child, includeOriginalTerm);
   }
 
-  public static Set<TermId> getAncestorTerms(
-      Ontology ontology,
-      Set<TermId> children,
-      boolean includeOriginalTerm) {
-    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+  public static Set<TermId> getAncestorTerms(Ontology ontology, Set<TermId> children, boolean includeOriginalTerm) {
+    Set<TermId> builder = new HashSet<>();
     if (includeOriginalTerm) builder.addAll(children);
     Deque<TermId> stack = new ArrayDeque<>();
     Set<TermId> parents = getParentTerms(ontology, children, false);
@@ -216,25 +188,11 @@ public class OntologyAlgorithm {
       Set<TermId> prnts = getParentTerms(ontology, tid, false);
       for (TermId t : prnts) stack.push(t);
     }
-    return builder.build();
+    return Set.copyOf(builder);
   }
 
-  public static Set<TermId> getAncestorTerms(
-      Ontology ontology,
-      TermId child,
-      boolean includeOriginalTerm) {
-    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
-    if (includeOriginalTerm) builder.add(child);
-    Deque<TermId> stack = new ArrayDeque<>();
-    Set<TermId> parents = getParentTerms(ontology, child, false);
-    for (TermId t : parents) stack.push(t);
-    while (!stack.isEmpty()) {
-      TermId tid = stack.pop();
-      builder.add(tid);
-      Set<TermId> prnts = getParentTerms(ontology, tid, false);
-      for (TermId t : prnts) stack.push(t);
-    }
-    return builder.build();
+  public static Set<TermId> getAncestorTerms(Ontology ontology, TermId child, boolean includeOriginalTerm) {
+    return getAncestorTerms(ontology, Set.of(child), includeOriginalTerm);
   }
 
   /**
