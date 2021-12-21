@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/monarch-initiative/phenol.svg?branch=master)](https://travis-ci.org/monarch-initiative/phenol)
+[![CI CD](https://github.com/monarch-initiative/phenol/actions/workflows/maven.yml/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0868b9dbdfd499fbcb5343275afc789)](https://www.codacy.com/app/monarch-initiative/phenol?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=monarch-initiative/phenol&amp;utm_campaign=Badge_Grade)
 [![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://phenol.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.monarchinitiative.phenol/phenol-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.monarchinitiative.phenol/phenol-core)
