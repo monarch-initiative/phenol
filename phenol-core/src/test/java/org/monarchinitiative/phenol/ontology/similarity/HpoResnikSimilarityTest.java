@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
@@ -24,8 +23,11 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
   @BeforeAll
   public static void  init() {
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
-    for(ToyHpoAnnotation annot : hpoAnnotations) {
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, Sets.newHashSet(annot.getTermId()), true);
+    for (ToyHpoAnnotation annot : hpoAnnotations) {
+
+      Set<TermId> termIds = new HashSet<>();
+      termIds.add(annot.getTermId());
+      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, termIds, true);
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());
         termIdToDiseaseIds.get(tid).add(annot.getLabel());
@@ -37,7 +39,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
 
   @Test
   public void testMicaAtRoot() {
-    // These two terms have their MICA at the root, the similaroty is zero
+    // These two terms have their MICA at the root, the similarity is zero
     double sim = similarity.getResnikTermSimilarity(GALLOP_RHYTHM, HYPERTELORISM);
     assertEquals(0.0, sim, EPSILON);
   }

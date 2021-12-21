@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -31,7 +29,7 @@ public class OntologyAlgorithmTest {
     id4 = TermId.of("HP:0000004");
     id5 = TermId.of("HP:0000005");
 
-    ImmutableList<Term> terms = ImmutableList.of(
+    List<Term> terms = List.of(
       Term.builder()
         .id(id1)
         .name("term1")
@@ -58,7 +56,7 @@ public class OntologyAlgorithmTest {
         .definition("some definition 5")
         .build());
 
-    List<Relationship> relationships = ImmutableList.of(
+    List<Relationship> relationships = List.of(
       new Relationship(id1, id2, 1, RelationshipType.IS_A),
       new Relationship(id1, id3, 2, RelationshipType.IS_A),
       new Relationship(id1, id4, 3, RelationshipType.IS_A),
@@ -96,10 +94,10 @@ public class OntologyAlgorithmTest {
   @Test
   public void testGetTermChildrenId4andId1() {
     // id4 has only one child term, id1: id1->id4
-    Set<TermId> expected = ImmutableSet.of(id4, id1);
+    Set<TermId> expected = Set.of(id4, id1);
     assertEquals(expected, getChildTerms(ontology, id4));
     // id1 is a leaf term and thus has no children
-    expected = ImmutableSet.of(id1);
+    expected = Set.of(id1);
     assertEquals(expected, getChildTerms(ontology, id1));
   }
 
@@ -107,15 +105,15 @@ public class OntologyAlgorithmTest {
   @Test
   public void testGetTermChildrenId5() {
     // id5 has 3 children: id2->id5, id3-> id5, id4->id5
-    Set<TermId> expected = ImmutableSet.of(id2, id3, id4, id5);
+    Set<TermId> expected = Set.of(id2, id3, id4, id5);
     assertEquals(expected, getChildTerms(ontology, id5));
   }
 
   @Test
   public void testGetChildrenOfSet() {
     // the child of both id2 and id3 is id1
-    Set<TermId> queryTerms = ImmutableSet.of(id2, id3);
-    Set<TermId> expected = ImmutableSet.of(id1, id2, id3);
+    Set<TermId> queryTerms = Set.of(id2, id3);
+    Set<TermId> expected = Set.of(id1, id2, id3);
     assertEquals(expected, getChildTerms(ontology, queryTerms));
   }
 
@@ -126,7 +124,7 @@ public class OntologyAlgorithmTest {
   @Test
   public void testReturnChildrenWithoutOriginalTerm() {
     // id5 has 3 children: id2->id5, id3-> id5, id4->id5
-    Set<TermId> expected = ImmutableSet.of(id2, id3, id4);
+    Set<TermId> expected = Set.of(id2, id3, id4);
     assertEquals(expected, getChildTerms(ontology, id5, false));
   }
 
@@ -136,19 +134,19 @@ public class OntologyAlgorithmTest {
    */
   @Test
   public void testGetDescendents() {
-    Set<TermId> expected = ImmutableSet.of(id1, id2, id3, id4, id5);
+    Set<TermId> expected = Set.of(id1, id2, id3, id4, id5);
     assertEquals(expected, getDescendents(ontology, id5));
   }
 
   @Test
   public void testGetParentsId2() {
     // the only ancestor of id2 is id5: id2->id5
-    Set<TermId> expected = ImmutableSet.of(id2, id5);
+    Set<TermId> expected = Set.of(id2, id5);
     assertEquals(expected, getParentTerms(ontology, id2));
     // id2 is not an ancestor of id5
     assertNotEquals(expected, getParentTerms(ontology, id5));
     // instead, only id5 is an ancestor of id5
-    expected = ImmutableSet.of(id5);
+    expected = Set.of(id5);
     assertEquals(expected, getParentTerms(ontology, id5));
   }
 
@@ -157,46 +155,46 @@ public class OntologyAlgorithmTest {
     // id1 has three parents. Since id5 is a parent of both id2 ans id1, id1 has three ancestors (four including id1)
     //id1->id2, id1->id3, id1 -> id4; id2->id5, id3-> id5,
     // id5 is not a parent of id1, though!
-    Set<TermId> expected = ImmutableSet.of(id1, id2, id3, id4);
+    Set<TermId> expected = Set.of(id1, id2, id3, id4);
     assertEquals(expected, getParentTerms(ontology, id1));
   }
 
   @Test
   public void testGetParentsOfSet() {
     //id3-> id5, id4->id5
-    Set<TermId> queryTerms = ImmutableSet.of(id3, id4);
-    Set<TermId> expected = ImmutableSet.of(id3, id4, id5);
+    Set<TermId> queryTerms = Set.of(id3, id4);
+    Set<TermId> expected = Set.of(id3, id4, id5);
     assertEquals(expected, getParentTerms(ontology, queryTerms));
   }
 
   @Test
   public void testGetAncestorsId1() {
     // id1 has id2, id3, id4m and id5 as ancestors
-    Set<TermId> expected = ImmutableSet.of(id1, id2, id3, id4, id5);
+    Set<TermId> expected = Set.of(id1, id2, id3, id4, id5);
     assertEquals(expected, getAncestorTerms(ontology, id1));
   }
 
   @Test
   public void testGetAncestorsFromSubOntology() {
     // We first try with id5 as a new root term; the resulting subontology is identical to the original one.
-    Set<TermId> expected1 = ImmutableSet.of(id1, id2, id3, id4, id5);
+    Set<TermId> expected1 = Set.of(id1, id2, id3, id4, id5);
     assertEquals(expected1, getAncestorTerms(ontology, id5, id1, true));
 
-    Set<TermId> expected2 = ImmutableSet.of(id2, id3, id4, id5);
+    Set<TermId> expected2 = Set.of(id2, id3, id4, id5);
     assertEquals(expected2, getAncestorTerms(ontology, id5, id1, false));
 
     // We then try with id2 as a new root term; the resulting subontology is the one with two terms: id1 and id2.
-    Set<TermId> expected3 = ImmutableSet.of(id1, id2);
+    Set<TermId> expected3 = Set.of(id1, id2);
     assertEquals(expected3, getAncestorTerms(ontology, id2, id1, true));
 
-    Set<TermId> expected4 = ImmutableSet.of(id2);
+    Set<TermId> expected4 = Set.of(id2);
     assertEquals(expected4, getAncestorTerms(ontology, id2, id1, false));
   }
 
   @Test
   public void testRootHasNoParent() {
     // id5 is the root of our graph and does not have a parent term other than itself
-    Set<TermId> expected = ImmutableSet.of(id5);
+    Set<TermId> expected = Set.of(id5);
     assertEquals(expected, getParentTerms(ontology, id5));
   }
 
@@ -209,7 +207,7 @@ public class OntologyAlgorithmTest {
     // id1 has three parents. Since id5 is a parent of both id2 ans id1, id1 has three ancestors (four including id1)
     //id1->id2, id1->id3, id1 -> id4; id2->id5, id3-> id5,
     // id5 is not a parent of id1, though!
-    Set<TermId> expected = ImmutableSet.of(id2, id3, id4);
+    Set<TermId> expected = Set.of(id2, id3, id4);
     assertEquals(expected, getParentTerms(ontology, id1, false));
     // The root has no parent, we expect the empty set
     expected = new HashSet<>();

@@ -4,8 +4,6 @@ import com.google.common.collect.ComparisonChain;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import javax.annotation.Nonnull;
-
 public class ToyHpoAnnotation implements TermAnnotation {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +27,7 @@ public class ToyHpoAnnotation implements TermAnnotation {
     }
 
     @Override
-    public int compareTo(@Nonnull TermAnnotation o) {
+    public int compareTo(TermAnnotation o) {
       if (!(o instanceof ToyHpoAnnotation)) {
         throw new RuntimeException("Cannot compare " + o + " to " + this);
       }

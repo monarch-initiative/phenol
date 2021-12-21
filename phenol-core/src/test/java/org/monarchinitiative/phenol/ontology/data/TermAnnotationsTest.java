@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.ontology.TestOntology;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TermAnnotationsTest {
 
   private final Ontology ontology = TestOntology.ontology();
-  private final List<TestTermAnnotation> annotations = Lists.newArrayList(
+  private final List<TestTermAnnotation> annotations = List.of(
       new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of("TEST","one")),
       new TestTermAnnotation(TermId.of("HP:0000001"), TermId.of("TEST","two")),
       new TestTermAnnotation(TermId.of("HP:0000002"), TermId.of("TEST","one")),

@@ -6,9 +6,9 @@ import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
-import com.google.common.collect.Lists;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,19 +39,19 @@ public class ResnikSimilarityTest extends VegetableOntologyTestBase {
   public void testComputeSimilarities() {
     assertEquals(
         0.0,
-        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idBeet), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.405,
-        similarity.computeScore(Lists.newArrayList(idBlueCarrot), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idBlueCarrot), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.00,
-        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idPumpkin), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.0,
-        similarity.computeScore(Lists.newArrayList(idLeafVegetable), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idLeafVegetable), List.of(idCarrot)),
         0.01);
   }
 }

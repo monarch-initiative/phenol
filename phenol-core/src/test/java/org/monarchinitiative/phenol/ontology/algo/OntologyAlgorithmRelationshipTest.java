@@ -1,12 +1,11 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedMap;
-
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +33,7 @@ public class OntologyAlgorithmRelationshipTest {
   private static final TermId t3_2 = TermId.of("HP:0000012");
 
   static {
-    ImmutableList.Builder<Relationship> relationsBuilder = ImmutableList.builder();
+    List<Relationship> relationsBuilder = new ArrayList<>();
     // n.b. these were originally incorrectly entered in the original test...
     relationsBuilder.add(new Relationship(t1, root, 1, RelationshipType.IS_A));
     relationsBuilder.add(new Relationship(t2, root, 2, RelationshipType.IS_A));
@@ -47,9 +46,9 @@ public class OntologyAlgorithmRelationshipTest {
     relationsBuilder.add(new Relationship(t2_2, t2, 9, RelationshipType.IS_A));
     relationsBuilder.add(new Relationship(t3_1, t3, 10, RelationshipType.IS_A));
     relationsBuilder.add(new Relationship(t3_2, t3, 11, RelationshipType.IS_A));
-    List<Relationship> relationships = relationsBuilder.build();
+    List<Relationship> relationships = List.copyOf(relationsBuilder);
 
-    ImmutableList.Builder<Term> termsBuilder = ImmutableList.builder();
+    List<Term> termsBuilder = new ArrayList<>();
     termsBuilder.add(Term.of(root, "root"));
     termsBuilder.add(Term.of(t1, "term1"));
     termsBuilder.add(Term.of(t2, "term2"));
@@ -63,10 +62,10 @@ public class OntologyAlgorithmRelationshipTest {
     termsBuilder.add(Term.of(t3_1, "term3_1"));
     termsBuilder.add(Term.of(t3_2, "term3_2"));
 
-    List<Term> terms = termsBuilder.build();
+    List<Term> terms = List.copyOf(termsBuilder);
 
     ontology = ImmutableOntology.builder()
-      .metaInfo(ImmutableSortedMap.of())
+      .metaInfo(Map.of())
       .terms(terms)
       .relationships(relationships)
       .build();

@@ -3,9 +3,10 @@ package org.monarchinitiative.phenol.ontology.data;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class TermSynonymTest {
 
@@ -18,7 +19,7 @@ public class TermSynonymTest {
             "synonym",
             TermSynonymScope.EXACT,
             "BRITISH_ENGLISH",
-            ImmutableList.of(new TermXref(TermId.of("HP:0000001"),"term description")),
+            List.of(new TermXref(TermId.of("HP:0000001"),"term description")),
           "http://purl.obolibrary.org/obo/hp.obo#layperson");
   }
 
