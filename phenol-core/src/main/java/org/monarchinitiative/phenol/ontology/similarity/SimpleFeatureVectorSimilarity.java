@@ -4,6 +4,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Implementation of simple feature vector similarity.
@@ -33,6 +34,6 @@ public final class SimpleFeatureVectorSimilarity implements Similarity {
 
   @Override
   public double computeScore(Collection<TermId> query, Collection<TermId> target) {
-    return Sets.intersection(Sets.newHashSet(query), Sets.newHashSet(target)).size();
+    return Sets.intersection(Set.copyOf(query), Set.copyOf(target)).size();
   }
 }

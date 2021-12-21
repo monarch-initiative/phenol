@@ -1,10 +1,9 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
 
 import java.io.Serializable;
 import java.util.*;
@@ -12,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +45,7 @@ public final class PrecomputingPairwiseResnikSimilarity
   private static final long serialVersionUID = -350622665214125471L;
 
   /** {@link Logger} object to use. */
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(PrecomputingPairwiseResnikSimilarity.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PrecomputingPairwiseResnikSimilarity.class);
 
   /** Precomputed data. */
   private final PrecomputedScores precomputedScores;
@@ -64,8 +63,7 @@ public final class PrecomputingPairwiseResnikSimilarity
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    * @param numThreads Number of threads to use for precomputation.
    */
-  public PrecomputingPairwiseResnikSimilarity(
-    Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
+  public PrecomputingPairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
     this.precomputedScores = new PrecomputedScores(ontology.getAllTermIds());
     this.numThreads = numThreads;
     precomputeScores(ontology, termToIc);
@@ -84,8 +82,7 @@ public final class PrecomputingPairwiseResnikSimilarity
 
   /** Precompute similarity scores. */
   private void precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
-    LOGGER.info(
-        "Precomputing pairwise scores for {} terms...", new Object[] {ontology.countAllTerms()});
+    LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.countAllTerms());
 
     // Setup PairwiseResnikSimilarity to use for computing scores.
     final PairwiseResnikSimilarity pairwiseSimilarity =
@@ -110,8 +107,7 @@ public final class PrecomputingPairwiseResnikSimilarity
               progressReport.incCurrent();
             }
           } catch (Exception e) {
-            System.err.print("An exception occured in parallel processing!");
-            e.printStackTrace();
+            LOGGER.error("An exception occurred in parallel processing! {}", e.getMessage(), e);
           }
         };
 
@@ -120,13 +116,10 @@ public final class PrecomputingPairwiseResnikSimilarity
     //
     // It is a bit verbose but in the end, not that complicated.
     //
-    // Setup thread pool executor and enforce that precicsely numThreads threads are present.
-    ThreadPoolExecutor threadPoolExecutor =
-        new ThreadPoolExecutor(
-            numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
+    // Setup thread pool executor and enforce that precisely numThreads threads are present.
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Split the input into chunks to reduce task startup overhead
-    final List<List<TermId>> chunks =
-        Lists.partition(Lists.newArrayList(ontology.getNonObsoleteTermIds()), chunkSize);
+    List<List<TermId>> chunks = Lists.partition(List.copyOf(ontology.getNonObsoleteTermIds()), chunkSize);
     // Submit all chunks into the executor.
     for (List<TermId> chunk : chunks) {
       threadPoolExecutor.submit(() -> task.accept(chunk));
@@ -169,8 +162,11 @@ public final class PrecomputingPairwiseResnikSimilarity
       data = new float[termIdCount][termIdCount];
       termIdToIdx = new HashMap<>(termIdCount);
 
+      List<TermId> sortedTermIds = termIds.stream()
+        .sorted()
+        .collect(Collectors.toList());
       int i = 0;
-      for (TermId termId : ImmutableSortedSet.copyOf(termIds)) {
+      for (TermId termId : sortedTermIds) {
         termIdToIdx.put(termId, i++);
       }
     }

@@ -128,7 +128,7 @@ public final class InformationContentComputation {
     Set<TermId> anc2 = ontology.getAncestorTermIds(t2,false);
     if (anc2.contains(t1)) return t1;
     // Case 4, t1 and t2 are not ancestors of one another
-    Sets.SetView<TermId> intersection = Sets.intersection(anc1,anc2);
+    Set<TermId> intersection = Sets.intersection(anc1, anc2);
     TermId mica = null;
     double maxIC = -1.0; // information content
     Deque<TermId> stack = new ArrayDeque<>();

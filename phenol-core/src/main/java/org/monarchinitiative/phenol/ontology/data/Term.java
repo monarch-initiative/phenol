@@ -1,11 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +9,6 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class Term {
-  private static final long serialVersionUID = 2L;
   /**
    * The term's Id.
    */
@@ -92,38 +86,33 @@ public class Term {
     this.id = termId;
     this.name = name;
     //other fields...
-    this.altTermIds = ImmutableList.of();
+    this.altTermIds = List.of();
     this.definition = "";
-    this.databaseXrefs = ImmutableList.of();
+    this.databaseXrefs = List.of();
     this.comment = "";
-    this.subsets = ImmutableList.of();
-    this.synonyms = ImmutableList.of();
+    this.subsets = List.of();
+    this.synonyms = List.of();
     this.obsolete = false;
     this.createdBy = "";
     // creation date can be null - it returns an Optional
     this.creationDate = null;
-    this.xrefs = ImmutableList.of();
+    this.xrefs = List.of();
   }
 
   private Term(Builder builder) {
-    Objects.requireNonNull(builder.id);
-    this.id = builder.id;
-    Objects.requireNonNull(builder.name);
-    this.name = builder.name;
-    this.altTermIds = ImmutableList.copyOf(builder.altTermIds);
-    Objects.requireNonNull(builder.definition);
-    this.definition = builder.definition;
-    this.databaseXrefs = ImmutableList.copyOf(builder.databaseXrefs);
-    Objects.requireNonNull(builder.comment);
-    this.comment = builder.comment;
-    this.subsets = ImmutableList.copyOf(builder.subsets);
-    this.synonyms = ImmutableList.copyOf(builder.synonyms);
+    this.id = Objects.requireNonNull(builder.id, "ID must not be null");
+    this.name = Objects.requireNonNull(builder.name, "Name must not be null");
+    this.altTermIds = List.copyOf(builder.altTermIds);
+    this.definition = Objects.requireNonNull(builder.definition, "Definition must not be null");
+    this.databaseXrefs = List.copyOf(builder.databaseXrefs);
+    this.comment = Objects.requireNonNull(builder.comment, "Comment must not be null");
+    this.subsets = List.copyOf(builder.subsets);
+    this.synonyms = List.copyOf(builder.synonyms);
     this.obsolete = builder.obsolete;
-    Objects.requireNonNull(builder.createdBy);
-    this.createdBy = builder.createdBy;
+    this.createdBy = Objects.requireNonNull(builder.createdBy, "Created by must not be null");
     // creation date can be null - it returns an Optional
     this.creationDate = builder.creationDate;
-    this.xrefs = ImmutableList.copyOf(builder.xrefs);
+    this.xrefs = List.copyOf(builder.xrefs);
   }
 
   public TermId getId() {
@@ -244,20 +233,20 @@ public class Term {
     private String name = null;
 
     //Optional attributes
-    private List<TermId> altTermIds = ImmutableList.of();
+    private List<TermId> altTermIds = List.of();
     private String definition = "";
     //  These are the cross-references that go along with the definition. In the case of the HPO, these
     //  are often PubMed ids.
-    private List<SimpleXref> databaseXrefs = ImmutableList.of();
+    private List<SimpleXref> databaseXrefs = List.of();
     private String comment = "";
     //  The names of the subsets that the term is in, empty if none. */
-    private List<String> subsets = ImmutableList.of();
-    private List<TermSynonym> synonyms = ImmutableList.of();
+    private List<String> subsets = List.of();
+    private List<TermSynonym> synonyms = List.of();
     private boolean obsolete = false;
     //  The term's author name. */
     private String createdBy = "";
     private Date creationDate;
-    private List<Dbxref> xrefs = ImmutableList.of();
+    private List<Dbxref> xrefs = List.of();
 
     /**
      * @param id The term's ID.
