@@ -22,7 +22,7 @@
     <jackson.version>2.12.1</jackson.version>
     <guava.version>30.1-jre</guava.version>
     <jgrapht.version>1.5.1</jgrapht.version>
-    <slf4j.version>1.7.25</slf4j.version>
+    <slf4j.version>1.7.32</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
     <h2.version>1.4.200</h2.version>
 
