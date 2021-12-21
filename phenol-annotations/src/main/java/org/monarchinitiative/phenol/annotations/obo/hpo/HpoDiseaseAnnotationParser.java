@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.*;
@@ -33,11 +33,15 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
 public class HpoDiseaseAnnotationParser {
   Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseAnnotationParser.class);
 
+  /**
+   * We will, by default, parse in disease models from the following databases.
+   */
+  private static final Set<DiseaseDatabase> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of(OMIM, ORPHANET, DECIPHER);
 
   /**
    * Path to the phenotype.hpoa annotation file.
    */
-  private final String annotationFilePath;
+  private final Path annotationFilePath;
   /**
    * Reference to the HPO Ontology object.
    */
@@ -55,26 +59,16 @@ public class HpoDiseaseAnnotationParser {
    */
   private List<String> errors;
   /**
-   * We will, by default, parse in disease models from the following databases.
-   */
-  private final Set<DiseaseDatabase> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of(OMIM, ORPHANET, DECIPHER);
-  /**
    * We will parse in disease models from the following databases.
    */
   private final Set<DiseaseDatabase> databasePrefixes;
 
 
-  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology) {
-    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology);
-    try {
-      return parser.parse();
-    } catch (PhenolException e) {
-      System.err.println("Could not load HPO annotations at " + annotationFile + ": " + e.getMessage());
-    }
-    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
+  public static Map<TermId, HpoDisease> loadDiseaseMap(Path annotationFile, Ontology ontology) {
+    return loadDiseaseMap(annotationFile, ontology, DEFAULT_DATABASE_PREFIXES);
   }
 
-  public static Map<TermId, HpoDisease> loadDiseaseMap(String annotationFile, Ontology ontology, List<DiseaseDatabase> databases) {
+  public static Map<TermId, HpoDisease> loadDiseaseMap(Path annotationFile, Ontology ontology, Set<DiseaseDatabase> databases) {
     HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology, databases);
     try {
       return parser.parse();
@@ -84,12 +78,21 @@ public class HpoDiseaseAnnotationParser {
     throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
   }
 
-
-  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology) {
-    this.annotationFilePath = annotationFile;
-    this.ontology = ontology;
-    this.diseaseMap = new HashMap<>();
-    this.databasePrefixes = DEFAULT_DATABASE_PREFIXES;
+  /**
+   * Get a map from HPO terms to diseases. This function includes OMIM, ORPHA, and DECIPHER references.
+   * @param annotationFile path to the the {@code phenotype.hpoa} file
+   * @param ontology reference to HPO Ontology object
+   * @return map with key being an HPO TermId object, and value being a list of TermIds representing diseases.
+   */
+  public static Multimap<TermId, TermId> loadTermToDiseaseMap(Path annotationFile, Ontology ontology, Set<DiseaseDatabase> databasePrefixes) {
+    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology, databasePrefixes);
+    try {
+      parser.parse(); // ignore return value for this
+      return parser.getTermToDiseaseMap();
+    } catch (PhenolException e) {
+      System.err.println("Could not load HPO annotations at " + annotationFile + ": " + e.getMessage());
+    }
+    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
   }
 
   /**
@@ -99,19 +102,13 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology       reference to HPO Ontology object
    * @param databases      list of databases we will keep for parsing (from OMIM, ORPHA, DECIPHER)
    */
-  private HpoDiseaseAnnotationParser(String annotationFile, Ontology ontology, List<DiseaseDatabase> databases) {
+  private HpoDiseaseAnnotationParser(Path annotationFile,
+                                     Ontology ontology,
+                                     Set<DiseaseDatabase> databases) {
     this.annotationFilePath = annotationFile;
     this.ontology = ontology;
+    this.databasePrefixes = databases;
     this.diseaseMap = new HashMap<>();
-    Set<DiseaseDatabase> dabaseSet = new HashSet<>(databases);
-    databasePrefixes = Set.copyOf(dabaseSet); // immutable copy
-  }
-
-  private HpoDiseaseAnnotationParser(File annotationFile, Ontology ontology) {
-    this.annotationFilePath = annotationFile.getAbsolutePath();
-    this.ontology = ontology;
-    this.diseaseMap = new HashMap<>();
-    databasePrefixes = DEFAULT_DATABASE_PREFIXES;
   }
 
   /**
@@ -133,23 +130,6 @@ public class HpoDiseaseAnnotationParser {
   }
 
   /**
-   * Get a map from HPO terms to diseases. This function includes OMIM, ORPHA, and DECIPHER references.
-   * @param annotationFile path to the the {@code phenotype.hpoa} file
-   * @param ontology reference to HPO Ontology object
-   * @return map with key being an HPO TermId object, and value being a list of TermIds representing diseases.
-   */
-  public static Multimap<TermId, TermId> loadTermToDiseaseMap(String annotationFile, Ontology ontology) {
-    HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology);
-    try {
-      parser.parse(); // ignore return value for this
-      return parser.getTermToDiseaseMap();
-    } catch (PhenolException e) {
-      System.err.println("Could not load HPO annotations at " + annotationFile + ": " + e.getMessage());
-    }
-    throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
-  }
-
-  /**
    * Parse the {@code phenotype.hpoa} file and return a map of diseases.
    *
    * @return a map with key: disease id, e.g., OMIM:600123, and value the corresponding HpoDisease object.
@@ -159,7 +139,7 @@ public class HpoDiseaseAnnotationParser {
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
     Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
     this.errors = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(this.annotationFilePath))) {
+    try (BufferedReader br = Files.newBufferedReader(annotationFilePath)) {
       String line = br.readLine();
       while (line.startsWith("#")) {
         line = br.readLine();
@@ -277,7 +257,7 @@ public class HpoDiseaseAnnotationParser {
   /**
    * Create a mapping from diseaseIds (e.g., OMIM:600123) to the HPO terms that the disease
    * is directly annotated to.
-   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(String, Ontology)} function
+   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(Path, Ontology)} function
    * @return A map from disease Ids to a collection of directly annotating HPO terms
    */
   public static Map<TermId, Collection<TermId>> diseaseIdToDirectHpoTermIds(Map<TermId, HpoDisease> diseaseMap) {
@@ -292,7 +272,7 @@ public class HpoDiseaseAnnotationParser {
 
   /**
    * Create a mapping from HPO ids to the disease Ids they are directly annotated to.
-   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(String, Ontology)} function
+   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(Path, Ontology)} function
    * @param ontology A reference to the HPO ontology
    * @return A map from HPO ids to Disease ids (direct annotations only).
    */
@@ -313,7 +293,7 @@ public class HpoDiseaseAnnotationParser {
   /**
    * Create a mapping from diseaseIds (e.g., OMIM:600123) to the HPO terms that the disease
    * is directly annotated to as well as all propagated annotations.
-   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(String, Ontology)} function
+   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(Path, Ontology)} function
    * @param ontology A reference to the HPO ontology
    * @return A map from disease Ids to a collection of directly annotating HPO terms
    */
@@ -334,7 +314,7 @@ public class HpoDiseaseAnnotationParser {
 
   /**
    * Create a mapping from HPO ids to the disease Ids they are directly annotated to and also propagated annotations.
-   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(String, Ontology)} function
+   * @param diseaseMap A disease map as generated by the {@link #loadDiseaseMap(Path, Ontology)} function
    * @param ontology A reference to the HPO ontology
    * @return A map from HPO ids to Disease ids (direct annotations only).
    */

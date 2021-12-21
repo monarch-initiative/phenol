@@ -1,0 +1,119 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://purl.obolibrary.org/obo/MONDO_0000645",
+      "meta" : {
+        "definition" : {
+          "val" : "A non-metastasizing neoplasm that arises from the fallopian tube. Representative examples include papilloma, adenofibroma, and leiomyoma.",
+          "xrefs" : [ ]
+        },
+        "subsets" : [ "http://purl.obolibrary.org/obo/mondo#ordo_disease" ],
+        "xrefs" : [ {
+          "val" : "UMLS:C0346190"
+        }, {
+          "val" : "Orphanet:180237"
+        }, {
+          "val" : "NCIT:C4517"
+        }, {
+          "val" : "ICD10:D28.2"
+        }, {
+          "val" : "SCTID:92100009"
+        }, {
+          "val" : "MedDRA:10053865"
+        }, {
+          "val" : "DOID:0060111"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Fallopian Tube Tumor",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Neoplasm of Fallopian Tube",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Fallopian Tube Tumor, Benign",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Tumor of Fallopian Tube",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "fallopian tube benign neoplasm",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Neoplasm of the Fallopian Tube",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Tumor of the Fallopian Tube",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Fallopian Tube Neoplasm, Benign",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "benign tumor of fallopian tubes",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Benign Fallopian Tube Neoplasm",
+          "xrefs" : [ ]
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "fallopian tube benign neoplasm"
+    } ],
+    "edges" : [ {
+      "sub" : "http://purl.obolibrary.org/obo/MONDO_0000645",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/MONDO_0000624"
+    } ],
+    "id" : "http://purl.obolibrary.org/obo/mondo-module.owl",
+    "meta" : {
+      "subsets" : [ ],
+      "xrefs" : [ ],
+      "basicPropertyValues" : [ {
+        "pred" : "http://purl.org/dc/elements/1.1/title",
+        "val" : "MONDO: Monarch Disease Ontology"
+      }, {
+        "pred" : "http://purl.org/dc/terms/description",
+        "val" : "A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology."
+      }, {
+        "pred" : "http://purl.org/dc/terms/license",
+        "val" : "http://creativecommons.org/licenses/by/4.0/"
+      }, {
+        "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBOFormatVersion",
+        "val" : "1.2"
+      }, {
+        "pred" : "http://www.w3.org/2000/01/rdf-schema#comment",
+        "val" : "Includes Ontology(OntologyID(OntologyIRI(<http://purl.obolibrary.org/obo/mondo/imports/equivalencies.owl>) VersionIRI(<null>))) [Axioms: 142991 Logical Axioms: 61249]"
+      }, {
+        "pred" : "http://xmlns.com/foaf/0.1/homepage",
+        "val" : "obofoundry.org/ontology/mondo.html"
+      } ],
+      "version" : "http://purl.obolibrary.org/obo/mondo/releases/2018-03-16/mondo.owl"
+    },
+    "equivalentNodesSets" : [ {
+      "nodeIds" : [ "http://purl.obolibrary.org/obo/MONDO_0000645", "http://www.orpha.net/ORDO/Orphanet_180237" ]
+    }, {
+      "nodeIds" : [ "http://purl.obolibrary.org/obo/SCTID_92100009", "http://purl.obolibrary.org/obo/MONDO_0000645" ]
+    }, {
+      "nodeIds" : [ "http://purl.obolibrary.org/obo/MONDO_0000645", "http://purl.obolibrary.org/obo/NCIT_C4517" ]
+    } ],
+    "logicalDefinitionAxioms" : [ {
+      "definedClassId" : "http://purl.obolibrary.org/obo/MONDO_0000645",
+      "genusIds" : [ "http://purl.obolibrary.org/obo/MONDO_0005165" ],
+      "restrictions" : [ {
+        "propertyId" : "http://purl.obolibrary.org/obo/RO_0004026",
+        "fillerId" : "http://purl.obolibrary.org/obo/UBERON_0003889"
+      } ]
+    } ],
+    "domainRangeAxioms" : [ ],
+    "propertyChainAxioms" : [ ]
+  } ]
+}

@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.obo.hpo;
 
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Disabled until we have a toy hpo.json")
 class HpoAnnotationLineTest {
 
   private final static double EPSILON = 0.00001;

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.Gene;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
@@ -19,6 +20,7 @@ import com.google.common.collect.Multimap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Disabled until we have a toy hpo.json")
 class HpoAssociationParserTest {
   private HpoAssociationParser parser;
 

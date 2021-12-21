@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * See also {@link HpoAnnotationModelTest}. This class tests merging od phenotype entries and calculation of the
  * correct frequencies.
  */
+@Disabled("Disabled until we have a toy hpo.json")
 class HpoAnnotationFileParserTest {
 
   private static HpoAnnotationModel smallFileOmim123456;

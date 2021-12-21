@@ -136,10 +136,9 @@ public class HpoAssociationParser {
     if (! phenotypeDotHpoaFile.exists()) {
       throw new PhenolRuntimeException("Cannot find phenotype.hpoa file");
     }
-    List<DiseaseDatabase> desiredDatabasePrefixes=ImmutableList.of(OMIM);
-    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(this.phenotypeDotHpoaFile.getAbsolutePath(),
-      hpoOntology,
-      desiredDatabasePrefixes);
+    Set<DiseaseDatabase> desiredDatabasePrefixes= new HashSet<>();
+    desiredDatabasePrefixes.add(OMIM);
+    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(phenotypeDotHpoaFile.toPath(), hpoOntology, desiredDatabasePrefixes);
     Multimap<TermId, TermId> phenotypeToDisease = ArrayListMultimap.create();
     for (Map.Entry<TermId,HpoDisease> entry : diseaseMap.entrySet()) {
       for (HpoAnnotation hpoAnnot : entry.getValue().getPhenotypicAbnormalities()) {

@@ -1,6 +1,0 @@
-language: java
-
-# We only support Java 8, but check the build on JDK 11
-jdk:
-  - openjdk8
-  - openjdk11

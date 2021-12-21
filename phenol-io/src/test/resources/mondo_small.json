@@ -1,0 +1,366 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://purl.obolibrary.org/obo/MONDO_0000001",
+      "meta" : {
+        "definition" : {
+          "val" : "A disease is a disposition to undergo pathological processes that exists in an organism because of one or more disorders in that organism.",
+          "xrefs" : [ "OGMS:0000031" ]
+        },
+        "xrefs" : [ {
+          "val" : "NCIT:C2991"
+        }, {
+          "val" : "EFO:0000408"
+        }, {
+          "val" : "MESH:D004194"
+        }, {
+          "val" : "ICD10:N18"
+        }, {
+          "val" : "UMLS:C0012634"
+        }, {
+          "val" : "OGMS:0000031"
+        }, {
+          "val" : "SCTID:64572001"
+        }, {
+          "val" : "DOID:4"
+        }, {
+          "val" : "ICD9:799.9"
+        }, {
+          "val" : "Orphanet:377788"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "disease or disorder",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "disease or disorder, non-neoplastic",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "other disease",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "diseases and disorders",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "disease",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "medical condition",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "condition",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "disorder",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "diseases",
+          "xrefs" : [ "NCIT:C2991" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "disorders",
+          "xrefs" : [ "NCIT:C2991" ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://linkedlifedata.com/resource/umls/id/C0012634"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://purl.obolibrary.org/obo/Orphanet_377788"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/mesh/D004194"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://purl.obolibrary.org/obo/NCIT_C2991"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/snomedct/64572001"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://purl.obolibrary.org/obo/DOID_4"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "disease or disorder"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#EXCLUDE",
+      "lbl" : "Synonym to be removed from public release but maintained in edit version as record of external usage"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#MISSPELLING",
+      "lbl" : "A synonym that is recorded for consistency with another source but is a misspelling"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#hasExactSynonym",
+      "type" : "PROPERTY",
+      "lbl" : "has_exact_synonym"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
+      "type" : "PROPERTY",
+      "lbl" : "database_cross_reference"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/MONDO_0007952",
+      "meta" : {
+        "subsets" : [ "http://purl.obolibrary.org/obo/mondo#gard_rare" ],
+        "xrefs" : [ {
+          "val" : "GARD:0006991"
+        }, {
+          "val" : "MESH:C563599"
+        }, {
+          "val" : "UMLS:C1835088"
+        }, {
+          "val" : "OMIM:155000"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "maxillofacial dysostosis",
+          "xrefs" : [ "OMIM:155000" ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/mesh/C563599"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/omim/155000"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://linkedlifedata.com/resource/umls/id/C1835088"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#seeAlso",
+          "val" : "https://rarediseases.info.nih.gov/diseases/6991/maxillofacial-dysostosis"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "maxillofacial dysostosis"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#DEPRECATED",
+      "lbl" : "A synonym that is historic and discouraged"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#SynonymTypeProperty",
+      "type" : "PROPERTY",
+      "lbl" : "synonym_type_property"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#inSubset",
+      "type" : "PROPERTY",
+      "lbl" : "in_subset"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#AMBIGUOUS",
+      "lbl" : "ambiguous"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#hasOBOFormatVersion",
+      "type" : "PROPERTY",
+      "lbl" : "has_obo_format_version"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym",
+      "type" : "PROPERTY",
+      "lbl" : "has_related_synonym"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym",
+      "type" : "PROPERTY",
+      "lbl" : "has_broad_synonym"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#ABBREVIATION",
+      "lbl" : "abbreviation"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/IAO_0000115",
+      "type" : "PROPERTY",
+      "lbl" : "definition"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/MONDO_0003847",
+      "meta" : {
+        "definition" : {
+          "val" : "A disease that is caused by genetic modifications where those modifications are inherited from a parent's genome.",
+          "xrefs" : [ "MONDO:cjm" ]
+        },
+        "comments" : [ "Usage note: this is intended only for diseases with an inherited genetic etiology. Somatic genetic mutations are excluded. Some ontologies use the term 'genetic disease' in the sense of inherited disorders only, we are here careful to distinguish." ],
+        "xrefs" : [ {
+          "val" : "SCTID:32895009"
+        }, {
+          "val" : "EFO:0000508"
+        }, {
+          "val" : "MESH:D030342"
+        }, {
+          "val" : "DOID:630"
+        }, {
+          "val" : "UMLS:C0019247"
+        }, {
+          "val" : "NCIT:C3101"
+        }, {
+          "val" : "ICD9:799.89"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "molecular disease",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasRelatedSynonym",
+          "val" : "familial disorder",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasBroadSynonym",
+          "val" : "genetic condition",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "hereditary disease or disorder",
+          "xrefs" : [ "MONDO:patterns/hereditary" ]
+        }, {
+          "pred" : "hasBroadSynonym",
+          "val" : "genetic disorder",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasRelatedSynonym",
+          "val" : "inborn disorder",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "genetic disorder",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "hereditary diseases",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "inherited disease",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasBroadSynonym",
+          "val" : "genetic disease",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "genetic condition",
+          "xrefs" : [ "NCIT:C3101" ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "hereditary disease",
+          "xrefs" : [ "MONDO:patterns/hereditary", "NCIT:C3101" ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://purl.obolibrary.org/obo/NCIT_C3101"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/mesh/D030342"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://purl.obolibrary.org/obo/DOID_630"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://linkedlifedata.com/resource/umls/id/C0019247"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#exactMatch",
+          "val" : "http://identifiers.org/snomedct/32895009"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/mondo#closeMatch",
+          "val" : "http://identifiers.org/snomedct/264530000"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "inherited genetic disease"
+    }, {
+      "id" : "http://www.geneontology.org/formats/oboInOwl#SubsetProperty",
+      "type" : "PROPERTY",
+      "lbl" : "subset_property"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/mondo#DUBIOUS",
+      "lbl" : "dubious synonym"
+    } ],
+    "edges" : [ {
+      "sub" : "http://purl.obolibrary.org/obo/MONDO_0003847",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/MONDO_0000001"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/MONDO_0003847",
+      "pred" : "http://purl.obolibrary.org/obo/mondo#has_modifier",
+      "obj" : "http://purl.obolibrary.org/obo/MONDO_0021152"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/MONDO_0007952",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/MONDO_0003847"
+    } ],
+    "id" : "http://purl.obolibrary.org/obo/mondo.owl",
+    "meta" : {
+      "subsets" : [ ],
+      "xrefs" : [ ],
+      "basicPropertyValues" : [ {
+        "pred" : "http://purl.org/dc/elements/1.1/title",
+        "val" : "Mondo Disease Ontology"
+      }, {
+        "pred" : "http://purl.org/dc/terms/description",
+        "val" : "A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology."
+      }, {
+        "pred" : "http://purl.org/dc/terms/license",
+        "val" : "http://creativecommons.org/licenses/by/4.0/"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/chebi.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/doid.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/envo.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/go.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/hp.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/mf.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/ncbitaxon.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/ncit.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://purl.obolibrary.org/obo/uberon.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "http://www.orpha.net/ontology/orphanet.owl"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "https://id.nlm.nih.gov/mesh/"
+      }, {
+        "pred" : "http://purl.org/dc/terms/source",
+        "val" : "https://rarediseases.info.nih.gov/"
+      }, {
+        "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBOFormatVersion",
+        "val" : "1.2"
+      }, {
+        "pred" : "http://www.w3.org/2000/01/rdf-schema#comment",
+        "val" : "Includes Ontology(OntologyID(Anonymous-31)) [Axioms: 86279 Logical Axioms: 0]"
+      }, {
+        "pred" : "http://www.w3.org/2000/01/rdf-schema#comment",
+        "val" : "Includes Ontology(OntologyID(Anonymous-33)) [Axioms: 7236 Logical Axioms: 0]"
+      }, {
+        "pred" : "http://xmlns.com/foaf/0.1/homepage",
+        "val" : "http://obofoundry.org/ontology/mondo.html"
+      } ],
+      "version" : "http://purl.obolibrary.org/obo/mondo/releases/2020-01-27/reasoned.owl.owl/mondo.owl"
+    },
+    "equivalentNodesSets" : [ ],
+    "logicalDefinitionAxioms" : [ {
+      "definedClassId" : "http://purl.obolibrary.org/obo/MONDO_0003847",
+      "genusIds" : [ "http://purl.obolibrary.org/obo/MONDO_0000001" ],
+      "restrictions" : [ {
+        "propertyId" : "http://purl.obolibrary.org/obo/mondo#has_modifier",
+        "fillerId" : "http://purl.obolibrary.org/obo/MONDO_0021152"
+      } ]
+    } ],
+    "domainRangeAxioms" : [ ],
+    "propertyChainAxioms" : [ ]
+  } ]
+}

@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Peter N Robinson
  */
+@Disabled("Disabled until we have a toy hpo.json")
 class OrphanetXML2HpoDiseaseModelParserTest {
 
   static private OrphanetXML2HpoDiseaseModelParser parser;
