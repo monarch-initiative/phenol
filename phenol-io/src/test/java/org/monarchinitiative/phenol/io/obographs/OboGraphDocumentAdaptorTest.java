@@ -46,7 +46,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testRemovesUnknownCurie() {
+  public void testRemovesUnknownCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -74,7 +74,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testCanManuallyAddUnknownCurie() {
+  public void testCanManuallyAddUnknownCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -105,7 +105,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testPropertyNodesAreNotIncluded() {
+  public void testPropertyNodesAreNotIncluded() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -138,7 +138,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void testCanManuallyFilterForCurie() {
+  public void testCanManuallyFilterForCurie() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -174,7 +174,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void throwsExceptionWhenUnknownFilterIdSupplied() {
+  public void throwsExceptionWhenUnknownFilterIdSupplied() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
@@ -208,7 +208,7 @@ public class OboGraphDocumentAdaptorTest {
   }
 
   @Test
-  void happyPath() {
+  public void happyPath() {
 
     Node root = new Node.Builder()
       .id("http://purl.obolibrary.org/obo/HP_0000001")
