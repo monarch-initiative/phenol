@@ -6,7 +6,7 @@ module org.monarchinitiative.phenol.core {
   exports org.monarchinitiative.phenol.ontology.scoredist;
   exports org.monarchinitiative.phenol.ontology.similarity;
 
+  requires transitive org.jgrapht.core; // due to DefaultDirectedGraph being exposed in MinimalOntology
   requires com.google.common;
-  requires org.jgrapht.core;
   requires org.slf4j;
 }
