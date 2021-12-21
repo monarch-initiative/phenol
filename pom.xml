@@ -15,7 +15,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
@@ -91,6 +91,10 @@
       <email>daniel.danis@jax.org</email>
       <organization>The Jackson Laboratory</organization>
       <organizationUrl>https://www.jax.org</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jules Jacobsen</name>
+      <url>https://github.com/julesjacobsen</url>
     </developer>
   </developers>
 
