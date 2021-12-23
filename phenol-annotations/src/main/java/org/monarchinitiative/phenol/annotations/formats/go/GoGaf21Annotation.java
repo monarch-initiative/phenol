@@ -254,7 +254,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getLabel() {
+  public TermId getItemId() {
     //return db + ":" + dbObjectId;
     return this.dbObjectTermId;
   }
@@ -428,13 +428,10 @@ public final class GoGaf21Annotation implements TermAnnotation {
       return false;
     }
     if (with == null) {
-      if (other.with != null) {
-        return false;
-      }
-    } else if (!with.equals(other.with)) {
-      return false;
+      return other.with == null;
+    } else {
+      return with.equals(other.with);
     }
-    return true;
   }
 
   @Override
