@@ -3,6 +3,8 @@ package org.monarchinitiative.phenol.ontology.data;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import com.google.common.collect.ComparisonChain;
 
+import java.util.Objects;
+
 public class TestTermAnnotation implements TermAnnotation {
 
   private static final long serialVersionUID = 1L;
@@ -23,6 +25,19 @@ public class TestTermAnnotation implements TermAnnotation {
   @Override
   public TermId getItemId() {
     return label;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TestTermAnnotation that = (TestTermAnnotation) o;
+    return Objects.equals(termId, that.termId) && Objects.equals(label, that.label);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(termId, label);
   }
 
   @Override

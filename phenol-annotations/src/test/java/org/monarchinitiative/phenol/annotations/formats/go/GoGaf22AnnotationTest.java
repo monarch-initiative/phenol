@@ -3,12 +3,10 @@ package org.monarchinitiative.phenol.annotations.formats.go;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.assoc.Gene2DiseaseAsssociationParserTest;
-import org.monarchinitiative.phenol.annotations.assoc.OrphaGeneToDiseaseParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;

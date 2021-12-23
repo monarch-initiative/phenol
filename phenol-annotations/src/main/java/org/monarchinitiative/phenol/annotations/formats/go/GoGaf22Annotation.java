@@ -19,11 +19,6 @@ import java.util.Optional;
  *
  * <p>The <b>label</b> of this {@link TermAnnotation} is the <code>"${DB}:${DB_Object_ID}"</code>.
  *
- * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
- * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
- * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
- *
- *
  * A GoGAF version 2.2. line has 17 fields (the last 2 of which are optional):
  * <ol>
  * <li>db Database source, e.g., <code>"UniProtKB"</code>.</li>
@@ -44,6 +39,10 @@ import java.util.Optional;
  * <li>annotationExtension Annotation extension; optional, <code>null</code> when missing.</li>
  * <li>geneProductFormId Gene product form ID; ; optional, <code>null</code> when missing.</li>
  * </ol>
+ *
+ * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
+ * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class GoGaf22Annotation implements TermAnnotation {
     /** The {@link TermId} of the database object being annotated. Includes both the "db" (which is the

@@ -13,6 +13,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.analysis.*;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.google.common.collect.ImmutableSet;
@@ -72,8 +74,9 @@ public final class GoEnrichmentDemo {
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
     int n_terms = gontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
-    System.out.println("[INFO] parsing  " + pathGoGaf);
-    associationContainer = GoAssociationContainer.loadGoGafAssociationContainer(pathGoGaf, gontology);
+    Path goGaf = Paths.get(pathGoGaf);
+    System.out.println("[INFO] parsing  " + goGaf.toAbsolutePath());
+    associationContainer = GoAssociationContainer.loadGoGafAssociationContainer(goGaf, gontology);
     goAnnots = associationContainer.getRawAssociations();
     populationGenes = getPopulationGenes(goAnnots);
     Set<TermId> studyGenes = getFocusedStudyGenes(goAnnots, targetGoTerm);

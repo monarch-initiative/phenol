@@ -4,8 +4,8 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -22,25 +22,22 @@ import java.util.List;
 
 public interface ItemAnnotations<T> {
 
-    /**
-     * @param annot defines the {@link TermAnnotation} to be added.
-     */
-    void addAnnotation(TermAnnotation annot);
-
     /** @return the annotated domain item (e.g., a gene) that is annotated by ontology terms */
     T annotatedItem();
+
+  /**
+   * @return an arraylist of all {@link TermAnnotation} objects to which this item is directly annotated
+   */
+  List<TermAnnotation> getAnnotations();
 
     /**
      * @return an arraylist of all ontology Ids to which this item is directly annotated
      */
-    List<TermId> getAnnotatingTermIds();
-
-
-
-    /**
-     * @return an arraylist of all {@link TermAnnotation} objects to which this item is directly annotated
-     */
-    List<TermAnnotation> getAnnotations();
+    default List<TermId> getAnnotatingTermIds() {
+      return getAnnotations().stream()
+        .map(TermAnnotation::getTermId)
+        .collect(Collectors.toList());
+    }
 
     /**
      * Returns whether the given term id is associated.
@@ -48,5 +45,7 @@ public interface ItemAnnotations<T> {
      * @param tid the id of the term that should be checked.
      * @return whether tid is contained in this mapping.
      */
-    boolean containsAnnotation(TermId tid);
+    default boolean containsAnnotation(TermId tid) {
+      return getAnnotations().stream().anyMatch(annot -> annot.getTermId().equals(tid) );
+    }
 }
