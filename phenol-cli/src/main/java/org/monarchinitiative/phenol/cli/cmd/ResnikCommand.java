@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
   description = "Resnik")
 public class ResnikCommand implements Callable<Integer> {
 
-  @CommandLine.Option(names = {"-h"}, description = "path to hp.obo file", required = true)
+  @CommandLine.Option(names = {"--hpo"}, description = "path to hp.obo file", required = true)
   private String hpoPath;
   @CommandLine.Option(names = "-a", description = "path to phenotype.hpoa file", required = true)
   private String phenotypeDotHpoaPath;
