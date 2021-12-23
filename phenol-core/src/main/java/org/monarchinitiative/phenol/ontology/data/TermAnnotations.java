@@ -40,9 +40,9 @@ public final class TermAnnotations {
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
         if (!result.containsKey(termId)) {
-          result.put(termId, Sets.newHashSet(anno.getLabel()));
+          result.put(termId, Sets.newHashSet(anno.getItemId()));
         } else {
-          result.get(termId).add(anno.getLabel());
+          result.get(termId).add(anno.getItemId());
         }
       }
     }
@@ -70,10 +70,10 @@ public final class TermAnnotations {
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
-        if (!result.containsKey(anno.getLabel())) {
-          result.put(anno.getLabel(), Sets.newHashSet(termId));
+        if (!result.containsKey(anno.getItemId())) {
+          result.put(anno.getItemId(), Sets.newHashSet(termId));
         } else {
-          result.get(anno.getLabel()).add(termId);
+          result.get(anno.getItemId()).add(termId);
         }
       }
     }

@@ -70,7 +70,7 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /** @return The term's Id as string including prefix. */
   @Override
-  public TermId getLabel() {
+  public TermId getItemId() {
     return TermId.of(String.format("NCBIGene:%d", entrezGeneId));
   }
 

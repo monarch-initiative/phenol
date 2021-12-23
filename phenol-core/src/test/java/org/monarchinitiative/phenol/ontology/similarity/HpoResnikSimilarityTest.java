@@ -28,7 +28,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
       final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, Sets.newHashSet(annot.getTermId()), true);
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());
-        termIdToDiseaseIds.get(tid).add(annot.getLabel());
+        termIdToDiseaseIds.get(tid).add(annot.getItemId());
       }
     }
     final Map<TermId, Double> icMap = new InformationContentComputation(ontology).computeInformationContent(termIdToDiseaseIds);

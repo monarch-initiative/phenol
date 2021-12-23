@@ -4,6 +4,7 @@ package org.monarchinitiative.phenol.cli.cmd;
 import org.monarchinitiative.phenol.cli.demo.ResnikGenebasedHpoDemo;
 import picocli.CommandLine;
 
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 @CommandLine.Command(name = "resnik",
   mixinStandardHelpOptions = true,
@@ -11,13 +12,13 @@ import java.util.concurrent.Callable;
 public class ResnikCommand implements Callable<Integer> {
 
   @CommandLine.Option(names = {"--hpo"}, description = "path to hp.obo file", required = true)
-  private String hpoPath;
+  public Path hpoPath;
   @CommandLine.Option(names = "-a", description = "path to phenotype.hpoa file", required = true)
-  private String phenotypeDotHpoaPath;
+  public Path phenotypeDotHpoaPath;
   @CommandLine.Option(names = "--geneinfo", description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz")
-  private String geneInfoPath;
+  public Path geneInfoPath;
   @CommandLine.Option(names = "--mimgene2medgen", description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
-  private String mim2genMedgenPath;
+  public Path mim2genMedgenPath;
 
 
   @Override

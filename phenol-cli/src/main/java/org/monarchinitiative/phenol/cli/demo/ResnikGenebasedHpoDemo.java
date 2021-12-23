@@ -12,8 +12,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
-import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -30,15 +29,15 @@ public class ResnikGenebasedHpoDemo {
   private final Map<TermId,String> geneIdToSymbolMap;
   private final Map<TermId, Collection<TermId>> diseaseIdToTermIds;
 
-  public ResnikGenebasedHpoDemo(String hpoPath, String hpoaPath, String geneInfoPath, String mim2genMedgenPath) {
+  public ResnikGenebasedHpoDemo(Path hpoPath, Path hpoaPath, Path geneInfoPath, Path mim2genMedgenPath) {
     Instant t1 = Instant.now();
-    this.hpo = OntologyLoader.loadOntology(new File(hpoPath));
+    this.hpo = OntologyLoader.loadOntology(hpoPath.toFile());
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
     Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
     databases.add(OMIM);
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(hpoaPath), hpo,databases);
+    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(hpoaPath, hpo, databases);
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
@@ -61,7 +60,7 @@ public class ResnikGenebasedHpoDemo {
     t2 = Instant.now();
     System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(geneInfoPath,mim2genMedgenPath,this.hpo);
+    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(geneInfoPath.toString(), mim2genMedgenPath.toString(), this.hpo);
     this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();

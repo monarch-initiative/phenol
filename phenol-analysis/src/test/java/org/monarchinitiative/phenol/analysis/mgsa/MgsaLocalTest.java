@@ -23,7 +23,7 @@ public class MgsaLocalTest {
   private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      TermId geneId = ann.getLabel();
+      TermId geneId = ann.getItemId();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);
@@ -35,7 +35,7 @@ public class MgsaLocalTest {
     Set<TermId> genes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
-        TermId geneId = ann.getLabel();
+        TermId geneId = ann.getItemId();
         genes.add(geneId);
       }
     }
@@ -55,7 +55,7 @@ public class MgsaLocalTest {
     i = 0;
     M *= 3;
     for (TermAnnotation ann : annots) {
-      TermId gene = ann.getLabel();
+      TermId gene = ann.getItemId();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;

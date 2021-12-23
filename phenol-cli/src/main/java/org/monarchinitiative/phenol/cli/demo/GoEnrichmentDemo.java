@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
-import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
+import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
@@ -13,6 +13,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.analysis.*;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.google.common.collect.ImmutableSet;
@@ -47,7 +49,7 @@ public final class GoEnrichmentDemo {
 
   private final Ontology gontology;
 
-  private final List<GoGaf21Annotation> goAnnots;
+  private final List<GoGaf22Annotation> goAnnots;
 
   private final Set<TermId> populationGenes;
 
@@ -72,8 +74,9 @@ public final class GoEnrichmentDemo {
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
     int n_terms = gontology.countAllTerms();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
-    System.out.println("[INFO] parsing  " + pathGoGaf);
-    associationContainer = GoAssociationContainer.loadGoGafAssociationContainer(pathGoGaf, gontology);
+    Path goGaf = Paths.get(pathGoGaf);
+    System.out.println("[INFO] parsing  " + goGaf.toAbsolutePath());
+    associationContainer = GoAssociationContainer.loadGoGafAssociationContainer(goGaf, gontology);
     goAnnots = associationContainer.getRawAssociations();
     populationGenes = getPopulationGenes(goAnnots);
     Set<TermId> studyGenes = getFocusedStudyGenes(goAnnots, targetGoTerm);
@@ -181,15 +184,15 @@ public final class GoEnrichmentDemo {
 
 
 
-  private Set<TermId> getFocusedStudyGenes(List<GoGaf21Annotation> annots, TermId focus) {
+  private Set<TermId> getFocusedStudyGenes(List<GoGaf22Annotation> annots, TermId focus) {
     return getFocusedStudyGenes(annots, focus, 0.5); // default proportion of 50%
   }
 
-  private Set<TermId> getFocusedStudyGenes(List<GoGaf21Annotation> annots, TermId focus, double proportion) {
+  private Set<TermId> getFocusedStudyGenes(List<GoGaf22Annotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
       if (focus.equals(ann.getTermId())) {
-        TermId geneId = ann.getLabel();
+        TermId geneId = ann.getItemId();
         targetGenes.add(geneId);
       }
     }
@@ -205,7 +208,7 @@ public final class GoEnrichmentDemo {
       finalGenes.add(tid);
     }
     for (TermAnnotation ann : annots) {
-      TermId gene = ann.getLabel();
+      TermId gene = ann.getItemId();
       if (!targetGenes.contains(gene)) {
         finalGenes.add(gene);
       }
@@ -221,10 +224,10 @@ public final class GoEnrichmentDemo {
    * @param annots List of annotations of genes/diseases to GO/HPO terms etc
    * @return an immutable set of TermIds representing the labeled genes/diseases
    */
-  private Set<TermId> getPopulationGenes(List<GoGaf21Annotation> annots) {
+  private Set<TermId> getPopulationGenes(List<GoGaf22Annotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      TermId geneId = ann.getLabel();
+      TermId geneId = ann.getItemId();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);
