@@ -46,18 +46,16 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     this.rawAssociations = assocs;
     this.ontology = ontology;
     Map<TermId, GeneAnnotations> tempMap = new HashMap<>();
-    for (TermAnnotation a : assocs) {
-      TermId tid = a.getLabel();
-      tempMap.putIfAbsent(tid, new GeneAnnotations(tid));
-      GeneAnnotations g2a = tempMap.get(tid);
-      g2a.addAnnotation(a);
+    for (TermAnnotation annot : assocs) {
+      TermId itemId = annot.getItemId();
+      tempMap.putIfAbsent(itemId, new GeneAnnotations(itemId));
+      tempMap.get(itemId).addAnnotation(annot);
     }
-    this.gene2associationMap = ImmutableMap.copyOf(tempMap);
+    this.gene2associationMap = ImmutableMap.copyOf(tempMap); // TODO Use Native Java 11
     Set<TermId> tidset = new HashSet<>();
-    for (GeneAnnotations a : this.gene2associationMap.values()) {
-      List<TermId> tidlist = a.getAnnotatingTermIds();
-      tidset.addAll(tidlist);
-    }
+    this.gene2associationMap
+            .values()
+            .forEach(ga -> tidset.addAll(ga.getAnnotatingTermIds()));
     this.annotatingTermCount = tidset.size();
   }
 
@@ -66,12 +64,12 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     Map<TermId, List<TermId>> mp = new HashMap<>();
     for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
-      mp.putIfAbsent(gene, new ArrayList<>());
       for (TermId ontologyTermId : entry.getValue().getAnnotatingTermIds()) {
+        mp.putIfAbsent(ontologyTermId, new ArrayList<>());
         mp.get(ontologyTermId).add(gene);
       }
     }
-    return mp;
+    return mp; // TODO Java 11 Map.copyOf()
   }
 
   public int getAnnotatingTermCount() {
@@ -136,7 +134,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         continue;
       }
       GeneAnnotations assocs = this.gene2associationMap.get(domainTermId);
-      for (TermAnnotation termAnnotation : assocs) {
+      for (TermAnnotation termAnnotation : assocs.getAnnotations()) {
         /* At first add the direct counts and remember the terms */
         TermId ontologyTermId = termAnnotation.getTermId();
         // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)

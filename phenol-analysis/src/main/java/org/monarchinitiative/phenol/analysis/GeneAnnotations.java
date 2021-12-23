@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  */
 public class GeneAnnotations implements ItemAnnotations<TermId> {
 
-
     /** TermId of the item (e.g., gene) for which this object stores 0 - n Associations (e.g., GO associations). */
     private final TermId annotatedGene;
 
@@ -22,7 +21,6 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
     private final List<TermAnnotation> annotations;
 
     /**
-     *
      * @param itemId name of the gene or other item being annotated
      */
     public GeneAnnotations(TermId itemId) {
@@ -35,10 +33,12 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
      *
      * @param a defines the {@link TermAnnotation} to be added.
      */
+    @Override
     public void addAnnotation(TermAnnotation a) {
         annotations.add(a);
     }
 
+    @Override
     public TermId annotatedItem() {
         return annotatedGene;
     }
@@ -48,6 +48,7 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
      * annotated by extracting the information from the Association object(s)
      * belonging to the gene.
      */
+    @Override
     public List<TermId> getAnnotatingTermIds() {
         return this.annotations.stream().map(TermAnnotation::getTermId).collect(Collectors.toList());
     }
@@ -58,19 +59,12 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
     }
 
     /**
-     * Returns the iterator to iterate over all {@link TermAnnotation} objects associated with this item.
-     */
-    public Iterator<TermAnnotation> iterator()
-    {
-        return annotations.iterator();
-    }
-
-    /**
      * Returns whether the given term id is associated.
      *
      * @param tid the id of the term that should be checked.
      * @return whether tid is contained in this mapping.
      */
+    @Override
     public boolean containsAnnotation(TermId tid) {
         return annotations.stream().anyMatch(annot -> annot.getTermId().equals(tid) );
     }
