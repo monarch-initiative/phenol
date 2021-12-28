@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
+import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
@@ -60,8 +61,8 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
     Map<TermId, List<TermId>> mp = new HashMap<>();
     for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {
       TermId gene = entry.getKey();
-      mp.putIfAbsent(gene, new ArrayList<>());
       for (TermId ontologyTermId : entry.getValue().getAnnotatingTermIds()) {
+        mp.putIfAbsent(ontologyTermId, new ArrayList<>());
         mp.get(ontologyTermId).add(gene);
       }
     }
@@ -127,13 +128,21 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
       LOGGER.warn("Cound not find annotations for {} ontology term ids (are versions in synch?)", not_found);
     }
     Map<TermId, DirectAndIndirectTermAnnotations> annotationMap = new HashMap<>();
-    for (Map.Entry<TermId, Set<TermId>> e : directAnnotationMap.entrySet()) {
-      TermId itemTermId = e.getKey();
-      DirectAndIndirectTermAnnotations daiAnnots =
-        new DirectAndIndirectTermAnnotations(e.getValue(), ontology);
-      annotationMap.put(itemTermId, daiAnnots);
+    for (Map.Entry<TermId, Set<TermId>> entry : directAnnotationMap.entrySet()) {
+      TermId domainItemTermId = entry.getKey();
+      for (TermId ontologyId : entry.getValue()) {
+        annotationMap.putIfAbsent(ontologyId, new DirectAndIndirectTermAnnotations(ontologyId));
+        annotationMap.get(ontologyId).addDirectAnnotatedItem(domainItemTermId);
+        // In addition to the direct annotation, the gene is also indirectly annotated
+        // to all of the GO Term's ancestors
+        Set<TermId> ancs = OntologyAlgorithm.getAncestorTerms(ontology, ontologyId, false);
+        for (TermId ancestor : ancs) {
+          annotationMap.putIfAbsent(ancestor, new DirectAndIndirectTermAnnotations(ancestor));
+          annotationMap.get(ancestor).addIndirectAnnotatedItem(domainItemTermId);
+        }
+      }
     }
-    return annotationMap;
+    return annotationMap; // TODO Java 11, Map.copyOf to make immutable
   }
 
   /**

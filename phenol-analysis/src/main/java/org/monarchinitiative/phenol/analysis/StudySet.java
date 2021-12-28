@@ -33,6 +33,8 @@ public class StudySet implements ItemSet<TermId> {
    */
   private final Set<String> unmappedGeneSymbols;
 
+  private final int domainItemCount;
+
   /**
    * The keys of the annotation map contain the IDs of the genes in the study set.
    * @param name                 The name of this set, e.g., study1 or population
@@ -54,6 +56,7 @@ public class StudySet implements ItemSet<TermId> {
     this.name = name;
     this.annotationMap = associationContainer;
     this.unmappedGeneSymbols = unmappedGenes;
+    this.domainItemCount = getGeneSet().size();
   }
 
   /**
@@ -69,7 +72,12 @@ public class StudySet implements ItemSet<TermId> {
    */
   @Override
   public Set<TermId> getGeneSet() {
-    return this.getAnnotationMap().keySet();
+    // the genes (domain items in general) are in the DirectAndIndirectTermAnnotations
+    Set<TermId> domainItemIdSet = new HashSet<>();
+    for (DirectAndIndirectTermAnnotations dai : this.annotationMap.values()) {
+      domainItemIdSet.addAll(dai.getTotalAnnotatedDomainItemSet());
+    }
+    return domainItemIdSet;
   }
 
 
@@ -121,7 +129,7 @@ public class StudySet implements ItemSet<TermId> {
    * @return the desired count of the number of genes or gene products within this studyset..
    */
   public int getAnnotatedItemCount() {
-    return this.annotationMap.size();
+    return this.domainItemCount;
   }
 
   /**
