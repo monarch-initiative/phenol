@@ -195,18 +195,16 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @return an AssociationContainer
    */
   public static TermAssociationContainer fromGoTermAnnotations(List<TermAnnotation> goAnnots, Ontology ontology) {
-    Map<TermId, Set<TermAnnotation>> annotationsBuilder = new HashMap<>();
+    // key: a gene id; value: set of direct GO annotations
+    Map<TermId, Set<TermAnnotation>> domainItemToAnnotationMap = new HashMap<>();
     for (TermAnnotation annot : goAnnots) {
       // a TermAnnotation is a simple object with (mainly) the itemId and the Ontology Id
       TermId itemId = annot.getItemId();
-      TermId ontologyId = annot.getTermId();
-     // annot.
-      annotationsBuilder.computeIfAbsent(itemId, k -> new HashSet<>())
-        .add(annot);
+      domainItemToAnnotationMap.computeIfAbsent(itemId, k -> new HashSet<>()).add(annot);
     }
-
+    // Key: a gene id; value: GeneAnnotations object with direct GO annotations
     Map<TermId, GeneAnnotations> gene2associationMap = new HashMap<>();
-    annotationsBuilder.forEach((k, v) ->
+    domainItemToAnnotationMap.forEach((k, v) ->
       gene2associationMap.put(k, GeneAnnotations.of(k, ImmutableList.copyOf(v))));
 
     long count = gene2associationMap.values().stream()

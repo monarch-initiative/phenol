@@ -48,6 +48,10 @@ public class DirectAndIndirectTermAnnotations {
     this.totalAnnotatedDomainItemSet.add(domainItemId);
   }
 
+  public TermId getOntologyId() {
+    return ontologyId;
+  }
+
   public void addIndirectAnnotatedItem(TermId domainItemId) {
     this.totalAnnotatedDomainItemSet.add(domainItemId);
   }
