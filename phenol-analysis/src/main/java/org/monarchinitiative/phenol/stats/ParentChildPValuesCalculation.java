@@ -6,6 +6,8 @@ import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,6 +20,8 @@ import java.util.*;
  * @author Peter Robinson (refactor)
  */
 public abstract class ParentChildPValuesCalculation extends PValueCalculation {
+  Logger LOGGER = LoggerFactory.getLogger(ParentChildPValuesCalculation.class);
+
   /**
    * For GO analysis, the parent term of cellular component, biological process, and molecular function
    * is owl:Thing. If we do a statistical test for parent-child with respect to this parent, artefactual
@@ -48,7 +52,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
       if (goId.equals(OWL_THING)) {
         continue;
       } else if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
-        System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
+          LOGGER.error("Study set contains GO ID ({}) but pop set does not: ", goId.getValue());
         continue;
       }
       int goidAnnotatedPopGeneCount = populationSetAnnotationMap.get(goId).totalAnnotatedCount();

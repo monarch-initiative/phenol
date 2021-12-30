@@ -6,6 +6,8 @@ import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.Map;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class TermForTermPValueCalculation extends PValueCalculation {
+  Logger LOGGER = LoggerFactory.getLogger(TermForTermPValueCalculation.class);
   public TermForTermPValueCalculation(Ontology graph,
                                       StudySet populationSet,
                                       StudySet studySet,
@@ -46,7 +49,7 @@ public class TermForTermPValueCalculation extends PValueCalculation {
       }
       TermId goId = entry.getKey();
       if (!this.populationSet.getAnnotationMap().containsKey(goId)) {
-        System.err.println("ERROR -- study set contains ID but pop set does not: " + goId.getValue());
+        LOGGER.error("Study set contains GO ID ({}) but pop set does not: ", goId.getValue());
       }
       int goidAnnotatedPopGeneCount = populationSet.getTotalAnnotationCount(goId);
       int goidAnnotatedStudyGeneCount = studySet.getTotalAnnotationCount(goId);
