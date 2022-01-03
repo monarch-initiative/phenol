@@ -1,9 +1,11 @@
-package org.monarchinitiative.phenol.stats.mtc;
+package org.monarchinitiative.phenol.analysis.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
+import org.monarchinitiative.phenol.analysis.stats.mtc.Sidak;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.PValue;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class SidakTest {
   private static final double EPSILON = 0.0001;
 
   @BeforeAll
-  static void init() {
+  public static void init() {
     pvalList = new ArrayList<>();
     for (int i = 0; i<pvals.length; i++) {
       String id = String.format("FAKE:%d", i);
@@ -39,12 +41,12 @@ public class SidakTest {
   }
 
   @Test
-  void testConstructionOfList() {
+  public void testConstructionOfList() {
     assertEquals(pvals.length, pvalList.size());
   }
 
   @Test
-  void testCorrectionOfPvals() {
+  public void testCorrectionOfPvals() {
     for (int i = 0; i<pvalList.size(); i++) {
       assertEquals(expected_adj_pvals[i], pvalList.get(i).getAdjustedPValue(), EPSILON);
     }

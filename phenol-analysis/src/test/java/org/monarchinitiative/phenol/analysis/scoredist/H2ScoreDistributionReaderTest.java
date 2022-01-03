@@ -1,9 +1,13 @@
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.monarchinitiative.phenol.analysis.scoredist.H2ScoreDistributionReader;
+import org.monarchinitiative.phenol.analysis.scoredist.H2ScoreDistributionWriter;
+import org.monarchinitiative.phenol.analysis.scoredist.ScoreDistributionReader;
+import org.monarchinitiative.phenol.analysis.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;

@@ -1,31 +1,28 @@
-package org.monarchinitiative.phenol.stats.mtc;
+package org.monarchinitiative.phenol.analysis.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.stats.mtc.MadeUpPValues;
-import org.monarchinitiative.phenol.stats.PValue;
-import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
-import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BonferroniTest {
+public class BonferroniTest {
 
   private static List<PValue> pvallist;
 
   private static final double EPSILON=0.00001;
 
   @BeforeAll
-  static void init() {
+  public static void init() {
     pvallist =  new MadeUpPValues().getRawPValues();
   }
 
 
   @Test
-  void testGet15Pvalues() {
+  public void testGet15Pvalues() {
     MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     int expectedNumberOfPValues=15;
@@ -34,7 +31,7 @@ class BonferroniTest {
 
 
   @Test
-  void testA() {
+  public void testA() {
     MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     // index 0
@@ -45,7 +42,7 @@ class BonferroniTest {
   }
 
   @Test
-  void testB() {
+  public void testB() {
     MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);
     double adjustedPValue = pvallist.get(1).getAdjustedPValue();// raw value was 0.0004
@@ -56,7 +53,7 @@ class BonferroniTest {
 
 
   @Test
-  void testN() {
+  public void testN() {
     //pvalmap.put(N,new PValue(0.7590));
     MultipleTestingCorrection bonf = new Bonferroni();
     bonf.adjustPvals(pvallist);

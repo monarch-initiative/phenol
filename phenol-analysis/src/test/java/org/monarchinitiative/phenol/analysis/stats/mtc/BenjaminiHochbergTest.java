@@ -1,9 +1,9 @@
-package org.monarchinitiative.phenol.stats.mtc;
+package org.monarchinitiative.phenol.analysis.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.PValue;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *  [1] 0.00150000 0.00300000 0.00950000 0.03562500 0.06030000 0.06385714 0.06385714 0.06450000 0.07650000 0.48600000 0.58118182
  * [12] 0.71487500 0.75323077 0.81321429 1.00000000
  */
-class BenjaminiHochbergTest {
+public class BenjaminiHochbergTest {
 
 
   private static final double EPSILON=0.00001;
@@ -28,7 +28,7 @@ class BenjaminiHochbergTest {
 
 
   @BeforeAll
-  static void init() {
+  public static void init() {
     pvallist =  new MadeUpPValues().getRawPValues();
   }
 
@@ -45,7 +45,7 @@ class BenjaminiHochbergTest {
 
   /** 0.0001 and  0.00150000 */
   @Test
-  void testA() {
+  public void testA() {
     MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
@@ -57,7 +57,7 @@ class BenjaminiHochbergTest {
 
   /** 0.0001 and  0.00150000 */
   @Test
-  void testB() {
+  public void testB() {
     MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0
@@ -67,7 +67,7 @@ class BenjaminiHochbergTest {
 
   /** 0.0001 and  0.00150000 */
   @Test
-  void testC() {
+  public void testC() {
     MultipleTestingCorrection bonf = new BenjaminiHochberg();
     bonf.adjustPvals(pvallist);
     // index 0

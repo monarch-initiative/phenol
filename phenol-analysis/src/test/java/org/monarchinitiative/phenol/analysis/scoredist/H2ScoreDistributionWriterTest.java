@@ -1,7 +1,9 @@
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
+import org.monarchinitiative.phenol.analysis.scoredist.H2ScoreDistributionWriter;
+import org.monarchinitiative.phenol.analysis.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;

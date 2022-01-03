@@ -1,9 +1,9 @@
-package org.monarchinitiative.phenol.stats.mtc;
+package org.monarchinitiative.phenol.analysis.stats.mtc;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.PValue;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *  [1] 0.004977343 0.009954687 0.031523175 0.118211908 0.200089208 0.211892623 0.211892623 0.214025770 0.253844518 1.000000000 1.000000000
  * [12] 1.000000000 1.000000000 1.000000000 1.000000000
  */
-class BenjaminiYekutieliTest {
+public class BenjaminiYekutieliTest {
 
 
   private static final double EPSILON=0.00001;
@@ -29,7 +29,7 @@ class BenjaminiYekutieliTest {
 
 
   @BeforeAll
-  static void init() {
+  public static void init() {
     pvallist =  new MadeUpPValues().getRawPValues();
   }
 
@@ -45,7 +45,7 @@ class BenjaminiYekutieliTest {
 
 
   @Test
-  void testA() {
+  public void testA() {
     MultipleTestingCorrection bonf = new BenjaminiYekutieli();
     bonf.adjustPvals(pvallist);
     // index 0
@@ -57,7 +57,7 @@ class BenjaminiYekutieliTest {
 
 
   @Test
-  void testB() {
+  public void testB() {
     MultipleTestingCorrection bonf = new BenjaminiYekutieli();
     bonf.adjustPvals(pvallist);
     // index 0

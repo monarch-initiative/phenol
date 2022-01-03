@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis.stats;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class HypergeometricTest {
+public class HypergeometricTest {
 
   private static final Hypergeometric hypergeometric = new Hypergeometric();
   private static final double EPSILON = 0.00001;
@@ -16,7 +16,7 @@ class HypergeometricTest {
 
 
   @Test
-  void test_factorial() {
+  public void test_factorial() {
     // factorial(4)=24
     // log(24) = 3.178054
     double expected = 3.178054;
@@ -31,7 +31,7 @@ class HypergeometricTest {
    * [1] 3.044522
    */
   @Test
-  void test_lchoose() {
+  public void test_lchoose() {
     double expected = 3.044522;
     assertEquals(expected, hypergeometric.lNchooseK(7, 2), EPSILON);
   }
@@ -55,7 +55,7 @@ class HypergeometricTest {
    * hypergeometric.dhyper(x, m+n, m, 20);
    */
   @Test
-  void test_dhyper() {
+  public void test_dhyper() {
     int x = 14; // # number of white balls drawn from urn
     int m = 70; // # white balls in urn
     int n = 30; // # number of other balls
@@ -76,7 +76,7 @@ class HypergeometricTest {
    *  0.9370032
    */
   @Test
-  void test_phyper_underrepresentation() {
+  public void test_phyper_underrepresentation() {
     int N = 60; // # total number of genes
     int n = 13; // # study set
     int n_t = 2; // # number genes in study set annotated to t
@@ -107,7 +107,7 @@ class HypergeometricTest {
    * a significant enrichment, that is, there is a small probablity of seeing an equal or bigger overlap than x.
    */
   @Test
-  void test_phyper_overrepresentation() {
+  public void test_phyper_overrepresentation() {
     int N = 60; // # total number of genes
     int n = 13; // # study set
     int n_t = 2; // # number genes in study set annotated to t
@@ -117,7 +117,7 @@ class HypergeometricTest {
   }
 
   @Test
-  void test_compatibility_phyper_and_phypergeometric() {
+  public void test_compatibility_phyper_and_phypergeometric() {
     int N = 60; // # total number of genes
     int n = 13; // # study set
     int n_t = 2; // # number genes in study set annotated to t
@@ -128,7 +128,7 @@ class HypergeometricTest {
   }
 
   @Test
-  void test_equality_phypergeometric_overloaded() {
+  public void test_equality_phypergeometric_overloaded() {
     int N = 60; // # total number of genes
     int n = 13; // # study set
     int n_t = 2; // # number genes in study set annotated to t
@@ -148,7 +148,7 @@ class HypergeometricTest {
    * 2.253392e-08
    */
   @Test
-  void testHypergeometric() {
+  public void testHypergeometric() {
     int pop=324;
     int m_t=82; // population terms annotated to t
     int study=74;
@@ -159,7 +159,7 @@ class HypergeometricTest {
   }
 
   @Test
-  void compareTermForTerm1() {
+  public void compareTermForTerm1() {
     // Pop.total	Pop.term	Study.total	Study.term
     // 13668	184	1757	59	3.81343996188218E-11
     int m = 13668;
@@ -172,7 +172,7 @@ class HypergeometricTest {
 
 
   @Test
-  void compareTermForTerm2() {
+  public void compareTermForTerm2() {
     // Pop.total	Pop.term	Study.total	Study.term
     // 13668	46	1757	18	1.170702787001301E-5
     int m = 13668;
@@ -184,7 +184,7 @@ class HypergeometricTest {
   }
 
   @Test
-  void compareTermForTerm3() {
+  public void compareTermForTerm3() {
     // Pop.total	Pop.term	Study.total	Study.term
     // 13668	360	1757	82	5.610055205824117E-7
     int m = 13668;
@@ -204,7 +204,7 @@ class HypergeometricTest {
    * 0.001022299
    */
   @Test
-  void compareTermForTerm4() {
+  public void compareTermForTerm4() {
     int m = 13668;
     int m_t = 70;
     int n = 1757;
@@ -222,7 +222,7 @@ class HypergeometricTest {
    * 0.0002578227
    */
   @Test
-  void compareTermForTerm5() {
+  public void compareTermForTerm5() {
     int m = 13668;
     int m_t = 19;
     int n = 1757;
@@ -237,7 +237,7 @@ class HypergeometricTest {
    * 13668	344	116	13	5651	60	1	false	4.7583683370433105E-5
    */
   @Test
-  void compareParentChildIntersection1() {
+  public void compareParentChildIntersection1() {
     int m = 1366;
     int m_t = 344;
     int n = 116;
@@ -252,7 +252,7 @@ class HypergeometricTest {
 
 
   @Test
-  void bla() {
+  public void bla() {
     Set<Integer> set1 = new HashSet<>();
     set1.add(10);
     set1.add(20);

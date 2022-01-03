@@ -18,13 +18,13 @@ public class DirectAndIndirectTermAnnotationsTest {
   static TermId abnormalityGlobeDSize;
 
   @BeforeAll
-  static void init() {
+  public static void init() {
     anophthalmia = TermId.of("HP:0000528");
     abnormalityGlobeDSize = TermId.of(("HP:0100887"));
   }
 
   @Test
-  void testDirectIndirect() {
+  public void testDirectIndirect() {
     //TODO Mock the ontology class and get ancesters method call.
     // these are the direct annotations were are putting in
     Set<TermId> totalAnnotations = new HashSet<>();

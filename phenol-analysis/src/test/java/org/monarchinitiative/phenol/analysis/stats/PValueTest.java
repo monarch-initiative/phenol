@@ -1,7 +1,8 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis.stats;
 
 
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
