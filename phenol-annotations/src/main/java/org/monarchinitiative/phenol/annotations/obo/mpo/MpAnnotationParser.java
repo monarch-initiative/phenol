@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.obo.mpo;
 
-import com.google.common.collect.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.mpo.*;
@@ -32,7 +31,7 @@ public class MpAnnotationParser {
   /**
    * Used to store sexSpecific-specific phenotype annotations.
    */
-  private Map<TermId, Map<TermId, MpAnnotation>> geno2ssannotMap = ImmutableMap.of();
+  private Map<TermId, Map<TermId, MpAnnotation>> geno2ssannotMap = Map.of();
   /**
    * Key: A term id representing the genotype accession id of an MPO model
    * Value: the corresponding MpSimpleModel object
@@ -77,7 +76,7 @@ public class MpAnnotationParser {
 
   public static Map<TermId, MpSimpleModel> loadIndividualModels(String genePhenoPath) {
     //Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
-    ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
+    Map<TermId, MpGeneModel> builder = new HashMap<>();
     MpAnnotationParser annotParser = new MpAnnotationParser(genePhenoPath);
     if (annotParser.genotypeAccessionToMpSimpleModelMap.isEmpty()) {
       for (String e : annotParser.parseErrors) {
@@ -106,7 +105,7 @@ public class MpAnnotationParser {
 
   public static Map<TermId, MpGeneModel> loadMpGeneModels(String genePhenoPath) {
     Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
-    ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
+    Map<TermId, MpGeneModel> builder = new HashMap<>();
     Map<TermId, MpSimpleModel> simpleModelMap = loadIndividualModels(genePhenoPath);
       for (MpSimpleModel simplemod : simpleModelMap.values()) {
         TermId geneId = simplemod.getMarkerId();
@@ -122,14 +121,14 @@ public class MpAnnotationParser {
         builder.put(geneId, genemod);
       }
 
-    return builder.build();
+    return Map.copyOf(builder);
   }
 
 
   public static Map<TermId, MpGeneModel>
   loadMpGeneModelsWithSexSpecificPhenotypes(String genePhenoPath, String phenoSexPath) {
     Map<TermId, List<MpSimpleModel>> gene2simpleMap = new HashMap<>();
-    ImmutableMap.Builder<TermId, MpGeneModel> builder = new ImmutableMap.Builder<>();
+    Map<TermId, MpGeneModel> builder = new HashMap<>();
     Map<TermId, MpSimpleModel> simpleModelMap =
       loadIndividualModelsWithSexSpecificPhenotypes(genePhenoPath, phenoSexPath);
     for (MpSimpleModel simplemod : simpleModelMap.values()) {
@@ -145,7 +144,7 @@ public class MpAnnotationParser {
       MpGeneModel genemod = new MpGeneModel(geneId, modCollection);
       builder.put(geneId, genemod);
     }
-    return builder.build();
+    return Map.copyOf(builder);
   }
 
 /*
@@ -202,7 +201,7 @@ public class MpAnnotationParser {
    * Parse the data in MGI_GenePheno.rpt. Interpolate the sexSpecific-specific data if available.
    */
   private void parse() {
-    Multimap<TermId, AnnotationLine> annotationCollector = ArrayListMultimap.create();
+    Map<TermId, Collection<AnnotationLine>> annotationCollector = new HashMap<>();
     String line;
     try (BufferedReader br = new BufferedReader(new FileReader(this.genePhenoPath))){
       while ((line = br.readLine()) != null) {
@@ -221,7 +220,7 @@ public class MpAnnotationParser {
         try {
           AnnotationLine annot = new AnnotationLine(A);
           TermId modelId = annot.getGenotypeAccessionId();
-          annotationCollector.put(modelId, annot);
+          annotationCollector.computeIfAbsent(modelId, key -> new HashSet<>()).add(annot);
         } catch (PhenolException e) {
           String err = String.format("[PARSE ERROR] %s (%s)", e.getMessage(), line);
           this.parseErrors.add(err);
@@ -233,10 +232,10 @@ public class MpAnnotationParser {
     // When we get here, we have parsed all of the MGI_GenePheno.rpt file.
     // Annotation lines are groups according to genotype accession id in the multimap
     // our goal in the following is to parse everything into corresponding MpSimpleModel objects
-    ImmutableMap.Builder<TermId, MpSimpleModel> builder = new ImmutableMap.Builder<>();
+    Map<TermId, MpSimpleModel> builder = new HashMap<>();
     for (TermId genoId : annotationCollector.keySet()) {
       Collection<AnnotationLine> annotationLines = annotationCollector.get(genoId);
-      ImmutableList.Builder<MpAnnotation> annotbuilder = new ImmutableList.Builder<>();
+      List<MpAnnotation> annotbuilder = new ArrayList<>();
       Iterator<AnnotationLine> it = annotationLines.iterator();
       MpStrain background = null;
       MpAllelicComposition allelicComp = null;
@@ -244,15 +243,15 @@ public class MpAnnotationParser {
       String alleleSymbol = null;
       TermId markerId = null;
       // get the sexSpecific-specific annotations for this genotypeId, if any
-      Map<TermId, MpAnnotation> sexSpecific = ImmutableMap.of(); // default, empty set
+      Map<TermId, MpAnnotation> sexSpecific = Map.of(); // default, empty set
       if (this.geno2ssannotMap.containsKey(genoId)) {
-        ImmutableMap.Builder<TermId, MpAnnotation> imapbuilder = new ImmutableMap.Builder<>();
+        Map<TermId, MpAnnotation> imapbuilder = new HashMap<>();
         Map<TermId, MpAnnotation> annots = this.geno2ssannotMap.get(genoId);
         for (MpAnnotation mpann : annots.values()) {
           imapbuilder.put(mpann.getTermId(), mpann);
         }
         try {
-          sexSpecific = imapbuilder.build();
+          sexSpecific = Map.copyOf(imapbuilder);
         } catch (Exception e) {
           System.err.println("Error building map of sexSpecific-specific annotations for " + genoId.getValue() + ": " + e.getMessage());
         }
@@ -277,10 +276,10 @@ public class MpAnnotationParser {
         // this type of normality (absence of a phenotype) is not useful for downstream analysis at the
         // present time and so we skip it to avoid unnecessarily complicating the implementation.
       }
-      MpSimpleModel mod = new MpSimpleModel(genoId, background, allelicComp, alleleId, alleleSymbol, markerId, annotbuilder.build());
+      MpSimpleModel mod = new MpSimpleModel(genoId, background, allelicComp, alleleId, alleleSymbol, markerId, List.copyOf(annotbuilder));
       builder.put(genoId, mod);
     }
-    genotypeAccessionToMpSimpleModelMap = builder.build();
+    genotypeAccessionToMpSimpleModelMap = Map.copyOf(builder);
   }
 
 
@@ -356,12 +355,8 @@ public class MpAnnotationParser {
       this.geneticBackground = MpStrain.fromString(annotations[GENETIC_BACKGROUND_IDX]);
       this.mpId = parseOrThrowException(annotations[MPO_IDX]);
       String pmids = annotations[PUBMED_IDX];
-      ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
       String[] pubMedIds = pmids.split(Pattern.quote("|"));
-      for (String b : pubMedIds) {
-        builder.add(b);
-      }
-      this.pmidSet = builder.build();
+      this.pmidSet = Set.of(pubMedIds);
       this.markerAccessionId = parseOrThrowException(annotations[MGI_MARKER_IDX]);
       this.genotypeAccessionId = parseOrThrowException(annotations[GENOTYPE_ACCESSION_IDX]);
     }
@@ -437,12 +432,8 @@ public class MpAnnotationParser {
       this.strain = MpStrain.fromString(A[4]);
       sexSpecificNormal = A[5].equals("Y");
       String pmids = A[6];
-      ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
       String[] B = pmids.split(Pattern.quote("|"));
-      for (String b : B) {
-        builder.add(b);
-      }
-      this.pmidList = builder.build();
+      this.pmidList = Set.of(B);
 
     }
 
