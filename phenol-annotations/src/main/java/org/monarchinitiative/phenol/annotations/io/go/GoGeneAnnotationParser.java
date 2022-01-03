@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.obo.go;
+package org.monarchinitiative.phenol.annotations.io.go;
 
 import java.io.BufferedReader;
 import java.io.File;
