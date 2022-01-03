@@ -40,7 +40,7 @@ public final class TermAnnotations {
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
         result.computeIfAbsent(termId, k -> new HashSet<>())
-          .add(anno.getLabel());
+          .add(anno.getItemId());
       }
     }
 
@@ -67,7 +67,7 @@ public final class TermAnnotations {
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
-        result.computeIfAbsent(anno.getTermId(), key -> new HashSet<>())
+        result.computeIfAbsent(anno.getItemId(), key -> new HashSet<>())
           .add(termId);
       }
     }
