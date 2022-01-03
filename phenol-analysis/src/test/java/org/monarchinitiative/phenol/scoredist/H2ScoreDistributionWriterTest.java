@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.scoredist;
 
-import com.google.common.collect.ImmutableSortedMap;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -10,10 +9,10 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +47,7 @@ public class H2ScoreDistributionWriterTest {
     Map<TermId, ObjectScoreDistribution> scoreDistributionMap = new HashMap<>();
     TermId tid1 = TermId.of("HP:1");
 
-    SortedMap<Double, Double> sortedMap = ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0);
+    SortedMap<Double, Double> sortedMap = new TreeMap<>(Map.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0));
     scoreDistributionMap.put(tid1, new ObjectScoreDistribution(tid1, 2, 3, sortedMap));
 
     ScoreDistribution integerScoreDistribution = new ScoreDistribution(2, scoreDistributionMap);
@@ -63,7 +62,7 @@ public class H2ScoreDistributionWriterTest {
     TermId termId = TermId.of("MONDO", "001");
     Map<TermId, ObjectScoreDistribution> scoreDistributionMap = new HashMap<>();
 
-    SortedMap<Double, Double> sortedMap = ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0);
+    SortedMap<Double, Double> sortedMap = new TreeMap<>(Map.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0));
     scoreDistributionMap.put(termId, new ObjectScoreDistribution(termId, 2, 3, sortedMap));
 
     ScoreDistribution objScoreDistribution = new ScoreDistribution(2, scoreDistributionMap);

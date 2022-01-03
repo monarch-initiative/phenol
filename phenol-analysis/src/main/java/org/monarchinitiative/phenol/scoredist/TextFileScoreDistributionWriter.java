@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ObjectScoreDistribution;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
-import com.google.common.base.Joiner;
 
 /**
  * Class for writing out {@link ScoreDistribution} objects to text files.
@@ -68,7 +67,7 @@ public class TextFileScoreDistributionWriter implements ScoreDistributionWriter 
       out.print("\t");
       out.print(dist.getSampleSize());
       out.print("\t");
-      out.println(Joiner.on(',').join(points));
+      out.println(String.join(",", points));
     }
   }
 

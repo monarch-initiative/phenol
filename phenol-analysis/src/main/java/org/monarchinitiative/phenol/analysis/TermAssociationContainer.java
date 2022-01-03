@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
@@ -206,7 +205,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     // Key: a gene id; value: GeneAnnotations object with direct GO annotations
     Map<TermId, GeneAnnotations> gene2associationMap = new HashMap<>();
     domainItemToAnnotationMap.forEach((k, v) ->
-      gene2associationMap.put(k, GeneAnnotations.of(k, ImmutableList.copyOf(v))));
+      gene2associationMap.put(k, GeneAnnotations.of(k, List.copyOf(v))));
 
     long count = gene2associationMap.values().stream()
       .map(ItemAnnotations::getAnnotatingTermIds)

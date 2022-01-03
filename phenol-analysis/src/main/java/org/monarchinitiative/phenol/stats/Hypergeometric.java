@@ -78,10 +78,7 @@ public class Hypergeometric {
     int nq = (int) Math.round(n * q);
 
     double log_n_choose_k = lNchooseK(n, k);
-    int top = k;
-    if (np < k) {
-      top = np;
-    }
+    int top = Math.min(np, k);
 
     double lfoo = lNchooseK(np, top) + lNchooseK(nq, k - top);
 
@@ -125,10 +122,7 @@ public class Hypergeometric {
 
     int nq = m - m_t;
     double log_n_choose_k = lNchooseK(m, n);
-    int top = n;
-    if (m_t < n) {
-      top = m_t;
-    }
+    int top = Math.min(m_t, n);
 
     double lfoo = lNchooseK(m_t, top) + lNchooseK(nq, n - top);
 

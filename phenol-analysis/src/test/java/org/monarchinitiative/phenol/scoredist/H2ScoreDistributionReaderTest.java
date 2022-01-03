@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.scoredist;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,8 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,8 +32,9 @@ public class H2ScoreDistributionReaderTest {
     objDbReader = new H2ScoreDistributionReader(dbpath.toFile().getAbsolutePath(), dataTableName);
 
     TermId termId = TermId.of("MONDO", "001");
-    ObjectScoreDistribution scoreDistribution = new ObjectScoreDistribution(termId, 2, 3, ImmutableSortedMap.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0));
-    ImmutableMap<TermId, ObjectScoreDistribution> scoreDistributionMap = ImmutableMap.of(termId, scoreDistribution);
+    SortedMap<Double, Double> cumulativeFrequencies = new TreeMap<>(Map.of(0.0, 0.2, 0.5, 0.6, 1.0, 1.0));
+    ObjectScoreDistribution scoreDistribution = new ObjectScoreDistribution(termId, 2, 3, cumulativeFrequencies);
+    Map<TermId, ObjectScoreDistribution> scoreDistributionMap = Map.of(termId, scoreDistribution);
     ScoreDistribution objScoreDistribution = new ScoreDistribution(2, scoreDistributionMap);
 
     dbWriter.write(3, objScoreDistribution);

@@ -98,9 +98,7 @@ public class H2ScoreDistributionReader implements ScoreDistributionReader {
 
   @Override
   public ObjectScoreDistribution readForTermCountAndObject(int termCount, TermId objectId) throws PhenolException {
-        try (final PreparedStatement stmt =
-        conn.prepareStatement(
-            String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
+        try (final PreparedStatement stmt = conn.prepareStatement(String.format(H2_SELECT_BY_TERM_COUNT_AND_OBJECT_STATEMENT, tableName))) {
           stmt.setInt(1, termCount);
           try {
             stmt.setString(2, ObjHexStringConverter.object2hex(objectId));
