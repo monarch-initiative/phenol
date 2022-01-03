@@ -39,7 +39,8 @@ public final class TermAnnotations {
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
-        result.computeIfAbsent(termId, k -> new HashSet<>()).add(anno.getLabel());
+        result.computeIfAbsent(termId, k -> new HashSet<>())
+          .add(anno.getLabel());
       }
     }
 
@@ -60,17 +61,14 @@ public final class TermAnnotations {
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *     labels.
    */
-  public static Map<TermId, Collection<TermId>> constructTermLabelToAnnotationsMap(
-      Ontology ontology, Collection<? extends TermAnnotation> annotations) {
-    final Map<TermId, Collection<TermId>> result = new HashMap<>();
+  public static Map<TermId, Collection<TermId>> constructTermLabelToAnnotationsMap(Ontology ontology,
+                                                                                   Collection<? extends TermAnnotation> annotations) {
+    Map<TermId, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
       for (TermId termId : ontology.getAncestorTermIds(anno.getTermId(), true)) {
-        if (!result.containsKey(anno.getLabel())) {
-          result.put(anno.getLabel(), new HashSet<>());
-        } else {
-          result.get(anno.getLabel()).add(termId);
-        }
+        result.computeIfAbsent(anno.getTermId(), key -> new HashSet<>())
+          .add(termId);
       }
     }
 

@@ -22,7 +22,7 @@ public class ToyHpoAnnotation implements TermAnnotation {
     }
 
     @Override
-    public TermId getLabel() {
+    public TermId getItemId() {
       return label;
     }
 

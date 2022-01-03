@@ -188,7 +188,7 @@ public class MpEnrichmentDemo {
   private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      TermId geneId = ann.getLabel();
+      TermId geneId = ann.getItemId();
       st.add(geneId);
     }
     return ImmutableSet.copyOf(st);

@@ -8,11 +8,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.annotations.formats.go.GoGaf21Annotation;
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parser for GO "gene annotation file" (GAF) format.
@@ -29,50 +30,30 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
  */
 public final class GoGeneAnnotationParser  {
 
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(GoGeneAnnotationParser.class);
 
   private GoGeneAnnotationParser() {
   }
 
 
-  public static List<GoGaf21Annotation> loadAnnotations(String filename) {
-    File f = new File(filename);
-    return GoGeneAnnotationParser.loadAnnotations(f.toPath());
-  }
-
-  public static List<GoGaf21Annotation> loadAnnotations(File file) {
-    return GoGeneAnnotationParser.loadAnnotations(file.toPath());
-  }
-
-  public static List<GoGaf21Annotation> loadAnnotations(Path path) {
-    ImmutableList.Builder<GoGaf21Annotation> builder = new ImmutableList.Builder<>();
+  public static List<GoGaf22Annotation> loadAnnotations(Path path) {
+    List<GoGaf22Annotation> goGaf22annots = new ArrayList<>();
     try (BufferedReader br = Files.newBufferedReader(path)) {
       for (String line; (line = br.readLine()) != null; ) {
         // skip the comments, which start with exclamation marks
-        if (line.isEmpty() || line.startsWith("!")) {
-          // no-op
-        } else {
+        if (! line.isEmpty() && ! line.startsWith("!")) {
           try {
-            GoGaf21Annotation annot = GoGaf21Annotation.parseAnnotation(line);
-            builder.add(annot);
+            goGaf22annots.add(GoGaf22Annotation.parseAnnotation(line));
           } catch (PhenolException e) {
-            System.err.printf("[ERROR] Could not parse GoGaf line (%s): %s", line, e.getMessage());
+            LOGGER.error("Could not parse GoGaf line ({}): {}", line, e.getMessage());
             // just skip this error. Should actually never happen
           }
         }
       }
     } catch (IOException e) {
-      throw new PhenolRuntimeException("Could not parse " + path.toString() +": " + e.getMessage());
+      throw new PhenolRuntimeException("Could not parse " + path +": " + e.getMessage());
     }
-    return builder.build();
-  }
-
-  /**
-   * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
-   */
-  public static List<TermAnnotation> loadTermAnnotations(String filename) {
-    File f = new File(filename);
-    return GoGeneAnnotationParser.loadTermAnnotations(f.toPath());
+    return goGaf22annots; // TODO add List.copyOf(...) with Java 11 refactor
   }
 
   /**
@@ -86,7 +67,7 @@ public final class GoGeneAnnotationParser  {
    * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
    */
   public static List<TermAnnotation> loadTermAnnotations(Path path) {
-    List<GoGaf21Annotation> annots = GoGeneAnnotationParser.loadAnnotations(path);
+    List<GoGaf22Annotation> annots = GoGeneAnnotationParser.loadAnnotations(path);
     return new ArrayList<>(annots);
   }
 

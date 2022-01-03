@@ -28,3 +28,7 @@ hs_err_pid*
 target/
 .idea/
 *.iml
+/phenol-core/pom.xml.releaseBackup
+/phenol-cli/pom.xml.releaseBackup
+/phenol-cli/dependency-reduced-pom.xml
+/phenol-annotations/pom.xml.releaseBackup

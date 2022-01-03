@@ -39,8 +39,8 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
     Map<TermId, Set<TermId>> labels = new HashMap<>();
     int nextId = 1;
     for (VegetableRecipeAnnotation a : recipeAnnotations) {
-      if (!recipeToId.containsKey(a.getLabel())) {
-        recipeToId.put(a.getLabel(), nextId++);
+      if (!recipeToId.containsKey(a.getItemId())) {
+        recipeToId.put(a.getItemId(), nextId++);
       }
       TermId recipeId = a.getTermId();
       if (!labels.containsKey(recipeId)) {

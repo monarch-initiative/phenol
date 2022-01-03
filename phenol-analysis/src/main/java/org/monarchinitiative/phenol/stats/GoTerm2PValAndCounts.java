@@ -38,6 +38,8 @@ public class GoTerm2PValAndCounts extends PValue {
   }
 
   public int getTotalPopulationGenes() { return totalPopulationGenes; }
+  /** GetItem from the superclass returns a Go ID for this class. Add a convenience function for clarity. */
+  public TermId getGoTermId() { return getItem(); }
 
 
   /**
