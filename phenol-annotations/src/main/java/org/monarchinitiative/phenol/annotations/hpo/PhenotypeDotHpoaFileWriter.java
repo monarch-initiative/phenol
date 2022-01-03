@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -31,7 +30,7 @@ public class PhenotypeDotHpoaFileWriter {
    */
   private final List<HpoAnnotationModel> orphanetSmallFileList;
 
-  private final Multimap<TermId, HpoAnnotationEntry> inheritanceMultiMap;
+  private final Map<TermId, Collection<HpoAnnotationEntry>> inheritanceMultiMap;
   /** tolerant mode (update obsolete term ids if possible) */
   private final boolean tolerant;
   /** Merge frequency data (e.g., 2/3 and 5/7 would be 7/10 if the same disease/HPO term hasa two annotations with
