@@ -26,9 +26,9 @@ public class HpoDiseaseAnnotationLoaderTest {
 
   @BeforeAll
   public static void beforeAll() throws Exception {
-    Path hpoaPath = Path.of(HpoDiseaseAnnotationLoaderTest.class.getResource("/annotations/phenotype.excerpt.hpoa").getPath());
+    Path hpoaPath = Path.of(HpoDiseaseAnnotationLoaderTest.class.getResource("/annotations/phenotype.excerpt.hpoa").toURI());
 
-    Path hpoPath = Path.of(HpoDiseaseAnnotationLoaderTest.class.getResource("/hpo_toy.json").getPath());
+    Path hpoPath = Path.of(HpoDiseaseAnnotationLoaderTest.class.getResource("/hpo_toy.json").toURI());
     Ontology hpoOntology = OntologyLoader.loadOntology(hpoPath.toFile());
 
     hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(hpoaPath, hpoOntology, DiseaseDatabase.allKnownDiseaseDatabases());
