@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.formats.go;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.annotations.assoc.Gene2DiseaseAsssociationParserTest;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -22,19 +21,15 @@ public class GoGaf22AnnotationTest {
 
     @BeforeAll
     public static void init() throws IOException {
-        final String goGaf22Path = "/go/goa_human_head_gaf22.gaf";
-        URL goGaf22URL = Gene2DiseaseAsssociationParserTest.class.getResource(goGaf22Path);
-        if (goGaf22URL == null) {
-            throw new IOException("Could not find goa_human_head_gaf22.gaf at " + goGaf22Path);
-        }
-        goGafLines = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader(goGaf22URL.getFile()));
-        String line;
-        while ((line = br.readLine()) != null) {
-            if (line.startsWith("!"))
-                continue; // skip comments
-            goGafLines.add(line);
-        }
+      URL goGaf22URL = GoGaf22AnnotationTest.class.getResource("/go/goa_human_head_gaf22.gaf");
+      goGafLines = new ArrayList<>();
+      BufferedReader br = new BufferedReader(new FileReader(goGaf22URL.getFile()));
+      String line;
+      while ((line = br.readLine()) != null) {
+          if (line.startsWith("!"))
+              continue; // skip comments
+          goGafLines.add(line);
+      }
     }
 
     /**
@@ -43,9 +38,6 @@ public class GoGaf22AnnotationTest {
     @Test
     public void if_ten_lines_ingested_then_ok() {
         assertEquals(10, goGafLines.size());
-        for (String v : goGafLines) {
-            System.out.println(v);
-        }
     }
 
     /**
