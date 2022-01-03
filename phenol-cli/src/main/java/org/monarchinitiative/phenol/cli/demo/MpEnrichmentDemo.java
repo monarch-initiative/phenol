@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
@@ -61,7 +59,7 @@ public class MpEnrichmentDemo {
   }
 
   private List<TermAnnotation> getTermAnnotations() {
-    ImmutableList.Builder<TermAnnotation> builder = new ImmutableList.Builder<>();
+    List<TermAnnotation> builder = new ArrayList<>();
     for (MpGeneModel model : mpgenemap.values()) {
       TermId markerId = model.getMarkerId();
       String symbol;
@@ -84,7 +82,7 @@ public class MpEnrichmentDemo {
         }
       }
     }
-    return builder.build();
+    return List.copyOf(builder);
   }
 
   public void run() {
@@ -161,7 +159,7 @@ public class MpEnrichmentDemo {
    */
   private Set<TermId> getStudySet() {
     initSymbol2termidMap();
-    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+    Set<TermId> builder = new HashSet<>();
     try {
       BufferedReader br = new BufferedReader(new FileReader(targetgenefile));
       String line;
@@ -176,7 +174,7 @@ public class MpEnrichmentDemo {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return builder.build();
+    return Set.copyOf(builder);
   }
 
 
@@ -192,7 +190,7 @@ public class MpEnrichmentDemo {
       TermId geneId = ann.getItemId();
       st.add(geneId);
     }
-    return ImmutableSet.copyOf(st);
+    return Set.copyOf(st);
   }
 
 
