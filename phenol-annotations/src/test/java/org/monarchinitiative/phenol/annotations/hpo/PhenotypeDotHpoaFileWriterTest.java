@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-class PhenotypeDotHpoaFileWriterTest {
+public class PhenotypeDotHpoaFileWriterTest {
 
     /** Note that the header should have a #
      */
     @Test
-    void testV2Header() {
+    public void testV2Header() {
         String expected="#DatabaseID\tDiseaseName\tQualifier\tHPO_ID\tReference\tEvidence\tOnset\tFrequency\tSex\tModifier\tAspect\tBiocuration";
         assertEquals(expected,PhenotypeDotHpoaFileWriter.getHeaderLine());
     }
