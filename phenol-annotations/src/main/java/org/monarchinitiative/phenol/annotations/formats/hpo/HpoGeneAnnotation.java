@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ComparisonChain;
 
 // TODO: obtain evidence code from ontology file?
 
@@ -142,11 +141,15 @@ public final class HpoGeneAnnotation implements TermAnnotation {
     }
 
     final HpoGeneAnnotation that = (HpoGeneAnnotation) o;
-    return ComparisonChain.start()
-        .compare(this.entrezGeneId, that.entrezGeneId)
-        .compare(this.entrezGeneSymbol, that.entrezGeneSymbol)
-        .compare(this.hpoTermName, that.hpoTermName)
-        .compare(this.hpoTermId, that.hpoTermId)
-        .result();
+    int result = Integer.compare(this.entrezGeneId, that.entrezGeneId);
+    if (result != 0) return result;
+
+    result = this.entrezGeneSymbol.compareTo(that.entrezGeneSymbol);
+    if (result != 0) return result;
+
+    result = this.hpoTermName.compareTo(that.hpoTermName);
+    if (result != 0) return result;
+
+    return this.hpoTermId.compareTo(that.hpoTermId);
   }
 }
