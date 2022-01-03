@@ -1,7 +1,7 @@
-package org.monarchinitiative.phenol.stats.mtc;
+package org.monarchinitiative.phenol.analysis.stats.mtc;
 
 
-import org.monarchinitiative.phenol.stats.PValue;
+import org.monarchinitiative.phenol.analysis.stats.PValue;
 
 import java.util.Collections;
 import java.util.List;

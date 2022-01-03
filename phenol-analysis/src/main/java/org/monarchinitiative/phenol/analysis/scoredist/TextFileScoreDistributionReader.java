@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
 
 import java.io.*;
 import java.util.HashMap;

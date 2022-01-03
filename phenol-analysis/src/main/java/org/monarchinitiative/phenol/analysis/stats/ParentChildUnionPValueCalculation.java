@@ -1,10 +1,10 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis.stats;
 
 import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,11 +1,11 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis.stats;
 
 
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
+import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

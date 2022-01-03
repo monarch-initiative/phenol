@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;

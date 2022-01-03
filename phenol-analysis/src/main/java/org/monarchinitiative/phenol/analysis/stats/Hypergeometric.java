@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.stats;
+package org.monarchinitiative.phenol.analysis.stats;
 
 
 import java.util.Vector;

@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.monarchinitiative.phenol.scoredist.ScoreDistributionWriter;
-import org.monarchinitiative.phenol.scoredist.TextFileScoreDistributionWriter;
+import org.monarchinitiative.phenol.analysis.scoredist.ScoreDistributionWriter;
+import org.monarchinitiative.phenol.analysis.scoredist.TextFileScoreDistributionWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
 
 import java.io.Closeable;
 import java.io.Serializable;

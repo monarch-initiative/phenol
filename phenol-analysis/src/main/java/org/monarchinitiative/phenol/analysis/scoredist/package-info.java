@@ -22,4 +22,4 @@
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-package org.monarchinitiative.phenol.scoredist;
+package org.monarchinitiative.phenol.analysis.scoredist;
