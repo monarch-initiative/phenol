@@ -1,9 +1,8 @@
-package org.monarchinitiative.phenol.annotations.obo.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -11,30 +10,23 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Disabled until we have a toy hpo.json")
-class HpoAnnotationLineTest {
+public class HpoAnnotationLineTest {
 
   private final static double EPSILON = 0.00001;
 
-  private final Ontology ontology;
+  private Ontology ontology;
 
-  HpoAnnotationLineTest() throws PhenolException, IOException {
-    final String hpOboPath = "/hp_head.obo";
-    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
-    if (hpOboURL == null) {
-      throw new IOException("Could not find hpOboPath at " + hpOboPath);
-    }
-    File file = new File(hpOboURL.getFile());
-    this.ontology = OntologyLoader.loadOntology(file);
+  @BeforeEach
+  public void setUp() {
+    File file = new File(HpoAnnotationLineTest.class.getResource("/hpo_toy.json").getFile());
+    ontology = OntologyLoader.loadOntology(file);
   }
+
 
   private HpoAnnotationLine makeLine(String[] items) throws PhenolException {
     String line = String.join("\t", items);
@@ -42,7 +34,7 @@ class HpoAnnotationLineTest {
   }
 
   @Test
-  void test1() throws PhenolException{
+  public void test1() throws PhenolException{
     String[] items ={"OMIM:269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
@@ -77,7 +69,7 @@ class HpoAnnotationLineTest {
    * @throws PhenolException expected to throw because prefix is malformed
    */
   @Test
-  void malformedDiseaseDatabasePrefix() throws PhenolException {
+  public void malformedDiseaseDatabasePrefix() throws PhenolException {
     String[] items = {"BadPrefix",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
@@ -102,7 +94,7 @@ class HpoAnnotationLineTest {
    * The expected mean is (0.8+0.99)/2=0.895
    */
   @Test
-  void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
+  public void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -133,7 +125,7 @@ class HpoAnnotationLineTest {
    * The expected mean is (0.01+0.04)/2=0.025
    */
   @Test
-  void testGetFrequencyFromVeryRareTerm() throws PhenolException{
+  public void testGetFrequencyFromVeryRareTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -161,7 +153,7 @@ class HpoAnnotationLineTest {
    * The expected mean is (0.05+0.29)/2=0.17
    */
   @Test
-  void testGetFrequencyFromOccassionalTerm() throws PhenolException{
+  public void testGetFrequencyFromOccassionalTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -190,7 +182,7 @@ class HpoAnnotationLineTest {
    * The expected mean is (0.30+0.79)/2=0.545
    */
   @Test
-  void testGetFrequencyFromFrequentTerm() throws PhenolException{
+  public void testGetFrequencyFromFrequentTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -218,7 +210,7 @@ class HpoAnnotationLineTest {
    * The expected mean is 1.0
    */
   @Test
-  void testGetFrequencyFromObligateTerm() throws PhenolException{
+  public void testGetFrequencyFromObligateTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -246,7 +238,7 @@ class HpoAnnotationLineTest {
    * The expected mean is 0.0
    */
   @Test
-  void testGetFrequencyFromExcludedTerm() throws PhenolException{
+  public void testGetFrequencyFromExcludedTerm() throws PhenolException{
     String[] items ={
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
@@ -268,7 +260,5 @@ class HpoAnnotationLineTest {
     double expectedFrequency=0.0;
     assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
   }
-
-
 
 }

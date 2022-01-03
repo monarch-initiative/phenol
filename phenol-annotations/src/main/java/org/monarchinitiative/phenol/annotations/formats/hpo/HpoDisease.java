@@ -1,10 +1,11 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
+import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,10 +21,10 @@ import java.util.stream.Collectors;
  * @version 0.2.1 (2017-11-16)
  */
 public final class HpoDisease {
-  /** Name of the disease from annotation. */
-  private final String name;
   /** The disease identifier as a CURIE, e.g., OMIM:600100. */
   private final TermId diseaseDatabaseId;
+  /** Name of the disease from annotation. */
+  private final String diseaseName;
 
   /** {@link TermId}s with phenotypic abnormalities and their frequencies. */
   private final List<HpoAnnotation> phenotypicAbnormalities;
@@ -42,26 +43,35 @@ public final class HpoDisease {
     return diseaseDatabaseId;
   }
 
-  public HpoDisease(
-    String name,
-    TermId databaseId,
-    List<HpoAnnotation> phenotypicAbnormalities,
-    List<TermId> modesOfInheritance,
-    List<TermId> notTerms,
-    List<TermId> clinicalModifiers,
-    List<TermId> clinicalCourses) {
-    this.name = name;
-    this.diseaseDatabaseId = databaseId;
-    this.phenotypicAbnormalities = ImmutableList.copyOf(phenotypicAbnormalities);
-    this.modesOfInheritance = ImmutableList.copyOf(modesOfInheritance);
-    this.negativeAnnotations = ImmutableList.copyOf(notTerms);
-    this.clinicalModifiers = ImmutableList.copyOf(clinicalModifiers);
-    this.clinicalCourseList = ImmutableList.copyOf(clinicalCourses);
+  public static HpoDisease of(TermId databaseId,
+                              String diseaseName,
+                              List<HpoAnnotation> phenotypicAbnormalities,
+                              List<TermId> modesOfInheritance,
+                              List<TermId> notTerms,
+                              List<TermId> clinicalModifiers,
+                              List<TermId> clinicalCourses) {
+    return new HpoDisease(databaseId, diseaseName, phenotypicAbnormalities, modesOfInheritance, notTerms, clinicalModifiers, clinicalCourses);
+  }
+
+  private HpoDisease(TermId databaseId,
+                     String diseaseName,
+                     List<HpoAnnotation> phenotypicAbnormalities,
+                     List<TermId> modesOfInheritance,
+                     List<TermId> notTerms,
+                     List<TermId> clinicalModifiers,
+                     List<TermId> clinicalCourses) {
+    this.diseaseDatabaseId = Objects.requireNonNull(databaseId, "Database ID must not be null");
+    this.diseaseName = Objects.requireNonNull(diseaseName, "Disease name must not be null");
+    this.phenotypicAbnormalities = Objects.requireNonNull(phenotypicAbnormalities, "Phenotypic abnormalities must not be null");
+    this.modesOfInheritance = Objects.requireNonNull(modesOfInheritance, "Modes of inheritance must not be null");
+    this.negativeAnnotations = Objects.requireNonNull(notTerms, "Not terms must not be null");
+    this.clinicalModifiers = Objects.requireNonNull(clinicalModifiers, "Clinical modifiers must not be null");
+    this.clinicalCourseList = Objects.requireNonNull(clinicalCourses, "Clinical courses must not be null");
   }
 
   /** @return The name of the disease. */
-  public String getName() {
-    return name;
+  public String getDiseaseName() {
+    return diseaseName;
   }
 
   /** @return the count of the non-negated annotations excluding mode of inheritance. */
@@ -191,13 +201,11 @@ public final class HpoDisease {
 
   @Override
   public String toString() {
-    String abnormalityList = phenotypicAbnormalities
-      .stream()
+    String abnormalityList = phenotypicAbnormalities.stream()
       .map(HpoAnnotation::getIdWithPrefix)
-      .collect(Collectors.joining(";"));
-    return String.format(
-      "HpoDisease [name=%s;%s] phenotypicAbnormalities=\n%s" + ", modesOfInheritance=%s",
-      name, diseaseDatabaseId.getValue(), abnormalityList, modesOfInheritance);
+      .collect(Collectors.joining(";", "[", "]"));
+    return String.format("HpoDisease [name=%s;%s] phenotypicAbnormalities=%s" + ", modesOfInheritance=%s",
+      diseaseDatabaseId.getValue(), diseaseName, abnormalityList, modesOfInheritance);
   }
 
   /** @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER (prefix of the diseaseId) */

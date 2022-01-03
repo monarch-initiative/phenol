@@ -41,13 +41,13 @@ public class HpoAnnotationTest {
     HpoAnnotation oxycephaly1 =
         new HpoAnnotation.Builder(oxycephalyId)
             .onset(HpoOnset.ADULT_ONSET)
-            .frequency(HpoFrequency.ALWAYS_PRESENT.mean(),HpoFrequency.ALWAYS_PRESENT.toString())
+            .frequency(HpoFrequency.ALWAYS_PRESENT.mean())
             .build();
 
     HpoAnnotation oxycephaly2 =
         new HpoAnnotation.Builder(oxycephalyId)
             .onset(HpoOnset.ADULT_ONSET)
-            .frequency(HpoFrequency.OCCASIONAL.mean(),HpoFrequency.OCCASIONAL.toString())
+            .frequency(HpoFrequency.OCCASIONAL.mean())
             .build();
     assertNotEquals(oxycephaly1, oxycephaly2);
   }

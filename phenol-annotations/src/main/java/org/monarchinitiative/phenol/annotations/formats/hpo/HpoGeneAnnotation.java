@@ -33,14 +33,12 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /**
    * Constructor.
-   *
-   * @param entrezGeneId Numeric Entrez gene Id.
+   *  @param entrezGeneId Numeric Entrez gene Id.
    * @param entrezGeneSymbol Entrez gene symbol.
-   * @param hpoTermName HPO term name from annotation file.
    * @param hpoTermId HPO {@link TermId} of annotated HPO term.
+   * @param hpoTermName HPO term name from annotation file.
    */
-  public HpoGeneAnnotation(
-      int entrezGeneId, String entrezGeneSymbol, String hpoTermName, TermId hpoTermId) {
+  public HpoGeneAnnotation(int entrezGeneId, String entrezGeneSymbol, TermId hpoTermId, String hpoTermName) {
     this.entrezGeneId = entrezGeneId;
     this.entrezGeneSymbol = entrezGeneSymbol;
     this.hpoTermName = hpoTermName;

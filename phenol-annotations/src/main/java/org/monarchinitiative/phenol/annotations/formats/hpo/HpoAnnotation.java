@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -16,15 +15,12 @@ import java.util.Objects;
  * @version 0.1.3 (2018-03-12)
  */
 public class HpoAnnotation implements Comparable<HpoAnnotation> {
-  /** Note that we still do not have valid frequency information for all of the annotations; the default
-   * is to show "n/a"*/
-  private static final String DEFAULT_FREQUENCY_STRING = "n/a";
   /** The annotated {@link TermId}. */
   private final TermId termId;
   /** The frequency with which this phenotypic abnormality is seen in patients with this disease */
   private final double frequency;
   /** The frequency represented in String form intended for display */
-  private final String frequencyString;
+  private final HpoFrequency hpoFrequency;
   /** The characteristic age of onset of a feature in a certain disease. */
   private final HpoOnset onset;
   /** List of modifiers of this annotation. List can be empty but cannot be null */
@@ -38,23 +34,23 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
    * Constructor.
    *
    * @param termId Annotated {@link TermId}.
-   * @param f The frequency the term is annotated with.
-   * @param freqString the original String in the annotation file (for display). If empty, substitute with {@link #DEFAULT_FREQUENCY_STRING}
+   * @param frequency The frequency the term is annotated with as a fraction (not as a percentage).
+   * @param hpoFrequency the original String in the annotation file (for display). If empty, substitute with {@link #DEFAULT_FREQUENCY_STRING}
    * @param onset The onset of the feature in the disease
    * @param modifiers list of modifiers (list can be empty but not null)
    * @param cites List of publications (e.g., PMID or OMIM) that support this annotation
    * @param ec Evidence code for this annotation
    */
   public HpoAnnotation(TermId termId,
-                       double f,
-                       String freqString,
+                       double frequency,
+                       HpoFrequency hpoFrequency,
                        HpoOnset onset,
                        List<TermId> modifiers,
                        List<String> cites,
                        EvidenceCode ec) {
     this.termId = termId;
-    this.frequency = f;
-    frequencyString=freqString.isEmpty()?DEFAULT_FREQUENCY_STRING:freqString;
+    this.frequency = frequency;
+    this.hpoFrequency = hpoFrequency;
     this.onset = onset;
     this.modifiers = modifiers;
     this.citations=cites;
@@ -70,8 +66,8 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
     return forTerm(tid);
   }
 
-  public String getFrequencyString() {
-    return frequencyString;
+  public HpoFrequency getHpoFrequency() {
+    return hpoFrequency;
   }
 
   public List<String> getCitations() {
@@ -183,8 +179,6 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
       /** The id of the HPO term that this annotation is reporting. */
       private final TermId termId;
 
-      /** The frequency represented as a String and intended for display */
-      private String frequencyString=DEFAULT_FREQUENCY_STRING;
       /** List of citations that support this annotation. */
       private List<String> citations=null;
 
@@ -195,7 +189,7 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
       /** Evidence for this annotation. */
       private EvidenceCode evidence = DEFAULT_EVIDENCE_CODE;
       /** List of modifiers of this annotation. List can be empty but cannot be null */
-      private List<TermId> modifierList = ImmutableList.of();
+      private List<TermId> modifierList = List.of();
 
       public Builder(TermId tid) {
         Objects.requireNonNull(tid,"TermId cannot be null");
@@ -203,35 +197,30 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
       }
 
       /**
-       *
-       * @param o HpoOnset term (can be null, in which case we use the default)
+       * @param onset HpoOnset term (can be null, in which case we use the default)
        * @return reference to this Builder object
        */
-      public Builder onset(HpoOnset o) {
-        if (o != null) {
-          this.onset = o;
+      public Builder onset(HpoOnset onset) {
+        if (onset != null) {
+          this.onset = onset;
         }
         return this;
       }
 
-      public Builder frequency(double f, String freqString) {
-        checkBoundsWithinZeroToOne(f);
-        this.frequency = f;
-        this.frequencyString=freqString;
+      public Builder frequency(double frequency) {
+        checkBoundsWithinZeroToOne(frequency);
+        this.frequency = frequency;
         return this;
       }
 
-      private void checkBoundsWithinZeroToOne(double f) {
-        try {
-          assert f >= 0d && f <= 1d;
-        } catch (AssertionError ex) {
-          throw new IllegalArgumentException(f + " Frequency must be within range 0-1");
-        }
+      private static void checkBoundsWithinZeroToOne(double f) {
+        if (f < 0. || f > 1.)
+          throw new IllegalArgumentException(f + " Frequency must be within range [0-1]");
       }
 
       public Builder modifiers(Collection<TermId> modifiers) {
         Objects.requireNonNull(modifiers,"modifiers cannot be null");
-        this.modifierList = ImmutableList.copyOf(modifiers);
+        this.modifierList = List.copyOf(modifiers);
         return this;
       }
 
@@ -245,10 +234,12 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
       }
 
       public HpoAnnotation build() {
-        if (citations==null){
-          citations=ImmutableList.of();
+        if (citations == null){
+          citations = List.of();
         }
-        return new HpoAnnotation(termId, frequency, frequencyString,onset, modifierList,citations, evidence);
+
+        HpoFrequency hpoFrequency = HpoFrequency.fromPercent(frequency * 100);
+        return new HpoAnnotation(termId, frequency, hpoFrequency, onset, modifierList, citations, evidence);
       }
   }
 }

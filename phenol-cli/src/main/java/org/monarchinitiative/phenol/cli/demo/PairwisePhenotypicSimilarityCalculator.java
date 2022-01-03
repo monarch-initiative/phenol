@@ -1,12 +1,13 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
+import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase;
+import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
-import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -18,13 +19,12 @@ import org.slf4j.LoggerFactory;
 
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
-import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.OMIM;
+import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OMIM;
 
 
 /**
@@ -42,21 +42,19 @@ public class PairwisePhenotypicSimilarityCalculator {
   /**
    * Path to {@code hp.obo}.
    */
-  private final String pathHpObo;
+  private final Path pathHpObo;
 
   /**
    * Path to {@code phenotype.hpoa}
    */
-  private final String pathPhenotypeHpoa;
+  private final Path pathPhenotypeHpoa;
 
-
-
-  private final String output_filename;
+  private final Path outputFilename;
 
   /** Path to {@code mim2gene_medgen} file with gene to disease associations.*/
-  private final String mimgeneMedgenPath;
+  private final Path mimgeneMedgenPath;
   /** Path to {@code Homo_sapiens_gene_info.gz} file. */
-  private final String geneInfoPath;
+  private final Path geneInfoPath;
   /** If true, perform pairwise gene-gene similarity analysis. Otherwise, perform pairwise disease-disease analysis.*/
   private boolean doGeneBasedAnalysis;
 
@@ -67,8 +65,8 @@ public class PairwisePhenotypicSimilarityCalculator {
   private Map<TermId,Integer> diseaseIdToIndexMap;
   private ResnikSimilarity resnikSimilarity;
   private  double[][] similarityScores;
-  private Multimap<TermId,TermId> geneToDiseaseMap;
-  private Map<TermId,String> geneIdToSymbolMap;
+  private Map<TermId, Collection<TermId>> geneToDiseaseMap;
+  private Map<TermId, String> geneIdToSymbolMap;
   private int n_diseases;
 
 
@@ -121,14 +119,14 @@ public class PairwisePhenotypicSimilarityCalculator {
 
   /**
    */
-  public PairwisePhenotypicSimilarityCalculator(String hpoPath,
-                                                String hpoaPath,
-                                                String outname,
-                                                String geneInfoPath,
-                                                String mim2genMedgenPath) {
+  public PairwisePhenotypicSimilarityCalculator(Path hpoPath,
+                                                Path hpoaPath,
+                                                Path outname,
+                                                Path geneInfoPath,
+                                                Path mim2genMedgenPath) {
     this.pathHpObo=hpoPath;
     this.pathPhenotypeHpoa=hpoaPath;
-    this.output_filename=outname;
+    this.outputFilename =outname;
     this.geneInfoPath=geneInfoPath;
     this.mimgeneMedgenPath=mim2genMedgenPath;
     if (geneInfoPath==null || mimgeneMedgenPath==null){
@@ -140,19 +138,19 @@ public class PairwisePhenotypicSimilarityCalculator {
     }
     boolean badFile=false;
     // check existence of Files
-    if (! (new File (this.pathHpObo).exists())) {
+    if (!pathHpObo.toFile().isFile()) {
       System.err.println("[ERROR] hp.obo file not found at "+pathHpObo);
       badFile=true;
     }
-    if (! (new File (this.pathPhenotypeHpoa).exists())) {
+    if (!pathPhenotypeHpoa.toFile().isFile()) {
       System.err.println("[ERROR] phenotype.hpoa file not found at "+pathPhenotypeHpoa);
       badFile=true;
     }
-    if (! (new File (this.geneInfoPath).exists())) {
+    if (!geneInfoPath.toFile().exists()) {
       System.err.println("[ERROR] Homo_sapiens_gene_info.gz not found at "+geneInfoPath);
       badFile=true;
     }
-    if (! (new File (this.mimgeneMedgenPath).exists())) {
+    if (!mimgeneMedgenPath.toFile().exists()) {
       System.err.println("[ERROR] mim2gene_medgen not found at "+mimgeneMedgenPath);
       badFile=true;
     }
@@ -204,11 +202,11 @@ public class PairwisePhenotypicSimilarityCalculator {
    * Do an analysis to get the maximum pairwise similarity between genes, calculated on the basis
    * of phenotypic similarity of the diseases to which the genes are annotated.
    */
-  private void performGeneBasedAnalysis() {
-    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(this.geneInfoPath,this.mimgeneMedgenPath,this.hpo);
-    this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
+  private void performGeneBasedAnalysis() throws IOException {
+    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mimgeneMedgenPath, null, pathPhenotypeHpoa, Set.of(OMIM));
+    this.geneToDiseaseMap = hpoAssociationData.geneToDiseases();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
-    this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
+    this.geneIdToSymbolMap = hpoAssociationData.geneIdToSymbol();
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
     List<TermId> geneList = new ArrayList<>(geneToDiseaseMap.keySet());
     int N = geneList.size();
@@ -250,7 +248,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     double threshold = mean + 2.0*sd;
     System.out.println("[INFO] Writing pairwise gene similarity to file." );
     int aboveThreshold=0;
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename))){
+    try (BufferedWriter writer = Files.newBufferedWriter(outputFilename)){
       String [] fields = {"gene1","symbol1","gene2","symbol2","similarity"};
       String header = String.join("\t",fields);
       writer.write(header + "\n");
@@ -290,7 +288,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     System.out.println("[INFO] Writing pairwise phenotype similarity to file." );
     int aboveThreshold=0;
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(this.output_filename));
+      BufferedWriter writer = Files.newBufferedWriter(outputFilename);
       String [] fields = {"disease1","disease2","similarity"};
       String header = String.join("\t",fields);
       writer.write(header + "\n");
@@ -318,17 +316,18 @@ public class PairwisePhenotypicSimilarityCalculator {
   /**
    * Run application.
    */
-  public void run() {
+  public void run() throws IOException {
     if (pathHpObo==null || pathPhenotypeHpoa == null) {
       System.err.println("[ERROR] Must pass path-to-hp.obo and path-to-phenotype.hpoa");
       System.exit(1);
     }
-    this.hpo = OntologyLoader.loadOntology(new File(pathHpObo));
+    this.hpo = OntologyLoader.loadOntology(pathHpObo.toFile());
     System.out.println("[INFO] DONE: Loading HPO");
 
     Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
     databases.add(OMIM);
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(pathPhenotypeHpoa), hpo, databases);
+    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(pathPhenotypeHpoa, hpo, databases);
+    diseaseMap = hpoDiseases.diseaseById();
     System.out.println("[INFO] DONE: Loading phenotype.hpoa");
 
     // Compute list of annoations and mapping from OMIM ID to term IDs.

@@ -1,70 +1,75 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
+import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase;
-import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
+import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
-import java.io.File;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.OMIM;
+import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OMIM;
 
-public class ResnikGenebasedHpoDemo {
+public class ResnikGeneBasedHpoDemo {
 
   private final Ontology hpo;
   private final Map<TermId, HpoDisease> diseaseMap;
   private HpoResnikSimilarity resnikSimilarity;
   private final Map<TermId, Double> termToIc;
-  private final Multimap<TermId,TermId> geneToDiseaseMap;
+  private final Map<TermId,Collection<TermId>> geneToDiseaseMap;
   private final Map<TermId,String> geneIdToSymbolMap;
   private final Map<TermId, Collection<TermId>> diseaseIdToTermIds;
 
-  public ResnikGenebasedHpoDemo(String hpoPath, String hpoaPath, String geneInfoPath, String mim2genMedgenPath) {
+  public ResnikGeneBasedHpoDemo(Path hpoPath, Path hpoaPath, Path geneInfoPath, Path mim2genMedgenPath) throws IOException {
     Instant t1 = Instant.now();
-    this.hpo = OntologyLoader.loadOntology(new File(hpoPath));
+    this.hpo = OntologyLoader.loadOntology(hpoPath.toFile());
     Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
-    databases.add(OMIM);
-    this.diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(Paths.get(hpoaPath), hpo,databases);
+    Set<DiseaseDatabase> databases = Set.of(OMIM); // restrict ourselves to OMIM entries
+
+    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(hpoaPath, hpo, databases);
+    diseaseMap = hpoDiseases.diseaseById();
+
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
     // Compute list of annoations and mapping from OMIM ID to term IDs.
     t1 = Instant.now();
     this.diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
-    for (TermId diseaseId : diseaseMap.keySet()) {
-      HpoDisease disease = diseaseMap.get(diseaseId);
+    for (Map.Entry<TermId, HpoDisease> entry: hpoDiseases.diseaseById().entrySet()) {
+      TermId diseaseId = entry.getKey();
+      HpoDisease disease = entry.getValue();
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
-      diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
-      // add term anscestors
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
+
+      // add term ancestors
+      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
 
       for (TermId tid : inclAncestorTermIds) {
-        termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());
-        termIdToDiseaseIds.get(tid).add(diseaseId);
-        diseaseIdToTermIds.get(diseaseId).add(tid);
+        termIdToDiseaseIds.computeIfAbsent(tid, key -> new HashSet<>()).add(diseaseId);
+        diseaseIdToTermIds.computeIfAbsent(diseaseId, key -> new HashSet<>()).add(tid);
       }
     }
     t2 = Instant.now();
     System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
-    HpoAssociationParser hpoAssociationParser = new HpoAssociationParser(geneInfoPath,mim2genMedgenPath,this.hpo);
-    this.geneToDiseaseMap = hpoAssociationParser.getGeneToDiseaseIdMap();
+
+    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mim2genMedgenPath, null, hpoaPath, databases);
+
+    this.geneToDiseaseMap = hpoAssociationData.geneToDiseases();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
-    this.geneIdToSymbolMap = hpoAssociationParser.getGeneIdToSymbolMap();
+    this.geneIdToSymbolMap = hpoAssociationData.geneIdToSymbol();
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
     t2 = Instant.now();
     System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
@@ -118,7 +123,7 @@ public class ResnikGenebasedHpoDemo {
 
   private void differential(List<TermId> hpoIds, TermId expectedDiseaseDiagnosis) {
     HashMap<String, Double> results = new HashMap<>();
-    for (TermId geneId : geneToDiseaseMap.keys()) {
+    for (TermId geneId : geneToDiseaseMap.keySet()) {
       for (TermId diseaseId : this.geneToDiseaseMap.get(geneId)) {
         Collection<TermId> diseasehpoIds = this.diseaseIdToTermIds.getOrDefault(diseaseId, new ArrayList<>());
         double resnikScore = this.resnikSimilarity.computeScoreSymmetric(hpoIds, diseasehpoIds);
@@ -129,7 +134,7 @@ public class ResnikGenebasedHpoDemo {
           // for which we do not have HPO terms because it is not a disease
           continue;
         }
-        String name = this.diseaseMap.get(diseaseId).getName();
+        String name = this.diseaseMap.get(diseaseId).getDiseaseName();
         String entry = String.format("%s - %s (%s)", name, diseaseId.getValue(), gene);
         results.put(entry, resnikScore);
       }
@@ -144,7 +149,7 @@ public class ResnikGenebasedHpoDemo {
         System.err.println("[ERROR] Could not find label for " + tid.getValue());
       }
     }
-    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).getName();
+    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).getDiseaseName();
     System.out.printf("[INFO] Expected diagnosis: %s\n", name);
     int c = 0;
     for (String dd : top10) {

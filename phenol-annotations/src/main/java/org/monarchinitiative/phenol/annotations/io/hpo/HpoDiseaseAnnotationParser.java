@@ -1,6 +1,5 @@
-package org.monarchinitiative.phenol.annotations.obo.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
-import com.google.common.collect.*;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds;
@@ -18,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static org.monarchinitiative.phenol.annotations.obo.hpo.DiseaseDatabase.*;
+import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.*;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
 
 /**
@@ -30,13 +29,14 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @author <a href="mailto:michael.gargano@jax.org">Michael Gargano</a>
  */
+@Deprecated // in favor of HpoDiseaseAnnotationLoader
 public class HpoDiseaseAnnotationParser {
-  Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseAnnotationParser.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseAnnotationParser.class);
 
   /**
    * We will, by default, parse in disease models from the following databases.
    */
-  private static final Set<DiseaseDatabase> DEFAULT_DATABASE_PREFIXES = ImmutableSet.of(OMIM, ORPHANET, DECIPHER);
+  private static final Set<DiseaseDatabase> DEFAULT_DATABASE_PREFIXES = Set.of(OMIM, ORPHANET, DECIPHER);
 
   /**
    * Path to the phenotype.hpoa annotation file.
@@ -53,7 +53,7 @@ public class HpoDiseaseAnnotationParser {
   /**
    * Key: HpoPhenotypeId; Value: corresponding {@link HpoDisease} object.
    */
-  private ImmutableMultimap<TermId, TermId> phenotypeToDiseaseMap;
+  private Map<TermId, List<TermId>> phenotypeToDiseaseMap;
   /**
    * List of errors encountered during parsing of the annotation file.
    */
@@ -73,7 +73,7 @@ public class HpoDiseaseAnnotationParser {
     try {
       return parser.parse();
     } catch (PhenolException e) {
-      System.err.println("Could not load HPO annotations at " + annotationFile + ": " + e.getMessage());
+      LOGGER.error("Could not load HPO annotations at {}: {}", annotationFile, e.getMessage());
     }
     throw new PhenolRuntimeException("Could not load HPO annotations at " + annotationFile);
   }
@@ -84,7 +84,7 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology reference to HPO Ontology object
    * @return map with key being an HPO TermId object, and value being a list of TermIds representing diseases.
    */
-  public static Multimap<TermId, TermId> loadTermToDiseaseMap(Path annotationFile, Ontology ontology, Set<DiseaseDatabase> databasePrefixes) {
+  public static Map<TermId, List<TermId>> loadTermToDiseaseMap(Path annotationFile, Ontology ontology, Set<DiseaseDatabase> databasePrefixes) {
     HpoDiseaseAnnotationParser parser = new HpoDiseaseAnnotationParser(annotationFile, ontology, databasePrefixes);
     try {
       parser.parse(); // ignore return value for this
@@ -125,7 +125,7 @@ public class HpoDiseaseAnnotationParser {
     return errors;
   }
 
-  private ImmutableMultimap<TermId, TermId> getTermToDiseaseMap() {
+  private Map<TermId, List<TermId>> getTermToDiseaseMap() {
     return this.phenotypeToDiseaseMap;
   }
 
@@ -137,7 +137,7 @@ public class HpoDiseaseAnnotationParser {
   public Map<TermId, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
     Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
-    Multimap<TermId, TermId> termToDisease = ArrayListMultimap.create();
+    Map<TermId, List<TermId>> termToDisease = new HashMap<>();
     this.errors = new ArrayList<>();
     try (BufferedReader br = Files.newBufferedReader(annotationFilePath)) {
       String line = br.readLine();
@@ -150,17 +150,15 @@ public class HpoDiseaseAnnotationParser {
           this.errors.add(String.format("Invalid number of fields: %s", line));
           continue;
         }
-        if (!termToDisease.containsEntry(aline.getPhenotypeId(), aline.getDiseaseTermId())) {
-          termToDisease.put(aline.getPhenotypeId(), aline.getDiseaseTermId());
+        List<TermId> ids = termToDisease.computeIfAbsent(aline.getPhenotypeId(), k -> new ArrayList<>());
+        if (!ids.contains(aline.getDiseaseTermId())) {
+          ids.add(aline.getDiseaseTermId());
         }
+
         TermId diseaseId = aline.getDiseaseTermId();
-        disease2AnnotLineMap.putIfAbsent(diseaseId, new ArrayList<>());
-        List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
-        annots.add(aline);
+        disease2AnnotLineMap.computeIfAbsent(diseaseId, k -> new ArrayList<>()).add(aline);
       }
-      ImmutableMultimap.Builder<TermId, TermId> builderTermToDisease = new ImmutableMultimap.Builder<>();
-      builderTermToDisease.putAll(termToDisease);
-      this.phenotypeToDiseaseMap = builderTermToDisease.build();
+      this.phenotypeToDiseaseMap = Map.copyOf(termToDisease);
     } catch (IOException e) {
       throw new PhenolException(String.format("Could not read annotation file: %s", e.getMessage()));
     }
@@ -173,11 +171,11 @@ public class HpoDiseaseAnnotationParser {
         continue; // skip unless we want to keep this database
       }
       List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
-      final ImmutableList.Builder<HpoAnnotation> phenoListBuilder = ImmutableList.builder();
-      final ImmutableList.Builder<TermId> inheritanceListBuilder = ImmutableList.builder();
-      final ImmutableList.Builder<TermId> negativeTermListBuilder = ImmutableList.builder();
-      final ImmutableList.Builder<TermId> clinicalModifierListBuilder = ImmutableList.builder();
-      final ImmutableList.Builder<TermId> clinicalCourseListBuilder = ImmutableList.builder();
+      List<HpoAnnotation> phenoListBuilder = new ArrayList<>();
+      List<TermId> inheritanceListBuilder = new ArrayList<>();
+      List<TermId> negativeTermListBuilder = new ArrayList<>();
+      List<TermId> clinicalModifierListBuilder = new ArrayList<>();
+      List<TermId> clinicalCourseListBuilder = new ArrayList<>();
       String diseaseName = null;
       for (HpoAnnotationLine line : annots) {
         try {
@@ -199,15 +197,12 @@ public class HpoDiseaseAnnotationParser {
             line.toString(), e.getMessage()));
         }
       }
-      HpoDisease hpoDisease =
-        new HpoDisease(
-          diseaseName,
-          diseaseId,
-          phenoListBuilder.build(),
-          inheritanceListBuilder.build(),
-          negativeTermListBuilder.build(),
-          clinicalModifierListBuilder.build(),
-          clinicalCourseListBuilder.build());
+      HpoDisease hpoDisease = HpoDisease.of(diseaseId, diseaseName,
+        List.copyOf(phenoListBuilder),
+        List.copyOf(inheritanceListBuilder),
+        List.copyOf(negativeTermListBuilder),
+        List.copyOf(clinicalModifierListBuilder),
+        List.copyOf(clinicalCourseListBuilder));
       this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
     return diseaseMap;
@@ -267,7 +262,7 @@ public class HpoDiseaseAnnotationParser {
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
       tmpMap.put(diseaseId, hpoTerms);
     }
-    return ImmutableMap.copyOf(tmpMap);
+    return Map.copyOf(tmpMap);
   }
 
   /**
@@ -276,8 +271,7 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology A reference to the HPO ontology
    * @return A map from HPO ids to Disease ids (direct annotations only).
    */
-  public static
-  Map<TermId, Collection<TermId>> hpoTermIdToDiseaseIdsDirect(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
+  public static Map<TermId, Collection<TermId>> hpoTermIdToDiseaseIdsDirect(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
@@ -287,7 +281,7 @@ public class HpoDiseaseAnnotationParser {
         tmpMap.get(tid).add(diseaseId);
       }
     }
-    return ImmutableMap.copyOf(tmpMap);
+    return Map.copyOf(tmpMap);
   }
 
   /**
@@ -297,19 +291,18 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology A reference to the HPO ontology
    * @return A map from disease Ids to a collection of directly annotating HPO terms
    */
-  public static
-  Map<TermId, Collection<TermId>> diseaseIdToPropagatedHpoTermIds(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
+  public static Map<TermId, Collection<TermId>> diseaseIdToPropagatedHpoTermIds(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
       tmpMap.putIfAbsent(diseaseId, new HashSet<>());
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, Sets.newHashSet(hpoTerms), true);
+      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, new HashSet<>(hpoTerms), true);
       for (TermId tid : inclAncestorTermIds) {
         tmpMap.get(diseaseId).add(tid);
       }
     }
-    return ImmutableMap.copyOf(tmpMap);
+    return Map.copyOf(tmpMap);
   }
 
   /**
@@ -318,19 +311,18 @@ public class HpoDiseaseAnnotationParser {
    * @param ontology A reference to the HPO ontology
    * @return A map from HPO ids to Disease ids (direct annotations only).
    */
-  public static
-  Map<TermId, Collection<TermId>> hpoTermIdToDiseaseIdsPropagated(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
+  public static Map<TermId, Collection<TermId>> hpoTermIdToDiseaseIdsPropagated(Map<TermId, HpoDisease> diseaseMap, Ontology ontology) {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
       List<TermId> hpoTermIds = disease.getPhenotypicAbnormalityTermIdList();
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, Sets.newHashSet(hpoTermIds), true);
+      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, new HashSet<>(hpoTermIds), true);
       for (TermId tid : inclAncestorTermIds) {
         tmpMap.putIfAbsent(tid, new HashSet<>());
         tmpMap.get(tid).add(diseaseId);
       }
     }
-    return ImmutableMap.copyOf(tmpMap);
+    return Map.copyOf(tmpMap);
   }
 
 }

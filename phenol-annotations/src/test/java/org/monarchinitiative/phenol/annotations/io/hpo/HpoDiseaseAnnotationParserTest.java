@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.obo.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
 
 import org.junit.jupiter.api.BeforeAll;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -27,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * These tests were constructed with a mini hpo file and a mini annotation file -- look at them to
  * figure out the logic!
  */
-@Disabled("Disabled until we have a toy hpo.json")
+@Deprecated
+@Disabled("Disabled due to deprecation")
 class HpoDiseaseAnnotationParserTest {
 
   private static Map<TermId, HpoDisease> diseaseMap;

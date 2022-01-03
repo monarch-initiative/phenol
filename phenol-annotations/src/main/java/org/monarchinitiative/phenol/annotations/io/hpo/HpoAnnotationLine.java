@@ -1,8 +1,5 @@
-package org.monarchinitiative.phenol.annotations.obo.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
-import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationParser;
-import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequency;
@@ -11,6 +8,8 @@ import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -123,7 +122,7 @@ class HpoAnnotationLine {
     try {
       return new HpoAnnotationLine(line);
     } catch (PhenolException e) {
-      throw new PhenolException(String.format("Exception [%s] parsing line: %s",e.getMessage(),line));
+      throw new PhenolException(String.format("Exception [%s] parsing line: %s",e.getMessage(), line));
     }
   }
 
@@ -156,13 +155,12 @@ class HpoAnnotationLine {
    * @throws PhenolException if the {@link #databaseId} field is invalid (not OMIM, ORPHA, or DECIPHER)
    */
   TermId getDiseaseTermId() throws PhenolException {
-    if (databaseId.startsWith("OMIM") ||
-      databaseId.startsWith("ORPHA") ||
-      databaseId.startsWith("DECIPHER")
-      )
+    if (databaseId.startsWith("OMIM")
+      || databaseId.startsWith("ORPHA")
+      || databaseId.startsWith("DECIPHER"))
         return TermId.of(databaseId);
     // we should never get here
-    throw new PhenolException("Invalid disease id (not OMIM/ORPHA/DECIPHER: "+databaseId);
+    throw new PhenolException("Invalid disease id (not OMIM/ORPHA/DECIPHER: " + databaseId);
   }
 
   TermId getPhenotypeId() {
@@ -186,13 +184,15 @@ class HpoAnnotationLine {
   }
 
   List<String> getPublication() {
-    ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-    if (publication == null || publication.isEmpty()) return builder.build();
-    String[] A = publication.split(";") ;
-    for (String a : A ){
+    if (publication == null || publication.isEmpty())
+      return List.of();
+
+    String[] tokens = publication.split(";") ;
+    List<String> builder = new ArrayList<>(tokens.length);
+    for (String a : tokens ){
       builder.add(a.trim());
     }
-    return builder.build();
+    return Collections.unmodifiableList(builder);
   }
 
   String getEvidence() {
@@ -222,7 +222,7 @@ class HpoAnnotationLine {
    * This method can be used to create a full HpoAnnotation object. Note that it is not
    * intended to be used to parse annotation lines that represent models of inheritance or
    * negative annotations. For this reason, the method is package-private and should only be
-   * called by {@link HpoAssociationParser}.
+   * called by {@link org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader}.
    * @param line AN HpoAnnotationLinbe object representing opne phenotype annotation
    * @param ontology reference to HPO Ontology object
    * @return corresponding HpoAnnotation object
@@ -230,15 +230,14 @@ class HpoAnnotationLine {
    static HpoAnnotation toHpoAnnotation(HpoAnnotationLine line, Ontology ontology) {
     TermId phenoId = line.getPhenotypeId();
     double frequency = getFrequency(line.getFrequency(), ontology);
-    String frequencyString=line.frequency.isEmpty() ? DEFAULT_FREQUENCY_STRING : line.frequency;
     HpoOnset onset = getOnset(line.onsetId);
-    return new HpoAnnotation(phenoId,
-      frequency,
-      frequencyString,
-      onset,
-      getModifiers(line.getModifierList()),
-      line.getPublication(),
-      EvidenceCode.fromString(line.evidence));
+    return HpoAnnotation.builder(phenoId)
+      .frequency(frequency)
+      .onset(onset)
+      .modifiers(getModifiers(line.getModifierList()))
+      .citations(line.getPublication())
+      .evidence(line.getEvidence())
+      .build();
   }
 
   /**
@@ -246,14 +245,16 @@ class HpoAnnotationLine {
    * @return Immutable List of {@link TermId} objects
    */
   private static List<TermId> getModifiers(String lst) {
-    ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
-    if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
+    if (lst == null || lst.isEmpty())
+      return List.of();
+
     String[] modifierTermStrings = lst.split(";");
+    List<TermId> builder = new ArrayList<>(modifierTermStrings.length);
     for (String mt : modifierTermStrings) {
       TermId mtId = TermId.of(mt.trim());
       builder.add(mtId);
     }
-    return builder.build();
+    return Collections.unmodifiableList(builder);
   }
 
   /**
@@ -306,7 +307,7 @@ class HpoAnnotationLine {
         return ontology
           .getTermMap()
           .get(tid)
-          .getId(); // replace alt_id with current if if necessary
+          .getId(); // replace alt_id with current if necessary
       } else {
         return null;
       }

@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.File;
