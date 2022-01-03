@@ -53,19 +53,23 @@ public final class GoGeneAnnotationParser  {
     } catch (IOException e) {
       throw new PhenolRuntimeException("Could not parse " + path +": " + e.getMessage());
     }
-    return goGaf22annots; // TODO add List.copyOf(...) with Java 11 refactor
+    return List.copyOf(goGaf22annots);
   }
 
   /**
-   * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
+   * @return a list of GoGafAnnotation as {@link TermAnnotation} objects.
    */
-  public static List<TermAnnotation> loadTermAnnotations(File file) {
-   return GoGeneAnnotationParser.loadTermAnnotations(file.toPath());
+  // This should be considered as redundant as it is super easy to get Path from File. As such, I do not see
+  // a lot of convenience here, just API that is larger than necessary.
+  @Deprecated(forRemoval = true)
+  public static List<GoGaf22Annotation> loadTermAnnotations(File file) {
+   return GoGeneAnnotationParser.loadAnnotations(file.toPath());
   }
 
   /**
-   * @return Return a list of GoGafAnnotation as {@link TermAnnotation} objects.
+   * @return a list of GoGafAnnotation as {@link TermAnnotation} objects.
    */
+  @Deprecated(forRemoval = true) // this is redundant as loadAnnotations returns List<GoGaf22Annotation>
   public static List<TermAnnotation> loadTermAnnotations(Path path) {
     List<GoGaf22Annotation> annots = GoGeneAnnotationParser.loadAnnotations(path);
     return new ArrayList<>(annots);
