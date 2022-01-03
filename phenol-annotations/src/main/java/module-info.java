@@ -17,5 +17,7 @@ module org.monarchinitiative.phenol.annotations {
   exports org.monarchinitiative.phenol.annotations.io.go;
   exports org.monarchinitiative.phenol.annotations.io.hpo;
 
-  // We're not exporting `org.monarchinitiative.phenol.annotations.obo` & child packages unless somebody uses the code.
+  exports org.monarchinitiative.phenol.annotations.obo.mpo to org.monarchinitiative.phenol.cli;
+  // We're not exporting all `org.monarchinitiative.phenol.annotations.obo` & child packages
+  // unless somebody uses the code.
 }
