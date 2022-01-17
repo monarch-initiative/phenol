@@ -72,6 +72,11 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     return this.annotatingTermCount;
   }
 
+  @Override
+  public int getTotalAnnotationCount() {
+    return rawAssociations.size();
+  }
+
   public List<? extends TermAnnotation> getRawAssociations() {
     return rawAssociations;
   }

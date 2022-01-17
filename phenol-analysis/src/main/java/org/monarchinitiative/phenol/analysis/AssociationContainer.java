@@ -32,4 +32,6 @@ public interface AssociationContainer<T> {
    */
   int getAnnotatingTermCount();
 
+  int getTotalAnnotationCount();
+
 }
