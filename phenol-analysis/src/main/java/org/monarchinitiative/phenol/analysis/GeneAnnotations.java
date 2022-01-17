@@ -24,7 +24,7 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
 
     /**
      * @param annotatedGene name of the gene or other item being annotated
-     * @param annotations
+     * @param annotations Gene Ontology annotations for the annotatedGene
      */
     private GeneAnnotations(TermId annotatedGene, List<TermAnnotation> annotations) {
       this.annotatedGene = Objects.requireNonNull(annotatedGene, "Annotated gene term ID must not be null");
@@ -40,6 +40,11 @@ public class GeneAnnotations implements ItemAnnotations<TermId> {
     public List<TermAnnotation> getAnnotations() {
         return this.annotations;
     }
+
+  @Override
+  public int getAnnotationCount() {
+    return this.annotations.size();
+  }
 
   @Override
   public boolean equals(Object o) {

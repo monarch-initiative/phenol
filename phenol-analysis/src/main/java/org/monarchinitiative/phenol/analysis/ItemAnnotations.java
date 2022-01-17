@@ -48,4 +48,6 @@ public interface ItemAnnotations<T> {
     default boolean containsAnnotation(TermId tid) {
       return getAnnotations().stream().anyMatch(annot -> annot.getTermId().equals(tid) );
     }
+
+    int getAnnotationCount();
 }
