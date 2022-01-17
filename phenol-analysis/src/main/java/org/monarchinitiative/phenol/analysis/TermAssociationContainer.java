@@ -77,6 +77,11 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     return rawAssociations.size();
   }
 
+  @Override
+  public int getAnnotatedDomainItemCount() {
+    return gene2associationMap.size();
+  }
+
   public List<? extends TermAnnotation> getRawAssociations() {
     return rawAssociations;
   }
