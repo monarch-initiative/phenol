@@ -47,16 +47,15 @@ class TermToItemMatrix {
         }
         this.goTermList = List.copyOf(builder);
         this.goTermToIndexMap = Map.copyOf(mapBuilder);
+
         // Now get list and indices of the genes
-        builder.clear();
         mapBuilder.clear();
         i = 0;
         for (TermId gene : genes) {
-          builder.add(gene);
           mapBuilder.put(gene, i);
           i++;
         }
-        this.annotatedItemList = List.copyOf(builder);
+        this.annotatedItemList = List.copyOf(genes);
         this.annotatedItemToIndexMap = Map.copyOf(mapBuilder);
         termLinks = new int[n_annotated_terms][];
         i = 0;
