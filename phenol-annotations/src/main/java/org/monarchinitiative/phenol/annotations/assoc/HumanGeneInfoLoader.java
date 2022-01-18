@@ -9,17 +9,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-public class GeneInfoLoader {
+public class HumanGeneInfoLoader {
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
 
 
-  private GeneInfoLoader() {
+  private HumanGeneInfoLoader() {
     // should not be instantiated
   }
 
   /**
-   * @param geneInfoFile Homo_sapiens.gene_info.gz File
-   * @return an immutable Map with keys being NCBI Gene IDs and values being the corresponding symbols
+   * Load gene identifiers from <em>Homo_sapiens.gene_info.gz</em>.
+   *
+   * @param geneInfoFile path to <em>Homo_sapiens.gene_info.gz</em>
+   * @return gene identifiers
    */
   public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile) throws IOException {
     List<GeneIdentifier> builder = new ArrayList<>();

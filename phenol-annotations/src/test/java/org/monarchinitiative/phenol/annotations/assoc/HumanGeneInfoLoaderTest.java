@@ -13,14 +13,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-public class GeneInfoLoaderTest {
+public class HumanGeneInfoLoaderTest {
   private static GeneIdentifiers GENE_IDENTIFIERS;
 
 
   @BeforeAll
   public static void init() throws Exception {
-    Path homoSapiensGeneInfo = Path.of(GeneInfoLoaderTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
-    GENE_IDENTIFIERS = GeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
+    Path homoSapiensGeneInfo = Path.of(HumanGeneInfoLoaderTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
+    GENE_IDENTIFIERS = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
   }
 
   @Test
