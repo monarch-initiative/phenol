@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HumanGeneInfoLoader {
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
@@ -24,31 +26,37 @@ public class HumanGeneInfoLoader {
    * @return gene identifiers
    */
   public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile) throws IOException {
-    List<GeneIdentifier> builder = new ArrayList<>();
+    // We have seen that occasionally the Homo_sapiens_gene_info.gz
+    // contains duplicate lines, which is an error, but we do not want the code
+    // to crash, so we only allow distinct gene identifiers.
+    // The TermId <-> symbol mapping is one to one.
     try (BufferedReader reader = FileUtils.newBufferedReader(geneInfoFile)) {
-      String line;
-      // We have seen that occasionally the Homo_sapiens_gene_info.gz
-      // contains duplicate lines, which is an error but we do not want the code
-      // to crash, so we check for previously found term ids with the seen set.
-      // The TermId <-> symbol mapping is one to one.
-      Set<TermId> seen = new HashSet<>();
-      while ((line = reader.readLine()) != null) {
-        String[] a = line.split("\t");
-        String taxon = a[0];
-        if (!taxon.equals("9606")) continue; // i.e., we want only Homo sapiens sapiens and not Neaderthal etc.
-        if (!("unknown".equals(a[9]))) {
-          String geneId = a[1];
-          TermId tid = TermId.of(ENTREZ_GENE_PREFIX, geneId);
-          if (seen.contains(tid)) continue;
-
-          seen.add(tid);
-
-          String symbol = a[2];
-
-          builder.add(GeneIdentifier.of(tid, symbol));
-        }
-      }
-      return GeneIdentifiers.of(List.copyOf(builder));
+      List<GeneIdentifier> identifiers = reader.lines()
+        .map(toGeneIdentifier())
+        .flatMap(Optional::stream)
+        .distinct()
+        .collect(Collectors.toUnmodifiableList());
+      return GeneIdentifiers.of(identifiers);
     }
+  }
+
+  private static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
+    return line -> {
+      /*
+      A line example:
+      9606	336	APOA2	-	Apo-AII|ApoA-II|apoAII	MIM:107670|HGNC:HGNC:601|Ensembl:ENSG00000158874|Vega:OTTHUMG00000034346	1	1q23.3	apolipoprotein A2	protein-coding	APOA2	apolipoprotein A2	O	apolipoprotein A-II	20180603	-
+       */
+
+      String[] a = line.split("\t");
+      String taxon = a[0];
+      if (!taxon.equals("9606"))// i.e., we want only Homo sapiens sapiens and not Neanderthal etc.
+        return Optional.empty();
+      if ("unknown".equals(a[9]))
+        return Optional.empty();
+
+
+      TermId tid = TermId.of(ENTREZ_GENE_PREFIX, a[1]); // a[1] is geneId
+      return Optional.of(GeneIdentifier.of(tid, a[2])); // a[2] is gene symbol
+    };
   }
 }
