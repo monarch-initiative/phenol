@@ -23,7 +23,7 @@ public class GeneInfoLoader {
    */
   public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile) throws IOException {
     List<GeneIdentifier> builder = new ArrayList<>();
-    try (BufferedReader reader = FileUtils.openForReading(geneInfoFile)) {
+    try (BufferedReader reader = FileUtils.newBufferedReader(geneInfoFile)) {
       String line;
       // We have seen that occasionally the Homo_sapiens_gene_info.gz
       // contains duplicate lines, which is an error but we do not want the code
