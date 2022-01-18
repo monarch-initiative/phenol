@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -86,7 +85,10 @@ public final class HpoDisease {
 
   /** @return The list of phenotype abnormalities as bare TermIds. */
   public List<TermId> getPhenotypicAbnormalityTermIdList() {
-    return phenotypicAbnormalities.stream().map(HpoAnnotation::getTermId).collect(Collectors.toList());
+    return phenotypicAbnormalities.stream()
+      .map(HpoAnnotation::getTermId)
+      .distinct()
+      .collect(Collectors.toUnmodifiableList());
   }
 
   /** @return The list of frequency-annotated modes of inheritance. */
@@ -169,15 +171,11 @@ public final class HpoDisease {
    * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
   public double getFrequencyOfTermInDisease(TermId tid) {
-    HpoAnnotation tiwm =
-        phenotypicAbnormalities
-            .stream()
+    return phenotypicAbnormalities.stream()
             .filter(twm -> twm.getTermId().equals(tid))
             .findFirst()
-            .orElse(null);
-    if (tiwm == null) {
-      return 0D; // term not annotated to disease so frequency is zero
-    } else return tiwm.getFrequency();
+            .map(HpoAnnotation::getFrequency)
+            .orElse(0D); // term not annotated to disease so frequency is zero
   }
 
   /**
