@@ -1,5 +1,5 @@
 module org.monarchinitiative.phenol.analysis {
-  requires org.monarchinitiative.phenol.annotations;
+  requires transitive org.monarchinitiative.phenol.annotations;
 
   requires java.sql;
   requires org.apache.commons.codec;
