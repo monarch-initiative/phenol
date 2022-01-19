@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
-import com.google.common.collect.ComparisonChain;
-
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -145,12 +143,14 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
       }
 
       final MpoGeneAnnotation that = (MpoGeneAnnotation) o;
-      return ComparisonChain.start()
-        .compare(this.geneId, that.geneId)
-        .compare(this.entrezGeneSymbol, that.entrezGeneSymbol)
-        .compare(this.hpoTermName, that.hpoTermName)
-        .compare(this.hpoTermId, that.hpoTermId)
-        .result();
+
+      int result = geneId.compareTo(that.geneId);
+      if (result != 0) return result;
+      result = entrezGeneSymbol.compareTo(that.entrezGeneSymbol);
+      if (result != 0) return result;
+      result = hpoTermName.compareTo(that.hpoTermName);
+      if (result != 0) return result;
+      return hpoTermId.compareTo(that.hpoTermId);
     }
   }
 

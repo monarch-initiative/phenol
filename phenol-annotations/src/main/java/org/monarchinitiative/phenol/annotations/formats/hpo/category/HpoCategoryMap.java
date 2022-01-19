@@ -1,9 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -39,7 +36,7 @@ public class HpoCategoryMap {
    * (Abnormality of the cardiovascular system) would correspond to the category Cardiovascular and
    * several subcategories.
    */
-  private final ImmutableMap<TermId, HpoCategory> categorymap;
+  private final Map<TermId, HpoCategory> categorymap;
 
   private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
   /** Clinical course includes ONSET, Mortality, temporal, and pace of progression. */
@@ -76,7 +73,7 @@ public class HpoCategoryMap {
       EAR_ID, ENDOCRINE_ID, EYE_ID, GENITOURINARY_ID, IMMUNOLOGY_ID, INTEGUMENT_ID,
       MUSCLE_ID, NERVOUS_SYSTEM_ID, RESPIRATORY_ID, SKELETAL_ID, THORACIC_CAVITY_ID,
       VOICE_ID, GROWTH_ID, CONSTITUTIONAL_ID, NEOPLASM_ID};
-    ImmutableMap.Builder<TermId, HpoCategory> mapbuilder = new ImmutableMap.Builder<>();
+    Map<TermId, HpoCategory> mapbuilder = new HashMap<>();
     // Inheritance
     HpoCategory inheritanceCategory = new HpoCategory(INHERITANCE_ID, "Inheritance");
     mapbuilder.put(INHERITANCE_ID, inheritanceCategory);
@@ -159,7 +156,7 @@ public class HpoCategoryMap {
     HpoCategory clinicalCourseCat = new HpoCategory(CLINICAL_COURSE_ID, "Clinical course");
     mapbuilder.put(CLINICAL_COURSE_ID, clinicalCourseCat);
     // Finally, build the map!
-    categorymap = mapbuilder.build();
+    categorymap = Map.copyOf(mapbuilder);
   }
 
   /**
@@ -202,21 +199,21 @@ public class HpoCategoryMap {
    * @return an immutable Set of all category ids for childTermId
    */
   private Set<TermId> getAncestorCategories(Ontology ontology, TermId childTermId) {
-    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+    Set<TermId> builder = new HashSet<>();
     Deque<TermId> stack = new ArrayDeque<>();
     stack.push(childTermId);
     while (!stack.isEmpty()) {
       TermId tid = stack.pop();
       Set<TermId> parents = getParentTerms(ontology, tid, false);
       for (TermId p : parents) {
-        if (this.categorymap.containsKey(p)) {
+        if (categorymap.containsKey(p)) {
           builder.add(p);
         } else {
           stack.add(p);
         }
       }
     }
-    return builder.build();
+    return Set.copyOf(builder);
   }
 
 
@@ -288,14 +285,14 @@ public class HpoCategoryMap {
    * @return List of all categories that have at least one HPO Term annotated
    */
   public List<HpoCategory> getActiveCategoryList() {
-    ImmutableList.Builder<HpoCategory> builder = new ImmutableList.Builder<>();
+    List<HpoCategory> builder = new ArrayList<>(termIdList.length);
     for (TermId tid : termIdList) {
       HpoCategory cat = categorymap.get(tid);
       if (cat.hasAnnotation()) {
         builder.add(cat);
       }
     }
-    return builder.build();
+    return Collections.unmodifiableList(builder);
   }
 
 

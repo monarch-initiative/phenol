@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -71,14 +70,14 @@ public final class MpAnnotation {
         annot1.termId.getValue(), annot2.termId.getValue()));
     }
     // merge PMIDs
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
+    Set<String> builder = new HashSet<>();
     builder.addAll(annot1.getPmidSet());
     builder.addAll(annot2.getPmidSet());
     // merge modifiers
-    ImmutableSet.Builder<MpModifier> modbuilder = new ImmutableSet.Builder<>();
+    Set<MpModifier> modbuilder = new HashSet<>();
     modbuilder.addAll(annot1.getModifiers());
     modbuilder.addAll(annot2.getModifiers());
-    return new MpAnnotation(annot1.termId, builder.build(),modbuilder.build());
+    return new MpAnnotation(annot1.termId, Collections.unmodifiableSet(builder), Collections.unmodifiableSet(modbuilder));
   }
 
   @Override
@@ -127,9 +126,7 @@ public final class MpAnnotation {
     }
 
     public MpAnnotation build() {
-      return new MpAnnotation(this.termId,
-        ImmutableSet.copyOf(this.pmidList),
-        ImmutableSet.copyOf(this.modifers));
+      return new MpAnnotation(this.termId, Set.copyOf(this.pmidList), Set.copyOf(this.modifers));
     }
   }
 

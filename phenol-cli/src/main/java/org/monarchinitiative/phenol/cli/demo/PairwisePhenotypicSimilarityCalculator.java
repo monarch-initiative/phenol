@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -336,8 +335,8 @@ public class PairwisePhenotypicSimilarityCalculator {
       HpoDisease disease = diseaseMap.get(diseaseId);
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
       diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
-      // add term anscestors
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
+      // add term ancestors
+      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
 
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());

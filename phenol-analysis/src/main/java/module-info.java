@@ -4,7 +4,6 @@ module org.monarchinitiative.phenol.analysis {
 
   requires java.sql;
   requires org.apache.commons.codec;
-  requires com.google.common;
   requires org.slf4j;
 
   // Exporting all packages as it's hard to say what the API should look like right now.

@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.formats.uberpheno;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ComparisonChain;
 
 import java.util.Optional;
 
@@ -107,9 +106,10 @@ public final class UberphenoGeneAnnotation implements TermAnnotation {
     }
 
     final UberphenoGeneAnnotation that = (UberphenoGeneAnnotation) o;
-    return ComparisonChain.start()
-        .compare(this.entrezGeneId, that.entrezGeneId)
-        .compare(this.termId, that.termId)
-        .result();
+    int result = Integer.compare(entrezGeneId, that.entrezGeneId);
+    if (result != 0) return result;
+
+    return termId.compareTo(that.termId);
+
   }
 }
