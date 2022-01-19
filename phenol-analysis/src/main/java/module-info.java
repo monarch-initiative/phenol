@@ -1,5 +1,4 @@
 module org.monarchinitiative.phenol.analysis {
-  requires org.monarchinitiative.phenol.core;
   requires org.monarchinitiative.phenol.annotations;
 
   requires java.sql;
