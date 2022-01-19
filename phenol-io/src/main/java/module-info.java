@@ -1,7 +1,7 @@
 module org.monarchinitiative.phenol.io {
   exports org.monarchinitiative.phenol.io;
 
-  requires org.monarchinitiative.phenol.core;
+  requires transitive org.monarchinitiative.phenol.core;
   requires obographs.core;
   requires curie.util;
   requires org.yaml.snakeyaml;

@@ -66,4 +66,12 @@ public class HpoCategory {
         return result;
     }
 
+  @Override
+  public String toString() {
+    return "HpoCategory{" +
+      "tid=" + tid +
+      ", label='" + label + '\'' +
+      ", annotatedTerms=" + annotatedTerms +
+      '}';
+  }
 }

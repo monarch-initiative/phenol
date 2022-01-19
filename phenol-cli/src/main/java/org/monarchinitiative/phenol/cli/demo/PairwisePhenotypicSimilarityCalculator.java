@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -37,8 +36,6 @@ import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OM
  */
 public class PairwisePhenotypicSimilarityCalculator {
   private final Logger LOGGER = LoggerFactory.getLogger(PairwisePhenotypicSimilarityCalculator.class);
-  /** Number of threads to use. */
-  private final int numThreads = 4;
   /**
    * Path to {@code hp.obo}.
    */
@@ -138,19 +135,19 @@ public class PairwisePhenotypicSimilarityCalculator {
     }
     boolean badFile=false;
     // check existence of Files
-    if (!pathHpObo.toFile().isFile()) {
+    if (!Files.isRegularFile(pathHpObo)) {
       System.err.println("[ERROR] hp.obo file not found at "+pathHpObo);
       badFile=true;
     }
-    if (!pathPhenotypeHpoa.toFile().isFile()) {
+    if (!Files.isRegularFile(pathPhenotypeHpoa)) {
       System.err.println("[ERROR] phenotype.hpoa file not found at "+pathPhenotypeHpoa);
       badFile=true;
     }
-    if (!geneInfoPath.toFile().exists()) {
+    if (geneInfoPath == null || !Files.isRegularFile(geneInfoPath)) {
       System.err.println("[ERROR] Homo_sapiens_gene_info.gz not found at "+geneInfoPath);
       badFile=true;
     }
-    if (!mimgeneMedgenPath.toFile().exists()) {
+    if (mimgeneMedgenPath == null || !Files.isRegularFile(mimgeneMedgenPath)) {
       System.err.println("[ERROR] mim2gene_medgen not found at "+mimgeneMedgenPath);
       badFile=true;
     }
@@ -338,8 +335,8 @@ public class PairwisePhenotypicSimilarityCalculator {
       HpoDisease disease = diseaseMap.get(diseaseId);
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
       diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
-      // add term anscestors
-      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
+      // add term ancestors
+      final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
 
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());
@@ -359,7 +356,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     // Initialize Resnik similarity precomputation
     System.out.println("[INFO] Performing Resnik precomputation...");
     final PrecomputingPairwiseResnikSimilarity pairwiseResnikSimilarity =
-      new PrecomputingPairwiseResnikSimilarity(hpo, icMap, numThreads);
+      new PrecomputingPairwiseResnikSimilarity(hpo, icMap);
     System.out.println("[INFO] DONE: Performing Resnik precomputation");
     this.resnikSimilarity =
       new ResnikSimilarity(pairwiseResnikSimilarity, false);

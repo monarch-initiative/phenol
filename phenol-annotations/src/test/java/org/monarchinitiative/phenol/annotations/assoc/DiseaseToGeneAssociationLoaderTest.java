@@ -27,7 +27,7 @@ public class DiseaseToGeneAssociationLoaderTest {
     Path mim2gene = Path.of(DiseaseToGeneAssociationLoaderTest.class.getResource("/mim2gene_medgen.excerpt").toURI());
     Path orphanet = Path.of(DiseaseToGeneAssociationLoaderTest.class.getResource("/orphanet_disease2gene_en_product6_head.xml").toURI());
 
-    GeneIdentifiers geneIdentifiers = GeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
+    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
 
     // 16 genes associated with OMIM:540000 are in the mim2gene_medgen.excerpt file
     // TRNC,COX1,COX2,COX3,CYTB,ND1,ND5,ND6,TRNF,TRNK,TRNL1,TRNQ,TRNS1,TRNS2,TRNV,TRNW

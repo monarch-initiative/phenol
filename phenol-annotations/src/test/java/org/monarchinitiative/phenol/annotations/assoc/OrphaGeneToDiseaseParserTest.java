@@ -49,7 +49,7 @@ public class OrphaGeneToDiseaseParserTest {
   @BeforeAll
   public static void init() throws Exception {
     Path homoSapiensGeneInfo = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
-    GeneIdentifiers geneIdentifiers = GeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
+    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
     Map<String, GeneIdentifier> geneIdToSymbol = geneIdentifiers.symbolToGeneIdentifier();
 
     Path mim2gene = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/mim2gene_medgen.excerpt").toURI());

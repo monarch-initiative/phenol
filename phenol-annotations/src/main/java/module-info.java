@@ -1,5 +1,5 @@
 module org.monarchinitiative.phenol.annotations {
-  requires org.monarchinitiative.phenol.core;
+  requires transitive org.monarchinitiative.phenol.core;
 
   requires java.xml;
   requires org.slf4j;

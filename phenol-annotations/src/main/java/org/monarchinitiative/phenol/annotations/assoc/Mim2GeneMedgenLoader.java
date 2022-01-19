@@ -46,7 +46,7 @@ public class Mim2GeneMedgenLoader {
   public static DiseaseToGeneAssociations loadDiseaseToGeneAssociations(Path mim2geneMedgene,
                                                                         Map<TermId, String> geneIdToSymbolMap) throws IOException {
     Map<TermId, Collection<GeneToAssociation>> associationMap = new HashMap<>();
-    try (BufferedReader br = FileUtils.openForReading(mim2geneMedgene)) {
+    try (BufferedReader br = FileUtils.newBufferedReader(mim2geneMedgene)) {
       String line;
       while ((line = br.readLine()) != null) {
         if (line.startsWith("#")) continue;

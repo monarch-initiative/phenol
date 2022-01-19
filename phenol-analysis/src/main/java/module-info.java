@@ -1,10 +1,8 @@
 module org.monarchinitiative.phenol.analysis {
-  requires org.monarchinitiative.phenol.core;
-  requires org.monarchinitiative.phenol.annotations;
+  requires transitive org.monarchinitiative.phenol.annotations;
 
   requires java.sql;
   requires org.apache.commons.codec;
-  requires com.google.common;
   requires org.slf4j;
 
   // Exporting all packages as it's hard to say what the API should look like right now.

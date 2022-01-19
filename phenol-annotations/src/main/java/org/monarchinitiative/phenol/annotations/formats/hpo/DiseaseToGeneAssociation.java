@@ -18,7 +18,7 @@ public class DiseaseToGeneAssociation {
    * The CURIE representing a disease, e.g., OMIM:600100.
    */
   private final TermId diseaseId;
-  private final List<GeneToAssociation> gene2assoc;
+  private final List<GeneToAssociation> geneToAssociations;
 
   public static DiseaseToGeneAssociation of(TermId diseaseId, List<GeneToAssociation> geneToAssociations) {
     return new DiseaseToGeneAssociation(diseaseId, geneToAssociations);
@@ -26,7 +26,7 @@ public class DiseaseToGeneAssociation {
 
   private DiseaseToGeneAssociation(TermId diseaseId, List<GeneToAssociation> geneAssociations) {
     this.diseaseId = Objects.requireNonNull(diseaseId, "Disease id must not be null");
-    this.gene2assoc = Objects.requireNonNull(geneAssociations, "Gene associations must not be null");
+    this.geneToAssociations = Objects.requireNonNull(geneAssociations, "Gene associations must not be null");
   }
 
   public TermId diseaseId() {
@@ -34,15 +34,16 @@ public class DiseaseToGeneAssociation {
   }
 
   public List<GeneToAssociation> associations() {
-    return gene2assoc;
+    return geneToAssociations;
   }
 
   /**
    * @return a list of all genes (regardless of the association type).
    */
-  public List<GeneIdentifier> getGeneList() {
-    return gene2assoc.stream()
+  public List<GeneIdentifier> geneIdentifiers() {
+    return geneToAssociations.stream()
       .map(GeneToAssociation::geneIdentifier)
+      .distinct()
       .collect(Collectors.toUnmodifiableList());
   }
 
@@ -52,19 +53,19 @@ public class DiseaseToGeneAssociation {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DiseaseToGeneAssociation that = (DiseaseToGeneAssociation) o;
-    return Objects.equals(diseaseId, that.diseaseId) && Objects.equals(gene2assoc, that.gene2assoc);
+    return Objects.equals(diseaseId, that.diseaseId) && Objects.equals(geneToAssociations, that.geneToAssociations);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(diseaseId, gene2assoc);
+    return Objects.hash(diseaseId, geneToAssociations);
   }
 
   @Override
   public String toString() {
     return "DiseaseToGeneAssociation{" +
       "disease=" + diseaseId +
-      ", gene2assoc=" + gene2assoc +
+      ", gene2assoc=" + geneToAssociations +
       '}';
   }
 }

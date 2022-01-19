@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.ontology.algo;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

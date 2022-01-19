@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +31,7 @@ public class MpGeneModel extends MpModel {
 
   private void mergeGenotypesAndPhenotypes(MpSimpleModel[] models) {
     HashMap<TermId, Set<MpAnnotation>> annotsByMpId = new HashMap<>();
-    ImmutableList.Builder<MpAnnotation> annotsBuilder = new ImmutableList.Builder<>();
-    ImmutableList.Builder<TermId> genotypesBuilder = new ImmutableList.Builder<>();
+    List<TermId> genotypesBuilder = new ArrayList<>(models.length);
     for (MpSimpleModel model : models) {
       // remember genotype, record annotations according to their MpId
       genotypesBuilder.add(model.getGenotypeId());
@@ -44,7 +42,7 @@ public class MpGeneModel extends MpModel {
       }
     }
     // now each MP id has a set of annotations associated with it in at least one model
-    ImmutableList.Builder<MpAnnotation>  listbuilder = new ImmutableList.Builder<>();
+    List<MpAnnotation> listbuilder = new ArrayList<>(annotsByMpId.size());
     for (TermId tid : annotsByMpId.keySet()) {
       Set<String> pmids = new HashSet<>();
       Set<MpModifier> modifierSet = new HashSet<>();
@@ -57,14 +55,13 @@ public class MpGeneModel extends MpModel {
       MpAnnotation mpa = new MpAnnotation.Builder(tid,pmids).modifiers(modifierSet).build();
       listbuilder.add(mpa);
     }
-    this.phenotypicAbnormalities =  listbuilder.build();
-    this.genotypes = genotypesBuilder.build();
+    this.phenotypicAbnormalities = Collections.unmodifiableList(listbuilder);
+    this.genotypes = Collections.unmodifiableList(genotypesBuilder);
   }
 
 
   static List<MpGeneModel> createGeneModelList(List<MpSimpleModel> simpleModelList) {
     HashMap<TermId, List<MpSimpleModel>> modelsByGene = new HashMap<>();
-    ImmutableList.Builder<MpGeneModel> returnListBuilder = new ImmutableList.Builder<>();
 
     for (MpSimpleModel model : simpleModelList) {
       TermId geneticMarker = model.getMarkerId();
@@ -73,8 +70,9 @@ public class MpGeneModel extends MpModel {
       matchingModels.add(model);
     }
 
+    List<MpGeneModel> returnListBuilder = new ArrayList<>(modelsByGene.size());
     modelsByGene.forEach((k, v) -> returnListBuilder.add(new MpGeneModel(k, v)));
-    return returnListBuilder.build();
+    return Collections.unmodifiableList(returnListBuilder);
   }
 
   public List<TermId> getGenotypes() {

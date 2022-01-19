@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.testdata.hpo;
 
-import com.google.common.collect.ComparisonChain;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -33,10 +32,9 @@ public class ToyHpoAnnotation implements TermAnnotation {
       }
       ToyHpoAnnotation that = (ToyHpoAnnotation) o;
 
-      return ComparisonChain.start()
-        .compare(this.termId, that.termId)
-        .compare(this.label, that.label)
-        .result();
+      int result = termId.compareTo(that.termId);
+      if (result != 0) return result;
+      return label.compareTo(that.label);
     }
 
     @Override

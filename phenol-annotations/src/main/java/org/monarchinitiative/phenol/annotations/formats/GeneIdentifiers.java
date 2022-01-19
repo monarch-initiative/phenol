@@ -10,6 +10,8 @@ public class GeneIdentifiers implements Iterable<GeneIdentifier> {
   // an interface candidate
 
   private final List<GeneIdentifier> geneIdentifiers;
+  private volatile Map<TermId, String> geneIdToSymbol = null;
+  private volatile Map<String, GeneIdentifier> symbolToGeneIdentifier = null;
 
   public static GeneIdentifiers of(List<GeneIdentifier> geneIdentifiers) {
     return new GeneIdentifiers(geneIdentifiers);
@@ -24,13 +26,27 @@ public class GeneIdentifiers implements Iterable<GeneIdentifier> {
   }
 
   public Map<TermId, String> geneIdToSymbol() {
-    return geneIdentifiers.stream()
-      .collect(Collectors.toUnmodifiableMap(GeneIdentifier::id, GeneIdentifier::symbol));
+    if (geneIdToSymbol == null) {
+      synchronized (this) {
+        if (geneIdToSymbol == null) {
+          geneIdToSymbol = geneIdentifiers.stream()
+            .collect(Collectors.toUnmodifiableMap(GeneIdentifier::id, GeneIdentifier::symbol));
+        }
+      }
+    }
+    return geneIdToSymbol;
   }
 
   public Map<String, GeneIdentifier> symbolToGeneIdentifier() {
-    return geneIdentifiers.stream()
-      .collect(Collectors.toUnmodifiableMap(GeneIdentifier::symbol, Function.identity()));
+    if (symbolToGeneIdentifier == null) {
+      synchronized (this) {
+        if (symbolToGeneIdentifier == null) {
+          symbolToGeneIdentifier = geneIdentifiers.stream()
+            .collect(Collectors.toUnmodifiableMap(GeneIdentifier::symbol, Function.identity()));
+        }
+      }
+    }
+    return symbolToGeneIdentifier;
   }
 
   @Override

@@ -214,7 +214,7 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
       }
 
       private static void checkBoundsWithinZeroToOne(double f) {
-        if (f < 0. || f > 1.)
+        if (f < 0D || f > 1D)
           throw new IllegalArgumentException(f + " Frequency must be within range [0-1]");
       }
 

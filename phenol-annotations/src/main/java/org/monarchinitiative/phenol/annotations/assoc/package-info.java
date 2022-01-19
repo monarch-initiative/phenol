@@ -5,7 +5,7 @@
  * To provide {@link org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData},
  * {@link org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader} uses sub-loaders:
  * <ul>
- *   <li>{@link org.monarchinitiative.phenol.annotations.assoc.GeneInfoLoader} to load {@link org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers}</li>
+ *   <li>{@link org.monarchinitiative.phenol.annotations.assoc.HumanGeneInfoLoader} to load {@link org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers}</li>
  *   <li>{@link org.monarchinitiative.phenol.annotations.assoc.DiseaseToGeneAssociationLoader} to load associations between genes and diseases, and</li>
  *   <li>{@link org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader} to create {@link org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases} with disease model definitions.</li>
  * </ul>

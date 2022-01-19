@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import com.google.common.collect.Sets;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
