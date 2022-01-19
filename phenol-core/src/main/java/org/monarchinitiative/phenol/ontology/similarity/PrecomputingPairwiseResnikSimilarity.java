@@ -1,16 +1,11 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
-import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.utils.ProgressReporter;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of pairwise Resnik similarity with precomputation.
  *
- * <p>This lies at the core of most of of the more computationally expensive pairwise similarities'
+ * <p>This lies at the core of most of the more computationally expensive pairwise similarities'
  * computations. For this reason, the similarity is precomputed for all term pairs in the {@link
  * Ontology} which is computationally expensive.
  *
@@ -38,8 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-public final class PrecomputingPairwiseResnikSimilarity
-    implements PairwiseSimilarity, Serializable {
+public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimilarity, Serializable {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = -350622665214125471L;
@@ -50,95 +44,64 @@ public final class PrecomputingPairwiseResnikSimilarity
   /** Precomputed data. */
   private final PrecomputedScores precomputedScores;
 
-  /** Number of threads to use for precomputation. */
-  private final int numThreads;
-
-  /** Number of genes to process for each chunk. */
-  private final int chunkSize = 100;
-
   /**
    * Construct new {@link PrecomputingPairwiseResnikSimilarity}.
-   *
-   * @param ontology {@link Ontology} to base computations on.
-   * @param termToIc {@link Map} from{@link TermId} to its information content.
-   * @param numThreads Number of threads to use for precomputation.
-   */
-  public PrecomputingPairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc, int numThreads) {
-    this.precomputedScores = new PrecomputedScores(ontology.getAllTermIds());
-    this.numThreads = numThreads;
-    precomputeScores(ontology, termToIc);
-  }
-
-  /**
-   * Construct with thread count of one.
-   *
-   * @param ontology {@link Ontology} to base computations on.
+   *  @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
-  public PrecomputingPairwiseResnikSimilarity(
-      Ontology ontology, Map<TermId, Double> termToIc) {
-    this(ontology, termToIc, 1);
+  public PrecomputingPairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc) {
+    this.precomputedScores = precomputeScores(ontology, termToIc);
   }
 
-  /** Precompute similarity scores. */
-  private void precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
+  /** Precompute similarity scores.
+   *
+   * @return container with precomputed scores.
+   */
+  private static PrecomputedScores precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
     LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.countAllTerms());
 
+    PrecomputedScores scores = new PrecomputedScores(ontology.getAllTermIds());
+
     // Setup PairwiseResnikSimilarity to use for computing scores.
-    final PairwiseResnikSimilarity pairwiseSimilarity =
-        new PairwiseResnikSimilarity(ontology, termToIc);
+    PairwiseResnikSimilarity pairwiseSimilarity = new PairwiseResnikSimilarity(ontology, termToIc);
 
-    // Setup progress reporting.
-    final ProgressReporter progressReport = new ProgressReporter("objects", ontology.countAllTerms());
-    progressReport.start();
-
-    // Setup the task to execute in parallel, with concurrent hash map for collecting results.
-    Consumer<List<TermId>> task =
-        (List<TermId> chunk) -> {
-          try {
-            for (TermId queryId : chunk) {
-
-              for (TermId targetId : ontology.getNonObsoleteTermIds()) {
-                if (queryId.compareTo(targetId) <= 0) {
-                  precomputedScores.put(
-                      queryId, targetId, pairwiseSimilarity.computeScore(queryId, targetId));
-                }
-              }
-              progressReport.incCurrent();
-            }
-          } catch (Exception e) {
-            LOGGER.error("An exception occurred in parallel processing! {}", e.getMessage(), e);
-          }
-        };
-
-    // Execution of the task in a ThreadPoolExecutor. This is the only way in Java 8 to guarantee
-    // thread counts.
-    //
-    // It is a bit verbose but in the end, not that complicated.
-    //
-    // Setup thread pool executor and enforce that precisely numThreads threads are present.
-    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(numThreads, numThreads, 5, TimeUnit.MICROSECONDS, new LinkedBlockingQueue<>());
     // Split the input into chunks to reduce task startup overhead
-    List<List<TermId>> chunks = Lists.partition(List.copyOf(ontology.getNonObsoleteTermIds()), chunkSize);
-    // Submit all chunks into the executor.
-    for (List<TermId> chunk : chunks) {
-      threadPoolExecutor.submit(() -> task.accept(chunk));
-    }
-    // Shutdown executor and wait for all tasks being completed.
-    threadPoolExecutor.shutdown();
-    try {
-      threadPoolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-    } catch (InterruptedException e) {
-      throw new RuntimeException("Could not wait for thread pool being done.", e);
-    }
-    progressReport.stop();
+    ontology.getNonObsoleteTermIds().parallelStream()
+      .map(computeSimilarities(ontology, pairwiseSimilarity))
+      .flatMap(Collection::stream)
+      .forEach(score -> scores.put(score.query, score.target, score.value));
 
     LOGGER.info("Done precomputing pairwise scores.");
+    return scores;
+  }
+
+  private static Function<TermId, List<SimilarityScoreContainer>> computeSimilarities(Ontology ontology, PairwiseResnikSimilarity pairwiseSimilarity) {
+    return queryId -> {
+      List<SimilarityScoreContainer> results = new LinkedList<>();
+      for (TermId targetId : ontology.getNonObsoleteTermIds()) {
+        if (queryId.compareTo(targetId) <= 0) {
+          results.add(new SimilarityScoreContainer(queryId, targetId, pairwiseSimilarity.computeScore(queryId, targetId)));
+        }
+      }
+      return results;
+    };
   }
 
   @Override
   public double computeScore(TermId query, TermId target) {
     return precomputedScores.get(query, target);
+  }
+
+  private static class SimilarityScoreContainer {
+    private final TermId query;
+    private final TermId target;
+    private final double value;
+
+    private SimilarityScoreContainer(TermId query, TermId target, double value) {
+      this.query = query;
+      this.target = target;
+      this.value = value;
+    }
   }
 
   /**
@@ -172,12 +135,12 @@ public final class PrecomputingPairwiseResnikSimilarity
     }
 
     /** Set score. */
-    public void put(TermId lhs, TermId rhs, double value) {
+    public synchronized void put(TermId lhs, TermId rhs, double value) {
       put(lhs, rhs, (float) value);
     }
 
     /** Set score. */
-    public void put(TermId lhs, TermId rhs, float value) {
+    public synchronized void put(TermId lhs, TermId rhs, float value) {
       final int idxLhs = termIdToIdx.get(lhs);
       final int idxRhs = termIdToIdx.get(rhs);
       data[idxLhs][idxRhs] = value;
@@ -185,7 +148,7 @@ public final class PrecomputingPairwiseResnikSimilarity
     }
 
     /** Get score. */
-    public float get(TermId lhs, TermId rhs) {
+    public synchronized float get(TermId lhs, TermId rhs) {
       final Integer idxLhs = termIdToIdx.get(lhs);
       final Integer idxRhs = termIdToIdx.get(rhs);
       if (idxLhs == null || idxRhs == null) {

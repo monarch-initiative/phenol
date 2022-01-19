@@ -37,8 +37,6 @@ import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OM
  */
 public class PairwisePhenotypicSimilarityCalculator {
   private final Logger LOGGER = LoggerFactory.getLogger(PairwisePhenotypicSimilarityCalculator.class);
-  /** Number of threads to use. */
-  private final int numThreads = 4;
   /**
    * Path to {@code hp.obo}.
    */
@@ -359,7 +357,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     // Initialize Resnik similarity precomputation
     System.out.println("[INFO] Performing Resnik precomputation...");
     final PrecomputingPairwiseResnikSimilarity pairwiseResnikSimilarity =
-      new PrecomputingPairwiseResnikSimilarity(hpo, icMap, numThreads);
+      new PrecomputingPairwiseResnikSimilarity(hpo, icMap);
     System.out.println("[INFO] DONE: Performing Resnik precomputation");
     this.resnikSimilarity =
       new ResnikSimilarity(pairwiseResnikSimilarity, false);

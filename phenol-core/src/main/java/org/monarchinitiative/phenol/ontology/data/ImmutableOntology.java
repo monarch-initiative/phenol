@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import com.google.common.collect.Sets;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -8,6 +7,7 @@ import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
+import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
