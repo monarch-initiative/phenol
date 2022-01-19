@@ -35,7 +35,7 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
    *
    * @param termId Annotated {@link TermId}.
    * @param frequency The frequency the term is annotated with as a fraction (not as a percentage).
-   * @param hpoFrequency the original String in the annotation file (for display). If empty, substitute with {@link #DEFAULT_FREQUENCY_STRING}
+   * @param hpoFrequency the original String in the annotation file (for display).
    * @param onset The onset of the feature in the disease
    * @param modifiers list of modifiers (list can be empty but not null)
    * @param cites List of publications (e.g., PMID or OMIM) that support this annotation
