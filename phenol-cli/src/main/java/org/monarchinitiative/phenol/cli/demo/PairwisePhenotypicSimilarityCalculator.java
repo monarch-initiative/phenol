@@ -135,19 +135,19 @@ public class PairwisePhenotypicSimilarityCalculator {
     }
     boolean badFile=false;
     // check existence of Files
-    if (!pathHpObo.toFile().isFile()) {
+    if (!Files.isRegularFile(pathHpObo)) {
       System.err.println("[ERROR] hp.obo file not found at "+pathHpObo);
       badFile=true;
     }
-    if (!pathPhenotypeHpoa.toFile().isFile()) {
+    if (!Files.isRegularFile(pathPhenotypeHpoa)) {
       System.err.println("[ERROR] phenotype.hpoa file not found at "+pathPhenotypeHpoa);
       badFile=true;
     }
-    if (!geneInfoPath.toFile().exists()) {
+    if (geneInfoPath == null || !Files.isRegularFile(geneInfoPath)) {
       System.err.println("[ERROR] Homo_sapiens_gene_info.gz not found at "+geneInfoPath);
       badFile=true;
     }
-    if (!mimgeneMedgenPath.toFile().exists()) {
+    if (mimgeneMedgenPath == null || !Files.isRegularFile(mimgeneMedgenPath)) {
       System.err.println("[ERROR] mim2gene_medgen not found at "+mimgeneMedgenPath);
       badFile=true;
     }
