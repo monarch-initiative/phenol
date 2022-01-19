@@ -39,4 +39,17 @@
 
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+<!--          -/-add-reads org.monarchinitiative.phenol.io=ALL-UNNAMED  -/-add-opens org.monarchinitiative.phenol.io/org.monarchinitiative.phenol.io=ALL-UNNAMED-->
+          <argLine>--add-reads com.fasterxml.jackson.datatype.guava=ALL-UNNAMED </argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
