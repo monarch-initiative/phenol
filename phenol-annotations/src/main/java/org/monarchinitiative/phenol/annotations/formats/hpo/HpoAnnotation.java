@@ -41,7 +41,7 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
    * @param cites List of publications (e.g., PMID or OMIM) that support this annotation
    * @param ec Evidence code for this annotation
    */
-  public HpoAnnotation(TermId termId,
+  private HpoAnnotation(TermId termId,
                        double frequency,
                        HpoFrequency hpoFrequency,
                        HpoOnset onset,
