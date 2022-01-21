@@ -1,13 +1,10 @@
 package org.monarchinitiative.phenol.io;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +45,7 @@ public class OntologyLoaderMondoTest {
     List<TermXref> xreflist = syn.getTermXrefs();
     assertEquals(1, xreflist.size());
     TermXref xref = xreflist.get(0);
-    assertEquals(TermId.of("OMIM:155000"), xref.getId());
+    assertEquals(TermId.of("OMIM:155000"), xref.id());
   }
 
 

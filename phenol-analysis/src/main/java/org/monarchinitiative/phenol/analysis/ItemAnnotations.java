@@ -35,7 +35,7 @@ public interface ItemAnnotations<T> {
      */
     default List<TermId> getAnnotatingTermIds() {
       return getAnnotations().stream()
-        .map(TermAnnotation::getTermId)
+        .map(TermAnnotation::id)
         .collect(Collectors.toList());
     }
 
@@ -46,7 +46,7 @@ public interface ItemAnnotations<T> {
      * @return whether tid is contained in this mapping.
      */
     default boolean containsAnnotation(TermId tid) {
-      return getAnnotations().stream().anyMatch(annot -> annot.getTermId().equals(tid) );
+      return getAnnotations().stream().anyMatch(annot -> annot.id().equals(tid) );
     }
 
     int getAnnotationCount();

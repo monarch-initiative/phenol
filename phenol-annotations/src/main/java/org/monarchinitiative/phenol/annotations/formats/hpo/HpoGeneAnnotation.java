@@ -61,7 +61,7 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /** @return The annotated HPO term's {@link TermId}. */
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return hpoTermId;
   }
 

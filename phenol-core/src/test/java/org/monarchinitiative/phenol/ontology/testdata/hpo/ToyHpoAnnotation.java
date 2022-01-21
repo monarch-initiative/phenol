@@ -16,7 +16,7 @@ public class ToyHpoAnnotation implements TermAnnotation {
     }
 
     @Override
-    public TermId getTermId() {
+    public TermId id() {
       return termId;
     }
 

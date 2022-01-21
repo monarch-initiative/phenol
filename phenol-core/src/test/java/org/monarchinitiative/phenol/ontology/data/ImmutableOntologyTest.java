@@ -167,12 +167,12 @@ public class ImmutableOntologyTest {
     assertEquals(rootId, instance.getRootTermId());
     assertTrue(instance.isRootTerm(rootId));
 
-    Set<TermId> allTermIds = terms.stream().map(Term::getId).collect(Collectors.toSet());
+    Set<TermId> allTermIds = terms.stream().map(Term::id).collect(Collectors.toSet());
     assertEquals(allTermIds, instance.getAllTermIds());
 
     Set<TermId> nonObsoleteTermIds = terms.stream()
       .filter(term -> !term.isObsolete())
-      .map(Term::getId)
+      .map(Term::id)
       .collect(Collectors.toSet());
     assertEquals(nonObsoleteTermIds, instance.getNonObsoleteTermIds());
 

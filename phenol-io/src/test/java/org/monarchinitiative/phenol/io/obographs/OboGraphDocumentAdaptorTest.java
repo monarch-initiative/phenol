@@ -250,8 +250,8 @@ public class OboGraphDocumentAdaptorTest {
 
     assertEquals(List.of(rootTerm, moiTerm, paTerm), instance.getTerms());
 
-    Relationship moiRootRel = new Relationship(moiTerm.getId(), rootTerm.getId(), 1, RelationshipType.IS_A);
-    Relationship paRootRel = new Relationship(paTerm.getId(), rootTerm.getId(), 2, RelationshipType.IS_A);
+    Relationship moiRootRel = new Relationship(moiTerm.id(), rootTerm.id(), 1, RelationshipType.IS_A);
+    Relationship paRootRel = new Relationship(paTerm.id(), rootTerm.id(), 2, RelationshipType.IS_A);
 
     assertEquals(List.of(moiRootRel, paRootRel), instance.getRelationships());
     assertEquals(Map.of("data-version", "releases/2018-10-09"), instance.getMetaInfo());

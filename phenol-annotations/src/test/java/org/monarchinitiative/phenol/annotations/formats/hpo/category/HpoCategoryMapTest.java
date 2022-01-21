@@ -42,7 +42,7 @@ public class HpoCategoryMapTest {
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
     HpoCategory hpoCategory = catlist.get(0);
     assertEquals(1, hpoCategory.getNumberOfAnnotations());
-    assertEquals(INHERITANCE_ID, hpoCategory.getTid());
+    assertEquals(INHERITANCE_ID, hpoCategory.id());
     // This HpoCategory object should now contain all of the annotating terms underneath
     // inheritance id
     assertEquals(1, catlist.size());
@@ -70,7 +70,7 @@ public class HpoCategoryMapTest {
     // but now the HpoCategory has two annotated terms
     assertEquals(2, hpoCategory.getNumberOfAnnotations());
     // Still annotated to INHERITANCE
-    assertEquals(INHERITANCE_ID, hpoCategory.getTid());
+    assertEquals(INHERITANCE_ID, hpoCategory.id());
     assertTrue(hpoCategory.hasAnnotation());
     List<TermId> annotatingTermsList = hpoCategory.getAnnotatingTermIds();
     assertEquals(2, annotatingTermsList.size());
@@ -92,7 +92,7 @@ public class HpoCategoryMapTest {
     HpoCategory hpoCategory = catlist.get(0);
     assertEquals(1, hpoCategory.getNumberOfAnnotations());
     // Still annotated to INHERITANCE
-    assertEquals(LIMBS_ID, hpoCategory.getTid());
+    assertEquals(LIMBS_ID, hpoCategory.id());
     assertEquals(1, catlist.size());
     // The category should include all terms added to the map that are under INHERITANCE_ID
     List<TermId> annotatingTermsList = hpoCategory.getAnnotatingTermIds();
@@ -132,8 +132,8 @@ public class HpoCategoryMapTest {
     assertEquals(2, catlist.size());
     // Check that we have both LIMBS and INHERITANCE
     catlist.forEach(System.err::println);
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(LIMBS_ID)));
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(INHERITANCE_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(INHERITANCE_ID)));
   }
 
   /**
@@ -150,8 +150,8 @@ public class HpoCategoryMapTest {
     // The terms should go to two different HpoCategory objects
     assertEquals(2, catlist.size());
     // Check that we have both LIMBS and CLINICAL_COURSE
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(LIMBS_ID)));
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(CLINICAL_COURSE_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(CLINICAL_COURSE_ID)));
   }
 
 }

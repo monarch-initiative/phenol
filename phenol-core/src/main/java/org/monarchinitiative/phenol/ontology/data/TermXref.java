@@ -5,7 +5,7 @@ package org.monarchinitiative.phenol.ontology.data;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class TermXref {
+public class TermXref implements Identified {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;
@@ -27,7 +27,8 @@ public class TermXref {
     this.description = description;
   }
 
-  public TermId getId() {
+  @Override
+  public TermId id() {
     return id;
   }
 

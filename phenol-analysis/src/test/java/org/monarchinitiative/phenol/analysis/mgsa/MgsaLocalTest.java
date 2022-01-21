@@ -32,7 +32,7 @@ public class MgsaLocalTest {
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
     Set<TermId> genes = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      if (focus.equals(ann.getTermId())) {
+      if (focus.equals(ann.id())) {
         TermId geneId = ann.getItemId();
         genes.add(geneId);
       }

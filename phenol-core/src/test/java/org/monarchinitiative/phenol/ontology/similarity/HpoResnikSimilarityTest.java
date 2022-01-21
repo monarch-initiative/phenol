@@ -26,7 +26,7 @@ public class HpoResnikSimilarityTest extends HpoOntologyTestBase {
     for (ToyHpoAnnotation annot : hpoAnnotations) {
 
       Set<TermId> termIds = new HashSet<>();
-      termIds.add(annot.getTermId());
+      termIds.add(annot.id());
       Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, termIds, true);
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.putIfAbsent(tid, new HashSet<>());

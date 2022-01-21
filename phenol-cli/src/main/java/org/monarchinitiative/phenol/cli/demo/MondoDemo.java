@@ -74,12 +74,12 @@ public class MondoDemo {
       }
     }
     for (Term psterm : phenoseriesRoots) {
-      Set<TermId> members = OntologyAlgorithm.getDescendents(mondo, psterm.getId());
+      Set<TermId> members = OntologyAlgorithm.getDescendents(mondo, psterm.id());
       for (TermId member : members) {
         Term candidate = mondo.getTermMap().get(member);
         if (isOmimEntry(candidate)) {
           phenoseries2omimMap.computeIfAbsent(psterm, key -> new HashSet<>())
-            .add(candidate.getId());
+            .add(candidate.id());
         }
       }
     }
@@ -93,7 +93,7 @@ public class MondoDemo {
           Optional<TermId> omimIdopt = getOMIMid(omimentry);
           if (omimIdopt.isPresent()) {
             TermId omimId = omimIdopt.get();
-            String line = psterm.getId().getValue() + "\t" +
+            String line = psterm.id().getValue() + "\t" +
               psterm.getName() + "\t" +
               omimId.getValue() + "\t" +
               omimentry.getName();

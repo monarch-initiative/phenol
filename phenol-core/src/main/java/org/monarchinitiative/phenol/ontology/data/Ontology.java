@@ -30,7 +30,7 @@ public interface Ontology extends MinimalOntology, Serializable {
     if (term == null) {
       return null;
     } else {
-      return term.getId();
+      return term.id();
     }
   }
 

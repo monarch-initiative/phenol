@@ -80,7 +80,7 @@ class HpoDiseaseAnnotationParserTest {
     TermId microphthalmia = TermId.of("HP:0000568");
     List<TermId> abnormalities = testDisease.getPhenotypicAbnormalities().
       stream().
-      map(HpoAnnotation::getTermId).
+      map(HpoAnnotation::id).
       collect(Collectors.toList());
     assertTrue(abnormalities.contains(lacrimation));
     assertTrue(abnormalities.contains(pupillary));
@@ -114,7 +114,7 @@ class HpoDiseaseAnnotationParserTest {
     TermId microphthalmia = TermId.of("HP:0000568"); // a NOT for disease 2
     List<TermId> abnormalities = testDisease.getPhenotypicAbnormalities().
       stream().
-      map(HpoAnnotation::getTermId).
+      map(HpoAnnotation::id).
       collect(Collectors.toList());
     assertTrue(abnormalities.contains(lacrimation));
     assertTrue(abnormalities.contains(pupillary));

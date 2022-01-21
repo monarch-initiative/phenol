@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
 
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.14
  */
-public class HpoCategory {
+public class HpoCategory implements Identified {
   /** The TermId of the HPO term that corresponds to this category. For example, the HPO Term Abnormality of the
    * voice (HP:0001608) would correspond to the category called "Voice". We display the stirng "Voice" in a browser (for instance)
    * when we show terms from the subontology that descends from Abnormality of the voice. */
@@ -35,7 +36,8 @@ public class HpoCategory {
   /** @return true if at least one annotated term belongs to this category. */
   boolean hasAnnotation() { return annotatedTerms.size()>0;}
   /** @return Term ID of the current category. */
-  public TermId getTid() {
+  @Override
+  public TermId id() {
     return tid;
   }
   /** @return Name of the current category. */

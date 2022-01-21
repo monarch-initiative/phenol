@@ -82,10 +82,10 @@ public class HpoCategoryMap {
     mapbuilder.put(ABNORMAL_CELLULAR_ID, abnCellCategory);
     // Blood
     HpoCategory abnBlood = new HpoCategory(BLOOD_ID, "Blood and blood-forming tissues");
-    mapbuilder.put(abnBlood.getTid(), abnBlood);
+    mapbuilder.put(abnBlood.id(), abnBlood);
     // Connective tissue
     HpoCategory abnConnTiss = new HpoCategory(CONNECTIVE_TISSUE_ID, "Connective tissue");
-    mapbuilder.put(abnConnTiss.getTid(), abnConnTiss);
+    mapbuilder.put(abnConnTiss.id(), abnConnTiss);
     // head or neck
     HpoCategory headNeckCat = new HpoCategory(HEAD_AND_NECK_ID, "Head and neck");
     mapbuilder.put(HEAD_AND_NECK_ID, headNeckCat);

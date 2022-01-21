@@ -185,7 +185,7 @@ public class OntologyLoaderTest {
     // 2270
    long ectoTermCount = permissiveOntology.getTermMap().values().
                         stream().
-                        filter(term -> term.getId().getPrefix().equals("ECTO")).
+                        filter(term -> term.id().getPrefix().equals("ECTO")).
                         count();
    assertEquals(2270, ectoTermCount);
   }

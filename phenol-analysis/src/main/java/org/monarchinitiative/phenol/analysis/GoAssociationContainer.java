@@ -111,7 +111,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
       GeneAnnotations assocs = this.gene2associationMap.get(domainTermId);
       for (TermAnnotation termAnnotation : assocs.getAnnotations()) {
         /* At first add the direct counts and remember the terms */
-        TermId ontologyTermId = termAnnotation.getTermId();
+        TermId ontologyTermId = termAnnotation.id();
         // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
         Term term = this.ontology.getTermMap().get(ontologyTermId);
         if (term == null) {
