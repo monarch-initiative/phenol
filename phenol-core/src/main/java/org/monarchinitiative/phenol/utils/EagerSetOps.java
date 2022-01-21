@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EagerSetOps implements SetOps {
+class EagerSetOps implements SetOps {
   @Override
   public <T> Set<T> intersection(Collection<T> left, Collection<T> right) {
     Set<T> result = new HashSet<>(left);
