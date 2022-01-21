@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.2.1 (2017-11-16)
  */
-public final class HpoDisease {
+public class HpoDisease implements Identified {
   /** The disease identifier as a CURIE, e.g., OMIM:600100. */
   private final TermId diseaseDatabaseId;
   /** Name of the disease from annotation. */
@@ -68,6 +69,11 @@ public final class HpoDisease {
     this.clinicalCourseList = Objects.requireNonNull(clinicalCourses, "Clinical courses must not be null");
   }
 
+  @Override
+  public TermId id() {
+    return diseaseDatabaseId;
+  }
+
   /** @return The name of the disease. */
   public String getDiseaseName() {
     return diseaseName;
@@ -86,7 +92,7 @@ public final class HpoDisease {
   /** @return The list of phenotype abnormalities as bare TermIds. */
   public List<TermId> getPhenotypicAbnormalityTermIdList() {
     return phenotypicAbnormalities.stream()
-      .map(HpoAnnotation::getTermId)
+      .map(HpoAnnotation::id)
       .distinct()
       .collect(Collectors.toUnmodifiableList());
   }
@@ -123,7 +129,7 @@ public final class HpoDisease {
   public HpoAnnotation getAnnotation(TermId id) {
     return phenotypicAbnormalities
         .stream()
-        .filter(timd -> timd.getTermId().equals(id))
+        .filter(timd -> timd.id().equals(id))
         .findAny()
         .orElse(null);
   }
@@ -135,7 +141,7 @@ public final class HpoDisease {
    */
   public boolean isDirectlyAnnotatedTo(TermId tid) {
     for (HpoAnnotation tiwm : phenotypicAbnormalities) {
-      if (tiwm.getTermId().equals(tid)) return true;
+      if (tiwm.id().equals(tid)) return true;
     }
     return false;
   }
@@ -146,7 +152,7 @@ public final class HpoDisease {
    */
   public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
     for (HpoAnnotation tiwm : phenotypicAbnormalities) {
-      if (tidset.contains(tiwm.getTermId())) return true;
+      if (tidset.contains(tiwm.id())) return true;
     }
     return false;
   }
@@ -172,7 +178,7 @@ public final class HpoDisease {
    */
   public double getFrequencyOfTermInDisease(TermId tid) {
     return phenotypicAbnormalities.stream()
-            .filter(twm -> twm.getTermId().equals(tid))
+            .filter(twm -> twm.id().equals(tid))
             .findFirst()
             .map(HpoAnnotation::getFrequency)
             .orElse(0D); // term not annotated to disease so frequency is zero
@@ -200,7 +206,8 @@ public final class HpoDisease {
   @Override
   public String toString() {
     String abnormalityList = phenotypicAbnormalities.stream()
-      .map(HpoAnnotation::getIdWithPrefix)
+      .map(HpoAnnotation::id)
+      .map(TermId::getValue)
       .collect(Collectors.joining(";", "[", "]"));
     return String.format("HpoDisease [name=%s;%s] phenotypicAbnormalities=%s" + ", modesOfInheritance=%s",
       diseaseDatabaseId.getValue(), diseaseName, abnormalityList, modesOfInheritance);

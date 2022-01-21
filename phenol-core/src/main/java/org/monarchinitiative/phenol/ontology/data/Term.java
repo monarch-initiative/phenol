@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class Term {
+public class Term implements Identified {
   /**
    * The term's Id.
    */
@@ -115,7 +115,8 @@ public class Term {
     this.xrefs = List.copyOf(builder.xrefs);
   }
 
-  public TermId getId() {
+  @Override
+  public TermId id() {
     return id;
   }
 

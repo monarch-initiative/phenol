@@ -17,7 +17,7 @@ public class TestTermAnnotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return termId;
   }
 

@@ -22,7 +22,7 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return termId;
   }
 

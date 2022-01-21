@@ -301,9 +301,9 @@ public class ImmutableOntology implements Ontology {
 
       for (Term term : terms) {
         if (term.isObsolete()) {
-          obsoleteTermIds.add(term.getId());
+          obsoleteTermIds.add(term.id());
         } else {
-          TermId termId = term.getId();
+          TermId termId = term.id();
           nonObsoleteTermIds.add(termId);
           nonObsoleteTerms.put(termId, term);
           for (TermId alternateId : term.getAltTermIds()) {
@@ -357,10 +357,10 @@ public class ImmutableOntology implements Ontology {
       // As per suggestion https://github.com/monarch-initiative/phenol/issues/163#issuecomment-452880405
       // We'll use owl:Thing instead of ID:0000000 so as not to potentially conflict with an existing term id.
       Term artificialRootTerm = Term.of(TermId.of("owl", "Thing"), "artificial root term");
-      logger.debug("Created new artificial root term {} {}", artificialRootTerm.getId(), artificialRootTerm.getName());
+      logger.debug("Created new artificial root term {} {}", artificialRootTerm.id(), artificialRootTerm.getName());
       addArtificialRootTerm(artificialRootTerm, rootCandidates);
 
-      return artificialRootTerm.getId();
+      return artificialRootTerm.id();
     }
 
     private List<TermId> findRootCandidates(Collection<Relationship> relationships) {
@@ -385,7 +385,7 @@ public class ImmutableOntology implements Ontology {
       for (TermId rootCandidate : rootCandidates) {
         IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
         //Note-for the "artificial root term, we use the IS_A relation
-        Relationship relationship = new Relationship(rootCandidate, rootTerm.getId(), idLabeledEdge.getId(), RelationshipType.IS_A);
+        Relationship relationship = new Relationship(rootCandidate, rootTerm.id(), idLabeledEdge.getId(), RelationshipType.IS_A);
         logger.debug("Adding new artificial root relationship {}", relationship);
         relationships.add(relationship);
       }

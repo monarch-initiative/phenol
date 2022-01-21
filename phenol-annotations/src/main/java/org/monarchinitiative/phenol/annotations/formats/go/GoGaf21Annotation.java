@@ -247,7 +247,7 @@ public final class GoGaf21Annotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return goId;
   }
 

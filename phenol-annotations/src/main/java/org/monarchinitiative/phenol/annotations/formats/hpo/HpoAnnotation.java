@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.3 (2018-03-12)
  */
-public class HpoAnnotation implements Comparable<HpoAnnotation> {
+public class HpoAnnotation implements Identified, Comparable<HpoAnnotation> {
   /** The annotated {@link TermId}. */
   private final TermId termId;
   /** The frequency with which this phenotypic abnormality is seen in patients with this disease */
@@ -75,7 +76,8 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
   }
 
   /** @return The annotated {@link TermId}. */
-  public TermId getTermId() {
+  @Override
+  public TermId id() {
     return termId;
   }
 
@@ -98,15 +100,6 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
   }
 
   /**
-   * Return the full term ID including prefix.
-   *
-   * @return The full HPO, id, e.g., HP:0000123.
-   */
-  public String getIdWithPrefix() {
-    return this.termId.getValue();
-  }
-
-  /**
    * Objects are equal if the three components are equal. Note that the constructor guarantees that
    * the the TermId, the Frequency, and the Onset are not null.
    *
@@ -119,7 +112,7 @@ public class HpoAnnotation implements Comparable<HpoAnnotation> {
     if (!(that instanceof HpoAnnotation)) return false;
     HpoAnnotation otherHpoAnnotation = (HpoAnnotation) that;
 
-    return termId.equals(otherHpoAnnotation.getTermId())
+    return termId.equals(otherHpoAnnotation.id())
         && frequency == otherHpoAnnotation.getFrequency()
         && onset.equals(otherHpoAnnotation.getOnset())
         && modifiers.equals(otherHpoAnnotation.modifiers);

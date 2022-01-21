@@ -63,7 +63,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
     /** @return The annotated HPO term's {@link TermId}. */
     @Override
-    public TermId getTermId() {
+    public TermId id() {
       return hpoTermId;
     }
 

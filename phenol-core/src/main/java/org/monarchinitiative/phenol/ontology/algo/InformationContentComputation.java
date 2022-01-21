@@ -74,9 +74,9 @@ public final class InformationContentComputation {
       if (t.isObsolete()) {
         continue;
       }
-      if (!termToFrequency.containsKey(t.getId())) {
+      if (!termToFrequency.containsKey(t.id())) {
         ++countIcZero;
-        termToInformationContent.put(t.getId(), dummyIc);
+        termToInformationContent.put(t.id(), dummyIc);
       }
     }
 

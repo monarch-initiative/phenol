@@ -17,14 +17,8 @@ import java.util.Optional;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public interface TermAnnotation extends Serializable, Comparable<TermAnnotation> {
+public interface TermAnnotation extends Identified, Serializable, Comparable<TermAnnotation> {
    long serialVersionUID = 2L;
-  /**
-   * Query for annotated term's ID.
-   *
-   * @return The annotated term's {@link TermId}.
-   */
-  TermId getTermId();
 
   /**
    * Query for "world object" label.

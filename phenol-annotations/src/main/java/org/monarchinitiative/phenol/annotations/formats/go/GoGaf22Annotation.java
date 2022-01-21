@@ -255,7 +255,7 @@ public class GoGaf22Annotation implements TermAnnotation {
     }
 
     @Override
-    public TermId getTermId() {
+    public TermId id() {
         return goId;
     }
 

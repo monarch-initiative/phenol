@@ -64,7 +64,7 @@ public class HpoAssociationLoader {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (Map.Entry<TermId, HpoDisease> entry : diseaseMap.entrySet()) {
       for (HpoAnnotation hpoAnnotation : entry.getValue().getPhenotypicAbnormalities()) {
-        TermId hpoId = hpoAnnotation.getTermId();
+        TermId hpoId = hpoAnnotation.id();
         phenotypeToDisease.computeIfAbsent(hpoId, k -> new HashSet<>())
           .add(entry.getKey());
       }

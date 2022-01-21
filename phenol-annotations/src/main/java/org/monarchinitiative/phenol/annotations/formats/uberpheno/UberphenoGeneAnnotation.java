@@ -64,7 +64,7 @@ public final class UberphenoGeneAnnotation implements TermAnnotation {
 
   /** @return The annotated HPO term's {@link TermId}. */
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return termId;
   }
 

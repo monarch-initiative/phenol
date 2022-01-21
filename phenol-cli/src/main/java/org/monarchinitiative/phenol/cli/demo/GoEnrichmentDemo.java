@@ -193,7 +193,7 @@ public final class GoEnrichmentDemo {
   private Set<TermId> getFocusedStudyGenes(List<GoGaf22Annotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      if (focus.equals(ann.getTermId())) {
+      if (focus.equals(ann.id())) {
         TermId geneId = ann.getItemId();
         targetGenes.add(geneId);
       }

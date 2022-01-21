@@ -1,10 +1,11 @@
 package org.monarchinitiative.phenol.annotations.formats;
 
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Objects;
 
-public class GeneIdentifier {
+public class GeneIdentifier implements Identified {
   /** A CURIE for the gene, such as NCBIGene:3949 */
   private final TermId id;
   /** The gene symbol for the gene, e.g., LDLR */
@@ -20,6 +21,7 @@ public class GeneIdentifier {
   }
 
   /** A CURIE for the gene, such as NCBIGene:3949 */
+  @Override
   public TermId id() {
     return id;
   }

@@ -521,7 +521,7 @@ public class HpoAnnotationEntry {
         } else if ( ! ontology.getTermMap().containsKey(id)) {
             throw new HpoAnnotationModelException(String.format("Could not find HPO term id (\"%s\") for \"%s\"",id,termLabel));
         } else {
-            TermId current = ontology.getTermMap().get(id).getId();
+            TermId current = ontology.getTermMap().get(id).id();
             if (! current.equals(id)) {
                 throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
                         id.getValue(),
@@ -559,7 +559,7 @@ public class HpoAnnotationEntry {
         if (! ontology.getTermMap().containsKey(tid)) {
             throw new HpoAnnotationModelException(String.format("Onset ID not found: \"%s\"",id));
         }
-        TermId current = ontology.getTermMap().get(tid).getId();
+        TermId current = ontology.getTermMap().get(tid).id();
         if (! current.equals(tid)) {
             throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
                     tid.getValue(),
@@ -618,7 +618,7 @@ public class HpoAnnotationEntry {
         if (! frequencySubhierarcyTermIds.contains(id) ) {
             throw new HpoAnnotationModelException(String.format("Usage of incorrect term for frequency: %s [%s]",
                     ontology.getTermMap().get(id).getName(),
-                    ontology.getTermMap().get(id).getId().getValue()));
+                    ontology.getTermMap().get(id).id().getValue()));
         }
     }
 
@@ -713,7 +713,7 @@ public class HpoAnnotationEntry {
     if (term == null) {
       throw new HpoAnnotationModelException("Cannot compute Aspect of NULL term");
     }
-    TermId primaryTid = term.getId(); // update in case term is an alt_id
+    TermId primaryTid = term.id(); // update in case term is an alt_id
     if (existsPath(ontology, primaryTid, phenotypeRoot)) {
       return "P"; // organ/phenotype abnormality
     } else if (existsPath(ontology, primaryTid, INHERITANCE_TERM_ID)) {

@@ -307,7 +307,7 @@ class HpoAnnotationLine {
         return ontology
           .getTermMap()
           .get(tid)
-          .getId(); // replace alt_id with current if necessary
+          .id(); // replace alt_id with current if necessary
       } else {
         return null;
       }

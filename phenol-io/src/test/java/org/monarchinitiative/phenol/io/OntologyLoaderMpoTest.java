@@ -88,7 +88,7 @@ public class OntologyLoaderMpoTest {
   @Test
   public void testGetAllFourTerms() {
     Collection<Term> terms = ontology.getTerms();
-    Set<TermId> tids = terms.stream().map(Term::getId).collect(Collectors.toSet());
+    Set<TermId> tids = terms.stream().map(Term::id).collect(Collectors.toSet());
     assertTrue(tids.contains(TermId.of("MP:0000001")));
     assertTrue(tids.contains(TermId.of("MP:0001186")));
     assertTrue(tids.contains(TermId.of("MP:0001188")));
