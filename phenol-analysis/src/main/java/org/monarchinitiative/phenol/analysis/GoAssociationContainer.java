@@ -55,6 +55,11 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
   }
 
   @Override
+  public int getTotalAnnotationCount() {
+    return this.rawAssociations.size();
+  }
+
+  @Override
   public Map<TermId, List<TermId>> getOntologyTermToDomainItemsMap() {
     Map<TermId, List<TermId>> mp = new HashMap<>();
     for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {

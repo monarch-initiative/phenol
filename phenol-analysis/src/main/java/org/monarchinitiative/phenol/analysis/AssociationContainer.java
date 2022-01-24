@@ -32,4 +32,12 @@ public interface AssociationContainer<T> {
    */
   int getAnnotatingTermCount();
 
+  int getTotalAnnotationCount();
+  /**
+   * Get total number of genes (or other domain items) that have at least one annotation).
+   */
+  default int getAnnotatedDomainItemCount() {
+    return getAllAnnotatedGenes().size();
+  }
+
 }
