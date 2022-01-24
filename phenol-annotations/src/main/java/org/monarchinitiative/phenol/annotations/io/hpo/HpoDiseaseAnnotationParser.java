@@ -28,6 +28,8 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @author <a href="mailto:michael.gargano@jax.org">Michael Gargano</a>
+ *
+ * @deprecated as of <em>2.0.0</em>. Use {@link HpoDiseaseAnnotationLoader} instead.
  */
 @Deprecated // in favor of HpoDiseaseAnnotationLoader
 public class HpoDiseaseAnnotationParser {
