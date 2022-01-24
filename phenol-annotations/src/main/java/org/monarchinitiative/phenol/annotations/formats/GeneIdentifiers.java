@@ -54,4 +54,7 @@ public class GeneIdentifiers implements Iterable<GeneIdentifier> {
     return geneIdentifiers.iterator();
   }
 
+  public int size() {
+    return geneIdentifiers.size();
+  }
 }

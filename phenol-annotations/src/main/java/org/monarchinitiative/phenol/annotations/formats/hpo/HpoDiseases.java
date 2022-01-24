@@ -38,4 +38,10 @@ public class HpoDiseases implements Iterable<HpoDisease> {
     return hpoDiseases.iterator();
   }
 
+  /**
+   * @return number of known disease models
+   */
+  public int size() {
+    return hpoDiseases.size();
+  }
 }

@@ -12,7 +12,6 @@ module org.monarchinitiative.phenol.annotations {
   exports org.monarchinitiative.phenol.annotations.formats.hpo;
   exports org.monarchinitiative.phenol.annotations.formats.hpo.category;
   exports org.monarchinitiative.phenol.annotations.formats.mpo;
-  exports org.monarchinitiative.phenol.annotations.formats.uberpheno;
 
   exports org.monarchinitiative.phenol.annotations.io.go;
   exports org.monarchinitiative.phenol.annotations.io.hpo;
