@@ -1,4 +1,4 @@
-[![CI CD](https://github.com/monarch-initiative/phenol/actions/workflows/maven.yml/badge.svg)
+[![CI CD](https://github.com/monarch-initiative/phenol/actions/workflows/maven.yml/badge.svg)](https://github.com/monarch-initiative/phenol/actions/workflows/maven.yml/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/phenol/badge/?version=latest)](http://phenol.readthedocs.io/en/latest/?badge=latest)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.monarchinitiative.phenol/phenol/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.monarchinitiative.phenol/phenol)
 
