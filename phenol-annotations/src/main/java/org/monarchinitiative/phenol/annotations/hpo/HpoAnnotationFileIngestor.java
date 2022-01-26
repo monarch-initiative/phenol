@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
@@ -130,7 +129,9 @@ public class HpoAnnotationFileIngestor {
    * @return List of entries (encoded as strings like "OMIM:600123") that should be omitted
    */
   private Set<String> getOmitEntries(String path) {
-    if (path == null || path.isEmpty()) return ImmutableSet.of();
+    if (path == null || path.isEmpty())
+      return Set.of();
+
     Set<String> entrylist = new HashSet<>();
     try (BufferedReader br = new BufferedReader(new FileReader(path))) {
       String line;

@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io;
 
-import com.google.common.collect.ImmutableSet;
 import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Set;
 
 /**
  * Entry class for loading an ontology from a File or InputStream. Files can be in OWL, OBO or JSON format and will be
@@ -62,7 +62,7 @@ public class OntologyLoader {
     logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
-      .wantedTermIdPrefixes(ImmutableSet.copyOf(termIdPrefixes))
+      .wantedTermIdPrefixes(Set.of(termIdPrefixes))
       .build(graphDocument);
 
     Ontology ontology = graphDocumentAdaptor.buildOntology();

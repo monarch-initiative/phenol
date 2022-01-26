@@ -1,8 +1,5 @@
 package org.monarchinitiative.phenol.io.obographs;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.core.model.*;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -131,9 +128,9 @@ public class OboGraphDocumentAdaptor {
 
     private Map<String, String> convertMetaData(Meta meta) {
       if (meta == null) {
-        return ImmutableSortedMap.of();
+        return Map.of();
       }
-      ImmutableMap.Builder<String, String> metaMap = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
+      SortedMap<String, String> metaMap = new TreeMap<>();
       String version = meta.getVersion() != null ? meta.getVersion() : "";
       metaMap.put("data-version", version);
       if (meta.getBasicPropertyValues() != null) {
@@ -144,11 +141,11 @@ public class OboGraphDocumentAdaptor {
           }
         }
       }
-      return metaMap.build();
+      return Collections.unmodifiableSortedMap(metaMap);
     }
 
     private List<Term> convertNodesToTerms(List<Node> nodes) {
-      ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
+      List<Term> termsList = new ArrayList<>();
       if (nodes == null || nodes.isEmpty()) {
         LOGGER.warn("No nodes found in loaded ontology.");
         throw new PhenolRuntimeException("PhenolException: No nodes found in loaded ontology.");
@@ -165,7 +162,7 @@ public class OboGraphDocumentAdaptor {
           }
         }
       }
-      return termsList.build();
+      return List.copyOf(termsList);
     }
 
     private List<Relationship> convertEdgesToRelationships(List<Edge> edges, List<Node> nodes) {
@@ -174,7 +171,7 @@ public class OboGraphDocumentAdaptor {
         .filter(node -> node.getId() != null && node.getLabel() != null)
         .collect(toMap(Node::getId, Node::getLabel));
 
-      ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
+      List<Relationship> relationshipsList = new ArrayList<>();
       if (edges == null || edges.isEmpty()) {
         LOGGER.warn("No edges found in loaded ontology.");
         throw new PhenolRuntimeException("No edges found in loaded ontology.");
@@ -190,7 +187,7 @@ public class OboGraphDocumentAdaptor {
           relationshipsList.add(relationship);
         }
       }
-      return relationshipsList.build();
+      return List.copyOf(relationshipsList);
     }
 
     private TermId getTermIdOrNull(String id) {

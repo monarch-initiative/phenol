@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HpoCategoryTest {
 
   @Test
-  void testContructor() {
+  public void testContructor() {
     TermId tid = TermId.of("FAKE:123");
     String label = "Fake category";
     HpoCategory hpocat = new HpoCategory(tid, label);

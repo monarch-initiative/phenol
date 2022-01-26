@@ -5,7 +5,7 @@
 
 # Phenol: Ontology Library for Phenomics and Genomics
 
-A Java library for working with OBO or OWL phenotype ontologies including especially
+A Java library for working with JSON phenotype ontologies including especially
 the [Human Phenotype Ontology](https://www.human-phenotype-ontology.org) and the
 [Mammalian Phenotype Ontology](http://www.informatics.jax.org/vocab/mp_ontology) and
 associate phenotype annotation files.
@@ -13,9 +13,9 @@ associate phenotype annotation files.
 
 ## In Brief
 
-- **Language/Platform:** Java >=8
+- **Language/Platform:** Java >=11
 - **License:** BSD 3-Clause Clear
-- **Version:** 1.6.1
+- **Version:** 1.6.3
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -28,19 +28,18 @@ associate phenotype annotation files.
     - Jules Jacobsen
 
 - **Availability:**
-    - Maven module `phenol-core` for dealing with (biological) ontologies ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-core/0.3)).
-    - Maven module `phenol-io` for reading ontologies from OBO files ([Javadoc via javadoc.io](http://javadoc.io/doc/com.github.phenomics/ontolib-io/0.3)).
+    - Maven module `phenol-core` for dealing with (biological) ontologies.
+    - Maven module `phenol-io` for reading ontologies from OBO files.
     - Maven module `phenol-cli` for performing empirical score distribution computation as a stand-alone program.
     - Maven module `phenol-analysis` -- several demo apps showing how to use phenol.
 
 ## Usage
-We recommend indicating the
-phenol version in the properties section of the pom file of the application.
+We recommend indicating the phenol version in the `properties` section of the pom file of the application.
 
 ```
 <properties>
   (...)
-  <phenol.version>1.6.1</phenol.version>
+  <phenol.version>1.6.3</phenol.version>
 </properties>
 ```
 

@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -15,22 +15,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled("Disabled until we have a toy hpo.json")
+@Disabled("Until the non-deterministic behavior of HpoCategoryMap is fixed")
 public class HpoCategoryMapTest {
 
   private static Ontology ontology;
   private static final TermId INHERITANCE_ID = TermId.of("HP:0000005");
-  private static final TermId EYE_ID = TermId.of("HP:0000478");
+  private static final TermId LIMBS_ID = TermId.of("HP:0040064");
   private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
 
   @BeforeAll
   public static void init() throws IOException {
-    final String hpOboPath = "/hp_head.obo";
-    URL hpOboURL = HpoCategoryMapTest.class.getResource(hpOboPath);
-    if (hpOboURL == null) {
-      throw new IOException("Could not find hpOboPath at " + hpOboPath);
-    }
-    ontology = OntologyLoader.loadOntology(new File(hpOboURL.getFile()));
+    URL hpOboURL = HpoCategoryMapTest.class.getResource("/hpo_toy.json");
+    HpoCategoryMapTest.ontology = OntologyLoader.loadOntology(new File(hpOboURL.getFile()));
   }
 
 
@@ -39,14 +35,14 @@ public class HpoCategoryMapTest {
    * INHERITANCE_ID
    */
   @Test
-  void testSingleInheritanceTerm() {
+  public void testSingleInheritanceTerm() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
     TermId autosomalDominant = TermId.of("HP:0000006");
     categoryMap.addAnnotatedTerm(autosomalDominant, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
     HpoCategory hpoCategory = catlist.get(0);
     assertEquals(1, hpoCategory.getNumberOfAnnotations());
-    assertEquals(INHERITANCE_ID, hpoCategory.getTid());
+    assertEquals(INHERITANCE_ID, hpoCategory.id());
     // This HpoCategory object should now contain all of the annotating terms underneath
     // inheritance id
     assertEquals(1, catlist.size());
@@ -61,7 +57,7 @@ public class HpoCategoryMapTest {
    * Same as above except we add two inheritance terms
    */
   @Test
-  void testTwoInheritanceTerms() {
+  public void testTwoInheritanceTerms() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
     TermId autosomalDominant = TermId.of("HP:0000006");
     TermId autosomalRecessive = TermId.of("HP:0000007");
@@ -74,7 +70,7 @@ public class HpoCategoryMapTest {
     // but now the HpoCategory has two annotated terms
     assertEquals(2, hpoCategory.getNumberOfAnnotations());
     // Still annotated to INHERITANCE
-    assertEquals(INHERITANCE_ID, hpoCategory.getTid());
+    assertEquals(INHERITANCE_ID, hpoCategory.id());
     assertTrue(hpoCategory.hasAnnotation());
     List<TermId> annotatingTermsList = hpoCategory.getAnnotatingTermIds();
     assertEquals(2, annotatingTermsList.size());
@@ -83,26 +79,26 @@ public class HpoCategoryMapTest {
   }
 
   /**
-   * Abnormality of globe size (HP:0100887) -- this is from EYE_ID
+   * Arachnodactyly (HP:0001166) -- this is from LIMBS_ID
    */
   @Test
-  void testAbnormalityGlobeSize(){
+  public void testArachnodactyly(){
     HpoCategoryMap categoryMap = new HpoCategoryMap();
-    TermId abnGlobeSize = TermId.of("HP:0100887");
-    categoryMap.addAnnotatedTerm(abnGlobeSize, ontology);
+    TermId arachnodactyly = TermId.of("HP:0001166");
+    categoryMap.addAnnotatedTerm(arachnodactyly, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
     // Both terms should go to the same HpoCategory
     assertEquals(1, catlist.size());
     HpoCategory hpoCategory = catlist.get(0);
     assertEquals(1, hpoCategory.getNumberOfAnnotations());
     // Still annotated to INHERITANCE
-    assertEquals(EYE_ID, hpoCategory.getTid());
+    assertEquals(LIMBS_ID, hpoCategory.id());
     assertEquals(1, catlist.size());
     // The category should include all terms added to the map that are under INHERITANCE_ID
     List<TermId> annotatingTermsList = hpoCategory.getAnnotatingTermIds();
     assertEquals(1, annotatingTermsList.size());
     assertTrue(hpoCategory.hasAnnotation());
-    assertEquals(abnGlobeSize, annotatingTermsList.get(0));
+    assertEquals(arachnodactyly, annotatingTermsList.get(0));
   }
 
   /**
@@ -110,7 +106,7 @@ public class HpoCategoryMapTest {
    * the term 'Very frequent' (HP:0040281) is simply skipped.
    */
   @Test
-  void testAddingInvalidModifierTerm() {
+  public void testAddingInvalidModifierTerm() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
     TermId veryFrequent = TermId.of("HP:0040281");
     categoryMap.addAnnotatedTerm(veryFrequent, ontology);
@@ -120,56 +116,42 @@ public class HpoCategoryMapTest {
   }
 
   /**
-   * Add terms from INHERITANCE and from EYE
+   * Add terms from INHERITANCE and from LIMBS_ID
    */
   @Test
-  void testTwoCategories() {
+  public void testTwoCategories() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
-    TermId abnGlobeSize = TermId.of("HP:0100887");
+    TermId arachnodactyly = TermId.of("HP:0001166");
     TermId autosomalDominant = TermId.of("HP:0000006");
     TermId autosomalRecessive = TermId.of("HP:0000007");
     categoryMap.addAnnotatedTerm(autosomalDominant, ontology);
     categoryMap.addAnnotatedTerm(autosomalRecessive, ontology);
-    categoryMap.addAnnotatedTerm(abnGlobeSize, ontology);
+    categoryMap.addAnnotatedTerm(arachnodactyly, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
     // The terms should go to two different HpoCategory objects
     assertEquals(2, catlist.size());
-    // Check that we have both EYE and INHERITANCE
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(EYE_ID)));
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(INHERITANCE_ID)));
+    // Check that we have both LIMBS and INHERITANCE
+    catlist.forEach(System.err::println);
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(INHERITANCE_ID)));
   }
 
   /**
    * Add an onset terms. It should map to the category CLINICAL_COURSE
    */
   @Test
-  void testOnsetTerm() {
+  public void testOnsetTerm() {
     HpoCategoryMap categoryMap = new HpoCategoryMap();
     TermId antenatalOnset = TermId.of("HP:0030674");  //Antenatal onset HP:
-    TermId abnGlobeSize = TermId.of("HP:0100887");
-    categoryMap.addAnnotatedTerm(abnGlobeSize, ontology);
+    TermId arachnodactyly = TermId.of("HP:0001166");
+    categoryMap.addAnnotatedTerm(arachnodactyly, ontology);
     categoryMap.addAnnotatedTerm(antenatalOnset, ontology);
     List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
     // The terms should go to two different HpoCategory objects
     assertEquals(2, catlist.size());
-    // Check that we have both EYE and CLINICAL_COURSE
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(EYE_ID)));
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(CLINICAL_COURSE_ID)));
+    // Check that we have both LIMBS and CLINICAL_COURSE
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(CLINICAL_COURSE_ID)));
   }
-
-
-
-
-  @Test
-  public void testConnectiveTissue() {
-    HpoCategoryMap categoryMap = new HpoCategoryMap();
-    TermId abnConnectiveTissue = TermId.of("HP:0003549");  //Abnormality of connective tissue
-    TermId increasedConnectiveTissue = TermId.of("HP:0009025"); //Increased connective tissue
-    categoryMap.addAnnotatedTerm(increasedConnectiveTissue, ontology);
-    List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
-    assertEquals(1, catlist.size());
-    assertTrue(catlist.stream().anyMatch(cat -> cat.getTid().equals(abnConnectiveTissue)));
-  }
-
 
 }

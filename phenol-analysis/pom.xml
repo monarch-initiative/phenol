@@ -16,11 +16,6 @@
   <dependencies>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
-      <artifactId>phenol-io</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-annotations</artifactId>
       <version>${project.version}</version>
     </dependency>

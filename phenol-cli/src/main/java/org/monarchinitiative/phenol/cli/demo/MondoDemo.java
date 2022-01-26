@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Dbxref;
@@ -27,14 +25,14 @@ public class MondoDemo {
 
   private Ontology mondo;
   private List<Term> phenoseriesRoots;
-  private Multimap<Term, TermId> phenoseries2omimMap;
+  private Map<Term, Collection<TermId>> phenoseries2omimMap;
 
 
   public MondoDemo(String mondoPath, String out) {
     this.mondoPath = mondoPath;
     this.outPath = out;
     phenoseriesRoots = new ArrayList<>();
-    phenoseries2omimMap = ArrayListMultimap.create();
+    phenoseries2omimMap = new HashMap<>();
   }
 
 
@@ -76,11 +74,12 @@ public class MondoDemo {
       }
     }
     for (Term psterm : phenoseriesRoots) {
-      Set<TermId> members = OntologyAlgorithm.getDescendents(mondo, psterm.getId());
+      Set<TermId> members = OntologyAlgorithm.getDescendents(mondo, psterm.id());
       for (TermId member : members) {
         Term candidate = mondo.getTermMap().get(member);
         if (isOmimEntry(candidate)) {
-          phenoseries2omimMap.put(psterm, candidate.getId());
+          phenoseries2omimMap.computeIfAbsent(psterm, key -> new HashSet<>())
+            .add(candidate.id());
         }
       }
     }
@@ -94,7 +93,7 @@ public class MondoDemo {
           Optional<TermId> omimIdopt = getOMIMid(omimentry);
           if (omimIdopt.isPresent()) {
             TermId omimId = omimIdopt.get();
-            String line = psterm.getId().getValue() + "\t" +
+            String line = psterm.id().getValue() + "\t" +
               psterm.getName() + "\t" +
               omimId.getValue() + "\t" +
               omimentry.getName();

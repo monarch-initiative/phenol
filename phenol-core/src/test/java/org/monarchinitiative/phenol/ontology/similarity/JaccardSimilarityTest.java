@@ -4,38 +4,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
-import com.google.common.collect.Lists;
-
 import org.junit.jupiter.api.Test;
 
-class JaccardSimilarityTest extends VegetableOntologyTestBase {
+import java.util.List;
+
+public class JaccardSimilarityTest extends VegetableOntologyTestBase {
 
   private final JaccardSimilarity similarity = new JaccardSimilarity(ontology);
 
   @Test
-  void testQueries() {
+  public void testQueries() {
     assertEquals("Jaccard similarity", similarity.getName());
     assertTrue(similarity.isSymmetric());
     assertEquals("{normalized: true}", similarity.getParameters());
   }
 
   @Test
-  void testComputeSimilarities() {
+  public void testComputeSimilarities() {
     assertEquals(
         0.25,
-        similarity.computeScore(Lists.newArrayList(idBeet), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idBeet), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.66,
-        similarity.computeScore(Lists.newArrayList(idBlueCarrot), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idBlueCarrot), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.33,
-        similarity.computeScore(Lists.newArrayList(idPumpkin), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idPumpkin), List.of(idCarrot)),
         0.01);
     assertEquals(
         0.0,
-        similarity.computeScore(Lists.newArrayList(idLeafVegetable), Lists.newArrayList(idCarrot)),
+        similarity.computeScore(List.of(idLeafVegetable), List.of(idCarrot)),
         0.01);
   }
 }

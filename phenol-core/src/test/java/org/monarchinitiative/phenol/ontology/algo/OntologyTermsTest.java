@@ -5,17 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
 
-class OntologyTermsTest extends VegetableOntologyTestBase {
+public class OntologyTermsTest extends VegetableOntologyTestBase {
 
   @Test
-  void testVisitChildrenOf() {
+  public void testVisitChildrenOf() {
     Set<TermId> children = new TreeSet<>();
 
     OntologyTerms.visitChildrenOf(
@@ -27,7 +26,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
     });
 
     assertEquals(
-      ImmutableSet.of(
+      Set.of(
         TermId.of("VO:0000002"),
         TermId.of("VO:0000004"),
         TermId.of("VO:0000005"),
@@ -37,9 +36,9 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testChildrenOf() {
+  public void testChildrenOf() {
     assertEquals(
-      ImmutableSet.of(
+      Set.of(
         TermId.of("VO:0000004"),
         TermId.of("VO:0000005"),
         TermId.of("VO:0000006"),
@@ -49,7 +48,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testVisitParentsOf() {
+  public void testVisitParentsOf() {
     Set<TermId> parents = new TreeSet<>();
 
     OntologyTerms.visitParentsOf(
@@ -61,7 +60,7 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
       });
 
     assertEquals(
-      ImmutableSet.of(
+      Set.of(
         TermId.of("VO:0000001"),
         TermId.of("VO:0000002"),
         TermId.of("VO:0000004"),
@@ -70,8 +69,8 @@ class OntologyTermsTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testParentsOf() {
-    assertEquals(ImmutableSet.of(
+  public void testParentsOf() {
+    assertEquals(Set.of(
       TermId.of("VO:0000004"),
       TermId.of("VO:0000007"),
       TermId.of("VO:0000001"),

@@ -1,8 +1,5 @@
 package org.monarchinitiative.phenol.annotations.formats.go;
 
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Ordering;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
@@ -10,6 +7,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -131,7 +129,7 @@ public class GoGaf22Annotation implements TermAnnotation {
         this.dbObjectName = arr[9];
         this.dbObjectSynonym = arr[10];
         this.dbObjectType = arr[11];
-        this.taxons = ImmutableList.copyOf(arr[12].split("\\|"));
+        this.taxons = Arrays.asList(arr[12].split("\\|"));
         final String dateStr = arr[13];
         this.assignedBy = arr[14];
         this.annotationExtension = (arr.length < 16) ? null : arr[15];
@@ -257,7 +255,7 @@ public class GoGaf22Annotation implements TermAnnotation {
     }
 
     @Override
-    public TermId getTermId() {
+    public TermId id() {
         return goId;
     }
 
@@ -269,30 +267,48 @@ public class GoGaf22Annotation implements TermAnnotation {
 
     @Override
     public int compareTo(TermAnnotation o) {
-        if (!(o instanceof GoGaf22Annotation)) {
-            throw new PhenolRuntimeException(
-                    "Can only compare GoGaf21Annotation with objects of same type");
-        }
-        GoGaf22Annotation that = (GoGaf22Annotation) o;
+      if (!(o instanceof GoGaf22Annotation)) {
+        throw new PhenolRuntimeException("Can only compare GoGaf21Annotation with objects of same type");
+      }
+      GoGaf22Annotation that = (GoGaf22Annotation) o;
 
-        return ComparisonChain.start()
-                .compare(this.annotationExtension, that.annotationExtension)
-                .compare(this.aspect, that.aspect)
-                .compare(this.assignedBy, that.assignedBy)
-                .compare(this.date, that.date)
-                .compare(this.dbObjectTermId, that.dbObjectTermId)
-                .compare(this.dbObjectName, that.dbObjectName)
-                .compare(this.dbObjectSymbol, that.dbObjectSymbol)
-                .compare(this.dbObjectSynonym, that.dbObjectSynonym)
-                .compare(this.dbObjectType, that.dbObjectType)
-                .compare(this.dbReference, that.dbReference)
-                .compare(this.evidenceCode, that.evidenceCode)
-                .compare(this.geneProductFormId, that.geneProductFormId)
-                .compare(this.goId, that.goId)
-                .compare(this.qualifier, that.qualifier)
-                .compare(this.taxons, that.taxons, Ordering.<String>natural().lexicographical())
-                .compare(this.with, that.with)
-                .result();
+      int result = annotationExtension.compareTo(that.annotationExtension);
+      if (result != 0) return result;
+      result = aspect.compareTo(that.aspect);
+      if (result != 0) return result;
+      result = assignedBy.compareTo(that.assignedBy);
+      if (result != 0) return result;
+      result = date.compareTo(that.date);
+      if (result != 0) return result;
+      result = dbObjectTermId.compareTo(that.dbObjectTermId);
+      if (result != 0) return result;
+      result = dbObjectName.compareTo(that.dbObjectName);
+      if (result != 0) return result;
+      result = dbObjectSymbol.compareTo(that.dbObjectSymbol);
+      if (result != 0) return result;
+      result = dbObjectSynonym.compareTo(that.dbObjectSynonym);
+      if (result != 0) return result;
+      result = dbObjectType.compareTo(that.dbObjectType);
+      if (result != 0) return result;
+      result = dbReference.compareTo(that.dbReference);
+      if (result != 0) return result;
+      result = evidenceCode.compareTo(that.evidenceCode);
+      if (result != 0) return result;
+      result = geneProductFormId.compareTo(that.geneProductFormId);
+      if (result != 0) return result;
+      result = goId.compareTo(that.goId);
+      if (result != 0) return result;
+      result = qualifier.compareTo(that.qualifier);
+      if (result != 0) return result;
+      for (int i = 0; i < this.taxons.size(); i++) {
+        String thisTaxon = this.taxons.get(i);
+        String thatTaxon = that.taxons.get(i);
+        result = thisTaxon.compareTo(thatTaxon);
+        if (result != 0)
+          return result;
+      }
+
+      return with.compareTo(that.with);
     }
 
     @Override

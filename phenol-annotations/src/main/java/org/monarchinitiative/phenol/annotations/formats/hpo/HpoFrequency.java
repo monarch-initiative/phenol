@@ -162,20 +162,27 @@ public enum HpoFrequency {
    *
    * @param percent Integer percent frequency value to convert.
    * @return Corresponding {@link HpoFrequency}.
+   * @throws
    */
-  public static HpoFrequency fromPercent(int percent) {
-    if (percent < 1) {
+  public static HpoFrequency fromPercent(double percent) {
+    if (percent < 0.)
+      throw new IllegalArgumentException(String.format("Percentage must be positive. Got %f", percent));
+
+    if (percent < 1.) {
       return EXCLUDED;
-    } else if (percent < 5) {
+    } else if (percent < 5.) {
       return VERY_RARE;
-    } else if (percent < 30) {
+    } else if (percent < 30.) {
       return OCCASIONAL;
-    } else if (percent < 80) {
+    } else if (percent < 80.) {
       return FREQUENT;
-    } else if (percent < 100) {
+    } else if (percent < 100.) {
       return VERY_FREQUENT;
-    } else {
+    } else if (percent - 100. < 1E-6) {
       return ALWAYS_PRESENT;
+    } else {
+      // must be greater than 100
+      throw new IllegalArgumentException(String.format("Percentage must be less than or equal to 100. Got %f", percent));
     }
   }
 

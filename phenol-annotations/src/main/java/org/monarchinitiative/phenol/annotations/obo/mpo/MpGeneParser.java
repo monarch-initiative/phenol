@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.obo.mpo;
 
-import com.google.common.collect.ImmutableMap;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -30,7 +29,7 @@ public class MpGeneParser {
    * @return ImmutableGenes object holding all the genes read from file
    */
   public static Map<TermId, MpGeneticMarker> loadMarkerMap(String markerPath) {
-    ImmutableMap.Builder<TermId, MpGeneticMarker> builder = ImmutableMap.builder();
+    Map<TermId, MpGeneticMarker> builder = new HashMap<>();
     try (BufferedReader br = new BufferedReader(new FileReader(markerPath))) {
       String line = br.readLine(); // skip header line
       while ((line = br.readLine()) != null) {
@@ -45,7 +44,7 @@ public class MpGeneParser {
     } catch (IOException e) {
       System.err.println("Could not read MGI Marker file" + markerPath);
     }
-    return builder.build();
+    return Map.copyOf(builder);
   }
 
 

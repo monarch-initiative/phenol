@@ -12,12 +12,12 @@ import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
-class InformationContentComputationTest extends VegetableOntologyTestBase {
+public class InformationContentComputationTest extends VegetableOntologyTestBase {
 
   private final InformationContentComputation computation = new InformationContentComputation(ontology);
 
   @Test
-  void test() {
+  public void test() {
     Map<TermId, Collection<TermId>> termLabels = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
 
@@ -34,7 +34,7 @@ class InformationContentComputationTest extends VegetableOntologyTestBase {
 
 
   @Test
-  void testMICA1() {
+  public void testMICA1() {
     Map<TermId, Collection<TermId>> termLabels = TermAnnotations.constructTermAnnotationToLabelsMap(ontology, recipeAnnotations);
     Map<TermId, Double> informationContent = computation.computeInformationContent(termLabels);
     TermId expectedMICA = idRootVegetable;

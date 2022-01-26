@@ -14,14 +14,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MpAnnotationParserTest {
+public class MpAnnotationParserTest {
 
   private static String genePhenoPath;
 
   private static String phenoSexPath;
 
   @BeforeAll
-  static void setUp() throws IOException {
+  public static void setUp() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MGI_GenePheno.rpt.excerpt");
     if (url == null) {
@@ -41,14 +41,14 @@ class MpAnnotationParserTest {
    * MGI:2166359; MGI:2167486; MGI:5306347,MGI:5433360,MGI:2169820 thus we expect to see five models
    */
   @Test
-  void testRetrieveCorrectNumberOfModels() {
+  public void testRetrieveCorrectNumberOfModels() {
     Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(genePhenoPath);
     int expected_number_of_models=5;
     assertEquals(expected_number_of_models,modelmap.size());
   }
 
   @Test
-  void testSexSpecificParser() {
+  public void testSexSpecificParser() {
     Map<TermId, MpSimpleModel> modelmap =
       MpAnnotationParser.loadIndividualModelsWithSexSpecificPhenotypes(genePhenoPath,phenoSexPath);
     TermId kit = TermId.of("MGI:2167486");
@@ -59,7 +59,7 @@ class MpAnnotationParserTest {
 
   /* This model should have 5 abnormalities. In the excerpt, none of them are listed as sexSpecific specific. */
   @Test
-  void testParseModelMgi5306347() {
+  public void testParseModelMgi5306347() {
     Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(genePhenoPath);
     TermId kit = TermId.of("MGI:5306347");
     MpSimpleModel model = modelmap.get(kit);
@@ -72,7 +72,7 @@ class MpAnnotationParserTest {
 
   /** 	MGI:5433360 has here two annotation with two PMIDs each. */
   @Test
-  void getMultiplePmid() {
+  public void getMultiplePmid() {
     Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(genePhenoPath);
     TermId kit = TermId.of("MGI:5433360");
     MpSimpleModel model = modelmap.get(kit);
@@ -90,7 +90,7 @@ class MpAnnotationParserTest {
 
 
   @Test
-  void testGetCorrectMarker() {
+  public void testGetCorrectMarker() {
     Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(genePhenoPath);
     TermId kitlGenotype = TermId.of("MGI:5306347");
     MpSimpleModel model = modelmap.get(kitlGenotype);

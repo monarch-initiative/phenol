@@ -15,14 +15,14 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <jackson.version>2.12.1</jackson.version>
     <guava.version>30.1-jre</guava.version>
     <jgrapht.version>1.5.1</jgrapht.version>
-    <slf4j.version>1.7.25</slf4j.version>
+    <slf4j.version>1.7.32</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
     <h2.version>1.4.200</h2.version>
 
@@ -91,6 +91,10 @@
       <email>daniel.danis@jax.org</email>
       <organization>The Jackson Laboratory</organization>
       <organizationUrl>https://www.jax.org</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jules Jacobsen</name>
+      <url>https://github.com/julesjacobsen</url>
     </developer>
   </developers>
 
@@ -255,9 +259,8 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
           <configuration>
-            <compilerArgument>-Xlint:all</compilerArgument>
             <showWarnings>true</showWarnings>
             <showDeprecation>true</showDeprecation>
             <source>${java.version}</source>
