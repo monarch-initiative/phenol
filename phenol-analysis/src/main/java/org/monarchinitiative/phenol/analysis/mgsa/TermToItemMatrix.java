@@ -1,9 +1,6 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -33,7 +30,7 @@ class TermToItemMatrix {
     TermToItemMatrix(GoAssociationContainer assocs) {
         Objects.requireNonNull(assocs);
         // termToGeneMultimap->key: A GO TermId; value: A Collection of Genes
-        Multimap<TermId, TermId> termToGeneMultimap = assocs.getTermToItemMultimap();
+        Map<TermId, List<TermId>> termToGeneMultimap = assocs.getOntologyTermToDomainItemsMap();
         Set<TermId> genes = assocs.getAllAnnotatedGenes();
         n_genes = genes.size();
         //In Multimap, size() returns an actual number of values stored in a Map,
@@ -41,26 +38,25 @@ class TermToItemMatrix {
         n_annotated_terms = termToGeneMultimap.keySet().size();
         // First get list and indices of the Terms
         int i = 0;
-        ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
-        ImmutableMap.Builder<TermId,Integer> mapBuilder = new ImmutableMap.Builder<>();
+        List<TermId> builder = new ArrayList<>();
+        Map<TermId, Integer> mapBuilder = new HashMap<>();
         for (TermId ontologyTermId : termToGeneMultimap.keySet()) {
           builder.add(ontologyTermId);
           mapBuilder.put(ontologyTermId, i);
           i++;
         }
-        this.goTermList = builder.build();
-        this.goTermToIndexMap = mapBuilder.build();
+        this.goTermList = List.copyOf(builder);
+        this.goTermToIndexMap = Map.copyOf(mapBuilder);
+
         // Now get list and indices of the genes
-        builder = new ImmutableList.Builder<>();
-        mapBuilder = new ImmutableMap.Builder<>();
+        mapBuilder.clear();
         i = 0;
         for (TermId gene : genes) {
-          builder.add(gene);
           mapBuilder.put(gene, i);
           i++;
         }
-        this.annotatedItemList = builder.build();
-        this.annotatedItemToIndexMap = mapBuilder.build();
+        this.annotatedItemList = List.copyOf(genes);
+        this.annotatedItemToIndexMap = Map.copyOf(mapBuilder);
         termLinks = new int[n_annotated_terms][];
         i = 0;
         for (TermId goTermId : goTermList) {

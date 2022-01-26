@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ComparisonChain;
 
 // TODO: obtain evidence code from ontology file?
 
@@ -33,14 +32,12 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /**
    * Constructor.
-   *
-   * @param entrezGeneId Numeric Entrez gene Id.
+   *  @param entrezGeneId Numeric Entrez gene Id.
    * @param entrezGeneSymbol Entrez gene symbol.
-   * @param hpoTermName HPO term name from annotation file.
    * @param hpoTermId HPO {@link TermId} of annotated HPO term.
+   * @param hpoTermName HPO term name from annotation file.
    */
-  public HpoGeneAnnotation(
-      int entrezGeneId, String entrezGeneSymbol, String hpoTermName, TermId hpoTermId) {
+  public HpoGeneAnnotation(int entrezGeneId, String entrezGeneSymbol, TermId hpoTermId, String hpoTermName) {
     this.entrezGeneId = entrezGeneId;
     this.entrezGeneSymbol = entrezGeneSymbol;
     this.hpoTermName = hpoTermName;
@@ -64,13 +61,13 @@ public final class HpoGeneAnnotation implements TermAnnotation {
 
   /** @return The annotated HPO term's {@link TermId}. */
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return hpoTermId;
   }
 
   /** @return The term's Id as string including prefix. */
   @Override
-  public TermId getLabel() {
+  public TermId getItemId() {
     return TermId.of(String.format("NCBIGene:%d", entrezGeneId));
   }
 
@@ -144,11 +141,15 @@ public final class HpoGeneAnnotation implements TermAnnotation {
     }
 
     final HpoGeneAnnotation that = (HpoGeneAnnotation) o;
-    return ComparisonChain.start()
-        .compare(this.entrezGeneId, that.entrezGeneId)
-        .compare(this.entrezGeneSymbol, that.entrezGeneSymbol)
-        .compare(this.hpoTermName, that.hpoTermName)
-        .compare(this.hpoTermId, that.hpoTermId)
-        .result();
+    int result = Integer.compare(this.entrezGeneId, that.entrezGeneId);
+    if (result != 0) return result;
+
+    result = this.entrezGeneSymbol.compareTo(that.entrezGeneSymbol);
+    if (result != 0) return result;
+
+    result = this.hpoTermName.compareTo(that.hpoTermName);
+    if (result != 0) return result;
+
+    return this.hpoTermId.compareTo(that.hpoTermId);
   }
 }

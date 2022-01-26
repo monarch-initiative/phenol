@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.cli.cmd;
 import org.monarchinitiative.phenol.cli.demo.HpDemo;
 import picocli.CommandLine;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "hp-demo",
@@ -19,7 +20,7 @@ public class HpDemoCommand implements Callable<Integer> {
 
 
   @Override
-  public Integer call() {
+  public Integer call() throws IOException {
     HpDemo hp = new HpDemo(hpoPath, annotPath);
     hp.run();
     return 0;

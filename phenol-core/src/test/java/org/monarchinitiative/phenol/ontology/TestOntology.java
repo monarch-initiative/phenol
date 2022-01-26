@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology;
 
-import com.google.common.collect.ImmutableList;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class TestOntology {
   public static final TermId TERM_ID_5 = TermId.of("HP:0000005");
 
   static {
-    ImmutableList<Term> terms = ImmutableList.of(
+    List<Term> terms = List.of(
       Term.builder()
         .id(TERM_ID_1)
         .name("term1")
@@ -51,7 +50,7 @@ public class TestOntology {
     // TODO: This is confusing as the root term here is TERM_ID_5 (HP:0000005).
     //  In the real HPO the root term is HP:0000001. The reason being that the relationships
     //  here are created backwards.
-    List<Relationship> relationships = ImmutableList.of(
+    List<Relationship> relationships = List.of(
       new Relationship(TERM_ID_1, TERM_ID_2, 1, RelationshipType.IS_A),
       new Relationship(TERM_ID_1, TERM_ID_3, 2, RelationshipType.IS_A),
       new Relationship(TERM_ID_1, TERM_ID_4, 3, RelationshipType.IS_A),

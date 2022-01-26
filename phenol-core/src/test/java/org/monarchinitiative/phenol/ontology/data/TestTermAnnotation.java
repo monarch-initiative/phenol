@@ -1,14 +1,15 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import com.google.common.collect.ComparisonChain;
+
+import java.util.Objects;
 
 public class TestTermAnnotation implements TermAnnotation {
 
   private static final long serialVersionUID = 1L;
 
-  private TermId termId;
-  private TermId label;
+  private final TermId termId;
+  private final TermId label;
 
   public TestTermAnnotation(TermId termId, TermId label) {
     this.termId = termId;
@@ -16,13 +17,26 @@ public class TestTermAnnotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return termId;
   }
 
   @Override
-  public TermId getLabel() {
+  public TermId getItemId() {
     return label;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TestTermAnnotation that = (TestTermAnnotation) o;
+    return Objects.equals(termId, that.termId) && Objects.equals(label, that.label);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(termId, label);
   }
 
   @Override
@@ -32,10 +46,9 @@ public class TestTermAnnotation implements TermAnnotation {
     }
     TestTermAnnotation that = (TestTermAnnotation) o;
 
-    return ComparisonChain.start()
-        .compare(this.termId, that.termId)
-        .compare(this.label, that.label)
-        .result();
+    int result = termId.compareTo(that.termId);
+    if (result != 0) return result;
+    return label.compareTo(that.label);
   }
 
   @Override

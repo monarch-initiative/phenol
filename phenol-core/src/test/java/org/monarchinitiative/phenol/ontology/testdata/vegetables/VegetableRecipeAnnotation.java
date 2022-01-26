@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ComparisonChain;
 
 /**
  * Annotate that a vegetable is used in a recipe.
@@ -23,12 +22,12 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
   }
 
   @Override
-  public TermId getTermId() {
+  public TermId id() {
     return termId;
   }
 
   @Override
-  public TermId getLabel() {
+  public TermId getItemId() {
     return label;
   }
 
@@ -39,10 +38,9 @@ public class VegetableRecipeAnnotation implements TermAnnotation {
     }
     VegetableRecipeAnnotation that = (VegetableRecipeAnnotation) o;
 
-    return ComparisonChain.start()
-        .compare(this.termId, that.termId)
-        .compare(this.label, that.label)
-        .result();
+    int result = termId.compareTo(that.termId);
+    if (result != 0) return result;
+    return label.compareTo(that.label);
   }
 
   @Override

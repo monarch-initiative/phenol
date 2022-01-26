@@ -1,9 +1,11 @@
 package org.monarchinitiative.phenol.cli.cmd;
 
 
-import org.monarchinitiative.phenol.cli.demo.ResnikGenebasedHpoDemo;
+import org.monarchinitiative.phenol.cli.demo.ResnikGeneBasedHpoDemo;
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 @CommandLine.Command(name = "resnik",
   mixinStandardHelpOptions = true,
@@ -11,18 +13,18 @@ import java.util.concurrent.Callable;
 public class ResnikCommand implements Callable<Integer> {
 
   @CommandLine.Option(names = {"-h"}, description = "path to hp.obo file", required = true)
-  private String hpoPath;
+  public Path hpoPath;
   @CommandLine.Option(names = "-a", description = "path to phenotype.hpoa file", required = true)
-  private String phenotypeDotHpoaPath;
+  public Path phenotypeDotHpoaPath;
   @CommandLine.Option(names = "--geneinfo", description = "path to downloaded file ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens_gene_info.gz")
-  private String geneInfoPath;
+  public Path geneInfoPath;
   @CommandLine.Option(names = "--mimgene2medgen", description = "path to downloaded file from ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen")
-  private String mim2genMedgenPath;
+  public Path mim2genMedgenPath;
 
 
   @Override
-  public Integer call() {
-    ResnikGenebasedHpoDemo resnik = new ResnikGenebasedHpoDemo(hpoPath, phenotypeDotHpoaPath, geneInfoPath, mim2genMedgenPath);
+  public Integer call() throws IOException {
+    ResnikGeneBasedHpoDemo resnik = new ResnikGeneBasedHpoDemo(hpoPath, phenotypeDotHpoaPath, geneInfoPath, mim2genMedgenPath);
     resnik.run();
     return 0;
   }

@@ -1,13 +1,16 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
+import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.annotations.obo.hpo.HpoDiseaseAnnotationParser;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +33,7 @@ public class HpDemo {
   }
 
 
-  public void run() {
+  public void run() throws IOException {
     Ontology hpo = OntologyLoader.loadOntology(new File(hpoPath));
     TermId rootTermId = hpo.getRootTermId();
     String rootLabel = hpo.getTermMap().get(rootTermId).getName();
@@ -79,8 +82,8 @@ public class HpDemo {
       System.out.println("\t" + sset);
     }
 
-    Map<TermId, HpoDisease> diseaseMap = HpoDiseaseAnnotationParser.loadDiseaseMap(annotPath,hpo);
-    System.out.println("Imported " + diseaseMap.size() + " disease models");
+    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(Paths.get(annotPath), hpo, Set.of(DiseaseDatabase.OMIM, DiseaseDatabase.ORPHANET, DiseaseDatabase.DECIPHER));
+    System.out.println("Imported " + hpoDiseases.size() + " disease models");
 
   }
 

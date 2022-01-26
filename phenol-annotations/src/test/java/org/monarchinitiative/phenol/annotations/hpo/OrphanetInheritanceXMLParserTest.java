@@ -2,13 +2,13 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.formats.hpo.category.HpoCategoryMapTest;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,23 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
 import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
 
-class OrphanetInheritanceXMLParserTest {
+public class OrphanetInheritanceXMLParserTest {
 
-
-  static private OrphanetInheritanceXMLParser parser;
+  private static OrphanetInheritanceXMLParser parser;
 
   @BeforeAll
-  private static void init()  {
-    Path orphaXMLpath = Paths.get("src", "test", "resources", "annotations", "en_product9_ages-small.xml");
-    //orphaXMLpath = Paths.get("..","en_product9_ages.xml");
-    Path hpOboPath = Paths.get("src", "test", "resources",  "hp_head.obo");
-    Ontology ontology = OntologyLoader.loadOntology(hpOboPath.toFile());
-    try {
-      parser = new OrphanetInheritanceXMLParser(orphaXMLpath.toAbsolutePath().toString(), ontology);
-    } catch (Exception e) {
-      System.err.println("Could not parse Orpha " + e.getMessage());
-      throw e;
-    }
+  public static void init() throws Exception {
+    File file = new File(OrphanetInheritanceXMLParserTest.class.getResource("/hpo_toy.json").getFile());
+    Ontology hpoOntology = OntologyLoader.loadOntology(file);
+
+    URL orphaURL = HpoCategoryMapTest.class.getResource("/annotations/en_product9_ages-small.xml");
+    parser = new OrphanetInheritanceXMLParser(orphaURL.getFile(), hpoOntology);
+
   }
 
   List<HpoAnnotationEntry> getModesIfInheritance(TermId diseaseId) {
@@ -45,7 +40,7 @@ class OrphanetInheritanceXMLParserTest {
   }
 
   @Test
-  void testNotNull() {
+  public void testNotNull() {
     assertNotNull(parser);
   }
 
@@ -53,7 +48,7 @@ class OrphanetInheritanceXMLParserTest {
   166024: Multiple epiphyseal dysplasia, Al-Gazali type has one MoI: autosomal recessive
    */
   @Test
-  void testMED_AlGazali() {
+  public void testMED_AlGazali() {
     TermId diseaseId = TermId.of("ORPHA:166024");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertEquals(1,entrylist.size());
@@ -72,7 +67,7 @@ class OrphanetInheritanceXMLParserTest {
   Has no inheritance annotations
    */
   @Test
-  void testMED_miniepiphyses() {
+  public void testMED_miniepiphyses() {
     TermId diseaseId = TermId.of("ORPHA:166032");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertTrue(entrylist.isEmpty());
@@ -82,7 +77,7 @@ class OrphanetInheritanceXMLParserTest {
   58:Alexander disease  autosomal dominant
    */
   @Test
-  void testAlexander() {
+  public void testAlexander() {
     TermId diseaseId = TermId.of("ORPHA:58");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertEquals(1,entrylist.size());
@@ -100,7 +95,7 @@ class OrphanetInheritanceXMLParserTest {
    Has no inheritance annotations
    */
   @Test
-  void testMED_severeProximalFemoralDysplasia() {
+  public void testMED_severeProximalFemoralDysplasia() {
     TermId diseaseId = TermId.of("ORPHA:166029");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertTrue(entrylist.isEmpty());
@@ -111,7 +106,7 @@ class OrphanetInheritanceXMLParserTest {
   *  61:Alpha-mannosidosis: autosomal recessive
    */
   @Test
-  void testAlphaMannosidosis() {
+  public void testAlphaMannosidosis() {
     TermId diseaseId = TermId.of("ORPHA:61");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertEquals(1,entrylist.size());
@@ -128,7 +123,7 @@ class OrphanetInheritanceXMLParserTest {
   98994: Total early-onset cataract: both recessive and dominant
    */
   @Test
-  void testTotalEarlyOnsetCataract() {
+  public void testTotalEarlyOnsetCataract() {
     TermId diseaseId = TermId.of("ORPHA:98994");
     List<HpoAnnotationEntry> entrylist = getModesIfInheritance(diseaseId);
     assertEquals(2,entrylist.size());

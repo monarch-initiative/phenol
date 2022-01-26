@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -15,9 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.*;
 
@@ -38,7 +34,7 @@ public class OrphanetInheritanceXMLParser {
    * Key: an Orphanet disease id; value: an array list of HpoAnnotations, one for each inheritance mode
    * that is associated with the disease.
    */
-  private final Multimap<TermId, HpoAnnotationEntry> disease2inheritanceMultimap;
+  private final Map<TermId, Collection<HpoAnnotationEntry>> disease2inheritanceMultimap;
   // XML Parsing
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaNumber";
@@ -78,12 +74,12 @@ public class OrphanetInheritanceXMLParser {
     String todaysDate = getTodaysDate();
     errorlist = new ArrayList<>();
     orphanetBiocurationString = String.format("ORPHA:orphadata[%s]", todaysDate);
-    disease2inheritanceMultimap = ArrayListMultimap.create();
+    disease2inheritanceMultimap = new HashMap<>();
     parse(new File(orphanetXmlPath));
   }
 
 
-  public Multimap<TermId, HpoAnnotationEntry> getDisease2inheritanceMultimap() {
+  public Map<TermId, Collection<HpoAnnotationEntry>> getDisease2inheritanceMultimap() {
     return disease2inheritanceMultimap;
   }
 
@@ -151,7 +147,8 @@ public class OrphanetInheritanceXMLParser {
               hpoInheritanceId,
               hpoLabel,
               orphanetBiocurationString);
-            this.disease2inheritanceMultimap.put(disId, entry);
+            disease2inheritanceMultimap.computeIfAbsent(disId, key -> new HashSet<>())
+              .add(entry);
           } else if (localPart.equals(AVERAGE_AGE_OF_ONSET_LIST)) {
             inAverageAgeOfOnsetList = true;
           } else if (localPart.equals(AVERAGE_AGE_OF_DEATH_LIST)) {

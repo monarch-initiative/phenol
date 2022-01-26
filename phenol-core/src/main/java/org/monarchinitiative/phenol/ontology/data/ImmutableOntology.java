@@ -1,21 +1,19 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.*;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
+import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.stream.Collectors.toSet;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of an immutable {@link Ontology}.
@@ -30,8 +28,10 @@ public class ImmutableOntology implements Ontology {
 
   private static final Logger logger = LoggerFactory.getLogger(ImmutableOntology.class);
 
-  /** Meta information, as loaded from file. */
-  private final ImmutableSortedMap<String, String> metaInfo;
+  /**
+   * Meta information, as loaded from file.
+   */
+  private final SortedMap<String, String> metaInfo;
 
   /** The graph storing the ontology's structure. */
   private final DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
@@ -39,76 +39,83 @@ public class ImmutableOntology implements Ontology {
   /** Id of the root term. */
   private final TermId rootTermId;
 
-  /** The mapping from TermId to TermI for all terms. */
-  private final ImmutableMap<TermId, Term> termMap;
+  /**
+   * The mapping from TermId to TermI for all terms.
+   */
+  private final Map<TermId, Term> termMap;
 
-  /** Set of non-obselete term ids, separate so maps can remain for sub ontology construction. */
-  private final ImmutableSet<TermId> nonObsoleteTermIds;
+  /**
+   * Set of non-obselete term ids, separate so maps can remain for sub ontology construction.
+   */
+  private final Set<TermId> nonObsoleteTermIds;
 
-  /** Set of obselete term ids, separate so maps can remain for sub ontology construction. These are the alt_id entries */
-  private final ImmutableSet<TermId> obsoleteTermIds;
+  /**
+   * Set of obselete term ids, separate so maps can remain for sub ontology construction. These are the alt_id entries
+   */
+  private final Set<TermId> obsoleteTermIds;
 
-  /** Set of all term IDs. */
-  private final ImmutableSet<TermId> allTermIds;
+  /**
+   * Set of all term IDs.
+   */
+  private final Set<TermId> allTermIds;
 
-  /** The mapping from edge Id to relationship. */
-  private final ImmutableMap<Integer, Relationship> relationMap;
+  /**
+   * The mapping from edge Id to relationship.
+   */
+  private final Map<Integer, Relationship> relationMap;
 
-  /** Precomputed ancestors (including vertex itself). */
-  private final ImmutableMap<TermId, ImmutableSet<TermId>> precomputedAncestors;
+  /**
+   * Precomputed ancestors (including vertex itself).
+   */
+  private final Map<TermId, Set<TermId>> precomputedAncestors;
 
   /**
    * Constructor.
    *
-   * @param metaInfo {@link ImmutableMap} with meta information.
-   * @param graph Graph to use for underlying structure.
-   * @param rootTermId Root node's {@link TermId}.
+   * @param metaInfo           {@link Map} with meta information.
+   * @param graph              Graph to use for underlying structure.
+   * @param rootTermId         Root node's {@link TermId}.
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
-   * @param obsoleteTermIds {@link Collection} of {@link TermId}s of obsolete terms.
-   * @param termMap Mapping from {@link TermId} to <code>T</code>.
-   * @param relationMap Mapping from numeric edge Id to <code>R</code>.
+   * @param obsoleteTermIds    {@link Collection} of {@link TermId}s of obsolete terms.
+   * @param termMap            Mapping from {@link TermId} to <code>T</code>.
+   * @param relationMap        Mapping from numeric edge Id to <code>R</code>.
    */
-  public ImmutableOntology(
-      ImmutableSortedMap<String, String> metaInfo,
-      DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
-      TermId rootTermId,
-      Collection<TermId> nonObsoleteTermIds,
-      Collection<TermId> obsoleteTermIds,
-      ImmutableMap<TermId, Term> termMap,
-      ImmutableMap<Integer, Relationship> relationMap) {
-    this.metaInfo = metaInfo;
-    this.graph = graph;
-    this.rootTermId = rootTermId;
-    this.termMap = termMap;
-    this.nonObsoleteTermIds = ImmutableSet.copyOf(nonObsoleteTermIds);
-    this.obsoleteTermIds = ImmutableSet.copyOf(obsoleteTermIds);
-    this.allTermIds =
-        ImmutableSet.copyOf(Sets.union(this.nonObsoleteTermIds, this.obsoleteTermIds));
-    this.relationMap = relationMap;
-    this.precomputedAncestors = precomputeAncestors();
+  private ImmutableOntology(SortedMap<String, String> metaInfo,
+                            DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
+                            TermId rootTermId,
+                            Set<TermId> nonObsoleteTermIds,
+                            Set<TermId> obsoleteTermIds,
+                            Map<TermId, Term> termMap,
+                            Map<Integer, Relationship> relationMap) {
+    this.metaInfo = Objects.requireNonNull(metaInfo, "Meta info must not be null");
+    this.graph = Objects.requireNonNull(graph, "Graph must not be null");
+    this.rootTermId = Objects.requireNonNull(rootTermId, "Root term ID must not be null");
+    this.termMap = Objects.requireNonNull(termMap, "Term map must not be null");
+    this.nonObsoleteTermIds = Objects.requireNonNull(nonObsoleteTermIds, "Non-obsolete term IDs must not be null");
+    this.obsoleteTermIds = Objects.requireNonNull(obsoleteTermIds, "Obsolete term IDs must not be null");
+    this.allTermIds = Set.copyOf(Sets.union(nonObsoleteTermIds, obsoleteTermIds));
+    this.relationMap = Objects.requireNonNull(relationMap, "Relation map must not be null");
+    this.precomputedAncestors = precomputeAncestors(graph);
   }
 
   /**
    * @return Precomputed map from term id to list of ancestor term ids (a term is its own ancestor).
    */
-  private ImmutableMap<TermId, ImmutableSet<TermId>> precomputeAncestors() {
-    final ImmutableMap.Builder<TermId, ImmutableSet<TermId>> mapBuilder = ImmutableMap.builder();
+  private static Map<TermId, Set<TermId>> precomputeAncestors(DefaultDirectedGraph<TermId, IdLabeledEdge> graph) {
+    Map<TermId, Set<TermId>> mapBuilder = new HashMap<>();
 
+    Set<TermId> ancestors = new HashSet<>(20);
     for (TermId termId : graph.vertexSet()) {
-      final ImmutableSet.Builder<TermId> setBuilder = ImmutableSet.builder();
       BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
-      bfs.startFromForward(
-        graph,
-        termId,
-        (g, v) -> {
-          setBuilder.add(v);
-          return true;
-        });
-
-      mapBuilder.put(termId, setBuilder.build());
+      bfs.startFromForward(graph, termId, (g, v) -> {
+        ancestors.add(v);
+        return true;
+      });
+      mapBuilder.put(termId, Set.copyOf(ancestors));
+      ancestors.clear();
     }
 
-    return mapBuilder.build();
+    return Map.copyOf(mapBuilder);
   }
 
   @Override
@@ -140,14 +147,19 @@ public class ImmutableOntology implements Ontology {
   public Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot) {
     final TermId primaryTermId = getPrimaryTermId(termId);
     if (primaryTermId == null) {
-      return ImmutableSet.of();
+      return Set.of();
     }
 
-    final ImmutableSet<TermId> precomputed = precomputedAncestors.getOrDefault(termId, ImmutableSet.of());
+    Set<TermId> precomputed = precomputedAncestors.getOrDefault(termId, Set.of());
     if (includeRoot) {
       return precomputed;
     } else {
-      return ImmutableSet.copyOf(Sets.difference(precomputed, ImmutableSet.of(rootTermId)));
+      Set<TermId> builder = new HashSet<>(precomputed.size() - 1);
+      for (TermId term : precomputed) {
+        if (!rootTermId.equals(term))
+          builder.add(term);
+      }
+      return Set.copyOf(builder);
     }
   }
 
@@ -203,45 +215,39 @@ public class ImmutableOntology implements Ontology {
 
   @Override
   public Ontology subOntology(TermId subOntologyRoot) {
-    final Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
-    final DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph = GraphUtil.subGraph(graph, childTermIds);
+    Set<TermId> childTermIds = OntologyTerms.childrenOf(subOntologyRoot, this);
+    DefaultDirectedGraph<TermId, IdLabeledEdge> subGraph = GraphUtil.subGraph(graph, childTermIds);
     Set<TermId> intersectingTerms = Sets.intersection(nonObsoleteTermIds, childTermIds);
 
-    // make sure the TermI map contains only terms from the subontology
-    final ImmutableMap.Builder<TermId, Term> termBuilder = ImmutableMap.builder();
+    // make sure the TermId map contains only terms from the subontology
+    Map<TermId, Term> termBuilder = new HashMap<>();
     for (TermId tid : intersectingTerms) {
       termBuilder.put(tid, termMap.get(tid));
     }
+    Map<TermId, Term> subsetTermMap = Map.copyOf(termBuilder);
 
-    ImmutableMap<TermId, Term> subsetTermMap = termBuilder.build();
     // Only retain relations where both source and destination are terms in the subontology
-    final ImmutableMap.Builder<Integer, Relationship> relationBuilder = ImmutableMap.builder();
-    for (Map.Entry<Integer, Relationship> entry : relationMap.entrySet() ) {
+    Map<Integer, Relationship> relationBuilder = new HashMap<>();
+    for (Map.Entry<Integer, Relationship> entry : relationMap.entrySet()) {
       Relationship tr = entry.getValue();
       if (subsetTermMap.containsKey(tr.getSource()) && subsetTermMap.containsKey(tr.getTarget())) {
         relationBuilder.put(entry.getKey(), entry.getValue());
       }
     }
-    // Note: natural order returns a builder whose keys are ordered by their natural ordering.
-    final ImmutableSortedMap.Builder<String, String> metaInfoBuilder = ImmutableSortedMap.naturalOrder();
-    for (Map.Entry<String, String> entry : metaInfo.entrySet()) {
-      metaInfoBuilder.put(entry.getKey(), entry.getValue());
-    }
-    metaInfoBuilder.put(
-        "provenance",
-        String.format(
-            "Ontology created as a subset from original ontology with root %s",
-            getTermMap().get(rootTermId).getName()));
-    ImmutableSortedMap<String, String> extendedMetaInfo = metaInfoBuilder.build();
+    Map<Integer, Relationship> relationMap = Map.copyOf(relationBuilder);
 
-    return new ImmutableOntology(
-        extendedMetaInfo,
-        subGraph,
-        subOntologyRoot,
-        intersectingTerms,
-        Sets.intersection(obsoleteTermIds, childTermIds),
-        subsetTermMap,
-        relationBuilder.build());
+    // Note: natural order returns a builder whose keys are ordered by their natural ordering.
+    SortedMap<String, String> metaInfoBuilder = new TreeMap<>();
+    metaInfoBuilder.putAll(metaInfo);
+    metaInfoBuilder.put("provenance", String.format("Ontology created as a subset from original ontology with root %s", getTermMap().get(rootTermId).getName()));
+
+    return new ImmutableOntology(Collections.unmodifiableSortedMap(metaInfoBuilder),
+      subGraph,
+      subOntologyRoot,
+      intersectingTerms,
+      Sets.intersection(obsoleteTermIds, childTermIds),
+      subsetTermMap,
+      relationMap);
   }
 
   @Override
@@ -258,25 +264,28 @@ public class ImmutableOntology implements Ontology {
   }
 
   public static class Builder {
-    private Map<String, String> metaInfo = new LinkedHashMap<>();
-    private Collection<Term> terms = new ArrayList<>();
-    private Collection<Relationship> relationships = new ArrayList<>();
+    private final SortedMap<String, String> metaInfo = new TreeMap<>();
+    private final Collection<Term> terms = new ArrayList<>();
+    private final Collection<Relationship> relationships = new ArrayList<>();
+
+    private Builder() {
+    }
 
     public Builder metaInfo(Map<String, String> metaInfo) {
       Objects.requireNonNull(metaInfo);
-      this.metaInfo = new LinkedHashMap<>(metaInfo);
+      this.metaInfo.putAll(metaInfo);
       return this;
     }
 
     public Builder terms(Collection<Term> terms) {
       Objects.requireNonNull(terms);
-      this.terms = new ArrayList<>(terms);
+      this.terms.addAll(terms);
       return this;
     }
 
     public Builder relationships(Collection<Relationship> relationships) {
       Objects.requireNonNull(relationships);
-      this.relationships = new ArrayList<>(relationships);
+      this.relationships.addAll(relationships);
       return this;
     }
 
@@ -286,41 +295,36 @@ public class ImmutableOntology implements Ontology {
       // WARNING - this method could mutate the terms and relationships, so DO NOT MOVE THIS METHOD CALL!
       TermId rootId = findRootTermId();
 
-      // Term ids of non-obsolete Terms
-      Set<TermId> nonObsoleteTermIds = Sets.newHashSet();
-      // Key: a TermId; value: corresponding Term object
-      Map<TermId, Term> termsMap = Maps.newTreeMap();
+      Set<TermId> obsoleteTermIds = new HashSet<>();
+      Set<TermId> nonObsoleteTermIds = new HashSet<>();
+      Map<TermId, Term> nonObsoleteTerms = new HashMap<>();
 
       for (Term term : terms) {
-        if (!term.isObsolete()) {
-          TermId termId = term.getId();
+        if (term.isObsolete()) {
+          obsoleteTermIds.add(term.id());
+        } else {
+          TermId termId = term.id();
           nonObsoleteTermIds.add(termId);
-          termsMap.put(termId, term);
+          nonObsoleteTerms.put(termId, term);
           for (TermId alternateId : term.getAltTermIds()) {
-            termsMap.put(alternateId, term);
+            nonObsoleteTerms.put(alternateId, term);
           }
         }
       }
-      // Term ids of obsolete Terms
-      Set<TermId> obsoleteTermIds = terms.stream()
-        .filter(Term::isObsolete)
-        .map(Term::getId)
-        .collect(toSet());
 
       // The relations are numbered incrementally--this is the key, and the value is the corresponding relation.
       Map<Integer, Relationship> relationshipMap = relationships.stream()
-        .collect(Collectors.toMap(Relationship::getId, Function.identity()));
+        .collect(Collectors.toUnmodifiableMap(Relationship::getId, Function.identity()));
 
       DefaultDirectedGraph<TermId, IdLabeledEdge> phenolGraph = makeDefaultDirectedGraph(nonObsoleteTermIds, relationships);
 
-      return new ImmutableOntology(
-        ImmutableSortedMap.copyOf(metaInfo),
+      return new ImmutableOntology(Collections.unmodifiableSortedMap(metaInfo),
         phenolGraph,
         rootId,
         nonObsoleteTermIds,
         obsoleteTermIds,
-        ImmutableMap.copyOf(termsMap),
-        ImmutableMap.copyOf(relationshipMap));
+        Map.copyOf(nonObsoleteTerms),
+        relationshipMap);
     }
 
     private DefaultDirectedGraph<TermId, IdLabeledEdge> makeDefaultDirectedGraph(Set<TermId> nonObsoleteTermIds, Collection<Relationship> relationships) {
@@ -353,15 +357,15 @@ public class ImmutableOntology implements Ontology {
       // As per suggestion https://github.com/monarch-initiative/phenol/issues/163#issuecomment-452880405
       // We'll use owl:Thing instead of ID:0000000 so as not to potentially conflict with an existing term id.
       Term artificialRootTerm = Term.of(TermId.of("owl", "Thing"), "artificial root term");
-      logger.debug("Created new artificial root term {} {}", artificialRootTerm.getId(), artificialRootTerm.getName());
+      logger.debug("Created new artificial root term {} {}", artificialRootTerm.id(), artificialRootTerm.getName());
       addArtificialRootTerm(artificialRootTerm, rootCandidates);
 
-      return artificialRootTerm.getId();
+      return artificialRootTerm.id();
     }
 
     private List<TermId> findRootCandidates(Collection<Relationship> relationships) {
-      Set<TermId> rootCandidateSet = Sets.newHashSet();
-      Set<TermId> removeMarkSet = Sets.newHashSet();
+      Set<TermId> rootCandidateSet = new HashSet<>();
+      Set<TermId> removeMarkSet = new HashSet<>();
       for (Relationship relationship : relationships) {
         TermId subjectTermId = relationship.getSource();
         TermId objectTermId = relationship.getTarget();
@@ -381,7 +385,7 @@ public class ImmutableOntology implements Ontology {
       for (TermId rootCandidate : rootCandidates) {
         IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
         //Note-for the "artificial root term, we use the IS_A relation
-        Relationship relationship = new Relationship(rootCandidate, rootTerm.getId(), idLabeledEdge.getId(), RelationshipType.IS_A);
+        Relationship relationship = new Relationship(rootCandidate, rootTerm.id(), idLabeledEdge.getId(), RelationshipType.IS_A);
         logger.debug("Adding new artificial root relationship {}", relationship);
         relationships.add(relationship);
       }

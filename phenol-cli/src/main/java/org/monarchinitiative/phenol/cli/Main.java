@@ -7,7 +7,9 @@ import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "phenol demo", mixinStandardHelpOptions = true, version = "0.0.1",
+@CommandLine.Command(name = "phenol demo",
+  mixinStandardHelpOptions = true,
+  version = "0.0.1",
   description = "phenol demo programs")
 public class Main implements Callable<Integer> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);

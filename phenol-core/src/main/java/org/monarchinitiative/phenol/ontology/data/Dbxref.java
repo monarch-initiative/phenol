@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /**
@@ -17,7 +16,7 @@ public class Dbxref {
   private final String description;
 
   /** Trailing modifier information. */
-  private final ImmutableMap<String, String> trailingModifiers;
+  private final Map<String, String> trailingModifiers;
 
   /**
    * Construct with the given values.
@@ -30,9 +29,9 @@ public class Dbxref {
     this.name = name;
     this.description = description;
     if (trailingModifiers != null) {
-      this.trailingModifiers = ImmutableMap.copyOf(trailingModifiers);
+      this.trailingModifiers = Map.copyOf(trailingModifiers);
     } else {
-      this.trailingModifiers = null;
+      this.trailingModifiers = Map.of();
     }
   }
 

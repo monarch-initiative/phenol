@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  *
  */
-class MpGeneParserTest {
+public class MpGeneParserTest {
 
   private static Map<TermId, MpGeneticMarker> mpgenemap;
   private static String MGI_genePhenoPath;
 
   @BeforeAll
-  static void setup() throws IOException {
+  public static void setup() throws IOException {
     ClassLoader classLoader = MpGeneParserTest.class.getClassLoader();
     URL url = classLoader.getResource("mgi/MRK_List2.rpt.excerpt");
     if (url == null) {
@@ -48,7 +48,7 @@ class MpGeneParserTest {
    * // MGI:1341858 is a 03B03F BAC/YAC
    */
   @Test
-  void parseMarkersTest() {
+  public void parseMarkersTest() {
     TermId tid = TermId.of("MGI:1341858");
     MpGeneticMarker g = mpgenemap.get(tid);
     assertNotNull(g);
@@ -64,7 +64,7 @@ class MpGeneParserTest {
    */
 
   @Test
-  void testMergeGetsCorrectGeneId() {
+  public void testMergeGetsCorrectGeneId() {
     Map<TermId, MpSimpleModel> modelmap = MpAnnotationParser.loadIndividualModels(MGI_genePhenoPath);
     List<MpSimpleModel> rb1Models = new ArrayList<>();
     TermId rb1Id = TermId.of("MGI:97874");
@@ -81,7 +81,7 @@ class MpGeneParserTest {
   }
 
   @Test
-  void ifHeritablePhenotypicMarker_isNotGene_thenOK() {
+  public void ifHeritablePhenotypicMarker_isNotGene_thenOK() {
     TermId tid = TermId.of("MGI:3578159"); // marker is Gene	heritable phenotypic marker
     MpGeneticMarker g = mpgenemap.get(tid);
     assertNotNull(g);

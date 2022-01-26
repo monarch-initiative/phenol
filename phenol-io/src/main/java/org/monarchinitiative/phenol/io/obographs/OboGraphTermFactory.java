@@ -1,15 +1,15 @@
 package org.monarchinitiative.phenol.io.obographs;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-import org.geneontology.obographs.model.Meta;
-import org.geneontology.obographs.model.Node;
-import org.geneontology.obographs.model.meta.BasicPropertyValue;
-import org.geneontology.obographs.model.meta.DefinitionPropertyValue;
-import org.geneontology.obographs.model.meta.SynonymPropertyValue;
-import org.geneontology.obographs.model.meta.XrefPropertyValue;
+import org.geneontology.obographs.core.model.Meta;
+import org.geneontology.obographs.core.model.Node;
+import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
+import org.geneontology.obographs.core.model.meta.DefinitionPropertyValue;
+import org.geneontology.obographs.core.model.meta.SynonymPropertyValue;
+import org.geneontology.obographs.core.model.meta.XrefPropertyValue;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,15 +87,15 @@ public class OboGraphTermFactory {
 
   private List<SimpleXref> convertToXrefs(DefinitionPropertyValue definitionPropertyValue) {
     if (definitionPropertyValue == null) {
-      return ImmutableList.of();
+      return List.of();
     }
 
     List<String> xrefs = definitionPropertyValue.getXrefs();
     if (xrefs == null) {
-      return ImmutableList.of();
+      return List.of();
     }
 
-    ImmutableList.Builder<SimpleXref> simpleXrefBuilder = new ImmutableList.Builder<>();
+    List<SimpleXref> simpleXrefBuilder = new ArrayList<>();
     for (String xref : xrefs) {
       SimpleXref sxref = new SimpleXref(xref);
       if (sxref.isValid()) { // Add Xrefs that we might want to reference later on
@@ -103,25 +103,24 @@ public class OboGraphTermFactory {
         simpleXrefBuilder.add(sxref);
       }
     }
-    return simpleXrefBuilder.build();
+    return List.copyOf(simpleXrefBuilder);
   }
 
   /** @return list of synoynms (can be an empty list but cannot be null). */
   private List<TermSynonym> convertToSynonyms(List<SynonymPropertyValue> spvs) {
-    if (spvs == null) return ImmutableList.of();
-    ImmutableList.Builder<TermSynonym> termSynonymBuilder = new ImmutableList.Builder<>();
+    if (spvs == null) return List.of();
+    List<TermSynonym> termSynonymBuilder = new ArrayList<>();
     for (SynonymPropertyValue spv : spvs) {
 
       // Map the scope of Synonym
       TermSynonymScope scope = null;
-      String pred = spv.getPred();
-      if (pred.equals(SynonymPropertyValue.PREDS.hasExactSynonym.toString())) {
+      if (spv.isExact()) {
         scope = TermSynonymScope.EXACT;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasBroadSynonym.toString())) {
+      } else if (spv.isBroad()) {
         scope = TermSynonymScope.BROAD;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasNarrowSynonym.toString())) {
+      } else if (spv.isNarrow()) {
         scope = TermSynonymScope.NARROW;
-      } else if (pred.equals(SynonymPropertyValue.PREDS.hasRelatedSynonym.toString())) {
+      } else if (spv.isRelated()) {
         scope = TermSynonymScope.RELATED;
       }
       String synonymType = spv.getSynonymType();
@@ -137,7 +136,7 @@ public class OboGraphTermFactory {
       termSynonymBuilder.add(its);
     }
 
-    return termSynonymBuilder.build();
+    return List.copyOf(termSynonymBuilder);
   }
   /**
    * We try to map the cross references to Curies, e.g., ORCID:0000-0000-0000-0123.
@@ -147,7 +146,7 @@ public class OboGraphTermFactory {
    * @return list of cross references as {@link TermXref} objects. Can be empty but not null.
    */
   private List<TermXref> mapXref(List<String>  xrefs) {
-    ImmutableList.Builder<TermXref> termXrefBuilder = new ImmutableList.Builder<>();
+    List<TermXref> termXrefBuilder = new ArrayList<>();
     for (String xref : xrefs) {
       try {
         TermId xrefTermId = TermId.of(xref);
@@ -158,21 +157,21 @@ public class OboGraphTermFactory {
       }
     }
 
-    return termXrefBuilder.build();
+    return List.copyOf(termXrefBuilder);
   }
 
   private List<Dbxref> convertToDbXrefs(List<XrefPropertyValue> xrefPropertyValues) {
     if (xrefPropertyValues == null || xrefPropertyValues.isEmpty()) {
-      return ImmutableList.of();
+      return List.of();
     }
 
-    ImmutableList.Builder<Dbxref> dbxrefs = new ImmutableList.Builder<>();
+    List<Dbxref> dbxrefs = new ArrayList<>();
     for (XrefPropertyValue xrefPropertyValue : xrefPropertyValues) {
       String val = xrefPropertyValue.getVal();
       if (val == null) continue;
       dbxrefs.add(new Dbxref(val, null, null));
     }
-    return dbxrefs.build();
+    return List.copyOf(dbxrefs);
   }
 
 
@@ -194,17 +193,17 @@ public class OboGraphTermFactory {
 
   private List<TermId> convertToAltIds(List<BasicPropertyValue> basicPropertyValues) {
     if (basicPropertyValues == null || basicPropertyValues.isEmpty()) {
-      return ImmutableList.of();
+      return List.of();
     }
 
-    ImmutableList.Builder<TermId> altIdsBuilder = new ImmutableList.Builder<>();
+    List<TermId> altIdsBuilder = new ArrayList<>();
     for (BasicPropertyValue bpv : basicPropertyValues) {
       if ("http://www.geneontology.org/formats/oboInOwl#hasAlternativeId".equals(bpv.getPred())) {
         String altId = bpv.getVal();
         altIdsBuilder.add(TermId.of(altId));
       }
     }
-    return altIdsBuilder.build();
+    return List.copyOf(altIdsBuilder);
   }
 
 }

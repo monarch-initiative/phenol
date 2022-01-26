@@ -3,6 +3,14 @@ Changelog
 =========
 
 ------
+v2.0.0
+------
+- Upgrade to Java 11+, adding JPMS
+- Support for GO GAF 2.2 files
+- Dropping support for reading OBO/OWL ontologies
+
+
+------
 v1.6.3
 ------
 - added class for efficient precalculation of Resnik scores for HPO

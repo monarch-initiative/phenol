@@ -1,8 +1,6 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import org.monarchinitiative.phenol.annotations.formats.Gene;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -13,9 +11,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 /**
  * This class parses the Orphanet file that contains the disease to gene associations (en_product6.xml).
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class OrphaGeneToDiseaseParser {
-  private final static Logger logger = LoggerFactory.getLogger(OrphaGeneToDiseaseParser.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(OrphaGeneToDiseaseParser.class);
   private static final String DISORDER = "Disorder";
   private static final String ORPHA_NUMBER = "OrphaCode";
   private static final String GENE_LIST = "GeneList";
@@ -37,77 +37,28 @@ public class OrphaGeneToDiseaseParser {
   private static final String REFERENCE = "Reference";
   private static final String SOURCE = "Source";
 
-  private boolean inDisorder = false;
-  private boolean inGeneList = false;
-  private boolean inGene = true;
-  private boolean inDisorderGeneAssociation = false;
-  private boolean inDisorderGeneAssociationList = false;
-  private boolean inExternalReference = false;
-  private boolean inOMIMReference = false;
 
   /**
-   * Key: e.g., ORPHA:163746 (for Peripheral demyelinating neuropathy-central dysmyelinating
-   * leukodystrophy-Waardenburg syndrome-Hirschsprung disease). Value, corresponding gene symbol(s),
-   * e.g., SOX10
+   * @return map with key: e.g., ORPHA:163746 (for Peripheral demyelinating neuropathy-central dysmyelinating
+   * leukodystrophy-Waardenburg syndrome-Hirschsprung disease).
+   * value: corresponding gene symbol(s), e.g., SOX10
    */
-  private final Multimap<TermId, Gene> orphaDiseaseToGeneMultiMap;
-  private Map<String, TermId> mimIdToGeneIdMap;
-  /** The following map is a hack to add NCBI Gene Ids for symbols that do not have OMIM references in the orphanet XML file. */
-  private Map<String, TermId> symbolToGeneIdMap;
+  public static Map<TermId, Collection<GeneIdentifier>> parseOrphaGeneXml(Path orphaGeneXMLfile,
+                                                                          Map<String, Collection<TermId>> mimIdToGeneIdMap,
+                                                                          Map<String, GeneIdentifier> symbolToGeneId) {
 
-  public OrphaGeneToDiseaseParser(File orphaGeneXMLfile, File mim2geneFile) {
-    orphaDiseaseToGeneMultiMap = ArrayListMultimap.create();
-    parseMim2GeneMedgen(mim2geneFile);
-    initMissingGeneIdMap();
-    parseOrphaGeneXml(orphaGeneXMLfile);
-  }
+    boolean inDisorder = false;
+    boolean inGeneList = false;
+    boolean inGene = true;
+    boolean inDisorderGeneAssociation = false;
+    boolean inDisorderGeneAssociationList = false;
+    boolean inExternalReference = false;
+    boolean inOMIMReference = false;
 
+    try (InputStream in = Files.newInputStream(orphaGeneXMLfile)) {
+      Map<TermId, Collection<GeneIdentifier>> orphaDiseaseToGeneBuilder = new HashMap<>();
 
-
-  public Multimap<TermId, Gene> getOrphaDiseaseToGeneSymbolMap() {
-    return orphaDiseaseToGeneMultiMap;
-  }
-
-  /**
-   * We want to have a map from a MIM id to an NCBIGene id, which we will store as a TermId object.
-   * The mim2gene file has the following format
-   * #MIM number	GeneID	type	Source	MedGenCUI	Comment
-   * 610911	57514	gene	-	-	-
-   * So basically, we check if the third field is "gene". If so, the first field is the MIM id of the gene,
-   * and the second field is the NCBI Gene Id (just the number, so we add the prefix "NCBIGene")
-   * @param mim2geneFile path to mim2gene_medgen file
-   */
-  private void parseMim2GeneMedgen(File mim2geneFile) {
-    mimIdToGeneIdMap = new HashMap<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(mim2geneFile))) {
-      String line;
-      while ((line = br.readLine()) != null) {
-        String [] fields = line.split("\t");
-        if (fields.length < 3) {
-          // should never happen
-          System.err.printf("[ERROR] Malformed line (only %d fields): %s.\n", fields.length, line);
-          continue;
-        }
-        if (! fields[2].equals("gene"))
-          continue; // we only need to parse the gene<->OMIM-id lines.
-        String mim = fields[0];
-        TermId geneId = TermId.of("NCBIGene", fields[1]);
-        mimIdToGeneIdMap.put(mim, geneId);
-      }
-    } catch (IOException e) {
-      throw new PhenolRuntimeException("Could not parse mim2gene file because of I/O exception: " + e.getMessage());
-    }
-    logger.info("Parsed {} OMIM id to NCBI Gene id mappings.\n", this.mimIdToGeneIdMap.size());
-  }
-
-
-
-  private void parseOrphaGeneXml(File orphaGeneXMLfile) {
-    try {
-
-      XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-      InputStream in = new FileInputStream(orphaGeneXMLfile);
-      XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
+      XMLEventReader eventReader = XMLInputFactory.newInstance().createXMLEventReader(in);
       String currentOrphanum = null;
       String currentDiseasename = null;
       String currentGeneSymbol = null;
@@ -188,22 +139,24 @@ public class OrphaGeneToDiseaseParser {
           } else if (localPart.equals(DISORDER_GENE_ASSOCIATION)) {
             inDisorderGeneAssociation = false;
             // if we have data then we can enter it here
-            if (currentOrphanum != null &&
-              currentDiseasename != null &&
-              currentGeneSymbol != null) {
+            if (currentOrphanum != null && currentDiseasename != null && currentGeneSymbol != null) {
               TermId orphaId = TermId.of("ORPHA", currentOrphanum);
-              TermId geneId = this.mimIdToGeneIdMap.get(currentOmimId);
-              if (currentOmimId == null || geneId == null) {
-                if (symbolToGeneIdMap.containsKey(currentGeneSymbol)) {
-                  geneId = symbolToGeneIdMap.get(currentGeneSymbol);
-                  Gene g = new Gene(geneId, currentGeneSymbol);
-                  this.orphaDiseaseToGeneMultiMap.put(orphaId, g);
+
+              Collection<TermId> geneIds = mimIdToGeneIdMap.get(currentOmimId);
+              if (currentOmimId == null || geneIds == null) {
+                GeneIdentifier geneId = symbolToGeneId.get(currentGeneSymbol);
+                if (geneId != null) {
+                  orphaDiseaseToGeneBuilder.computeIfAbsent(orphaId, k -> new HashSet<>())
+                    .add(geneId);
                 } else {
-                  System.err.printf("[ERROR] Could not find OMIM gene id for %s.\n", currentGeneSymbol);
+                  LOGGER.warn("Could not find gene id for {}", currentGeneSymbol);
                 }
               } else {
-                Gene g = new Gene(geneId, currentGeneSymbol);
-                this.orphaDiseaseToGeneMultiMap.put(orphaId, g);
+                for (TermId geneId : geneIds) {
+                  GeneIdentifier g = GeneIdentifier.of(geneId, currentGeneSymbol);
+                  orphaDiseaseToGeneBuilder.computeIfAbsent(orphaId, k -> new HashSet<>())
+                    .add(g);
+                }
               }
             }
             currentGeneSymbol = null; // reset
@@ -214,17 +167,29 @@ public class OrphaGeneToDiseaseParser {
           }
         }
       }
+
+      return makeUnmodifiable(orphaDiseaseToGeneBuilder);
     } catch (IOException | XMLStreamException e) {
       throw new PhenolRuntimeException("Could not parse orpha disease to gene xml: " + e.getMessage());
     }
+  }
+
+  private static Map<TermId, Collection<GeneIdentifier>> makeUnmodifiable(Map<TermId, Collection<GeneIdentifier>> orphaDiseaseToGeneBuilder) {
+    Map<TermId, Collection<GeneIdentifier>> orphaDiseaseToGene = new HashMap<>(orphaDiseaseToGeneBuilder.size(), .9f);
+
+    for (Map.Entry<TermId, Collection<GeneIdentifier>> e : orphaDiseaseToGeneBuilder.entrySet()) {
+      orphaDiseaseToGene.put(e.getKey(), List.copyOf(e.getValue()));
+    }
+
+    return Collections.unmodifiableMap(orphaDiseaseToGene);
   }
 
   /**
    * This is a hack to identify the gene ids for Orpha XML file entries that do not have an OMIM cross reference
    * Date: March 11, 2020.
    */
-  private void initMissingGeneIdMap() {
-    symbolToGeneIdMap = new HashMap<>();
+  private static Map<String, TermId> initMissingGeneIdMap() {
+    Map<String, TermId> symbolToGeneIdMap = new HashMap<>();
     symbolToGeneIdMap.put("ATP5F1D", TermId.of("NCBIGene:513"));
     symbolToGeneIdMap.put("CHD1", TermId.of("NCBIGene:1105"));
     symbolToGeneIdMap.put("CD55", TermId.of("NCBIGene:1604"));
@@ -301,6 +266,7 @@ public class OrphaGeneToDiseaseParser {
     symbolToGeneIdMap.put("USH1K", TermId.of("NCBIGene:101180907"));
     symbolToGeneIdMap.put("IL12A-AS1", TermId.of("NCBIGene:101928376"));
     symbolToGeneIdMap.put("SCA37", TermId.of("NCBIGene:103753527"));
+    return symbolToGeneIdMap;
   }
 
 }

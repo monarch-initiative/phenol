@@ -5,11 +5,11 @@ import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.logging.Logger;
 
-import static java.util.logging.Level.INFO;
 
 
 /**
@@ -21,7 +21,7 @@ import static java.util.logging.Level.INFO;
  * @see <A HREF="http://nar.oxfordjournals.org/content/early/2010/02/19/nar.gkq045.short">GOing Bayesian: model-based gene set analysis of genome-scale data</A>
  */
 public class MgsaCalculation {
-  private static final Logger logger = Logger.getLogger(MgsaCalculation.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(MgsaCalculation.class.getName());
 
   private final long seed;
 
@@ -72,7 +72,7 @@ public class MgsaCalculation {
 
     Set<TermId> allAnnotatedGenes = goAssociations.getAllAnnotatedGenes();
     Map<TermId, DirectAndIndirectTermAnnotations> assocs = goAssociations.getAssociationMap(allAnnotatedGenes);
-    this.populationSet =  StudySet.populationSet(goAssociations.getAllAnnotatedGenes(), assocs);
+    this.populationSet =  StudySet.populationSet(assocs);
   }
 
   /**
@@ -120,7 +120,7 @@ public class MgsaCalculation {
   /**
    * Sets the type of the alpha parameter.
    *
-   * @param alpha
+   * @param alpha false-positive parameter for MGSA algorithm
    */
   public void setAlpha(MgsaParam.Type alpha) {
     this.alpha.setType(alpha);
@@ -140,7 +140,7 @@ public class MgsaCalculation {
   /**
    * Sets the type of the beta parameter.
    *
-   * @param beta
+   * @param beta false-negative parameter for MGSA algorithm
    */
   public void setBeta(MgsaParam.Type beta) {
     this.beta.setType(beta);
@@ -172,9 +172,7 @@ public class MgsaCalculation {
   }
 
   /**
-   * Set whether the parameter should be integrated.
-   *
-   * @param integrateParams
+   * @param integrateParams flag to set whether the parameter should be integrated.
    */
   public void setIntegrateParams(boolean integrateParams) {
     this.integrateParams = integrateParams;
@@ -191,9 +189,7 @@ public class MgsaCalculation {
   }
 
   /**
-   * Sets whether a random start should be used.
-   *
-   * @param randomStart
+   * @param randomStart true if a random start should be used.
    */
   public void useRandomStart(boolean randomStart) {
     this.randomStart = randomStart;
@@ -219,7 +215,7 @@ public class MgsaCalculation {
     }
 
 
-    logger.log(INFO, "Starting calculation: expectedNumberOfTerms=" + expectedNumberOfTerms +
+    logger.info("Starting calculation: expectedNumberOfTerms=" + expectedNumberOfTerms +
       " alpha=" + alpha +
       " beta=" + beta +
       " numberOfPop=" + getPopulationSetCount() +
@@ -228,7 +224,7 @@ public class MgsaCalculation {
     long start = System.currentTimeMillis();
     calculateByMCMC(result, studySet);
     long end = System.currentTimeMillis();
-    logger.log(INFO, (end - start) + "ms");
+    logger.info((end - start) + "ms");
     return result;
   }
 
@@ -280,7 +276,7 @@ public class MgsaCalculation {
     double[] res = new double[numTerms];
 
     Random rnd = new Random(seed);
-    logger.log(INFO, "Using random seed of: " + seed);
+    logger.info("Using random seed of: " + seed);
 
     int maxIter;
 
@@ -296,7 +292,7 @@ public class MgsaCalculation {
     for (int i = 0; i < maxIter; i++) {
       FixedAlphaBetaScore fixedAlphaBetaScore = new FixedAlphaBetaScore(rnd, term2Items, observedItems);
       fixedAlphaBetaScore.setIntegrateParams(integrateParams);
-      logger.log(INFO, "MCMC only: " + alpha + "  " + beta + "  " + expectedNumberOfTerms);
+      logger.info("MCMC only: " + alpha + "  " + beta + "  " + expectedNumberOfTerms);
       fixedAlphaBetaScore.setAlpha(alpha);
       if (this.alpha.hasMax())
         fixedAlphaBetaScore.setMaxAlpha(this.alpha.getMax());
@@ -306,7 +302,7 @@ public class MgsaCalculation {
       fixedAlphaBetaScore.setExpectedNumberOfTerms(expectedNumberOfTerms);
       fixedAlphaBetaScore.setUsePrior(usePrior);
 
-      logger.log(INFO, "Score of empty set: " + fixedAlphaBetaScore.getScore());
+      logger.info("Score of empty set: " + fixedAlphaBetaScore.getScore());
 
       /* Provide a starting point */
       if (randomStart) {
@@ -316,11 +312,11 @@ public class MgsaCalculation {
         for (int j = 0; j < term2Items.length; j++)
           if (rnd.nextDouble() < pForStart) fixedAlphaBetaScore.switchState(j);
 
-        logger.log(INFO, "Starting with " + fixedAlphaBetaScore.getActiveTerms().length + " terms (p=" + pForStart + ")");
+        logger.info("Starting with " + fixedAlphaBetaScore.getActiveTerms().length + " terms (p=" + pForStart + ")");
       }
 
       double score = fixedAlphaBetaScore.getScore();
-      logger.log(INFO, "Score of initial set: " + score);
+      logger.info("Score of initial set: " + score);
 
       int maxSteps = mcmcSteps;
       int burnin = 20000;
@@ -352,7 +348,7 @@ public class MgsaCalculation {
 
         long now = System.currentTimeMillis();
         if (now - start > updateReportTime) {
-          logger.log(INFO, (t * 100 / maxSteps) + "% (score=" + score + " maxScore=" + maxScore + " #terms=" + fixedAlphaBetaScore.getActiveTerms().length +
+          logger.info((t * 100 / maxSteps) + "% (score=" + score + " maxScore=" + maxScore + " #terms=" + fixedAlphaBetaScore.getActiveTerms().length +
             " accept/reject=" + (double) numAccepts / (double) numRejects +
             " accept/steps=" + (double) numAccepts / (double) t +
             " exp=" + expectedNumberOfTerms + " usePrior=" + usePrior + ")");
@@ -392,27 +388,27 @@ public class MgsaCalculation {
       if (fixedAlphaBetaScore != null) {
         if (Double.isNaN(alpha)) {
           for (int j = 0; j < fixedAlphaBetaScore.totalAlpha.length; j++)
-            logger.log(INFO, "alpha(" + fixedAlphaBetaScore.ALPHA[j] + ")=" + (double) fixedAlphaBetaScore.totalAlpha[j] / fixedAlphaBetaScore.numRecords);
+            logger.info("alpha(" + fixedAlphaBetaScore.ALPHA[j] + ")=" + (double) fixedAlphaBetaScore.totalAlpha[j] / fixedAlphaBetaScore.numRecords);
         }
 
         if (Double.isNaN(beta)) {
           for (int j = 0; j < fixedAlphaBetaScore.totalBeta.length; j++)
-            logger.log(INFO, "beta(" + fixedAlphaBetaScore.BETA[j] + ")=" + (double) fixedAlphaBetaScore.totalBeta[j] / fixedAlphaBetaScore.numRecords);
+            logger.info("beta(" + fixedAlphaBetaScore.BETA[j] + ")=" + (double) fixedAlphaBetaScore.totalBeta[j] / fixedAlphaBetaScore.numRecords);
         }
 
         if (Double.isNaN(expectedNumberOfTerms)) {
           for (int j = 0; j < fixedAlphaBetaScore.totalExp.length; j++)
-            logger.log(INFO, "exp(" + fixedAlphaBetaScore.EXPECTED_NUMBER_OF_TERMS[j] + ")=" + (double) fixedAlphaBetaScore.totalExp[j] / fixedAlphaBetaScore.numRecords);
+            logger.info("exp(" + fixedAlphaBetaScore.EXPECTED_NUMBER_OF_TERMS[j] + ")=" + (double) fixedAlphaBetaScore.totalExp[j] / fixedAlphaBetaScore.numRecords);
 
         }
       }
 
-      logger.log(INFO, "numAccepts=" + numAccepts + "  numRejects = " + numRejects);
+      logger.info("numAccepts=" + numAccepts + "  numRejects = " + numRejects);
 
-      if (logger.isLoggable(INFO)) {
+      if (logger.isInfoEnabled()) {
         StringBuilder b = new StringBuilder();
 
-        logger.log(INFO, "Term combination that reaches score of " + maxScore +
+        logger.info("Term combination that reaches score of " + maxScore +
           " when alpha=" + maxScoredAlpha +
           ", beta=" + maxScoredBeta +
           ", p=" + maxScoredP +
@@ -422,7 +418,7 @@ public class MgsaCalculation {
           b.append(t);
           b.append(", ");
         }
-        logger.log(INFO, b.toString());
+        logger.info(b.toString());
       }
     }
     return res;

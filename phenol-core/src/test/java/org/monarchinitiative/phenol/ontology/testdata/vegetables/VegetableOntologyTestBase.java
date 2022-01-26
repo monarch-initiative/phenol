@@ -1,11 +1,10 @@
 package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.monarchinitiative.phenol.ontology.data.*;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Lists;
 
 /**
  * Re-useable base class for ontology-using tests.
@@ -43,7 +42,7 @@ public class VegetableOntologyTestBase {
 
     rootTermId = idVegetable;
 
-    ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
+    Map<TermId, Term> termMapBuilder = new HashMap<>();
     termMapBuilder.put(
       idVegetable,
       Term.builder()
@@ -100,9 +99,9 @@ public class VegetableOntologyTestBase {
         .definition("pumpkins are great for soup and pickling")
         .build()
     );
-    ImmutableMap<TermId, Term> termMap = termMapBuilder.build();
+    Map<TermId, Term> termMap = Map.copyOf(termMapBuilder);
 
-    ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
+    Map<Integer, Relationship> relationMapBuilder = new HashMap<>();
     relationMapBuilder.put(1, new Relationship(idRootVegetable, idVegetable, 1, RelationshipType.IS_A));
     relationMapBuilder.put(2, new Relationship(idLeafVegetable, idVegetable, 2, RelationshipType.IS_A));
     relationMapBuilder.put(3, new Relationship(idCarrot, idRootVegetable, 3, RelationshipType.IS_A));
@@ -110,16 +109,15 @@ public class VegetableOntologyTestBase {
     relationMapBuilder.put(5, new Relationship(idBeet, idLeafVegetable, 5, RelationshipType.IS_A));
     relationMapBuilder.put(6, new Relationship(idPumpkin, idRootVegetable, 6, RelationshipType.IS_A));
     relationMapBuilder.put(7, new Relationship(idBlueCarrot, idCarrot, 7, RelationshipType.IS_A));
-    ImmutableMap<Integer, Relationship> relationMap = relationMapBuilder.build();
+    Map<Integer, Relationship> relationMap = Map.copyOf(relationMapBuilder);
 
     ontology = ImmutableOntology.builder()
-      .metaInfo(ImmutableSortedMap.of())
+      .metaInfo(Map.of())
       .terms(termMap.values())
       .relationships(relationMap.values())
       .build();
 
-    recipeAnnotations =
-        Lists.newArrayList(
+    recipeAnnotations = List.of(
             new VegetableRecipeAnnotation(idCarrot, "pumpkin soup"),
             new VegetableRecipeAnnotation(idPumpkin, "pumpkin soup"),
             new VegetableRecipeAnnotation(idPumpkin, "pickled pumpkin"),

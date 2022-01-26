@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.ontology.algo;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.monarchinitiative.phenol.graph.algo.TopologicalSorting;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
@@ -12,7 +10,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.ImmutableSortedSet;
 
 // TODO: Separate separation of algorithm and generated data structure to equalize with graph.algo
 
@@ -52,8 +49,12 @@ public final class ShortestPathTable {
     distances = new int[termIdCount * termIdCount];
     termIdToIdx = new HashMap<>(termIdCount);
 
+    List<TermId> sortedNonObsoleteTermIds = ontology.getNonObsoleteTermIds().stream()
+      .sorted()
+      .collect(Collectors.toList());
+
     int i = 0;
-    for (TermId termId : ImmutableSortedSet.copyOf(ontology.getNonObsoleteTermIds())) {
+    for (TermId termId : sortedNonObsoleteTermIds) {
       termIdToIdx.put(termId, i++);
     }
 
@@ -62,9 +63,7 @@ public final class ShortestPathTable {
 
   private void precomputeDistances(Ontology ontology) {
     // Initialize with values "infinity".
-    for (int i = 0; i < distances.length; ++i) {
-      distances[i] = DISTANCE_INFINITY;
-    }
+    Arrays.fill(distances, DISTANCE_INFINITY);
     // Precompute distances from topological sorting.
     new TopologicalSorting<TermId, IdLabeledEdge, DefaultDirectedGraph<TermId, IdLabeledEdge>>()
         .startForward(ontology.getGraph(), new BuildDistanceTableVertexVisitor());

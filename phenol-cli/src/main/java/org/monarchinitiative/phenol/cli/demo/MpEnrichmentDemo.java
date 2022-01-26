@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.analysis.TermAssociationContainer;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
+import org.monarchinitiative.phenol.analysis.stats.GoTerm2PValAndCounts;
+import org.monarchinitiative.phenol.analysis.stats.TermForTermPValueCalculation;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneticMarker;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
@@ -16,9 +16,8 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.stats.*;
-import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
-import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.monarchinitiative.phenol.analysis.stats.mtc.Bonferroni;
+import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,7 +59,7 @@ public class MpEnrichmentDemo {
   }
 
   private List<TermAnnotation> getTermAnnotations() {
-    ImmutableList.Builder<TermAnnotation> builder = new ImmutableList.Builder<>();
+    List<TermAnnotation> builder = new ArrayList<>();
     for (MpGeneModel model : mpgenemap.values()) {
       TermId markerId = model.getMarkerId();
       String symbol;
@@ -83,7 +82,7 @@ public class MpEnrichmentDemo {
         }
       }
     }
-    return builder.build();
+    return List.copyOf(builder);
   }
 
   public void run() {
@@ -97,8 +96,9 @@ public class MpEnrichmentDemo {
     Set<TermId> studyGenes = getStudySet();
 
     Map<TermId, DirectAndIndirectTermAnnotations> studyAssociations = associationContainer.getAssociationMap(studyGenes);
-    StudySet studySet = new StudySet(studyGenes, "study", studyAssociations);
-    StudySet populationSet = new StudySet(populationGenes, "population", studyAssociations);
+    StudySet studySet = new StudySet("study", studyAssociations);
+    Map<TermId, DirectAndIndirectTermAnnotations> popAssociations = associationContainer.getAssociationMap(populationGenes);
+    StudySet populationSet = new StudySet("population", popAssociations);
     System.out.printf("[INFO] study: %d genes, population: %d genes\n", studyGenes.size(), populationGenes.size());
 
     MultipleTestingCorrection bonf = new Bonferroni();
@@ -159,7 +159,7 @@ public class MpEnrichmentDemo {
    */
   private Set<TermId> getStudySet() {
     initSymbol2termidMap();
-    ImmutableSet.Builder<TermId> builder = new ImmutableSet.Builder<>();
+    Set<TermId> builder = new HashSet<>();
     try {
       BufferedReader br = new BufferedReader(new FileReader(targetgenefile));
       String line;
@@ -174,7 +174,7 @@ public class MpEnrichmentDemo {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return builder.build();
+    return Set.copyOf(builder);
   }
 
 
@@ -187,10 +187,10 @@ public class MpEnrichmentDemo {
   private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      TermId geneId = ann.getLabel();
+      TermId geneId = ann.getItemId();
       st.add(geneId);
     }
-    return ImmutableSet.copyOf(st);
+    return Set.copyOf(st);
   }
 
 

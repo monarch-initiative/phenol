@@ -1,13 +1,15 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
-import com.google.common.collect.Multimap;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.annotations.formats.Gene;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
+import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociations;
+import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,13 +44,27 @@ public class OrphaGeneToDiseaseParserTest {
   // with SCN5A, HCN4 and MYH6
   private static final String ORPHA_PREFIX = "ORPHA";
 
-  private static Multimap<TermId, Gene> orphaId2GeneMultimap;
+  private static Map<TermId, Collection<GeneIdentifier>> orphaId2GeneMultimap;
 
-  public OrphaGeneToDiseaseParserTest() {
-    Path orphaPath = Paths.get("src/test/resources/orphanet_disease2gene_en_product6_head.xml");
-    Path mim2genePath = Paths.get("src/test/resources/mim2gene_medgen.excerpt");
-    OrphaGeneToDiseaseParser parser = new OrphaGeneToDiseaseParser(orphaPath.toFile(), mim2genePath.toFile());
-    orphaId2GeneMultimap = parser.getOrphaDiseaseToGeneSymbolMap();
+  @BeforeAll
+  public static void init() throws Exception {
+    Path homoSapiensGeneInfo = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
+    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
+    Map<String, GeneIdentifier> geneIdToSymbol = geneIdentifiers.symbolToGeneIdentifier();
+
+    Path mim2gene = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/mim2gene_medgen.excerpt").toURI());
+    DiseaseToGeneAssociations mim2Gene = Mim2GeneMedgenLoader.loadDiseaseToGeneAssociations(mim2gene, geneIdentifiers.geneIdToSymbol());
+    Map<String, Collection<TermId>> diseaseIdToGeneId = new HashMap<>();
+    for (Map.Entry<TermId, Collection<GeneToAssociation>> e : mim2Gene.diseaseIdToGeneAssociations().entrySet()) {
+      List<TermId> genes = new ArrayList<>(e.getValue().size());
+      for (GeneToAssociation association : e.getValue()) {
+        genes.add(association.geneIdentifier().id());
+      }
+      diseaseIdToGeneId.put(e.getKey().getId(), genes);
+    }
+
+    Path orphanet = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/orphanet_disease2gene_en_product6_head.xml").toURI());
+    orphaId2GeneMultimap = OrphaGeneToDiseaseParser.parseOrphaGeneXml(orphanet, diseaseIdToGeneId, geneIdToSymbol);
   }
 
   /**
@@ -56,52 +72,52 @@ public class OrphaGeneToDiseaseParserTest {
    * There are four diseases in our test file (we get the set of disease Ids with keySet).
    */
   @Test
-  void testDiseaseCount() {
+  public void testDiseaseCount() {
     int expected = 4;
     assertEquals(expected, orphaId2GeneMultimap.keySet().size());
   }
 
   @Test
-  void testMultipleEpiphysealDysplasia() {
+  public void testMultipleEpiphysealDysplasia() {
     TermId medId = TermId.of(ORPHA_PREFIX, "166024");
     assertTrue(orphaId2GeneMultimap.containsKey(medId));
-    Collection<Gene> genes = orphaId2GeneMultimap.get(medId);
-    assertEquals(1, genes.size());
+    Collection<GeneIdentifier> geneIdentifiers = orphaId2GeneMultimap.get(medId);
+    assertEquals(1, geneIdentifiers.size());
     String expectedGeneSymbol = "KIF7";
-    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
+    assertEquals(expectedGeneSymbol, geneIdentifiers.iterator().next().symbol());
   }
 
   @Test
-  void testBrachydactyly() {
+  public void testBrachydactyly() {
     TermId brachydactylyId = TermId.of(ORPHA_PREFIX, "166035");
     assertTrue(orphaId2GeneMultimap.containsKey(brachydactylyId));
-    Collection<Gene> genes = orphaId2GeneMultimap.get(brachydactylyId);
-    assertEquals(1, genes.size());
+    Collection<GeneIdentifier> geneIdentifiers = orphaId2GeneMultimap.get(brachydactylyId);
+    assertEquals(1, geneIdentifiers.size());
     String expectedGeneSymbol = "CWC27";
-    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
+    assertEquals(expectedGeneSymbol, geneIdentifiers.iterator().next().symbol());
   }
 
   @Test
-  void testAspartylglucosaminuria() {
+  public void testAspartylglucosaminuria() {
     TermId aspartylglucosaminuriaId = TermId.of(ORPHA_PREFIX, "93");
     assertTrue(orphaId2GeneMultimap.containsKey(aspartylglucosaminuriaId));
-    Collection<Gene> genes = orphaId2GeneMultimap.get(aspartylglucosaminuriaId);
-    assertEquals(1, genes.size());
+    Collection<GeneIdentifier> geneIdentifiers = orphaId2GeneMultimap.get(aspartylglucosaminuriaId);
+    assertEquals(1, geneIdentifiers.size());
     String expectedGeneSymbol = "AGA";
-    assertEquals(expectedGeneSymbol, genes.iterator().next().getSymbol());
+    assertEquals(expectedGeneSymbol, geneIdentifiers.iterator().next().symbol());
   }
 
 
   @Test
-  void testFamilialSickSinusSyndrome() {
+  public void testFamilialSickSinusSyndrome() {
     TermId familialSSS = TermId.of(ORPHA_PREFIX, "166282");
     assertTrue(orphaId2GeneMultimap.containsKey(familialSSS));
-    Collection<Gene> genes = orphaId2GeneMultimap.get(familialSSS);
-    assertEquals(3, genes.size());
+    Collection<GeneIdentifier> geneIdentifiers = orphaId2GeneMultimap.get(familialSSS);
+    assertEquals(3, geneIdentifiers.size());
     // This disease is associated with the following three genes
-    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("SCN5A")));
-    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("HCN4")));
-    assertTrue(genes.stream().map(Gene::getSymbol).anyMatch(s -> s.equals("MYH6")));
+    assertTrue(geneIdentifiers.stream().map(GeneIdentifier::symbol).anyMatch(s -> s.equals("SCN5A")));
+    assertTrue(geneIdentifiers.stream().map(GeneIdentifier::symbol).anyMatch(s -> s.equals("HCN4")));
+    assertTrue(geneIdentifiers.stream().map(GeneIdentifier::symbol).anyMatch(s -> s.equals("MYH6")));
   }
 
 }

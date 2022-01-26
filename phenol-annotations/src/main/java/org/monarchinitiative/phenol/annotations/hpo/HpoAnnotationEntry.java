@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 
-import com.google.common.collect.ImmutableSet;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -79,21 +78,21 @@ public class HpoAnnotationEntry {
     private static final int NUMBER_OF_FIELDS=expectedFields.length;
 
 
-    private final static Set<String> validDatabases = ImmutableSet.of("OMIM","DECIPHER","ORPHA");
+    private final static Set<String> validDatabases = Set.of("OMIM","DECIPHER","ORPHA");
     /** A set with all of the TermIds for frequency. */
-    private final static Set<TermId> frequencySubhierarcyTermIds = ImmutableSet.of(TermId.of("HP:0003674"),TermId.of("HP:0040280"),
+    private final static Set<TermId> frequencySubhierarcyTermIds = Set.of(TermId.of("HP:0003674"),TermId.of("HP:0040280"),
             TermId.of("HP:0040281"), TermId.of("HP:0040282"),TermId.of("HP:0040283"),TermId.of("HP:0040284"),
             TermId.of("HP:0040285"));
     /** A set with all of the TermIds for age of onset. */
-    private final static Set<TermId> onsetSubhierarcyTermIds = ImmutableSet.of( TermId.of("HP:0003674"), TermId.of("HP:0011460"),
+    private final static Set<TermId> onsetSubhierarcyTermIds = Set.of( TermId.of("HP:0003674"), TermId.of("HP:0011460"),
             TermId.of("HP:0003581"), TermId.of("HP:0003596"), TermId.of("HP:0003584"), TermId.of("HP:0011462"),
              TermId.of("HP:0003577"), TermId.of("HP:0003623"), TermId.of("HP:0410280"), TermId.of("HP:0011463"),
              TermId.of("HP:0003593"), TermId.of("HP:0003621"), TermId.of("HP:0030674"), TermId.of("HP:0011461"));
 
     /** Set of allowable evidence codes. */
-    private static final Set<String> EVIDENCE_CODES = ImmutableSet.of("IEA","TAS","PCS");
+    private static final Set<String> EVIDENCE_CODES = Set.of("IEA","TAS","PCS");
 
-    private static final Set<String> VALID_CITATION_PREFIXES = ImmutableSet.of("PMID","OMIM","http","https","DECIPHER",
+    private static final Set<String> VALID_CITATION_PREFIXES = Set.of("PMID","OMIM","http","https","DECIPHER",
            "ORPHA", "ISBN", "ISBN-10","ISBN-13");
     /** regex for patterns such as HPO:skoehler[2018-09-22] */
     private static final String biocurationRegex = "(\\w+:\\w+)\\[(\\d{4}-\\d{2}-\\d{2})]";
@@ -522,7 +521,7 @@ public class HpoAnnotationEntry {
         } else if ( ! ontology.getTermMap().containsKey(id)) {
             throw new HpoAnnotationModelException(String.format("Could not find HPO term id (\"%s\") for \"%s\"",id,termLabel));
         } else {
-            TermId current = ontology.getTermMap().get(id).getId();
+            TermId current = ontology.getTermMap().get(id).id();
             if (! current.equals(id)) {
                 throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
                         id.getValue(),
@@ -560,7 +559,7 @@ public class HpoAnnotationEntry {
         if (! ontology.getTermMap().containsKey(tid)) {
             throw new HpoAnnotationModelException(String.format("Onset ID not found: \"%s\"",id));
         }
-        TermId current = ontology.getTermMap().get(tid).getId();
+        TermId current = ontology.getTermMap().get(tid).id();
         if (! current.equals(tid)) {
             throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
                     tid.getValue(),
@@ -619,7 +618,7 @@ public class HpoAnnotationEntry {
         if (! frequencySubhierarcyTermIds.contains(id) ) {
             throw new HpoAnnotationModelException(String.format("Usage of incorrect term for frequency: %s [%s]",
                     ontology.getTermMap().get(id).getName(),
-                    ontology.getTermMap().get(id).getId().getValue()));
+                    ontology.getTermMap().get(id).id().getValue()));
         }
     }
 
@@ -714,7 +713,7 @@ public class HpoAnnotationEntry {
     if (term == null) {
       throw new HpoAnnotationModelException("Cannot compute Aspect of NULL term");
     }
-    TermId primaryTid = term.getId(); // update in case term is an alt_id
+    TermId primaryTid = term.id(); // update in case term is an alt_id
     if (existsPath(ontology, primaryTid, phenotypeRoot)) {
       return "P"; // organ/phenotype abnormality
     } else if (existsPath(ontology, primaryTid, INHERITANCE_TERM_ID)) {

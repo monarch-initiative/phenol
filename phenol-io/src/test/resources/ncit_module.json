@@ -1,0 +1,120 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://purl.obolibrary.org/obo/NCIT_C60312",
+      "meta" : {
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Serum PSA Increased",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Serum Prostate Specific Antigen Increased",
+          "xrefs" : [ ]
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Serum Prostate Specific Antigen Increased"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/NCIT_C2852",
+      "meta" : {
+        "definition" : {
+          "val" : "A common cancer characterized by the presence of malignant glandular cells.  Morphologically, adenocarcinomas are classified according to the growth pattern (e.g., papillary, alveolar) or according to the secreting product (e.g., mucinous, serous).  Representative examples of adenocarcinoma are ductal and lobular breast carcinoma, lung adenocarcinoma, renal cell carcinoma, hepatocellular carcinoma (hepatoma), colon adenocarcinoma, and prostate adenocarcinoma.",
+          "xrefs" : [ ]
+        },
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "adenocarcinoma",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Adenocarcinoma, NOS",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Adenocarcinoma",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "ADENOCARCINOMA, MALIGNANT",
+          "xrefs" : [ ]
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Adenocarcinoma"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/NCIT_C2919",
+      "meta" : {
+        "definition" : {
+          "val" : "An adenocarcinoma arising from the prostate gland.  It is one of the most common malignant tumors afflicting men.  The majority of adenocarcinomas arise in the peripheral zone and a minority occurs in the central or the transitional zone of the prostate gland.  Grading of prostatic adenocarcinoma predicts disease progression and correlates with survival.  Several grading systems have been proposed, of which the Gleason system is the most commonly used.  Gleason sums of 2 to 4 represent well-differentiated disease, 5 to 7 moderately differentiated disease and 8 to 10 poorly differentiated disease.  Prostatic-specific antigen (PSA) serum test is widely used as a screening test for the early detection of prostatic adenocarcinoma.  Treatment options include radical prostatectomy, radiation therapy, androgen ablation and cryotherapy.  Watchful waiting or surveillance alone is an option for older patients with low-grade or low-stage disease.",
+          "xrefs" : [ ]
+        },
+        "subsets" : [ "http://purl.obolibrary.org/obo/ncit#oncotree_slim", "http://purl.obolibrary.org/obo/NCIT_C116977", "http://purl.obolibrary.org/obo/NCIT_C126659" ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Adenocarcinoma of Prostate",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Adenocarcinoma of the Prostate",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Prostate Adenocarcinoma",
+          "xrefs" : [ ]
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Prostate Adenocarcinoma"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/NCIT_C48596",
+      "meta" : {
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Invasive Prostate Carcinoma",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Invasive Prostate Cancer",
+          "xrefs" : [ ]
+        }, {
+          "pred" : "hasExactSynonym",
+          "val" : "Infiltrating Prostate Carcinoma",
+          "xrefs" : [ ]
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Invasive Prostate Carcinoma"
+    }, {
+      "id" : "http://purl.obolibrary.org/obo/NCIT_C116977",
+      "type" : "CLASS",
+      "lbl" : "L1"
+    } ],
+    "edges" : [ {
+      "sub" : "http://purl.obolibrary.org/obo/NCIT_C2919",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/NCIT_C2852"
+    }, {
+      "sub" : "http://purl.obolibrary.org/obo/NCIT_C2919",
+      "pred" : "is_a",
+      "obj" : "http://purl.obolibrary.org/obo/NCIT_C48596"
+    } ],
+    "id" : "http://purl.obolibrary.org/obo/ncit-module.owl",
+    "meta" : {
+      "subsets" : [ ],
+      "xrefs" : [ ],
+      "basicPropertyValues" : [ ]
+    },
+    "equivalentNodesSets" : [ ],
+    "logicalDefinitionAxioms" : [ {
+      "definedClassId" : "http://purl.obolibrary.org/obo/NCIT_C2919",
+      "genusIds" : [ "http://purl.obolibrary.org/obo/NCIT_C2852", "http://purl.obolibrary.org/obo/NCIT_C48596" ],
+      "restrictions" : [ {
+        "propertyId" : "http://purl.obolibrary.org/obo/NCIT_R115",
+        "fillerId" : "http://purl.obolibrary.org/obo/NCIT_C60312"
+      } ]
+    } ],
+    "domainRangeAxioms" : [ ],
+    "propertyChainAxioms" : [ ]
+  } ]
+}

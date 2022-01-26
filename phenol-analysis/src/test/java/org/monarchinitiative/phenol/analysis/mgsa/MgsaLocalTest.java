@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.analysis.mgsa;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -23,10 +21,10 @@ public class MgsaLocalTest {
   private Set<TermId> getPopulationSet(List<TermAnnotation> annots) {
     Set<TermId> st = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      TermId geneId = ann.getLabel();
+      TermId geneId = ann.getItemId();
       st.add(geneId);
     }
-    return ImmutableSet.copyOf(st);
+    return Set.copyOf(st);
   }
 
 
@@ -34,8 +32,8 @@ public class MgsaLocalTest {
   private Set<TermId> getFocusedStudySet(List<TermAnnotation> annots, TermId focus) {
     Set<TermId> genes = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      if (focus.equals(ann.getTermId())) {
-        TermId geneId = ann.getLabel();
+      if (focus.equals(ann.id())) {
+        TermId geneId = ann.getItemId();
         genes.add(geneId);
       }
     }
@@ -55,7 +53,7 @@ public class MgsaLocalTest {
     i = 0;
     M *= 3;
     for (TermAnnotation ann : annots) {
-      TermId gene = ann.getLabel();
+      TermId gene = ann.getItemId();
       if (! genes.contains(gene)) {
         finalGenes.add(gene);
         i++;
@@ -63,7 +61,7 @@ public class MgsaLocalTest {
       if (i>M) break;
     }
 
-    return ImmutableSet.copyOf(finalGenes);
+    return Set.copyOf(finalGenes);
   }
 
 /*

@@ -4,10 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.Lists;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class SimpleFeatureVectorSimilarityTest {
 
@@ -30,28 +31,20 @@ public class SimpleFeatureVectorSimilarityTest {
     assertEquals(
         1.0,
         similarity.computeScore(
-            Lists.newArrayList(
-                TermId.of("HP:0000008"),
-                TermId.of("HP:0000009")),
-            Lists.newArrayList(TermId.of("HP:0000008"))),
+          List.of(TermId.of("HP:0000008"), TermId.of("HP:0000009")),
+          List.of(TermId.of("HP:0000008"))),
         0.01);
     assertEquals(
         1.0,
         similarity.computeScore(
-            Lists.newArrayList(
-                TermId.of("HP:0000008"),
-                TermId.of("HP:0000009")),
-            Lists.newArrayList(
-                TermId.of("HP:0000008"),
-                TermId.of("HP:0000010"))),
+            List.of(TermId.of("HP:0000008"), TermId.of("HP:0000009")),
+            List.of(TermId.of("HP:0000008"), TermId.of("HP:0000010"))),
         0.01);
     assertEquals(
         0.0,
         similarity.computeScore(
-            Lists.newArrayList(TermId.of("HP:0000009")),
-            Lists.newArrayList(
-                TermId.of("HP:0000008"),
-                TermId.of("HP:0000010"))),
+            List.of(TermId.of("HP:0000009")),
+            List.of(TermId.of("HP:0000008"), TermId.of("HP:0000010"))),
         0.01);
   }
 }

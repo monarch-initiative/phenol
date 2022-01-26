@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import org.monarchinitiative.phenol.ontology.testdata.vegetables.VegetableOntologyTestBase;
 
-class ShortestPathTableTest extends VegetableOntologyTestBase {
+public class ShortestPathTableTest extends VegetableOntologyTestBase {
 
   private final ShortestPathTable table = new ShortestPathTable(ontology);
 
   @Test
-  void testGetDistance() {
+  public void testGetDistance() {
     assertEquals(1, table.getDistance(idRootVegetable, idVegetable));
     assertEquals(-1, table.getDistance(idVegetable, idRootVegetable));
 
@@ -29,7 +29,7 @@ class ShortestPathTableTest extends VegetableOntologyTestBase {
   }
 
   @Test
-  void testGetDistanceSymmetric() {
+  public void testGetDistanceSymmetric() {
     assertEquals(1, table.getDistanceSymmetric(idRootVegetable, idVegetable));
     assertEquals(1, table.getDistanceSymmetric(idVegetable, idRootVegetable));
 

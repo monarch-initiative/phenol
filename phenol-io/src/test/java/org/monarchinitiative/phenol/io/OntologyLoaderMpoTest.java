@@ -1,9 +1,8 @@
 package org.monarchinitiative.phenol.io;
 
-import com.google.common.collect.ImmutableMap;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.SimpleXref;
@@ -11,10 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,15 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class OntologyLoaderMpoTest {
 
-  private Ontology ontology;
+  private static Ontology ontology;
 
-  public OntologyLoaderMpoTest() throws PhenolException {
-    this.ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/mgi/mp_head.obo").toFile());
+  @BeforeAll
+  public static void beforeAll() {
+    ontology = OntologyLoader.loadOntology(Paths.get("src/test/resources/mgi/mp_head.json").toFile());
   }
 
   @Test
   public void testNumberOfTermsParsed() {
-    // mp_head.obo has four valid MP terms
+    // mp_head.json has four valid MP terms
     assertEquals(4, ontology.countNonObsoleteTerms());
   }
 
@@ -86,12 +83,12 @@ public class OntologyLoaderMpoTest {
   }
 
   /**
-   * Test that we get all four terms from {@code mp_head.obo}.
+   * Test that we get all four terms from {@code mp_head.json}.
    */
   @Test
   public void testGetAllFourTerms() {
     Collection<Term> terms = ontology.getTerms();
-    Set<TermId> tids = terms.stream().map(Term::getId).collect(Collectors.toSet());
+    Set<TermId> tids = terms.stream().map(Term::id).collect(Collectors.toSet());
     assertTrue(tids.contains(TermId.of("MP:0000001")));
     assertTrue(tids.contains(TermId.of("MP:0001186")));
     assertTrue(tids.contains(TermId.of("MP:0001188")));
@@ -103,10 +100,10 @@ public class OntologyLoaderMpoTest {
   @Test
   public void testParseMpoHead() {
 
-    final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
+    DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
     assertEquals(3, graph.edgeSet().size());
     assertEquals(TermId.of("MP:0000001"), ontology.getRootTermId());
-    assertEquals(ImmutableMap.of("data-version","http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl"), ontology.getMetaInfo());
+    assertEquals(Map.of("data-version","http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl"), ontology.getMetaInfo());
   }
 }

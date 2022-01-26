@@ -314,3 +314,17 @@ synonym: "Excluded (0%)" EXACT []
 xref: ORPHA:453315
 is_a: HP:0040279 ! Frequency
 created_by: HPO:skoehler
+
+[Term]
+id: HP:0003549
+name: Abnormality of connective tissue
+def: "Any abnormality of the soft tissues, including both connective tissue (tendons, ligaments, fascia, fibrous tissues, and fat)." [HPO:curators]
+xref: UMLS:C4025596
+is_a: HP:0000118 ! Phenotypic abnormality
+
+[Term]
+id: HP:0009025
+name: Increased connective tissue
+def: "The presence of an abnormally increased amount of connective tissue." [HPO:curators]
+xref: UMLS:C1866021
+is_a: HP:0003549 ! Abnormality of connective tissue

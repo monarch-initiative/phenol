@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.io;
 
 import static java.util.stream.Collectors.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Files;
@@ -20,40 +22,10 @@ import org.junit.jupiter.api.Test;
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  */
-class OntologyLoaderTest {
+public class OntologyLoaderTest {
 
   @Test
-  void loadOwl() {
-    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
-    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
-    // the ncit_module.owl has 6 classes
-    assertEquals(6, ontology.countAllTerms());
-  }
-
-  @Test
-  void loadOwlStream() throws Exception {
-    Path ontologyPath = Paths.get("src/test/resources/ncit_module.owl");
-    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    // the ncit_module.owl has 6 classes
-    assertEquals(6, ontology.countAllTerms());
-  }
-
-  @Test
-  void loadObo() {
-    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
-    Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
-    assertNotNull(ontology);
-  }
-
-  @Test
-  void loadOboStream() throws Exception {
-    Path ontologyPath = Paths.get("src/test/resources/ecto.obo");
-    Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    assertNotNull(ontology);
-  }
-
-  @Test
-  void loadJson() {
+  public void loadJson() {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
     // this file has 5 example HP terms
@@ -61,15 +33,15 @@ class OntologyLoaderTest {
   }
 
   @Test
-  void loadJsonStream() throws Exception {
+  public void loadJsonStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    System.out.println(ontology.countAllTerms());
+    assertThat(ontology.countAllTerms(), is(5));
   }
 
   @Test
-  void testNCITLoad() {
-    Path ncitPath = Paths.get("src/test/resources/ncit_module.owl");
+  public void testNCITLoad() {
+    Path ncitPath = Paths.get("src/test/resources/ncit_module.json");
     Ontology ontology = OntologyLoader.loadOntology(ncitPath.toFile(), "NCIT");
     DefaultDirectedGraph<TermId, IdLabeledEdge> graph = ontology.getGraph();
 
@@ -120,8 +92,8 @@ class OntologyLoaderTest {
   }
 
   @Test
-  void testMONDOLoad() {
-    Path mondoPath = Paths.get("src", "test", "resources", "mondo_module.owl");
+  public void testMONDOLoad() {
+    Path mondoPath = Paths.get("src", "test", "resources", "mondo_module.json");
     Ontology ontology = OntologyLoader.loadOntology(mondoPath.toFile(), "MONDO");
     List<String> xrefs =
       Arrays.asList(
@@ -152,8 +124,8 @@ class OntologyLoaderTest {
   }
 
   @Test
-  void testLoadEctoSubset() {
-    Path ectoPath = Paths.get("src/test/resources/ecto.obo");
+  public void testLoadEctoSubset() {
+    Path ectoPath = Paths.get("src/test/resources/ecto.json");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here (the PURL isn't correct)
     //CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://purl.obolibrary.org/obo/ECTO_"));
@@ -187,8 +159,8 @@ class OntologyLoaderTest {
    * But four terms are obsolete and we add one term for owl:thing, so we arrive at 8343
    */
   @Test
-  void testLoadEctoAll() {
-    Path ectoPath = Paths.get("src/test/resources/ecto.obo");
+  public void testLoadEctoAll() {
+    Path ectoPath = Paths.get("src/test/resources/ecto.json");
 
     // ECTO isn't mapped in the default Curie mappings, so we need to add it here
     //CurieUtil curieUtil = CurieUtilBuilder.withDefaultsAnd(ImmutableMap.of("ECTO", "http://http://purl.obolibrary.org/obo/ECTO_"));
@@ -213,7 +185,7 @@ class OntologyLoaderTest {
     // 2270
    long ectoTermCount = permissiveOntology.getTermMap().values().
                         stream().
-                        filter(term -> term.getId().getPrefix().equals("ECTO")).
+                        filter(term -> term.id().getPrefix().equals("ECTO")).
                         count();
    assertEquals(2270, ectoTermCount);
   }

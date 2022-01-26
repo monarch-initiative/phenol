@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.io;
 
-import com.google.common.collect.ImmutableSet;
-import org.geneontology.obographs.model.GraphDocument;
+import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Set;
 
 /**
  * Entry class for loading an ontology from a File or InputStream. Files can be in OWL, OBO or JSON format and will be
@@ -62,7 +62,7 @@ public class OntologyLoader {
     logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
-      .wantedTermIdPrefixes(ImmutableSet.copyOf(termIdPrefixes))
+      .wantedTermIdPrefixes(Set.of(termIdPrefixes))
       .build(graphDocument);
 
     Ontology ontology = graphDocumentAdaptor.buildOntology();
@@ -93,15 +93,16 @@ public class OntologyLoader {
         } catch (Exception e) {
           throw new PhenolRuntimeException("Error loading JSON", e);
         }
+      } else {
+        try {
+          bufferedStream.reset();
+        } catch (Exception e) {
+          throw new PhenolRuntimeException("Error loading OBO/OWL", e);
+        }
       }
-
       logger.debug("Looks like a OBO/OWL file...");
-      try {
-        bufferedStream.reset();
-        return OboGraphDocumentLoader.loadObo(bufferedStream);
-      } catch (Exception e) {
-        throw new PhenolRuntimeException("Error loading OBO/OWL", e);
-      }
+      logger.error("OBO/OWL support was removed since 2.0.0");
+      throw new PhenolRuntimeException("OBO/OWL support was removed since 2.0.0, use JSON instead");
     } catch (IOException e) {
       throw new PhenolRuntimeException("Unable to load ontology", e);
     }

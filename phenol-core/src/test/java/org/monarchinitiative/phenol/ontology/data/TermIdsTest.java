@@ -2,11 +2,12 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.ontology.TestOntology;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class TermIdsTest {
 
@@ -16,26 +17,26 @@ public class TermIdsTest {
   @Test
   public void augmentWithAncestorsIncludeRoot() {
     assertEquals(
-      ImmutableSet.of(
+      Set.of(
         TermId.of("HP:0000001"),
         TermId.of("HP:0000002"),
         TermId.of("HP:0000003"),
         TermId.of("HP:0000004"),
         TermId.of("HP:0000005")
       ),
-      TermIds.augmentWithAncestors(ontology, Sets.newHashSet(id1), true));
+      TermIds.augmentWithAncestors(ontology, new HashSet<>(Set.of(id1)), true));
   }
 
   @Test
   public void augmentWithAncestorsExcludeRoot() {
     assertEquals(TermId.of("HP:0000005"), ontology.getRootTermId());
     assertEquals(
-      ImmutableSet.of(
+      Set.of(
         TermId.of("HP:0000001"),
         TermId.of("HP:0000002"),
         TermId.of("HP:0000003"),
         TermId.of("HP:0000004")
       ),
-      TermIds.augmentWithAncestors(ontology, Sets.newHashSet(id1), false));
+      TermIds.augmentWithAncestors(ontology, new HashSet<>(Set.of(id1)), false));
   }
 }

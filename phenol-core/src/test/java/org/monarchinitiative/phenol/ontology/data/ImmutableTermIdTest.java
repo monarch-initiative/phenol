@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 
-class ImmutableTermIdTest {
+public class ImmutableTermIdTest {
 
   private final TermId termId = TermId.of("HP:0000001");
   private final TermId termId2 = TermId.of("HP:0000002");
 
   @Test
-  void testStaticConstructMethod() {
+  public void testStaticConstructMethod() {
     TermId otherId = TermId.of("HP:0000001");
     assertEquals("HP:0000001", otherId.toString());
     assertEquals(termId, otherId);
@@ -24,13 +24,13 @@ class ImmutableTermIdTest {
   }
 
   @Test
-  void testStaticOfConstructorFullId() {
+  public void testStaticOfConstructorFullId() {
     TermId otherId = TermId.of("HP:0000001");
     assertEquals(termId, otherId);
   }
 
   @Test
-  void testStaticOfConstructorPrefixAndId() {
+  public void testStaticOfConstructorPrefixAndId() {
     TermId otherId = TermId.of("HP", "0000001");
     assertEquals(termId, otherId);
     assertThrows(PhenolRuntimeException.class, () -> TermId.of(null, "0000000"));
@@ -41,27 +41,27 @@ class ImmutableTermIdTest {
   }
 
   @Test
-  void testComparable() {
+  public void testComparable() {
     assertEquals(0, termId.compareTo(termId));
     assertThat(termId.compareTo(termId2), lessThan(0));
     assertThat(termId2.compareTo(termId), greaterThan(0));
   }
 
   @Test
-  void testEquals() {
+  public void testEquals() {
     assertEquals(termId, termId);
     assertNotEquals(termId, termId2);
   }
 
   @Test
-  void testQueryFunctions() {
+  public void testQueryFunctions() {
     assertEquals("HP", termId.getPrefix());
     assertEquals("0000001", termId.getId());
     assertEquals("HP:0000001", termId.getValue());
   }
 
   @Test
-  void testToString() {
+  public void testToString() {
     assertEquals("HP:0000001", termId.toString());
   }
 }
