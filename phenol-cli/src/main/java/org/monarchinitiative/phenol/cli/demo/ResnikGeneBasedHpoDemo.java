@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.cli.demo;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -54,7 +53,7 @@ public class ResnikGeneBasedHpoDemo {
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
 
       // add term ancestors
-      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, Sets.newHashSet(hpoTerms), true);
+      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
 
       for (TermId tid : inclAncestorTermIds) {
         termIdToDiseaseIds.computeIfAbsent(tid, key -> new HashSet<>()).add(diseaseId);

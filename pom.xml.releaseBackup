@@ -1,0 +1,305 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+
+  <groupId>org.monarchinitiative.phenol</groupId>
+  <artifactId>phenol</artifactId>
+  <packaging>pom</packaging>
+  <version>1.6.4-SNAPSHOT</version>
+
+  <name>Phenol</name>
+
+  <description>Phenotype Ontology Library: phenol</description>
+  <url>https://github.com/monarchinitiative/phenol</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+
+    <jackson.version>2.12.1</jackson.version>
+    <guava.version>30.1-jre</guava.version>
+    <jgrapht.version>1.5.1</jgrapht.version>
+    <slf4j.version>1.7.32</slf4j.version>
+    <commons-codec.version>1.15</commons-codec.version>
+    <h2.version>1.4.200</h2.version>
+
+    <hamcrest.version>1.3</hamcrest.version>
+    <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    <mockito.version>3.7.7</mockito.version>
+  </properties>
+
+  <modules>
+    <module>phenol-core</module>
+    <module>phenol-io</module>
+    <module>phenol-annotations</module>
+    <module>phenol-analysis</module>
+    <module>phenol-cli</module>
+  </modules>
+
+  <!-- Inherit artifact from SonaType OSS pom.xml Following this article:
+    http://java.dzone.com/articles/deploy-maven-central -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
+  </parent>
+
+  <!-- License Information for Maven Central -->
+  <licenses>
+    <license>
+      <name>BSD 3-clause Clear License</name>
+      <url>https://spdx.org/licenses/BSD-3-Clause-Clear.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- Developers Information for Maven Central -->
+  <developers>
+    <developer>
+      <name>Sebastian Bauer</name>
+      <email>mail@sebastianbauer.info</email>
+    </developer>
+    <developer>
+      <name>Peter Robinson</name>
+      <email>peter.robinson@jax.org</email>
+      <organization>The Jackson Laboratory</organization>
+      <organizationUrl>https://www.jax.org</organizationUrl>
+    </developer>
+    <developer>
+      <name>Manuel Holtgrewe</name>
+      <email>Manuel.Holtgrewe@bihealth.de</email>
+      <organization>Berlin Institute of Health</organization>
+      <organizationUrl>https://www.bihealth.de</organizationUrl>
+    </developer>
+    <developer>
+      <name>Sebastian Koehler</name>
+      <email>sebastian.koehler@charite.de</email>
+      <organization>Charite University Medicine Berlin</organization>
+      <organizationUrl>https://www.charite.de</organizationUrl>
+    </developer>
+    <developer>
+      <name>HyeongSik Kim</name>
+      <email>HyeongSikKim@lbl.gov</email>
+      <organization>Lawrence Berkeley National Laboratory</organization>
+      <organizationUrl>https://www.lbl.gov</organizationUrl>
+    </developer>
+    <developer>
+      <name>Daniel Danis</name>
+      <email>daniel.danis@jax.org</email>
+      <organization>The Jackson Laboratory</organization>
+      <organizationUrl>https://www.jax.org</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jules Jacobsen</name>
+      <url>https://github.com/julesjacobsen</url>
+    </developer>
+  </developers>
+
+  <!-- SCM Information for Maven Central -->
+  <scm>
+    <connection>scm:git:git@github.com:monarch-initiative/phenol.git</connection>
+    <developerConnection>scm:git:git@github.com:monarch-initiative/phenol.git</developerConnection>
+    <url>scm:git:git@github.com:monarch-initiative/phenol.git</url>
+    <tag>v${project.version}</tag>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <!-- This profile should be activated only when a release is being built. -->
+      <!-- Then, GPG plugin is used to sign the artifacts. Note that you need to set up your GPG key first. -->
+      <!-- Activate the profile by running e.g. `mvn -DperformRelease=true clean deploy` -->
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- override version of GPG plugin to use new GPG signing features -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jgrapht</groupId>
+        <artifactId>jgrapht-core</artifactId>
+        <version>${jgrapht.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>2.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito mocking -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.3.1</version>
+          <configuration>
+            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+            <doclint>none</doclint>
+            <quiet>true</quiet>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.0-M5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <configuration>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <!-- Attach sources -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <!-- Generate javadocs -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
