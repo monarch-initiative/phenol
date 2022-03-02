@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequency;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -11,6 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class represents one line of the V2 (post 2018) HPO annotation line from the "big file"
@@ -18,7 +18,7 @@ import java.util.List;
  * convenience class that will allow us to collect the annotation lines for each disease that we
  * want to parse; from these data, we will construct the {@link HpoDisease}. Note that
  * this class performs only the first part of the parse. The class {@link
- * HpoDiseaseAnnotationLoader} will complete the input of the lines once all of the lines for some
+ * HpoDiseaseLoader} will complete the input of the lines once all of the lines for some
  * disease have been input into individual {@link HpoAnnotationLine} objects. The reason for this is
  * that in some cases, we may have multiple lines for some annotation and we will want to combine
  * them into one annotation for some computational disease models. The class checks whether the
@@ -27,19 +27,6 @@ import java.util.List;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 class HpoAnnotationLine {
-
-  private static final int DATABASE_ID_IDX = 0;
-  private static final int DB_NAME_IDX = 1;
-  private static final int QUALIFIER_IDX = 2;
-  private static final int PHENOTYPE_ID_IDX = 3;
-  private static final int DB_REFERENCE_IDX = 4;
-  private static final int EVIDENCE_IDX = 5;
-  private static final int ONSET_ID_IDX = 6;
-  private static final int FREQUENCY_IDX = 7;
-  private static final int SEX_IDX = 8;
-  private static final int MODIFIER_IDX = 9;
-  private static final int ASPECT_IDX = 10;
-  private static final int BIOCURATION_IDX = 11;
 
   private static final String DEFAULT_FREQUENCY_STRING="n/a";
 
@@ -68,30 +55,30 @@ class HpoAnnotationLine {
   };
 
   /** 1. The diseaseId. For instance, "OMIM:300200". */
-  private String databaseId;
+  private final String databaseId;
   /** 3. The disease name, e.g., Marfan syndrome . */
-  private String DbObjectName;
+  private final String databaseObjectName;
   /** 4. true is this is a negated annotation, i.e., some phenotype is not present in some disease.*/
-  private boolean NOT;
+  private final boolean isNegated;
   /** 5. The phenotype term id */
-  private TermId phenotypeId;
+  private final String phenotypeId;
   /** 6. Publication */
-  private String publication;
+  private final String publication;
   /** 7. Evidence about assertion */
-  private String evidence;
+  private final String evidence;
   /** 8. The onset (can be null) */
-  private TermId onsetId = null;
+  private final String onsetId;
   /** 9. The frequency (can be null) */
-  private String frequency;
+  private final String frequency;
   /** 10. Male, female */
-  private String sex;
+  private final String sex;
   /** 11. Modifier terms (0..n) */
-  private String modifierList;
+  private final String modifiers;
   /** 12. aspect */
   @SuppressWarnings("unused")
-  private String aspect;
+  private final String aspect;
   /** 13. the biocurator/date, e.g., HPO:skoehler[2018-02-17] */
-  private String biocuration;
+  private final String biocuration;
 
   private HpoAnnotationLine(String line) throws PhenolException {
     String[] fields = line.split("\t");
@@ -99,23 +86,19 @@ class HpoAnnotationLine {
       valid_number_of_fields = false;
       throw new PhenolException("[phenol:ERROR] Annotation line with " + fields.length + "fields: \"" + line + "\"");
     }
-    this.databaseId = fields[DATABASE_ID_IDX];
-    this.DbObjectName = fields[DB_NAME_IDX];
-    String phenoId = fields[PHENOTYPE_ID_IDX];
-    this.phenotypeId = TermId.of(phenoId);
-    String onset = fields[ONSET_ID_IDX];
-    if (onset != null && onset.startsWith("HP:")) {
-      onsetId = TermId.of(onset);
-    }
-    this.frequency = fields[FREQUENCY_IDX];
-    this.sex = fields[SEX_IDX];
-    String neg = fields[QUALIFIER_IDX];
-    this.NOT =  (neg != null && neg.equalsIgnoreCase("NOT"));
-    this.aspect = fields[ASPECT_IDX];
-    this.modifierList = fields[MODIFIER_IDX];
-    this.publication = fields[DB_REFERENCE_IDX];
-    this.evidence = fields[EVIDENCE_IDX];
-    this.biocuration = fields[BIOCURATION_IDX];
+
+    this.databaseId = fields[0];
+    this.databaseObjectName = fields[1];
+    this.isNegated = fields[2].equalsIgnoreCase("NOT");
+    this.phenotypeId = fields[3];
+    this.publication = fields[4];
+    this.evidence = fields[5];
+    this.onsetId = fields[6];
+    this.frequency = fields[7];
+    this.sex = fields[8];
+    this.modifiers = fields[9];
+    this.aspect = fields[10];
+    this.biocuration = fields[11];
   }
 
   static HpoAnnotationLine constructFromString(String line) throws PhenolException {
@@ -154,20 +137,19 @@ class HpoAnnotationLine {
    * @return The TermId representing this disease.
    * @throws PhenolException if the {@link #databaseId} field is invalid (not OMIM, ORPHA, or DECIPHER)
    */
-  TermId getDiseaseTermId() throws PhenolException {
+  Optional<TermId> getDiseaseTermId() {
     if (databaseId.startsWith("OMIM")
       || databaseId.startsWith("ORPHA")
       || databaseId.startsWith("DECIPHER"))
-        return TermId.of(databaseId);
-    // we should never get here
-    throw new PhenolException("Invalid disease id (not OMIM/ORPHA/DECIPHER: " + databaseId);
+        return Optional.of(TermId.of(databaseId));
+    return Optional.empty();
   }
 
-  TermId getPhenotypeId() {
+  String getPhenotypeId() {
     return phenotypeId;
   }
 
-  TermId getOnsetId() {
+  String getOnsetId() {
     return onsetId;
   }
 
@@ -179,8 +161,8 @@ class HpoAnnotationLine {
     return sex;
   }
 
-  private String getModifierList() {
-    return modifierList;
+  String modifiers() {
+    return modifiers;
   }
 
   List<String> getPublication() {
@@ -203,15 +185,15 @@ class HpoAnnotationLine {
     return biocuration;
   }
 
-  String getDbObjectName() {
-    return DbObjectName;
+  String getDatabaseObjectName() {
+    return databaseObjectName;
   }
 
   String getAspect() { return this.aspect;}
 
   /** @return true if this annotation is negated. */
   boolean isNOT() {
-    return NOT;
+    return isNegated;
   }
 
   boolean hasValidNumberOfFields() {
@@ -227,17 +209,18 @@ class HpoAnnotationLine {
    * @param ontology reference to HPO Ontology object
    * @return corresponding HpoAnnotation object
    */
+  @Deprecated
    static HpoAnnotation toHpoAnnotation(HpoAnnotationLine line, Ontology ontology) {
-    TermId phenoId = line.getPhenotypeId();
-    double frequency = getFrequency(line.getFrequency(), ontology);
-    HpoOnset onset = getOnset(line.onsetId);
-    return HpoAnnotation.builder(phenoId)
-      .frequency(frequency)
-      .onset(onset)
-      .modifiers(getModifiers(line.getModifierList()))
-      .citations(line.getPublication())
-      .evidence(line.getEvidence())
-      .build();
+//    String phenoId = line.getPhenotypeId();
+//    double frequency = annotationFrequency(line.annotationFrequency(), ontology);
+//    return HpoAnnotation.of(TermId.of(phenoId), frequency)
+//      .frequency(frequency)
+//      .onset(HpoOnset.fromHpoIdString(line.getOnsetId()).orElse(null))
+//      .modifiers(modifiers(line.modifiers()))
+//      .citations(line.getPublication())
+//      .evidence(line.getEvidence())
+//      .build();
+    throw new RuntimeException("Not supported anymore!");
   }
 
   /**
@@ -270,7 +253,7 @@ class HpoAnnotationLine {
    */
   private static double getFrequency(String freq, Ontology ontology) {
     if (freq == null || freq.isEmpty()) {
-      return HpoFrequency.ALWAYS_PRESENT.mean();
+      return HpoFrequency.OBLIGATE.frequency();
     }
     int i = freq.indexOf('%');
     if (i > 0) {
@@ -284,12 +267,17 @@ class HpoAnnotationLine {
     }
     try {
       TermId tid = string2TermId(freq, ontology);
-      if (tid != null) return HpoFrequency.fromTermId(tid).mean();
+      if (tid != null)
+        try {
+          return HpoFrequency.fromTermId(tid).frequency();
+        } catch (IllegalArgumentException e) {
+          return HpoFrequency.OBLIGATE.frequency();
+        }
     } catch (Exception e) {
       e.printStackTrace();
     }
     // if we get here we could not parse the Frequency, return the default 100%
-    return HpoFrequency.ALWAYS_PRESENT.mean();
+    return HpoFrequency.OBLIGATE.frequency();
   }
 
   /**
@@ -314,29 +302,17 @@ class HpoAnnotationLine {
     }
   }
 
-  /**
-   * This fucnction transforms a {@link TermId} into an {@link HpoOnset} object. If the argument is
-   * null, it means that no annotation for the onset was provided in the annotation line, and
-   * then this function returns null.
-   * @param ons The {@link TermId} of an HPO Onset
-   * @return The {@link HpoOnset} object corresponding to the {@link TermId} in the argument
-   */
-  private static HpoOnset getOnset(TermId ons) {
-    if (ons == null) return HpoOnset.UNKNOWN;
-    return HpoOnset.fromTermId(ons);
-  }
-
   @Override
   public String toString() {
     String [] fields={this.databaseId,
-      this.DbObjectName ,
-      this.phenotypeId.getValue() ,
-      this.onsetId==null?EMPTY_STRING:this.onsetId.getValue(),
+      this.databaseObjectName,
+      this.phenotypeId ,
+      this.onsetId==null?EMPTY_STRING:this.onsetId,
       this.frequency ,
       this.sex ,
-      this.NOT?"NOT":"" ,
+      this.isNegated ?"NOT":"" ,
       this.aspect,
-      this.modifierList ,
+      this.modifiers,
       this.publication,
       this.evidence ,
       this.biocuration};

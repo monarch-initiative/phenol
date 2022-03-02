@@ -1,13 +1,11 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.Identified;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Model of a disease from the HPO annotations.
@@ -18,203 +16,106 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:daniel.danis@jax.org">Daniel Danis</a>
  * @version 0.2.1 (2017-11-16)
  */
-public class HpoDisease implements Identified {
-  /** The disease identifier as a CURIE, e.g., OMIM:600100. */
-  private final TermId diseaseDatabaseId;
-  /** Name of the disease from annotation. */
-  private final String diseaseName;
+public interface HpoDisease extends Identified {
 
-  /** {@link TermId}s with phenotypic abnormalities and their frequencies. */
-  private final List<HpoAnnotation> phenotypicAbnormalities;
-
-  /** {@link TermId}s with mode of inheritance and their frequencies. */
-  private final List<TermId> modesOfInheritance;
-  /** {@link TermId}s that do NOT characterize this disease. */
-  private final List<TermId> negativeAnnotations;
-  /** {@link TermId}s for clinical modifiers, including Incomplete penetrance . */
-  private final List<TermId> clinicalModifiers;
-  /** {@link TermId}s clinical course representing Onset, Mortality, Pace of progression and Temporal pattern . */
-  private final List<TermId> clinicalCourseList;
-
-
-  public TermId getDiseaseDatabaseId() {
-    return diseaseDatabaseId;
-  }
-
-  public static HpoDisease of(TermId databaseId,
-                              String diseaseName,
-                              List<HpoAnnotation> phenotypicAbnormalities,
-                              List<TermId> modesOfInheritance,
-                              List<TermId> notTerms,
-                              List<TermId> clinicalModifiers,
-                              List<TermId> clinicalCourses) {
-    return new HpoDisease(databaseId, diseaseName, phenotypicAbnormalities, modesOfInheritance, notTerms, clinicalModifiers, clinicalCourses);
-  }
-
-  private HpoDisease(TermId databaseId,
-                     String diseaseName,
-                     List<HpoAnnotation> phenotypicAbnormalities,
-                     List<TermId> modesOfInheritance,
-                     List<TermId> notTerms,
-                     List<TermId> clinicalModifiers,
-                     List<TermId> clinicalCourses) {
-    this.diseaseDatabaseId = Objects.requireNonNull(databaseId, "Database ID must not be null");
-    this.diseaseName = Objects.requireNonNull(diseaseName, "Disease name must not be null");
-    this.phenotypicAbnormalities = Objects.requireNonNull(phenotypicAbnormalities, "Phenotypic abnormalities must not be null");
-    this.modesOfInheritance = Objects.requireNonNull(modesOfInheritance, "Modes of inheritance must not be null");
-    this.negativeAnnotations = Objects.requireNonNull(notTerms, "Not terms must not be null");
-    this.clinicalModifiers = Objects.requireNonNull(clinicalModifiers, "Clinical modifiers must not be null");
-    this.clinicalCourseList = Objects.requireNonNull(clinicalCourses, "Clinical courses must not be null");
-  }
-
-  @Override
-  public TermId id() {
-    return diseaseDatabaseId;
-  }
-
-  /** @return The name of the disease. */
-  public String getDiseaseName() {
-    return diseaseName;
-  }
-
-  /** @return the count of the non-negated annotations excluding mode of inheritance. */
-  public int getNumberOfPhenotypeAnnotations() {
-    return this.phenotypicAbnormalities.size();
-  }
-
-  /** @return The list of frequency-annotated phenotypic abnormalities. */
-  public List<HpoAnnotation> getPhenotypicAbnormalities() {
-    return phenotypicAbnormalities;
-  }
-
-  /** @return The list of phenotype abnormalities as bare TermIds. */
-  public List<TermId> getPhenotypicAbnormalityTermIdList() {
-    return phenotypicAbnormalities.stream()
-      .map(HpoAnnotation::id)
-      .distinct()
-      .collect(Collectors.toUnmodifiableList());
-  }
-
-  /** @return The list of frequency-annotated modes of inheritance. */
-  public List<TermId> getModesOfInheritance() {
-    return modesOfInheritance;
-  }
-
-  public List<TermId> getNegativeAnnotations() {
-    return this.negativeAnnotations;
+  static HpoDisease of(String name,
+                       TermId databaseId,
+                       HpoOnset onset,
+                       List<HpoDiseaseAnnotation> phenotypicAbnormalities,
+                       List<TermId> modesOfInheritance) {
+    return new HpoDiseaseDefault(databaseId, name, onset, phenotypicAbnormalities, modesOfInheritance);
   }
 
   /**
-   * @return The list of clinical modifiers for the disease
+   * Use {@link #id()}
    */
-  public List<TermId> getClinicalModifiers() {
-    return clinicalModifiers;
+  @Deprecated
+  default TermId diseaseDatabaseTermId() {
+    return id();
   }
 
+  String diseaseName();
+
   /**
-   * @return The list of clinical course terms for the disease
+   * @return global disease onset
    */
-  public List<TermId> getClinicalCourseList() {
-    return clinicalCourseList;
+  HpoOnset onset();
+
+  List<TermId> modesOfInheritance();
+
+  Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities();
+
+  int phenotypicAbnormalitiesCount();
+
+  default Stream<HpoDiseaseAnnotation> phenotypicAbnormalitiesStream() {
+    return StreamSupport.stream(Spliterators.spliterator(phenotypicAbnormalities(), phenotypicAbnormalitiesCount(), Spliterator.DISTINCT & Spliterator.SIZED), false);
+  }
+
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default List<TermId> negativeAnnotations() {
+    return List.of();
   }
 
   /**
    * Users can user this function to get the HpoTermId corresponding to a TermId
    *
-   * @param id id of the plain {@link TermId} for which we want to have the {@link HpoAnnotation}.
-   * @return corresponding {@link HpoAnnotation} or null if not present.
+   * @param termId id of the plain {@link TermId} for which we want to have the {@link HpoDiseaseAnnotation}.
+   * @return optional with {@link HpoDiseaseAnnotation}
    */
-  public HpoAnnotation getAnnotation(TermId id) {
-    return phenotypicAbnormalities
-        .stream()
-        .filter(timd -> timd.id().equals(id))
-        .findAny()
-        .orElse(null);
+  default Optional<HpoDiseaseAnnotation> getAnnotation(TermId termId) {
+    return phenotypicAbnormalitiesStream()
+      .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
+      .findAny();
   }
-
-  /**
-   * @param tid ID of an HPO TermI
-   * @return true if there is a direct annotation to tid. Does not include indirect annotations from
-   *     annotation propagation rule.
-   */
-  public boolean isDirectlyAnnotatedTo(TermId tid) {
-    for (HpoAnnotation tiwm : phenotypicAbnormalities) {
-      if (tiwm.id().equals(tid)) return true;
-    }
-    return false;
-  }
-  /**
-   * @param tidset Set of ids of HPO Terms
-   * @return true if there is a direct annotation to any of the terms in tidset. Does not include
-   *     indirect annotations from annotation propagation rule.
-   */
-  public boolean isDirectlyAnnotatedToAnyOf(Set<TermId> tidset) {
-    for (HpoAnnotation tiwm : phenotypicAbnormalities) {
-      if (tidset.contains(tiwm.id())) return true;
-    }
-    return false;
-  }
-
-  /**
-   * Check if {@code tid} is annotated to any of the terms to which this disease is annotated or their ancestors
-   * @param tid An HP query term
-   * @param ontology reference to HPO ontology
-   * @return true iff this disease is annotated to the term directly or via annotation propagation
-   */
-  private boolean isAnnotatedTo(TermId tid, Ontology ontology) {
-    List<TermId> direct = getPhenotypicAbnormalityTermIdList();
-    Set<TermId> ancs = ontology.getAllAncestorTermIds(direct,true);
-    return ancs.contains(tid);
-  }
-
 
   /**
    * Returns the mean frequency of the feature in the disease.
    *
-   * @param tid id of an HPO term
+   * @param termId id of an HPO term
    * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
-  public double getFrequencyOfTermInDisease(TermId tid) {
-    return phenotypicAbnormalities.stream()
-            .filter(twm -> twm.id().equals(tid))
-            .findFirst()
-            .map(HpoAnnotation::getFrequency)
-            .orElse(0D); // term not annotated to disease so frequency is zero
+  default float getFrequencyOfTermInDisease(TermId termId) {
+    return phenotypicAbnormalitiesStream()
+      .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
+      .findFirst()
+      .map(HpoDiseaseAnnotation::frequency)
+      .orElse(0F); // term not annotated to disease so frequency is zero
+  }
+
+  default Stream<TermId> getPhenotypicAbnormalityTermIds() {
+    return phenotypicAbnormalitiesStream()
+      .map(HpoDiseaseAnnotation::id);
   }
 
   /**
-   * Get the frequency of a term in the disease. This includes if any disease term is an ancestor of the
-   * query term -- we take the maximum of any ancestor term.
-   * @param tid Term ID of an HPO term whose frequency we want to know
-   * @param ontology Reference to the HPO ontology
-   * @return frequency of the term in the disease (including annotation propagation)
+   * @return the count of the non-negated annotations excluding mode of inheritance
+   * @deprecated use {@link #phenotypicAbnormalitiesCount()}
    */
-  private double getFrequencyOfTermInDiseaseWithAnnotationPropagation(TermId tid, Ontology ontology) {
-    double freq=0.0;
-    for (TermId diseaseTermId :  getPhenotypicAbnormalityTermIdList() ) {
-      Set<TermId> ancs = ontology.getAncestorTermIds(diseaseTermId,true);
-      if (ancs.contains(tid)) {
-        double f = getFrequencyOfTermInDisease(diseaseTermId);
-        freq = Math.max(f,freq);
-      }
-    }
-    return freq;
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default long getNumberOfPhenotypeAnnotations() {
+    return phenotypicAbnormalitiesCount();
   }
 
-  @Override
-  public String toString() {
-    String abnormalityList = phenotypicAbnormalities.stream()
-      .map(HpoAnnotation::id)
-      .map(TermId::getValue)
-      .collect(Collectors.joining(";", "[", "]"));
-    return String.format("HpoDisease [name=%s;%s] phenotypicAbnormalities=%s" + ", modesOfInheritance=%s",
-      diseaseDatabaseId.getValue(), diseaseName, abnormalityList, modesOfInheritance);
+
+  /**
+   * @param termId ID of an HPO Term
+   * @return true if there is a direct annotation to termId. Does not include indirect annotations from
+   * annotation propagation rule.
+   */
+  default boolean isDirectlyAnnotatedTo(TermId termId) {
+    return phenotypicAbnormalitiesStream()
+      .anyMatch(annotation -> annotation.id().equals(termId));
   }
 
-  /** @return the {@code DB} field of the annotation, e.g., OMIM, ORPHA, or DECIPHER (prefix of the diseaseId) */
-  public String getDatabase() {
-    return diseaseDatabaseId.getPrefix();
+  /**
+   * @param termIds Set of ids of HPO Terms
+   * @return true if there is a direct annotation to any of the terms in termIds. Does not include
+   * indirect annotations from annotation propagation rule.
+   */
+  default boolean isDirectlyAnnotatedToAnyOf(Set<TermId> termIds) {
+    return phenotypicAbnormalitiesStream().anyMatch(tiwm -> termIds.contains(tiwm.id()));
   }
 }

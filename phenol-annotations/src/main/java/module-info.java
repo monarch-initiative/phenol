@@ -6,6 +6,7 @@ module org.monarchinitiative.phenol.annotations {
 
   /*                                             Exports                                                              */
   exports org.monarchinitiative.phenol.annotations.assoc;
+  exports org.monarchinitiative.phenol.annotations.base;
 
   exports org.monarchinitiative.phenol.annotations.formats;
   exports org.monarchinitiative.phenol.annotations.formats.go;
