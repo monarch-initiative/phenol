@@ -12,10 +12,10 @@ public interface Age {
     return AgeDefault.of(timestamp, confidenceInterval);
   }
 
-  Timestamp age();
+  Timestamp timestamp();
 
   /**
-   * @return confidence interval relative to the {@link #age()} timestamp
+   * @return confidence interval relative to the {@link #timestamp()} timestamp
    * (<em>not</em> with respect to start of the time-line!)
    */
   ConfidenceInterval confidenceInterval();

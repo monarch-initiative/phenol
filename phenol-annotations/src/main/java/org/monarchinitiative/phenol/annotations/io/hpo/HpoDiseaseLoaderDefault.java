@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -269,7 +269,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
     Optional<HpoOnset> earliest = termIds.stream()
       .map(HpoOnset::fromTermId)
       .flatMap(Optional::stream)
-      .min(Comparator.comparing(HpoOnset::temporalRange, TemporalRange::compare));
+      .min(Comparator.comparing(a -> a, TemporalInterval::compare));
 
     if (earliest.isPresent())
       return earliest.get();
@@ -283,7 +283,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
         if (onset == null)
           onset = candidate;
         else {
-          int result = TemporalRange.compare(candidate.temporalRange(), onset.temporalRange());
+          int result = TemporalInterval.compare(candidate, onset);
           if (result < 0)
             onset = candidate;
         }
@@ -304,9 +304,12 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
 
   private static Optional<HpoDiseaseAnnotationMetadata> toHpoDiseaseAnnotationMetadata(HpoAnnotation annotation) {
     return Optional.of(
-      HpoDiseaseAnnotationMetadata.of(annotation.onset()
-          .map(HpoOnset::temporalRange)
-          .orElse(null),
+      HpoDiseaseAnnotationMetadata.of(
+        // TODO - fix
+//        annotation.onset()
+//          .map(HpoOnset::temporalRange)
+//          .orElse(null),
+        null,
         annotation.annotationFrequency(),
         annotation.modifiers(),
         annotation.sex())

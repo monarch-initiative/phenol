@@ -1,77 +1,82 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.base.*;
+import org.monarchinitiative.phenol.annotations.base.temporal.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.time.Period;
 import java.util.Optional;
 
-public enum HpoOnset implements TemporalRangeAware {
+public enum HpoOnset implements TemporalInterval {
   /**
-   * Onset prior to birth.
+   * Onset between conception and birth.
    */
-  ANTENATAL_ONSET(Lifetimes.HUMAN.conception(), Lifetimes.HUMAN.birth()),
+  ANTENATAL_ONSET(Timestamp.of(-280), Timestamp.ZERO),
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
   // (40 - 10) * 7
-  EMBRYONAL_ONSET(Lifetimes.HUMAN.conception(), Period.of(0, 0, -210).normalized()),
+  EMBRYONAL_ONSET(Timestamp.of(-280), Timestamp.of(-210)),
   /**
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
   // 40 gestational weeks - 10 embryonal weeks - 30 weeks (210 days)
-  FETAL_ONSET(Period.of(0, 0, -210).normalized(), Lifetimes.HUMAN.birth()),
+  FETAL_ONSET(Timestamp.of(-210), Timestamp.ZERO),
   /**
    * Onset at birth
    */
-  CONGENITAL_ONSET(Lifetimes.HUMAN.birth(), Lifetimes.HUMAN.birth()),
+  CONGENITAL_ONSET(Timestamp.ZERO, Timestamp.ZERO),
   /**
    * Onset in the first 28 days of life
    */
-  NEONATAL_ONSET(Lifetimes.HUMAN.birth(), Period.of(0, 0, 28)),
+  NEONATAL_ONSET(Timestamp.ZERO, Timestamp.of(29)),
   /**
    * Onset of disease manifestations before adulthood, defined here as before the age of 15 years,
    * but excluding neonatal or congenital onset.
    */
-  PEDIATRIC_ONSET(Period.of(0, 0, 28), Period.of(16, 0,0)),
+  PEDIATRIC_ONSET(Timestamp.of(29), Timestamp.of(16, 0,0)),
   /**
    * Onset within the first 12 months of life
    */
-  INFANTILE_ONSET(Period.of(0, 0, 28), Period.of(1, 0, 0)),
+  INFANTILE_ONSET(Timestamp.of(29), Timestamp.of(1, 0, 0)),
   /**
    * Onset between the ages of one and five years: at least one but less than 5 years
    */
-  CHILDHOOD_ONSET(Period.of(1, 0, 0), Period.of(5, 0, 0)),
+  CHILDHOOD_ONSET(Timestamp.of(1, 0, 0), Timestamp.of(5, 0, 0)),
   /**
    * Onset between 5 and 15 years
    */
-  JUVENILE_ONSET(Period.of(5, 0, 0), Period.of(16, 0, 0)),
+  JUVENILE_ONSET(Timestamp.of(5, 0, 0), Timestamp.of(16, 0, 0)),
   /**
    * Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.
    */
-  ADULT_ONSET(Period.of(16, 0, 0), Lifetimes.HUMAN.death()),
+  ADULT_ONSET(Timestamp.of(16, 0, 0), Timestamp.openEnd()),
   /**
    * Onset of disease at the age of between 16 and 40 years
    */
-  YOUNG_ADULT_ONSET(Period.of(16, 0, 0), Period.of(40, 0, 0)),
+  YOUNG_ADULT_ONSET(Timestamp.of(16, 0, 0), Timestamp.of(40, 0, 0)),
   /**
    * Onset of symptoms at the age of 40 to 60 years.
    */
-  MIDDLE_AGE_ONSET(Period.of(40, 0, 0), Period.of(60, 0, 0)),
+  MIDDLE_AGE_ONSET(Timestamp.of(40, 0, 0), Timestamp.of(60, 0, 0)),
   /**
    * Onset of symptoms after 60 years
    */
-  LATE_ONSET(Period.of(60, 0, 0), Lifetimes.HUMAN.death());
+  LATE_ONSET(Timestamp.of(60, 0, 0), Timestamp.openEnd());
 
-  private final TemporalRange temporalRange;
+  private final Timestamp start, end;
 
-  HpoOnset(Period start, Period end) {
-    this.temporalRange = TemporalRange.of(Age.of(start), Age.of(end));
+  HpoOnset(Timestamp start, Timestamp end) {
+    this.start = start;
+    this.end = end;
   }
 
   @Override
-  public TemporalRange temporalRange() {
-    return temporalRange;
+  public Timestamp start() {
+    return start;
+  }
+
+  @Override
+  public Timestamp end() {
+    return end;
   }
 
   /**
@@ -163,32 +168,4 @@ public enum HpoOnset implements TemporalRangeAware {
     }
   }
 
-  /**
-   * Convert integer year. month, day values to {@link HpoOnset}.
-   *
-   * @param years  number of completed years of age
-   * @param months number of completed months of age
-   * @param days   number of completed days of age
-   * @return Corresponding {@link HpoOnset}.
-   */
-  @Deprecated // should not be necessary as the enum itself implements age
-  public static HpoOnset fromAge(int years, int months, int days) {
-    if (years >= 60) {
-      return LATE_ONSET;
-    } else if (years >= 40) {
-      return MIDDLE_AGE_ONSET;
-    } else if (years >= 16) {
-      return YOUNG_ADULT_ONSET;
-    } else if (years >= 5) {
-      return JUVENILE_ONSET;
-    }else if (years >= 1) {
-      return CHILDHOOD_ONSET;
-    } else if (months > 1) {
-      return INFANTILE_ONSET;
-    } else if (days > 0) {
-      return NEONATAL_ONSET;
-    } else {
-      return CONGENITAL_ONSET;
-    }
-  }
 }

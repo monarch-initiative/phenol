@@ -23,7 +23,7 @@ class AgeDefault {
     }
 
     @Override
-    public Timestamp age() {
+    public Timestamp timestamp() {
       return timestamp;
     }
 
@@ -64,7 +64,7 @@ class AgeDefault {
     }
 
     @Override
-    public Timestamp age() {
+    public Timestamp timestamp() {
       return timestamp;
     }
 

@@ -1,9 +1,14 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
 /**
- * Timestamp represents duration since/until the start of the time-line. Start of the timeline is represented by {@link Timestamp#ZERO}
+ * Timestamp represents duration since/until the start of the time-line.
+ * Start of the timeline is represented by {@link Timestamp#ZERO}.
  */
 public interface Timestamp {
+
+  double DAYS_IN_JULIAN_YEAR = 365.25;
+
+  double DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
 
   /**
    * Number of seconds in {@link java.time.temporal.JulianFields#JULIAN_DAY} (86,400 seconds).
@@ -20,6 +25,15 @@ public interface Timestamp {
    * Duration of 0 days and 0 seconds.
    */
   Timestamp ZERO = TimestampDefault.of(0, 0);
+
+  static Timestamp of(int years, int months, int days) {
+    days += convertYearsAndMonthsToDays(years, months);
+    return of(days);
+  }
+
+  private static int convertYearsAndMonthsToDays(int years, int months) {
+    return Math.toIntExact(Math.round(years * DAYS_IN_JULIAN_YEAR + months * DAYS_IN_MONTH));
+  }
 
   /**
    * Create {@link Timestamp} representing given number of days.

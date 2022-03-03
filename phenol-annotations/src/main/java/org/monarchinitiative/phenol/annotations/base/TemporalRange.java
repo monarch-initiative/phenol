@@ -8,7 +8,9 @@ import java.time.Period;
  * <em>Birth</em> is represented by {@link Period#ZERO} and <em>death</em> does not have any specific marker.
  * <p>
  * The smallest resolution unit is the <em>day</em>.
+ * @deprecated use {@link org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval}.
  */
+@Deprecated
 public interface TemporalRange {
 
   /**
