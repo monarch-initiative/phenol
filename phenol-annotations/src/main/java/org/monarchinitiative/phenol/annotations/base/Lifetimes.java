@@ -5,6 +5,7 @@ import java.time.Period;
 /**
  * Lifetimes of some common organisms.
  */
+@Deprecated
 public enum Lifetimes implements Lifetime {
 
   /**

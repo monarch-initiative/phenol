@@ -5,6 +5,7 @@ import java.time.Period;
 /**
  * Implementors provide important landmarks of the lifetime of an organism.
  */
+@Deprecated
 public interface Lifetime {
 
   Period conception();

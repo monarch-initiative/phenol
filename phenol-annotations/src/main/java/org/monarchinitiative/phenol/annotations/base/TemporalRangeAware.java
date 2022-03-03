@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.base;
 
+@Deprecated
 public interface TemporalRangeAware {
 
   TemporalRange temporalRange();

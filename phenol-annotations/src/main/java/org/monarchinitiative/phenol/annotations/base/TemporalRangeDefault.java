@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.base;
 
 import java.util.Objects;
 
+@Deprecated
 class TemporalRangeDefault implements TemporalRange {
 
   private final Age start;

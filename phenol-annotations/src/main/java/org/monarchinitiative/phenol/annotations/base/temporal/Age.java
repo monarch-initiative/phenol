@@ -20,5 +20,17 @@ public interface Age {
    */
   ConfidenceInterval confidenceInterval();
 
+  /* **************************************************************************************************************** */
 
+  default boolean isPrecise() {
+    return confidenceInterval().isPrecise();
+  }
+
+  static int compare(Age x, Age y) {
+    int result = Timestamp.compare(x.timestamp(), y.timestamp());
+    if (result != 0)
+      return result;
+
+    return ConfidenceInterval.compare(x.confidenceInterval(), y.confidenceInterval());
+  }
 }

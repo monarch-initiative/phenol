@@ -62,7 +62,18 @@ public class ConfidenceIntervalTest {
     assertThat(ConfidenceInterval.compare(left, right), equalTo(expected));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    " 0, 0,    true",
+    "-1, 1,    false",
+    " 0, 1,    false",
+    "-1, 0,    false",
+  })
+  public void isPrecise(int lower, int upper, boolean expected) {
+    ConfidenceInterval ci = ConfidenceInterval.of(lower, upper);
 
+    assertThat(ci.isPrecise(), equalTo(expected));
+  }
 
 
 }

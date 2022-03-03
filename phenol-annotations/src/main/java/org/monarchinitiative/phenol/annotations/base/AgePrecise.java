@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.base;
 import java.time.Period;
 import java.util.Objects;
 
+@Deprecated
 class AgePrecise implements Age {
 
   private final Period age;

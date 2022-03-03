@@ -10,6 +10,7 @@ import java.util.Comparator;
  * <p>
  * <em>Imprecise</em> age is modeled as a period since birth plus a pair of period bounds where the age can be anywhere between the two.
  */
+@Deprecated
 public interface Age {
 
   /**

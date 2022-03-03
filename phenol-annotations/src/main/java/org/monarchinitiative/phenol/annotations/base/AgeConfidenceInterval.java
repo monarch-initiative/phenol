@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.base;
 import java.time.Period;
 import java.util.Objects;
 
+@Deprecated
 public class AgeConfidenceInterval implements Comparable<AgeConfidenceInterval> {
 
   private static final AgeConfidenceInterval PRECISE = new AgeConfidenceInterval(Period.ZERO, Period.ZERO);
