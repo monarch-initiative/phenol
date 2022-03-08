@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -10,21 +10,21 @@ import java.util.Optional;
 
 class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadata {
 
-  private final TemporalRange temporalRange;
+  private final TemporalInterval temporalInterval;
   private final AnnotationFrequency diseaseAnnotationFrequency;
   private final Collection<TermId> modifiers;
   private final Sex sex;
 
-  HpoDiseaseAnnotationMetadataDefault(TemporalRange temporalRange, AnnotationFrequency diseaseAnnotationFrequency, Collection<TermId> modifiers, Sex sex) {
-    this.temporalRange = temporalRange;
+  HpoDiseaseAnnotationMetadataDefault(TemporalInterval temporalInterval, AnnotationFrequency diseaseAnnotationFrequency, Collection<TermId> modifiers, Sex sex) {
+    this.temporalInterval = temporalInterval; // nullable
     this.diseaseAnnotationFrequency = Objects.requireNonNull(diseaseAnnotationFrequency, "Frequency cannot be null");
     this.modifiers = Objects.requireNonNull(modifiers, "Modifiers collection cannot be null");
-    this.sex = sex;
+    this.sex = sex; // nullable
   }
 
   @Override
-  public Optional<TemporalRange> temporalRange() {
-    return Optional.ofNullable(temporalRange);
+  public Optional<TemporalInterval> temporalRange() {
+    return Optional.ofNullable(temporalInterval);
   }
 
   @Override
@@ -47,18 +47,18 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HpoDiseaseAnnotationMetadataDefault that = (HpoDiseaseAnnotationMetadataDefault) o;
-    return Objects.equals(temporalRange, that.temporalRange) && Objects.equals(diseaseAnnotationFrequency, that.diseaseAnnotationFrequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
+    return Objects.equals(temporalInterval, that.temporalInterval) && Objects.equals(diseaseAnnotationFrequency, that.diseaseAnnotationFrequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(temporalRange, diseaseAnnotationFrequency, modifiers, sex);
+    return Objects.hash(temporalInterval, diseaseAnnotationFrequency, modifiers, sex);
   }
 
   @Override
   public String toString() {
     return "HpoDiseaseAnnotationMetadataDefault{" +
-      "temporalRange=" + temporalRange +
+      "temporalInterval=" + temporalInterval +
       ", frequency=" + diseaseAnnotationFrequency +
       ", modifiers=" + modifiers +
       ", sex=" + sex +

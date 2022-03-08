@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
+import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -23,10 +25,10 @@ public interface HpoDisease extends Identified {
 
   static HpoDisease of(String name,
                        TermId databaseId,
-                       HpoOnset onset,
+                       TemporalInterval globalOnset,
                        List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                        List<TermId> modesOfInheritance) {
-    return new HpoDiseaseDefault(databaseId, name, onset, phenotypicAbnormalities, modesOfInheritance);
+    return new HpoDiseaseDefault(databaseId, name, globalOnset, phenotypicAbnormalities, modesOfInheritance);
   }
 
   /**
@@ -42,7 +44,7 @@ public interface HpoDisease extends Identified {
   /**
    * @return global disease onset
    */
-  HpoOnset onset();
+  Optional<TemporalInterval> globalOnset();
 
   List<TermId> modesOfInheritance();
 
@@ -77,12 +79,11 @@ public interface HpoDisease extends Identified {
    * @param termId id of an HPO term
    * @return frequency of the phenotypic feature in individuals with the annotated disease
    */
-  default float getFrequencyOfTermInDisease(TermId termId) {
+  default Optional<Ratio> getFrequencyOfTermInDisease(TermId termId) {
     return phenotypicAbnormalitiesStream()
       .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
       .findFirst()
-      .map(HpoDiseaseAnnotation::frequency)
-      .orElse(0F); // term not annotated to disease so frequency is zero
+      .flatMap(HpoDiseaseAnnotation::ratio);
   }
 
   default Stream<TermId> getPhenotypicAbnormalityTermIds() {

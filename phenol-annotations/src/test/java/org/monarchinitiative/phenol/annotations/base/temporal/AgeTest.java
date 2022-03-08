@@ -12,7 +12,7 @@ public class AgeTest {
   @Test
   public void imprecise() {
 
-    Age imprecise = Age.of(Timestamp.ZERO, ConfidenceInterval.of(-1, 1));
+    Age imprecise = Age.of(Timestamp.zero(), ConfidenceInterval.of(-1, 1));
 
     assertThat(imprecise.isPrecise(), equalTo(false));
     assertThat(imprecise.confidenceInterval().lowerBound(), equalTo(Timestamp.of(-1)));
@@ -21,8 +21,8 @@ public class AgeTest {
 
   @Test
   public void imprecise_error() {
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Timestamp.ZERO, ConfidenceInterval.of(1, 1)));
-    assertThat(e.getMessage(), equalTo("The lower bound DefaultTimestamp{days=1, seconds=0} must not be positive and the upper bound DefaultTimestamp{days=1, seconds=0} must not be negative!"));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Timestamp.zero(), ConfidenceInterval.of(1, 1)));
+    assertThat(e.getMessage(), equalTo("The lower bound [days=1,seconds=0] must not be positive and the upper bound [days=1,seconds=0] must not be negative!"));
   }
 
 }

@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 public interface Age {
 
-  Age ZERO = Age.of(Timestamp.ZERO);
+  Age ZERO = Age.of(Timestamp.zero());
 
   static Age of(Timestamp timestamp) {
     return of(timestamp, ConfidenceInterval.precise());

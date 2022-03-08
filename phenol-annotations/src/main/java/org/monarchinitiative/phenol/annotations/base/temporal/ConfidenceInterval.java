@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class ConfidenceInterval {
 
-  private static final ConfidenceInterval PRECISE = new ConfidenceInterval(Timestamp.ZERO, Timestamp.ZERO);
+  private static final ConfidenceInterval PRECISE = new ConfidenceInterval(Timestamp.zero(), Timestamp.zero());
 
   /**
    *
@@ -25,7 +25,8 @@ public class ConfidenceInterval {
     } else {
       if ((!lowerBound.isNegative() && !lowerBound.isZero())
         || (upperBound.isNegative() && !upperBound.isZero()))
-        throw new IllegalArgumentException("The lower bound " + lowerBound + " must not be positive and the upper bound " + upperBound + " must not be negative!");
+        throw new IllegalArgumentException("The lower bound [days=" + lowerBound.days() + ",seconds=" + lowerBound.seconds() + "]" +
+          " must not be positive and the upper bound [days=" + upperBound.days() + ",seconds=" + upperBound.seconds() + "] must not be negative!");
       return new ConfidenceInterval(lowerBound, upperBound);
     }
   }
@@ -58,7 +59,7 @@ public class ConfidenceInterval {
 
   public Timestamp length() {
     if (isPrecise()) {
-      return Timestamp.ZERO;
+      return Timestamp.zero();
     } else {
       // TODO - may blow up
       return Timestamp.of(upperBound.days() - lowerBound.days(), upperBound.seconds() - lowerBound.seconds());

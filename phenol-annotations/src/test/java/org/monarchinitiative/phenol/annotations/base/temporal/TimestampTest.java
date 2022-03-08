@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TimestampTest {
@@ -22,6 +22,24 @@ public class TimestampTest {
       assertThat(timestamp.seconds(), is(0));
       assertThat(timestamp.isOpen(), is(false));
       assertThat(timestamp.isClosed(), is(true));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // check rounding of Julian years
+      "  1,  0,  0,       365",
+      " 10,  0,  0,      3653",
+      "100,  0,  0,     36525",
+
+      // months
+      "  0,  1,  0,        30",
+      "  0,  2,  0,        61",
+      "  0,  3,  0,        91",
+      "  0,  4,  0,       122",
+      "  0, 12,  0,       365",
+    })
+    public void createUsingDays(int years, int months, int days, int expectedDays) {
+      assertThat(Timestamp.of(years, months, days).days(), equalTo(expectedDays));
     }
 
     @Test
@@ -68,6 +86,20 @@ public class TimestampTest {
       assertThat(Timestamp.compare(Timestamp.openEnd(), Timestamp.openStart()), is(1));
       assertThat(Timestamp.compare(Timestamp.openStart(), Timestamp.openEnd()), is(-1));
     }
+  }
+
+  @Nested
+  public class SecondResolutionTests {
+
+    @ParameterizedTest
+    @CsvSource({
+      " 10, -10",
+      "-10,  10",
+    })
+    public void throwsIfDaysAndSecondsDoNotHaveTheSameSign(int days, int seconds) {
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Timestamp.of(days, seconds));
+      assertThat(e.getMessage(), equalTo("Days and seconds must have the same sign"));
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -90,7 +122,81 @@ public class TimestampTest {
       assertThat(duration.days(), is(expectedDays));
       assertThat(duration.seconds(), is(expectedSeconds));
     }
-  }
 
+    @ParameterizedTest
+    @CsvSource({
+      // left           right                expected
+      " 1,      0,      2,      0,            3,     0",
+      " 1,  86399,      2,  86399,            4, 86398",
+      "-1, -86399,      1,  86399,            0,     0",
+      "-1,    -10,      2,     20,            1,    10",
+      "-1,    -10,     -2, -86390,           -4,     0",
+    })
+    public void plus(int leftDays, int leftSeconds, int rightDays, int rightSeconds, int expectedDays, int expectedSeconds) {
+      Timestamp left = Timestamp.of(leftDays, leftSeconds);
+      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+      Timestamp expected = Timestamp.of(expectedDays, expectedSeconds);
+
+      assertThat(left.plus(right), equalTo(expected));
+      assertThat(right.plus(left), equalTo(expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // left           right                expected
+      " 1,      0,      2,     0,           -1,      0",
+      " 1,     10,      2,    20,           -1,    -10",
+      "-1, -86399,      1, 86399,           -3, -86398",
+    })
+    public void minus(int leftDays, int leftSeconds, int rightDays, int rightSeconds, int expectedDays, int expectedSeconds) {
+      Timestamp left = Timestamp.of(leftDays, leftSeconds);
+      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+      Timestamp expected = Timestamp.of(expectedDays, expectedSeconds);
+
+      assertThat(left.minus(right), equalTo(expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // left           right       result
+      "1,      0,      0,     0,      left",
+      "1,      0,      1,     0,      left",
+      "1,      0,      1,     0,     right",
+      "1,      0,      2,     0,     right",
+
+      "1,      1,      1,     0,      left",
+      "1,      1,      1,     1,      left",
+      "1,      1,      1,     1,     right",
+      "1,      1,      1,     2,     right",
+    })
+    public void max(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
+      Timestamp left = Timestamp.of(leftDays, leftSeconds);
+      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+
+      Timestamp expected = result.equals("left") ? left : right;
+      assertThat(Timestamp.max(left, right), equalTo(expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // left           right       result
+      "1,      0,      0,     0,     right",
+      "1,      0,      1,     0,     right",
+      "1,      0,      1,     0,      left",
+      "1,      0,      2,     0,      left",
+
+      "1,      1,      1,     0,     right",
+      "1,      1,      1,     1,     right",
+      "1,      1,      1,     1,      left",
+      "1,      1,      1,     2,      left",
+    })
+    public void min(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
+      Timestamp left = Timestamp.of(leftDays, leftSeconds);
+      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+
+      Timestamp expected = result.equals("left") ? left : right;
+      assertThat(Timestamp.min(left, right), equalTo(expected));
+    }
+  }
 
 }

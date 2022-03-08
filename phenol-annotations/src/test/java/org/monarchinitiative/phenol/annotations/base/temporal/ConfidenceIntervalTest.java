@@ -14,21 +14,21 @@ public class ConfidenceIntervalTest {
   public void precise() {
     ConfidenceInterval precise = ConfidenceInterval.precise();
     assertThat(precise.isPrecise(), is(true));
-    assertThat(precise.lowerBound(), is(Timestamp.ZERO));
-    assertThat(precise.upperBound(), is(Timestamp.ZERO));
-    assertThat(precise.length(), is(Timestamp.ZERO));
+    assertThat(precise.lowerBound(), is(Timestamp.zero()));
+    assertThat(precise.upperBound(), is(Timestamp.zero()));
+    assertThat(precise.length(), is(Timestamp.zero()));
   }
 
   @Test
   public void zeroTimestampsYieldPreciseConfidenceInterval() {
-    ConfidenceInterval ci = ConfidenceInterval.of(Timestamp.ZERO, Timestamp.ZERO);
+    ConfidenceInterval ci = ConfidenceInterval.of(Timestamp.zero(), Timestamp.zero());
     assertThat(ci.isPrecise(), is(true));
   }
 
   @Test
   public void unorderedBoundsProduceException() {
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceInterval.of(Timestamp.of(0), Timestamp.of(-1)));
-    assertThat(e.getMessage(), equalTo("The lower bound DefaultTimestamp{days=0, seconds=0} must not be positive and the upper bound DefaultTimestamp{days=-1, seconds=0} must not be negative!"));
+    assertThat(e.getMessage(), equalTo("The lower bound [days=0,seconds=0] must not be positive and the upper bound [days=-1,seconds=0] must not be negative!"));
   }
 
   @ParameterizedTest

@@ -1,16 +1,13 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.base.Age;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.time.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -19,11 +16,16 @@ import java.util.stream.Stream;
 public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseAnnotation> {
 
   static HpoDiseaseAnnotation of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
-    double totalFrequency = metadata.stream()
-      .mapToDouble(meta -> meta.frequency().frequency())
-      .sum();
-    if (totalFrequency > 1.0)
-      throw new IllegalArgumentException("Total frequency cannot be greater than 1: " + totalFrequency);
+    float frequency = metadata.stream()
+      .map(HpoDiseaseAnnotationMetadata::frequency)
+      .map(AnnotationFrequency::ratio)
+      .flatMap(Optional::stream)
+      .reduce(Ratio::combine)
+      .map(Ratio::frequency)
+      .orElse(0F);
+
+    if (frequency > 1.0)
+      throw new IllegalArgumentException("Total frequency cannot be greater than 1: " + frequency);
 
     return HpoDiseaseAnnotationDefault.of(termId, metadata);
   }
@@ -37,48 +39,59 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
     return id();
   }
 
-  // TODO - do we really have to to expose this? Probably not.
-  //  Let's make several methods for data that we need to get out of the annotation, i.e. frequencies, onsets, etc.
-
+  /*
+   TODO - do we really have to to expose the metadata stream? Probably not.
+    We may just need to make the "default" methods non-default and keep `metadata` as an implementation detail.
+   */
   Stream<HpoDiseaseAnnotationMetadata> metadata();
 
-  default double observedInPeriod(Period period) {
-    // TODO - implement
-    return Double.NaN;
-  }
-
-  // TODO - implement aggregator methods for onset, etc.
-
-  default float frequency() { // TODO - test
-    List<Ratio> ratios = metadata()
+  default Optional<Ratio> observedInPeriod(TemporalInterval temporalInterval) {
+    return metadata()
+      .filter(meta -> meta.temporalRange().map(range -> range.overlapsWith(temporalInterval)).orElse(false))
       .map(HpoDiseaseAnnotationMetadata::frequency)
       .map(AnnotationFrequency::ratio)
       .flatMap(Optional::stream)
-      .collect(Collectors.toList());
-
-    int n = 0, m = 0;
-    for (Ratio ratio : ratios) {
-      n += ratio.numerator();
-      m += ratio.denominator();
-    }
-
-    return ((float) n) / m;
+      .reduce(Ratio::combine);
   }
 
-  default Optional<Age> earliestOnset() { // TODO - test
+  default Optional<Ratio> ratio() {
+    return metadata()
+      .map(HpoDiseaseAnnotationMetadata::frequency)
+      .map(AnnotationFrequency::ratio)
+      .flatMap(Optional::stream)
+      .reduce(Ratio::combine);
+  }
+
+  default Optional<Timestamp> earliestOnset() {
     return metadata()
       .map(HpoDiseaseAnnotationMetadata::temporalRange)
       .flatMap(Optional::stream)
-      .map(TemporalRange::start)
-      .min(Age::compare);
+      .map(TemporalInterval::start)
+      .min(Timestamp::compare);
   }
 
-  default Optional<Age> latestOnset() { // TODO - test
+  default Optional<Timestamp> latestOnset() {
     return metadata()
       .map(HpoDiseaseAnnotationMetadata::temporalRange)
       .flatMap(Optional::stream)
-      .map(TemporalRange::end)
-      .max(Age::compare);
+      .map(TemporalInterval::start)
+      .max(Timestamp::compare);
+  }
+
+  default Optional<Timestamp> earliestResolution() {
+    return metadata()
+      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .flatMap(Optional::stream)
+      .map(TemporalInterval::end)
+      .min(Timestamp::compare);
+  }
+
+  default Optional<Timestamp> latestResolution() {
+    return metadata()
+      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .flatMap(Optional::stream)
+      .map(TemporalInterval::end)
+      .max(Timestamp::compare);
   }
 
 }

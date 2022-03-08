@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -29,6 +30,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseLoaderDefault.class);
   private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
   private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
+  private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
   private static final TermId CLINICAL_MODIFIER_ROOT = TermId.of("HP:0012823");
   private static final TermId CLINICAL_COURSE = TermId.of("HP:0031797");
 
@@ -85,7 +87,6 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
 
   private Optional<HpoDisease> assembleHpoDisease(TermId diseaseId,
                                                   Iterable<HpoAnnotationLine> annotationLines) {
-
     Optional<HpoDiseaseData> diseaseDataOptional = parseDiseaseData(hpo, annotationLines);
     if (diseaseDataOptional.isEmpty())
       return Optional.empty();
@@ -124,7 +125,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       try {
         phenotypeId = TermId.of(line.getPhenotypeId());
       } catch (PhenolRuntimeException e) {
-        LOGGER.warn("Non-parsable phenotype term `" + line.getPhenotypeId() + "`: " + e.getMessage());
+        LOGGER.warn("Non-parsable phenotype term `{}`: {}", line.getPhenotypeId(), e.getMessage());
         continue;
       }
 
@@ -183,6 +184,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
   }
 
   private AnnotationFrequency parseFrequency(boolean isNegated, String frequency) throws IllegalArgumentException {
+    boolean notDone = true;
     int numerator = -1, denominator = -1;
 
     if ("".equals(frequency)) {
@@ -192,21 +194,27 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       return AnnotationFrequency.of(Ratio.of(numerator, denominator));
     }
 
+    // HPO term, e.g. HP:0040280 (Obligate)
     if (HPO_PATTERN.matcher(frequency).matches()) {
-      // HPO
       HpoFrequency hpoFrequency = HpoFrequency.fromTermId(TermId.of(frequency));
       int hpoApproximate = Math.round(hpoFrequency.frequency() * cohortSize);
       numerator = isNegated
         ? cohortSize - hpoApproximate
         : hpoApproximate;
       denominator = cohortSize;
-    } else {
-      // Ratio
-      Matcher ratioMatcher = RATIO_PATTERN.matcher(frequency);
-      if (ratioMatcher.matches()) {
-        denominator = Integer.parseInt(ratioMatcher.group("denominator"));
-        int i = Integer.parseInt(ratioMatcher.group("numerator"));
+      notDone = false;
+    }
+
+    // Ratio, e.g. 1/2
+    if (notDone) {
+      Matcher matcher = RATIO_PATTERN.matcher(frequency);
+      if (matcher.matches()) {
+        denominator = Integer.parseInt(matcher.group("denominator"));
+        int i = Integer.parseInt(matcher.group("numerator"));
         if (isNegated) {
+          if (denominator == 0)
+            // fix denominator in cases like `0/0`
+            denominator = cohortSize;
           if (i == 0 && salvageNegatedFrequencies) {
             numerator = 0;
           } else {
@@ -215,14 +223,26 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
         } else {
           numerator = i;
         }
+        notDone = false;
       }
     }
 
-    if (numerator >= 0 && denominator > 0) {
-      return AnnotationFrequency.of(Ratio.of(numerator, denominator));
+    // Percentage, e.g. 20%
+    if (notDone) {
+      Matcher matcher = PERCENTAGE_PATTERN.matcher(frequency);
+      if (matcher.matches()) {
+        float percentage = Float.parseFloat(matcher.group("value"));
+        numerator = Math.round(percentage * cohortSize / 100F);
+        denominator = cohortSize;
+        notDone = false;
+      }
     }
 
-    throw new IllegalArgumentException();
+    if (notDone)
+      // we should be done at this point
+      throw new IllegalArgumentException();
+
+    return AnnotationFrequency.of(Ratio.of(numerator, denominator));
   }
 
   /**
@@ -274,7 +294,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
     if (earliest.isPresent())
       return earliest.get();
 
-    // If there is no such term, lets use the earliest onset of the phenotype terms.
+    // If there is no such term, lets use the earliest onset of the phenotype terms. Otherwise, the onset is `null`.
     HpoOnset onset = null;
     for (HpoAnnotation phenotype : phenotypes) {
       Optional<HpoOnset> onsetOptional = phenotype.onset();
@@ -304,12 +324,10 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
 
   private static Optional<HpoDiseaseAnnotationMetadata> toHpoDiseaseAnnotationMetadata(HpoAnnotation annotation) {
     return Optional.of(
-      HpoDiseaseAnnotationMetadata.of(
-        // TODO - fix
-//        annotation.onset()
-//          .map(HpoOnset::temporalRange)
-//          .orElse(null),
-        null,
+      HpoDiseaseAnnotationMetadata.of(annotation.onset()
+        // We do not have "resolution/offset" of the terms, hence open end
+          .map(o -> TemporalInterval.of(o.start(), Timestamp.openEnd()))
+          .orElse(null),
         annotation.annotationFrequency(),
         annotation.modifiers(),
         annotation.sex())

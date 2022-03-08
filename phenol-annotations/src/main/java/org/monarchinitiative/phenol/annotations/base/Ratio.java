@@ -10,6 +10,10 @@ public class Ratio {
   private final int numerator;
   private final int denominator;
 
+  public static Ratio combine(Ratio left, Ratio right) {
+    return Ratio.of(left.numerator + right.numerator, left.denominator + right.denominator);
+  }
+
   /**
    * @param numerator   non-negative numerator
    * @param denominator positive denominator

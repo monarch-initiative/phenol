@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 /**
  * Timestamp represents duration since/until the start of the time-line.
- * Start of the timeline is represented by {@link Timestamp#ZERO}.
+ * Start of the timeline is represented by {@link Timestamp#zero()}.
  */
 public interface Timestamp {
 
@@ -24,7 +24,9 @@ public interface Timestamp {
   /**
    * Duration of 0 days and 0 seconds.
    */
-  Timestamp ZERO = TimestampDefault.of(0, 0);
+  static Timestamp zero() {
+    return TimestampDefault.ZERO;
+  }
 
   static Timestamp of(int years, int months, int days) {
     days += convertYearsAndMonthsToDays(years, months);
@@ -59,8 +61,10 @@ public interface Timestamp {
       throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end timestamp");
     else if (days == Integer.MIN_VALUE)
       throw new IllegalArgumentException("Integer MIN_VALUE is reserved for open end timestamp");
+    else if ((days > 0 && seconds < 0) || (days < 0 && seconds > 0))
+      throw new IllegalArgumentException("Days and seconds must have the same sign");
     else if (days == 0 && seconds == 0)
-      return ZERO;
+      return zero();
     else
       return TimestampDefault.of(days, seconds);
   }
@@ -108,16 +112,33 @@ public interface Timestamp {
     return days() > 0 && seconds() >= 0;
   }
 
+  /* **************************************************************************************************************** */
+
+  default Timestamp plus(Timestamp other) {
+    return Timestamp.of(this.days() + other.days(), this.seconds() + other.seconds());
+  }
+
+  default Timestamp minus(Timestamp other) {
+    return Timestamp.of(this.days() - other.days(), this.seconds() - other.seconds());
+  }
+
+  static Timestamp max(Timestamp a, Timestamp b) {
+    int compare = Timestamp.compare(a, b);
+    return compare >= 0 ? a : b;
+  }
+
+  static Timestamp min(Timestamp a, Timestamp b) {
+    int compare = Timestamp.compare(a, b);
+    return compare <= 0 ? a : b;
+  }
+
+  /* **************************************************************************************************************** */
 
   static int compare(Timestamp x, Timestamp y) {
     int result = Integer.compare(x.days(), y.days());
     if (result != 0)
       return result;
 
-    result = Integer.compare(x.seconds(), y.seconds());
-    if (result != 0)
-      return result;
-
-    return Boolean.compare(x.isOpen(), y.isOpen());
+    return Integer.compare(x.seconds(), y.seconds());
   }
 }

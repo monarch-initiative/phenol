@@ -4,6 +4,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,4 +42,18 @@ public class RatioTest {
     assertThat(e.getMessage(), equalTo(expectedMessage));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    "10,   20,     30,  40,     40,  60",
+    "100, 200,    300, 400,    400, 600",
+  })
+  public void combine(int leftNumerator, int leftDenominator, int rightNumerator, int rightDenominator, int finalNumerator, int finalDenominator) {
+    Optional<Ratio> totalOptional = Stream.of(Ratio.of(leftNumerator, leftDenominator), Ratio.of(rightNumerator, rightDenominator))
+      .reduce(Ratio::combine);
+
+    Ratio total = totalOptional.get();
+
+    assertThat(total.numerator(), equalTo(finalNumerator));
+    assertThat(total.denominator(), equalTo(finalDenominator));
+  }
 }

@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.base;
 import java.time.Period;
 import java.util.Comparator;
 
+@Deprecated(forRemoval = true)
 class Comparators {
 
   enum PeriodNaturalOrderComparator implements Comparator<Period> {

@@ -6,6 +6,7 @@ class TimestampDefault implements Timestamp {
 
   static final TimestampOpen START = new TimestampOpen(Integer.MIN_VALUE);
   static final TimestampOpen END = new TimestampOpen(Integer.MAX_VALUE);
+  static final TimestampZero ZERO = new TimestampZero();
 
   private final int days, seconds;
 
@@ -106,6 +107,32 @@ class TimestampDefault implements Timestamp {
     @Override
     public String toString() {
       return this.equals(START) ? "OpenStartTimestamp" : "OpenEndTimestamp";
+    }
+  }
+
+  private static class TimestampZero implements Timestamp {
+
+    private TimestampZero() {
+    }
+
+    @Override
+    public int days() {
+      return 0;
+    }
+
+    @Override
+    public int seconds() {
+      return 0;
+    }
+
+    @Override
+    public boolean isOpen() {
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return "TimestampZero";
     }
   }
 }

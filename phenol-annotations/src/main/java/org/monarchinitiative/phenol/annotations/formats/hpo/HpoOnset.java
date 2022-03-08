@@ -9,7 +9,7 @@ public enum HpoOnset implements TemporalInterval {
   /**
    * Onset between conception and birth.
    */
-  ANTENATAL_ONSET(Timestamp.of(-280), Timestamp.ZERO),
+  ANTENATAL_ONSET(Timestamp.of(-280), Timestamp.zero()),
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
@@ -19,15 +19,15 @@ public enum HpoOnset implements TemporalInterval {
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
   // 40 gestational weeks - 10 embryonal weeks - 30 weeks (210 days)
-  FETAL_ONSET(Timestamp.of(-210), Timestamp.ZERO),
+  FETAL_ONSET(Timestamp.of(-210), Timestamp.zero()),
   /**
    * Onset at birth
    */
-  CONGENITAL_ONSET(Timestamp.ZERO, Timestamp.ZERO),
+  CONGENITAL_ONSET(Timestamp.zero(), Timestamp.zero()),
   /**
    * Onset in the first 28 days of life
    */
-  NEONATAL_ONSET(Timestamp.ZERO, Timestamp.of(29)),
+  NEONATAL_ONSET(Timestamp.zero(), Timestamp.of(29)),
   /**
    * Onset of disease manifestations before adulthood, defined here as before the age of 15 years,
    * but excluding neonatal or congenital onset.
