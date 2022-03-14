@@ -4,11 +4,16 @@ import java.util.Objects;
 
 class AgeDefault {
 
+  static final Age BIRTH = new PreciseAge(Timestamp.zero());
+
   static Age of(Timestamp timestamp, ConfidenceInterval confidenceInterval) {
-    if (confidenceInterval.isPrecise())
-      return new PreciseAge(timestamp);
-    else
+    if (confidenceInterval.isPrecise()) {
+      return timestamp.isZero()
+        ? BIRTH
+        : new PreciseAge(timestamp);
+    } else {
       return new ImpreciseAge(timestamp, confidenceInterval);
+    }
   }
 
   private AgeDefault() {
