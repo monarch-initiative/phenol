@@ -80,14 +80,14 @@ public interface Timestamp {
   /* **************************************************************************************************************** */
 
   /**
-   * @return number of days since start of the time-line. The number can be negative if the {@link Timestamp} represents
-   * an event occurring before start of the time-line.
+   * @return number of days since start of the time-line (e.g. birth for Humans).
+   * The number can be negative if the {@link Timestamp} represents an event occurring before start of the time-line.
    */
   int days();
 
   /**
-   * @return number of outstanding seconds. The number must be non-positive if the {@link Timestamp} represents
-   * an event before start of the time-line.
+   * @return number of outstanding seconds. The number must be <em>non-positive</em> if the {@link Timestamp} represents
+   * an event before the start of the time-line. The value ranges from -{@link #SECONDS_IN_DAY} to {@link #SECONDS_IN_DAY}.
    */
   int seconds();
 
