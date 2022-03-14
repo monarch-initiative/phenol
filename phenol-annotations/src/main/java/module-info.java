@@ -5,6 +5,7 @@ module org.monarchinitiative.phenol.annotations {
   requires org.slf4j;
 
   /*                                             Exports                                                              */
+  exports org.monarchinitiative.phenol.annotations.analysis;
   exports org.monarchinitiative.phenol.annotations.assoc;
   exports org.monarchinitiative.phenol.annotations.base;
   exports org.monarchinitiative.phenol.annotations.base.temporal;

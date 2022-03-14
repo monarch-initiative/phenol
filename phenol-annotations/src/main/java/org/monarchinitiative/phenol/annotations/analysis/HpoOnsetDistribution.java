@@ -1,7 +1,8 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo;
+package org.monarchinitiative.phenol.annotations.analysis;
 
 
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 
 /**
  * This interface represents all HpoOnset annotations for a disease. This includes a list of global
