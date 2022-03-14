@@ -2,9 +2,8 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,23 +23,96 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
   private final Collection<HpoDiseaseAnnotationMetadata> metadata;
 
+  private final Ratio ratio;
+
+  private final List<TemporalInterval> observationIntervals;
+
+  static HpoDiseaseAnnotationDefault of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
+    // 1. Initialize
+    int numerator = 0, denominator = 0;
+    List<TemporalInterval> observationIntervals = new LinkedList<>();
+
+    // 2. Process ratio and observation intervals in a single loop
+    for (HpoDiseaseAnnotationMetadata datum : metadata) {
+      // Ratio
+      Optional<Ratio> ratio = datum.frequency().ratio();
+      if (ratio.isPresent()) {
+        Ratio r = ratio.get();
+        numerator += r.numerator();
+        denominator += r.denominator();
+      }
+
+      // Observation intervals
+      Optional<TemporalInterval> interval = datum.observationInterval();
+      if (interval.isPresent()) {
+        TemporalInterval current = interval.get();
+
+        boolean overlapFound = false;
+        for (int j = 0; j < observationIntervals.size(); j++) {
+          TemporalInterval other = observationIntervals.get(j);
+          if (current.overlapsWith(other)) {
+            observationIntervals.set(j, TemporalInterval.of(
+              Timestamp.min(current.start(), other.start()),
+              Timestamp.max(current.end(), other.end()))
+            );
+            overlapFound = true;
+            break;
+          }
+        }
+
+        if (!overlapFound) observationIntervals.add(current);
+      }
+    }
+
+    // 3. Finalize
+    Ratio ratio = numerator == 0 && denominator == 0
+      ? null
+      : Ratio.of(numerator, denominator);
+
+    List<TemporalInterval> intervals = observationIntervals.stream()
+      .sorted(TemporalInterval::compare)
+      .collect(Collectors.toUnmodifiableList());
+
+    return new HpoDiseaseAnnotationDefault(termId, metadata, ratio, intervals);
+  }
+
+  private HpoDiseaseAnnotationDefault(TermId termId,
+                                      Collection<HpoDiseaseAnnotationMetadata> metadata,
+                                      Ratio ratio,
+                                      List<TemporalInterval> observationIntervals) {
+    this.termId = Objects.requireNonNull(termId, "Term ID must not be null");
+    this.metadata = metadata;
+    this.ratio = ratio; // nullable
+    this.observationIntervals = observationIntervals;
+  }
+
   @Override
   public TermId id() {
     return termId;
   }
 
-  static HpoDiseaseAnnotationDefault of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
-    return new HpoDiseaseAnnotationDefault(termId, metadata);
-  }
-
-  private HpoDiseaseAnnotationDefault(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
-    this.termId = Objects.requireNonNull(termId, "Term ID must not be null");
-    this.metadata = Objects.requireNonNull(metadata, "Metadata must not be null");
-  }
-
   @Override
   public Stream<HpoDiseaseAnnotationMetadata> metadata() {
     return metadata.stream();
+  }
+
+  @Override
+  public Optional<Ratio> ratio() {
+    return Optional.ofNullable(ratio);
+  }
+
+  @Override
+  public List<TemporalInterval> observationIntervals() {
+    return observationIntervals;
+  }
+
+  @Override
+  public Optional<Ratio> observedInInterval(TemporalInterval target) {
+    return metadata.stream()
+      .filter(meta -> meta.observationInterval().map(interval -> interval.overlapsWith(target)).orElse(false))
+      .map(meta -> meta.frequency().ratio())
+      .flatMap(Optional::stream)
+      .reduce(Ratio::combine);
   }
 
   @Override

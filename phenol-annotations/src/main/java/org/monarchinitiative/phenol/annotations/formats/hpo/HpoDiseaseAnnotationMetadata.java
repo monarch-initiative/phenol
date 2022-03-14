@@ -17,22 +17,22 @@ public interface HpoDiseaseAnnotationMetadata {
     return new HpoDiseaseAnnotationMetadataDefault(temporalInterval, frequency, modifiers, sex);
   }
 
-  Optional<TemporalInterval> temporalRange();
-
-  default Optional<Timestamp> start() {
-    return temporalRange()
-      .map(TemporalInterval::start);
-  }
-
-  default Optional<Timestamp> end() {
-    return temporalRange()
-      .map(TemporalInterval::end);
-  }
+  Optional<TemporalInterval> observationInterval();
 
   AnnotationFrequency frequency();
 
   Collection<TermId> modifiers();
 
   Optional<Sex> sex();
+
+  default Optional<Timestamp> start() {
+    return observationInterval()
+      .map(TemporalInterval::start);
+  }
+
+  default Optional<Timestamp> end() {
+    return observationInterval()
+      .map(TemporalInterval::end);
+  }
 
 }

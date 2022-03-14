@@ -33,6 +33,37 @@ public class TemporalIntervalTest {
 
   @ParameterizedTest
   @CsvSource({
+    // positive
+    " 1,   0,   2,   0,      1,      0",
+    " 1,   0,   1,  20,      0,     20",
+    " 1,  20,   2,  10,      0,  86390",
+
+    // negative
+    "-2,   0,  -1,   0,      1,      0",
+    "-1, -20,  -1, -10,      0,     10",
+    "-2, -10,  -1, -20,      0,  86390",
+
+    // crossing zero
+    "-1,   0,   2,   0,      3,      0",
+    "-1, -10,   2,  20,      3,     30",
+    "-1, -20,   2,  10,      3,     30",
+  })
+  public void length(int startDays, int startSeconds, int endDays, int endSeconds, int days, int seconds) {
+    TemporalInterval interval = TemporalInterval.of(Timestamp.of(startDays, startSeconds), Timestamp.of(endDays, endSeconds));
+    assertThat(interval.length(), equalTo(TemporalInterval.of(Timestamp.zero(), Timestamp.of(days, seconds))));
+  }
+
+  @Test
+  public void length_openEndpoints() {
+    Timestamp stamp = Timestamp.of(1, 0);
+
+    assertThat(TemporalInterval.openStart(stamp).length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
+    assertThat(TemporalInterval.openEnd(stamp).length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
+    assertThat(TemporalInterval.open().length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
     // intersecting
     "1, 3,    2, 4,    2, 3",
 

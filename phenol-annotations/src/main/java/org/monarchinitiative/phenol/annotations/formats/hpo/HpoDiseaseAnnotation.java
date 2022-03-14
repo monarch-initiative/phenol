@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -17,8 +18,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   static HpoDiseaseAnnotation of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
     float frequency = metadata.stream()
-      .map(HpoDiseaseAnnotationMetadata::frequency)
-      .map(AnnotationFrequency::ratio)
+      .map(meta -> meta.frequency().ratio())
       .flatMap(Optional::stream)
       .reduce(Ratio::combine)
       .map(Ratio::frequency)
@@ -34,37 +34,37 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   /**
    * @deprecated use {@link #id()}.
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0-RC1", forRemoval = true)
   default TermId termId() {
     return id();
   }
 
-  /*
-   TODO - do we really have to to expose the metadata stream? Probably not.
-    We may just need to make the "default" methods non-default and keep `metadata` as an implementation detail.
-   */
   Stream<HpoDiseaseAnnotationMetadata> metadata();
 
-  default Optional<Ratio> observedInPeriod(TemporalInterval temporalInterval) {
-    return metadata()
-      .filter(meta -> meta.temporalRange().map(range -> range.overlapsWith(temporalInterval)).orElse(false))
-      .map(HpoDiseaseAnnotationMetadata::frequency)
-      .map(AnnotationFrequency::ratio)
-      .flatMap(Optional::stream)
-      .reduce(Ratio::combine);
-  }
+  /**
+   * @return ratio representing number of individuals with this {@link HpoDiseaseAnnotation} or an empty optional
+   * if no occurrence data is available.
+   */
+  Optional<Ratio> ratio();
 
-  default Optional<Ratio> ratio() {
-    return metadata()
-      .map(HpoDiseaseAnnotationMetadata::frequency)
-      .map(AnnotationFrequency::ratio)
-      .flatMap(Optional::stream)
-      .reduce(Ratio::combine);
-  }
+  /**
+   * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
+   */
+  List<TemporalInterval> observationIntervals();
+
+  /**
+   * @param target temporal interval
+   * @return ratio of patients with {@link HpoDiseaseAnnotation} observable in given <code>target</code> {@link TemporalInterval}
+   * or an empty {@link Optional} if no occurrence data is available
+   */
+  Optional<Ratio> observedInInterval(TemporalInterval target);
+
+  /* **************************************************************************************************************** */
 
   default Optional<Timestamp> earliestOnset() {
     return metadata()
-      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
       .min(Timestamp::compare);
@@ -72,7 +72,8 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Timestamp> latestOnset() {
     return metadata()
-      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
       .max(Timestamp::compare);
@@ -80,7 +81,8 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Timestamp> earliestResolution() {
     return metadata()
-      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
       .min(Timestamp::compare);
@@ -88,7 +90,8 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Timestamp> latestResolution() {
     return metadata()
-      .map(HpoDiseaseAnnotationMetadata::temporalRange)
+      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
       .max(Timestamp::compare);

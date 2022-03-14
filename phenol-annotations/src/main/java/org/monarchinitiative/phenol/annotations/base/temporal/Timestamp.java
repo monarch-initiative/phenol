@@ -114,14 +114,6 @@ public interface Timestamp {
 
   /* **************************************************************************************************************** */
 
-  default Timestamp plus(Timestamp other) {
-    return Timestamp.of(this.days() + other.days(), this.seconds() + other.seconds());
-  }
-
-  default Timestamp minus(Timestamp other) {
-    return Timestamp.of(this.days() - other.days(), this.seconds() - other.seconds());
-  }
-
   static Timestamp max(Timestamp a, Timestamp b) {
     int compare = Timestamp.compare(a, b);
     return compare >= 0 ? a : b;

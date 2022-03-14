@@ -23,7 +23,7 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
   }
 
   @Override
-  public Optional<TemporalInterval> temporalRange() {
+  public Optional<TemporalInterval> observationInterval() {
     return Optional.ofNullable(temporalInterval);
   }
 

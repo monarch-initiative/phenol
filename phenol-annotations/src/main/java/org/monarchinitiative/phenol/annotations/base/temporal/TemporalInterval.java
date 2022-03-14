@@ -66,13 +66,30 @@ public interface TemporalInterval {
   }
 
   default boolean isFullyClosed() {
-    return !isFullyOpen();
+    return isStartClosed() && isEndClosed();
   }
 
   /* **************************************************************************************************************** */
 
+  /**
+   * @return length represented as {@link TemporalInterval} that starts on {@link Timestamp#zero()}. The length is a
+   * {@link TemporalInterval} with open end if start or end of <code>this</code> {@link TemporalInterval} is open.   *
+   */
   default TemporalInterval length() {
-    return TemporalInterval.of(Timestamp.zero(), end().minus(start()));
+    if (isFullyClosed()) {
+      Timestamp start = start();
+      Timestamp end = end();
+      int secondsDifference = end.seconds() - start.seconds();
+      int daysDifference = end.days() - start.days();
+      if (secondsDifference < 0) {
+        secondsDifference = Timestamp.SECONDS_IN_DAY + secondsDifference;
+        --daysDifference;
+      }
+
+      return TemporalInterval.of(Timestamp.zero(), Timestamp.of(daysDifference, secondsDifference));
+    } else {
+      return TemporalInterval.openEnd(Timestamp.zero());
+    }
   }
 
   default boolean isEmpty() {
