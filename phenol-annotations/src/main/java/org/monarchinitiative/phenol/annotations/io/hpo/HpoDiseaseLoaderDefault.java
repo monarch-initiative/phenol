@@ -314,19 +314,19 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
   }
 
   private static HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
-    List<HpoDiseaseAnnotationMetadata> meta = annotations.stream()
+    List<HpoDiseaseAnnotationMetadata> metadata = annotations.stream()
       .map(HpoDiseaseLoaderDefault::toHpoDiseaseAnnotationMetadata)
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    return HpoDiseaseAnnotation.of(phenotypeId, meta);
+    return HpoDiseaseAnnotation.of(phenotypeId, metadata);
   }
 
   private static Optional<HpoDiseaseAnnotationMetadata> toHpoDiseaseAnnotationMetadata(HpoAnnotation annotation) {
     return Optional.of(
       HpoDiseaseAnnotationMetadata.of(annotation.onset()
         // We do not have "resolution/offset" of the terms, hence open end
-          .map(o -> TemporalInterval.of(o.start(), Timestamp.openEnd()))
+          .map(o -> TemporalInterval.openEnd(o.start()))
           .orElse(null),
         annotation.annotationFrequency(),
         annotation.modifiers(),
