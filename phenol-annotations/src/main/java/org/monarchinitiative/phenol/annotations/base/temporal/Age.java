@@ -1,5 +1,10 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
+/**
+ * @deprecated we should not think of an {@link Age} as of a point on a timeline. Instead, we should always work with
+ * {@link TemporalInterval}s.
+ */
+@Deprecated(forRemoval = true)
 public interface Age {
 
   static Age birth() {
@@ -21,6 +26,13 @@ public interface Age {
    * (<em>not</em> with respect to start of the time-line!)
    */
   ConfidenceInterval confidenceInterval();
+
+  /**
+   * @return representation of the {@link Age}.
+   * This is a {@link TemporalInterval} with length 0 if the {@link Age} is precise,
+   * and {@link TemporalInterval} with length of the {@link #confidenceInterval()} if the {@link Age} is imprecise.
+   */
+  TemporalInterval asTemporalInterval();
 
   /* **************************************************************************************************************** */
 

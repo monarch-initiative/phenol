@@ -2,6 +2,10 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
+/**
+ * @deprecated due to {@link Age} being deprecated.
+ */
+@Deprecated
 class AgeDefault {
 
   static final Age BIRTH = new PreciseAge(Timestamp.zero());
@@ -35,6 +39,11 @@ class AgeDefault {
     @Override
     public ConfidenceInterval confidenceInterval() {
       return ConfidenceInterval.precise();
+    }
+
+    @Override
+    public TemporalInterval asTemporalInterval() {
+      return TemporalInterval.of(timestamp, timestamp);
     }
 
     @Override
@@ -76,6 +85,11 @@ class AgeDefault {
     @Override
     public ConfidenceInterval confidenceInterval() {
       return confidenceInterval;
+    }
+
+    @Override
+    public TemporalInterval asTemporalInterval() {
+      return TemporalInterval.of(timestamp.plus(confidenceInterval.lowerBound()), timestamp.plus(confidenceInterval.upperBound()));
     }
 
     @Override

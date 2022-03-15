@@ -2,6 +2,10 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
+/**
+ * @deprecated due to deprecation of {@link Age}.
+ */
+@Deprecated(forRemoval = true)
 public class AgeRange {
 
   private final Age start;

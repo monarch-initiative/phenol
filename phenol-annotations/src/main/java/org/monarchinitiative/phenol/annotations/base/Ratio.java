@@ -37,6 +37,20 @@ public class Ratio {
     this.denominator = denominator;
   }
 
+  /**
+   * @return <code>true</code> if {@link #numerator()} is greater than <code>0</code>
+   */
+  public boolean isPositive() {
+    return numerator > 0;
+  }
+
+  /**
+   * @return <code>true</code> if {@link #numerator()} is equal to <code>0</code>
+   */
+  public boolean isZero() {
+    return numerator == 0;
+  }
+
   public int numerator() {
     return numerator;
   }
@@ -47,6 +61,10 @@ public class Ratio {
 
   public float frequency() {
     return ((float) numerator) / denominator;
+  }
+
+  public static int compare(Ratio left, Ratio right) {
+    return Float.compare(left.frequency(), right.frequency());
   }
 
   @Override

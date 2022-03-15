@@ -122,6 +122,23 @@ public class TemporalIntervalTest {
 
   @ParameterizedTest
   @CsvSource({
+    "-1, 1,  false, false",
+    "-1, 2,  false,  true",
+    "-2, 1,   true, false",
+    "-2, 2,   true,  true",
+  })
+  public void overlapsWith_openEndpoints(int start, int end, boolean openStartExpected, boolean openEndExpected) {
+    TemporalInterval interval = TemporalInterval.of(Timestamp.of(start), Timestamp.of(end));
+
+    TemporalInterval openStart = TemporalInterval.openStart(Timestamp.of(-1));
+    assertThat(openStart.overlapsWith(interval), equalTo(openStartExpected));
+
+    TemporalInterval openEnd = TemporalInterval.openEnd(Timestamp.of(1));
+    assertThat(openEnd.overlapsWith(interval), equalTo(openEndExpected));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
     "1, 2,    0,    false",
     "1, 2,    1,    true",
     "1, 2,    2,    false",

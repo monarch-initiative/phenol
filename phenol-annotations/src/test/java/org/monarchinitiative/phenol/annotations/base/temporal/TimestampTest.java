@@ -125,6 +125,39 @@ public class TimestampTest {
 
     @ParameterizedTest
     @CsvSource({
+      // left    right      result
+      " 1,   0,   2,      0,     3,    0",
+      " 1,   1,   2,      3,     3,    4",
+      " 1,  10,   2,  86395,     4,    5",
+
+      "-1,   0,   2,      0,     1,    0",
+      " 1,   1,  -2,     -3,    -1,   -2",
+      "-1, -10,  -2, -86395,    -4,   -5",
+    })
+    public void plus(int leftDays, int leftSeconds, int rightDays, int rightSeconds, int days, int seconds) {
+      Timestamp left = Timestamp.of(leftDays, leftSeconds);
+      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+
+      assertThat(left.plus(right), equalTo(Timestamp.of(days, seconds)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // left    result
+      " 1,  3,  -1, -3",
+      "-1, -5,   1,  5",
+      " 0,  3,   0, -3",
+      " 0, -3,   0,  3",
+      " 0,  0,   0,  0",
+    })
+    public void negated(int inputDays, int inputSeconds, int days, int seconds) {
+      Timestamp timestamp = Timestamp.of(inputDays, inputSeconds);
+
+      assertThat(timestamp.negated(), equalTo(Timestamp.of(days, seconds)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
       // left           right       result
       "1,      0,      0,     0,      left",
       "1,      0,      1,     0,      left",

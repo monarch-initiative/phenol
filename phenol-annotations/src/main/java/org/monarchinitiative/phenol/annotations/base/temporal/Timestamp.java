@@ -112,6 +112,14 @@ public interface Timestamp {
     return days() > 0 && seconds() >= 0;
   }
 
+  default Timestamp plus(Timestamp other) {
+    return Timestamp.of(days() + other.days(), seconds() + other.seconds());
+  }
+
+  default Timestamp negated() {
+    return Timestamp.of(-days(), -seconds());
+  }
+
   /* **************************************************************************************************************** */
 
   static Timestamp max(Timestamp a, Timestamp b) {
