@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -199,7 +198,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       HpoFrequency hpoFrequency = HpoFrequency.fromTermId(TermId.of(frequency));
       int hpoApproximate = Math.round(hpoFrequency.frequency() * cohortSize);
       numerator = isNegated
-        ? cohortSize - hpoApproximate
+        ? 0
         : hpoApproximate;
       denominator = cohortSize;
       notDone = false;
