@@ -163,8 +163,7 @@ public enum HpoOnset implements TemporalInterval {
       case LATE_ONSET:
         return HpoOnsetTermIds.LATE_ONSET;
       default:
-        // TODO - is this a good idea?
-        return HpoOnsetTermIds.ONSET_TERMID;
+        throw new IllegalStateException("A TermId for `" + this + "` is missing");
     }
   }
 
