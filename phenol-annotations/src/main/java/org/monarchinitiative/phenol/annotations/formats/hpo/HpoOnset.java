@@ -9,73 +9,73 @@ public enum HpoOnset implements TemporalInterval {
   /**
    * Onset between conception and birth.
    */
-  ANTENATAL_ONSET(Timestamp.of(-280), Timestamp.zero()),
+  ANTENATAL_ONSET(AgeSinceBirth.of(-280), AgeSinceBirth.zero()),
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
   // (40 - 10) * 7
-  EMBRYONAL_ONSET(Timestamp.of(-280), Timestamp.of(-210)),
+  EMBRYONAL_ONSET(AgeSinceBirth.of(-280), AgeSinceBirth.of(-210)),
   /**
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
   // 40 gestational weeks - 10 embryonal weeks - 30 weeks (210 days)
-  FETAL_ONSET(Timestamp.of(-210), Timestamp.zero()),
+  FETAL_ONSET(AgeSinceBirth.of(-210), AgeSinceBirth.zero()),
   /**
    * Onset at birth
    */
-  CONGENITAL_ONSET(Timestamp.zero(), Timestamp.zero()),
+  CONGENITAL_ONSET(AgeSinceBirth.zero(), AgeSinceBirth.zero()),
   /**
    * Onset in the first 28 days of life
    */
-  NEONATAL_ONSET(Timestamp.zero(), Timestamp.of(29)),
+  NEONATAL_ONSET(AgeSinceBirth.zero(), AgeSinceBirth.of(29)),
   /**
    * Onset of disease manifestations before adulthood, defined here as before the age of 15 years,
    * but excluding neonatal or congenital onset.
    */
-  PEDIATRIC_ONSET(Timestamp.of(29), Timestamp.of(16, 0,0)),
+  PEDIATRIC_ONSET(AgeSinceBirth.of(29), AgeSinceBirth.of(16, 0,0)),
   /**
    * Onset within the first 12 months of life
    */
-  INFANTILE_ONSET(Timestamp.of(29), Timestamp.of(1, 0, 0)),
+  INFANTILE_ONSET(AgeSinceBirth.of(29), AgeSinceBirth.of(1, 0, 0)),
   /**
    * Onset between the ages of one and five years: at least one but less than 5 years
    */
-  CHILDHOOD_ONSET(Timestamp.of(1, 0, 0), Timestamp.of(5, 0, 0)),
+  CHILDHOOD_ONSET(AgeSinceBirth.of(1, 0, 0), AgeSinceBirth.of(5, 0, 0)),
   /**
    * Onset between 5 and 15 years
    */
-  JUVENILE_ONSET(Timestamp.of(5, 0, 0), Timestamp.of(16, 0, 0)),
+  JUVENILE_ONSET(AgeSinceBirth.of(5, 0, 0), AgeSinceBirth.of(16, 0, 0)),
   /**
    * Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.
    */
-  ADULT_ONSET(Timestamp.of(16, 0, 0), Timestamp.openEnd()),
+  ADULT_ONSET(AgeSinceBirth.of(16, 0, 0), AgeSinceBirth.openEnd()),
   /**
    * Onset of disease at the age of between 16 and 40 years
    */
-  YOUNG_ADULT_ONSET(Timestamp.of(16, 0, 0), Timestamp.of(40, 0, 0)),
+  YOUNG_ADULT_ONSET(AgeSinceBirth.of(16, 0, 0), AgeSinceBirth.of(40, 0, 0)),
   /**
    * Onset of symptoms at the age of 40 to 60 years.
    */
-  MIDDLE_AGE_ONSET(Timestamp.of(40, 0, 0), Timestamp.of(60, 0, 0)),
+  MIDDLE_AGE_ONSET(AgeSinceBirth.of(40, 0, 0), AgeSinceBirth.of(60, 0, 0)),
   /**
    * Onset of symptoms after 60 years
    */
-  LATE_ONSET(Timestamp.of(60, 0, 0), Timestamp.openEnd());
+  LATE_ONSET(AgeSinceBirth.of(60, 0, 0), AgeSinceBirth.openEnd());
 
-  private final Timestamp start, end;
+  private final AgeSinceBirth start, end;
 
-  HpoOnset(Timestamp start, Timestamp end) {
+  HpoOnset(AgeSinceBirth start, AgeSinceBirth end) {
     this.start = start;
     this.end = end;
   }
 
   @Override
-  public Timestamp start() {
+  public AgeSinceBirth start() {
     return start;
   }
 
   @Override
-  public Timestamp end() {
+  public AgeSinceBirth end() {
     return end;
   }
 

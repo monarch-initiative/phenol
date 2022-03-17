@@ -3,16 +3,16 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 public interface TemporalInterval {
 
   static TemporalInterval zero() {
-    return TemporalIntervalDefault.of(Timestamp.zero(), Timestamp.zero());
+    return TemporalIntervalDefault.of(AgeSinceBirth.zero(), AgeSinceBirth.zero());
   }
 
-  static TemporalInterval of(Timestamp start, Timestamp end) {
-    int result = Timestamp.compare(start, end);
+  static TemporalInterval of(AgeSinceBirth start, AgeSinceBirth end) {
+    int result = AgeSinceBirth.compare(start, end);
     if (result > 0)
       throw new IllegalArgumentException(String.format("Start (%d days, %d seconds) must not be after end (%d days, %d seconds)",
         start.days(), start.seconds(), end.days(), end.seconds()));
 
-    if (start.equals(Timestamp.zero()) && end.equals(Timestamp.zero()))
+    if (start.equals(AgeSinceBirth.zero()) && end.equals(AgeSinceBirth.zero()))
       return zero();
 
     return TemporalIntervalDefault.of(start, end);
@@ -21,27 +21,27 @@ public interface TemporalInterval {
   /**
    * @return interval spanning the temporal domain starting at negative infinity and ending in <code>end</code>.
    */
-  static TemporalInterval openStart(Timestamp end) {
-    return TemporalIntervalDefault.of(Timestamp.openStart(), end);
+  static TemporalInterval openStart(AgeSinceBirth end) {
+    return TemporalIntervalDefault.of(AgeSinceBirth.openStart(), end);
   }
 
   /**
    * @return interval spanning the temporal domain starting at <code>start</code> and ending in positive infinity.
    */
-  static TemporalInterval openEnd(Timestamp start) {
-    return TemporalIntervalDefault.of(start, Timestamp.openEnd());
+  static TemporalInterval openEnd(AgeSinceBirth start) {
+    return TemporalIntervalDefault.of(start, AgeSinceBirth.openEnd());
   }
 
   /**
    * @return interval spanning the entire temporal domain.
    */
   static TemporalInterval open() {
-    return TemporalInterval.of(Timestamp.openStart(), Timestamp.openEnd());
+    return TemporalInterval.of(AgeSinceBirth.openStart(), AgeSinceBirth.openEnd());
   }
 
-  Timestamp start();
+  AgeSinceBirth start();
 
-  Timestamp end();
+  AgeSinceBirth end();
 
   /* **************************************************************************************************************** */
 
@@ -72,23 +72,23 @@ public interface TemporalInterval {
   /* **************************************************************************************************************** */
 
   /**
-   * @return length represented as {@link TemporalInterval} that starts on {@link Timestamp#zero()}. The length is a
+   * @return length represented as {@link TemporalInterval} that starts on {@link AgeSinceBirth#zero()}. The length is a
    * {@link TemporalInterval} with open end if start or end of <code>this</code> {@link TemporalInterval} is open.   *
    */
   default TemporalInterval length() {
     if (isFullyClosed()) {
-      Timestamp start = start();
-      Timestamp end = end();
+      AgeSinceBirth start = start();
+      AgeSinceBirth end = end();
       int secondsDifference = end.seconds() - start.seconds();
       int daysDifference = end.days() - start.days();
       if (secondsDifference < 0) {
-        secondsDifference = Timestamp.SECONDS_IN_DAY + secondsDifference;
+        secondsDifference = AgeSinceBirth.SECONDS_IN_DAY + secondsDifference;
         --daysDifference;
       }
 
-      return TemporalInterval.of(Timestamp.zero(), Timestamp.of(daysDifference, secondsDifference));
+      return TemporalInterval.of(AgeSinceBirth.zero(), AgeSinceBirth.of(daysDifference, secondsDifference));
     } else {
-      return TemporalInterval.openEnd(Timestamp.zero());
+      return TemporalInterval.openEnd(AgeSinceBirth.zero());
     }
   }
 
@@ -98,9 +98,9 @@ public interface TemporalInterval {
   }
 
   default TemporalInterval intersection(TemporalInterval other) {
-    Timestamp start = Timestamp.max(start(), other.start());
-    Timestamp end = Timestamp.min(end(), other.end());
-    int compare = Timestamp.compare(start, end);
+    AgeSinceBirth start = AgeSinceBirth.max(start(), other.start());
+    AgeSinceBirth end = AgeSinceBirth.min(end(), other.end());
+    int compare = AgeSinceBirth.compare(start, end);
     if (compare > 0)
       return zero();
 
@@ -111,9 +111,9 @@ public interface TemporalInterval {
     return !intersection(other).isEmpty();
   }
 
-  default boolean contains(Timestamp timestamp) {
-    int start = Timestamp.compare(start(), timestamp);
-    int end = Timestamp.compare(end(), timestamp);
+  default boolean contains(AgeSinceBirth ageSinceBirth) {
+    int start = AgeSinceBirth.compare(start(), ageSinceBirth);
+    int end = AgeSinceBirth.compare(end(), ageSinceBirth);
 
     return start <= 0 && 0 < end;
   }
@@ -121,11 +121,11 @@ public interface TemporalInterval {
   /* **************************************************************************************************************** */
 
   static int compare(TemporalInterval x, TemporalInterval y) {
-    int result = Timestamp.compare(x.start(), y.start());
+    int result = AgeSinceBirth.compare(x.start(), y.start());
     if (result != 0)
       return result;
 
-    return Timestamp.compare(x.end(), y.end());
+    return AgeSinceBirth.compare(x.end(), y.end());
   }
 
 

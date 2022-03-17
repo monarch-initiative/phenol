@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
+import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -35,7 +35,7 @@ public class HpoDiseaseExamples {
     return HpoDisease.of(
       diseaseName,
       databaseId,
-      TemporalInterval.openEnd(Timestamp.zero()),
+      TemporalInterval.openEnd(AgeSinceBirth.zero()),
       annotations,
       modesOfInheritance
       );

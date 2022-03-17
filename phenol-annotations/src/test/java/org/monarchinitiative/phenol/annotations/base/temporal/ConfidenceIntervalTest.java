@@ -14,20 +14,20 @@ public class ConfidenceIntervalTest {
   public void precise() {
     ConfidenceInterval precise = ConfidenceInterval.precise();
     assertThat(precise.isPrecise(), is(true));
-    assertThat(precise.lowerBound(), is(Timestamp.zero()));
-    assertThat(precise.upperBound(), is(Timestamp.zero()));
-    assertThat(precise.length(), is(Timestamp.zero()));
+    assertThat(precise.lowerBound(), is(AgeSinceBirth.zero()));
+    assertThat(precise.upperBound(), is(AgeSinceBirth.zero()));
+    assertThat(precise.length(), is(AgeSinceBirth.zero()));
   }
 
   @Test
   public void zeroTimestampsYieldPreciseConfidenceInterval() {
-    ConfidenceInterval ci = ConfidenceInterval.of(Timestamp.zero(), Timestamp.zero());
+    ConfidenceInterval ci = ConfidenceInterval.of(AgeSinceBirth.zero(), AgeSinceBirth.zero());
     assertThat(ci.isPrecise(), is(true));
   }
 
   @Test
   public void unorderedBoundsProduceException() {
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceInterval.of(Timestamp.of(0), Timestamp.of(-1)));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceInterval.of(AgeSinceBirth.of(0), AgeSinceBirth.of(-1)));
     assertThat(e.getMessage(), equalTo("The lower bound [days=0,seconds=0] must not be positive and the upper bound [days=-1,seconds=0] must not be negative!"));
   }
 
@@ -40,9 +40,9 @@ public class ConfidenceIntervalTest {
     "-1, -43200,   1, 43200,    3,     0",
   })
   public void length(int lowerDays, int lowerSeconds, int upperDays, int upperSeconds, int expectedDays, int expectedSeconds) {
-    ConfidenceInterval ci = ConfidenceInterval.of(Timestamp.of(lowerDays, lowerSeconds), Timestamp.of(upperDays, upperSeconds));
+    ConfidenceInterval ci = ConfidenceInterval.of(AgeSinceBirth.of(lowerDays, lowerSeconds), AgeSinceBirth.of(upperDays, upperSeconds));
 
-    Timestamp length = ci.length();
+    AgeSinceBirth length = ci.length();
 
     assertThat(length.days(), is(expectedDays));
     assertThat(length.seconds(), is(expectedSeconds));
@@ -56,8 +56,8 @@ public class ConfidenceIntervalTest {
 
   })
   public void compare(int leftLowerDays, int leftUpperDays, int rightLowerDays, int rightUpperDays, int expected) {
-    ConfidenceInterval left = ConfidenceInterval.of(Timestamp.of(leftLowerDays), Timestamp.of(leftUpperDays));
-    ConfidenceInterval right = ConfidenceInterval.of(Timestamp.of(rightLowerDays), Timestamp.of(rightUpperDays));
+    ConfidenceInterval left = ConfidenceInterval.of(AgeSinceBirth.of(leftLowerDays), AgeSinceBirth.of(leftUpperDays));
+    ConfidenceInterval right = ConfidenceInterval.of(AgeSinceBirth.of(rightLowerDays), AgeSinceBirth.of(rightUpperDays));
 
     assertThat(ConfidenceInterval.compare(left, right), equalTo(expected));
   }

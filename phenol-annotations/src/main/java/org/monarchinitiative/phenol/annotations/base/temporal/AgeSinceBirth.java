@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
 /**
- * Timestamp represents duration since/until the start of the time-line.
- * Start of the timeline is represented by {@link Timestamp#zero()}.
+ * {@link AgeSinceBirth} represents duration since/until the start of the time-line.
+ * Start of the timeline is represented by {@link AgeSinceBirth#zero()}.
  */
-public interface Timestamp {
+public interface AgeSinceBirth {
 
   double DAYS_IN_JULIAN_YEAR = 365.25;
 
@@ -16,7 +16,7 @@ public interface Timestamp {
   int SECONDS_IN_DAY = 24 * 60 * 60;
 
   /**
-   * To prevent numerical overflow, we do not allow creation of a {@link Timestamp} corresponding to more
+   * To prevent numerical overflow, we do not allow creation of a {@link AgeSinceBirth} corresponding to more
    * than 2,000 Julian years (730,500 days). It should be enough for our use case of modeling life-span of organisms.
    */
   int MAX_DAYS = 20 * 36_525;
@@ -24,11 +24,11 @@ public interface Timestamp {
   /**
    * Duration of 0 days and 0 seconds.
    */
-  static Timestamp zero() {
-    return TimestampDefault.ZERO;
+  static AgeSinceBirth zero() {
+    return AgeSinceBirthDefault.ZERO;
   }
 
-  static Timestamp of(int years, int months, int days) {
+  static AgeSinceBirth of(int years, int months, int days) {
     days += convertYearsAndMonthsToDays(years, months);
     return of(days);
   }
@@ -38,55 +38,55 @@ public interface Timestamp {
   }
 
   /**
-   * Create {@link Timestamp} representing given number of days.
+   * Create {@link AgeSinceBirth} representing given number of days.
    *
    * @param days    number of days
    * @return timestamp
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization
    */
-  static Timestamp of(int days) {
+  static AgeSinceBirth of(int days) {
     return of(days, 0);
   }
 
   /**
-   * Create {@link Timestamp} representing given number of days and seconds.
+   * Create {@link AgeSinceBirth} representing given number of days and seconds.
    *
    * @param days    number of days
    * @param seconds number of seconds
    * @return timestamp
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization
    */
-  static Timestamp of(int days, int seconds) {
+  static AgeSinceBirth of(int days, int seconds) {
     if (days == Integer.MAX_VALUE)
-      throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end timestamp");
+      throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end age");
     else if (days == Integer.MIN_VALUE)
-      throw new IllegalArgumentException("Integer MIN_VALUE is reserved for open end timestamp");
+      throw new IllegalArgumentException("Integer MIN_VALUE is reserved for open end age");
     else if ((days > 0 && seconds < 0) || (days < 0 && seconds > 0))
       throw new IllegalArgumentException("Days and seconds must have the same sign");
     else if (days == 0 && seconds == 0)
       return zero();
     else
-      return TimestampDefault.of(days, seconds);
+      return AgeSinceBirthDefault.of(days, seconds);
   }
 
-  static Timestamp openStart() {
-    return TimestampDefault.START;
+  static AgeSinceBirth openStart() {
+    return AgeSinceBirthDefault.START;
   }
 
-  static Timestamp openEnd() {
-    return TimestampDefault.END;
+  static AgeSinceBirth openEnd() {
+    return AgeSinceBirthDefault.END;
   }
 
   /* **************************************************************************************************************** */
 
   /**
    * @return number of days since start of the time-line (e.g. birth for Humans).
-   * The number can be negative if the {@link Timestamp} represents an event occurring before start of the time-line.
+   * The number can be negative if the {@link AgeSinceBirth} represents an event occurring before start of the time-line.
    */
   int days();
 
   /**
-   * @return number of outstanding seconds. The number must be <em>non-positive</em> if the {@link Timestamp} represents
+   * @return number of outstanding seconds. The number must be <em>non-positive</em> if the {@link AgeSinceBirth} represents
    * an event before the start of the time-line. The value ranges from -{@link #SECONDS_IN_DAY} to {@link #SECONDS_IN_DAY}.
    */
   int seconds();
@@ -112,29 +112,29 @@ public interface Timestamp {
     return days() > 0 && seconds() >= 0;
   }
 
-  default Timestamp plus(Timestamp other) {
-    return Timestamp.of(days() + other.days(), seconds() + other.seconds());
+  default AgeSinceBirth plus(AgeSinceBirth other) {
+    return AgeSinceBirth.of(days() + other.days(), seconds() + other.seconds());
   }
 
-  default Timestamp negated() {
-    return Timestamp.of(-days(), -seconds());
+  default AgeSinceBirth negated() {
+    return AgeSinceBirth.of(-days(), -seconds());
   }
 
   /* **************************************************************************************************************** */
 
-  static Timestamp max(Timestamp a, Timestamp b) {
-    int compare = Timestamp.compare(a, b);
+  static AgeSinceBirth max(AgeSinceBirth a, AgeSinceBirth b) {
+    int compare = AgeSinceBirth.compare(a, b);
     return compare >= 0 ? a : b;
   }
 
-  static Timestamp min(Timestamp a, Timestamp b) {
-    int compare = Timestamp.compare(a, b);
+  static AgeSinceBirth min(AgeSinceBirth a, AgeSinceBirth b) {
+    int compare = AgeSinceBirth.compare(a, b);
     return compare <= 0 ? a : b;
   }
 
   /* **************************************************************************************************************** */
 
-  static int compare(Timestamp x, Timestamp y) {
+  static int compare(AgeSinceBirth x, AgeSinceBirth y) {
     int result = Integer.compare(x.days(), y.days());
     if (result != 0)
       return result;

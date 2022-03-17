@@ -8,15 +8,15 @@ import java.util.Objects;
 @Deprecated
 class AgeDefault {
 
-  static final Age BIRTH = new PreciseAge(Timestamp.zero());
+  static final Age BIRTH = new PreciseAge(AgeSinceBirth.zero());
 
-  static Age of(Timestamp timestamp, ConfidenceInterval confidenceInterval) {
+  static Age of(AgeSinceBirth ageSinceBirth, ConfidenceInterval confidenceInterval) {
     if (confidenceInterval.isPrecise()) {
-      return timestamp.isZero()
+      return ageSinceBirth.isZero()
         ? BIRTH
-        : new PreciseAge(timestamp);
+        : new PreciseAge(ageSinceBirth);
     } else {
-      return new ImpreciseAge(timestamp, confidenceInterval);
+      return new ImpreciseAge(ageSinceBirth, confidenceInterval);
     }
   }
 
@@ -25,15 +25,15 @@ class AgeDefault {
 
   private static class PreciseAge implements Age {
 
-    private final Timestamp timestamp;
+    private final AgeSinceBirth ageSinceBirth;
 
-    private PreciseAge(Timestamp timestamp) {
-      this.timestamp = timestamp;
+    private PreciseAge(AgeSinceBirth ageSinceBirth) {
+      this.ageSinceBirth = ageSinceBirth;
     }
 
     @Override
-    public Timestamp timestamp() {
-      return timestamp;
+    public AgeSinceBirth timestamp() {
+      return ageSinceBirth;
     }
 
     @Override
@@ -43,7 +43,7 @@ class AgeDefault {
 
     @Override
     public TemporalInterval asTemporalInterval() {
-      return TemporalInterval.of(timestamp, timestamp);
+      return TemporalInterval.of(ageSinceBirth, ageSinceBirth);
     }
 
     @Override
@@ -51,35 +51,35 @@ class AgeDefault {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       PreciseAge that = (PreciseAge) o;
-      return Objects.equals(timestamp, that.timestamp);
+      return Objects.equals(ageSinceBirth, that.ageSinceBirth);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(timestamp);
+      return Objects.hash(ageSinceBirth);
     }
 
     @Override
     public String toString() {
       return "PreciseAge{" +
-        "timestamp=" + timestamp +
+        "timestamp=" + ageSinceBirth +
         '}';
     }
   }
 
   private static class ImpreciseAge implements Age {
 
-    private final Timestamp timestamp;
+    private final AgeSinceBirth ageSinceBirth;
     private final ConfidenceInterval confidenceInterval;
 
-    private ImpreciseAge(Timestamp timestamp, ConfidenceInterval confidenceInterval) {
-      this.timestamp = timestamp;
+    private ImpreciseAge(AgeSinceBirth ageSinceBirth, ConfidenceInterval confidenceInterval) {
+      this.ageSinceBirth = ageSinceBirth;
       this.confidenceInterval = confidenceInterval;
     }
 
     @Override
-    public Timestamp timestamp() {
-      return timestamp;
+    public AgeSinceBirth timestamp() {
+      return ageSinceBirth;
     }
 
     @Override
@@ -89,7 +89,7 @@ class AgeDefault {
 
     @Override
     public TemporalInterval asTemporalInterval() {
-      return TemporalInterval.of(timestamp.plus(confidenceInterval.lowerBound()), timestamp.plus(confidenceInterval.upperBound()));
+      return TemporalInterval.of(ageSinceBirth.plus(confidenceInterval.lowerBound()), ageSinceBirth.plus(confidenceInterval.upperBound()));
     }
 
     @Override
@@ -97,18 +97,18 @@ class AgeDefault {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       ImpreciseAge that = (ImpreciseAge) o;
-      return Objects.equals(timestamp, that.timestamp) && Objects.equals(confidenceInterval, that.confidenceInterval);
+      return Objects.equals(ageSinceBirth, that.ageSinceBirth) && Objects.equals(confidenceInterval, that.confidenceInterval);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(timestamp, confidenceInterval);
+      return Objects.hash(ageSinceBirth, confidenceInterval);
     }
 
     @Override
     public String toString() {
       return "ImpreciseAge{" +
-        "timestamp=" + timestamp +
+        "timestamp=" + ageSinceBirth +
         ", confidenceInterval=" + confidenceInterval +
         '}';
     }

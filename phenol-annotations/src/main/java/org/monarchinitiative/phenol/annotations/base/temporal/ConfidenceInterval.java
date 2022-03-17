@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class ConfidenceInterval {
 
-  private static final ConfidenceInterval PRECISE = new ConfidenceInterval(Timestamp.zero(), Timestamp.zero());
+  private static final ConfidenceInterval PRECISE = new ConfidenceInterval(AgeSinceBirth.zero(), AgeSinceBirth.zero());
 
   /**
    *
@@ -13,10 +13,10 @@ public class ConfidenceInterval {
    * @return confidence interval
    */
   public static ConfidenceInterval of(int lowerBound, int upperBound) {
-    return of(Timestamp.of(lowerBound), Timestamp.of(upperBound));
+    return of(AgeSinceBirth.of(lowerBound), AgeSinceBirth.of(upperBound));
   }
 
-  public static ConfidenceInterval of(Timestamp lowerBound, Timestamp upperBound) {
+  public static ConfidenceInterval of(AgeSinceBirth lowerBound, AgeSinceBirth upperBound) {
     Objects.requireNonNull(lowerBound, "Lower bound must not be null");
     Objects.requireNonNull(upperBound, "Upper bound must not be null");
 
@@ -35,10 +35,10 @@ public class ConfidenceInterval {
     return PRECISE;
   }
 
-  private final Timestamp lowerBound;
-  private final Timestamp upperBound;
+  private final AgeSinceBirth lowerBound;
+  private final AgeSinceBirth upperBound;
 
-  private ConfidenceInterval(Timestamp lowerBound, Timestamp upperBound) {
+  private ConfidenceInterval(AgeSinceBirth lowerBound, AgeSinceBirth upperBound) {
     this.lowerBound = lowerBound;
     this.upperBound = upperBound;
   }
@@ -46,23 +46,23 @@ public class ConfidenceInterval {
   /**
    * @return lower bound (included)
    */
-  public Timestamp lowerBound() {
+  public AgeSinceBirth lowerBound() {
     return lowerBound;
   }
 
   /**
    * @return upper bound (excluded)
    */
-  public Timestamp upperBound() {
+  public AgeSinceBirth upperBound() {
     return upperBound;
   }
 
-  public Timestamp length() {
+  public AgeSinceBirth length() {
     if (isPrecise()) {
-      return Timestamp.zero();
+      return AgeSinceBirth.zero();
     } else {
       // TODO - may blow up
-      return Timestamp.of(upperBound.days() - lowerBound.days(), upperBound.seconds() - lowerBound.seconds());
+      return AgeSinceBirth.of(upperBound.days() - lowerBound.days(), upperBound.seconds() - lowerBound.seconds());
     }
   }
 
@@ -71,7 +71,7 @@ public class ConfidenceInterval {
   }
 
   public static int compare(ConfidenceInterval x, ConfidenceInterval y) {
-    return Timestamp.compare(x.length(), y.length());
+    return AgeSinceBirth.compare(x.length(), y.length());
   }
 
   @Override

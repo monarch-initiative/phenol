@@ -2,15 +2,15 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
-class TimestampDefault implements Timestamp {
+class AgeSinceBirthDefault implements AgeSinceBirth {
 
-  static final TimestampOpen START = new TimestampOpen(Integer.MIN_VALUE);
-  static final TimestampOpen END = new TimestampOpen(Integer.MAX_VALUE);
-  static final TimestampZero ZERO = new TimestampZero();
+  static final AgeSinceBirthOpen START = new AgeSinceBirthOpen(Integer.MIN_VALUE);
+  static final AgeSinceBirthOpen END = new AgeSinceBirthOpen(Integer.MAX_VALUE);
+  static final AgeSinceBirthZero ZERO = new AgeSinceBirthZero();
 
   private final int days, seconds;
 
-  static Timestamp of(int days, int seconds) {
+  static AgeSinceBirth of(int days, int seconds) {
     if (Math.abs(seconds) >= SECONDS_IN_DAY) {
       DaysSecondConstant constant = normalizeOutstandingSeconds(seconds);
       days += constant.days;
@@ -18,8 +18,8 @@ class TimestampDefault implements Timestamp {
     }
 
     return seconds == 0
-      ? new TimestampDays(days)
-      : new TimestampDefault(days, seconds);
+      ? new AgeSinceBirthDays(days)
+      : new AgeSinceBirthDefault(days, seconds);
   }
 
   private static DaysSecondConstant normalizeOutstandingSeconds(int seconds) {
@@ -28,7 +28,7 @@ class TimestampDefault implements Timestamp {
     return new DaysSecondConstant(d, s);
   }
 
-  private TimestampDefault(int days, int seconds) {
+  private AgeSinceBirthDefault(int days, int seconds) {
     if (days > MAX_DAYS)
       throw new ArithmeticException(String.format("Number of days %d must not be greater than %d", days, MAX_DAYS));
     this.days = days;
@@ -54,7 +54,7 @@ class TimestampDefault implements Timestamp {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TimestampDefault that = (TimestampDefault) o;
+    AgeSinceBirthDefault that = (AgeSinceBirthDefault) o;
     return days == that.days && seconds == that.seconds;
   }
 
@@ -65,19 +65,19 @@ class TimestampDefault implements Timestamp {
 
   @Override
   public String toString() {
-    return "DefaultTimestamp{" +
+    return "DefaultAgeSinceBirth{" +
       "days=" + days +
       ", seconds=" + seconds +
       '}';
   }
 
   /**
-   * Open timestamp
+   * Open age since birth.
    */
-  private static class TimestampOpen implements Timestamp {
+  private static class AgeSinceBirthOpen implements AgeSinceBirth {
 
     private final int days;
-    private TimestampOpen(int days) {
+    private AgeSinceBirthOpen(int days) {
       this.days = days;
     }
 
@@ -100,7 +100,7 @@ class TimestampDefault implements Timestamp {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      TimestampOpen that = (TimestampOpen) o;
+      AgeSinceBirthOpen that = (AgeSinceBirthOpen) o;
       return days == that.days;
     }
 
@@ -111,13 +111,13 @@ class TimestampDefault implements Timestamp {
 
     @Override
     public String toString() {
-      return this.equals(START) ? "OpenStartTimestamp" : "OpenEndTimestamp";
+      return this.equals(START) ? "OpenStartAgeSinceBirth" : "OpenEndAgeSinceBirth";
     }
   }
 
-  private static class TimestampZero implements Timestamp {
+  private static class AgeSinceBirthZero implements AgeSinceBirth {
 
-    private TimestampZero() {
+    private AgeSinceBirthZero() {
     }
 
     @Override
@@ -137,18 +137,18 @@ class TimestampDefault implements Timestamp {
 
     @Override
     public String toString() {
-      return "TimestampZero";
+      return "AgeSinceBirthZero";
     }
   }
 
   /**
-   * A {@link Timestamp} implementation that only stores days (no seconds).
+   * A {@link AgeSinceBirth} implementation that only stores days (no seconds).
    */
-  private static class TimestampDays implements Timestamp {
+  private static class AgeSinceBirthDays implements AgeSinceBirth {
 
     private final int days;
 
-    private TimestampDays(int days) {
+    private AgeSinceBirthDays(int days) {
       this.days = days;
     }
 
@@ -171,7 +171,7 @@ class TimestampDefault implements Timestamp {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      TimestampDays that = (TimestampDays) o;
+      AgeSinceBirthDays that = (AgeSinceBirthDays) o;
       return days == that.days;
     }
 
@@ -182,7 +182,7 @@ class TimestampDefault implements Timestamp {
 
     @Override
     public String toString() {
-      return "TimestampDays{" +
+      return "AgeSinceBirthDays{" +
         "days=" + days +
         '}';
     }

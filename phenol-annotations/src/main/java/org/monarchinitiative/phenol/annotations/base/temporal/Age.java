@@ -11,15 +11,15 @@ public interface Age {
     return AgeDefault.BIRTH;
   }
 
-  static Age of(Timestamp timestamp) {
-    return of(timestamp, ConfidenceInterval.precise());
+  static Age of(AgeSinceBirth ageSinceBirth) {
+    return of(ageSinceBirth, ConfidenceInterval.precise());
   }
 
-  static Age of(Timestamp timestamp, ConfidenceInterval confidenceInterval) {
-    return AgeDefault.of(timestamp, confidenceInterval);
+  static Age of(AgeSinceBirth ageSinceBirth, ConfidenceInterval confidenceInterval) {
+    return AgeDefault.of(ageSinceBirth, confidenceInterval);
   }
 
-  Timestamp timestamp();
+  AgeSinceBirth timestamp();
 
   /**
    * @return confidence interval relative to the {@link #timestamp()} timestamp
@@ -41,7 +41,7 @@ public interface Age {
   }
 
   static int compare(Age x, Age y) {
-    int result = Timestamp.compare(x.timestamp(), y.timestamp());
+    int result = AgeSinceBirth.compare(x.timestamp(), y.timestamp());
     if (result != 0)
       return result;
 

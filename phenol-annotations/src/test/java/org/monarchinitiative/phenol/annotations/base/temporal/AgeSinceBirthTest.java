@@ -9,19 +9,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TimestampTest {
+public class AgeSinceBirthTest {
 
   @Nested
   public class DayResolutionTests {
 
     @Test
     public void closedTimestamp() {
-      Timestamp timestamp = Timestamp.of(10);
+      AgeSinceBirth ageSinceBirth = AgeSinceBirth.of(10);
 
-      assertThat(timestamp.days(), is(10));
-      assertThat(timestamp.seconds(), is(0));
-      assertThat(timestamp.isOpen(), is(false));
-      assertThat(timestamp.isClosed(), is(true));
+      assertThat(ageSinceBirth.days(), is(10));
+      assertThat(ageSinceBirth.seconds(), is(0));
+      assertThat(ageSinceBirth.isOpen(), is(false));
+      assertThat(ageSinceBirth.isClosed(), is(true));
     }
 
     @ParameterizedTest
@@ -39,16 +39,16 @@ public class TimestampTest {
       "  0, 12,  0,       365",
     })
     public void createUsingDays(int years, int months, int days, int expectedDays) {
-      assertThat(Timestamp.of(years, months, days).days(), equalTo(expectedDays));
+      assertThat(AgeSinceBirth.of(years, months, days).days(), equalTo(expectedDays));
     }
 
     @Test
     public void reservedValuesThrowException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Timestamp.of(Integer.MIN_VALUE));
-      assertThat(e.getMessage(), is("Integer MIN_VALUE is reserved for open end timestamp"));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> AgeSinceBirth.of(Integer.MIN_VALUE));
+      assertThat(e.getMessage(), is("Integer MIN_VALUE is reserved for open end age"));
 
-      e = assertThrows(IllegalArgumentException.class, () -> Timestamp.of(Integer.MAX_VALUE));
-      assertThat(e.getMessage(), is("Integer MAX_VALUE is reserved for open end timestamp"));
+      e = assertThrows(IllegalArgumentException.class, () -> AgeSinceBirth.of(Integer.MAX_VALUE));
+      assertThat(e.getMessage(), is("Integer MAX_VALUE is reserved for open end age"));
     }
 
     @ParameterizedTest
@@ -62,9 +62,9 @@ public class TimestampTest {
       "-1,  0, -1",
     })
     public void compareTo(int left, int right, int expected) {
-      Timestamp l = Timestamp.of(left);
-      Timestamp r = Timestamp.of(right);
-      assertThat(Timestamp.compare(l, r), is(expected));
+      AgeSinceBirth l = AgeSinceBirth.of(left);
+      AgeSinceBirth r = AgeSinceBirth.of(right);
+      assertThat(AgeSinceBirth.compare(l, r), is(expected));
     }
 
     @ParameterizedTest
@@ -73,18 +73,18 @@ public class TimestampTest {
       "-730500",
     })
     public void compareTo_nearLimits(int days) {
-      Timestamp stamp = Timestamp.of(days);
-      assertThat(Timestamp.compare(stamp, Timestamp.openStart()), is(1));
-      assertThat(Timestamp.compare(stamp, Timestamp.openEnd()), is(-1));
+      AgeSinceBirth stamp = AgeSinceBirth.of(days);
+      assertThat(AgeSinceBirth.compare(stamp, AgeSinceBirth.openStart()), is(1));
+      assertThat(AgeSinceBirth.compare(stamp, AgeSinceBirth.openEnd()), is(-1));
     }
 
     @Test
     public void compareTo_limits() {
-      assertThat(Timestamp.compare(Timestamp.openStart(), Timestamp.openStart()), is(0));
-      assertThat(Timestamp.compare(Timestamp.openEnd(), Timestamp.openEnd()), is(0));
+      assertThat(AgeSinceBirth.compare(AgeSinceBirth.openStart(), AgeSinceBirth.openStart()), is(0));
+      assertThat(AgeSinceBirth.compare(AgeSinceBirth.openEnd(), AgeSinceBirth.openEnd()), is(0));
 
-      assertThat(Timestamp.compare(Timestamp.openEnd(), Timestamp.openStart()), is(1));
-      assertThat(Timestamp.compare(Timestamp.openStart(), Timestamp.openEnd()), is(-1));
+      assertThat(AgeSinceBirth.compare(AgeSinceBirth.openEnd(), AgeSinceBirth.openStart()), is(1));
+      assertThat(AgeSinceBirth.compare(AgeSinceBirth.openStart(), AgeSinceBirth.openEnd()), is(-1));
     }
   }
 
@@ -97,7 +97,7 @@ public class TimestampTest {
       "-10,  10",
     })
     public void throwsIfDaysAndSecondsDoNotHaveTheSameSign(int days, int seconds) {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Timestamp.of(days, seconds));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> AgeSinceBirth.of(days, seconds));
       assertThat(e.getMessage(), equalTo("Days and seconds must have the same sign"));
     }
 
@@ -117,7 +117,7 @@ public class TimestampTest {
       "0, -172801,  -2, -1",
     })
     public void timestampWithOutstandingSecondsIsNormalized(int days, int seconds, int expectedDays, int expectedSeconds) {
-      Timestamp duration = Timestamp.of(days, seconds);
+      AgeSinceBirth duration = AgeSinceBirth.of(days, seconds);
 
       assertThat(duration.days(), is(expectedDays));
       assertThat(duration.seconds(), is(expectedSeconds));
@@ -135,10 +135,10 @@ public class TimestampTest {
       "-1, -10,  -2, -86395,    -4,   -5",
     })
     public void plus(int leftDays, int leftSeconds, int rightDays, int rightSeconds, int days, int seconds) {
-      Timestamp left = Timestamp.of(leftDays, leftSeconds);
-      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+      AgeSinceBirth left = AgeSinceBirth.of(leftDays, leftSeconds);
+      AgeSinceBirth right = AgeSinceBirth.of(rightDays, rightSeconds);
 
-      assertThat(left.plus(right), equalTo(Timestamp.of(days, seconds)));
+      assertThat(left.plus(right), equalTo(AgeSinceBirth.of(days, seconds)));
     }
 
     @ParameterizedTest
@@ -151,9 +151,9 @@ public class TimestampTest {
       " 0,  0,   0,  0",
     })
     public void negated(int inputDays, int inputSeconds, int days, int seconds) {
-      Timestamp timestamp = Timestamp.of(inputDays, inputSeconds);
+      AgeSinceBirth ageSinceBirth = AgeSinceBirth.of(inputDays, inputSeconds);
 
-      assertThat(timestamp.negated(), equalTo(Timestamp.of(days, seconds)));
+      assertThat(ageSinceBirth.negated(), equalTo(AgeSinceBirth.of(days, seconds)));
     }
 
     @ParameterizedTest
@@ -170,11 +170,11 @@ public class TimestampTest {
       "1,      1,      1,     2,     right",
     })
     public void max(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
-      Timestamp left = Timestamp.of(leftDays, leftSeconds);
-      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+      AgeSinceBirth left = AgeSinceBirth.of(leftDays, leftSeconds);
+      AgeSinceBirth right = AgeSinceBirth.of(rightDays, rightSeconds);
 
-      Timestamp expected = result.equals("left") ? left : right;
-      assertThat(Timestamp.max(left, right), equalTo(expected));
+      AgeSinceBirth expected = result.equals("left") ? left : right;
+      assertThat(AgeSinceBirth.max(left, right), equalTo(expected));
     }
 
     @ParameterizedTest
@@ -191,11 +191,11 @@ public class TimestampTest {
       "1,      1,      1,     2,      left",
     })
     public void min(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
-      Timestamp left = Timestamp.of(leftDays, leftSeconds);
-      Timestamp right = Timestamp.of(rightDays, rightSeconds);
+      AgeSinceBirth left = AgeSinceBirth.of(leftDays, leftSeconds);
+      AgeSinceBirth right = AgeSinceBirth.of(rightDays, rightSeconds);
 
-      Timestamp expected = result.equals("left") ? left : right;
-      assertThat(Timestamp.min(left, right), equalTo(expected));
+      AgeSinceBirth expected = result.equals("left") ? left : right;
+      assertThat(AgeSinceBirth.min(left, right), equalTo(expected));
     }
   }
 

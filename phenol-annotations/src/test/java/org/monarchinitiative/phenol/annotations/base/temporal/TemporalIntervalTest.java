@@ -12,9 +12,9 @@ public class TemporalIntervalTest {
 
   @Test
   public void create() {
-    TemporalInterval interval = TemporalInterval.of(Timestamp.of(10), Timestamp.of(20));
-    assertThat(interval.start(), equalTo(Timestamp.of(10)));
-    assertThat(interval.end(), equalTo(Timestamp.of(20)));
+    TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(10), AgeSinceBirth.of(20));
+    assertThat(interval.start(), equalTo(AgeSinceBirth.of(10)));
+    assertThat(interval.end(), equalTo(AgeSinceBirth.of(20)));
   }
 
   @ParameterizedTest
@@ -27,7 +27,7 @@ public class TemporalIntervalTest {
   })
   public void errorOnStartAfterEnd(int startDays, int startSeconds, int endDays, int endSeconds) {
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-      () -> TemporalInterval.of(Timestamp.of(startDays, startSeconds), Timestamp.of(endDays, endSeconds)));
+      () -> TemporalInterval.of(AgeSinceBirth.of(startDays, startSeconds), AgeSinceBirth.of(endDays, endSeconds)));
     assertThat(e.getMessage(), is(String.format("Start (%d days, %d seconds) must not be after end (%d days, %d seconds)", startDays, startSeconds, endDays, endSeconds)));
   }
 
@@ -49,17 +49,17 @@ public class TemporalIntervalTest {
     "-1, -20,   2,  10,      3,     30",
   })
   public void length(int startDays, int startSeconds, int endDays, int endSeconds, int days, int seconds) {
-    TemporalInterval interval = TemporalInterval.of(Timestamp.of(startDays, startSeconds), Timestamp.of(endDays, endSeconds));
-    assertThat(interval.length(), equalTo(TemporalInterval.of(Timestamp.zero(), Timestamp.of(days, seconds))));
+    TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(startDays, startSeconds), AgeSinceBirth.of(endDays, endSeconds));
+    assertThat(interval.length(), equalTo(TemporalInterval.of(AgeSinceBirth.zero(), AgeSinceBirth.of(days, seconds))));
   }
 
   @Test
   public void length_openEndpoints() {
-    Timestamp stamp = Timestamp.of(1, 0);
+    AgeSinceBirth stamp = AgeSinceBirth.of(1, 0);
 
-    assertThat(TemporalInterval.openStart(stamp).length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
-    assertThat(TemporalInterval.openEnd(stamp).length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
-    assertThat(TemporalInterval.open().length(), equalTo(TemporalInterval.openEnd(Timestamp.zero())));
+    assertThat(TemporalInterval.openStart(stamp).length(), equalTo(TemporalInterval.openEnd(AgeSinceBirth.zero())));
+    assertThat(TemporalInterval.openEnd(stamp).length(), equalTo(TemporalInterval.openEnd(AgeSinceBirth.zero())));
+    assertThat(TemporalInterval.open().length(), equalTo(TemporalInterval.openEnd(AgeSinceBirth.zero())));
   }
 
   @ParameterizedTest
@@ -80,19 +80,19 @@ public class TemporalIntervalTest {
     "3, 4,    1, 2,    0, 0",
   })
   public void intersection(int leftStart, int leftEnd, int rightStart, int rightEnd, int expectedStart, int expectedEnd) {
-    TemporalInterval left = TemporalInterval.of(Timestamp.of(leftStart), Timestamp.of(leftEnd));
-    TemporalInterval right = TemporalInterval.of(Timestamp.of(rightStart), Timestamp.of(rightEnd));
+    TemporalInterval left = TemporalInterval.of(AgeSinceBirth.of(leftStart), AgeSinceBirth.of(leftEnd));
+    TemporalInterval right = TemporalInterval.of(AgeSinceBirth.of(rightStart), AgeSinceBirth.of(rightEnd));
 
     TemporalInterval intersection = left.intersection(right);
-    assertThat(intersection, equalTo(TemporalInterval.of(Timestamp.of(expectedStart), Timestamp.of(expectedEnd))));
+    assertThat(intersection, equalTo(TemporalInterval.of(AgeSinceBirth.of(expectedStart), AgeSinceBirth.of(expectedEnd))));
   }
 
   @Test
   public void intersection_openEnds() {
-    TemporalInterval closed = TemporalInterval.of(Timestamp.of(1), Timestamp.of(2));
+    TemporalInterval closed = TemporalInterval.of(AgeSinceBirth.of(1), AgeSinceBirth.of(2));
 
-    assertThat(TemporalInterval.openStart(Timestamp.of(2)).intersection(closed), equalTo(closed)); // left open
-    assertThat(TemporalInterval.openEnd(Timestamp.of(1)).intersection(closed), equalTo(closed)); // right open
+    assertThat(TemporalInterval.openStart(AgeSinceBirth.of(2)).intersection(closed), equalTo(closed)); // left open
+    assertThat(TemporalInterval.openEnd(AgeSinceBirth.of(1)).intersection(closed), equalTo(closed)); // right open
     assertThat(TemporalInterval.open().intersection(closed), equalTo(closed)); // fully open
   }
 
@@ -114,8 +114,8 @@ public class TemporalIntervalTest {
     "3, 4,    1, 2,    false",
   })
   public void overlapsWith(int leftStart, int leftEnd, int rightStart, int rightEnd, boolean expected) {
-    TemporalInterval left = TemporalInterval.of(Timestamp.of(leftStart), Timestamp.of(leftEnd));
-    TemporalInterval right = TemporalInterval.of(Timestamp.of(rightStart), Timestamp.of(rightEnd));
+    TemporalInterval left = TemporalInterval.of(AgeSinceBirth.of(leftStart), AgeSinceBirth.of(leftEnd));
+    TemporalInterval right = TemporalInterval.of(AgeSinceBirth.of(rightStart), AgeSinceBirth.of(rightEnd));
 
     assertThat(left.overlapsWith(right), equalTo(expected));
   }
@@ -128,12 +128,12 @@ public class TemporalIntervalTest {
     "-2, 2,   true,  true",
   })
   public void overlapsWith_openEndpoints(int start, int end, boolean openStartExpected, boolean openEndExpected) {
-    TemporalInterval interval = TemporalInterval.of(Timestamp.of(start), Timestamp.of(end));
+    TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(start), AgeSinceBirth.of(end));
 
-    TemporalInterval openStart = TemporalInterval.openStart(Timestamp.of(-1));
+    TemporalInterval openStart = TemporalInterval.openStart(AgeSinceBirth.of(-1));
     assertThat(openStart.overlapsWith(interval), equalTo(openStartExpected));
 
-    TemporalInterval openEnd = TemporalInterval.openEnd(Timestamp.of(1));
+    TemporalInterval openEnd = TemporalInterval.openEnd(AgeSinceBirth.of(1));
     assertThat(openEnd.overlapsWith(interval), equalTo(openEndExpected));
   }
 
@@ -145,7 +145,7 @@ public class TemporalIntervalTest {
     "1, 2,    3,    false",
   })
   public void contains(int start, int end, int position, boolean expected) {
-    assertThat(TemporalInterval.of(Timestamp.of(start), Timestamp.of(end)).contains(Timestamp.of(position)), equalTo(expected));
+    assertThat(TemporalInterval.of(AgeSinceBirth.of(start), AgeSinceBirth.of(end)).contains(AgeSinceBirth.of(position)), equalTo(expected));
   }
 
 }

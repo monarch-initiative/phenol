@@ -12,32 +12,32 @@ public class AgeTest {
   public void birth() {
     Age birth = Age.birth();
     assertThat(birth.isPrecise(), is(true));
-    assertThat(birth.timestamp(), is(Timestamp.zero()));
+    assertThat(birth.timestamp(), is(AgeSinceBirth.zero()));
   }
 
   @Test
   public void precise() {
-    Age precise = Age.of(Timestamp.of(1));
+    Age precise = Age.of(AgeSinceBirth.of(1));
     assertThat(precise.isPrecise(), is(true));
-    assertThat(precise.timestamp(), equalTo(Timestamp.of(1)));
+    assertThat(precise.timestamp(), equalTo(AgeSinceBirth.of(1)));
 
-    precise = Age.of(Timestamp.of(1), ConfidenceInterval.precise());
+    precise = Age.of(AgeSinceBirth.of(1), ConfidenceInterval.precise());
     assertThat(precise.isPrecise(), is(true));
-    assertThat(precise.timestamp(), equalTo(Timestamp.of(1)));
+    assertThat(precise.timestamp(), equalTo(AgeSinceBirth.of(1)));
   }
 
   @Test
   public void imprecise() {
-    Age imprecise = Age.of(Timestamp.zero(), ConfidenceInterval.of(-1, 1));
+    Age imprecise = Age.of(AgeSinceBirth.zero(), ConfidenceInterval.of(-1, 1));
 
     assertThat(imprecise.isPrecise(), equalTo(false));
-    assertThat(imprecise.confidenceInterval().lowerBound(), equalTo(Timestamp.of(-1)));
-    assertThat(imprecise.confidenceInterval().upperBound(), equalTo(Timestamp.of(1)));
+    assertThat(imprecise.confidenceInterval().lowerBound(), equalTo(AgeSinceBirth.of(-1)));
+    assertThat(imprecise.confidenceInterval().upperBound(), equalTo(AgeSinceBirth.of(1)));
   }
 
   @Test
   public void imprecise_error() {
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Timestamp.zero(), ConfidenceInterval.of(1, 1)));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(AgeSinceBirth.zero(), ConfidenceInterval.of(1, 1)));
     assertThat(e.getMessage(), equalTo("The lower bound [days=1,seconds=0] must not be positive and the upper bound [days=1,seconds=0] must not be negative!"));
   }
 

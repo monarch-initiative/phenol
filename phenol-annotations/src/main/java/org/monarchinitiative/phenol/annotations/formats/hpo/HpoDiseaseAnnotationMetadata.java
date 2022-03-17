@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
+import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -25,12 +25,12 @@ public interface HpoDiseaseAnnotationMetadata {
 
   Optional<Sex> sex();
 
-  default Optional<Timestamp> start() {
+  default Optional<AgeSinceBirth> start() {
     return observationInterval()
       .map(TemporalInterval::start);
   }
 
-  default Optional<Timestamp> end() {
+  default Optional<AgeSinceBirth> end() {
     return observationInterval()
       .map(TemporalInterval::end);
   }
