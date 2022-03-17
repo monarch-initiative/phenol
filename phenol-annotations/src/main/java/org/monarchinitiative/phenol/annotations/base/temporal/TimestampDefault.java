@@ -10,17 +10,22 @@ class TimestampDefault implements Timestamp {
 
   private final int days, seconds;
 
-  static TimestampDefault of(int days, int seconds) {
-    if (Math.abs(seconds) >= SECONDS_IN_DAY)
-      return normalize(days, seconds);
-    return new TimestampDefault(days, seconds);
+  static Timestamp of(int days, int seconds) {
+    if (Math.abs(seconds) >= SECONDS_IN_DAY) {
+      DaysSecondConstant constant = normalizeOutstandingSeconds(seconds);
+      days += constant.days;
+      seconds += constant.seconds;
+    }
+
+    return seconds == 0
+      ? new TimestampDays(days)
+      : new TimestampDefault(days, seconds);
   }
 
-  private static TimestampDefault normalize(int days, int seconds) {
-    int leapDays = seconds / SECONDS_IN_DAY;
-    days = days + leapDays;
-    seconds = seconds - leapDays * SECONDS_IN_DAY;
-    return new TimestampDefault(days, seconds);
+  private static DaysSecondConstant normalizeOutstandingSeconds(int seconds) {
+    int d = seconds / SECONDS_IN_DAY;
+    int s = -d * SECONDS_IN_DAY;
+    return new DaysSecondConstant(d, s);
   }
 
   private TimestampDefault(int days, int seconds) {
@@ -133,6 +138,63 @@ class TimestampDefault implements Timestamp {
     @Override
     public String toString() {
       return "TimestampZero";
+    }
+  }
+
+  /**
+   * A {@link Timestamp} implementation that only stores days (no seconds).
+   */
+  private static class TimestampDays implements Timestamp {
+
+    private final int days;
+
+    private TimestampDays(int days) {
+      this.days = days;
+    }
+
+    @Override
+    public int days() {
+      return days;
+    }
+
+    @Override
+    public int seconds() {
+      return 0;
+    }
+
+    @Override
+    public boolean isOpen() {
+      return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      TimestampDays that = (TimestampDays) o;
+      return days == that.days;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(days);
+    }
+
+    @Override
+    public String toString() {
+      return "TimestampDays{" +
+        "days=" + days +
+        '}';
+    }
+  }
+
+  private static class DaysSecondConstant {
+    private final int days;
+    private final int seconds;
+
+    private DaysSecondConstant(int days, int seconds) {
+      this.days = days;
+      this.seconds = seconds;
     }
   }
 }
