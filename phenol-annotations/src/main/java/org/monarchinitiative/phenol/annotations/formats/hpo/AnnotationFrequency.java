@@ -25,8 +25,7 @@ public interface AnnotationFrequency {
   }
 
   static int compare(AnnotationFrequency x, AnnotationFrequency y) {
-    // TODO - implement
-    return 0;
+    return Float.compare(x.frequency(), y.frequency());
   }
 
 }
