@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.analysis;
 
 
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.Timestamp;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 
 /**
@@ -21,17 +22,30 @@ public interface HpoOnsetDistribution {
    * to medical attention at an Age that corresponds to what we expect for a disease. For instance, an implementation
    * could return true if the age is within one of the HPO Onset terms used to annotate a disease, otherwise false
    *
-   * @param interval representing the age of an individual
+   * @param interval representing the age of a patient
    * @return true if the age corresponds to the onset information of the disease
    */
   boolean isObservableInAge(HpoDisease disease, TemporalInterval interval);
+
+  /**
+   * This method can be used to determine whether a patient (as represented in a Phenopacket, for example) has come
+   * to medical attention at an <code>age</code> that corresponds to what we expect for a disease.
+   * For instance, an implementation could return <code>true</code> if the <code>age</code> is within one of
+   * the HPO Onset terms used to annotate a disease, otherwise <code>false</code>.
+   *
+   * @param age of the patient
+   * @return true if the age corresponds to the onset information of the disease
+   */
+  default boolean isObservableInAge(HpoDisease disease, Timestamp age) {
+    return isObservableInAge(disease, TemporalInterval.openEnd(age));
+  }
 
   /**
    * This method can return a probability of a patient presenting at the indicated age if the patient has the disease.
    * By default, we return 1.0 if the patient is within the age range, otherwise zero, but implementations can
    * implement more sophisticated probability distributions.
    *
-   * @param interval representing the age of an individual
+   * @param interval representing the age of a patient
    */
   default double probabilityOfPresentationAtAge(HpoDisease disease, TemporalInterval interval) {
     return isObservableInAge(disease, interval) ? 1.0 : 0.0;
