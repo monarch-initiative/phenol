@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
+import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -61,40 +61,40 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   /* **************************************************************************************************************** */
 
-  default Optional<AgeSinceBirth> earliestOnset() {
+  default Optional<Age> earliestOnset() {
     return metadata()
       .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
-      .min(AgeSinceBirth::compare);
+      .min(Age::compare);
   }
 
-  default Optional<AgeSinceBirth> latestOnset() {
+  default Optional<Age> latestOnset() {
     return metadata()
       .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
-      .max(AgeSinceBirth::compare);
+      .max(Age::compare);
   }
 
-  default Optional<AgeSinceBirth> earliestResolution() {
+  default Optional<Age> earliestResolution() {
     return metadata()
       .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
-      .min(AgeSinceBirth::compare);
+      .min(Age::compare);
   }
 
-  default Optional<AgeSinceBirth> latestResolution() {
+  default Optional<Age> latestResolution() {
     return metadata()
       .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
-      .max(AgeSinceBirth::compare);
+      .max(Age::compare);
   }
 
 }

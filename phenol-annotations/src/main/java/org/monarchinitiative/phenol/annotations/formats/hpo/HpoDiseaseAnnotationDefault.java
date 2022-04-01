@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
+import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -55,8 +55,8 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
           TemporalInterval other = observationIntervals.get(j);
           if (current.overlapsWith(other)) {
             observationIntervals.set(j, TemporalInterval.of(
-              AgeSinceBirth.min(current.start(), other.start()),
-              AgeSinceBirth.max(current.end(), other.end()))
+              Age.min(current.start(), other.start()),
+              Age.max(current.end(), other.end()))
             );
             overlapFound = true;
             break;

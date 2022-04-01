@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.analysis;
 
 
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
+import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 
 /**
@@ -36,7 +36,7 @@ public interface HpoOnsetDistribution {
    * @param age of the patient
    * @return true if the age corresponds to the onset information of the disease
    */
-  default boolean isObservableInAge(HpoDisease disease, AgeSinceBirth age) {
+  default boolean isObservableInAge(HpoDisease disease, Age age) {
     return isObservableInAge(disease, TemporalInterval.openEnd(age));
   }
 

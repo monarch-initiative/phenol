@@ -4,7 +4,7 @@ import java.util.Objects;
 
 class TemporalIntervalDefault implements TemporalInterval {
 
-  static TemporalInterval of(AgeSinceBirth start, AgeSinceBirth end) {
+  static TemporalInterval of(Age start, Age end) {
     if (start.isOpen() || end.isOpen()) {
       if (!start.isOpen()) {
         return new TemporalIntervalOpenEnd(start);
@@ -18,21 +18,21 @@ class TemporalIntervalDefault implements TemporalInterval {
     }
   }
 
-  private final AgeSinceBirth start;
-  private final AgeSinceBirth end;
+  private final Age start;
+  private final Age end;
 
-  private TemporalIntervalDefault(AgeSinceBirth start, AgeSinceBirth end) {
+  private TemporalIntervalDefault(Age start, Age end) {
     this.start = start;
     this.end = end;
   }
 
   @Override
-  public AgeSinceBirth start() {
+  public Age start() {
     return start;
   }
 
   @Override
-  public AgeSinceBirth end() {
+  public Age end() {
     return end;
   }
 
@@ -59,20 +59,20 @@ class TemporalIntervalDefault implements TemporalInterval {
 
   private static class TemporalIntervalOpenEnd implements TemporalInterval {
 
-    private final AgeSinceBirth start;
+    private final Age start;
 
-    private TemporalIntervalOpenEnd(AgeSinceBirth start) {
+    private TemporalIntervalOpenEnd(Age start) {
       this.start = start;
     }
 
     @Override
-    public AgeSinceBirth start() {
+    public Age start() {
       return start;
     }
 
     @Override
-    public AgeSinceBirth end() {
-      return AgeSinceBirth.openEnd();
+    public Age end() {
+      return Age.openEnd();
     }
 
     @Override
@@ -98,19 +98,19 @@ class TemporalIntervalDefault implements TemporalInterval {
 
   private static class TemporalIntervalOpenStart implements TemporalInterval {
 
-    private final AgeSinceBirth end;
+    private final Age end;
 
-    private TemporalIntervalOpenStart(AgeSinceBirth end) {
+    private TemporalIntervalOpenStart(Age end) {
       this.end = end;
     }
 
     @Override
-    public AgeSinceBirth start() {
-      return AgeSinceBirth.openStart();
+    public Age start() {
+      return Age.openStart();
     }
 
     @Override
-    public AgeSinceBirth end() {
+    public Age end() {
       return end;
     }
 
@@ -146,13 +146,13 @@ class TemporalIntervalDefault implements TemporalInterval {
     private TemporalIntervalOpen() {}
 
     @Override
-    public AgeSinceBirth start() {
-      return AgeSinceBirth.openStart();
+    public Age start() {
+      return Age.openStart();
     }
 
     @Override
-    public AgeSinceBirth end() {
-      return AgeSinceBirth.openEnd();
+    public Age end() {
+      return Age.openEnd();
     }
 
     @Override

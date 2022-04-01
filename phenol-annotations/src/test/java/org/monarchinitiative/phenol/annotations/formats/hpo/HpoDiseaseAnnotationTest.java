@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.AgeSinceBirth;
+import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class HpoDiseaseAnnotationTest {
 
   /**
    * Tests that operate on a simple {@link HpoDiseaseAnnotation} instance.
-   * All {@link HpoDiseaseAnnotationMetadata} lack the resolution feature, and use {@link TemporalInterval#openEnd(AgeSinceBirth)}.
+   * All {@link HpoDiseaseAnnotationMetadata} lack the resolution feature, and use {@link TemporalInterval#openEnd(Age)}.
    */
   @Nested
   public class SimpleTest {
@@ -34,10 +34,10 @@ public class HpoDiseaseAnnotationTest {
       instance = HpoDiseaseAnnotation.of(
         TermId.of("HP:123456"),
         List.of(
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(AgeSinceBirth.of(1)), AnnotationFrequency.of(Ratio.of(0, 5)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(AgeSinceBirth.of(2)), AnnotationFrequency.of(Ratio.of(10, 10)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(AgeSinceBirth.of(3)), AnnotationFrequency.of(Ratio.of(5, 15)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(AgeSinceBirth.of(4)), AnnotationFrequency.of(Ratio.of(0, 20)), noModifiersForNow, Sex.MALE)
+          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(1)), AnnotationFrequency.of(Ratio.of(0, 5)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(2)), AnnotationFrequency.of(Ratio.of(10, 10)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(3)), AnnotationFrequency.of(Ratio.of(5, 15)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(4)), AnnotationFrequency.of(Ratio.of(0, 20)), noModifiersForNow, Sex.MALE)
         ));
     }
 
@@ -53,41 +53,41 @@ public class HpoDiseaseAnnotationTest {
 
     @Test
     public void earliestOnset() {
-      Optional<AgeSinceBirth> optional = instance.earliestOnset();
+      Optional<Age> optional = instance.earliestOnset();
 
       assertThat(optional.isPresent(), equalTo(true));
-      assertThat(optional.get(), equalTo(AgeSinceBirth.of(2)));
+      assertThat(optional.get(), equalTo(Age.postnatal(2)));
     }
 
     @Test
     public void latestOnset() {
-      Optional<AgeSinceBirth> optional = instance.latestOnset();
+      Optional<Age> optional = instance.latestOnset();
 
       assertThat(optional.isPresent(), equalTo(true));
-      assertThat(optional.get(), equalTo(AgeSinceBirth.of(3)));
+      assertThat(optional.get(), equalTo(Age.postnatal(3)));
     }
 
     @Test
     public void earliestResolution() {
-      Optional<AgeSinceBirth> optional = instance.earliestResolution();
+      Optional<Age> optional = instance.earliestResolution();
 
       assertThat(optional.isPresent(), equalTo(true));
-      assertThat(optional.get(), equalTo(AgeSinceBirth.openEnd()));
+      assertThat(optional.get(), equalTo(Age.openEnd()));
     }
 
     @Test
     public void latestResolution() {
-      Optional<AgeSinceBirth> optional = instance.latestResolution();
+      Optional<Age> optional = instance.latestResolution();
 
       assertThat(optional.isPresent(), equalTo(true));
-      assertThat(optional.get(), equalTo(AgeSinceBirth.openEnd()));
+      assertThat(optional.get(), equalTo(Age.openEnd()));
     }
 
     @Test
     public void observationIntervals() {
       List<TemporalInterval> intervals = instance.observationIntervals();
       assertThat(intervals, hasSize(1));
-      assertThat(intervals, hasItem(TemporalInterval.openEnd(AgeSinceBirth.of(1))));
+      assertThat(intervals, hasItem(TemporalInterval.openEnd(Age.postnatal(1))));
     }
 
     @ParameterizedTest
@@ -99,7 +99,7 @@ public class HpoDiseaseAnnotationTest {
       "0, 10,      15, 50",
     })
     public void observedInPeriod(int start, int end, int numerator, int denominator) {
-      TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(start), AgeSinceBirth.of(end));
+      TemporalInterval interval = TemporalInterval.of(Age.postnatal(start), Age.postnatal(end));
       Optional<Ratio> ratio = instance.observedInInterval(interval);
 
       assertThat(ratio.isPresent(), equalTo(true));
@@ -108,7 +108,7 @@ public class HpoDiseaseAnnotationTest {
 
     @Test
     public void observedInPeriod_noData() {
-      TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(0), AgeSinceBirth.of(1));
+      TemporalInterval interval = TemporalInterval.of(Age.postnatal(0), Age.postnatal(1));
       assertThat(instance.observedInInterval(interval).isPresent(), is(false));
     }
   }
@@ -141,7 +141,7 @@ public class HpoDiseaseAnnotationTest {
       " 0, 10,    5,  9",
     })
     public void observedInPeriod(int startDays, int endDays, int numerator, int denominator) {
-      TemporalInterval interval = TemporalInterval.of(AgeSinceBirth.of(startDays), AgeSinceBirth.of(endDays));
+      TemporalInterval interval = TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays));
       Optional<Ratio> ratio = instance.observedInInterval(interval);
 
       assertThat(ratio.isPresent(), equalTo(true));
@@ -150,13 +150,13 @@ public class HpoDiseaseAnnotationTest {
 
     @Test
     public void observedInPeriod_noData() {
-      TemporalInterval before = TemporalInterval.of(AgeSinceBirth.of(-1), AgeSinceBirth.of(0));
+      TemporalInterval before = TemporalInterval.of(Age.postnatal(0), Age.postnatal(0));
       assertThat(instance.observedInInterval(before).isPresent(), is(false));
 
-      TemporalInterval between = TemporalInterval.of(AgeSinceBirth.of(20), AgeSinceBirth.of(30));
+      TemporalInterval between = TemporalInterval.of(Age.postnatal(20), Age.postnatal(30));
       assertThat(instance.observedInInterval(between).isPresent(), is(false));
 
-      TemporalInterval after = TemporalInterval.of(AgeSinceBirth.of(35), AgeSinceBirth.of(36));
+      TemporalInterval after = TemporalInterval.of(Age.postnatal(35), Age.postnatal(36));
       assertThat(instance.observedInInterval(after).isPresent(), is(false));
     }
 
@@ -166,15 +166,15 @@ public class HpoDiseaseAnnotationTest {
 
       assertThat(intervals, hasSize(2));
       assertThat(intervals, hasItems(
-        TemporalInterval.of(AgeSinceBirth.zero(), AgeSinceBirth.of(20)),
-        TemporalInterval.of(AgeSinceBirth.of(30), AgeSinceBirth.of(35))
+        TemporalInterval.of(Age.birth(), Age.postnatal(20)),
+        TemporalInterval.of(Age.postnatal(30), Age.postnatal(35))
         ));
     }
   }
 
   private static HpoDiseaseAnnotationMetadata createMetadata(int startDays, int endDays, int numerator, int denominator) {
     return HpoDiseaseAnnotationMetadata.of(
-      TemporalInterval.of(AgeSinceBirth.of(startDays), AgeSinceBirth.of(endDays)),
+      TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays)),
       AnnotationFrequency.of(Ratio.of(numerator, denominator)),
       List.of(), Sex.MALE);
   }
