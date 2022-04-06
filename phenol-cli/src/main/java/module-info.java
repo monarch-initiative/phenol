@@ -4,4 +4,5 @@ module org.monarchinitiative.phenol.cli {
 
   requires info.picocli;
   requires org.slf4j;
+  opens org.monarchinitiative.phenol.cli.cmd;
 }

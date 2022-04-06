@@ -3,7 +3,7 @@ Input
 
 The phenol library is mainly intended to support working with the Human Phenotype Ontology,
 the Mammalian Phenotype Ontology, the Gene Ontology, MONDO, and ECTO, but has also been
-tested with the OBO version of NCIT.
+tested with the OBO version of NCIT. Phenol expects the JSON version of these ontologies as input.
 
 
 Human Phenotype Ontology
@@ -11,7 +11,7 @@ Human Phenotype Ontology
 To load the `Human Phenotype Ontology (HPO) <https://hpo.jax.org/app/>`_, use the following code.
 The HPO is in the default  curie map and only contains known relationships (is-a) and HP terms. ::
 
-  String hpoPath="/some/path/hp.obo";
+  String hpoPath="/some/path/hp.json";
   Ontology hpoOntology = OntologyLoader.loadOntology(new File(hpoPath));
 
 

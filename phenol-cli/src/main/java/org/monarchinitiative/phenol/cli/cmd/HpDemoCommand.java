@@ -11,9 +11,9 @@ import java.util.concurrent.Callable;
   description = "HP enrichment")
 public class HpDemoCommand implements Callable<Integer> {
 
-    @CommandLine.Option(names = {"-o","--obo"}, description = "path to hp.obo file", required = true)
+    @CommandLine.Option(names = {"--hpo"}, description = "path to hp.json file", required = true)
     private String hpoPath;
-    @CommandLine.Option(names = {"-a","--annot"}, description = "path to HPO annotation file (phenotyoe.hpoa", required = true)
+    @CommandLine.Option(names = {"-a","--annot"}, description = "path to HPO annotation file (phenotype.hpoa)", required = true)
     private String annotPath;
 
 
