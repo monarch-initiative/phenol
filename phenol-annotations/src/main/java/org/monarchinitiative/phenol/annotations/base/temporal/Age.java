@@ -72,7 +72,7 @@ public interface Age {
    * @param seconds number of seconds
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization
    */
-  static Age of(int days, int seconds, boolean gestational) {
+  static Age of(int days, int seconds, boolean prenatal) {
     if (days == Integer.MAX_VALUE)
       throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end age");
     else if (days < 0 || seconds < 0)
@@ -87,7 +87,7 @@ public interface Age {
     if (days > MAX_DAYS)
       throw new ArithmeticException("Normalized number of days must not be greater than '" + MAX_DAYS + "'. Got '" + days + '\'');
 
-    return gestational
+    return prenatal
       ? AgePrenatal.of(days, seconds)
       : AgePostnatal.of(days, seconds);
   }

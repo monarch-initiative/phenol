@@ -8,11 +8,11 @@ import java.util.Objects;
 class AgeOpen implements Age {
 
   private final int days;
-  private final boolean isGestational;
+  private final boolean isPrenatal;
 
-  AgeOpen(int days, boolean isGestational) {
+  AgeOpen(int days, boolean isPrenatal) {
     this.days = days;
-    this.isGestational = isGestational;
+    this.isPrenatal = isPrenatal;
   }
 
   @Override
@@ -27,7 +27,7 @@ class AgeOpen implements Age {
 
   @Override
   public boolean isPrenatal() {
-    return isGestational;
+    return isPrenatal;
   }
 
   @Override
@@ -40,19 +40,19 @@ class AgeOpen implements Age {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AgeOpen ageOpen = (AgeOpen) o;
-    return days == ageOpen.days && isGestational == ageOpen.isGestational;
+    return days == ageOpen.days && isPrenatal == ageOpen.isPrenatal;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(days, isGestational);
+    return Objects.hash(days, isPrenatal);
   }
 
   @Override
   public String toString() {
     return "AgeOpen{" +
       "days=" + days +
-      ", isGestational=" + isGestational +
+      ", isPrenatal=" + isPrenatal +
       '}';
   }
 }

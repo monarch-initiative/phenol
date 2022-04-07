@@ -55,7 +55,7 @@ class AgePrenatal implements Age {
 
   @Override
   public String toString() {
-    return "AgeGestational{" +
+    return "AgePrenatal{" +
       "days=" + days +
       ", seconds=" + seconds +
       '}';
@@ -107,7 +107,7 @@ class AgePrenatal implements Age {
 
     @Override
     public String toString() {
-      return "AgeGestationalDays{" +
+      return "AgePrenatalDays{" +
         "days=" + days +
         '}';
     }

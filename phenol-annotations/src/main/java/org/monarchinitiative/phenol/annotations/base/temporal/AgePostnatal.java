@@ -57,7 +57,7 @@ class AgePostnatal implements Age {
 
   @Override
   public String toString() {
-    return "DefaultAgeSinceBirth{" +
+    return "AgePostnatal{" +
       "days=" + days +
       ", seconds=" + seconds +
       '}';
@@ -109,7 +109,7 @@ class AgePostnatal implements Age {
 
     @Override
     public String toString() {
-      return "AgeSinceBirthDays{" +
+      return "AgePostnatalDays{" +
         "days=" + days +
         '}';
     }
