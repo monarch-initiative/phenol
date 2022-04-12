@@ -9,12 +9,10 @@ import org.monarchinitiative.phenol.ontology.data.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAncestorTerms;
+import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
 
 /**
  * A demonstration of how to access data in the human phenotype ontology and its annotation files.
@@ -35,25 +33,116 @@ public class HpDemo {
     this.annotPath = annotPath;
   }
 
-  private void showAncestorsOfTerm(Ontology hpo, TermId tid1, TermId tid2) {
+  private enum Relation {
+    ANCESTOR("ancestor"),
+    CHILD("child"),
+    DESCENDENT("descendent"),
+    PARENT("parent");
+
+    private final String name;
+
+    Relation(String n) {
+      this.name = n;
+    }
+
+    @Override
+    public String toString() {
+      return this.name;
+    }
+  }
+
+  private void showRelationsOfTerm(Ontology hpo, TermId tid, Relation relation) {
     boolean includeOriginalTerm = true;
-    Set<TermId> ancestorsOfTid1 = getAncestorTerms(hpo, tid1, includeOriginalTerm);
-    Optional<String> opt = hpo.getTermLabel(tid1);
+    Set<TermId> relationsOfTid;
+    String descriptor;
+    switch (relation) {
+      case ANCESTOR:
+        descriptor = "Ancestors";
+        relationsOfTid = getAncestorTerms(hpo, tid, includeOriginalTerm);
+        break;
+      case DESCENDENT:
+        descriptor = "Descendents";
+        relationsOfTid = getDescendents(hpo, tid);
+        break;
+      case CHILD:
+        descriptor = "Children";
+        relationsOfTid = getChildTerms(hpo, tid, includeOriginalTerm);
+        break;
+      case PARENT:
+        descriptor = "Parents";
+        relationsOfTid = getParentTerms(hpo, tid, includeOriginalTerm);
+        break;
+      default:
+        return;
+    }
+    Optional<String> opt = hpo.getTermLabel(tid);
     if (opt.isEmpty()) {
+      System.err.println("Could not find label for " + tid.getValue());
+      return;
+    }
+    System.out.printf("%s of %s (%s):\n", descriptor, opt.get(), tid.getValue());
+    for (TermId rel: relationsOfTid) {
+      opt = hpo.getTermLabel(rel);
+      if (opt.isEmpty()) {
+        System.err.println("Could not find label for " + rel.getValue());
+        continue;
+      }
+      String label = opt.get();
+      System.out.printf("\t%s (%s)\n", label, rel.getValue());
+    }
+  }
+
+  private void showRelationsOfTerms(Ontology hpo, List<TermId> tids, Relation relation) {
+    for (TermId tid : tids) {
+      showRelationsOfTerm(hpo, tid, relation);
+    }
+  }
+
+  private void showCommonAncestorsOfTerms(Ontology hpo, TermId tid1, TermId tid2) {
+    Set<TermId> commonAncestors = hpo.getCommonAncestors(tid1, tid2);
+    Optional<String> opt1 = hpo.getTermLabel(tid1);
+    Optional<String> opt2 = hpo.getTermLabel(tid2);
+    if (opt1.isEmpty()) {
       System.err.println("Could not find label for " + tid1.getValue());
       return;
     }
-    System.out.printf("Ancestors of %s (%s)", opt.get(), tid1.getValue());
-    for (TermId anc: ancestorsOfTid1) {
-      opt = hpo.getTermLabel(anc);
+    if (opt2.isEmpty()) {
+      System.err.println("Could not find label for " + tid2.getValue());
+      return;
+    }
+    System.out.printf("Common Ancestors of %s (%s) and %s (%s):\n", opt1.get(), tid1.getValue(), opt2.get(), tid2.getValue());
+    for (TermId anc: commonAncestors) {
+      Optional<String> opt = hpo.getTermLabel(anc);
       if (opt.isEmpty()) {
-        System.err.println("COuld not find label for " + anc.getValue());
+        System.err.println("Could not find label for " + anc.getValue());
         continue;
       }
       String label = opt.get();
       System.out.printf("\t%s (%s)\n", label, anc.getValue());
     }
-    // TODO , show getting all ancestors of two terms
+  }
+
+  private void showAllAncestorsOfTerms(Ontology hpo, List<TermId> tids) {
+    Set<TermId> allAncestors = hpo.getAllAncestorTermIds(tids);
+    StringBuilder tidStr = new StringBuilder();
+    for (TermId tid: tids) {
+      Optional<String> opt = hpo.getTermLabel(tid);
+      if (opt.isEmpty()) {
+        System.err.println("Could not find label for " + tid.getValue());
+        return;
+      }
+      tidStr.append(String.format("%s (%s), ", opt.get(), tid.getValue()));
+    }
+    System.out.printf("All Ancestors of %s:\n", tidStr.substring(0, tidStr.length()-2));
+    for (TermId anc: allAncestors) {
+      Optional<String> opt = hpo.getTermLabel(anc);
+      if (opt.isEmpty()) {
+        System.err.println("Could not find label for " + anc.getValue());
+        continue;
+      }
+      String label = opt.get();
+      System.out.printf("\t%s (%s)\n", label, anc.getValue());
+    }
   }
 
 
@@ -63,7 +152,15 @@ public class HpDemo {
     System.out.println("root term: " + rootLabel + " (" + rootTermId.getValue() + ")");
     TermId lungMorphId = TermId.of("HP:0002088");
     TermId abnBloodGasId = TermId.of("HP:0012415");
-    showAncestorsOfTerm(hpo, lungMorphId, abnBloodGasId);
+    List<TermId> tidList = new ArrayList<>();
+    tidList.add(lungMorphId);
+    tidList.add(abnBloodGasId);
+    showRelationsOfTerms(hpo, tidList, Relation.ANCESTOR);
+    showCommonAncestorsOfTerms(hpo, lungMorphId, abnBloodGasId);
+    showAllAncestorsOfTerms(hpo, tidList);
+    showRelationsOfTerms(hpo, tidList, Relation.DESCENDENT);
+    showRelationsOfTerms(hpo, tidList, Relation.CHILD);
+    showRelationsOfTerms(hpo, tidList, Relation.PARENT);
 
 
 
