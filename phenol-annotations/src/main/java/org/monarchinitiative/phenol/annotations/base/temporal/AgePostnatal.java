@@ -33,7 +33,7 @@ class AgePostnatal implements Age {
   }
 
   @Override
-  public boolean isPrenatal() {
+  public boolean isGestational() {
     return false;
   }
 
@@ -85,7 +85,7 @@ class AgePostnatal implements Age {
     }
 
     @Override
-    public boolean isPrenatal() {
+    public boolean isGestational() {
       return false;
     }
 

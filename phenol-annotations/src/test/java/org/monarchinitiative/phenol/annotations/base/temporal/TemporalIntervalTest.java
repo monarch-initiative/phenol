@@ -33,9 +33,9 @@ public class TemporalIntervalTest {
     " 1,   0,   2,   0,      7",
     " 1,   0,   1,   6,      6",
   })
-  public void length_Prenatal(int startWeeks, int startDays, int endWeeks, int endDays, int days) {
-    TemporalInterval prenatal = TemporalInterval.of(Age.prenatal(startWeeks, startDays), Age.prenatal(endWeeks, endDays));
-    assertThat(prenatal.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days))));
+  public void length_Gestational(int startWeeks, int startDays, int endWeeks, int endDays, int days) {
+    TemporalInterval gestational = TemporalInterval.of(Age.gestational(startWeeks, startDays), Age.gestational(endWeeks, endDays));
+    assertThat(gestational.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days))));
   }
 
   @ParameterizedTest

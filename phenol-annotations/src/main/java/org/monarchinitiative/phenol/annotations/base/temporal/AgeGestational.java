@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
-class AgePrenatal implements Age {
+class AgeGestational implements Age {
 
   public static final Age START = new AgeOpen(Integer.MIN_VALUE, true);
   static final Age LMP = new AgeDays(0);
@@ -12,10 +12,10 @@ class AgePrenatal implements Age {
   static Age of(int days, int seconds) {
     return seconds == 0
       ? days == 0 ? LMP : new AgeDays(days)
-      : new AgePrenatal(days, seconds);
+      : new AgeGestational(days, seconds);
   }
 
-  private AgePrenatal(int days, int seconds) {
+  private AgeGestational(int days, int seconds) {
     this.days = days;
     this.seconds = seconds;
   }
@@ -31,7 +31,7 @@ class AgePrenatal implements Age {
   }
 
   @Override
-  public boolean isPrenatal() {
+  public boolean isGestational() {
     return true;
   }
 
@@ -44,7 +44,7 @@ class AgePrenatal implements Age {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    AgePrenatal that = (AgePrenatal) o;
+    AgeGestational that = (AgeGestational) o;
     return days == that.days && seconds == that.seconds;
   }
 
@@ -55,7 +55,7 @@ class AgePrenatal implements Age {
 
   @Override
   public String toString() {
-    return "AgePrenatal{" +
+    return "AgeGestational{" +
       "days=" + days +
       ", seconds=" + seconds +
       '}';
@@ -83,7 +83,7 @@ class AgePrenatal implements Age {
     }
 
     @Override
-    public boolean isPrenatal() {
+    public boolean isGestational() {
       return true;
     }
 
@@ -107,7 +107,7 @@ class AgePrenatal implements Age {
 
     @Override
     public String toString() {
-      return "AgePrenatalDays{" +
+      return "AgeGestationalDays{" +
         "days=" + days +
         '}';
     }

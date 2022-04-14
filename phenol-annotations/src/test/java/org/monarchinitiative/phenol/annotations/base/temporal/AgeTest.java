@@ -22,7 +22,7 @@ public class AgeTest {
       assertThat(age.seconds(), is(0));
       assertThat(age.isOpen(), is(false));
       assertThat(age.isClosed(), is(true));
-      assertThat(age.isPrenatal(), is(false));
+      assertThat(age.isGestational(), is(false));
     }
 
     @ParameterizedTest
@@ -60,9 +60,9 @@ public class AgeTest {
 
       " 0,  0,  0",
     })
-    public void compareToPrenatal(int left, int right, int expected) {
-      Age l = Age.prenatal(left, 0);
-      Age r = Age.prenatal(right, 0);
+    public void compareToGestational(int left, int right, int expected) {
+      Age l = Age.gestational(left, 0);
+      Age r = Age.gestational(right, 0);
       assertThat(Age.compare(l, r), is(expected));
     }
 
@@ -95,8 +95,8 @@ public class AgeTest {
 
       " 0,  0, -1",
     })
-    public void compareTo_PrenatalIsAlwaysLessThanPostnatal(int prenatalDays, int postnatalDays, int expected) {
-      Age prenatal = Age.prenatal(0, prenatalDays);
+    public void compareTo_GestationalIsAlwaysLessThanPostnatal(int prenatalDays, int postnatalDays, int expected) {
+      Age prenatal = Age.gestational(0, prenatalDays);
       Age postnatal = Age.postnatal(postnatalDays);
       assertThat(Age.compare(prenatal, postnatal), is(expected));
     }

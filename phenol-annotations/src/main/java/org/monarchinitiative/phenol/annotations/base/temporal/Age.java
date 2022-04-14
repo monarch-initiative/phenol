@@ -26,7 +26,7 @@ public interface Age {
    * @return age representing the last menstrual period before the conception.
    */
   static Age lastMenstrualPeriod() {
-    return AgePrenatal.LMP;
+    return AgeGestational.LMP;
   }
 
   /**
@@ -36,7 +36,7 @@ public interface Age {
     return AgePostnatal.BIRTH;
   }
 
-  static Age prenatal(int weeks, int days) {
+  static Age gestational(int weeks, int days) {
     days += weeks * 7;
     return of(days, 0, true);
   }
@@ -76,9 +76,10 @@ public interface Age {
    *
    * @param days    number of days
    * @param seconds number of seconds
+   * @param gestational true if the age should be gestational, false if the age should be postnatal
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization
    */
-  static Age of(int days, int seconds, boolean prenatal) {
+  static Age of(int days, int seconds, boolean gestational) {
     if (days == Integer.MAX_VALUE)
       throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end age");
     else if (days < 0 || seconds < 0)
@@ -93,8 +94,8 @@ public interface Age {
     if (days > MAX_DAYS)
       throw new ArithmeticException("Normalized number of days must not be greater than '" + MAX_DAYS + "'. Got '" + days + '\'');
 
-    return prenatal
-      ? AgePrenatal.of(days, seconds)
+    return gestational
+      ? AgeGestational.of(days, seconds)
       : AgePostnatal.of(days, seconds);
   }
 
@@ -108,7 +109,7 @@ public interface Age {
    * @return age that represents event that occurred in unspecified distant past.
    */
   static Age openStart() {
-    return AgePrenatal.START;
+    return AgeGestational.START;
   }
 
   /**
@@ -135,7 +136,7 @@ public interface Age {
   /**
    * @return true if the {@link Age} represents the time passed since conception.
    */
-  boolean isPrenatal();
+  boolean isGestational();
 
   boolean isOpen();
 
@@ -156,7 +157,7 @@ public interface Age {
   default Age plus(Age other) {
     int days = days() + other.days();
     int seconds = seconds() + other.seconds();
-    return Age.of(days, seconds, isPrenatal());
+    return Age.of(days, seconds, isGestational());
   }
 
   /* **************************************************************************************************************** */
@@ -174,8 +175,8 @@ public interface Age {
   /* **************************************************************************************************************** */
 
   static int compare(Age x, Age y) {
-    if (x.isPrenatal() ^ y.isPrenatal())
-      return x.isPrenatal() ? -1 : 1;
+    if (x.isGestational() ^ y.isGestational())
+      return x.isGestational() ? -1 : 1;
 
 
     int result = Integer.compare(x.days(), y.days());

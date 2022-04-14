@@ -14,11 +14,11 @@ public enum HpoOnset implements TemporalInterval {
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
-  EMBRYONAL_ONSET(Age.lastMenstrualPeriod(), Age.prenatal(10, 0)),
+  EMBRYONAL_ONSET(Age.lastMenstrualPeriod(), Age.gestational(10, 0)),
   /**
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
-  FETAL_ONSET(Age.prenatal(10, 0), Age.birth()),
+  FETAL_ONSET(Age.gestational(10, 0), Age.birth()),
   /**
    * Onset at birth.
    */
