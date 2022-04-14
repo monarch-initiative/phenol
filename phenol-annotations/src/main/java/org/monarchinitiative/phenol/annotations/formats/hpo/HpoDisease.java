@@ -32,14 +32,31 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * Use {@link #id()}
+   * @deprecated use {@link #id()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default TermId diseaseDatabaseTermId() {
     return id();
   }
 
+  // TODO - add String getName() and getDiseaseName() and deprecate since v3.0.0
   String diseaseName();
+
+  /**
+   * @deprecated use {@link #diseaseName()} instead.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default String getName() {
+    return diseaseName();
+  }
+
+  /**
+   * @deprecated use {@link #diseaseName()} instead.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default String getDiseaseName() {
+    return diseaseName();
+  }
 
   /**
    * @return global disease onset
