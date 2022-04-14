@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.cli.demo;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OMIM;
 
@@ -293,8 +294,8 @@ public class PairwisePhenotypicSimilarityCalculator {
       for (int i=0;i<N-1;i++) {
         for (int j = i+1; j < N; j++) {
           if (similarityScores[i][j]>threshold) {
-            String d1 = diseaseList.get(i).getDiseaseDatabaseId().getValue();
-            String d2 = diseaseList.get(j).getDiseaseDatabaseId().getValue();
+            String d1 = diseaseList.get(i).id().getValue();
+            String d2 = diseaseList.get(j).id().getValue();
             writer.write(d1 + "\t" + d2 + "\t" + similarityScores[i][j] + "\n");
             aboveThreshold++;
           }
@@ -333,7 +334,7 @@ public class PairwisePhenotypicSimilarityCalculator {
 
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       diseaseIdToTermIds.putIfAbsent(diseaseId, new HashSet<>());
       // add term ancestors
       final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
@@ -368,7 +369,7 @@ public class PairwisePhenotypicSimilarityCalculator {
     this.diseaseList = new ArrayList<>(diseaseMap.values());
     this.diseaseIdToIndexMap=new HashMap<>();
     for (int i=0;i<diseaseList.size();i++){
-      this.diseaseIdToIndexMap.put(diseaseList.get(i).getDiseaseDatabaseId(),i);
+      this.diseaseIdToIndexMap.put(diseaseList.get(i).id(),i);
     }
     n_diseases = diseaseList.size();
     int expectedTotal = n_diseases*(n_diseases-1)/2;
@@ -380,8 +381,8 @@ public class PairwisePhenotypicSimilarityCalculator {
       for (int j=i;j<n_diseases;j++) {
         HpoDisease d1 = diseaseList.get(i);
         HpoDisease d2 = diseaseList.get(j);
-        List<TermId> pheno1 = d1.getPhenotypicAbnormalityTermIdList();
-        List<TermId> pheno2 = d2.getPhenotypicAbnormalityTermIdList();
+        List<TermId> pheno1 = d1.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
+        List<TermId> pheno2 = d2.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
         double similarity = resnikSimilarity.computeScore(pheno1, pheno2);
         similarityScores[i][j]=similarity;
         similarityScores[j][i]=similarity; // symmetric

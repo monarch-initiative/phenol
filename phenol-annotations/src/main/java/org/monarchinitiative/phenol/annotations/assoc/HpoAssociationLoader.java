@@ -5,7 +5,6 @@ import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -63,8 +62,8 @@ public class HpoAssociationLoader {
                                                                                Map<TermId, HpoDisease> diseaseMap) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (Map.Entry<TermId, HpoDisease> entry : diseaseMap.entrySet()) {
-      for (HpoAnnotation hpoAnnotation : entry.getValue().getPhenotypicAbnormalities()) {
-        TermId hpoId = hpoAnnotation.id();
+      for (Iterator<HpoDiseaseAnnotation> iterator = entry.getValue().phenotypicAbnormalities(); iterator.hasNext(); ) {
+        TermId hpoId = iterator.next().id();
         phenotypeToDisease.computeIfAbsent(hpoId, k -> new HashSet<>())
           .add(entry.getKey());
       }

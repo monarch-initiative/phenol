@@ -1,15 +1,10 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,25 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoAnnotationLineTest {
 
-  private final static double EPSILON = 0.00001;
-
-  private Ontology ontology;
-
-  @BeforeEach
-  public void setUp() {
-    File file = new File(HpoAnnotationLineTest.class.getResource("/hpo_toy.json").getFile());
-    ontology = OntologyLoader.loadOntology(file);
-  }
-
-
-  private HpoAnnotationLine makeLine(String[] items) throws PhenolException {
+  private static HpoAnnotationLine makeLine(String[] items) throws PhenolException {
     String line = String.join("\t", items);
     return HpoAnnotationLine.constructFromString(line);
   }
 
   @Test
-  public void test1() throws PhenolException{
-    String[] items ={"OMIM:269150",
+  public void test1() throws PhenolException {
+    String[] items = {"OMIM:269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
       "",
       "HP:0030736",
@@ -50,26 +34,26 @@ public class HpoAnnotationLineTest {
     List<String> publist = new ArrayList<>();
     publist.add("OMIM:269150");
     HpoAnnotationLine hpoAnnot = makeLine(items);
-    assertEquals("OMIM:269150",hpoAnnot.getDiseaseId());
-    assertEquals("SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME", hpoAnnot.getDbObjectName());
-    assertEquals("TAS",hpoAnnot.getEvidence());
-    assertEquals(publist,hpoAnnot.getPublication());
-    assertEquals("P",hpoAnnot.getAspect());
+    assertEquals("OMIM:269150", hpoAnnot.getDiseaseId());
+    assertEquals("SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME", hpoAnnot.getDatabaseObjectName());
+    assertEquals("TAS", hpoAnnot.getEvidence());
+    assertEquals(publist, hpoAnnot.getPublication());
+    assertEquals("P", hpoAnnot.getAspect());
     assertEquals("HPO:skoehler[2017-07-13]", hpoAnnot.getBiocuration());
     assertFalse(hpoAnnot.isNOT());
     assertEquals("", hpoAnnot.getFrequency());
-    TermId diseaseId = hpoAnnot.getDiseaseTermId();
+    TermId diseaseId = hpoAnnot.getDiseaseTermId().get();
     TermId expected = TermId.of("OMIM:269150");
-    assertEquals(expected,diseaseId);
+    assertEquals(expected, diseaseId);
 
   }
 
   /**
    * The first field ("BadPrefix" instead of "OMIM") is invalid and should throw an exception.
-   * @throws PhenolException expected to throw because prefix is malformed
+   *
    */
   @Test
-  public void malformedDiseaseDatabasePrefix() throws PhenolException {
+  public void malformedDiseaseDatabasePrefix() {
     String[] items = {"BadPrefix",
       "269150",
       "SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME",
@@ -88,14 +72,13 @@ public class HpoAnnotationLineTest {
   }
 
 
-
   /**
    * Very frequent HP:0040281; Present in 80% to 99% of the cases.
    * The expected mean is (0.8+0.99)/2=0.895
    */
   @Test
-  public void testGetFrequencyFromVeryFrequentTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromVeryFrequentTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -108,16 +91,11 @@ public class HpoAnnotationLineTest {
       "",            //Modifier
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
-      };
+    };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line, ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=0.895;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+    assertEquals("OMIM:123456", line.getDiseaseId());
+    assertEquals("HP:0040281", line.getFrequency());
   }
-
-
 
 
   /**
@@ -125,8 +103,8 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.01+0.04)/2=0.025
    */
   @Test
-  public void testGetFrequencyFromVeryRareTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromVeryRareTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -141,11 +119,9 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=0.025;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+
+    assertEquals("OMIM:123456", line.getDiseaseId());
+    assertEquals("HP:0040284", line.getFrequency());
   }
 
   /**
@@ -153,8 +129,8 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.05+0.29)/2=0.17
    */
   @Test
-  public void testGetFrequencyFromOccassionalTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromOccassionalTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -169,11 +145,8 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=0.17;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+    assertEquals("OMIM:123456", line.getDiseaseId());
+    assertEquals("HP:0040283", line.getFrequency());
   }
 
 
@@ -182,8 +155,8 @@ public class HpoAnnotationLineTest {
    * The expected mean is (0.30+0.79)/2=0.545
    */
   @Test
-  public void testGetFrequencyFromFrequentTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromFrequentTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -198,11 +171,8 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=0.545;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+    assertEquals("OMIM:123456", line.getDiseaseId());
+
   }
 
   /**
@@ -210,8 +180,8 @@ public class HpoAnnotationLineTest {
    * The expected mean is 1.0
    */
   @Test
-  public void testGetFrequencyFromObligateTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromObligateTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -226,11 +196,8 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=1.0;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+    assertEquals("OMIM:123456", line.getDiseaseId());
+    assertEquals("HP:0040280", line.getFrequency());
   }
 
   /**
@@ -238,8 +205,8 @@ public class HpoAnnotationLineTest {
    * The expected mean is 0.0
    */
   @Test
-  public void testGetFrequencyFromExcludedTerm() throws PhenolException{
-    String[] items ={
+  public void testGetFrequencyFromExcludedTerm() throws PhenolException {
+    String[] items = {
       "OMIM:123456", // DatabaseID
       "Example",     //DiseaseName
       "",            //Qualifier
@@ -254,11 +221,8 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
     HpoAnnotationLine line = makeLine(items);
-    HpoAnnotation annot = HpoAnnotationLine.toHpoAnnotation(line,ontology);
-    TermId expectedId = TermId.of("OMIM:123456");
-    assertEquals(expectedId,line.getDiseaseTermId());
-    double expectedFrequency=0.0;
-    assertEquals(expectedFrequency,annot.getFrequency(),EPSILON);
+    assertEquals("OMIM:123456", line.getDiseaseId());
+    assertEquals("HP:0040285", line.getFrequency());
   }
 
 }

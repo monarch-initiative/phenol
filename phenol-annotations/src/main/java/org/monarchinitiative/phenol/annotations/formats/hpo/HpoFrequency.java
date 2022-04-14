@@ -1,7 +1,10 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+
+import java.util.Optional;
 
 /**
  * Enumeration mapping to the "frequency" sub ontology of the HPO.
@@ -13,120 +16,88 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public enum HpoFrequency {
+public enum HpoFrequency implements Identified, AnnotationFrequency {
+
+  /*
+  We assume a cohort size of 50 was used to determine the feature frequency.
+   */
 
   /** Always present (100% of the cases). */
-  ALWAYS_PRESENT("Always present (HP:??)"),
+  OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate", Ratio.of(50, 50)),
   /** Very frequent (80-99% of the cases). */
-  VERY_FREQUENT("Very frequent (HP:??"),
+  VERY_FREQUENT(HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", Ratio.of(45, 50)),
   /** Frequent (30-79% of the cases). */
-  FREQUENT("Frequent (HP:??"),
+  FREQUENT(HpoFrequencyTermIds.FREQUENT, "Frequent", Ratio.of(27, 50)),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL("Occasional (HP:??)"),
+  OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", Ratio.of(20, 50)),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE("Very rare (HP:??)"),
+  VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", Ratio.of(2, 50)),
   /** Excluded (0% of the cases). */
-  EXCLUDED("Excluded (HP:??)");
+  EXCLUDED(HpoFrequencyTermIds.EXCLUDED, "Excluded", Ratio.of(0, 50));
 
-  private final String name;
+  private final TermId termId;
+  private final String label;
+  private final Ratio ratio;
 
-  HpoFrequency(String n) {
-    this.name=n;
+  HpoFrequency(TermId termId, String label, Ratio ratio) {
+    this.termId = termId;
+    this.label = label;
+    this.ratio = ratio;
   }
 
   /**
-   * @return Lower (inclusive) bound of {@code this} frequency category. Our default value for terms
-   *     with no frequency will be always present since this applies to the majority of data for
-   *     which we have no frequency data.
-   */
-  public double lowerBound() {
-    switch (this) {
-      case ALWAYS_PRESENT:
-        return 1D;
-      case EXCLUDED:
-        return 0D;
-      case FREQUENT:
-        return 0.30D;
-      case OCCASIONAL:
-        return 0.05D;
-      case VERY_FREQUENT:
-        return 0.80D;
-      case VERY_RARE:
-        return 0.01D;
-      default:
-        return ALWAYS_PRESENT.lowerBound();
-    }
-  }
-
-  /**
-   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for terms
-   *     with no frequency will be always present since this applies to the majoriry for data for
-   *     which we have no frequency data.
-   */
-  public double mean() {
-    switch (this) {
-      case ALWAYS_PRESENT:
-        return 1D;
-      case EXCLUDED:
-        return 0D;
-      case FREQUENT:
-        return 0.5 * (0.30D + 0.79D);
-      case OCCASIONAL:
-        return 0.5 * (0.05D + 0.29D);
-      case VERY_FREQUENT:
-        return 0.5 * (0.80D + 0.99D);
-      case VERY_RARE:
-        return 0.5*(0.01D + 0.04D);
-      default:
-        return ALWAYS_PRESENT.mean();
-    }
-  }
-
-  /**
-   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for terms
-   *     with no frequency will be always present since this applies to the majoriry for data for
-   *     which we have no frequency data.
-   */
-  public double upperBound() {
-    switch (this) {
-      case ALWAYS_PRESENT:
-        return 1D;
-      case EXCLUDED:
-        return 0D;
-      case FREQUENT:
-        return 0.79D;
-      case OCCASIONAL:
-        return 0.29D;
-      case VERY_FREQUENT:
-        return 0.99D;
-      case VERY_RARE:
-        return 0.04D;
-      default:
-        return ALWAYS_PRESENT.upperBound();
-    }
-  }
-
-  /**
-   * Return the {@link TermId} that corresponds to this HpoFrequency Our default is ALWAYS_PRESENT.
+   * Return the {@link TermId} that corresponds to this HpoFrequency. The default is {@link HpoFrequencyTermIds#OBLIGATE}.
    *
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
+   * @deprecated use {@link #id()} instead
    */
-  public TermId toTermId() {
+  @Deprecated
+  public TermId termId() {
+    return this.termId;
+  }
+
+  @Override
+  public TermId id() {
+    return termId;
+  }
+
+  public String label() {
+    return label;
+  }
+
+  @Override
+  public float frequency() {
     switch (this) {
-      case ALWAYS_PRESENT:
-        return HpoFrequencyTermIds.ALWAYS_PRESENT;
       case EXCLUDED:
-        return HpoFrequencyTermIds.EXCLUDED;
-      case FREQUENT:
-        return HpoFrequencyTermIds.FREQUENT;
-      case OCCASIONAL:
-        return HpoFrequencyTermIds.OCCASIONAL;
-      case VERY_FREQUENT:
-        return HpoFrequencyTermIds.VERY_FREQUENT;
+        return 0F;
       case VERY_RARE:
+        return 0.01F + 0.5F * (0.04F - 0.01F);
+      case OCCASIONAL:
+        return 0.05F + 0.5F * (0.29F - 0.05F);
+      case FREQUENT:
+        return 0.3F + 0.5F * (0.79F - 0.30F);
+      case VERY_FREQUENT:
+        return 0.8F + 0.5F * (0.99F - 0.80F);
+      case OBLIGATE:
       default:
-        return HpoFrequencyTermIds.ALWAYS_PRESENT;
+        return 1F;
     }
+  }
+
+  @Override
+  public Optional<Ratio> ratio() {
+    return Optional.of(ratio);
+  }
+
+  /**
+   * @return Upper (inclusive) bound of {@code this} frequency category. Our default value for terms
+   * with no frequency will be always present since this applies to the majority for data for
+   * which we have no frequency data.
+   * @deprecated use {@link #frequency()}
+   */
+  @Deprecated
+  public float mean() {
+    return frequency();
   }
 
   /**
@@ -134,13 +105,12 @@ public enum HpoFrequency {
    *
    * @param termId The {@link TermId} to convert.
    * @return Corresponding {@link HpoFrequency}.
-   * @throws PhenolRuntimeException if {@code termId} is not a valid frequency sub ontology {@link
-   *     TermId}.
+   * @throws IllegalArgumentException if {@code termId} is not a valid frequency sub ontology {@link TermId}.
    */
-  public static HpoFrequency fromTermId(TermId termId) {
+  public static HpoFrequency fromTermId(TermId termId) throws IllegalArgumentException {
     switch (termId.getValue()) {
       case "HP:0040280":
-        return ALWAYS_PRESENT;
+        return OBLIGATE;
       case "HP:0040281":
         return VERY_FREQUENT;
       case "HP:0040282":
@@ -152,43 +122,13 @@ public enum HpoFrequency {
       case "HP:0040285":
         return EXCLUDED;
       default:
-        throw new PhenolRuntimeException(
-            "TermId " + termId + " is not a valid frequency sub ontology term ID");
-    }
-  }
-
-  /**
-   * Convert integer percent value to {@link HpoFrequency}.
-   *
-   * @param percent Integer percent frequency value to convert.
-   * @return Corresponding {@link HpoFrequency}.
-   * @throws
-   */
-  public static HpoFrequency fromPercent(double percent) {
-    if (percent < 0.)
-      throw new IllegalArgumentException(String.format("Percentage must be positive. Got %f", percent));
-
-    if (percent < 1.) {
-      return EXCLUDED;
-    } else if (percent < 5.) {
-      return VERY_RARE;
-    } else if (percent < 30.) {
-      return OCCASIONAL;
-    } else if (percent < 80.) {
-      return FREQUENT;
-    } else if (percent < 100.) {
-      return VERY_FREQUENT;
-    } else if (percent - 100. < 1E-6) {
-      return ALWAYS_PRESENT;
-    } else {
-      // must be greater than 100
-      throw new IllegalArgumentException(String.format("Percentage must be less than or equal to 100. Got %f", percent));
+        throw new IllegalArgumentException("TermId " + termId + " is not a valid frequency sub ontology term ID");
     }
   }
 
   @Override
   public String toString() {
-    return name;
+    return label + " (" + termId + ')';
   }
 
 

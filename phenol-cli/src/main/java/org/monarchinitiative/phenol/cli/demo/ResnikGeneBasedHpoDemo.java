@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.cli.demo;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OMIM;
 
@@ -50,7 +51,7 @@ public class ResnikGeneBasedHpoDemo {
     for (Map.Entry<TermId, HpoDisease> entry: hpoDiseases.diseaseById().entrySet()) {
       TermId diseaseId = entry.getKey();
       HpoDisease disease = entry.getValue();
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
 
       // add term ancestors
       Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
@@ -133,7 +134,7 @@ public class ResnikGeneBasedHpoDemo {
           // for which we do not have HPO terms because it is not a disease
           continue;
         }
-        String name = this.diseaseMap.get(diseaseId).getDiseaseName();
+        String name = this.diseaseMap.get(diseaseId).diseaseName();
         String entry = String.format("%s - %s (%s)", name, diseaseId.getValue(), gene);
         results.put(entry, resnikScore);
       }
@@ -148,7 +149,7 @@ public class ResnikGeneBasedHpoDemo {
         System.err.println("[ERROR] Could not find label for " + tid.getValue());
       }
     }
-    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).getDiseaseName();
+    String name = this.diseaseMap.get(expectedDiseaseDiagnosis).diseaseName();
     System.out.printf("[INFO] Expected diagnosis: %s\n", name);
     int c = 0;
     for (String dd : top10) {

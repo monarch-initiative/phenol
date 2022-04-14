@@ -10,7 +10,7 @@ public enum EvidenceCode {
    * @param code
    * @return an evidence code enum constant representing the evidence for a phenotype annotation
    */
-  public static EvidenceCode fromString(String code) {
+  public static EvidenceCode parse(String code) {
     if (code == null) return IEA;
     switch(code.toUpperCase()) {
       case "IEA":

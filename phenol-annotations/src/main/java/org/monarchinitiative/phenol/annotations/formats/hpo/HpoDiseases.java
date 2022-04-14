@@ -2,46 +2,36 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+public interface HpoDiseases extends Iterable<HpoDisease> {
 
-public class HpoDiseases implements Iterable<HpoDisease> {
-  // an interface candidate
-
-  private final List<HpoDisease> hpoDiseases;
-
-  public static HpoDiseases of(List<HpoDisease> hpoDiseases) {
-    return new HpoDiseases(hpoDiseases);
+  static HpoDiseases of(List<HpoDisease> diseases) {
+    return new HpoDiseasesDefault(diseases);
   }
 
-  private HpoDiseases(List<HpoDisease> hpoDiseases) {
-    this.hpoDiseases = Objects.requireNonNull(hpoDiseases, "HPO diseases must not be null");
-  }
-
-  public Stream<HpoDisease> hpoDiseases() {
-    return hpoDiseases.stream();
-  }
-
-  public Map<TermId, HpoDisease> diseaseById() {
-    return hpoDiseases.stream()
-      .collect(Collectors.toUnmodifiableMap(HpoDisease::getDiseaseDatabaseId, Function.identity()));
-  }
-
-  @Override
-  public Iterator<HpoDisease> iterator() {
-    return hpoDiseases.iterator();
-  }
+  Optional<HpoDisease> diseaseById(TermId diseaseId);
 
   /**
-   * @return number of known disease models
+   * @return number of {@link HpoDisease}s
    */
-  public int size() {
-    return hpoDiseases.size();
+  int size();
+
+  default Stream<HpoDisease> hpoDiseases() {
+    return StreamSupport.stream(Spliterators.spliterator(iterator(), size(), Spliterator.SIZED), false);
   }
+
+  default Set<TermId> diseaseIds() {
+    return hpoDiseases().map(HpoDisease::id).collect(Collectors.toUnmodifiableSet());
+  }
+
+  default Map<TermId, HpoDisease> diseaseById() {
+    return hpoDiseases()
+      .collect(Collectors.toUnmodifiableMap(HpoDisease::id, Function.identity()));
+  }
+
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.*;
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
@@ -152,13 +153,14 @@ public class HpoDiseaseAnnotationParser {
           this.errors.add(String.format("Invalid number of fields: %s", line));
           continue;
         }
-        List<TermId> ids = termToDisease.computeIfAbsent(aline.getPhenotypeId(), k -> new ArrayList<>());
-        if (!ids.contains(aline.getDiseaseTermId())) {
-          ids.add(aline.getDiseaseTermId());
-        }
+        List<TermId> ids = termToDisease.computeIfAbsent(aline.getDiseaseTermId().get(), k -> new ArrayList<>());
+        Optional<TermId> diseaseIdOptional = aline.getDiseaseTermId();
+        if (diseaseIdOptional.isPresent()) {
+          TermId diseaseId = diseaseIdOptional.get();
+          if (!ids.contains(diseaseId)) ids.add(diseaseId);
 
-        TermId diseaseId = aline.getDiseaseTermId();
-        disease2AnnotLineMap.computeIfAbsent(diseaseId, k -> new ArrayList<>()).add(aline);
+          disease2AnnotLineMap.computeIfAbsent(diseaseId, k -> new ArrayList<>()).add(aline);
+        }
       }
       this.phenotypeToDiseaseMap = Map.copyOf(termToDisease);
     } catch (IOException e) {
@@ -181,31 +183,33 @@ public class HpoDiseaseAnnotationParser {
       String diseaseName = null;
       for (HpoAnnotationLine line : annots) {
         try {
-          if (isInheritanceTerm(line.getPhenotypeId())) {
-            inheritanceListBuilder.add(line.getPhenotypeId());
-          } else if (isClinicalModifierTerm(line.getPhenotypeId())) {
-            clinicalModifierListBuilder.add(line.getPhenotypeId());
-          } else if (isClinicalCourse(line.getPhenotypeId())) {
-            clinicalCourseListBuilder.add(line.getPhenotypeId());
+          TermId phenotypeId = TermId.of(line.getPhenotypeId());
+          if (isInheritanceTerm(phenotypeId)) {
+            inheritanceListBuilder.add(phenotypeId);
+          } else if (isClinicalModifierTerm(phenotypeId)) {
+            clinicalModifierListBuilder.add(phenotypeId);
+          } else if (isClinicalCourse(phenotypeId)) {
+            clinicalCourseListBuilder.add(phenotypeId);
           } else if (line.isNOT()) {
-            negativeTermListBuilder.add(line.getPhenotypeId());
+            negativeTermListBuilder.add(phenotypeId);
           } else {
             HpoAnnotation tidm = HpoAnnotationLine.toHpoAnnotation(line, ontology);
             phenoListBuilder.add(tidm);
           }
-          if (line.getDbObjectName() != null) diseaseName = line.getDbObjectName();
+          if (line.getDatabaseObjectName() != null)
+            diseaseName = line.getDatabaseObjectName();
         } catch (Exception e) {
           this.errors.add(String.format("PHENOL ERROR] Line: %s--could not parse annotation: %s ",
             line.toString(), e.getMessage()));
         }
       }
-      HpoDisease hpoDisease = HpoDisease.of(diseaseId, diseaseName,
-        List.copyOf(phenoListBuilder),
-        List.copyOf(inheritanceListBuilder),
-        List.copyOf(negativeTermListBuilder),
-        List.copyOf(clinicalModifierListBuilder),
-        List.copyOf(clinicalCourseListBuilder));
-      this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
+//      HpoDisease hpoDisease = HpoDisease.of(diseaseId, diseaseName,
+//        List.copyOf(phenoListBuilder),
+//        List.copyOf(inheritanceListBuilder),
+//        List.copyOf(negativeTermListBuilder),
+//        List.copyOf(clinicalModifiers),
+//        List.copyOf(clinicalCourseTerms));
+//      this.diseaseMap.put(hpoDisease.getDiseaseDatabaseId(), hpoDisease);
     }
     return diseaseMap;
   }
@@ -261,7 +265,7 @@ public class HpoDiseaseAnnotationParser {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       tmpMap.put(diseaseId, hpoTerms);
     }
     return Map.copyOf(tmpMap);
@@ -277,7 +281,7 @@ public class HpoDiseaseAnnotationParser {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> hpoTermIds = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTermIds = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       for (TermId tid : hpoTermIds) {
         tmpMap.putIfAbsent(tid, new HashSet<>());
         tmpMap.get(tid).add(diseaseId);
@@ -298,7 +302,7 @@ public class HpoDiseaseAnnotationParser {
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
       tmpMap.putIfAbsent(diseaseId, new HashSet<>());
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, new HashSet<>(hpoTerms), true);
       for (TermId tid : inclAncestorTermIds) {
         tmpMap.get(diseaseId).add(tid);
@@ -317,7 +321,7 @@ public class HpoDiseaseAnnotationParser {
     Map<TermId, Collection<TermId>> tmpMap = new HashMap<>();
     for (TermId diseaseId : diseaseMap.keySet()) {
       HpoDisease disease = diseaseMap.get(diseaseId);
-      List<TermId> hpoTermIds = disease.getPhenotypicAbnormalityTermIdList();
+      List<TermId> hpoTermIds = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
       final Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(ontology, new HashSet<>(hpoTermIds), true);
       for (TermId tid : inclAncestorTermIds) {
         tmpMap.putIfAbsent(tid, new HashSet<>());
