@@ -135,9 +135,9 @@ public class OboGraphDocumentAdaptor {
       metaMap.put("data-version", version);
       if (meta.getBasicPropertyValues() != null) {
         for (BasicPropertyValue basicPropertyValue : meta.getBasicPropertyValues()) {
-          if (basicPropertyValue.getPred().equalsIgnoreCase("date")) {
-            String date = basicPropertyValue.getVal().trim();
-            metaMap.put("date", date);
+          if (basicPropertyValue.getPred().contains("#versionInfo")) {
+            String release = basicPropertyValue.getVal().trim();
+            metaMap.put("release", release);
           }
         }
       }
