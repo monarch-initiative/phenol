@@ -9,8 +9,8 @@ public interface TemporalInterval {
   static TemporalInterval of(Age start, Age end) {
     int result = Age.compare(start, end);
     if (result > 0)
-      throw new IllegalArgumentException(String.format("Start (%d days, %d seconds) must not be after end (%d days, %d seconds)",
-        start.days(), start.seconds(), end.days(), end.seconds()));
+      throw new IllegalArgumentException(String.format("Start (%d days) must not be after end (%d days)",
+        start.days(), end.days()));
 
     return TemporalIntervalDefault.of(start, end);
   }
@@ -77,16 +77,7 @@ public interface TemporalInterval {
    */
   default TemporalInterval length() {
     if (isFullyClosed()) {
-      Age start = start();
-      Age end = end();
-      int secondsDifference = end.seconds() - start.seconds();
-      int daysDifference = end.days() - start.days();
-      if (secondsDifference < 0) {
-        secondsDifference = Age.SECONDS_IN_DAY + secondsDifference;
-        --daysDifference;
-      }
-
-      return TemporalInterval.of(Age.birth(), Age.postnatal(daysDifference, secondsDifference));
+      return TemporalInterval.of(Age.birth(), Age.postnatal(end().days() - start().days()));
     } else {
       return TemporalInterval.open();
     }

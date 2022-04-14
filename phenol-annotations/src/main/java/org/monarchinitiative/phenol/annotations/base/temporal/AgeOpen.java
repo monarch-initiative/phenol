@@ -21,11 +21,6 @@ class AgeOpen implements Age {
   }
 
   @Override
-  public int seconds() {
-    return 0;
-  }
-
-  @Override
   public boolean isGestational() {
     return isPrenatal;
   }

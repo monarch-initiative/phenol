@@ -19,7 +19,6 @@ public class AgeTest {
       Age age = Age.postnatal(10);
 
       assertThat(age.days(), is(10));
-      assertThat(age.seconds(), is(0));
       assertThat(age.isOpen(), is(false));
       assertThat(age.isClosed(), is(true));
       assertThat(age.isGestational(), is(false));
@@ -126,60 +125,28 @@ public class AgeTest {
 
     @ParameterizedTest
     @CsvSource({
-      " 10, -10",
-      "-10,  10",
-    })
-    public void throwsIfDaysAndSecondsDoNotHaveTheSameSign(int days, int seconds) {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(days, seconds));
-      assertThat(e.getMessage(), equalTo("Days and seconds must not be negative, got '" + days + "' days and '" + seconds + "' seconds"));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-      // positive
-      "0,   86399,   0,  86399",
-      "0,   86400,   1,  0",
-      "0,   86401,   1,  1",
-      "0,  172801,   2,  1",
-      "0,  172801,   2,  1",
-    })
-    public void ageWithOutstandingSecondsIsNormalized(int days, int seconds, int expectedDays, int expectedSeconds) {
-      Age age = Age.postnatal(days, seconds);
-
-      assertThat(age.days(), is(expectedDays));
-      assertThat(age.seconds(), is(expectedSeconds));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
       // left    right      result
-      " 1,   0,   2,      0,     3,    0",
-      " 1,   1,   2,      3,     3,    4",
-      " 1,  10,   2,  86395,     4,    5",
+      "  1,       2,         3",
+      " 10,       2,        12"
     })
-    public void plus(int leftDays, int leftSeconds, int rightDays, int rightSeconds, int days, int seconds) {
-      Age left = Age.postnatal(leftDays, leftSeconds);
-      Age right = Age.postnatal(rightDays, rightSeconds);
+    public void plus(int leftDays, int rightDays, int days) {
+      Age left = Age.postnatal(leftDays);
+      Age right = Age.postnatal(rightDays);
 
-      assertThat(left.plus(right), equalTo(Age.postnatal(days, seconds)));
+      assertThat(left.plus(right), equalTo(Age.postnatal(days)));
     }
 
     @ParameterizedTest
     @CsvSource({
-      // left           right       result
-      "1,      0,      0,     0,      left",
-      "1,      0,      1,     0,      left",
-      "1,      0,      1,     0,     right",
-      "1,      0,      2,     0,     right",
-
-      "1,      1,      1,     0,      left",
-      "1,      1,      1,     1,      left",
-      "1,      1,      1,     1,     right",
-      "1,      1,      1,     2,     right",
+      // left    right       result
+      "1,        0,           left",
+      "1,        1,           left",
+      "1,        1,          right",
+      "1,        2,          right",
     })
-    public void max(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
-      Age left = Age.postnatal(leftDays, leftSeconds);
-      Age right = Age.postnatal(rightDays, rightSeconds);
+    public void max(int leftDays, int rightDays, String result) {
+      Age left = Age.postnatal(leftDays);
+      Age right = Age.postnatal(rightDays);
 
       Age expected = result.equals("left") ? left : right;
       assertThat(Age.max(left, right), equalTo(expected));
@@ -192,15 +159,10 @@ public class AgeTest {
       "1,      0,      1,     0,     right",
       "1,      0,      1,     0,      left",
       "1,      0,      2,     0,      left",
-
-      "1,      1,      1,     0,     right",
-      "1,      1,      1,     1,     right",
-      "1,      1,      1,     1,      left",
-      "1,      1,      1,     2,      left",
     })
-    public void min(int leftDays, int leftSeconds, int rightDays, int rightSeconds, String result) {
-      Age left = Age.postnatal(leftDays, leftSeconds);
-      Age right = Age.postnatal(rightDays, rightSeconds);
+    public void min(int leftDays, int rightDays, String result) {
+      Age left = Age.postnatal(leftDays);
+      Age right = Age.postnatal(rightDays);
 
       Age expected = result.equals("left") ? left : right;
       assertThat(Age.min(left, right), equalTo(expected));

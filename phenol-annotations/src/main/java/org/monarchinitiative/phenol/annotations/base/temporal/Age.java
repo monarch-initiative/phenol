@@ -12,11 +12,6 @@ public interface Age {
   double DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
 
   /**
-   * Number of seconds in {@link java.time.temporal.JulianFields#JULIAN_DAY} (86,400 seconds).
-   */
-  int SECONDS_IN_DAY = 24 * 60 * 60;
-
-  /**
    * To prevent numerical overflow, we do not allow creation of a {@link Age} corresponding to more
    * than 2,000 Julian years (730,500 days). It should be enough for our use case of modeling life-span of organisms.
    */
@@ -38,12 +33,12 @@ public interface Age {
 
   static Age gestational(int weeks, int days) {
     days += weeks * 7;
-    return of(days, 0, true);
+    return of(days, true);
   }
 
   static Age postnatal(int years, int months, int days) {
     days += Math.toIntExact(Math.round(convertYearsAndMonthsToDays(years, months)));
-    return postnatal(days, 0);
+    return postnatal(days);
   }
 
   /**
@@ -59,50 +54,28 @@ public interface Age {
    * @param days number of days
    */
   static Age postnatal(int days) {
-    return postnatal(days, 0);
-  }
-
-  /**
-   * Create {@link Age} representing a number of days and seconds since birth.
-   * @param days number of days
-   * @param seconds number of seconds
-   */
-  static Age postnatal(int days, int seconds) {
-    return of(days, seconds, false);
+    return of(days, false);
   }
 
   /**
    * Create {@link Age} representing given number of days and seconds.
    *
    * @param days    number of days
-   * @param seconds number of seconds
    * @param gestational true if the age should be gestational, false if the age should be postnatal
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization
    */
-  static Age of(int days, int seconds, boolean gestational) {
+  static Age of(int days, boolean gestational) {
     if (days == Integer.MAX_VALUE)
       throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end age");
-    else if (days < 0 || seconds < 0)
-      throw new IllegalArgumentException("Days and seconds must not be negative, got '" + days + "' days and '" + seconds + "' seconds");
+    else if (days < 0)
+      throw new IllegalArgumentException("Days must not be negative, got '" + days + "' days!");
 
-    // Ensure we don't have more than 86,400 seconds, which is greater than the number of seconds in one day.
-    if (seconds >= SECONDS_IN_DAY) {
-      DaysSecondConstant constant = normalizeOutstandingSeconds(seconds);
-      days += constant.days();
-      seconds += constant.seconds();
-    }
     if (days > MAX_DAYS)
       throw new ArithmeticException("Normalized number of days must not be greater than '" + MAX_DAYS + "'. Got '" + days + '\'');
 
     return gestational
-      ? AgeGestational.of(days, seconds)
-      : AgePostnatal.of(days, seconds);
-  }
-
-  private static DaysSecondConstant normalizeOutstandingSeconds(int seconds) {
-    int d = seconds / SECONDS_IN_DAY;
-    int s = -d * SECONDS_IN_DAY;
-    return new DaysSecondConstant(d, s);
+      ? AgeGestational.of(days)
+      : AgePostnatal.of(days);
   }
 
   /**
@@ -128,12 +101,6 @@ public interface Age {
   int days();
 
   /**
-   * @return number of outstanding seconds. The number must be <em>non-positive</em> if the {@link Age} represents
-   * an event before the start of the time-line. The value ranges from -{@link #SECONDS_IN_DAY} to {@link #SECONDS_IN_DAY}.
-   */
-  int seconds();
-
-  /**
    * @return true if the {@link Age} represents the time passed since conception.
    */
   boolean isGestational();
@@ -147,17 +114,16 @@ public interface Age {
   }
 
   default boolean isZero() {
-    return days() == 0 && seconds() == 0;
+    return days() == 0;
   }
 
   default boolean isPositive() {
-    return days() > 0 && seconds() >= 0;
+    return days() > 0;
   }
 
   default Age plus(Age other) {
     int days = days() + other.days();
-    int seconds = seconds() + other.seconds();
-    return Age.of(days, seconds, isGestational());
+    return Age.of(days, isGestational());
   }
 
   /* **************************************************************************************************************** */
@@ -179,10 +145,6 @@ public interface Age {
       return x.isGestational() ? -1 : 1;
 
 
-    int result = Integer.compare(x.days(), y.days());
-    if (result != 0)
-      return result;
-
-    return Integer.compare(x.seconds(), y.seconds());
+    return Integer.compare(x.days(), y.days());
   }
 }

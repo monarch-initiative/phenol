@@ -19,13 +19,12 @@ public class TemporalIntervalTest {
 
   @ParameterizedTest
   @CsvSource({
-    "0,  1,  0,  0",
-    "1,  0,  0,  0",
+    "1,  0",
   })
-  public void errorOnStartAfterEnd(int startDays, int startSeconds, int endDays, int endSeconds) {
+  public void errorOnStartAfterEnd(int startDays, int endDays) {
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-      () -> TemporalInterval.of(Age.postnatal(startDays, startSeconds), Age.postnatal(endDays, endSeconds)));
-    assertThat(e.getMessage(), is(String.format("Start (%d days, %d seconds) must not be after end (%d days, %d seconds)", startDays, startSeconds, endDays, endSeconds)));
+      () -> TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays)));
+    assertThat(e.getMessage(), is(String.format("Start (%d days) must not be after end (%d days)", startDays, endDays)));
   }
 
   @ParameterizedTest
@@ -40,18 +39,17 @@ public class TemporalIntervalTest {
 
   @ParameterizedTest
   @CsvSource({
-    " 1,   0,   2,   0,      1,      0",
-    " 1,   0,   1,  20,      0,     20",
-    " 1,  20,   2,  10,      0,  86390",
+    " 1,   2,      1",
+    " 1,   1,      0",
   })
-  public void length_Postnatal(int startDays, int startSeconds, int endDays, int endSeconds, int days, int seconds) {
-    TemporalInterval postnatal = TemporalInterval.of(Age.postnatal(startDays, startSeconds), Age.postnatal(endDays, endSeconds));
-    assertThat(postnatal.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days, seconds))));
+  public void length_Postnatal(int startDays, int endDays, int days) {
+    TemporalInterval postnatal = TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays));
+    assertThat(postnatal.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days))));
   }
 
   @Test
   public void length_openEndpoints() {
-    Age stamp = Age.postnatal(1, 0);
+    Age stamp = Age.postnatal(1);
 
     assertThat(TemporalInterval.openStart(stamp).length(), equalTo(TemporalInterval.open()));
     assertThat(TemporalInterval.openEnd(stamp).length(), equalTo(TemporalInterval.open()));
