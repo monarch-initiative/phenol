@@ -69,7 +69,7 @@ public interface TemporalInterval {
   /* **************************************************************************************************************** */
 
   /**
-   * @return length represented as {@link TemporalInterval} that starts either on {@link Age#conception()} or
+   * @return length represented as {@link TemporalInterval} that starts either on {@link Age#lastMenstrualPeriod()} or
    * on {@link Age#birth()}.
    * <p>
    * If the start or the end of <code>this</code> {@link TemporalInterval} is open,

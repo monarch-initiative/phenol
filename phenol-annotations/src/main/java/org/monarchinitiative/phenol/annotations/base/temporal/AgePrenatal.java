@@ -5,13 +5,13 @@ import java.util.Objects;
 class AgePrenatal implements Age {
 
   public static final Age START = new AgeOpen(Integer.MIN_VALUE, true);
-  static final Age CONCEPTION = new AgeDays(0);
+  static final Age LMP = new AgeDays(0);
 
   private final int days, seconds;
 
   static Age of(int days, int seconds) {
     return seconds == 0
-      ? days == 0 ? CONCEPTION : new AgeDays(days)
+      ? days == 0 ? LMP : new AgeDays(days)
       : new AgePrenatal(days, seconds);
   }
 

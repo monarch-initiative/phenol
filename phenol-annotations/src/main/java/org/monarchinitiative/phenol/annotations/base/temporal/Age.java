@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 /**
  * {@link Age} represents duration since the start of the time-line.
- * Start of the timeline is represented by {@link Age#conception()} for prenatal events and
- * by {@link Age#birth()} for postnatal events.
+ * Start of the timeline is represented by the {@link Age#lastMenstrualPeriod()} for prenatal events
+ * and by {@link Age#birth()} for postnatal events.
  */
 public interface Age {
 
@@ -22,12 +22,18 @@ public interface Age {
    */
   int MAX_DAYS = 20 * 36_525;
 
-  static Age birth() {
-    return AgePostnatal.BIRTH;
+  /**
+   * @return age representing the last menstrual period before the conception.
+   */
+  static Age lastMenstrualPeriod() {
+    return AgePrenatal.LMP;
   }
 
-  static Age conception() {
-    return AgePrenatal.CONCEPTION;
+  /**
+   * @return age representing birth.
+   */
+  static Age birth() {
+    return AgePostnatal.BIRTH;
   }
 
   static Age prenatal(int weeks, int days) {

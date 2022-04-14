@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public enum HpoOnset implements TemporalInterval {
   /**
-   * Onset between conception and birth.
+   * Onset between the time of mother's last menstrual period and birth.
    */
-  ANTENATAL_ONSET(Age.prenatal(0, 0), Age.birth()),
+  ANTENATAL_ONSET(Age.lastMenstrualPeriod(), Age.birth()),
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
-  EMBRYONAL_ONSET(Age.prenatal(0, 0), Age.prenatal(10, 0)),
+  EMBRYONAL_ONSET(Age.lastMenstrualPeriod(), Age.prenatal(10, 0)),
   /**
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
