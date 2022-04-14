@@ -4,8 +4,8 @@ import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
-import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
-import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -201,7 +201,7 @@ public class PairwisePhenotypicSimilarityCalculator {
    * of phenotypic similarity of the diseases to which the genes are annotated.
    */
   private void performGeneBasedAnalysis() throws IOException {
-    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mimgeneMedgenPath, null, pathPhenotypeHpoa, Set.of(OMIM));
+    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mimgeneMedgenPath, null, pathPhenotypeHpoa, null);
     this.geneToDiseaseMap = hpoAssociationData.geneToDiseases();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationData.geneIdToSymbol();
@@ -322,9 +322,9 @@ public class PairwisePhenotypicSimilarityCalculator {
     this.hpo = OntologyLoader.loadOntology(pathHpObo.toFile());
     System.out.println("[INFO] DONE: Loading HPO");
 
-    Set<DiseaseDatabase> databases = new HashSet<>(); // restrict ourselves to OMIM entries
-    databases.add(OMIM);
-    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(pathPhenotypeHpoa, hpo, databases);
+    // restrict ourselves to OMIM entries
+    HpoDiseaseLoader loader = HpoDiseaseLoader.of(hpo, HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
+    HpoDiseases hpoDiseases = loader.load(pathPhenotypeHpoa);
     diseaseMap = hpoDiseases.diseaseById();
     System.out.println("[INFO] DONE: Loading phenotype.hpoa");
 

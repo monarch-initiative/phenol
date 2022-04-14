@@ -38,11 +38,14 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
   private final boolean salvageNegatedFrequencies;
   private final Set<String> databasePrefixes;
 
-  HpoDiseaseLoaderDefault(Ontology hpo, Options options) {
-    this.hpo = Objects.requireNonNull(hpo, "Hpo ontology must not be null");
+  HpoDiseaseLoaderDefault(Ontology hpo, HpoDiseaseLoaderOptions options) {
+    this.hpo = Objects.requireNonNull(hpo, "Hpo ontology must not be null.");
+    Objects.requireNonNull(options, "Options must not be null.");
     this.cohortSize = options.cohortSize();
     this.salvageNegatedFrequencies = options.salvageNegatedFrequencies();
-    this.databasePrefixes = options.includedDatabases();
+    this.databasePrefixes = options.includedDatabases().stream()
+      .map(DiseaseDatabase::prefix)
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   @Override
