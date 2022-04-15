@@ -47,6 +47,10 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    */
   Optional<Ratio> ratio();
 
+  default Optional<Float> frequency() {
+    return ratio().map(Ratio::frequency);
+  }
+
   /**
    * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
    */

@@ -6,6 +6,7 @@ import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -23,19 +24,27 @@ import java.util.stream.StreamSupport;
  */
 public interface HpoDisease extends Identified {
 
-  static HpoDisease of(String name,
-                       TermId databaseId,
+  static HpoDisease of(TermId diseaseId,
+                       String name,
                        TemporalInterval globalOnset,
                        List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                        List<TermId> modesOfInheritance) {
-    return new HpoDiseaseDefault(databaseId, name, globalOnset, phenotypicAbnormalities, modesOfInheritance);
+    return new HpoDiseaseDefault(diseaseId, name, globalOnset, phenotypicAbnormalities, modesOfInheritance);
   }
 
   /**
-   * @deprecated use {@link #id()} instead.
+   * @deprecated to be removed in v3.0.0, use {@link #id()} instead.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default TermId diseaseDatabaseTermId() {
+    return id();
+  }
+
+  /**
+   * @deprecated to be removed in v3.0.0, use {@link #id()} instead.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default TermId getDiseaseDatabaseTermId() {
     return id();
   }
 
@@ -43,7 +52,7 @@ public interface HpoDisease extends Identified {
   String diseaseName();
 
   /**
-   * @deprecated use {@link #diseaseName()} instead.
+   * @deprecated to be removed in v3.0.0, use {@link #diseaseName()} instead.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default String getName() {
@@ -51,7 +60,7 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @deprecated use {@link #diseaseName()} instead.
+   * @deprecated to be removed in v3.0.0, use {@link #diseaseName()} instead.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default String getDiseaseName() {
@@ -65,17 +74,54 @@ public interface HpoDisease extends Identified {
 
   List<TermId> modesOfInheritance();
 
+  /**
+   * @deprecated to be removed in v3.0.0, use {@link #modesOfInheritance()} instead.
+   */
+  @Deprecated(forRemoval = true, since = "2.0.0-RC2")
+  default List<TermId> getModesOfInheritance() {
+    return modesOfInheritance();
+  }
+
+  /**
+   * @return iterator of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
+   */
   Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities();
 
   int phenotypicAbnormalitiesCount();
 
+  /**
+   * @return stream of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
+   */
   default Stream<HpoDiseaseAnnotation> phenotypicAbnormalitiesStream() {
     return StreamSupport.stream(Spliterators.spliterator(phenotypicAbnormalities(), phenotypicAbnormalitiesCount(), Spliterator.DISTINCT & Spliterator.SIZED), false);
   }
 
+  /**
+   * @return stream of absent phenotypic abnormalities of the disease,
+   * i.e. ones that were observed in <em>zero</em> out of <em>n</em> affected individuals.
+   */
+  default Stream<HpoDiseaseAnnotation> absentPhenotypicAbnormalitiesStream() {
+    return phenotypicAbnormalitiesStream()
+      .filter(a -> a.ratio().map(Ratio::isZero).orElse(false));
+  }
+
+  /**
+   *
+   * @deprecated to be removed in v3.0.0, use {@link #absentPhenotypicAbnormalitiesStream()} instead.
+   */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> negativeAnnotations() {
-    return List.of();
+    return absentPhenotypicAbnormalitiesStream()
+      .map(HpoDiseaseAnnotation::id)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * @deprecated to be removed in v3.0.0, use {@link #absentPhenotypicAbnormalitiesStream()} instead.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default List<TermId> getNegativeAnnotations() {
+    return negativeAnnotations();
   }
 
   /**
@@ -103,7 +149,24 @@ public interface HpoDisease extends Identified {
       .flatMap(HpoDiseaseAnnotation::ratio);
   }
 
+  /**
+   * @deprecated use {@link #getPhenotypicAbnormalityTermIds()} and decide if you really need the list.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
+  default List<TermId> getPhenotypicAbnormalityTermIdList() {
+    return getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
+  }
+
+  /**
+   * @deprecated use {@link #phenotypicAbnormalityTermIds()}.
+   */
+  @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default Stream<TermId> getPhenotypicAbnormalityTermIds() {
+    return phenotypicAbnormalityTermIds();
+  }
+
+
+  default Stream<TermId> phenotypicAbnormalityTermIds() {
     return phenotypicAbnormalitiesStream()
       .map(HpoDiseaseAnnotation::id);
   }

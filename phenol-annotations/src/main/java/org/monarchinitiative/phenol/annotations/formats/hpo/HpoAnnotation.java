@@ -15,7 +15,9 @@ import java.util.Optional;
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.3 (2018-03-12)
+ * @deprecated to be removed in v3.0.0, use {@link HpoDiseaseAnnotation} instead.
  */
+@Deprecated(forRemoval = true, since = "2.0.0-RC2")
 public class HpoAnnotation implements Identified {
   /**
    * The annotated {@link TermId}.
