@@ -22,27 +22,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
-
 class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseLoaderDefault.class);
   private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
   private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
   private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
-  private static final TermId CLINICAL_MODIFIER_ROOT = TermId.of("HP:0012823");
-  private static final TermId CLINICAL_COURSE = TermId.of("HP:0031797");
 
-  private final Ontology hpo;
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
   private final Set<String> databasePrefixes;
+  private final Set<TermId> clinicalCourseSubHierarchy;
+  private final Set<TermId> inheritanceSubHierarchy;
 
-  HpoDiseaseLoaderDefault(Ontology hpo, Options options) {
-    this.hpo = Objects.requireNonNull(hpo, "Hpo ontology must not be null");
+  HpoDiseaseLoaderDefault(Ontology hpo, HpoDiseaseLoaderOptions options) {
+    Objects.requireNonNull(hpo, "HPO ontology must not be null.");
+    Objects.requireNonNull(options, "Options must not be null.");
     this.cohortSize = options.cohortSize();
     this.salvageNegatedFrequencies = options.salvageNegatedFrequencies();
-    this.databasePrefixes = options.includedDatabases();
+    this.databasePrefixes = options.includedDatabases().stream()
+      .map(DiseaseDatabase::prefix)
+      .collect(Collectors.toUnmodifiableSet());
+    this.clinicalCourseSubHierarchy = hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds();
+    this.inheritanceSubHierarchy = hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds();
   }
 
   @Override
@@ -86,7 +88,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
 
   private Optional<HpoDisease> assembleHpoDisease(TermId diseaseId,
                                                   Iterable<HpoAnnotationLine> annotationLines) {
-    Optional<HpoDiseaseData> diseaseDataOptional = parseDiseaseData(hpo, annotationLines);
+    Optional<HpoDiseaseData> diseaseDataOptional = parseDiseaseData(annotationLines);
     if (diseaseDataOptional.isEmpty())
       return Optional.empty();
     HpoDiseaseData diseaseData = diseaseDataOptional.get();
@@ -108,7 +110,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       Collections.unmodifiableList(diseaseData.modesOfInheritance())));
   }
 
-  private Optional<HpoDiseaseData> parseDiseaseData(Ontology hpo, Iterable<HpoAnnotationLine> annotationLines) {
+  private Optional<HpoDiseaseData> parseDiseaseData(Iterable<HpoAnnotationLine> annotationLines) {
     List<HpoAnnotation> phenotypes = new ArrayList<>();
     List<TermId> modesOfInheritance = new LinkedList<>();
     List<TermId> clinicalModifierListBuilder = new ArrayList<>();
@@ -129,12 +131,14 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       }
 
 
-      if (isInheritanceTerm(hpo, phenotypeId)) {
+      if (inheritanceSubHierarchy.contains(phenotypeId)) {
         modesOfInheritance.add(phenotypeId);
-      } else if (isClinicalModifierTerm(hpo, phenotypeId)) {
-        clinicalModifierListBuilder.add(phenotypeId);
-      } else if (isClinicalCourse(hpo, phenotypeId)) {
+      } else if (clinicalCourseSubHierarchy.contains(phenotypeId)) {
         clinicalCourse.add(phenotypeId);
+      } else if (phenotypeId.equals(HpoSubOntologyRootTermIds.CLINICAL_MODIFIER)) {
+        // The term can only be clinical modifier only if it is NOT clinical course (checked above) and it is equal to
+        // clinical modifier.
+        clinicalModifierListBuilder.add(phenotypeId);
       } else {
         try {
           phenotypes.add(createHpoAnnotation(phenotypeId, line));
@@ -242,45 +246,6 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       throw new IllegalArgumentException();
 
     return AnnotationFrequency.of(Ratio.of(numerator, denominator));
-  }
-
-  /**
-   * Check whether a term is a member of the inheritance subontology.
-   * We check whether there is a path between the term and the root of the inheritance ontology.
-   * We also check whether the term is itself the root of the inheritance ontology because
-   * there cannot be a path between a term and itself.
-   *
-   * @param tid A term to be checked
-   * @return true if tid is an inheritance term
-   */
-  private static boolean isInheritanceTerm(Ontology ontology, TermId tid) {
-    return tid.equals(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT) || existsPath(ontology, tid, HpoModeOfInheritanceTermIds.INHERITANCE_ROOT);
-  }
-
-  /**
-   * Check whether a term is a member of the clinical modifier subontology.
-   * We check whether there is a path between the term and the root of the clinical modifier ontology.
-   * We also check whether the term is itself the root of the clinical modifier ontology because
-   * there cannot be a path between a term and itself.
-   *
-   * @param tid A term to be checked
-   * @return true if tid is a clinical modifier term
-   */
-  private static boolean isClinicalModifierTerm(Ontology ontology, TermId tid) {
-    return tid.equals(CLINICAL_MODIFIER_ROOT) || existsPath(ontology, tid, CLINICAL_MODIFIER_ROOT);
-  }
-
-  /**
-   * Check whether a term is a member of the clinical course subontology.
-   * We check whether there is a path between the term and the root of the clinical course ontology.
-   * We also check whether the term is itself the root of the clinical course ontology because
-   * there cannot be a path between a term and itself.
-   *
-   * @param tid A term to be checked
-   * @return true if tid is a clinical course term
-   */
-  private static boolean isClinicalCourse(Ontology ontology, TermId tid) {
-    return tid.equals(CLINICAL_COURSE) || existsPath(ontology, tid, CLINICAL_COURSE);
   }
 
   private static HpoOnset parseGlobalDiseaseOnset(List<TermId> termIds, List<HpoAnnotation> phenotypes) {

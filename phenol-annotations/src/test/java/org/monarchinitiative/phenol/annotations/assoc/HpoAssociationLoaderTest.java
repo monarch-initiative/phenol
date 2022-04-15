@@ -8,6 +8,7 @@ import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssocia
 import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -40,7 +41,7 @@ public class HpoAssociationLoaderTest {
     Path hpoAssociations = Path.of(HpoAssociationLoaderTest.class.getResource("/annotations/phenotype.excerpt.hpoa").toURI());
     Set<DiseaseDatabase> diseaseDatabases = Set.of(DiseaseDatabase.OMIM, DiseaseDatabase.ORPHANET);
 
-    ASSOCIATION_DATA = HpoAssociationLoader.loadHpoAssociationData(hpo, homoSapiensGeneInfo, mimToMedgen, orphaToGene, hpoAssociations, diseaseDatabases);
+    ASSOCIATION_DATA = HpoAssociationLoader.loadHpoAssociationData(hpo, homoSapiensGeneInfo, mimToMedgen, orphaToGene, hpoAssociations, HpoDiseaseLoaderOptions.of(diseaseDatabases, true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
   }
 
   @Test

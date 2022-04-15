@@ -5,7 +5,8 @@ import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
-import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -39,7 +40,8 @@ public class ResnikGeneBasedHpoDemo {
     t1 = Instant.now();
     Set<DiseaseDatabase> databases = Set.of(OMIM); // restrict ourselves to OMIM entries
 
-    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(hpoaPath, hpo, databases);
+    HpoDiseaseLoader loader = HpoDiseaseLoader.of(hpo, HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
+    HpoDiseases hpoDiseases = loader.load(hpoaPath);
     diseaseMap = hpoDiseases.diseaseById();
 
     t2 = Instant.now();
@@ -48,24 +50,22 @@ public class ResnikGeneBasedHpoDemo {
     t1 = Instant.now();
     this.diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
-    for (Map.Entry<TermId, HpoDisease> entry: hpoDiseases.diseaseById().entrySet()) {
-      TermId diseaseId = entry.getKey();
-      HpoDisease disease = entry.getValue();
+    for (HpoDisease disease:hpoDiseases) {
       List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
 
       // add term ancestors
       Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
 
       for (TermId tid : inclAncestorTermIds) {
-        termIdToDiseaseIds.computeIfAbsent(tid, key -> new HashSet<>()).add(diseaseId);
-        diseaseIdToTermIds.computeIfAbsent(diseaseId, key -> new HashSet<>()).add(tid);
+        termIdToDiseaseIds.computeIfAbsent(tid, key -> new HashSet<>()).add(disease.id());
+        diseaseIdToTermIds.computeIfAbsent(disease.id(), key -> new HashSet<>()).add(tid);
       }
     }
     t2 = Instant.now();
     System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
 
-    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mim2genMedgenPath, null, hpoaPath, databases);
+    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mim2genMedgenPath, null, hpoaPath, null);
 
     this.geneToDiseaseMap = hpoAssociationData.geneToDiseases();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");

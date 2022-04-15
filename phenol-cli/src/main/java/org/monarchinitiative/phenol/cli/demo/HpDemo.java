@@ -2,7 +2,8 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
-import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.*;
 
@@ -82,7 +83,8 @@ public class HpDemo {
       System.out.println("\t" + sset);
     }
 
-    HpoDiseases hpoDiseases = HpoDiseaseAnnotationLoader.loadHpoDiseases(Paths.get(annotPath), hpo, Set.of(DiseaseDatabase.OMIM, DiseaseDatabase.ORPHANET, DiseaseDatabase.DECIPHER));
+    HpoDiseaseLoader loader = HpoDiseaseLoader.of(hpo, HpoDiseaseLoaderOptions.of(Set.of(DiseaseDatabase.OMIM, DiseaseDatabase.ORPHANET, DiseaseDatabase.DECIPHER), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
+    HpoDiseases hpoDiseases = loader.load(Paths.get(annotPath));
     System.out.println("Imported " + hpoDiseases.size() + " disease models");
 
   }
