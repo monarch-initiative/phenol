@@ -6,7 +6,10 @@ import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -48,5 +51,12 @@ public class OntologyLoaderMondoTest {
     assertEquals(TermId.of("OMIM:155000"), xref.id());
   }
 
+  @Test
+  public void testMetadata() {
+    Map<String, String> metaInfo = mondo.getMetaInfo();
+    System.err.println(metaInfo);
+    assertThat(metaInfo, hasEntry("release", "2020-01-27"));
+    assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/mondo/releases/2020-01-27/reasoned.owl.owl/mondo.owl"));
+  }
 
 }

@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -58,10 +60,9 @@ public class OntologyLoaderGoTest {
    * @throws FileNotFoundException if the test GO file cannot be found
    * @throws PhenolException upon parse errors
    */
-  @Disabled
   @Test
   public void testReal() throws Exception {
-    String localpath = "src/test/resources/go.obo";
+    String localpath = "src/test/resources/go/go_head.json";
     String RO_PREFIX = "RO";
     Ontology goOntology = OntologyLoader.loadOntology(Paths.get(localpath).toFile(), "GO");
     assertNotNull(goOntology);
@@ -80,4 +81,12 @@ public class OntologyLoaderGoTest {
       }
     }
   }
+
+  @Test
+  public void testMetadata() {
+    Map<String, String> metaInfo = ontology.getMetaInfo();
+    assertThat(metaInfo, hasEntry("release", "2017-06-16"));
+    assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/go/releases/2017-06-16/go.owl"));
+  }
+
 }
