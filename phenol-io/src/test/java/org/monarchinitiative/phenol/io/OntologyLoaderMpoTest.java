@@ -104,6 +104,7 @@ public class OntologyLoaderMpoTest {
 
     assertEquals(3, graph.edgeSet().size());
     assertEquals(TermId.of("MP:0000001"), ontology.getRootTermId());
-    assertEquals(Map.of("data-version","http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl"), ontology.getMetaInfo());
+    assertEquals(Map.of("data-version","http://purl.obolibrary.org/obo/mp/releases/2017-06-05/mp.owl",
+      "release", "2017-06-05"), ontology.getMetaInfo());
   }
 }
