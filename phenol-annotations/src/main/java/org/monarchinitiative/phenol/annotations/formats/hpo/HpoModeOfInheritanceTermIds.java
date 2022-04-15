@@ -109,4 +109,6 @@ public final class HpoModeOfInheritanceTermIds {
   /** {@link TermId} for "male-limited autosomal dominant". */
   public static final TermId AUTOSOMAL_DOMINANT_MALE_LIMITED =
       TermId.of("HP:0001475");
+
+  private HpoModeOfInheritanceTermIds() {}
 }

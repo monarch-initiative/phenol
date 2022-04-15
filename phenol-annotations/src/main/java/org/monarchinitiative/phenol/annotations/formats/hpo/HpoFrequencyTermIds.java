@@ -28,4 +28,6 @@ public final class HpoFrequencyTermIds {
 
   /** {@link TermId} for "excluded (0% of the cases)". */
   public static final TermId EXCLUDED = TermId.of("HP:0040285");
+
+  private HpoFrequencyTermIds() {}
 }
