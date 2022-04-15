@@ -12,7 +12,7 @@ import java.util.Optional;
  * <p>Further provides methods for accessing lower and upper bounds as well as converting from and
  * to HPO {@link TermId} and from frequency in percent.
  *
- * @see HpoFrequencyTermIds
+ * @see org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
@@ -23,17 +23,17 @@ public enum HpoFrequency implements Identified, AnnotationFrequency {
    */
 
   /** Always present (100% of the cases). */
-  OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate", Ratio.of(50, 50)),
+  OBLIGATE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OBLIGATE, "Obligate", Ratio.of(50, 50)),
   /** Very frequent (80-99% of the cases). */
-  VERY_FREQUENT(HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", Ratio.of(45, 50)),
+  VERY_FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", Ratio.of(45, 50)),
   /** Frequent (30-79% of the cases). */
-  FREQUENT(HpoFrequencyTermIds.FREQUENT, "Frequent", Ratio.of(27, 50)),
+  FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.FREQUENT, "Frequent", Ratio.of(27, 50)),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", Ratio.of(20, 50)),
+  OCCASIONAL(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OCCASIONAL, "Occasional", Ratio.of(20, 50)),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", Ratio.of(2, 50)),
+  VERY_RARE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_RARE, "Very rare", Ratio.of(2, 50)),
   /** Excluded (0% of the cases). */
-  EXCLUDED(HpoFrequencyTermIds.EXCLUDED, "Excluded", Ratio.of(0, 50));
+  EXCLUDED(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.EXCLUDED, "Excluded", Ratio.of(0, 50));
 
   private final TermId termId;
   private final String label;
@@ -46,7 +46,7 @@ public enum HpoFrequency implements Identified, AnnotationFrequency {
   }
 
   /**
-   * Return the {@link TermId} that corresponds to this HpoFrequency. The default is {@link HpoFrequencyTermIds#OBLIGATE}.
+   * Return the {@link TermId} that corresponds to this HpoFrequency. The default is {@link org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds#OBLIGATE}.
    *
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
    * @deprecated use {@link #id()} instead

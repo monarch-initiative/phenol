@@ -1,8 +1,12 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 
+import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.constants.hpo.HpoClinicalModifierTermIds;
+import org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds;
+import org.monarchinitiative.phenol.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -11,12 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
+import static org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.*;
+import static org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.*;
 
 
 /**
@@ -26,10 +34,6 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.exist
  */
 public class HpoAnnotationEntry {
   private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
-  private static final TermId phenotypeRoot = TermId.of("HP:0000118");
-  private static final TermId INHERITANCE_TERM_ID = TermId.of("HP:0000005");
-  private static final TermId CLINICAL_COURSE_ID = TermId.of("HP:0031797");
-  private static final TermId CLINICAL_MODIFIER_ID = TermId.of("HP:0012823");
   private final static String EMPTY_STRING="";
     /** The CURIE of the disease, e.g., OMIM:600201 (Field #0). */
     private final String diseaseID;
@@ -78,16 +82,16 @@ public class HpoAnnotationEntry {
     private static final int NUMBER_OF_FIELDS=expectedFields.length;
 
 
-    private final static Set<String> validDatabases = Set.of("OMIM","DECIPHER","ORPHA");
+    private final static Set<String> validDatabases = Arrays.stream(DiseaseDatabase.values())
+      .map(DiseaseDatabase::prefix)
+      .collect(Collectors.toUnmodifiableSet());
     /** A set with all of the TermIds for frequency. */
-    private final static Set<TermId> frequencySubhierarcyTermIds = Set.of(TermId.of("HP:0003674"),TermId.of("HP:0040280"),
-            TermId.of("HP:0040281"), TermId.of("HP:0040282"),TermId.of("HP:0040283"),TermId.of("HP:0040284"),
-            TermId.of("HP:0040285"));
+    private final static Set<TermId> frequencySubhierarchyTermIds = Set.of(FREQUENCY, OBLIGATE, VERY_FREQUENT, FREQUENT, OCCASIONAL, VERY_RARE, EXCLUDED);
     /** A set with all of the TermIds for age of onset. */
-    private final static Set<TermId> onsetSubhierarcyTermIds = Set.of( TermId.of("HP:0003674"), TermId.of("HP:0011460"),
-            TermId.of("HP:0003581"), TermId.of("HP:0003596"), TermId.of("HP:0003584"), TermId.of("HP:0011462"),
-             TermId.of("HP:0003577"), TermId.of("HP:0003623"), TermId.of("HP:0410280"), TermId.of("HP:0011463"),
-             TermId.of("HP:0003593"), TermId.of("HP:0003621"), TermId.of("HP:0030674"), TermId.of("HP:0011461"));
+    private final static Set<TermId> onsetSubhierarchyTermIds = Set.of(ONSET, EMBRYONAL_ONSET,
+            ADULT_ONSET, MIDDLE_AGE_ONSET, LATE_ONSET, YOUNG_ADULT_ONSET,
+             CONGENITAL_ONSET, NEONATAL_ONSET, PEDIATRIC_ONSET, CHILDHOOD_ONSET,
+             INFANTILE_ONSET, JUVENILE_ONSET, ANTENATAL_ONSET, FETAL_ONSET);
 
     /** Set of allowable evidence codes. */
     private static final Set<String> EVIDENCE_CODES = Set.of("IEA","TAS","PCS");
@@ -98,8 +102,6 @@ public class HpoAnnotationEntry {
     private static final String biocurationRegex = "(\\w+:\\w+)\\[(\\d{4}-\\d{2}-\\d{2})]";
     /** The pattern that corresponds to {@link #biocurationRegex}. */
     private static final Pattern biocurationPattern = Pattern.compile(biocurationRegex);
-
-    private static final TermId EXCLUDED = TermId.of("HP:0040285");
 
     public String getDiseaseID() {
         return diseaseID;
@@ -566,8 +568,8 @@ public class HpoAnnotationEntry {
                     current.getValue(),
                     ontology.getTermMap().get(tid).getName()));
         }
-        if (! onsetSubhierarcyTermIds.contains(tid)) {
-            throw new HpoAnnotationModelException("Invalid ID in onset ID field: \""+tid.toString()+"\"");
+        if (! onsetSubhierarchyTermIds.contains(tid)) {
+            throw new HpoAnnotationModelException("Invalid ID in onset ID field: \""+ tid +"\"");
         }
         // if we get here, the Age of onset id was OK
         // now let's check the label
@@ -615,7 +617,7 @@ public class HpoAnnotationEntry {
         } catch (PhenolRuntimeException pre) {
             throw new HpoAnnotationModelException(String.format("Could not parse frequency term id: \"%s\"", freq));
         }
-        if (! frequencySubhierarcyTermIds.contains(id) ) {
+        if (! frequencySubhierarchyTermIds.contains(id) ) {
             throw new HpoAnnotationModelException(String.format("Usage of incorrect term for frequency: %s [%s]",
                     ontology.getTermMap().get(id).getName(),
                     ontology.getTermMap().get(id).id().getValue()));
@@ -714,17 +716,17 @@ public class HpoAnnotationEntry {
       throw new HpoAnnotationModelException("Cannot compute Aspect of NULL term");
     }
     TermId primaryTid = term.id(); // update in case term is an alt_id
-    if (existsPath(ontology, primaryTid, phenotypeRoot)) {
+    if (existsPath(ontology, primaryTid, HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY)) {
       return "P"; // organ/phenotype abnormality
-    } else if (existsPath(ontology, primaryTid, INHERITANCE_TERM_ID)) {
+    } else if (existsPath(ontology, primaryTid, HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)) {
       return "I";
-    } else if (existsPath(ontology, primaryTid, CLINICAL_COURSE_ID)) {
+    } else if (existsPath(ontology, primaryTid, HpoClinicalModifierTermIds.CLINICAL_COURSE)) {
       return "C";
-    } else if (existsPath(ontology, primaryTid, CLINICAL_MODIFIER_ID)) {
+    } else if (existsPath(ontology, primaryTid, HpoSubOntologyRootTermIds.CLINICAL_MODIFIER)) {
       return "M";
-    } else if (primaryTid.equals(phenotypeRoot)){
+    } else if (primaryTid.equals(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY)){
       return "P"; // the Orphanet annotations include some entries to the phenotype root
-    } else if (primaryTid.equals(INHERITANCE_TERM_ID)) {
+    } else if (primaryTid.equals(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)) {
       return "I"; // the Orphanet annotations include some entries to the rrot
     } else {
       throw new HpoAnnotationModelException("Could not determine aspect of TermId " + tid.getValue());

@@ -143,25 +143,25 @@ public enum HpoOnset implements TemporalInterval {
   public TermId toTermId() {
     switch (this) {
       case ANTENATAL_ONSET:
-        return HpoOnsetTermIds.ANTENATAL_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.ANTENATAL_ONSET;
       case CONGENITAL_ONSET:
-        return HpoOnsetTermIds.CONGENITAL_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.CONGENITAL_ONSET;
       case NEONATAL_ONSET:
-        return HpoOnsetTermIds.NEONATAL_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.NEONATAL_ONSET;
       case INFANTILE_ONSET:
-        return HpoOnsetTermIds.INFANTILE_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.INFANTILE_ONSET;
       case CHILDHOOD_ONSET:
-        return HpoOnsetTermIds.CHILDHOOD_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.CHILDHOOD_ONSET;
       case JUVENILE_ONSET:
-        return HpoOnsetTermIds.JUVENILE_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.JUVENILE_ONSET;
       case ADULT_ONSET:
-        return HpoOnsetTermIds.ADULT_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.ADULT_ONSET;
       case YOUNG_ADULT_ONSET:
-        return HpoOnsetTermIds.YOUNG_ADULT_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.YOUNG_ADULT_ONSET;
       case MIDDLE_AGE_ONSET:
-        return HpoOnsetTermIds.MIDDLE_AGE_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.MIDDLE_AGE_ONSET;
       case LATE_ONSET:
-        return HpoOnsetTermIds.LATE_ONSET;
+        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.LATE_ONSET;
       default:
         throw new IllegalStateException("A TermId for `" + this + "` is missing");
     }
