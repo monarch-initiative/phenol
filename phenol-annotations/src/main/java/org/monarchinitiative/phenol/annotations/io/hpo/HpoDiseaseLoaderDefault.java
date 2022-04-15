@@ -46,8 +46,13 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
     this.databasePrefixes = options.includedDatabases().stream()
       .map(DiseaseDatabase::prefix)
       .collect(Collectors.toUnmodifiableSet());
-    this.clinicalCourseSubHierarchy = hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds();
-    this.inheritanceSubHierarchy = hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds();
+
+    this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
+      ? hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds()
+      : Set.of();
+    this.inheritanceSubHierarchy = hpo.containsTerm(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
+      ? hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds()
+      : Set.of();
   }
 
   @Override
@@ -106,8 +111,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
       .map(entry -> toDiseaseAnnotation(entry.getKey(), entry.getValue()))
       .collect(Collectors.toUnmodifiableList());
 
-    return Optional.of(HpoDisease.of(diseaseData.diseaseName(),
-      diseaseId,
+    return Optional.of(HpoDisease.of(diseaseId, diseaseData.diseaseName(),
       onset,
       diseaseAnnotations,
       Collections.unmodifiableList(diseaseData.modesOfInheritance())));
