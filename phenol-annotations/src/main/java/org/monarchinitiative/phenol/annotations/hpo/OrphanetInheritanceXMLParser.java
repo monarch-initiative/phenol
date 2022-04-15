@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.*;
+import static org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds.*;
 
 public class OrphanetInheritanceXMLParser {
   /**

@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
-import static org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
+import static org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_DOMINANT;
+import static org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds.AUTOSOMAL_RECESSIVE;
 
 public class OrphanetInheritanceXMLParserTest {
 
