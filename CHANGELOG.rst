@@ -5,10 +5,15 @@ Changelog
 ------
 v2.0.0
 ------
-- Upgrade to Java 11+, adding JPMS
+- Upgrade to Java 11+, add ``module-info`` files
 - Support for GO GAF 2.2 files
-- Dropping support for reading OBO/OWL ontologies
-
+- ``phenol-core``
+  - Consolidate hardcoded HPO constants (``TermId``s) into ``org.monarchinitiative.phenol.constants.hpo`` package
+- ``phenol-io``
+  - Dropping support for reading OBO/OWL ontologies
+- ``phenol-annotations``
+  - Remodel ``HpoDisease``, ``HpoAnnotation``, ``HpoAssociationData``, ``GeneIdentifier``s, etc..
+  - Model temporal elements
 
 ------
 v1.6.3
