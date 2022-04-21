@@ -1,12 +1,12 @@
 package org.monarchinitiative.phenol.io.utils;
 
-import com.google.common.collect.ImmutableMap;
 import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +19,7 @@ public class CurieUtilBuilder {
   private static final Logger LOGGER = LoggerFactory.getLogger(CurieUtilBuilder.class);
 
 
-  private static final Map<String, String> DEFAULT_CURIE_MAP = ImmutableMap.copyOf(generate());
+  private static final Map<String, String> DEFAULT_CURIE_MAP = Map.copyOf(generate());
   private static final CurieUtil DEFAULT_CURIE_UTIL = new CurieUtil(DEFAULT_CURIE_MAP);
 
 
@@ -35,14 +35,15 @@ public class CurieUtilBuilder {
   }
 
   public static CurieUtil withDefaultsAnd(Map<String, String> additionalCuries) {
-    ImmutableMap.Builder<String, String> merged = new ImmutableMap.Builder<>();
+    Map<String, String> merged = new HashMap<>();
     merged.putAll(DEFAULT_CURIE_MAP);
+    // overwrite any existing keys with the user-provided ones
     merged.putAll(additionalCuries);
-    return new CurieUtil(merged.build());
+    return new CurieUtil(Map.copyOf(merged));
   }
 
   public static CurieUtil just(Map<String, String> curies) {
-    return new CurieUtil(ImmutableMap.copyOf(curies));
+    return new CurieUtil(Map.copyOf(curies));
   }
 
   /**
@@ -58,6 +59,6 @@ public class CurieUtilBuilder {
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
     }
-    return ImmutableMap.of();
+    return Map.of();
   }
 }
