@@ -1,30 +1,30 @@
 MGI Accession ID	Chr	cM Position	genome coordinate start	genome coordinate end	strand	Marker Symbol	Status	Marker Name	Marker Type	Feature Type	Marker Synonyms (pipe-separated)
-MGI:97487	1	  39.79	78101267	78197134	-	Pax3	O	paired box 3	Gene	protein coding gene	Splchl2|Pax-3
+MGI:97487	1	  39.79	78101267	78197134	-	Pax3	O	paired box 3	Gene	protein coding geneIdentifier	Splchl2|Pax-3
 MGI:1341858	5	  syntenic				03B03F	O	DNA segment, 03B03F (Research Genetics)	BAC/YAC end	BAC/YAC end
 MGI:1341869	5	  syntenic				03B03R	O	DNA segment, 03B03R (Research Genetics)	BAC/YAC end	BAC/YAC end
 MGI:1337005	11	  syntenic				03.MMHAP34FRA.seq	O	DNA segment, 03.MMHAP34FRA.seq	DNA Segment	DNA segment
-MGI:1918911	7	  29.36	45567794	45575327	-	0610005C13Rik	O	RIKEN cDNA 0610005C13 gene	Gene	antisense lncRNA gene
-MGI:1923503	7	  syntenic	74818818	74853813	-	0610006L08Rik	O	RIKEN cDNA 0610006L08 gene	Gene	lincRNA gene
-MGI:1925547	UN	       N/A				0610008J02Rik	O	RIKEN cDNA 0610008J02 gene	Gene	unclassified gene
-MGI:1913300	11	  31.26	51685386	51688874	-	0610009B22Rik	O	RIKEN cDNA 0610009B22 gene	Gene	protein coding gene
+MGI:1918911	7	  29.36	45567794	45575327	-	0610005C13Rik	O	RIKEN cDNA 0610005C13 geneIdentifier	Gene	antisense lncRNA geneIdentifier
+MGI:1923503	7	  syntenic	74818818	74853813	-	0610006L08Rik	O	RIKEN cDNA 0610006L08 geneIdentifier	Gene	lincRNA geneIdentifier
+MGI:1925547	UN	       N/A				0610008J02Rik	O	RIKEN cDNA 0610008J02 geneIdentifier	Gene	unclassified geneIdentifier
+MGI:1913300	11	  31.26	51685386	51688874	-	0610009B22Rik	O	RIKEN cDNA 0610009B22 geneIdentifier	Gene	protein coding geneIdentifier
 MGI:3578159	4	  syntenic				12aex	O	12a exencephaly	Gene	heritable phenotypic marker
-MGI:2142939	13	  35.18	68181294	68182869	+	AA414992	O	expressed sequence AA414992	Gene	unclassified non-coding RNA gene
-MGI:3034216	7	  57.70	110057987	110061325	-	AA474408	O	expressed sequence AA474408	Gene	unclassified gene
-MGI:1917062	5	  74.94	135012122	135013157	-	Abhd11os	O	abhydrolase domain containing 11, opposite strand	Gene	antisense lncRNA gene	2010001M06Rik
-MGI:3510328	12	  60.56	109681519	109681593	+	AF357341	O	snoRNA AF357341	Gene	snoRNA gene	MBII-19
-MGI:3651084	4	  14.02	32251761	32265835	+	Bach2it1	O	BTB and CNC homology 2, intronic transcript 1	Gene	sense intronic lncRNA gene	Gm11932
-MGI:5784924	2	  syntenic				Betalinc1	O	beta-cell long intergenic noncoding RNA 1	Gene	lincRNA gene
-MGI:1914973	10	  49.04	94673493	94688613	-	Cep83os	O	centrosomal protein 83, opposite strand	Gene	bidirectional promoter lncRNA gene	4932415G12Rik|Ccdc41os1
-MGI:5538645	6	  syntenic				Egot	O	eosinophil granule ontogeny transcript (non-protein coding)	Gene	non-coding RNA gene
-MGI:4439892	12	  62.11	113528032	113528054	-	Gm16968	O	predicted gene, 16968	Gene	gene segment
-MGI:5011843	13	   9.77	21810712	21810849	-	Gm19658	O	predicted gene, 19658	Gene	miRNA gene
-MGI:5451780	12	  syntenic	4758547	4758653	+	Gm22003	O	predicted gene, 22003	Gene	snRNA gene
-MGI:5451853	12	  syntenic	45359699	45359782	+	Gm22076	O	predicted gene, 22076	Gene	rRNA gene
-MGI:5452491	19	  syntenic	37149085	37149162	-	Gm22714	O	predicted gene, 22714	Gene	ribozyme gene
-MGI:5521081	18	  syntenic				Gm27238	O	predicted gene 27238	Gene	sense overlapping lncRNA gene
-MGI:102491	MT	  syntenic	5018	5086	-	mt-Ta	O	mitochondrially encoded tRNA alanine	Gene	tRNA gene	tRNA|TrnA tRNA|tRNA-Ala
-MGI:97937	4	  23.04	43492785	43493059	-	Rmrp	O	RNA component of mitochondrial RNAase P	Gene	RNase MRP RNA gene	RNase MRP|Rmrpr
-MGI:97950	12	  syntenic	69159295	69159593	+	Rn7s1	O	7S RNA 1	Gene	SRP RNA gene	Gm22405|Rn7s-1
-MGI:97995	6	  22.94	47788070	47788180	-	Rny1	O	RNA, Y1 small cytoplasmic, Ro-associated	Gene	scRNA gene
-MGI:1934664	14	  26.25	50807449	50807767	-	Rpph1	O	ribonuclease P RNA component H1	Gene	RNase P RNA gene	Parp2|Rmrp5|RNase P|H1RNA|Gm24821|Rpr
-MGI:109558	3	  41.82	96414437	96414833	-	Terc	O	telomerase RNA component	Gene	telomerase RNA gene	mTER|mTR
+MGI:2142939	13	  35.18	68181294	68182869	+	AA414992	O	expressed sequence AA414992	Gene	unclassified non-coding RNA geneIdentifier
+MGI:3034216	7	  57.70	110057987	110061325	-	AA474408	O	expressed sequence AA474408	Gene	unclassified geneIdentifier
+MGI:1917062	5	  74.94	135012122	135013157	-	Abhd11os	O	abhydrolase domain containing 11, opposite strand	Gene	antisense lncRNA geneIdentifier	2010001M06Rik
+MGI:3510328	12	  60.56	109681519	109681593	+	AF357341	O	snoRNA AF357341	Gene	snoRNA geneIdentifier	MBII-19
+MGI:3651084	4	  14.02	32251761	32265835	+	Bach2it1	O	BTB and CNC homology 2, intronic transcript 1	Gene	sense intronic lncRNA geneIdentifier	Gm11932
+MGI:5784924	2	  syntenic				Betalinc1	O	beta-cell long intergenic noncoding RNA 1	Gene	lincRNA geneIdentifier
+MGI:1914973	10	  49.04	94673493	94688613	-	Cep83os	O	centrosomal protein 83, opposite strand	Gene	bidirectional promoter lncRNA geneIdentifier	4932415G12Rik|Ccdc41os1
+MGI:5538645	6	  syntenic				Egot	O	eosinophil granule ontogeny transcript (non-protein coding)	Gene	non-coding RNA geneIdentifier
+MGI:4439892	12	  62.11	113528032	113528054	-	Gm16968	O	predicted geneIdentifier, 16968	Gene	geneIdentifier segment
+MGI:5011843	13	   9.77	21810712	21810849	-	Gm19658	O	predicted geneIdentifier, 19658	Gene	miRNA geneIdentifier
+MGI:5451780	12	  syntenic	4758547	4758653	+	Gm22003	O	predicted geneIdentifier, 22003	Gene	snRNA geneIdentifier
+MGI:5451853	12	  syntenic	45359699	45359782	+	Gm22076	O	predicted geneIdentifier, 22076	Gene	rRNA geneIdentifier
+MGI:5452491	19	  syntenic	37149085	37149162	-	Gm22714	O	predicted geneIdentifier, 22714	Gene	ribozyme geneIdentifier
+MGI:5521081	18	  syntenic				Gm27238	O	predicted geneIdentifier 27238	Gene	sense overlapping lncRNA geneIdentifier
+MGI:102491	MT	  syntenic	5018	5086	-	mt-Ta	O	mitochondrially encoded tRNA alanine	Gene	tRNA geneIdentifier	tRNA|TrnA tRNA|tRNA-Ala
+MGI:97937	4	  23.04	43492785	43493059	-	Rmrp	O	RNA component of mitochondrial RNAase P	Gene	RNase MRP RNA geneIdentifier	RNase MRP|Rmrpr
+MGI:97950	12	  syntenic	69159295	69159593	+	Rn7s1	O	7S RNA 1	Gene	SRP RNA geneIdentifier	Gm22405|Rn7s-1
+MGI:97995	6	  22.94	47788070	47788180	-	Rny1	O	RNA, Y1 small cytoplasmic, Ro-associated	Gene	scRNA geneIdentifier
+MGI:1934664	14	  26.25	50807449	50807767	-	Rpph1	O	ribonuclease P RNA component H1	Gene	RNase P RNA geneIdentifier	Parp2|Rmrp5|RNase P|H1RNA|Gm24821|Rpr
+MGI:109558	3	  41.82	96414437	96414833	-	Terc	O	telomerase RNA component	Gene	telomerase RNA geneIdentifier	mTER|mTR

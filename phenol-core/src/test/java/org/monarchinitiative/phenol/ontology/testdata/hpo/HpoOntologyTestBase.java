@@ -1,11 +1,8 @@
 package org.monarchinitiative.phenol.ontology.testdata.hpo;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Lists;
 import org.monarchinitiative.phenol.ontology.data.*;
 
-import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,91 +37,87 @@ public class HpoOntologyTestBase {
   private static final AtomicInteger counter = new AtomicInteger(0);
 
   static {
-    final ImmutableMap.Builder<TermId, Term> termMapBuilder = ImmutableMap.builder();
-    final ImmutableMap.Builder<Integer, Relationship> relationMapBuilder = ImmutableMap.builder();
-    termMapBuilder.put(createTerm(PHENOTYPIC_ABNORMALITY, "Phenotypic abnormality"));
-    termMapBuilder.put(createTerm(CARDIOVASCULAR_ID, "Abnormality of the cardiovascular system"));
-    termMapBuilder.put(createTerm(ABN_CARDIOVASCULAR_PHYSIOLOGY,"Abnormal cardiovascular system physiology"));
-    termMapBuilder.put(createTerm(ABN_HEART_SOUND, "Abnormal heart sound"));
-    termMapBuilder.put(createTerm(HEART_MURMUR, "Heart murmur"));
-    termMapBuilder.put(createTerm(GALLOP_RHYTHM, "Gallop rhythm"));
-    termMapBuilder.put(createTerm(SYNCOPE, "Syncope"));
-    termMapBuilder.put(createTerm(VASOVAGAL_SYNCOPE, "Vasovagal syncope"));
-    termMapBuilder.put(createTerm(ORTHOSTATIC_SYNCOPE, "Orthostatic syncope"));
-    termMapBuilder.put(createTerm(EYE_ID, "Abnormality of the eye"));
-    termMapBuilder.put(createTerm(ABN_EYE_MORPHOLOGY, "Abnormal eye morphology"));
-    termMapBuilder.put(createTerm(COLOBOMA, "Coloboma"));
-    termMapBuilder.put(createTerm(RETINAL_COLOBOMA, "Retinal coloboma"));
-    termMapBuilder.put(createTerm(IRIS_COLOBOMA, "Iris coloboma"));
-    termMapBuilder.put(createTerm(ABN_GLOBE_LOCATION, "Abnormality of globe location"));
-    termMapBuilder.put(createTerm(PROPTOSIS, "Proptosis"));
-    termMapBuilder.put(createTerm(HYPERTELORISM, "Hypertelorism"));
-    ImmutableMap<TermId, Term> termMap = termMapBuilder.build();
+    Map<TermId, Term> termMapBuilder = new HashMap<>();
+    Map<Integer, Relationship> relationMapBuilder = new HashMap<>();
+    termMapBuilder.put(PHENOTYPIC_ABNORMALITY, createTerm(PHENOTYPIC_ABNORMALITY, "Phenotypic abnormality"));
+    termMapBuilder.put(CARDIOVASCULAR_ID, createTerm(CARDIOVASCULAR_ID, "Abnormality of the cardiovascular system"));
+    termMapBuilder.put(ABN_CARDIOVASCULAR_PHYSIOLOGY, createTerm(ABN_CARDIOVASCULAR_PHYSIOLOGY, "Abnormal cardiovascular system physiology"));
+    termMapBuilder.put(ABN_HEART_SOUND, createTerm(ABN_HEART_SOUND, "Abnormal heart sound"));
+    termMapBuilder.put(HEART_MURMUR, createTerm(HEART_MURMUR, "Heart murmur"));
+    termMapBuilder.put(GALLOP_RHYTHM, createTerm(GALLOP_RHYTHM, "Gallop rhythm"));
+    termMapBuilder.put(SYNCOPE, createTerm(SYNCOPE, "Syncope"));
+    termMapBuilder.put(VASOVAGAL_SYNCOPE, createTerm(VASOVAGAL_SYNCOPE, "Vasovagal syncope"));
+    termMapBuilder.put(ORTHOSTATIC_SYNCOPE, createTerm(ORTHOSTATIC_SYNCOPE, "Orthostatic syncope"));
+    termMapBuilder.put(EYE_ID, createTerm(EYE_ID, "Abnormality of the eye"));
+    termMapBuilder.put(ABN_EYE_MORPHOLOGY, createTerm(ABN_EYE_MORPHOLOGY, "Abnormal eye morphology"));
+    termMapBuilder.put(COLOBOMA, createTerm(COLOBOMA, "Coloboma"));
+    termMapBuilder.put(RETINAL_COLOBOMA, createTerm(RETINAL_COLOBOMA, "Retinal coloboma"));
+    termMapBuilder.put(IRIS_COLOBOMA, createTerm(IRIS_COLOBOMA, "Iris coloboma"));
+    termMapBuilder.put(ABN_GLOBE_LOCATION, createTerm(ABN_GLOBE_LOCATION, "Abnormality of globe location"));
+    termMapBuilder.put(PROPTOSIS, createTerm(PROPTOSIS, "Proptosis"));
+    termMapBuilder.put(HYPERTELORISM, createTerm(HYPERTELORISM, "Hypertelorism"));
+    Map<TermId, Term> termMap = Map.copyOf(termMapBuilder);
 
-    relationMapBuilder.put(createRelationship(CARDIOVASCULAR_ID, PHENOTYPIC_ABNORMALITY));
-    relationMapBuilder.put(createRelationship(ABN_CARDIOVASCULAR_PHYSIOLOGY, CARDIOVASCULAR_ID));
-    relationMapBuilder.put(createRelationship(ABN_HEART_SOUND, ABN_CARDIOVASCULAR_PHYSIOLOGY));
-    relationMapBuilder.put(createRelationship(HEART_MURMUR,ABN_HEART_SOUND));
-    relationMapBuilder.put(createRelationship(GALLOP_RHYTHM,ABN_HEART_SOUND));
-    relationMapBuilder.put(createRelationship(SYNCOPE, ABN_CARDIOVASCULAR_PHYSIOLOGY));
-    relationMapBuilder.put(createRelationship(VASOVAGAL_SYNCOPE, SYNCOPE));
-    relationMapBuilder.put(createRelationship(ORTHOSTATIC_SYNCOPE, SYNCOPE));
+    createRelationship(relationMapBuilder, CARDIOVASCULAR_ID, PHENOTYPIC_ABNORMALITY);
+    createRelationship(relationMapBuilder, ABN_CARDIOVASCULAR_PHYSIOLOGY, CARDIOVASCULAR_ID);
+    createRelationship(relationMapBuilder, ABN_HEART_SOUND, ABN_CARDIOVASCULAR_PHYSIOLOGY);
+    createRelationship(relationMapBuilder, HEART_MURMUR, ABN_HEART_SOUND);
+    createRelationship(relationMapBuilder, GALLOP_RHYTHM, ABN_HEART_SOUND);
+    createRelationship(relationMapBuilder, SYNCOPE, ABN_CARDIOVASCULAR_PHYSIOLOGY);
+    createRelationship(relationMapBuilder, VASOVAGAL_SYNCOPE, SYNCOPE);
+    createRelationship(relationMapBuilder, ORTHOSTATIC_SYNCOPE, SYNCOPE);
     // Eye
-    relationMapBuilder.put(createRelationship(EYE_ID, PHENOTYPIC_ABNORMALITY));
-    relationMapBuilder.put(createRelationship(ABN_EYE_MORPHOLOGY, EYE_ID));
-    relationMapBuilder.put(createRelationship(COLOBOMA, ABN_EYE_MORPHOLOGY));
-    relationMapBuilder.put(createRelationship(RETINAL_COLOBOMA, COLOBOMA));
-    relationMapBuilder.put(createRelationship(IRIS_COLOBOMA, COLOBOMA));
-    relationMapBuilder.put(createRelationship(ABN_GLOBE_LOCATION, ABN_EYE_MORPHOLOGY));
-    relationMapBuilder.put(createRelationship(PROPTOSIS, ABN_GLOBE_LOCATION));
-    relationMapBuilder.put(createRelationship(HYPERTELORISM, ABN_GLOBE_LOCATION));
+    createRelationship(relationMapBuilder, EYE_ID, PHENOTYPIC_ABNORMALITY);
+    createRelationship(relationMapBuilder, ABN_EYE_MORPHOLOGY, EYE_ID);
+    createRelationship(relationMapBuilder, COLOBOMA, ABN_EYE_MORPHOLOGY);
+    createRelationship(relationMapBuilder, RETINAL_COLOBOMA, COLOBOMA);
+    createRelationship(relationMapBuilder, IRIS_COLOBOMA, COLOBOMA);
+    createRelationship(relationMapBuilder, ABN_GLOBE_LOCATION, ABN_EYE_MORPHOLOGY);
+    createRelationship(relationMapBuilder, PROPTOSIS, ABN_GLOBE_LOCATION);
+    createRelationship(relationMapBuilder, HYPERTELORISM, ABN_GLOBE_LOCATION);
 
-    ImmutableMap<Integer, Relationship> relationMap = relationMapBuilder.build();
+    Map<Integer, Relationship> relationMap = Map.copyOf(relationMapBuilder);
 
     ontology = ImmutableOntology.builder()
-      .metaInfo(ImmutableSortedMap.of())
+      .metaInfo(Map.of())
       .terms(termMap.values())
       .relationships(relationMap.values())
       .build();
 
-    hpoAnnotations =
-      Lists.newArrayList(
-        new ToyHpoAnnotation(IRIS_COLOBOMA, "disease1"),
-        new ToyHpoAnnotation(IRIS_COLOBOMA, "disease2"),
-        new ToyHpoAnnotation(IRIS_COLOBOMA, "disease3"),
-        new ToyHpoAnnotation(IRIS_COLOBOMA, "disease4"),
-        new ToyHpoAnnotation(RETINAL_COLOBOMA, "disease4"),
-        new ToyHpoAnnotation(RETINAL_COLOBOMA, "disease6"),
-        new ToyHpoAnnotation(HYPERTELORISM, "disease1"),
-        new ToyHpoAnnotation(PROPTOSIS, "disease1"),
-        new ToyHpoAnnotation(PROPTOSIS, "disease7"),
-        new ToyHpoAnnotation(ORTHOSTATIC_SYNCOPE, "disease8"),
-        new ToyHpoAnnotation(GALLOP_RHYTHM, "disease1"),
-        new ToyHpoAnnotation(HEART_MURMUR, "disease2"),
-        new ToyHpoAnnotation(HEART_MURMUR, "disease5"),
-        new ToyHpoAnnotation(HEART_MURMUR, "disease7"));
+    hpoAnnotations = List.of(
+      new ToyHpoAnnotation(IRIS_COLOBOMA, "disease1"),
+      new ToyHpoAnnotation(IRIS_COLOBOMA, "disease2"),
+      new ToyHpoAnnotation(IRIS_COLOBOMA, "disease3"),
+      new ToyHpoAnnotation(IRIS_COLOBOMA, "disease4"),
+      new ToyHpoAnnotation(RETINAL_COLOBOMA, "disease4"),
+      new ToyHpoAnnotation(RETINAL_COLOBOMA, "disease6"),
+      new ToyHpoAnnotation(HYPERTELORISM, "disease1"),
+      new ToyHpoAnnotation(PROPTOSIS, "disease1"),
+      new ToyHpoAnnotation(PROPTOSIS, "disease7"),
+      new ToyHpoAnnotation(ORTHOSTATIC_SYNCOPE, "disease8"),
+      new ToyHpoAnnotation(GALLOP_RHYTHM, "disease1"),
+      new ToyHpoAnnotation(HEART_MURMUR, "disease2"),
+      new ToyHpoAnnotation(HEART_MURMUR, "disease5"),
+      new ToyHpoAnnotation(HEART_MURMUR, "disease7"));
 
-    disease1annotations = Lists.newArrayList(IRIS_COLOBOMA, HYPERTELORISM, PROPTOSIS, GALLOP_RHYTHM);
-    disease2annotations = Lists.newArrayList(IRIS_COLOBOMA, HEART_MURMUR);
+    disease1annotations = List.of(IRIS_COLOBOMA, HYPERTELORISM, PROPTOSIS, GALLOP_RHYTHM);
+    disease2annotations = List.of(IRIS_COLOBOMA, HEART_MURMUR);
 
   }
 
 
-
-  private static Map.Entry<Integer, Relationship> createRelationship(TermId source, TermId target) {
+  private static void createRelationship(Map<Integer, Relationship> relationshipMap, TermId source, TermId target) {
     int id = counter.incrementAndGet();
-    return new AbstractMap.SimpleEntry<>(id, Relationship.IS_A(source, target,id));
+    relationshipMap.put(id, Relationship.IS_A(source, target, id));
   }
 
 
-  private static Map.Entry<TermId, Term> createTerm(TermId tid, String label) {
-    final String definition = "n/a";
-    Term t = Term.builder()
-        .id(tid)
-        .name(label)
-        .definition(definition)
-        .build();
-    return new AbstractMap.SimpleEntry<>(tid,t);
+  private static Term createTerm(TermId tid, String label) {
+    return Term.builder()
+      .id(tid)
+      .name(label)
+      .definition("n/a")
+      .build();
   }
 
 }

@@ -2,11 +2,12 @@ package org.monarchinitiative.phenol.ontology.scoredist;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ScoreDistributionTest {
 
@@ -19,10 +20,10 @@ public class ScoreDistributionTest {
     dist =
         new ScoreDistribution(
             2,
-            ImmutableMap.of(
+            Map.of(
               tid1,
                 new ObjectScoreDistribution(
-                  tid1, 2, 10, ImmutableSortedMap.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9))));
+                  tid1, 2, 10, new TreeMap<>(Map.of(0.1, 0.1, 0.5, 0.5, 0.9, 0.9)))));
   }
 
   @Test

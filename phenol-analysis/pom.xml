@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <version>2.0.0-RC3-SNAPSHOT</version>
   </parent>
 
   <artifactId>phenol-analysis</artifactId>
@@ -14,11 +14,6 @@
   <description>phenol-analysis implements some algorithms for working with ontology data</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.monarchinitiative.phenol</groupId>
-      <artifactId>phenol-io</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.monarchinitiative.phenol</groupId>
       <artifactId>phenol-annotations</artifactId>

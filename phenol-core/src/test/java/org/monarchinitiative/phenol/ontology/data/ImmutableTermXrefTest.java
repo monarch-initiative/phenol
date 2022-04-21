@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class ImmutableTermXrefTest {
+public class ImmutableTermXrefTest {
 
   @Test
-  void test() {
+  public void test() {
     TermId termId = TermId.of("HP:0000001");
     TermXref termXref = new TermXref(termId, "Some description");
 
-    assertEquals(termId, termXref.getId());
+    assertEquals(termId, termXref.id());
     assertEquals("Some description", termXref.getDescription());
   }
 }

@@ -28,7 +28,10 @@ hs_err_pid*
 target/
 .idea/
 *.iml
-/phenol-core/pom.xml.releaseBackup
-/phenol-cli/pom.xml.releaseBackup
-/phenol-cli/dependency-reduced-pom.xml
-/phenol-annotations/pom.xml.releaseBackup
+
+# maven release plugin
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.propertie

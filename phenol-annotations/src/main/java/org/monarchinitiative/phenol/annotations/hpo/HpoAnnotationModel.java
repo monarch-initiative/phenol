@@ -1,10 +1,8 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequency;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -69,17 +67,17 @@ public class HpoAnnotationModel {
    */
   public HpoAnnotationModel(String name, List<HpoAnnotationEntry> entries) {
     basename = name;
-    entryList = ImmutableList.copyOf(entries);
+    entryList = List.copyOf(entries);
     if (basename.contains("OMIM")) this.database = Database.OMIM;
     else if (basename.contains("DECIPHER")) this.database = Database.DECIPHER;
     else this.database = Database.UNKNOWN;
   }
 
   public HpoAnnotationModel mergeWithInheritanceAnnotations(Collection<HpoAnnotationEntry> inherit) {
-      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+    List<HpoAnnotationEntry> builder = new ArrayList<>();
       builder.addAll(this.entryList);
       builder.addAll(inherit);
-      return new HpoAnnotationModel(this.basename,builder.build());
+    return new HpoAnnotationModel(this.basename, List.copyOf(builder));
   }
 
   /**
@@ -313,7 +311,7 @@ public class HpoAnnotationModel {
       termId2AnnotEntryListMap.putIfAbsent(entry.getPhenotypeId(), new ArrayList<>());
       termId2AnnotEntryListMap.get(entry.getPhenotypeId()).add(entry);
     }
-    ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
+    List<HpoAnnotationEntry> builder = new ArrayList<>();
     for (TermId tid : termId2AnnotEntryListMap.keySet()) {
       List<HpoAnnotationEntry> entrylist = termId2AnnotEntryListMap.get(tid);
       if (entrylist.size() == 1) { // No duplicate entries for this TermId
@@ -336,7 +334,7 @@ public class HpoAnnotationModel {
         }
       }
     }
-    return new HpoAnnotationModel(this.basename,builder.build());
+    return new HpoAnnotationModel(this.basename, List.copyOf(builder));
   }
 
   /**
@@ -360,10 +358,10 @@ public class HpoAnnotationModel {
 
 
   public void addInheritanceEntryCollection(Collection<HpoAnnotationEntry> entries) {
-      ImmutableList.Builder<HpoAnnotationEntry> builder = new ImmutableList.Builder<>();
-      builder.addAll(this.entryList);
-      builder.addAll(entries);
-      this.entryList = builder.build();
+    List<HpoAnnotationEntry> builder = new ArrayList<>();
+    builder.addAll(this.entryList);
+    builder.addAll(entries);
+    this.entryList = List.copyOf(builder);
   }
 
 

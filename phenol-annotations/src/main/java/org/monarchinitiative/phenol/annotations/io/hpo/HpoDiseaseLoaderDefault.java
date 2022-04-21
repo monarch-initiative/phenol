@@ -1,0 +1,308 @@
+package org.monarchinitiative.phenol.annotations.io.hpo;
+
+import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.Sex;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
+import org.monarchinitiative.phenol.annotations.formats.hpo.*;
+import org.monarchinitiative.phenol.base.PhenolException;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.constants.hpo.HpoClinicalModifierTermIds;
+import org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds;
+import org.monarchinitiative.phenol.constants.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+class HpoDiseaseLoaderDefault implements HpoDiseaseLoader {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseLoaderDefault.class);
+  private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
+  private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
+  private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
+
+  private final int cohortSize;
+  private final boolean salvageNegatedFrequencies;
+  private final Set<String> databasePrefixes;
+  private final Set<TermId> clinicalCourseSubHierarchy;
+  private final Set<TermId> inheritanceSubHierarchy;
+
+  HpoDiseaseLoaderDefault(Ontology hpo, HpoDiseaseLoaderOptions options) {
+    Objects.requireNonNull(hpo, "HPO ontology must not be null.");
+    Objects.requireNonNull(options, "Options must not be null.");
+    this.cohortSize = options.cohortSize();
+    this.salvageNegatedFrequencies = options.salvageNegatedFrequencies();
+    this.databasePrefixes = options.includedDatabases().stream()
+      .map(DiseaseDatabase::prefix)
+      .collect(Collectors.toUnmodifiableSet());
+
+    this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
+      ? hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds()
+      : Set.of();
+    this.inheritanceSubHierarchy = hpo.containsTerm(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
+      ? hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds()
+      : Set.of();
+  }
+
+  @Override
+  public HpoDiseases load(InputStream is) throws IOException {
+    Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = groupLinesByDiseaseId(is);
+
+    // Then, we assemble the annotation lines into a HpoDisease objects.
+    List<HpoDisease> diseases = disease2AnnotLineMap.entrySet().stream()
+      .map(entry -> assembleHpoDisease(entry.getKey(), entry.getValue()))
+      .flatMap(Optional::stream)
+      .collect(Collectors.toUnmodifiableList());
+
+    return HpoDiseases.of(diseases);
+  }
+
+  private Map<TermId, List<HpoAnnotationLine>> groupLinesByDiseaseId(InputStream is) throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+
+    Map<TermId, List<HpoAnnotationLine>> annotationLinesByDiseaseId = new HashMap<>();
+    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+      if (line.startsWith("#"))
+        continue;
+
+      HpoAnnotationLine annotationLine;
+      try {
+        annotationLine = HpoAnnotationLine.constructFromString(line);
+      } catch (PhenolException e) {
+        LOGGER.warn("Error {} while parsing line: {}", e.getMessage(), line);
+        continue;
+      }
+
+      TermId diseaseId = TermId.of(annotationLine.getDiseaseId());
+      if (!databasePrefixes.contains(diseaseId.getPrefix()))
+        continue; // skip unless we want to keep this database
+
+      annotationLinesByDiseaseId.computeIfAbsent(diseaseId, k -> new ArrayList<>()).add(annotationLine);
+    }
+
+    return annotationLinesByDiseaseId;
+  }
+
+  private Optional<HpoDisease> assembleHpoDisease(TermId diseaseId,
+                                                  Iterable<HpoAnnotationLine> annotationLines) {
+    Optional<HpoDiseaseData> diseaseDataOptional = parseDiseaseData(annotationLines);
+    if (diseaseDataOptional.isEmpty())
+      return Optional.empty();
+    HpoDiseaseData diseaseData = diseaseDataOptional.get();
+
+    List<HpoAnnotation> phenotypes = diseaseData.phenotypes();
+    HpoOnset onset = parseGlobalDiseaseOnset(diseaseData.clinicalCourseTerms(), phenotypes);
+
+    Map<TermId, List<HpoAnnotation>> phenotypeById = phenotypes.stream()
+      .collect(Collectors.groupingBy(HpoAnnotation::id));
+
+    List<HpoDiseaseAnnotation> diseaseAnnotations = phenotypeById.entrySet().stream()
+      .map(entry -> toDiseaseAnnotation(entry.getKey(), entry.getValue()))
+      .collect(Collectors.toUnmodifiableList());
+
+    return Optional.of(HpoDisease.of(diseaseId, diseaseData.diseaseName(),
+      onset,
+      diseaseAnnotations,
+      Collections.unmodifiableList(diseaseData.modesOfInheritance())));
+  }
+
+  private Optional<HpoDiseaseData> parseDiseaseData(Iterable<HpoAnnotationLine> annotationLines) {
+    List<HpoAnnotation> phenotypes = new ArrayList<>();
+    List<TermId> modesOfInheritance = new LinkedList<>();
+    List<TermId> clinicalModifierListBuilder = new ArrayList<>();
+    List<TermId> clinicalCourse = new ArrayList<>();
+    String diseaseName = null;
+    for (HpoAnnotationLine line : annotationLines) {
+      // disease name
+      if (line.getDatabaseObjectName() != null)
+        diseaseName = line.getDatabaseObjectName();
+
+      // phenotype term
+      TermId phenotypeId;
+      try {
+        phenotypeId = TermId.of(line.getPhenotypeId());
+      } catch (PhenolRuntimeException e) {
+        LOGGER.warn("Non-parsable phenotype term `{}`: {}", line.getPhenotypeId(), e.getMessage());
+        continue;
+      }
+
+
+      if (inheritanceSubHierarchy.contains(phenotypeId)) {
+        modesOfInheritance.add(phenotypeId);
+      } else if (clinicalCourseSubHierarchy.contains(phenotypeId)) {
+        clinicalCourse.add(phenotypeId);
+      } else if (phenotypeId.equals(HpoSubOntologyRootTermIds.CLINICAL_MODIFIER)) {
+        // The term can only be clinical modifier only if it is NOT clinical course (checked above) and it is equal to
+        // clinical modifier.
+        clinicalModifierListBuilder.add(phenotypeId);
+      } else {
+        try {
+          phenotypes.add(createHpoAnnotation(phenotypeId, line));
+        } catch (IllegalArgumentException e) {
+          LOGGER.warn("Non-parsable phenotype entry `{}`: {}", line, e.getMessage());
+        }
+      }
+    }
+
+    return Optional.of(
+      new HpoDiseaseData(diseaseName,
+        phenotypes,
+        modesOfInheritance,
+        clinicalModifierListBuilder,
+        clinicalCourse)
+    );
+  }
+
+  private HpoAnnotation createHpoAnnotation(TermId phenotypeId, HpoAnnotationLine line) throws IllegalArgumentException {
+    // frequency
+    AnnotationFrequency annotationFrequency = parseFrequency(line.isNOT(), line.getFrequency());
+
+    // onset
+    HpoOnset onset = HpoOnset.fromHpoIdString(line.getOnsetId())
+      .orElse(null);
+
+    // modifiers
+    List<TermId> modifiers = Arrays.stream(line.modifiers().split(";"))
+      .filter(token -> !token.isBlank())
+      .map(TermId::of)
+      .collect(Collectors.toList());
+
+    // citations/publications & evidence
+    List<String> citations = line.getPublication();
+    EvidenceCode evidenceCode = EvidenceCode.parse(line.getEvidence());
+
+    Sex sex = Sex.parse(line.getSex()).orElse(null);
+
+    return HpoAnnotation.of(phenotypeId,
+      annotationFrequency,
+      onset,
+      modifiers,
+      citations,
+      evidenceCode,
+      sex);
+  }
+
+  private AnnotationFrequency parseFrequency(boolean isNegated, String frequency) throws IllegalArgumentException {
+    boolean notDone = true;
+    int numerator = -1, denominator = -1;
+
+    if ("".equals(frequency)) {
+      // The empty string is assumed to represent a case study
+      numerator = (isNegated) ? 0 : 1;
+      denominator = 1;
+      return AnnotationFrequency.of(Ratio.of(numerator, denominator));
+    }
+
+    // HPO term, e.g. HP:0040280 (Obligate)
+    if (HPO_PATTERN.matcher(frequency).matches()) {
+      HpoFrequency hpoFrequency = HpoFrequency.fromTermId(TermId.of(frequency));
+      int hpoApproximate = Math.round(hpoFrequency.frequency() * cohortSize);
+      numerator = isNegated
+        ? 0
+        : hpoApproximate;
+      denominator = cohortSize;
+      notDone = false;
+    }
+
+    // Ratio, e.g. 1/2
+    if (notDone) {
+      Matcher matcher = RATIO_PATTERN.matcher(frequency);
+      if (matcher.matches()) {
+        denominator = Integer.parseInt(matcher.group("denominator"));
+        int i = Integer.parseInt(matcher.group("numerator"));
+        if (isNegated) {
+          if (denominator == 0)
+            // fix denominator in cases like `0/0`
+            denominator = cohortSize;
+          if (i == 0 && salvageNegatedFrequencies) {
+            numerator = 0;
+          } else {
+            numerator = denominator - i;
+          }
+        } else {
+          numerator = i;
+        }
+        notDone = false;
+      }
+    }
+
+    // Percentage, e.g. 20%
+    if (notDone) {
+      Matcher matcher = PERCENTAGE_PATTERN.matcher(frequency);
+      if (matcher.matches()) {
+        float percentage = Float.parseFloat(matcher.group("value"));
+        numerator = Math.round(percentage * cohortSize / 100F);
+        denominator = cohortSize;
+        notDone = false;
+      }
+    }
+
+    if (notDone)
+      // we should be done at this point
+      throw new IllegalArgumentException();
+
+    return AnnotationFrequency.of(Ratio.of(numerator, denominator));
+  }
+
+  private static HpoOnset parseGlobalDiseaseOnset(List<TermId> termIds, List<HpoAnnotation> phenotypes) {
+    // First, let's use the onset term IDs provided by HPOA lines where `aspect==C`.
+    Optional<HpoOnset> earliest = termIds.stream()
+      .map(HpoOnset::fromTermId)
+      .flatMap(Optional::stream)
+      .min(Comparator.comparing(a -> a, TemporalInterval::compare));
+
+    if (earliest.isPresent())
+      return earliest.get();
+
+    // If there is no such term, lets use the earliest onset of the phenotype terms. Otherwise, the onset is `null`.
+    HpoOnset onset = null;
+    for (HpoAnnotation phenotype : phenotypes) {
+      Optional<HpoOnset> onsetOptional = phenotype.onset();
+      if (onsetOptional.isPresent()) {
+        HpoOnset candidate = onsetOptional.get();
+        if (onset == null)
+          onset = candidate;
+        else {
+          int result = TemporalInterval.compare(candidate, onset);
+          if (result < 0)
+            onset = candidate;
+        }
+      }
+    }
+
+    return onset;
+  }
+
+  private static HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
+    List<HpoDiseaseAnnotationMetadata> metadata = annotations.stream()
+      .map(HpoDiseaseLoaderDefault::toHpoDiseaseAnnotationMetadata)
+      .flatMap(Optional::stream)
+      .collect(Collectors.toUnmodifiableList());
+
+    return HpoDiseaseAnnotation.of(phenotypeId, metadata);
+  }
+
+  private static Optional<HpoDiseaseAnnotationMetadata> toHpoDiseaseAnnotationMetadata(HpoAnnotation annotation) {
+    return Optional.of(
+      HpoDiseaseAnnotationMetadata.of(annotation.onset()
+        // We do not have "resolution/offset" of the terms, hence open end
+          .map(o -> TemporalInterval.openEnd(o.start()))
+          .orElse(null),
+        annotation.annotationFrequency(),
+        annotation.modifiers(),
+        annotation.sex())
+    );
+  }
+
+}

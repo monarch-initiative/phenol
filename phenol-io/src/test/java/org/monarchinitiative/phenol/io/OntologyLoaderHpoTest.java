@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.monarchinitiative.phenol.ontology.data.TermSynonymScope.EXACT;
 
@@ -37,6 +36,13 @@ public class OntologyLoaderHpoTest {
   public void testParseHpoToy() {
     final DefaultDirectedGraph<TermId, IdLabeledEdge> graph = hpo.getGraph();
     assertNotNull(graph);
+  }
+
+  @Test
+  public void testMetadata() {
+    Map<String, String> metaInfo = hpo.getMetaInfo();
+    assertThat(metaInfo, hasEntry("release", "2021-06-08"));
+    assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/hp/releases/2021-06-08/hp.json"));
   }
 
   @Test

@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequencyTermIds;
+import org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -175,7 +175,7 @@ public class OrphanetXML2HpoDiseaseModelParser {
   private TermId string2frequency(String fstring) throws PhenolRuntimeException {
     switch (fstring) {
       case "28405":
-        return HpoFrequencyTermIds.ALWAYS_PRESENT;// Obligate
+        return HpoFrequencyTermIds.OBLIGATE;
       case "28412":
         return HpoFrequencyTermIds.VERY_FREQUENT;
       case "28419":

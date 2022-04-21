@@ -1,9 +1,10 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.formats.Gene;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -16,38 +17,55 @@ public class DiseaseToGeneAssociation {
   /**
    * The CURIE representing a disease, e.g., OMIM:600100.
    */
-  private final TermId disease;
-  private final List<GeneToAssociation> gene2assoc;
+  private final TermId diseaseId;
+  private final List<GeneToAssociation> geneToAssociations;
 
-  public DiseaseToGeneAssociation(TermId id, List<GeneToAssociation> genes) {
-    this.gene2assoc = genes;
-    this.disease = id;
+  public static DiseaseToGeneAssociation of(TermId diseaseId, List<GeneToAssociation> geneToAssociations) {
+    return new DiseaseToGeneAssociation(diseaseId, geneToAssociations);
   }
 
-  public TermId getDiseaseId() {
-    return disease;
+  private DiseaseToGeneAssociation(TermId diseaseId, List<GeneToAssociation> geneAssociations) {
+    this.diseaseId = Objects.requireNonNull(diseaseId, "Disease id must not be null");
+    this.geneToAssociations = Objects.requireNonNull(geneAssociations, "Gene associations must not be null");
+  }
+
+  public TermId diseaseId() {
+    return diseaseId;
+  }
+
+  public List<GeneToAssociation> associations() {
+    return geneToAssociations;
   }
 
   /**
-   * @return a list of all genes (regardless of bla32 type).
+   * @return a list of all genes (regardless of the association type).
    */
-  public List<Gene> getGeneList() {
-    return gene2assoc.stream().map(GeneToAssociation::getGene).collect(Collectors.toList());
+  public List<GeneIdentifier> geneIdentifiers() {
+    return geneToAssociations.stream()
+      .map(GeneToAssociation::geneIdentifier)
+      .distinct()
+      .collect(Collectors.toUnmodifiableList());
   }
 
-  public List<GeneToAssociation> getAssociations() {
-    return gene2assoc;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DiseaseToGeneAssociation that = (DiseaseToGeneAssociation) o;
+    return Objects.equals(diseaseId, that.diseaseId) && Objects.equals(geneToAssociations, that.geneToAssociations);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(diseaseId, geneToAssociations);
   }
 
   @Override
   public String toString() {
-    return String.format("%s: %s",
-      disease.getValue(),
-      gene2assoc.stream().
-        map(GeneToAssociation::getGene).
-        map(Gene::toString).
-        collect(Collectors.joining(";"))
-    );
+    return "DiseaseToGeneAssociation{" +
+      "disease=" + diseaseId +
+      ", gene2assoc=" + geneToAssociations +
+      '}';
   }
-
 }

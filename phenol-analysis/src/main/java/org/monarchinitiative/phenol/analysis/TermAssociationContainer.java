@@ -1,8 +1,7 @@
 package org.monarchinitiative.phenol.analysis;
 
 
-import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.annotations.obo.go.GoGeneAnnotationParser;
+import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -24,7 +23,8 @@ import java.util.*;
  */
 public class TermAssociationContainer implements AssociationContainer<TermId> {
   private static final Logger LOGGER = LoggerFactory.getLogger(TermAssociationContainer.class);
-  private final List<TermAnnotation> rawAssociations;
+
+  private final List<? extends TermAnnotation> rawAssociations;
   /**
    * Key -- TermId for a gene. Value: {@link ItemAnnotations} object with GO annotations for the gene.
    */
@@ -46,7 +46,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @param annotatingTermCount number of annotating terms TODO DO WE NEED THIS?
    */
   private TermAssociationContainer(Ontology ontology,
-                                  List<TermAnnotation> rawAssociations,
+                                  List<? extends TermAnnotation> rawAssociations,
                                   Map<TermId, GeneAnnotations> gene2associationMap,
                                   int annotatingTermCount) {
     this.ontology = ontology;
@@ -65,14 +65,19 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         mp.get(ontologyTermId).add(gene);
       }
     }
-    return mp; // TODO Java 11 Map.copyOf()
+    return Map.copyOf(mp);
   }
 
   public int getAnnotatingTermCount() {
     return this.annotatingTermCount;
   }
 
-  public List<TermAnnotation> getRawAssociations() {
+  @Override
+  public int getTotalAnnotationCount() {
+    return rawAssociations.size();
+  }
+
+  public List<? extends TermAnnotation> getRawAssociations() {
     return rawAssociations;
   }
 
@@ -150,7 +155,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
       GeneAnnotations assocs = this.gene2associationMap.get(domainTermId);
       for (TermAnnotation termAnnotation : assocs.getAnnotations()) {
         /* In this step add the direct annotations only */
-        TermId ontologyTermId = termAnnotation.getTermId();
+        TermId ontologyTermId = termAnnotation.id();
         // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
         Term term = this.ontology.getTermMap().get(ontologyTermId);
         if (term == null) {
@@ -181,7 +186,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         }
       }
     }
-    return annotationMap; // TODO Java 11, Map.copyOf to make immutable
+    return Map.copyOf(annotationMap);
   }
 
 
@@ -194,7 +199,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @param ontology {@link Ontology} object
    * @return an AssociationContainer
    */
-  public static TermAssociationContainer fromGoTermAnnotations(List<TermAnnotation> goAnnots, Ontology ontology) {
+  public static TermAssociationContainer fromGoTermAnnotations(List<? extends TermAnnotation> goAnnots, Ontology ontology) {
     // key: a gene id; value: set of direct GO annotations
     Map<TermId, Set<TermAnnotation>> domainItemToAnnotationMap = new HashMap<>();
     for (TermAnnotation annot : goAnnots) {
@@ -205,7 +210,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
     // Key: a gene id; value: GeneAnnotations object with direct GO annotations
     Map<TermId, GeneAnnotations> gene2associationMap = new HashMap<>();
     domainItemToAnnotationMap.forEach((k, v) ->
-      gene2associationMap.put(k, GeneAnnotations.of(k, ImmutableList.copyOf(v))));
+      gene2associationMap.put(k, GeneAnnotations.of(k, List.copyOf(v))));
 
     long count = gene2associationMap.values().stream()
       .map(ItemAnnotations::getAnnotatingTermIds)
@@ -222,7 +227,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @return An {@link TermAssociationContainer} object representing GO associations
    */
   public static TermAssociationContainer loadGoGafAssociationContainer(File goGafFile, Ontology ontology) {
-    List<TermAnnotation> goAnnots = GoGeneAnnotationParser.loadTermAnnotations(goGafFile);
+    List<? extends TermAnnotation> goAnnots = GoGeneAnnotationParser.loadAnnotations(goGafFile.toPath());
     return TermAssociationContainer.fromGoTermAnnotations(goAnnots, ontology);
   }
 

@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.ontology.algo;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.google.common.collect.Sets;
 import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +74,9 @@ public final class InformationContentComputation {
       if (t.isObsolete()) {
         continue;
       }
-      if (!termToFrequency.containsKey(t.getId())) {
+      if (!termToFrequency.containsKey(t.id())) {
         ++countIcZero;
-        termToInformationContent.put(t.getId(), dummyIc);
+        termToInformationContent.put(t.id(), dummyIc);
       }
     }
 
@@ -128,7 +128,7 @@ public final class InformationContentComputation {
     Set<TermId> anc2 = ontology.getAncestorTermIds(t2,false);
     if (anc2.contains(t1)) return t1;
     // Case 4, t1 and t2 are not ancestors of one another
-    Sets.SetView<TermId> intersection = Sets.intersection(anc1,anc2);
+    Set<TermId> intersection = Sets.intersection(anc1, anc2);
     TermId mica = null;
     double maxIC = -1.0; // information content
     Deque<TermId> stack = new ArrayDeque<>();

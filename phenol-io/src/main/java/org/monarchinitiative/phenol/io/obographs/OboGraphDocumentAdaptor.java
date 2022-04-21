@@ -1,8 +1,5 @@
 package org.monarchinitiative.phenol.io.obographs;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import org.geneontology.obographs.core.model.*;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -13,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -131,24 +130,61 @@ public class OboGraphDocumentAdaptor {
 
     private Map<String, String> convertMetaData(Meta meta) {
       if (meta == null) {
-        return ImmutableSortedMap.of();
+        return Map.of();
       }
-      ImmutableMap.Builder<String, String> metaMap = new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
+      SortedMap<String, String> metaMap = new TreeMap<>();
       String version = meta.getVersion() != null ? meta.getVersion() : "";
       metaMap.put("data-version", version);
+      String versionInfo = null;
       if (meta.getBasicPropertyValues() != null) {
         for (BasicPropertyValue basicPropertyValue : meta.getBasicPropertyValues()) {
           if (basicPropertyValue.getPred().equalsIgnoreCase("date")) {
             String date = basicPropertyValue.getVal().trim();
             metaMap.put("date", date);
+          } else if (basicPropertyValue.getPred().contains("#versionInfo")) {
+            versionInfo = basicPropertyValue.getVal();
           }
         }
       }
-      return metaMap.build();
+      if (versionInfo != null)
+        metaMap.put("release", versionInfo);
+      else if (version != null) {
+        Optional<String> releaseDate = findDate(version);
+        if (releaseDate.isPresent())
+          metaMap.put("release", releaseDate.get());
+        else
+          LOGGER.warn("Unable to parse release from IRI `{}`.", version);
+      } else
+        LOGGER.warn("Unable to retrieve release for ontology.");
+
+      return Collections.unmodifiableSortedMap(metaMap);
+    }
+
+    /**
+     * Find exactly one date matching `20YY-MM-DD` pattern in given payload.
+     * @return date string (e.g. 2022-04-04)
+     */
+    private static Optional<String> findDate(String payload) {
+      // A string like `http://purl.obolibrary.org/obo/hp/releases/2021-06-08/hp.json`
+      Pattern datePattern = Pattern.compile("(?<value>20\\d{2}-\\d{2}-\\d{2})");
+      Matcher matcher = datePattern.matcher(payload);
+      String value;
+      if (matcher.find()) {
+        value = matcher.group("value");
+      } else {
+        return Optional.empty();
+      }
+
+      if (matcher.find()) {
+        LOGGER.warn("More than one match for date in IRI `{}`", payload);
+        return Optional.empty();
+      } else {
+        return Optional.of(value);
+      }
     }
 
     private List<Term> convertNodesToTerms(List<Node> nodes) {
-      ImmutableList.Builder<Term> termsList = new ImmutableList.Builder<>();
+      List<Term> termsList = new ArrayList<>();
       if (nodes == null || nodes.isEmpty()) {
         LOGGER.warn("No nodes found in loaded ontology.");
         throw new PhenolRuntimeException("PhenolException: No nodes found in loaded ontology.");
@@ -165,7 +201,7 @@ public class OboGraphDocumentAdaptor {
           }
         }
       }
-      return termsList.build();
+      return List.copyOf(termsList);
     }
 
     private List<Relationship> convertEdgesToRelationships(List<Edge> edges, List<Node> nodes) {
@@ -174,7 +210,7 @@ public class OboGraphDocumentAdaptor {
         .filter(node -> node.getId() != null && node.getLabel() != null)
         .collect(toMap(Node::getId, Node::getLabel));
 
-      ImmutableList.Builder<Relationship> relationshipsList = new ImmutableList.Builder<>();
+      List<Relationship> relationshipsList = new ArrayList<>();
       if (edges == null || edges.isEmpty()) {
         LOGGER.warn("No edges found in loaded ontology.");
         throw new PhenolRuntimeException("No edges found in loaded ontology.");
@@ -190,12 +226,12 @@ public class OboGraphDocumentAdaptor {
           relationshipsList.add(relationship);
         }
       }
-      return relationshipsList.build();
+      return List.copyOf(relationshipsList);
     }
 
     private TermId getTermIdOrNull(String id) {
       Optional<String> curie = curieUtil.getCurie(id);
-      if (!curie.isPresent()) {
+      if (curie.isEmpty()) {
         LOGGER.warn("No matching curie found for id: {}", id);
         return null;
       }

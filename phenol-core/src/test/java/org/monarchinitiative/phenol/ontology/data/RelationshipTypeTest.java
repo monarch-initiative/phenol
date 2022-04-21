@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RelationshipTypeTest {
+public class RelationshipTypeTest {
 
   @Test
-  void testHasModifier() {
+  public void testHasModifier() {
     RelationshipType hasMod = RelationshipType.of("http://purl.obolibrary.org/obo/RO_0002573", "has modifier");
     assertEquals(RelationshipType.HAS_MODIFIER, hasMod);
     assertNotEquals(RelationshipType.PART_OF, hasMod);
@@ -15,20 +15,20 @@ class RelationshipTypeTest {
   }
 
   @Test
-  void testIsA() {
+  public void testIsA() {
     assertEquals(RelationshipType.IS_A, RelationshipType.of("is_a", "is_a"));
     assertTrue(RelationshipType.IS_A.propagates());
   }
 
   @Test
-  void testPartOf() {
+  public void testPartOf() {
     assertEquals(RelationshipType.PART_OF, RelationshipType.of("http://purl.obolibrary.org/obo/BFO_0000050", "part of"));
     assertEquals(RelationshipType.PART_OF, RelationshipType.of("part_of", "part of"));
     assertTrue(RelationshipType.PART_OF.propagates());
   }
 
   @Test
-  void allowsForUndefinedRelationship() {
+  public void allowsForUndefinedRelationship() {
     assertEquals(RelationshipType.of("wibble", "thing"), RelationshipType.of("wibble", "thing"));
   }
 }

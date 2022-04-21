@@ -9,11 +9,11 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class MpAnnotationTest {
+public class MpAnnotationTest {
 
   /** Test the toString method -- todo, we should prettify this output! */
   @Test
-  void testAnnotationTypeString() {
+  public void testAnnotationTypeString() {
     TermId mpId = TermId.of("MP:123");
     Set<String> pmids = ImmutableSet.of();
     MpAnnotation.Builder builder = new MpAnnotation.Builder(mpId,pmids).sexSpecific(MpSex.FEMALE);

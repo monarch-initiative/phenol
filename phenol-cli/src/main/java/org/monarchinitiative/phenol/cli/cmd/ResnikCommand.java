@@ -1,9 +1,10 @@
 package org.monarchinitiative.phenol.cli.cmd;
 
 
-import org.monarchinitiative.phenol.cli.demo.ResnikGenebasedHpoDemo;
+import org.monarchinitiative.phenol.cli.demo.ResnikGeneBasedHpoDemo;
 import picocli.CommandLine;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 @CommandLine.Command(name = "resnik",
@@ -11,7 +12,7 @@ import java.util.concurrent.Callable;
   description = "Resnik")
 public class ResnikCommand implements Callable<Integer> {
 
-  @CommandLine.Option(names = {"--hpo"}, description = "path to hp.obo file", required = true)
+  @CommandLine.Option(names = {"-h"}, description = "path to hp.obo file", required = true)
   public Path hpoPath;
   @CommandLine.Option(names = "-a", description = "path to phenotype.hpoa file", required = true)
   public Path phenotypeDotHpoaPath;
@@ -22,8 +23,8 @@ public class ResnikCommand implements Callable<Integer> {
 
 
   @Override
-  public Integer call() {
-    ResnikGenebasedHpoDemo resnik = new ResnikGenebasedHpoDemo(hpoPath, phenotypeDotHpoaPath, geneInfoPath, mim2genMedgenPath);
+  public Integer call() throws IOException {
+    ResnikGeneBasedHpoDemo resnik = new ResnikGeneBasedHpoDemo(hpoPath, phenotypeDotHpoaPath, geneInfoPath, mim2genMedgenPath);
     resnik.run();
     return 0;
   }

@@ -3,6 +3,10 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaCalculation;
 import org.monarchinitiative.phenol.analysis.mgsa.MgsaGOTermsResultContainer;
+import org.monarchinitiative.phenol.analysis.stats.GoTerm2PValAndCounts;
+import org.monarchinitiative.phenol.analysis.stats.ParentChildIntersectionPValueCalculation;
+import org.monarchinitiative.phenol.analysis.stats.ParentChildPValuesCalculation;
+import org.monarchinitiative.phenol.analysis.stats.TermForTermPValueCalculation;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -17,10 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import com.google.common.collect.ImmutableSet;
-import org.monarchinitiative.phenol.stats.*;
-import org.monarchinitiative.phenol.stats.mtc.Bonferroni;
-import org.monarchinitiative.phenol.stats.mtc.MultipleTestingCorrection;
+import org.monarchinitiative.phenol.analysis.stats.mtc.Bonferroni;
+import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
 import picocli.CommandLine;
 
 /**
@@ -191,7 +193,7 @@ public final class GoEnrichmentDemo {
   private Set<TermId> getFocusedStudyGenes(List<GoGaf22Annotation> annots, TermId focus, double proportion) {
     Set<TermId> targetGenes = new HashSet<>();
     for (TermAnnotation ann : annots) {
-      if (focus.equals(ann.getTermId())) {
+      if (focus.equals(ann.id())) {
         TermId geneId = ann.getItemId();
         targetGenes.add(geneId);
       }
@@ -215,7 +217,7 @@ public final class GoEnrichmentDemo {
       if (finalGenes.size() > STUDYSET_SIZE) break;
     }
 
-    return ImmutableSet.copyOf(finalGenes);
+    return Set.copyOf(finalGenes);
   }
 
   /**
@@ -230,7 +232,7 @@ public final class GoEnrichmentDemo {
       TermId geneId = ann.getItemId();
       st.add(geneId);
     }
-    return ImmutableSet.copyOf(st);
+    return Set.copyOf(st);
   }
 
 

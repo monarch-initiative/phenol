@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.ontology.similarity;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import com.google.common.collect.Sets;
+import org.monarchinitiative.phenol.utils.Sets;
 
 import java.util.Collection;
 import java.util.Set;
