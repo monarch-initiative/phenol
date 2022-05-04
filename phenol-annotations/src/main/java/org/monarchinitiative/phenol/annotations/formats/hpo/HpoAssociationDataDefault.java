@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -10,13 +11,13 @@ import java.util.Objects;
 
 class HpoAssociationDataDefault implements HpoAssociationData {
 
-  private final List<GeneIdentifier> geneIdentifiers;
+  private final GeneIdentifiers geneIdentifiers;
   private final Map<TermId, Collection<GeneIdentifier>> diseaseToGenes;
   private final Map<TermId, Collection<TermId>> geneToDiseases;
   private final List<HpoGeneAnnotation> phenotypeToGene;
   private final DiseaseToGeneAssociations associations;
 
-  HpoAssociationDataDefault(List<GeneIdentifier> geneIdentifiers,
+  HpoAssociationDataDefault(GeneIdentifiers geneIdentifiers,
                             Map<TermId, Collection<GeneIdentifier>> diseaseToGenes,
                             Map<TermId, Collection<TermId>> geneToDiseases,
                             List<HpoGeneAnnotation> phenotypeToGene,
@@ -29,7 +30,7 @@ class HpoAssociationDataDefault implements HpoAssociationData {
   }
 
   @Override
-  public List<GeneIdentifier> geneIdentifiers() {
+  public GeneIdentifiers getGeneIdentifiers() {
     return geneIdentifiers;
   }
 

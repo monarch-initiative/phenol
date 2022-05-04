@@ -61,7 +61,7 @@ public class HpoAssociationLoader {
 
     List<HpoGeneAnnotation> hpoGeneAnnotations = processDiseaseMapToHpoGeneAnnotations(hpo.getTermMap(), diseaseToGeneMap, diseases);
 
-    return HpoAssociationData.of(geneIdentifiers.geneIdentifiers(), diseaseToGenes, geneToDiseases, hpoGeneAnnotations, diseaseToGeneAssociations);
+    return HpoAssociationData.of(geneIdentifiers, diseaseToGenes, geneToDiseases, hpoGeneAnnotations, diseaseToGeneAssociations);
   }
 
 
