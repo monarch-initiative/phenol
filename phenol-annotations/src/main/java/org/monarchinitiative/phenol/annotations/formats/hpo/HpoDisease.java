@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -94,6 +95,17 @@ public interface HpoDisease extends Identified {
    */
   default Stream<HpoDiseaseAnnotation> phenotypicAbnormalitiesStream() {
     return StreamSupport.stream(Spliterators.spliterator(phenotypicAbnormalities(), phenotypicAbnormalitiesCount(), Spliterator.DISTINCT & Spliterator.SIZED), false);
+  }
+
+  /**
+   * The method is kept for backward compatibility. However, the method throws {@link PhenolRuntimeException} upon each invocation.
+   *
+   * @deprecated to be removed in 2.0.0, use {@link #phenotypicAbnormalities()} or {@link #phenotypicAbnormalitiesStream()} instead.
+   * @throws PhenolRuntimeException upon each invocation.
+   */
+  @Deprecated(forRemoval = true, since = "2.0.0-RC2")
+  default List<HpoAnnotation> getPhenotypicAbnormalities() {
+    throw new PhenolRuntimeException("The 'getPhenotypicAbnormalities()` method was deprecated. Use `phenotypicAbnormalities()` instead!");
   }
 
   /**
