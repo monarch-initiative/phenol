@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -13,7 +14,19 @@ import java.util.stream.Collectors;
 // TODO - should this be a one-stop-shop for all association data? If yes, then we should add HpoDiseases.
 public interface HpoAssociationData {
 
+  /**
+   * @deprecated to be removed in v2.0.0, use the other constructor instead.
+   */
+  @Deprecated(forRemoval = true)
   static HpoAssociationData of(List<GeneIdentifier> geneIdentifiers,
+                               Map<TermId, Collection<GeneIdentifier>> diseaseToGenes,
+                               Map<TermId, Collection<TermId>> geneToDiseases,
+                               List<HpoGeneAnnotation> phenotypeToGene,
+                               DiseaseToGeneAssociations associations) {
+    return new HpoAssociationDataDefault(GeneIdentifiers.of(geneIdentifiers), diseaseToGenes, geneToDiseases, phenotypeToGene, associations);
+  }
+
+  static HpoAssociationData of(GeneIdentifiers geneIdentifiers,
                                Map<TermId, Collection<GeneIdentifier>> diseaseToGenes,
                                Map<TermId, Collection<TermId>> geneToDiseases,
                                List<HpoGeneAnnotation> phenotypeToGene,
@@ -21,7 +34,15 @@ public interface HpoAssociationData {
     return new HpoAssociationDataDefault(geneIdentifiers, diseaseToGenes, geneToDiseases, phenotypeToGene, associations);
   }
 
-  List<GeneIdentifier> geneIdentifiers();
+  GeneIdentifiers getGeneIdentifiers();
+
+  /**
+   * @deprecated use {@link #getGeneIdentifiers()} instead (to be removed in v2.0.0).
+   */
+  @Deprecated(forRemoval = true)
+  default List<GeneIdentifier> geneIdentifiers() {
+    return getGeneIdentifiers().geneIdentifiers();
+  }
 
   Map<TermId, Collection<GeneIdentifier>> diseaseToGenes();
 
