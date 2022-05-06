@@ -12,10 +12,18 @@ import java.util.zip.GZIPInputStream;
 
 public interface HpoDiseaseLoader {
 
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link HpoDiseaseLoaders#defaultLoader(Ontology, HpoDiseaseLoaderOptions)} instead.
+   */
+  @Deprecated(forRemoval = true)
   static HpoDiseaseLoader of(Ontology hpo) {
     return of(hpo, HpoDiseaseLoaderOptions.defaultOptions());
   }
 
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link HpoDiseaseLoaders#defaultLoader(Ontology, HpoDiseaseLoaderOptions)} instead.
+   */
+  @Deprecated(forRemoval = true)
   static HpoDiseaseLoader of(Ontology hpo, HpoDiseaseLoaderOptions options) {
     return new HpoDiseaseLoaderDefault(hpo, options);
   }

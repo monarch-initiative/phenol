@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -10,16 +11,27 @@ import java.util.Optional;
 
 class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadata {
 
+  private final AnnotationReference reference;
   private final TemporalInterval temporalInterval;
-  private final AnnotationFrequency diseaseAnnotationFrequency;
+  private final AnnotationFrequency frequency;
   private final Collection<TermId> modifiers;
   private final Sex sex;
 
-  HpoDiseaseAnnotationMetadataDefault(TemporalInterval temporalInterval, AnnotationFrequency diseaseAnnotationFrequency, Collection<TermId> modifiers, Sex sex) {
+  HpoDiseaseAnnotationMetadataDefault(AnnotationReference reference,
+                                      TemporalInterval temporalInterval,
+                                      AnnotationFrequency frequency,
+                                      Collection<TermId> modifiers,
+                                      Sex sex) {
+    this.reference = Objects.requireNonNull(reference, "Reference must not be null");
     this.temporalInterval = temporalInterval; // nullable
-    this.diseaseAnnotationFrequency = Objects.requireNonNull(diseaseAnnotationFrequency, "Frequency cannot be null");
-    this.modifiers = Objects.requireNonNull(modifiers, "Modifiers collection cannot be null");
+    this.frequency = frequency; // nullable
+    this.modifiers = Objects.requireNonNull(modifiers, "Modifiers collection must not be null");
     this.sex = sex; // nullable
+  }
+
+  @Override
+  public AnnotationReference reference() {
+    return reference;
   }
 
   @Override
@@ -28,8 +40,8 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
   }
 
   @Override
-  public AnnotationFrequency frequency() {
-    return diseaseAnnotationFrequency;
+  public Optional<AnnotationFrequency> frequency() {
+    return Optional.ofNullable(frequency);
   }
 
   @Override
@@ -47,19 +59,20 @@ class HpoDiseaseAnnotationMetadataDefault implements HpoDiseaseAnnotationMetadat
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HpoDiseaseAnnotationMetadataDefault that = (HpoDiseaseAnnotationMetadataDefault) o;
-    return Objects.equals(temporalInterval, that.temporalInterval) && Objects.equals(diseaseAnnotationFrequency, that.diseaseAnnotationFrequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
+    return Objects.equals(reference, that.reference) && Objects.equals(temporalInterval, that.temporalInterval) && Objects.equals(frequency, that.frequency) && Objects.equals(modifiers, that.modifiers) && Objects.equals(sex, that.sex);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(temporalInterval, diseaseAnnotationFrequency, modifiers, sex);
+    return Objects.hash(reference, temporalInterval, frequency, modifiers, sex);
   }
 
   @Override
   public String toString() {
     return "HpoDiseaseAnnotationMetadataDefault{" +
-      "temporalInterval=" + temporalInterval +
-      ", frequency=" + diseaseAnnotationFrequency +
+      "reference=" + reference +
+      ", temporalInterval=" + temporalInterval +
+      ", frequency=" + frequency +
       ", modifiers=" + modifiers +
       ", sex=" + sex +
       '}';
