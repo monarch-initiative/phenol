@@ -51,7 +51,7 @@ public class HpoAssociationLoader {
                                                           Path mim2geneMedgen,
                                                           Path orphaToGene,
                                                           HpoDiseases diseases) throws IOException {
-    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo);
+    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo, GeneInfoGeneType.DEFAULT);
     Map<TermId, String> geneIdToSymbol = geneIdentifiers.geneIdToSymbol();
 
     DiseaseToGeneAssociations diseaseToGeneAssociations = DiseaseToGeneAssociationLoader.loadDiseaseToGeneAssociations(mim2geneMedgen, orphaToGene, geneIdentifiers);
