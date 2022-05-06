@@ -28,8 +28,10 @@ public enum GeneInfoGeneType {
 
   public static final Set<GeneInfoGeneType> ALL = EnumSet.allOf(GeneInfoGeneType.class);
 
-   // TODO - finalize
-  public static final Set<GeneInfoGeneType> DEFAULT = EnumSet.of(protein_coding);
+  /**
+   * The default {@link GeneInfoGeneType}s include {@link #protein_coding}, {@link #ncRNA}, and {@link #tRNA}.
+   */
+  public static final Set<GeneInfoGeneType> DEFAULT = EnumSet.of(protein_coding, ncRNA, tRNA);
 
   public static GeneInfoGeneType parse(String value) {
     switch (value.toLowerCase()) {

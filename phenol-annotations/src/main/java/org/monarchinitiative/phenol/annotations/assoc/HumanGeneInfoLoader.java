@@ -79,8 +79,21 @@ public class HumanGeneInfoLoader {
       if (!taxon.equals("9606"))// i.e., we want only Homo sapiens sapiens and not Neanderthal etc.
         return Optional.empty();
 
-      TermId tid = TermId.of(ENTREZ_GENE_PREFIX, tokens[1]); // a[1] is geneId
-      return Optional.of(GeneIdentifier.of(tid, tokens[2])); // a[2] is gene symbol
+      String id = tokens[1]; // a[1] is geneId
+      if (id.equals("122405565"))
+        // There are 2 entries for `SMIM44`. Let's keep the first one
+        // 9606    122405565       SMIM44  -       -       Ensembl:ENSG00000284638 19      19p13.3 small integral membrane protein 44      protein-coding  -       -       -       small integral membrane protein 44      20220313        -
+        return Optional.empty();
+
+      String symbol = tokens[2]; // a[2] is gene symbol
+      if (symbol.equals("TRNAV-CAC"))
+        // TRNAV-CAC are not present on genenames.org - the entries below are of low quality
+        // 9606    107985614       TRNAV-CAC       -       -       -       1       1q21.1  transfer RNA valine (anticodon CAC)     tRNA    -       -       -       -       20211123        -
+        // 9606    107985615       TRNAV-CAC       -       -       -       1       1q21.1  transfer RNA valine (anticodon CAC)     tRNA    -       -       -       -       20211123        -
+        return Optional.empty();
+
+      TermId tid = TermId.of(ENTREZ_GENE_PREFIX, id);
+      return Optional.of(GeneIdentifier.of(tid, symbol));
     };
   }
 }
