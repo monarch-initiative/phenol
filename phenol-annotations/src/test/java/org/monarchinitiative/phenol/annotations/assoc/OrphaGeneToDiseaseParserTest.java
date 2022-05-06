@@ -50,10 +50,9 @@ public class OrphaGeneToDiseaseParserTest {
   public static void init() throws Exception {
     Path homoSapiensGeneInfo = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
     GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo, GeneInfoGeneType.DEFAULT);
-    Map<String, GeneIdentifier> geneIdToSymbol = geneIdentifiers.symbolToGeneIdentifier();
 
     Path mim2gene = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/mim2gene_medgen.excerpt").toURI());
-    DiseaseToGeneAssociations mim2Gene = Mim2GeneMedgenLoader.loadDiseaseToGeneAssociations(mim2gene, geneIdentifiers.geneIdToSymbol());
+    DiseaseToGeneAssociations mim2Gene = Mim2GeneMedgenLoader.loadDiseaseToGeneAssociations(mim2gene, geneIdentifiers);
     Map<String, Collection<TermId>> diseaseIdToGeneId = new HashMap<>();
     for (Map.Entry<TermId, Collection<GeneToAssociation>> e : mim2Gene.diseaseIdToGeneAssociations().entrySet()) {
       List<TermId> genes = new ArrayList<>(e.getValue().size());
@@ -64,7 +63,7 @@ public class OrphaGeneToDiseaseParserTest {
     }
 
     Path orphanet = Path.of(OrphaGeneToDiseaseParserTest.class.getResource("/orphanet_disease2gene_en_product6_head.xml").toURI());
-    orphaId2GeneMultimap = OrphaGeneToDiseaseParser.parseOrphaGeneXml(orphanet, diseaseIdToGeneId, geneIdToSymbol);
+    orphaId2GeneMultimap = OrphaGeneToDiseaseParser.parseOrphaGeneXml(orphanet, diseaseIdToGeneId, geneIdentifiers);
   }
 
   /**

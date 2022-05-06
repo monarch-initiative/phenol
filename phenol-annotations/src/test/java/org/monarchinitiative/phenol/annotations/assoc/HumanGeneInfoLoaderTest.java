@@ -10,6 +10,7 @@ import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,7 +32,7 @@ public class HumanGeneInfoLoaderTest {
   @Test
   public void testNumberOfGeneIdsParsed() {
     // zcat Homo_sapiens.gene_info.excerpt.gz | grep ^9606 | wc -l
-    assertThat(GENE_IDENTIFIERS_ALL_TYPES.geneIdentifiers(), hasSize(34));
+    assertThat(GENE_IDENTIFIERS_ALL_TYPES.size(), equalTo(34));
   }
 
   @ParameterizedTest
@@ -40,13 +41,18 @@ public class HumanGeneInfoLoaderTest {
     "NCBIGene:6910, TBX5"
   })
   public void testGetGeneSymbol(TermId tid, String symbol) {
-    assertThat(GENE_IDENTIFIERS_ALL_TYPES.geneIdToSymbol().get(tid), equalTo(symbol));
+    Optional<GeneIdentifier> gio = GENE_IDENTIFIERS_ALL_TYPES.geneIdById(tid);
+    assertThat(gio.isPresent(), equalTo(true));
+    assertThat(gio.get().id(), equalTo(tid));
+    assertThat(gio.get().symbol(), equalTo(symbol));
   }
 
   @Test
   public void testRNR1_okWhenLoadingOnlyProteinCodingAndRRNAGeneTypes() throws Exception {
     GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(EXAMPLE, Set.of(GeneInfoGeneType.protein_coding, GeneInfoGeneType.rRNA));
-    GeneIdentifier rnr1 = geneIdentifiers.symbolToGeneIdentifier().get("RNR1");
+    Optional<GeneIdentifier> gio = geneIdentifiers.geneIdBySymbol("RNR1");
+    assertThat(gio.isPresent(), equalTo(true));
+    GeneIdentifier rnr1 = gio.get();
 
     assertThat(rnr1.id().getValue(), equalTo("NCBIGene:4549"));
     assertThat(rnr1.symbol(), equalTo("RNR1"));
@@ -55,7 +61,7 @@ public class HumanGeneInfoLoaderTest {
   @Test
   public void testRNR1_throwsWhenLoadingAllGeneTypes() throws Exception {
     GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(EXAMPLE, GeneInfoGeneType.ALL);
-    IllegalStateException e = assertThrows(IllegalStateException.class, () -> geneIdentifiers.symbolToGeneIdentifier().get("RNR1"));
+    IllegalStateException e = assertThrows(IllegalStateException.class, () -> geneIdentifiers.geneIdBySymbol("RNR1"));
     assertThat(e.getMessage(), containsString("Duplicate key RNR1 (attempted merging values RNR1 [NCBIGene:4549] and RNR1 [NCBIGene:6052])"));
   }
 }

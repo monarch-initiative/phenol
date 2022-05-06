@@ -52,7 +52,6 @@ public class HpoAssociationLoader {
                                                           Path orphaToGene,
                                                           HpoDiseases diseases) throws IOException {
     GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo, GeneInfoGeneType.DEFAULT);
-    Map<TermId, String> geneIdToSymbol = geneIdentifiers.geneIdToSymbol();
 
     DiseaseToGeneAssociations diseaseToGeneAssociations = DiseaseToGeneAssociationLoader.loadDiseaseToGeneAssociations(mim2geneMedgen, orphaToGene, geneIdentifiers);
     Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap = diseaseToGeneAssociations.diseaseIdToGeneAssociations();
@@ -60,7 +59,7 @@ public class HpoAssociationLoader {
     Map<TermId, Collection<GeneIdentifier>> diseaseToGenes = diseaseToGeneAssociations.diseaseIdToGeneIds();
     Map<TermId, Collection<TermId>> geneToDiseases = diseaseToGeneAssociations.geneIdToDiseaseIds();
 
-    List<HpoGeneAnnotation> hpoGeneAnnotations = processDiseaseMapToHpoGeneAnnotations(hpo.getTermMap(), diseaseToGeneMap, geneIdToSymbol, diseases);
+    List<HpoGeneAnnotation> hpoGeneAnnotations = processDiseaseMapToHpoGeneAnnotations(hpo.getTermMap(), diseaseToGeneMap, diseases);
 
     return HpoAssociationData.of(geneIdentifiers.geneIdentifiers(), diseaseToGenes, geneToDiseases, hpoGeneAnnotations, diseaseToGeneAssociations);
   }
@@ -68,7 +67,6 @@ public class HpoAssociationLoader {
 
   private static List<HpoGeneAnnotation> processDiseaseMapToHpoGeneAnnotations(Map<TermId, Term> termIdToTerm,
                                                                                Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap,
-                                                                               Map<TermId, String> geneIdToSymbolMap,
                                                                                HpoDiseases diseases) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (HpoDisease disease : diseases) {
@@ -88,18 +86,18 @@ public class HpoAssociationLoader {
         phenotypeToDisease.get(phenotype).stream()
           .flatMap(disease -> diseaseToGeneMap.getOrDefault(disease, List.of()).stream())
           .map(GeneToAssociation::geneIdentifier)
-          .forEach((gene) -> {
+          .forEach((geneId) -> {
             try {
-              int entrezId = Integer.parseInt(gene.id().getId());
-              if (!mappedGenesTracker.contains(gene.id())) {
-                String entrezGeneSymbol = geneIdToSymbolMap.getOrDefault(gene.id(), "-");
+              if (!mappedGenesTracker.contains(geneId.id())) {
+                int entrezId = Integer.parseInt(geneId.id().getId());
+                String entrezGeneSymbol = geneId.symbol();
 
                 HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, phenotype, phenotypeTerm.getName());
                 geneAnnotationListBuilder.add(geneAnnotation);
-                mappedGenesTracker.add(gene.id());
+                mappedGenesTracker.add(geneId.id());
               }
             } catch (Exception e) {
-              LOGGER.error("An exception found during creating HPO-gene annotations: " + e.getMessage() + " for gene: " + gene.toString());
+              LOGGER.error("An exception found during creating HPO-gene annotations: " + e.getMessage() + " for gene: " + geneId.toString());
             }
           });
       }
