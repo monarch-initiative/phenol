@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.annotations.TestBase;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociations;
 import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
@@ -24,11 +25,12 @@ public class DiseaseToGeneAssociationLoaderTest {
 
   @Test
   public void testMim2GeneParser() throws Exception {
-    Path homoSapiensGeneInfo = Path.of(DiseaseToGeneAssociationLoaderTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
-    Path mim2gene = Path.of(DiseaseToGeneAssociationLoaderTest.class.getResource("/mim2gene_medgen.excerpt").toURI());
-    Path orphanet = Path.of(DiseaseToGeneAssociationLoaderTest.class.getResource("/orphanet_disease2gene_en_product6_head.xml").toURI());
+    Path homoSapiensGeneInfo = TestBase.TEST_BASE.resolve("Homo_sapiens.gene_info.excerpt.gz");
+    Path mim2gene = TestBase.TEST_BASE.resolve("mim2gene_medgen.excerpt");
+    Path orphanet = TestBase.TEST_BASE.resolve("orphanet_disease2gene_en_product6_head.xml");
 
-    GeneIdentifiers geneIdentifiers = HumanGeneInfoLoader.loadGeneIdentifiers(homoSapiensGeneInfo, GeneInfoGeneType.DEFAULT);
+    GeneIdentifiers geneIdentifiers = GeneIdentifierLoaders.forHumanGeneInfo(GeneInfoGeneType.DEFAULT)
+      .load(homoSapiensGeneInfo);
 
     // 16 genes associated with OMIM:540000 are in the mim2gene_medgen.excerpt file
     // TRNC,COX1,COX2,COX3,CYTB,ND1,ND5,ND6,TRNF,TRNK,TRNL1,TRNQ,TRNS1,TRNS2,TRNV,TRNW

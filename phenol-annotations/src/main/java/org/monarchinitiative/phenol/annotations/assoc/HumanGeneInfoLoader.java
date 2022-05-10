@@ -4,27 +4,55 @@ import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class HumanGeneInfoLoader {
+class HumanGeneInfoLoader implements GeneIdentifierLoader {
+
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
 
+  private final Set<GeneInfoGeneType> geneTypes;
 
-  private HumanGeneInfoLoader() {
-    // should not be instantiated
+  /**
+   * Create loader that loads genes of the provided <code>geneTypes</code>.
+   *
+   * @param geneTypes gene types to retain.
+   */
+  static HumanGeneInfoLoader of(Set<GeneInfoGeneType> geneTypes) {
+    return new HumanGeneInfoLoader(geneTypes);
   }
 
+  private HumanGeneInfoLoader(Set<GeneInfoGeneType> geneTypes) {
+    this.geneTypes = Objects.requireNonNull(geneTypes);
+    if (geneTypes.isEmpty())
+      throw new IllegalArgumentException("Gene types must not be empty!");
+  }
+
+  @Override
+  public GeneIdentifiers load(Reader reader) throws IOException {
+    BufferedReader br = (reader instanceof BufferedReader)
+      ? (BufferedReader) reader
+      : new BufferedReader(reader);
+
+    List<GeneIdentifier> identifiers = br.lines()
+      .filter(line -> !line.startsWith("#")) // skip header
+      .map(l -> l.split("\t"))
+      .filter(retainSelected(geneTypes))
+      .map(toGeneIdentifier())
+      .flatMap(Optional::stream)
+      .collect(Collectors.toUnmodifiableList());
+    return GeneIdentifiers.of(identifiers);
+  }
+
+  @Deprecated(forRemoval = true)
   public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile, Set<GeneInfoGeneType> geneTypes) throws IOException {
     try (InputStream is = FileUtils.newInputStream(geneInfoFile)) {
       return loadGeneIdentifiers(is, geneTypes);
@@ -39,6 +67,7 @@ public class HumanGeneInfoLoader {
    * @param geneTypes types of genes to include
    * @return gene identifiers
    */
+  @Deprecated(forRemoval = true)
   public static GeneIdentifiers loadGeneIdentifiers(InputStream is, Set<GeneInfoGeneType> geneTypes) {
     // The TermId <-> symbol mapping is one to one.
     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));

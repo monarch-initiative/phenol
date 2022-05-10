@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.annotations.assoc;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +12,16 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
+class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HGNCGeneIdentifierLoader.class);
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
+
+  private static final HGNCGeneIdentifierLoader INSTANCE = new HGNCGeneIdentifierLoader();
+
+  static HGNCGeneIdentifierLoader instance() {
+    return INSTANCE;
+  }
 
   @Override
   public GeneIdentifiers load(Reader reader) throws IOException {

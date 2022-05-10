@@ -37,8 +37,8 @@ public interface GeneIdentifierLoader {
    * @return gene IDs.
    */
   default GeneIdentifiers load(Path path) throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-      return load(reader);
+    try (InputStream is = FileUtils.newInputStream(path)) {
+      return load(is);
     }
   }
 
