@@ -52,6 +52,15 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   }
 
   /**
+   * @return {@code true} if the annotation was not observed in the disease (the numerator of {@link #ratio()} is zero).
+   * In absence of {@link #ratio()}, the method defaults to {@code false}.
+   */
+  default boolean isAbsent() {
+    return ratio().map(Ratio::isZero)
+      .orElse(false);
+  }
+
+  /**
    * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
    */
   List<TemporalInterval> observationIntervals();
