@@ -73,6 +73,18 @@ public enum HpoOnset implements TemporalInterval, Identified {
    */
   YOUNG_ADULT_ONSET(HpoOnsetTermIds.YOUNG_ADULT_ONSET, Age.postnatal(16, 0, 0), Age.postnatal(40, 0, 0)),
   /**
+   * Onset of disease at an age of greater than or equal to 16 to under 19 years.
+   */
+  EARLY_YOUNG_ADULT_ONSET(HpoOnsetTermIds.EARLY_YOUNG_ADULT_ONSET, Age.postnatal(16, 0, 0), Age.postnatal(19, 0, 0)),
+  /**
+   * Onset of disease at an age of greater than or equal to 19 to under 25 years.
+   */
+  INTERMEDIATE_YOUNG_ADULT_ONSET(HpoOnsetTermIds.INTERMEDIATE_YOUNG_ADULT_ONSET, Age.postnatal(19, 0, 0), Age.postnatal(25, 0, 0)),
+  /**
+   * Onset of disease at an age of greater than or equal to 25 to under 40 years.
+   */
+  LATE_YOUNG_ADULT_ONSET(HpoOnsetTermIds.LATE_YOUNG_ADULT_ONSET, Age.postnatal(25, 0, 0), Age.postnatal(40, 0, 0)),
+  /**
    * Onset of symptoms at the age of 40 to 60 years.
    */
   MIDDLE_AGE_ONSET(HpoOnsetTermIds.MIDDLE_AGE_ONSET, Age.postnatal(40, 0, 0), Age.postnatal(60, 0, 0)),
@@ -123,32 +135,44 @@ public enum HpoOnset implements TemporalInterval, Identified {
    */
   public static Optional<HpoOnset> fromHpoIdString(String termId) {
     switch (termId) {
-      case "HP:0003577":
-        return Optional.of(CONGENITAL_ONSET);
-      case "HP:0003581":
-        return Optional.of(ADULT_ONSET);
-      case "HP:0003584":
-        return Optional.of(LATE_ONSET);
-      case "HP:0011462":
-        return Optional.of(YOUNG_ADULT_ONSET);
-      case "HP:0003596":
-        return Optional.of(MIDDLE_AGE_ONSET);
-      case "HP:0003593":
-        return Optional.of(INFANTILE_ONSET);
       case "HP:0030674":
         return Optional.of(ANTENATAL_ONSET);
       case "HP:0011460":
         return Optional.of(EMBRYONAL_ONSET);
-      case "HP:0410280":
-        return Optional.of(PEDIATRIC_ONSET);
       case "HP:0011461":
         return Optional.of(FETAL_ONSET);
-      case "HP:0003621":
-        return Optional.of(JUVENILE_ONSET);
+      case "HP:0034199":
+        return Optional.of(LATE_FIRST_TRIMESTER_ONSET);
+      case "HP:0034198":
+        return Optional.of(SECOND_TRIMESTER_ONSET);
+      case "HP:0034197":
+        return Optional.of(THIRD_TRIMESTER_ONSET);
+      case "HP:0003577":
+        return Optional.of(CONGENITAL_ONSET);
       case "HP:0003623":
         return Optional.of(NEONATAL_ONSET);
+      case "HP:0410280":
+        return Optional.of(PEDIATRIC_ONSET);
+      case "HP:0003593":
+        return Optional.of(INFANTILE_ONSET);
       case "HP:0011463":
         return Optional.of(CHILDHOOD_ONSET);
+      case "HP:0003621":
+        return Optional.of(JUVENILE_ONSET);
+      case "HP:0003581":
+        return Optional.of(ADULT_ONSET);
+      case "HP:0011462":
+        return Optional.of(YOUNG_ADULT_ONSET);
+      case "HP:0025708":
+        return Optional.of(EARLY_YOUNG_ADULT_ONSET);
+      case "HP:0025709":
+        return Optional.of(INTERMEDIATE_YOUNG_ADULT_ONSET);
+      case "HP:0025710":
+        return Optional.of(LATE_YOUNG_ADULT_ONSET);
+      case "HP:0003596":
+        return Optional.of(MIDDLE_AGE_ONSET);
+      case "HP:0003584":
+        return Optional.of(LATE_ONSET);
       default:
         return Optional.empty();
     }

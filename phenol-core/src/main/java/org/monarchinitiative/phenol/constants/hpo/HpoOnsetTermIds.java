@@ -14,6 +14,9 @@ public final class HpoOnsetTermIds {
   public static final TermId LATE_ONSET = TermId.of("HP:0003584");
 
   public static final TermId YOUNG_ADULT_ONSET = TermId.of("HP:0011462");
+  public static final TermId EARLY_YOUNG_ADULT_ONSET = TermId.of("HP:0025708");
+  public static final TermId INTERMEDIATE_YOUNG_ADULT_ONSET = TermId.of("HP:0025709");
+  public static final TermId LATE_YOUNG_ADULT_ONSET = TermId.of("HP:0025710");
 
   public static final TermId MIDDLE_AGE_ONSET = TermId.of("HP:0003596");
 
