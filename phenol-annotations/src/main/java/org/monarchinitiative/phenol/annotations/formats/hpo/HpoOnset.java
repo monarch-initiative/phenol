@@ -2,71 +2,97 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds;
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Optional;
 
-public enum HpoOnset implements TemporalInterval {
+public enum HpoOnset implements TemporalInterval, Identified {
   /**
    * Onset between the time of mother's last menstrual period and birth.
    */
-  ANTENATAL_ONSET(Age.lastMenstrualPeriod(), Age.birth()),
+  ANTENATAL_ONSET(HpoOnsetTermIds.ANTENATAL_ONSET, Age.lastMenstrualPeriod(), Age.birth()),
   /**
    * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
    */
-  EMBRYONAL_ONSET(Age.lastMenstrualPeriod(), Age.gestational(10, 0)),
+  EMBRYONAL_ONSET(HpoOnsetTermIds.EMBRYONAL_ONSET, Age.lastMenstrualPeriod(), Age.gestational(10, 0)),
   /**
    * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
    */
-  FETAL_ONSET(Age.gestational(10, 0), Age.birth()),
+  FETAL_ONSET(HpoOnsetTermIds.FETAL_ONSET, Age.gestational(10, 0), Age.birth()),
+  /**
+   * This term refers to a phenotypic feature that was first observed prior to birth in the first trimester during
+   * the early fetal period, which is defined as 11 0/7 to 13 6/7 weeks of gestation (inclusive).
+   */
+  // Note, the end age is EXCLUDED in TemporalInterval, hence `Age.gestational(14, 0)`.
+  LATE_FIRST_TRIMESTER_ONSET(HpoOnsetTermIds.LATE_FIRST_TRIMESTER_ONSET, Age.gestational(10, 6), Age.gestational(14, 0)),
+  /**
+   * This term refers to a phenotypic feature that was first observed prior to birth during the second trimester,
+   * which comprises the range of gestational ages from 14 0/7 weeks to 27 6/7 (inclusive).
+   */
+  // Note, the end age is EXCLUDED in TemporalInterval, hence `Age.gestational(28, 0)`.
+  SECOND_TRIMESTER_ONSET(HpoOnsetTermIds.SECOND_TRIMESTER_ONSET, Age.gestational(14, 0), Age.gestational(28, 0)),
+  /**
+   * This term refers to a phenotypic feature that was first observed prior to birth during the third trimester,
+   * which is defined as 28 weeks and zero days (28+0) of gestation and beyond.
+   */
+  THIRD_TRIMESTER_ONSET(HpoOnsetTermIds.THIRD_TRIMESTER_ONSET, Age.gestational(28, 0), Age.birth()),
   /**
    * Onset at birth.
    */
-  CONGENITAL_ONSET(Age.birth(), Age.birth()),
+  CONGENITAL_ONSET(HpoOnsetTermIds.CONGENITAL_ONSET, Age.birth(), Age.birth()),
   /**
    * Onset in the first 28 days of life, including the 28th day.
    */
-  NEONATAL_ONSET(Age.birth(), Age.postnatal(29)),
+  NEONATAL_ONSET(HpoOnsetTermIds.NEONATAL_ONSET, Age.birth(), Age.postnatal(29)),
   /**
    * Onset of disease manifestations before adulthood, defined here as before the age of 15 years,
    * but excluding neonatal or congenital onset.
    * Effectively an interval starting on the 29th day of life and ending on the last day of the 15th year of life.
    */
-  PEDIATRIC_ONSET(Age.postnatal(29), Age.postnatal(16, 0, 0)),
+  PEDIATRIC_ONSET(HpoOnsetTermIds.PEDIATRIC_ONSET, Age.postnatal(29), Age.postnatal(16, 0, 0)),
   /**
    * Onset within the first 12 months of life.
    */
-  INFANTILE_ONSET(Age.postnatal(29), Age.postnatal(1, 0, 0)),
+  INFANTILE_ONSET(HpoOnsetTermIds.INFANTILE_ONSET, Age.postnatal(29), Age.postnatal(1, 0, 0)),
   /**
    * Onset between the ages of one and five years: at least one but less than 5 years.
    */
-  CHILDHOOD_ONSET(Age.postnatal(1, 0, 0), Age.postnatal(5, 0, 0)),
+  CHILDHOOD_ONSET(HpoOnsetTermIds.CHILDHOOD_ONSET, Age.postnatal(1, 0, 0), Age.postnatal(5, 0, 0)),
   /**
    * Onset between 5 and 15 years.
    */
-  JUVENILE_ONSET(Age.postnatal(5, 0, 0), Age.postnatal(16, 0, 0)),
+  JUVENILE_ONSET(HpoOnsetTermIds.JUVENILE_ONSET, Age.postnatal(5, 0, 0), Age.postnatal(16, 0, 0)),
   /**
    * Onset of disease manifestations in adulthood, defined here as at the age of 16 years or later.
    */
-  ADULT_ONSET(Age.postnatal(16, 0, 0), Age.openEnd()),
+  ADULT_ONSET(HpoOnsetTermIds.ADULT_ONSET, Age.postnatal(16, 0, 0), Age.openEnd()),
   /**
    * Onset of disease at the age of between 16 and 40 years.
    */
-  YOUNG_ADULT_ONSET(Age.postnatal(16, 0, 0), Age.postnatal(40, 0, 0)),
+  YOUNG_ADULT_ONSET(HpoOnsetTermIds.YOUNG_ADULT_ONSET, Age.postnatal(16, 0, 0), Age.postnatal(40, 0, 0)),
   /**
    * Onset of symptoms at the age of 40 to 60 years.
    */
-  MIDDLE_AGE_ONSET(Age.postnatal(40, 0, 0), Age.postnatal(60, 0, 0)),
+  MIDDLE_AGE_ONSET(HpoOnsetTermIds.MIDDLE_AGE_ONSET, Age.postnatal(40, 0, 0), Age.postnatal(60, 0, 0)),
   /**
    * Onset of symptoms after 60 years.
    */
-  LATE_ONSET(Age.postnatal(60, 0, 0), Age.openEnd());
+  LATE_ONSET(HpoOnsetTermIds.LATE_ONSET, Age.postnatal(60, 0, 0), Age.openEnd());
 
+  private final TermId id;
   private final Age start, end;
 
-  HpoOnset(Age start, Age end) {
+  HpoOnset(TermId id, Age start, Age end) {
+    this.id = id;
     this.start = start;
     this.end = end;
+  }
+
+  @Override
+  public TermId id() {
+    return id;
   }
 
   @Override
@@ -132,39 +158,18 @@ public enum HpoOnset implements TemporalInterval {
    * @return true if information is available (i.e., if not UNKNOWN).
    * @deprecated since the onset must be available if enum instance is used.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean available() {
     return true;
   }
 
   /**
-   * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
+   * @return Corresponding {@link TermId} in the HPO of {@code this} onset category.
+   * @deprecated to be removed in v3.0.0, use {@link #id()} instead.
    */
+  @Deprecated(forRemoval = true, since = "2.0.0-RC3")
   public TermId toTermId() {
-    switch (this) {
-      case ANTENATAL_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.ANTENATAL_ONSET;
-      case CONGENITAL_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.CONGENITAL_ONSET;
-      case NEONATAL_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.NEONATAL_ONSET;
-      case INFANTILE_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.INFANTILE_ONSET;
-      case CHILDHOOD_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.CHILDHOOD_ONSET;
-      case JUVENILE_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.JUVENILE_ONSET;
-      case ADULT_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.ADULT_ONSET;
-      case YOUNG_ADULT_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.YOUNG_ADULT_ONSET;
-      case MIDDLE_AGE_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.MIDDLE_AGE_ONSET;
-      case LATE_ONSET:
-        return org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.LATE_ONSET;
-      default:
-        throw new IllegalStateException("A TermId for `" + this + "` is missing");
-    }
+    return id();
   }
 
 }

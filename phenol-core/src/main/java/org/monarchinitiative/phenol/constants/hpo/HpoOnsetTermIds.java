@@ -24,6 +24,9 @@ public final class HpoOnsetTermIds {
   public static final TermId EMBRYONAL_ONSET = TermId.of("HP:0011460");
 
   public static final TermId FETAL_ONSET = TermId.of("HP:0011461");
+  public static final TermId LATE_FIRST_TRIMESTER_ONSET = TermId.of("HP:0034199");
+  public static final TermId SECOND_TRIMESTER_ONSET = TermId.of("HP:0034198");
+  public static final TermId THIRD_TRIMESTER_ONSET = TermId.of("HP:0034197");
 
   public static final TermId JUVENILE_ONSET = TermId.of("HP:0003621");
 
