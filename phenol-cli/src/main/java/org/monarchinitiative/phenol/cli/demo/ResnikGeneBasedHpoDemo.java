@@ -52,7 +52,7 @@ public class ResnikGeneBasedHpoDemo {
     this.diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
     for (HpoDisease disease:hpoDiseases) {
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
+      List<TermId> hpoTerms = disease.annotationTermIdList();
 
       // add term ancestors
       Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);

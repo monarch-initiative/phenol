@@ -64,16 +64,13 @@ class HpoDiseaseDefault implements HpoDisease {
     return modesOfInheritance;
   }
 
-  /**
-   * @return The list of frequency-annotated phenotypic abnormalities.
-   */
   @Override
-  public Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities() {
-    return phenotypicAbnormalities.iterator();
+  public Iterable<HpoDiseaseAnnotation> annotations() {
+    return phenotypicAbnormalities;
   }
 
   @Override
-  public int phenotypicAbnormalitiesCount() {
+  public int annotationCount() {
     return phenotypicAbnormalities.size();
   }
 

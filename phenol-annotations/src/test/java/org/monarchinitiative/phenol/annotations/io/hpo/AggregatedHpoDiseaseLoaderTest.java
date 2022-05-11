@@ -61,7 +61,7 @@ public class AggregatedHpoDiseaseLoaderTest {
 
     HpoDisease omimSyndrome = omimSyndromeOptional.get();
 
-    List<HpoDiseaseAnnotation> annotations = omimSyndrome.phenotypicAbnormalitiesStream()
+    List<HpoDiseaseAnnotation> annotations = omimSyndrome.annotationStream()
       .sorted()
       .collect(Collectors.toList());
 

@@ -163,8 +163,8 @@ public class HpoAssociationDataBuilder {
                                                            Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (HpoDisease disease : diseases) {
-      for (Iterator<HpoDiseaseAnnotation> iterator = disease.phenotypicAbnormalities(); iterator.hasNext(); ) {
-        TermId hpoId = iterator.next().id();
+      for (HpoDiseaseAnnotation annotation: disease.annotations()) {
+        TermId hpoId = annotation.id();
         phenotypeToDisease.computeIfAbsent(hpoId, k -> new HashSet<>())
           .add(disease.id());
       }

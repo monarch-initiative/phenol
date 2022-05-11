@@ -36,6 +36,7 @@ public class HpoAssociationLoader {
 
   /**
    * @deprecated to be removed in v3.0.0, use {@link HpoAssociationDataBuilder} instead.
+   * @see HpoAssociationData#builder(Ontology)
    */
   @Deprecated(forRemoval = true)
   public static HpoAssociationData loadHpoAssociationData(Ontology hpo,
@@ -75,8 +76,8 @@ public class HpoAssociationLoader {
                                                                                Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (HpoDisease disease : diseases) {
-      for (Iterator<HpoDiseaseAnnotation> iterator = disease.phenotypicAbnormalities(); iterator.hasNext(); ) {
-        TermId hpoId = iterator.next().id();
+      for (HpoDiseaseAnnotation annotation : disease.annotations()) {
+        TermId hpoId = annotation.id();
         phenotypeToDisease.computeIfAbsent(hpoId, k -> new HashSet<>())
           .add(disease.id());
       }
