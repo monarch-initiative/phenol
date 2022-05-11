@@ -85,15 +85,44 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return iterator of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
+   * @return iterable over <em>ALL</em> disease annotations, both present and absent.
    */
-  Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities();
+  Iterable<HpoDiseaseAnnotation> annotations();
 
-  int phenotypicAbnormalitiesCount();
+  /**
+   * @return number of annotations present in the disease.
+   */
+  int annotationCount();
+
+  /**
+   * @return stream of <em>ALL</em> disease annotations, both present and absent.
+   */
+  default Stream<HpoDiseaseAnnotation> annotationStream() {
+    return StreamSupport.stream(annotations().spliterator(), false);
+  }
+
+  /**
+   * @return iterator of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
+   * @deprecated to be removed in v2.0.0, use {@link #annotations()} instead.
+   */
+  @Deprecated(forRemoval = true)
+  default Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities() {
+    return annotations().iterator();
+  }
+
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link #annotationCount()} instead.
+   */
+  @Deprecated(forRemoval = true)
+  default int phenotypicAbnormalitiesCount() {
+    return annotationCount();
+  }
 
   /**
    * @return stream of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
+   * @deprecated to be removed in 2.0.0, use {@link #annotationTermIds()}
    */
+  @Deprecated(forRemoval = true)
   default Stream<HpoDiseaseAnnotation> phenotypicAbnormalitiesStream() {
     return StreamSupport.stream(Spliterators.spliterator(phenotypicAbnormalities(), phenotypicAbnormalitiesCount(), Spliterator.DISTINCT & Spliterator.SIZED), false);
   }
@@ -101,7 +130,7 @@ public interface HpoDisease extends Identified {
   /**
    * The method is kept for backward compatibility. However, the method throws {@link PhenolRuntimeException} upon each invocation.
    *
-   * @deprecated to be removed in 2.0.0, use {@link #phenotypicAbnormalities()} or {@link #phenotypicAbnormalitiesStream()} instead.
+   * @deprecated to be removed in 2.0.0, use {@link #annotations()} or {@link #annotationStream()} instead.
    * @throws PhenolRuntimeException upon each invocation.
    */
   @Deprecated(forRemoval = true, since = "2.0.0-RC2")
@@ -110,27 +139,27 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return stream of absent phenotypic abnormalities of the disease,
+   * @return stream of absent disease annotations,
    * i.e. ones that were observed in <em>zero</em> out of <em>n</em> affected individuals.
    */
-  default Stream<HpoDiseaseAnnotation> absentPhenotypicAbnormalitiesStream() {
+  default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
     return phenotypicAbnormalitiesStream()
       .filter(a -> a.ratio().map(Ratio::isZero).orElse(false));
   }
 
   /**
    *
-   * @deprecated to be removed in v3.0.0, use {@link #absentPhenotypicAbnormalitiesStream()} instead.
+   * @deprecated to be removed in v3.0.0, use {@link #absentAnnotationsStream()} instead.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> negativeAnnotations() {
-    return absentPhenotypicAbnormalitiesStream()
+    return absentAnnotationsStream()
       .map(Identified::id)
       .collect(Collectors.toList());
   }
 
   /**
-   * @deprecated to be removed in v3.0.0, use {@link #absentPhenotypicAbnormalitiesStream()} instead.
+   * @deprecated to be removed in v3.0.0, use {@link #absentAnnotationsStream()} instead.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> getNegativeAnnotations() {
@@ -167,30 +196,41 @@ public interface HpoDisease extends Identified {
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> getPhenotypicAbnormalityTermIdList() {
-    return getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
+    return getPhenotypicAbnormalityTermIds()
+      .collect(Collectors.toList());
   }
 
   /**
-   * @deprecated use {@link #phenotypicAbnormalityTermIds()}.
+   * @deprecated use {@link #annotationTermIds()}.
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default Stream<TermId> getPhenotypicAbnormalityTermIds() {
-    return phenotypicAbnormalityTermIds();
+    return annotationTermIds();
   }
 
-
-  default Stream<TermId> phenotypicAbnormalityTermIds() {
-    return phenotypicAbnormalitiesStream()
+  /**
+   * @return stream of disease annotation IDs.
+   */
+  default Stream<TermId> annotationTermIds() {
+    return annotationStream()
       .map(Identified::id);
   }
 
   /**
+   * @return a list of disease annotation IDs.
+   */
+  default List<TermId> annotationTermIdList() {
+    return annotationTermIds()
+      .collect(Collectors.toList());
+  }
+
+  /**
    * @return the count of the non-negated annotations excluding mode of inheritance
-   * @deprecated use {@link #phenotypicAbnormalitiesCount()}
+   * @deprecated use {@link #annotationCount()}
    */
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default long getNumberOfPhenotypeAnnotations() {
-    return phenotypicAbnormalitiesCount();
+    return annotationCount();
   }
 
   /**

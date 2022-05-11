@@ -31,8 +31,7 @@ public class HpoAnnotationAlgorithms {
                                                                  boolean propagate) {
     Map<TermId,Integer> annotationCounts = new HashMap<>();
     for (HpoDisease disease : diseaseSet) {
-      Set<TermId> termset = disease.phenotypicAbnormalitiesStream()
-        .map(Identified::id)
+      Set<TermId> termset = disease.annotationTermIds()
         .collect(Collectors.toSet());
       if (propagate) {
         termset.addAll(getAncestorTerms(ontology,termset,false));
