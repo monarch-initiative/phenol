@@ -78,7 +78,7 @@ class HpoDiseaseDefault implements HpoDisease {
   }
 
   @Override
-  public Optional<TemporalInterval> globalOnset() {
+  public Optional<TemporalInterval> diseaseOnset() {
     return Optional.ofNullable(onset);
   }
 

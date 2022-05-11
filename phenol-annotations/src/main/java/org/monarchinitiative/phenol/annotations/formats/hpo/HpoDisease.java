@@ -69,9 +69,9 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return global disease onset
+   * @return temporal interval representing onset of the earliest {@link HpoDiseaseAnnotation}.
    */
-  Optional<TemporalInterval> globalOnset();
+  Optional<TemporalInterval> diseaseOnset();
 
   List<TermId> modesOfInheritance();
 
