@@ -114,20 +114,6 @@ class HpoDiseaseDefault implements HpoDisease {
 //  }
 
   /**
-   * Check if {@code tid} is annotated to any of the terms to which this disease is annotated or their ancestors
-   *
-   * @param tid      An HP query term
-   * @param ontology reference to HPO ontology
-   * @return true iff this disease is annotated to the term directly or via annotation propagation
-   */
-  private boolean isAnnotatedTo(TermId tid, Ontology ontology) {
-    List<TermId> direct = getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
-    Set<TermId> ancs = ontology.getAllAncestorTermIds(direct, true);
-    return ancs.contains(tid);
-  }
-
-
-  /**
    * Get the frequency of a term in the disease. This includes if any disease term is an ancestor of the
    * query term -- we take the maximum of any ancestor term.
    *
