@@ -84,7 +84,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> earliestOnset() {
     return metadata()
-      .filter(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio).map(Ratio::isPositive).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
@@ -93,7 +93,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> latestOnset() {
     return metadata()
-      .filter(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio).map(Ratio::isPositive).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
@@ -102,7 +102,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> earliestResolution() {
     return metadata()
-      .filter(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio).map(Ratio::isPositive).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
@@ -111,7 +111,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> latestResolution() {
     return metadata()
-      .filter(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio).map(Ratio::isPositive).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
