@@ -4,6 +4,7 @@ import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -124,7 +125,7 @@ public interface HpoDisease extends Identified {
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> negativeAnnotations() {
     return absentPhenotypicAbnormalitiesStream()
-      .map(HpoDiseaseAnnotation::id)
+      .map(Identified::id)
       .collect(Collectors.toList());
   }
 
@@ -180,7 +181,7 @@ public interface HpoDisease extends Identified {
 
   default Stream<TermId> phenotypicAbnormalityTermIds() {
     return phenotypicAbnormalitiesStream()
-      .map(HpoDiseaseAnnotation::id);
+      .map(Identified::id);
   }
 
   /**
@@ -192,6 +193,23 @@ public interface HpoDisease extends Identified {
     return phenotypicAbnormalitiesCount();
   }
 
+  /**
+   * Check if {@code termId} is annotated to any of the terms to which this disease is annotated including their
+   * ancestors.
+   *
+   * @param termId a query term.
+   * @param hpo HPO ontology.
+   * @return true iff this disease is annotated to the term directly or via annotation propagation.
+   */
+  default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
+    List<TermId> directAnnotations = phenotypicAbnormalitiesStream()
+      .filter(a -> !a.isAbsent())
+      .map(Identified::id)
+      .collect(Collectors.toList());
+    Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);
+
+    return ancestors.contains(termId);
+  }
 
   /**
    * @param termId ID of an HPO Term

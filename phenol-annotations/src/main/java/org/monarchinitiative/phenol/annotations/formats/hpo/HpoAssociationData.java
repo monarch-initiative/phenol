@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -99,7 +100,7 @@ public interface HpoAssociationData {
 
   default Map<TermId, String> geneIdToSymbol() {
     return geneIdentifiers().stream()
-      .collect(Collectors.toUnmodifiableMap(GeneIdentifier::id, GeneIdentifier::symbol));
+      .collect(Collectors.toUnmodifiableMap(Identified::id, GeneIdentifier::symbol));
   };
 
   default Map<TermId, DiseaseToGeneAssociation> associationsByDiseaseId() {
