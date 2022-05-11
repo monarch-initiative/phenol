@@ -37,7 +37,7 @@ public class HpoDiseaseLoaderTest {
 
   @BeforeEach
   public void setUp() {
-    instance = HpoDiseaseLoader.of(HPO);
+    instance = HpoDiseaseLoaders.defaultLoader(HPO, HpoDiseaseLoaderOptions.defaultOptions());
   }
 
   @Test

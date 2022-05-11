@@ -3,12 +3,15 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -16,9 +19,12 @@ import java.util.stream.Stream;
  */
 public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseAnnotation> {
 
+  // TODO - implement real comparator
+  Comparator<HpoDiseaseAnnotation> COMPARATOR = Comparator.comparing(HpoDiseaseAnnotation::id);
+
   static HpoDiseaseAnnotation of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
     float frequency = metadata.stream()
-      .map(meta -> meta.frequency().ratio())
+      .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))
       .flatMap(Optional::stream)
       .reduce(Ratio::combine)
       .map(Ratio::frequency)
@@ -78,7 +84,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> earliestOnset() {
     return metadata()
-      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
@@ -87,7 +93,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> latestOnset() {
     return metadata()
-      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::start)
@@ -96,7 +102,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> earliestResolution() {
     return metadata()
-      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
@@ -105,11 +111,22 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
   default Optional<Age> latestResolution() {
     return metadata()
-      .filter(meta -> meta.frequency().numerator().map(numerator -> numerator != 0).orElse(false))
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
       .map(TemporalInterval::end)
       .max(Age::compare);
+  }
+
+  default List<AnnotationReference> references() {
+    return metadata()
+      .map(HpoDiseaseAnnotationMetadata::reference)
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  default int compareTo(HpoDiseaseAnnotation other) {
+    return COMPARATOR.compare(this, other);
   }
 
 }
