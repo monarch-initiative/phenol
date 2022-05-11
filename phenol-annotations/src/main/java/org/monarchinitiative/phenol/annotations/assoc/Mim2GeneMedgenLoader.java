@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AssociationType;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociations;
@@ -39,12 +40,12 @@ public class Mim2GeneMedgenLoader {
   /**
    * Parse the medgen file that contains disease to gene links.
    *
-   * @param mim2geneMedgene   Path to mim2gene_medgen file
-   * @param geneIdToSymbolMap map with mapping between NCBI Gene IDs and HGVS gene symbols
+   * @param mim2geneMedgene Path to mim2gene_medgen file
+   * @param geneIdentifiers Gene identifiers.
    * @throws IOException if the mim2gene_medgen cannot be parsed.
    */
   public static DiseaseToGeneAssociations loadDiseaseToGeneAssociations(Path mim2geneMedgene,
-                                                                        Map<TermId, String> geneIdToSymbolMap) throws IOException {
+                                                                        GeneIdentifiers geneIdentifiers) throws IOException {
     Map<TermId, Collection<GeneToAssociation>> associationMap = new HashMap<>();
     try (BufferedReader br = FileUtils.newBufferedReader(mim2geneMedgene)) {
       String line;
@@ -59,7 +60,9 @@ public class Mim2GeneMedgenLoader {
 
           TermId entrezId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
           // rarely, mim2gene has a format error and the following prevents downstream errors with null pointer
-          String symbol = geneIdToSymbolMap.getOrDefault(entrezId, "-");
+          String symbol = geneIdentifiers.geneIdById(entrezId)
+            .map(GeneIdentifier::symbol)
+            .orElse("-");
 
           TermId geneId = TermId.of(ENTREZ_GENE_PREFIX, entrezGeneNumber);
           GeneIdentifier geneIdentifier = GeneIdentifier.of(geneId, symbol);
