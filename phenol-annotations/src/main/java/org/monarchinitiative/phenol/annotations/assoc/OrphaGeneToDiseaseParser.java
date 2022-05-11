@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.assoc;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class OrphaGeneToDiseaseParser {
    */
   public static Map<TermId, Collection<GeneIdentifier>> parseOrphaGeneXml(Path orphaGeneXMLfile,
                                                                           Map<String, Collection<TermId>> mimIdToGeneIdMap,
-                                                                          Map<String, GeneIdentifier> symbolToGeneId) {
+                                                                          GeneIdentifiers geneIdentifiers) {
 
     boolean inDisorder = false;
     boolean inGeneList = false;
@@ -144,13 +145,12 @@ public class OrphaGeneToDiseaseParser {
 
               Collection<TermId> geneIds = mimIdToGeneIdMap.get(currentOmimId);
               if (currentOmimId == null || geneIds == null) {
-                GeneIdentifier geneId = symbolToGeneId.get(currentGeneSymbol);
-                if (geneId != null) {
+                Optional<GeneIdentifier> gio = geneIdentifiers.geneIdBySymbol(currentGeneSymbol);
+                if (gio.isPresent())
                   orphaDiseaseToGeneBuilder.computeIfAbsent(orphaId, k -> new HashSet<>())
-                    .add(geneId);
-                } else {
+                    .add(gio.get());
+                else
                   LOGGER.warn("Could not find gene id for {}", currentGeneSymbol);
-                }
               } else {
                 for (TermId geneId : geneIds) {
                   GeneIdentifier g = GeneIdentifier.of(geneId, currentGeneSymbol);

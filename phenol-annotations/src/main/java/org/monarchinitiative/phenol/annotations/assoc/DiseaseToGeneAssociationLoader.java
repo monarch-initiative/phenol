@@ -53,13 +53,13 @@ public class DiseaseToGeneAssociationLoader {
   public static DiseaseToGeneAssociations loadDiseaseToGeneAssociations(Path mim2geneMedgen,
                                                                         Path orphanet2Gene,
                                                                         GeneIdentifiers geneIdentifiers) throws IOException {
-    DiseaseToGeneAssociations omimDiseaseToGeneAssociations = Mim2GeneMedgenLoader.loadDiseaseToGeneAssociations(mim2geneMedgen, geneIdentifiers.geneIdToSymbol());
+    DiseaseToGeneAssociations omimDiseaseToGeneAssociations = Mim2GeneMedgenLoader.loadDiseaseToGeneAssociations(mim2geneMedgen, geneIdentifiers);
     DiseaseToGeneAssociations orphaDiseaseToGeneAssociations;
     if (orphanet2Gene == null) {
       return omimDiseaseToGeneAssociations;
     } else {
       Map<String, Collection<TermId>> diseaseMimToGeneIds = prepareDiseaseMimToGeneIds(omimDiseaseToGeneAssociations);
-      Map<TermId, Collection<GeneIdentifier>> orphaDiseaseToGeneIds = OrphaGeneToDiseaseParser.parseOrphaGeneXml(orphanet2Gene, diseaseMimToGeneIds, geneIdentifiers.symbolToGeneIdentifier());
+      Map<TermId, Collection<GeneIdentifier>> orphaDiseaseToGeneIds = OrphaGeneToDiseaseParser.parseOrphaGeneXml(orphanet2Gene, diseaseMimToGeneIds, geneIdentifiers);
       orphaDiseaseToGeneAssociations = postprocessOrphaMappings(orphaDiseaseToGeneIds);
 
       List<DiseaseToGeneAssociation> associations = Stream.concat(omimDiseaseToGeneAssociations.diseaseToGeneAssociations(), orphaDiseaseToGeneAssociations.diseaseToGeneAssociations())

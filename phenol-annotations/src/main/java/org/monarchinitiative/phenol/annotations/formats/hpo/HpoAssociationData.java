@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -13,21 +15,80 @@ import java.util.stream.Collectors;
 // TODO - should this be a one-stop-shop for all association data? If yes, then we should add HpoDiseases.
 public interface HpoAssociationData {
 
+  /**
+   * @deprecated to be removed in v2.0.0, use the other constructor instead.
+   */
+  @Deprecated(forRemoval = true)
   static HpoAssociationData of(List<GeneIdentifier> geneIdentifiers,
                                Map<TermId, Collection<GeneIdentifier>> diseaseToGenes,
                                Map<TermId, Collection<TermId>> geneToDiseases,
-                               List<HpoGeneAnnotation> phenotypeToGene,
+                               List<HpoGeneAnnotation> hpoGeneAnnotations,
                                DiseaseToGeneAssociations associations) {
-    return new HpoAssociationDataDefault(geneIdentifiers, diseaseToGenes, geneToDiseases, phenotypeToGene, associations);
+    return of(GeneIdentifiers.of(geneIdentifiers), hpoGeneAnnotations, associations);
   }
 
-  List<GeneIdentifier> geneIdentifiers();
+  /**
+   * @deprecated to be removed in v2.0.0, use the other constructor instead.
+   */
+  @Deprecated(forRemoval = true)
+  static HpoAssociationData of(GeneIdentifiers geneIdentifiers,
+                               List<HpoGeneAnnotation> hpoGeneAnnotations,
+                               DiseaseToGeneAssociations associations) {
+    return of(geneIdentifiers, HpoGeneAnnotations.of(hpoGeneAnnotations), associations);
+  }
 
-  Map<TermId, Collection<GeneIdentifier>> diseaseToGenes();
+  static HpoAssociationData of(GeneIdentifiers geneIdentifiers,
+                               HpoGeneAnnotations hpoGeneAnnotations,
+                               DiseaseToGeneAssociations associations) {
+    return new HpoAssociationDataDefault(geneIdentifiers, hpoGeneAnnotations, associations);
+  }
 
-  Map<TermId, Collection<TermId>> geneToDiseases();
+  /**
+   * Get a builder for creating {@link HpoAssociationData}.
+   *
+   * @param hpo Human phenotype ontology.
+   * @return a builder for building {@link HpoAssociationData}.
+   * @see HpoAssociationDataBuilder
+   */
+  static HpoAssociationDataBuilder builder(Ontology hpo) {
+    return new HpoAssociationDataBuilder(hpo);
+  }
 
-  List<HpoGeneAnnotation> phenotypeToGene();
+  GeneIdentifiers getGeneIdentifiers();
+
+  /**
+   * @deprecated use {@link #getGeneIdentifiers()} instead (to be removed in v2.0.0).
+   */
+  @Deprecated(forRemoval = true)
+  default List<GeneIdentifier> geneIdentifiers() {
+    return getGeneIdentifiers().geneIdentifiers();
+  }
+
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link #associations()} instead.
+   */
+  @Deprecated(forRemoval = true)
+  default Map<TermId, Collection<GeneIdentifier>> diseaseToGenes() {
+    return associations().diseaseIdToGeneIds();
+  }
+
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link #associations()} instead.
+   */
+  @Deprecated(forRemoval = true)
+  default Map<TermId, Collection<TermId>> geneToDiseases() {
+    return associations().geneIdToDiseaseIds();
+  }
+
+  /**
+   * @deprecated to be removed in v2.0.0, use {@link #hpoToGeneAnnotations()} instead.
+   */
+  @Deprecated(forRemoval = true)
+  default List<HpoGeneAnnotation> phenotypeToGene() {
+    return hpoToGeneAnnotations().stream().collect(Collectors.toList());
+  }
+
+  HpoGeneAnnotations hpoToGeneAnnotations();
 
   DiseaseToGeneAssociations associations();
 
