@@ -125,7 +125,7 @@ public interface HpoDisease extends Identified {
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> negativeAnnotations() {
     return absentPhenotypicAbnormalitiesStream()
-      .map(HpoDiseaseAnnotation::id)
+      .map(Identified::id)
       .collect(Collectors.toList());
   }
 
@@ -181,7 +181,7 @@ public interface HpoDisease extends Identified {
 
   default Stream<TermId> phenotypicAbnormalityTermIds() {
     return phenotypicAbnormalitiesStream()
-      .map(HpoDiseaseAnnotation::id);
+      .map(Identified::id);
   }
 
   /**
@@ -204,7 +204,7 @@ public interface HpoDisease extends Identified {
   default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
     List<TermId> directAnnotations = phenotypicAbnormalitiesStream()
       .filter(a -> !a.isAbsent())
-      .map(HpoDiseaseAnnotation::id)
+      .map(Identified::id)
       .collect(Collectors.toList());
     Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);
 

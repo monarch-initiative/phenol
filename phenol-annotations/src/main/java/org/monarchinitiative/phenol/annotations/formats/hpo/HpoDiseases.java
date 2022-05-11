@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -26,12 +27,12 @@ public interface HpoDiseases extends Iterable<HpoDisease> {
   }
 
   default Set<TermId> diseaseIds() {
-    return hpoDiseases().map(HpoDisease::id).collect(Collectors.toUnmodifiableSet());
+    return hpoDiseases().map(Identified::id).collect(Collectors.toUnmodifiableSet());
   }
 
   default Map<TermId, HpoDisease> diseaseById() {
     return hpoDiseases()
-      .collect(Collectors.toUnmodifiableMap(HpoDisease::id, Function.identity()));
+      .collect(Collectors.toUnmodifiableMap(Identified::id, Function.identity()));
   }
 
 }
