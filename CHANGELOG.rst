@@ -7,6 +7,7 @@ v2.0.0
 ------
 - Upgrade to Java 11+, add ``module-info`` files
 - Support for GO GAF 2.2 files
+- Speed up build by adding a new build profile
 - ``phenol-core``
   - Consolidate hardcoded HPO constants (``TermId``s) into ``org.monarchinitiative.phenol.constants.hpo`` package
 - ``phenol-io``
@@ -14,6 +15,8 @@ v2.0.0
 - ``phenol-annotations``
   - Remodel ``HpoDisease``, ``HpoAnnotation``, ``HpoAssociationData``, ``GeneIdentifier``s, etc..
   - Model temporal elements
+  - Implement ``HGNCGeneIdentifierLoader`` for reading ``GeneIdentifiers`` from HGNC complete set archive.
+  - Add new ``HpoOnset`` terms.
 
 ------
 v1.6.3

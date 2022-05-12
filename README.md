@@ -14,7 +14,7 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=11
 - **License:** BSD 3-Clause Clear
-- **Version:** 2.0.0
+- **Version:** 2.0.0-RC3
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -39,7 +39,7 @@ We recommend indicating the phenol version in the `properties` section of the po
 ```
 <properties>
   (...)
-  <phenol.version>2.0.0</phenol.version>
+  <phenol.version>2.0.0-RC3</phenol.version>
 </properties>
 ```
 
