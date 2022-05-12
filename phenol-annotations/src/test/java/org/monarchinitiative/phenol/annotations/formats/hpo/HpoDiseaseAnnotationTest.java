@@ -45,10 +45,7 @@ public class HpoDiseaseAnnotationTest {
 
     @Test
     public void ratio() {
-      Optional<Ratio> ratioOptional = instance.ratio();
-
-      assertThat(ratioOptional.isPresent(), equalTo(true));
-      Ratio ratio = ratioOptional.get();
+      Ratio ratio = instance.ratio();
       assertThat(ratio.numerator(), equalTo(15));
       assertThat(ratio.denominator(), equalTo(50));
     }
