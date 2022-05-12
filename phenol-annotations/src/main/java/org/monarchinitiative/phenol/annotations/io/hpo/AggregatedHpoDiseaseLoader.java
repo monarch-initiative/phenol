@@ -129,8 +129,12 @@ class AggregatedHpoDiseaseLoader extends BaseHpoDiseaseLoader {
       }
     }
 
+    if (annotationFrequency.ratio().isEmpty()) {
+      throw new IllegalStateException("Annotation frequency must be present!");
+    }
+
     return new AggregatedHpoDiseaseAnnotation(phenotypeId,
-      annotationFrequency.ratio().orElse(null),
+      annotationFrequency.ratio().get(),
       earliestOnset,
       latestOnset,
       observationIntervals,
