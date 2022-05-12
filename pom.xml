@@ -5,7 +5,7 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0-RC2</version>
+  <version>2.0.0-RC3</version>
 
   <name>Phenol</name>
 
@@ -133,19 +133,16 @@
       <build>
         <plugins>
           <plugin>
-            <!-- override version of GPG plugin to use new GPG signing features -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
           </plugin>
         </plugins>
       </build>
@@ -261,6 +258,21 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>3.0.0-M5</version>
         </plugin>
+        <plugin>
+          <!-- override version of GPG plugin to use new GPG signing features -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -285,22 +297,13 @@
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M2</version>
+        </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <!-- Attach sources -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <!-- Generate javadocs -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

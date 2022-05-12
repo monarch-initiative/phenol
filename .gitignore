@@ -28,10 +28,3 @@ hs_err_pid*
 target/
 .idea/
 *.iml
-
-# maven release plugin
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.propertie

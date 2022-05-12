@@ -64,21 +64,18 @@ class HpoDiseaseDefault implements HpoDisease {
     return modesOfInheritance;
   }
 
-  /**
-   * @return The list of frequency-annotated phenotypic abnormalities.
-   */
   @Override
-  public Iterator<HpoDiseaseAnnotation> phenotypicAbnormalities() {
-    return phenotypicAbnormalities.iterator();
+  public Iterable<HpoDiseaseAnnotation> annotations() {
+    return phenotypicAbnormalities;
   }
 
   @Override
-  public int phenotypicAbnormalitiesCount() {
+  public int annotationCount() {
     return phenotypicAbnormalities.size();
   }
 
   @Override
-  public Optional<TemporalInterval> globalOnset() {
+  public Optional<TemporalInterval> diseaseOnset() {
     return Optional.ofNullable(onset);
   }
 
@@ -112,20 +109,6 @@ class HpoDiseaseDefault implements HpoDisease {
 //    return clinicalCourseList.stream()
 //      .collect(Collectors.toMap(HpoOnset::fromTermId, termId -> freq));
 //  }
-
-  /**
-   * Check if {@code tid} is annotated to any of the terms to which this disease is annotated or their ancestors
-   *
-   * @param tid      An HP query term
-   * @param ontology reference to HPO ontology
-   * @return true iff this disease is annotated to the term directly or via annotation propagation
-   */
-  private boolean isAnnotatedTo(TermId tid, Ontology ontology) {
-    List<TermId> direct = getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
-    Set<TermId> ancs = ontology.getAllAncestorTermIds(direct, true);
-    return ancs.contains(tid);
-  }
-
 
   /**
    * Get the frequency of a term in the disease. This includes if any disease term is an ancestor of the

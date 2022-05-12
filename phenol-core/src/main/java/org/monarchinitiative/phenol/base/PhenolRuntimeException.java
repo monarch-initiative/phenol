@@ -9,11 +9,15 @@ public class PhenolRuntimeException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
+  public PhenolRuntimeException() {
+    super();
+  }
+
   /**
    * Constructor.
    *
    * @param message Message of exception.
-   * @param cause Causing {@link Throwable}.
+   * @param cause   Causing {@link Throwable}.
    */
   public PhenolRuntimeException(String message, Throwable cause) {
     super(message, cause);
@@ -26,5 +30,13 @@ public class PhenolRuntimeException extends RuntimeException {
    */
   public PhenolRuntimeException(String message) {
     super(message);
+  }
+
+  public PhenolRuntimeException(Throwable cause) {
+    super(cause);
+  }
+
+  protected PhenolRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
   }
 }

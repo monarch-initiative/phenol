@@ -1,51 +1,31 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 class HpoAssociationDataDefault implements HpoAssociationData {
 
-  private final List<GeneIdentifier> geneIdentifiers;
-  private final Map<TermId, Collection<GeneIdentifier>> diseaseToGenes;
-  private final Map<TermId, Collection<TermId>> geneToDiseases;
-  private final List<HpoGeneAnnotation> phenotypeToGene;
+  private final GeneIdentifiers geneIdentifiers;
+  private final HpoGeneAnnotations hpoToGeneAnnotations;
   private final DiseaseToGeneAssociations associations;
 
-  HpoAssociationDataDefault(List<GeneIdentifier> geneIdentifiers,
-                            Map<TermId, Collection<GeneIdentifier>> diseaseToGenes,
-                            Map<TermId, Collection<TermId>> geneToDiseases,
-                            List<HpoGeneAnnotation> phenotypeToGene,
+  HpoAssociationDataDefault(GeneIdentifiers geneIdentifiers,
+                            HpoGeneAnnotations hpoGeneAnnotations,
                             DiseaseToGeneAssociations associations) {
     this.geneIdentifiers = Objects.requireNonNull(geneIdentifiers, "Gene identifiers must not be null");
-    this.diseaseToGenes = Objects.requireNonNull(diseaseToGenes, "Disease to genes must not be null");
-    this.geneToDiseases = Objects.requireNonNull(geneToDiseases, "Gene to diseases must not be null");
-    this.phenotypeToGene = Objects.requireNonNull(phenotypeToGene, "Phenotype to gene must not be null");
+    this.hpoToGeneAnnotations = Objects.requireNonNull(hpoGeneAnnotations, "Phenotype to gene must not be null");
     this.associations = Objects.requireNonNull(associations, "Associations must not be null");
   }
 
   @Override
-  public List<GeneIdentifier> geneIdentifiers() {
+  public GeneIdentifiers getGeneIdentifiers() {
     return geneIdentifiers;
   }
 
   @Override
-  public Map<TermId, Collection<GeneIdentifier>> diseaseToGenes() {
-    return diseaseToGenes;
-  }
-
-  @Override
-  public Map<TermId, Collection<TermId>> geneToDiseases() {
-    return geneToDiseases;
-  }
-
-  @Override
-  public List<HpoGeneAnnotation> phenotypeToGene() {
-    return phenotypeToGene;
+  public HpoGeneAnnotations hpoToGeneAnnotations() {
+    return hpoToGeneAnnotations;
   }
 
   @Override

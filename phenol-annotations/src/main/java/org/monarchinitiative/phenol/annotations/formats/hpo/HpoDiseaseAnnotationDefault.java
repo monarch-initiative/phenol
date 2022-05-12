@@ -18,9 +18,6 @@ import java.util.stream.Stream;
  */
 class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
-  // TODO - implement real comparator
-  private static final Comparator<HpoDiseaseAnnotation> COMPARATOR = Comparator.comparing(HpoDiseaseAnnotation::id);
-
   /** The annotated {@link TermId}. */
   private final TermId termId;
 
@@ -38,7 +35,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
     // 2. Process ratio and observation intervals in a single loop
     for (HpoDiseaseAnnotationMetadata datum : metadata) {
       // Ratio
-      Optional<Ratio> ratio = datum.frequency().ratio();
+      Optional<Ratio> ratio = datum.frequency().flatMap(AnnotationFrequency::ratio);
       if (ratio.isPresent()) {
         Ratio r = ratio.get();
         numerator += r.numerator();
@@ -85,7 +82,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
                                       List<TemporalInterval> observationIntervals) {
     this.termId = Objects.requireNonNull(termId, "Term ID must not be null");
     this.metadata = metadata;
-    this.ratio = ratio; // nullable
+    this.ratio = Objects.requireNonNull(ratio, "Ratio must not be null!");
     this.observationIntervals = observationIntervals;
   }
 
@@ -100,8 +97,8 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public Optional<Ratio> ratio() {
-    return Optional.ofNullable(ratio);
+  public Ratio ratio() {
+    return ratio;
   }
 
   @Override
@@ -113,14 +110,9 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   public Optional<Ratio> observedInInterval(TemporalInterval target) {
     return metadata.stream()
       .filter(meta -> meta.observationInterval().map(interval -> interval.overlapsWith(target)).orElse(false))
-      .map(meta -> meta.frequency().ratio())
+      .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))
       .flatMap(Optional::stream)
       .reduce(Ratio::combine);
-  }
-
-  @Override
-  public int compareTo(HpoDiseaseAnnotation other) {
-    return COMPARATOR.compare(this, other);
   }
 
   @Override

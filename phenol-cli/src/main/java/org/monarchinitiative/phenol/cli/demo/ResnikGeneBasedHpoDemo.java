@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaders;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -40,7 +41,7 @@ public class ResnikGeneBasedHpoDemo {
     t1 = Instant.now();
     Set<DiseaseDatabase> databases = Set.of(OMIM); // restrict ourselves to OMIM entries
 
-    HpoDiseaseLoader loader = HpoDiseaseLoader.of(hpo, HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
+    HpoDiseaseLoader loader = HpoDiseaseLoaders.defaultLoader(hpo, HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
     HpoDiseases hpoDiseases = loader.load(hpoaPath);
     diseaseMap = hpoDiseases.diseaseById();
 
@@ -51,7 +52,7 @@ public class ResnikGeneBasedHpoDemo {
     this.diseaseIdToTermIds = new HashMap<>();
     final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
     for (HpoDisease disease:hpoDiseases) {
-      List<TermId> hpoTerms = disease.getPhenotypicAbnormalityTermIds().collect(Collectors.toList());
+      List<TermId> hpoTerms = disease.annotationTermIdList();
 
       // add term ancestors
       Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);

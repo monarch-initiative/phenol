@@ -4,59 +4,125 @@ import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class HumanGeneInfoLoader {
+class HumanGeneInfoLoader implements GeneIdentifierLoader {
+
   private static final String ENTREZ_GENE_PREFIX = "NCBIGene";
 
+  private final Set<GeneInfoGeneType> geneTypes;
 
-  private HumanGeneInfoLoader() {
-    // should not be instantiated
+  /**
+   * Create loader that loads genes of the provided <code>geneTypes</code>.
+   *
+   * @param geneTypes gene types to retain.
+   */
+  static HumanGeneInfoLoader of(Set<GeneInfoGeneType> geneTypes) {
+    return new HumanGeneInfoLoader(geneTypes);
+  }
+
+  private HumanGeneInfoLoader(Set<GeneInfoGeneType> geneTypes) {
+    this.geneTypes = Objects.requireNonNull(geneTypes);
+    if (geneTypes.isEmpty())
+      throw new IllegalArgumentException("Gene types must not be empty!");
+  }
+
+  @Override
+  public GeneIdentifiers load(Reader reader) throws IOException {
+    BufferedReader br = (reader instanceof BufferedReader)
+      ? (BufferedReader) reader
+      : new BufferedReader(reader);
+
+    List<GeneIdentifier> identifiers = br.lines()
+      .filter(line -> !line.startsWith("#")) // skip header
+      .map(l -> l.split("\t"))
+      .filter(retainSelected(geneTypes))
+      .map(toGeneIdentifier())
+      .flatMap(Optional::stream)
+      .collect(Collectors.toUnmodifiableList());
+    return GeneIdentifiers.of(identifiers);
+  }
+
+  @Deprecated(forRemoval = true)
+  public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile, Set<GeneInfoGeneType> geneTypes) throws IOException {
+    try (InputStream is = FileUtils.newInputStream(geneInfoFile)) {
+      return loadGeneIdentifiers(is, geneTypes);
+    }
   }
 
   /**
    * Load gene identifiers from <em>Homo_sapiens.gene_info.gz</em>.
    *
-   * @param geneInfoFile path to <em>Homo_sapiens.gene_info.gz</em>
+   * @param is        input stream. The stream is decoded using {@link java.nio.charset.StandardCharsets#UTF_8} and
+   *                  it is not closed after consuming.
+   * @param geneTypes types of genes to include
    * @return gene identifiers
    */
-  public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile) throws IOException {
-    // We have seen that occasionally the Homo_sapiens_gene_info.gz
-    // contains duplicate lines, which is an error, but we do not want the code
-    // to crash, so we only allow distinct gene identifiers.
+  @Deprecated(forRemoval = true)
+  public static GeneIdentifiers loadGeneIdentifiers(InputStream is, Set<GeneInfoGeneType> geneTypes) {
     // The TermId <-> symbol mapping is one to one.
-    try (BufferedReader reader = FileUtils.newBufferedReader(geneInfoFile)) {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
       List<GeneIdentifier> identifiers = reader.lines()
+        .filter(line -> !line.startsWith("#")) // skip header
+        .map(l -> l.split("\t"))
+        .filter(retainSelected(geneTypes))
         .map(toGeneIdentifier())
         .flatMap(Optional::stream)
-        .distinct()
         .collect(Collectors.toUnmodifiableList());
       return GeneIdentifiers.of(identifiers);
-    }
   }
 
-  private static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
-    return line -> {
+  private static Predicate<? super String[]> retainSelected(Set<GeneInfoGeneType> geneTypes) {
+    return tokens -> geneTypes.contains(GeneInfoGeneType.parse(tokens[9]));
+  }
+
+  /**
+   * Load gene identifiers from <em>Homo_sapiens.gene_info.gz</em> including <em>all</em> {@link GeneInfoGeneType}s.
+   *
+   * @param geneInfoFile path to <em>Homo_sapiens.gene_info.gz</em>
+   * @return gene identifiers
+   * @deprecated to be removed in v2.0.0, use {@link #loadGeneIdentifiers(Path, Set)} instead.
+   */
+  @Deprecated(forRemoval = true, since = "v2.0.0-RC3")
+  public static GeneIdentifiers loadGeneIdentifiers(Path geneInfoFile) throws IOException {
+    return loadGeneIdentifiers(geneInfoFile, GeneInfoGeneType.ALL);
+  }
+
+  private static Function<String[], Optional<GeneIdentifier>> toGeneIdentifier() {
+    return tokens -> {
       /*
       A line example:
       9606	336	APOA2	-	Apo-AII|ApoA-II|apoAII	MIM:107670|HGNC:HGNC:601|Ensembl:ENSG00000158874|Vega:OTTHUMG00000034346	1	1q23.3	apolipoprotein A2	protein-coding	APOA2	apolipoprotein A2	O	apolipoprotein A-II	20180603	-
        */
 
-      String[] a = line.split("\t");
-      String taxon = a[0];
+      String taxon = tokens[0];
       if (!taxon.equals("9606"))// i.e., we want only Homo sapiens sapiens and not Neanderthal etc.
         return Optional.empty();
-      if ("unknown".equals(a[9]))
+
+      String id = tokens[1]; // a[1] is geneId
+      if (id.equals("122405565"))
+        // There are 2 entries for `SMIM44`. Let's keep the first one
+        // 9606    122405565       SMIM44  -       -       Ensembl:ENSG00000284638 19      19p13.3 small integral membrane protein 44      protein-coding  -       -       -       small integral membrane protein 44      20220313        -
         return Optional.empty();
 
+      String symbol = tokens[2]; // a[2] is gene symbol
+      if (symbol.equals("TRNAV-CAC"))
+        // TRNAV-CAC are not present on genenames.org - the entries below are of low quality
+        // 9606    107985614       TRNAV-CAC       -       -       -       1       1q21.1  transfer RNA valine (anticodon CAC)     tRNA    -       -       -       -       20211123        -
+        // 9606    107985615       TRNAV-CAC       -       -       -       1       1q21.1  transfer RNA valine (anticodon CAC)     tRNA    -       -       -       -       20211123        -
+        return Optional.empty();
 
-      TermId tid = TermId.of(ENTREZ_GENE_PREFIX, a[1]); // a[1] is geneId
-      return Optional.of(GeneIdentifier.of(tid, a[2])); // a[2] is gene symbol
+      TermId tid = TermId.of(ENTREZ_GENE_PREFIX, id);
+      return Optional.of(GeneIdentifier.of(tid, symbol));
     };
   }
 }

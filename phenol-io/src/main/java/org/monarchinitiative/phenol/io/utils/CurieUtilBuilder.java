@@ -37,6 +37,7 @@ public class CurieUtilBuilder {
   public static CurieUtil withDefaultsAnd(Map<String, String> additionalCuries) {
     Map<String, String> merged = new HashMap<>();
     merged.putAll(DEFAULT_CURIE_MAP);
+    // overwrite any existing keys with the user-provided ones
     merged.putAll(additionalCuries);
     return new CurieUtil(Map.copyOf(merged));
   }

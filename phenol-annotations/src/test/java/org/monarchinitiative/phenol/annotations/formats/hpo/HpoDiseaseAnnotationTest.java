@@ -9,6 +9,8 @@ import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
+import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
@@ -34,19 +36,16 @@ public class HpoDiseaseAnnotationTest {
       instance = HpoDiseaseAnnotation.of(
         TermId.of("HP:123456"),
         List.of(
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(1)), AnnotationFrequency.of(Ratio.of(0, 5)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(2)), AnnotationFrequency.of(Ratio.of(10, 10)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(3)), AnnotationFrequency.of(Ratio.of(5, 15)), noModifiersForNow, Sex.MALE),
-          HpoDiseaseAnnotationMetadata.of(TemporalInterval.openEnd(Age.postnatal(4)), AnnotationFrequency.of(Ratio.of(0, 20)), noModifiersForNow, Sex.MALE)
+          HpoDiseaseAnnotationMetadata.of(createAnnotationReference("PMID:123456"), TemporalInterval.openEnd(Age.postnatal(1)), AnnotationFrequency.of(Ratio.of(0, 5)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(createAnnotationReference("OMIM:614856"), TemporalInterval.openEnd(Age.postnatal(2)), AnnotationFrequency.of(Ratio.of(10, 10)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(createAnnotationReference("ISBN:978-80-8144-105-9"), TemporalInterval.openEnd(Age.postnatal(3)), AnnotationFrequency.of(Ratio.of(5, 15)), noModifiersForNow, Sex.MALE),
+          HpoDiseaseAnnotationMetadata.of(createAnnotationReference("PMID:987654321"), TemporalInterval.openEnd(Age.postnatal(4)), AnnotationFrequency.of(Ratio.of(0, 20)), noModifiersForNow, Sex.MALE)
         ));
     }
 
     @Test
     public void ratio() {
-      Optional<Ratio> ratioOptional = instance.ratio();
-
-      assertThat(ratioOptional.isPresent(), equalTo(true));
-      Ratio ratio = ratioOptional.get();
+      Ratio ratio = instance.ratio();
       assertThat(ratio.numerator(), equalTo(15));
       assertThat(ratio.denominator(), equalTo(50));
     }
@@ -113,6 +112,10 @@ public class HpoDiseaseAnnotationTest {
     }
   }
 
+  public static AnnotationReference createAnnotationReference(String reference) {
+    return AnnotationReference.of(TermId.of(reference), EvidenceCode.PCS);
+  }
+
   @Nested
   public class OtherTests {
 
@@ -173,7 +176,7 @@ public class HpoDiseaseAnnotationTest {
   }
 
   private static HpoDiseaseAnnotationMetadata createMetadata(int startDays, int endDays, int numerator, int denominator) {
-    return HpoDiseaseAnnotationMetadata.of(
+    return HpoDiseaseAnnotationMetadata.of(createAnnotationReference("PMID:123456"),
       TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays)),
       AnnotationFrequency.of(Ratio.of(numerator, denominator)),
       List.of(), Sex.MALE);
