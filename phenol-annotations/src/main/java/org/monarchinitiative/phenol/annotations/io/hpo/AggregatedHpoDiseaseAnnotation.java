@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
 
   private final TermId id;
-  private final Ratio ratio; // nullable
+  private final Ratio ratio;
   private final List<TemporalInterval> observationIntervals;
   private final Age earliestOnset, latestOnset; // nullable
   private final List<AnnotationReference> references;
@@ -28,7 +28,7 @@ class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
                                  List<TemporalInterval> observationIntervals,
                                  List<AnnotationReference> references) {
     this.id = Objects.requireNonNull(id);
-    this.ratio = ratio;
+    this.ratio = Objects.requireNonNull(ratio);
     this.observationIntervals = Objects.requireNonNull(observationIntervals);
     this.earliestOnset = earliestOnset;
     this.latestOnset = latestOnset;
