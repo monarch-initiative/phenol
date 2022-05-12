@@ -46,8 +46,8 @@ class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public Optional<Ratio> ratio() {
-    return Optional.ofNullable(ratio);
+  public Ratio ratio() {
+    return ratio;
   }
 
   @Override

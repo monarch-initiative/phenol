@@ -144,7 +144,7 @@ public interface HpoDisease extends Identified {
    */
   default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
     return phenotypicAbnormalitiesStream()
-      .filter(a -> a.ratio().map(Ratio::isZero).orElse(false));
+      .filter(a -> a.ratio().isZero());
   }
 
   /**
@@ -188,7 +188,7 @@ public interface HpoDisease extends Identified {
     return phenotypicAbnormalitiesStream()
       .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
       .findFirst()
-      .flatMap(HpoDiseaseAnnotation::ratio);
+      .map(HpoDiseaseAnnotation::ratio);
   }
 
   /**
@@ -243,7 +243,7 @@ public interface HpoDisease extends Identified {
    */
   default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
     List<TermId> directAnnotations = phenotypicAbnormalitiesStream()
-      .filter(a -> !a.isAbsent())
+      .filter(HpoDiseaseAnnotation::isPresent)
       .map(Identified::id)
       .collect(Collectors.toList());
     Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);

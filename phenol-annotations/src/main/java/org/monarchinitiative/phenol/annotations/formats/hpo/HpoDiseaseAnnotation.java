@@ -48,13 +48,16 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   Stream<HpoDiseaseAnnotationMetadata> metadata();
 
   /**
-   * @return ratio representing number of individuals with this {@link HpoDiseaseAnnotation} or an empty optional
-   * if no occurrence data is available.
+   * @return ratio representing number of individuals with this {@link HpoDiseaseAnnotation}.
    */
-  Optional<Ratio> ratio();
+  Ratio ratio();
 
-  default Optional<Float> frequency() {
-    return ratio().map(Ratio::frequency);
+  /**
+   * @return frequency of this {@link HpoDiseaseAnnotation} in the cohort of individuals used to assert
+   * the presence of the annotation in an {@link HpoDisease}.
+   */
+  default float frequency() {
+    return ratio().frequency();
   }
 
   /**
@@ -64,9 +67,17 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * in question).
    */
   default boolean isAbsent() {
-    return ratio().map(Ratio::isZero)
-      .orElse(false);
+    return ratio().isZero();
   }
+
+  /**
+   * @return the opposite of what {@link #isAbsent()} returns.
+   * @see #isAbsent()
+   */
+  default boolean isPresent() {
+    return !isAbsent();
+  }
+
 
   /**
    * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.

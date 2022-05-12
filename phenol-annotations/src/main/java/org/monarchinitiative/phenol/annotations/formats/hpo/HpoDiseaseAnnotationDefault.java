@@ -82,7 +82,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
                                       List<TemporalInterval> observationIntervals) {
     this.termId = Objects.requireNonNull(termId, "Term ID must not be null");
     this.metadata = metadata;
-    this.ratio = ratio; // nullable
+    this.ratio = Objects.requireNonNull(ratio, "Ratio must not be null!");
     this.observationIntervals = observationIntervals;
   }
 
@@ -97,8 +97,8 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public Optional<Ratio> ratio() {
-    return Optional.ofNullable(ratio);
+  public Ratio ratio() {
+    return ratio;
   }
 
   @Override

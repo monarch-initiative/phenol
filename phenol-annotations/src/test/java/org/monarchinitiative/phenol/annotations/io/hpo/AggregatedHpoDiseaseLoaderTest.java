@@ -68,7 +68,7 @@ public class AggregatedHpoDiseaseLoaderTest {
     assertThat(annotations, hasSize(3));
     HpoDiseaseAnnotation first = annotations.get(0);
     assertThat(first.id().getValue(), equalTo("HP:0001167"));
-    assertThat(first.ratio().get(), equalTo(Ratio.of(1, 8)));
+    assertThat(first.ratio(), equalTo(Ratio.of(1, 8)));
     assertThat(first.references(), hasSize(1));
     assertThat(first.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
     assertThat(first.earliestOnset().get(), equalTo(Age.postnatal(1, 0, 0)));
@@ -76,7 +76,7 @@ public class AggregatedHpoDiseaseLoaderTest {
 
     HpoDiseaseAnnotation second = annotations.get(1);
     assertThat(second.id().getValue(), equalTo("HP:0001167"));
-    assertThat(second.ratio().get(), equalTo(Ratio.of(4, 5)));
+    assertThat(second.ratio(), equalTo(Ratio.of(4, 5)));
     assertThat(second.references(), hasSize(1));
     assertThat(second.references(), hasItem(AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS)));
     assertThat(second.earliestOnset().get(), equalTo(Age.postnatal(29)));
@@ -84,7 +84,7 @@ public class AggregatedHpoDiseaseLoaderTest {
 
     HpoDiseaseAnnotation third = annotations.get(2);
     assertThat(third.id().getValue(), equalTo("HP:0001238"));
-    assertThat(third.ratio().get(), equalTo(Ratio.of(0, 50)));
+    assertThat(third.ratio(), equalTo(Ratio.of(0, 50)));
     assertThat(third.references(), hasSize(1));
     assertThat(third.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
     assertThat(third.earliestOnset().isEmpty(), equalTo(true));
