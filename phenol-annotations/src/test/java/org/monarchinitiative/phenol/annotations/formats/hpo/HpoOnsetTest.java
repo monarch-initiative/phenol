@@ -5,13 +5,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -66,7 +64,7 @@ public class HpoOnsetTest {
     assertThat(hpoOnset.get(), equalTo(expected));
   }
 
-  static Stream<Arguments> fromAge_data() {
+  public static Stream<Arguments> fromAge_data() {
     return Stream.of(
       Arguments.of(Age.postnatal(1,1,0), HpoOnset.CHILDHOOD_ONSET),
       Arguments.of(Age.postnatal(0,6,0), HpoOnset.INFANTILE_ONSET),
