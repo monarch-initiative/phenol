@@ -6,6 +6,7 @@ import org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.List;
 import java.util.Optional;
 
 public enum HpoOnset implements TemporalInterval, Identified {
@@ -176,6 +177,29 @@ public enum HpoOnset implements TemporalInterval, Identified {
       default:
         return Optional.empty();
     }
+  }
+
+  /**
+   * Convert Age {@link Age} to HPO {@link HpoOnset}
+   * @param age The {@link Age} to convert
+   * @return Optional with {@link HpoOnset}
+   */
+  public static Optional<HpoOnset> fromAge(Age age){
+    // Loop over hpo onsets and find the first one we cross
+    for(HpoOnset onset : specificOnsets()){
+        if(onset.contains(age)){
+          return Optional.of(onset);
+        }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * @return the set of onsets that are most specific
+   */
+  public static List<HpoOnset> specificOnsets(){
+    return List.of(CONGENITAL_ONSET, NEONATAL_ONSET, INFANTILE_ONSET, CHILDHOOD_ONSET, JUVENILE_ONSET,
+      EARLY_YOUNG_ADULT_ONSET, INTERMEDIATE_YOUNG_ADULT_ONSET, LATE_YOUNG_ADULT_ONSET, MIDDLE_AGE_ONSET, LATE_ONSET);
   }
 
   /**
