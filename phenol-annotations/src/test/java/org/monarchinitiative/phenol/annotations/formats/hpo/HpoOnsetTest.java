@@ -71,7 +71,9 @@ public class HpoOnsetTest {
       Arguments.of(Age.postnatal(1,1,0), HpoOnset.CHILDHOOD_ONSET),
       Arguments.of(Age.postnatal(0,6,0), HpoOnset.INFANTILE_ONSET),
       Arguments.of(Age.postnatal(61,0,0), HpoOnset.LATE_ONSET),
-      Arguments.of(Age.postnatal(30, 20,1), HpoOnset.LATE_YOUNG_ADULT_ONSET)
+      Arguments.of(Age.postnatal(30, 20,1), HpoOnset.LATE_YOUNG_ADULT_ONSET),
+      Arguments.of(Age.gestational(3,0), HpoOnset.EMBRYONAL_ONSET),
+      Arguments.of(Age.gestational(32,0), HpoOnset.THIRD_TRIMESTER_ONSET)
     );
   }
 
