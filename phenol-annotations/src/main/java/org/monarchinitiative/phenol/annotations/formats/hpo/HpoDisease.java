@@ -90,6 +90,22 @@ public interface HpoDisease extends Identified {
   Iterable<HpoDiseaseAnnotation> annotations();
 
   /**
+   * @return iterable over <em>PRESENT</em> disease annotations. These are the annotations that were observed in at least
+   * one individual of a cohort.
+   */
+  default Iterable<HpoDiseaseAnnotation> presentAnnotations() {
+    return Utils.filterIterable(annotations(), HpoDiseaseAnnotation::isPresent);
+  }
+
+  /**
+   * @return iterable over <em>ABSENT</em> disease annotations. These are the annotations that were <em>NOT</em>
+   * observed in any individuals of a cohort.
+   */
+  default Iterable<HpoDiseaseAnnotation> absentAnnotations() {
+    return Utils.filterIterable(annotations(), HpoDiseaseAnnotation::isAbsent);
+  }
+
+  /**
    * @return number of annotations present in the disease.
    */
   int annotationCount();
