@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import java.util.Objects;
+
 /**
  * Class to represent the database_cross_reference such as "PMID:102212" or "HPO:skoehler" that
  * is used to represent the provenance of the Term definitions in the HPO.
@@ -116,6 +118,19 @@ public class SimpleXref {
    */
   public String getId() {
     return id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SimpleXref that = (SimpleXref) o;
+    return prefix == that.prefix && Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prefix, id);
   }
 
   @Override
