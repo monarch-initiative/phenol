@@ -26,7 +26,6 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>${picocli.version}</version>
     </dependency>
   </dependencies>
 
@@ -53,6 +52,7 @@
                   <goal>copy-dependencies</goal>
                 </goals>
                 <configuration>
+                  <includeScope>compile</includeScope>
                   <outputDirectory>${project.build.directory}/lib</outputDirectory>
                 </configuration>
               </execution>
