@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obographs;
 import org.geneontology.obographs.core.model.*;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.prefixcommons.CurieUtil;
 
 import java.util.List;
 import java.util.Map;

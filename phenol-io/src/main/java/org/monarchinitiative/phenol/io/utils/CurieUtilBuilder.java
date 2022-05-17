@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io.utils;
 
-import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -20,7 +19,7 @@ public class CurieUtilBuilder {
 
 
   private static final Map<String, String> DEFAULT_CURIE_MAP = Map.copyOf(generate());
-  private static final CurieUtil DEFAULT_CURIE_UTIL = new CurieUtil(DEFAULT_CURIE_MAP);
+  private static final CurieUtil DEFAULT_CURIE_UTIL = CurieUtil.of(DEFAULT_CURIE_MAP);
 
 
   private CurieUtilBuilder() {
@@ -39,11 +38,11 @@ public class CurieUtilBuilder {
     merged.putAll(DEFAULT_CURIE_MAP);
     // overwrite any existing keys with the user-provided ones
     merged.putAll(additionalCuries);
-    return new CurieUtil(Map.copyOf(merged));
+    return CurieUtil.of(Map.copyOf(merged));
   }
 
   public static CurieUtil just(Map<String, String> curies) {
-    return new CurieUtil(Map.copyOf(curies));
+    return CurieUtil.of(Map.copyOf(curies));
   }
 
   /**
@@ -52,10 +51,9 @@ public class CurieUtilBuilder {
    * https://github.com/monarch-initiative/dipper/blob/master/dipper/curie_map.yaml.
    */
   private static Map<String, String> generate() {
-    try {
-      InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("curie_map.yaml");
+    try (InputStream is = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("curie_map.yaml")) {
       Yaml yaml = new Yaml();
-      return yaml.load(inputStream);
+      return yaml.load(is);
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
     }

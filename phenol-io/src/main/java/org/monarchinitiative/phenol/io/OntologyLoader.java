@@ -4,9 +4,9 @@ import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

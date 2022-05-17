@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.io.obographs;
 import org.geneontology.obographs.core.model.*;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
-import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +120,7 @@ public class OboGraphDocumentAdaptor {
       List<String> unmappedIdPrefixes = new ArrayList<>();
       if(!wantedTermIdPrefixes.isEmpty()) {
         for (String prefix : wantedTermIdPrefixes) {
-          if (!curieUtil.getCurieMap().containsKey(prefix)) {
+          if (!curieUtil.hasPrefix(prefix)) {
             unmappedIdPrefixes.add(prefix);
           }
         }
@@ -230,13 +230,13 @@ public class OboGraphDocumentAdaptor {
     }
 
     private TermId getTermIdOrNull(String id) {
-      Optional<String> curie = curieUtil.getCurie(id);
+      Optional<TermId> curie = curieUtil.getCurie(id);
       if (curie.isEmpty()) {
         LOGGER.warn("No matching curie found for id: {}", id);
         return null;
       }
-      String curieStr = curie.get();
-      TermId termId = TermId.of(curieStr);
+
+      TermId termId = curie.get();
       // Note that GO has some Terms/Relations with RO and BFO that we want to skip
       String prefix = termId.getPrefix();
       if (wantedTermIdPrefixes.isEmpty() || wantedTermIdPrefixes.contains(prefix)) {
