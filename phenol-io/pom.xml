@@ -24,19 +24,6 @@
        <artifactId>obographs-core</artifactId>
        <version>0.3.0</version>
     </dependency>
-
-    <dependency>
-       <groupId>org.prefixcommons</groupId>
-       <artifactId>curie-util</artifactId>
-       <version>0.0.2</version>
-       <exclusions>
-          <exclusion>
-              <groupId>com.github.jsonld-java</groupId>
-              <artifactId>jsonld-java</artifactId>
-          </exclusion>
-       </exclusions>
-    </dependency>
-
   </dependencies>
 
   <build>

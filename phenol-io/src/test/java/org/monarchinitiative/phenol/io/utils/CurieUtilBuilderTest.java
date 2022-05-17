@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.io.utils;
 
 import org.junit.jupiter.api.Test;
-import org.prefixcommons.CurieUtil;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,19 +21,19 @@ public class CurieUtilBuilderTest {
   @Test
   public void defaultCurieUtil() {
     CurieUtil instance = CurieUtilBuilder.defaultCurieUtil();
-    assertEquals(Optional.of("HP:0000001"), instance.getCurie("http://purl.obolibrary.org/obo/HP_0000001"));
+    assertEquals(Optional.of(TermId.of("HP:0000001")), instance.getCurie("http://purl.obolibrary.org/obo/HP_0000001"));
   }
 
   @Test
   public void defaultCurieUtilWithDefaultsAndUserDefinedResource() {
     CurieUtil defaultCurieUtil = CurieUtilBuilder.defaultCurieUtil();
-    assertFalse(defaultCurieUtil.getCurieMap().containsKey("WIBBLE"));
+    assertFalse(defaultCurieUtil.hasPrefix("WIBBLE"));
 
     CurieUtil instance = CurieUtilBuilder.withDefaultsAnd(Map.of("WIBBLE", "http://purl.obolibrary.org/obo/WIBBLE_"));
-    assertTrue(instance.getCurieMap().containsKey("WIBBLE"));
-    assertEquals(Optional.of("WIBBLE:0000001"), instance.getCurie("http://purl.obolibrary.org/obo/WIBBLE_0000001"));
-    assertEquals("http://purl.obolibrary.org/obo/WIBBLE_", instance.getExpansion("WIBBLE"));
-    assertEquals(Optional.of("http://purl.obolibrary.org/obo/WIBBLE_0000001"), instance.getIri("WIBBLE:0000001"));
+    assertTrue(instance.hasPrefix("WIBBLE"));
+    assertEquals(Optional.of(TermId.of("WIBBLE:0000001")), instance.getCurie("http://purl.obolibrary.org/obo/WIBBLE_0000001"));
+    assertEquals(Optional.of("http://purl.obolibrary.org/obo/WIBBLE_"), instance.getExpansion("WIBBLE"));
+    assertEquals(Optional.of("http://purl.obolibrary.org/obo/WIBBLE_0000001"), instance.getIri(TermId.of("WIBBLE:0000001")));
   }
 
   @Test
@@ -45,8 +45,16 @@ public class CurieUtilBuilderTest {
 
     CurieUtil instance = CurieUtilBuilder.just(userDefinedCurieMap);
 
-    assertEquals(userDefinedCurieMap, instance.getCurieMap());
-    assertEquals(Optional.of("WIBBLE:0000001"), instance.getCurie("http://purl.obolibrary.org/obo/WIBBLE_0000001"));
-    assertEquals(Optional.of("FLUFFY:0000001"), instance.getCurie("http://purl.obolibrary.org/obo/FLUFFY_0000001"));
+    assertEquals(Optional.of(TermId.of("WIBBLE:0000001")), instance.getCurie("http://purl.obolibrary.org/obo/WIBBLE_0000001"));
+    assertEquals(Optional.of(TermId.of("FLUFFY:0000001")), instance.getCurie("http://purl.obolibrary.org/obo/FLUFFY_0000001"));
+  }
+
+  @Test
+  public void incorrectIri() {
+    CurieUtil instance = CurieUtilBuilder.withDefaultsAnd(Map.of("WIBBLE", "http://purl.obolibrary.org/obo/WIBBLE_"));
+
+    Optional<TermId> curie = instance.getCurie("http://purl.obolibrary.org/ob/WIBBLE_0000001"); // note missing `o` in `/obo/`
+
+    assertTrue(curie.isEmpty());
   }
 }
