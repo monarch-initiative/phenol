@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import java.util.Objects;
+
 /**
  * Immutable implementation of {@link TermXref}.
  *
@@ -34,6 +36,19 @@ public class TermXref implements Identified {
 
   public String getDescription() {
     return description;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TermXref termXref = (TermXref) o;
+    return Objects.equals(id, termXref.id) && Objects.equals(description, termXref.description);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, description);
   }
 
   @Override
