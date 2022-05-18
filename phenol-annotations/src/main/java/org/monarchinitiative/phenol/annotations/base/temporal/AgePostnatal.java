@@ -2,56 +2,122 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
-class AgePostnatal implements Age {
+class AgePostnatal {
 
   static final AgeOpen END = new AgeOpen(Integer.MAX_VALUE, false);
-  static final AgePostnatal BIRTH = new AgePostnatal(0);
+  static final AgePostnatalPrecise BIRTH = new AgePostnatalPrecise(0);
 
-  private final int days;
+  static Age of(int days, ConfidenceInterval ci) {
+    if (ci.isPrecise())
+      return days == 0 ? BIRTH : new AgePostnatalPrecise(days);
 
-  static Age of(int days) {
-    return days == 0 ? BIRTH : new AgePostnatal(days);
+    return new AgePostnatalImprecise(days, ci);
   }
 
-  private AgePostnatal(int days) {
-    if (days > MAX_DAYS)
-      throw new ArithmeticException(String.format("Number of days %d must not be greater than %d", days, MAX_DAYS));
-    this.days = days;
+  private static abstract class AgePostnatalBase implements Age {
+
+    private final int days;
+
+    protected AgePostnatalBase(int days) {
+      if (days > MAX_DAYS)
+        throw new ArithmeticException(String.format("Number of days %d must not be greater than %d", days, MAX_DAYS));
+      this.days = days;
+    }
+
+    @Override
+    public int days() {
+      return days;
+    }
+
+    @Override
+    public boolean isGestational() {
+      return false;
+    }
+
+    @Override
+    public boolean isOpen() {
+      return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      AgePostnatalBase that = (AgePostnatalBase) o;
+      return days == that.days;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(days);
+    }
   }
 
-  @Override
-  public int days() {
-    return days;
+  private static class AgePostnatalPrecise extends AgePostnatalBase {
+
+    private AgePostnatalPrecise(int days) {
+      super(days);
+    }
+
+    @Override
+    public ConfidenceInterval confidenceInterval() {
+      return ConfidenceInterval.precise();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "AgePostnatalPrecise{" +
+        "days=" + days() +
+        '}';
+    }
+
   }
 
-  @Override
-  public boolean isGestational() {
-    return false;
-  }
+  private static class AgePostnatalImprecise extends AgePostnatalBase {
 
-  @Override
-  public boolean isOpen() {
-    return false;
-  }
+    private final ConfidenceInterval ci;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    AgePostnatal that = (AgePostnatal) o;
-    return days == that.days;
-  }
+    private AgePostnatalImprecise(int days, ConfidenceInterval ci) {
+      super(days);
+      this.ci = ci;
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(days, true);
-  }
+    @Override
+    public ConfidenceInterval confidenceInterval() {
+      return ci;
+    }
 
-  @Override
-  public String toString() {
-    return "AgePostnatal{" +
-      "days=" + days +
-      '}';
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      if (!super.equals(o)) return false;
+      AgePostnatalImprecise that = (AgePostnatalImprecise) o;
+      return Objects.equals(ci, that.ci);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(super.hashCode(), ci);
+    }
+
+    @Override
+    public String toString() {
+      return "AgePostnatalImprecise{" +
+        "days=" + days() +
+        "ci=" + ci +
+        "}";
+    }
   }
 
 }

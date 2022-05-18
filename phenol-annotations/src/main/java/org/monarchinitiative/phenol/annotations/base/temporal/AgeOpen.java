@@ -3,16 +3,16 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * Open age since birth.
+ * Open age.
  */
 class AgeOpen implements Age {
 
   private final int days;
-  private final boolean isPrenatal;
+  private final boolean isGestational;
 
-  AgeOpen(int days, boolean isPrenatal) {
+  AgeOpen(int days, boolean isGestational) {
     this.days = days;
-    this.isPrenatal = isPrenatal;
+    this.isGestational = isGestational;
   }
 
   @Override
@@ -22,7 +22,7 @@ class AgeOpen implements Age {
 
   @Override
   public boolean isGestational() {
-    return isPrenatal;
+    return isGestational;
   }
 
   @Override
@@ -31,23 +31,28 @@ class AgeOpen implements Age {
   }
 
   @Override
+  public ConfidenceInterval confidenceInterval() {
+    return ConfidenceInterval.precise();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AgeOpen ageOpen = (AgeOpen) o;
-    return days == ageOpen.days && isPrenatal == ageOpen.isPrenatal;
+    return days == ageOpen.days && isGestational == ageOpen.isGestational;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(days, isPrenatal);
+    return Objects.hash(days, isGestational);
   }
 
   @Override
   public String toString() {
     return "AgeOpen{" +
       "days=" + days +
-      ", isPrenatal=" + isPrenatal +
+      ", isGestational=" + isGestational +
       '}';
   }
 }

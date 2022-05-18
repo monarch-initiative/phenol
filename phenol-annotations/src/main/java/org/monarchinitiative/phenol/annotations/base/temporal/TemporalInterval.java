@@ -66,6 +66,20 @@ public interface TemporalInterval {
     return isStartClosed() && isEndClosed();
   }
 
+  /**
+   * @return <code>true</code> if both {@link TemporalInterval#start()} and {@link TemporalInterval#end()} are precise.
+   */
+  default boolean isPrecise() {
+    return start().isPrecise() && end().isPrecise();
+  }
+
+  /**
+   * @return <code>true</code> if any of {@link TemporalInterval#start()} and {@link TemporalInterval#end()} is imprecise.
+   */
+  default boolean isImprecise() {
+    return !isPrecise();
+  }
+
   /* **************************************************************************************************************** */
 
   /**
