@@ -86,7 +86,7 @@ public interface Age {
   }
 
   /**
-   * @return age that represents event that occurrs in unspecified distant future.
+   * @return age that represents event that occurs in unspecified distant future.
    */
   static Age openEnd() {
     return AgePostnatal.END;
@@ -95,19 +95,29 @@ public interface Age {
   /* **************************************************************************************************************** */
 
   /**
-   * @return number of days since start of the time-line (e.g. birth for Humans).
-   * The number can be negative if the {@link Age} represents an event occurring before start of the time-line.
+   * Get the number of days since start of the time-line. This is the number of days since {@link Age#lastMenstrualPeriod()}
+   * for {@link Age#isGestational()} and since {@link Age#birth()} for {@link Age#isPostnatal()}.
+   * The number is <em>non-negative</em>.
+   *
+   * @return the number of days.
    */
   int days();
 
   /**
-   * @return true if the {@link Age} represents the time passed since conception.
+   * @return true if the {@link Age} represents the time passed since conception but prior {@link Age#birth()}.
    */
   boolean isGestational();
 
   boolean isOpen();
 
   /* **************************************************************************************************************** */
+
+  /**
+   * @return true if the {@link Age} represents the time passed since {@link Age#birth()}.
+   */
+  default boolean isPostnatal() {
+    return !isGestational();
+  }
 
   default boolean isClosed() {
     return !isOpen();
