@@ -36,13 +36,6 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
     return upperBound;
   }
 
-  public TemporalInterval asTemporalInterval(Age age) {
-    return TemporalInterval.of(
-      Age.of(age.days() + lowerBound, age.isGestational(), ConfidenceInterval.precise()),
-      Age.of(age.days() + upperBound, age.isGestational(), ConfidenceInterval.precise())
-    );
-  }
-
   public boolean isPrecise() {
     return this.equals(PRECISE);
   }

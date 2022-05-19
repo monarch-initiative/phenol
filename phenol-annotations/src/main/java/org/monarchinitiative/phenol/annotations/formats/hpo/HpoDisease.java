@@ -1,7 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -28,7 +29,7 @@ public interface HpoDisease extends Identified {
 
   static HpoDisease of(TermId diseaseId,
                        String name,
-                       TemporalInterval globalOnset,
+                       TemporalRange globalOnset,
                        List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                        List<TermId> modesOfInheritance) {
     return new HpoDiseaseDefault(diseaseId, name, globalOnset, phenotypicAbnormalities, modesOfInheritance);
@@ -72,7 +73,14 @@ public interface HpoDisease extends Identified {
   /**
    * @return temporal interval representing onset of the earliest {@link HpoDiseaseAnnotation}.
    */
-  Optional<TemporalInterval> diseaseOnset();
+  default Optional<TemporalRange> diseaseOnset() {
+    return annotationStream()
+      .filter(HpoDiseaseAnnotation::isPresent)
+      .min((l, r) -> TemporalPoint.compare(l.earliestOnset().orElse(TemporalPoint.openEnd()), r.earliestOnset().orElse(TemporalPoint.openEnd())))
+      .map(a -> a.observationIntervals().stream())
+      .orElse(Stream.empty())
+      .min(TemporalRange::compare);
+  }
 
   List<TermId> modesOfInheritance();
 
@@ -155,12 +163,21 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return stream of absent disease annotations,
-   * i.e. ones that were observed in <em>zero</em> out of <em>n</em> affected individuals.
+   * @return stream of <em>PRESENT</em> disease annotations. These are the annotations that were observed in at least
+   *  one individual of a cohort.
+   */
+  default Stream<HpoDiseaseAnnotation> presentAnnotationsStream() {
+    return annotationStream()
+      .filter(HpoDiseaseAnnotation::isPresent);
+  }
+
+  /**
+   * @return stream of <em>ABSENT</em> disease annotations. These are the annotations that were <em>NOT</em>
+   * observed in any individuals of a cohort.
    */
   default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
-    return phenotypicAbnormalitiesStream()
-      .filter(a -> a.ratio().isZero());
+    return annotationStream()
+      .filter(HpoDiseaseAnnotation::isAbsent);
   }
 
   /**

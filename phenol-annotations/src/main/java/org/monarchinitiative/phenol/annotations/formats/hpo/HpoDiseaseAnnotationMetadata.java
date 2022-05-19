@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -13,11 +13,11 @@ import java.util.Optional;
 public interface HpoDiseaseAnnotationMetadata {
 
   static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
-                                         TemporalInterval temporalInterval,
+                                         TemporalRange ageRange,
                                          AnnotationFrequency frequency,
                                          Collection<TermId> modifiers,
                                          Sex sex) {
-    return new HpoDiseaseAnnotationMetadataDefault(reference, temporalInterval, frequency, modifiers, sex);
+    return new HpoDiseaseAnnotationMetadataDefault(reference, ageRange, frequency, modifiers, sex);
   }
 
   /**
@@ -25,7 +25,7 @@ public interface HpoDiseaseAnnotationMetadata {
    */
   AnnotationReference reference();
 
-  Optional<TemporalInterval> observationInterval();
+  Optional<TemporalRange> observationInterval();
 
   /**
    * @return frequency of the disease annotation.
@@ -56,14 +56,14 @@ public interface HpoDiseaseAnnotationMetadata {
 
   Optional<Sex> sex();
 
-  default Optional<Age> start() {
+  default Optional<TemporalPoint> start() {
     return observationInterval()
-      .map(TemporalInterval::start);
+      .map(TemporalRange::start);
   }
 
-  default Optional<Age> end() {
+  default Optional<TemporalPoint> end() {
     return observationInterval()
-      .map(TemporalInterval::end);
+      .map(TemporalRange::end);
   }
 
 }

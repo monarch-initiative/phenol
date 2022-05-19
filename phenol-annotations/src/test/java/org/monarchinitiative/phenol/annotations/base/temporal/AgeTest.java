@@ -12,32 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AgeTest {
 
   @Nested
-  public class AgeConstantsTests {
-
-    @Test
-    public void lastMenstrualPeriod() {
-      Age lmp = Age.lastMenstrualPeriod();
-      assertThat(lmp.days(), equalTo(0));
-      assertThat(lmp.isZero(), equalTo(true));
-      assertThat(lmp.isPositive(), equalTo(false));
-      assertThat(lmp.isPrecise(), equalTo(true));
-      assertThat(lmp.isGestational(), equalTo(true));
-      assertThat(lmp.isClosed(), equalTo(true));
-    }
-
-    @Test
-    public void birth() {
-      Age birth = Age.birth();
-      assertThat(birth.days(), equalTo(0));
-      assertThat(birth.isZero(), equalTo(true));
-      assertThat(birth.isPositive(), equalTo(false));
-      assertThat(birth.isPrecise(), equalTo(true));
-      assertThat(birth.isPostnatal(), equalTo(true));
-      assertThat(birth.isClosed(), equalTo(true));
-    }
-  }
-
-  @Nested
   public class PreciseAgeTests {
 
     @Test
@@ -201,15 +175,11 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalInterval() {
+    public void asTemporalRange() {
       Age age = Age.postnatal(0, 0, 14);
-      TemporalInterval ti = age.asTemporalInterval();
 
-      assertThat(ti.start().days(), equalTo(14));
-      assertThat(ti.start().isPrecise(), equalTo(true));
-
-      assertThat(ti.end().days(), equalTo(14));
-      assertThat(ti.end().isPrecise(), equalTo(true));
+      assertThat(age.start().days(), equalTo(14));
+      assertThat(age.end().days(), equalTo(14));
     }
   }
 
@@ -318,16 +288,11 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalInterval() {
+    public void asTemporalRange() {
       Age age = Age.postnatal(10, ConfidenceInterval.of(-5, 10));
 
-      TemporalInterval ti = age.asTemporalInterval();
-
-      assertThat(ti.start().days(), equalTo(5));
-      assertThat(ti.start().isPrecise(), equalTo(true));
-
-      assertThat(ti.end().days(), equalTo(20));
-      assertThat(ti.end().isPrecise(), equalTo(true));
+      assertThat(age.start().days(), equalTo(5));
+      assertThat(age.end().days(), equalTo(20));
     }
   }
 

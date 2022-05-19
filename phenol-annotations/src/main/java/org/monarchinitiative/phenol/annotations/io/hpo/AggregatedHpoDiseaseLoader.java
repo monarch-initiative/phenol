@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotationFrequency;
@@ -37,7 +37,7 @@ class AggregatedHpoDiseaseLoader extends BaseHpoDiseaseLoader {
     HpoDiseaseData diseaseData = diseaseDataOptional.get();
 
     List<HpoDiseaseAnnotation> phenotypes = diseaseData.phenotypes();
-    TemporalInterval onset = parseGlobalDiseaseOnset(diseaseData.clinicalCourseTerms(), phenotypes);
+    TemporalRange onset = parseGlobalDiseaseOnset(diseaseData.clinicalCourseTerms(), phenotypes);
 
     return Optional.of(
       HpoDisease.of(diseaseId,
@@ -105,13 +105,13 @@ class AggregatedHpoDiseaseLoader extends BaseHpoDiseaseLoader {
     // onset
     //    HpoOnset onset = onsetOptional.orElse(null);
     Optional<HpoOnset> onsetOptional = HpoOnset.fromHpoIdString(line.getOnsetId());
-    Age earliestOnset = onsetOptional.map(HpoOnset::start).orElse(null);
-    Age latestOnset = onsetOptional.map(HpoOnset::end).orElse(null);
+    TemporalPoint earliestOnset = onsetOptional.map(HpoOnset::start).orElse(null);
+    TemporalPoint latestOnset = onsetOptional.map(HpoOnset::end).orElse(null);
 
-    List<TemporalInterval> observationIntervals;
+    List<TemporalRange> observationIntervals;
     if (onsetOptional.isPresent()) {
       HpoOnset onset = onsetOptional.get();
-      observationIntervals = List.of(TemporalInterval.openEnd(onset.start()));
+      observationIntervals = List.of(TemporalRange.openEnd(onset.start()));
     } else {
       observationIntervals = List.of();
     }
@@ -141,40 +141,40 @@ class AggregatedHpoDiseaseLoader extends BaseHpoDiseaseLoader {
       references);
   }
 
-  private static TemporalInterval parseGlobalDiseaseOnset(List<TermId> termIds, List<HpoDiseaseAnnotation> phenotypes) {
+  private static TemporalRange parseGlobalDiseaseOnset(List<TermId> termIds, List<HpoDiseaseAnnotation> phenotypes) {
     {
       // First, let's use the onset term IDs provided by HPOA lines where `aspect==C`.
       Optional<HpoOnset> earliest = termIds.stream()
         .map(HpoOnset::fromTermId)
         .flatMap(Optional::stream)
-        .min(Comparator.comparing(a -> a, TemporalInterval::compare));
+        .min(Comparator.comparing(a -> a, TemporalRange::compare));
 
       if (earliest.isPresent())
         return earliest.get();
     }
 
     // If there is no such term, lets use the earliest onset of the phenotype terms. Otherwise, the onset is `null`.
-    Age earliestOnset = null, latestOnset = null;
+    TemporalPoint earliestOnset = null, latestOnset = null;
     for (HpoDiseaseAnnotation phenotype : phenotypes) {
-      Optional<Age> earliest = phenotype.earliestOnset();
+      Optional<TemporalPoint> earliest = phenotype.earliestOnset();
       if (earliest.isPresent()) {
         if (earliestOnset == null)
           earliestOnset = earliest.get();
         else
-          earliestOnset = Age.min(earliestOnset, earliest.get());
+          earliestOnset = TemporalPoint.min(earliestOnset, earliest.get());
       }
-      Optional<Age> latest = phenotype.latestOnset();
+      Optional<TemporalPoint> latest = phenotype.latestOnset();
       if (latest.isPresent()) {
         if (latestOnset == null)
           latestOnset = latest.get();
         else
-          latestOnset = Age.max(latestOnset, latest.get());
+          latestOnset = TemporalPoint.max(latestOnset, latest.get());
       }
     }
 
     return (earliestOnset == null || latestOnset == null)
       ? null
-      : TemporalInterval.of(earliestOnset, latestOnset);
+      : TemporalRange.of(earliestOnset, latestOnset);
   }
 
   /**

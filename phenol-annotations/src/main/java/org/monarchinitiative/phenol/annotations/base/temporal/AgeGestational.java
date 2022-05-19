@@ -14,7 +14,7 @@ class AgeGestational {
   }
 
   private static abstract class AgeGestationalBase implements Age {
-    private final int days;
+    protected final int days;
 
     protected AgeGestationalBase(int days) {
       this.days = days;
@@ -45,7 +45,7 @@ class AgeGestational {
 
     @Override
     public int hashCode() {
-      return Objects.hash(days, true);
+      return Objects.hash(days);
     }
 
   }
@@ -57,15 +57,24 @@ class AgeGestational {
     }
 
     @Override
+    public TemporalPoint start() {
+      return TemporalPoint.of(days, isGestational());
+    }
+
+    @Override
+    public TemporalPoint end() {
+      return TemporalPoint.of(days, isGestational());
+    }
+
+    @Override
     public ConfidenceInterval confidenceInterval() {
       return ConfidenceInterval.precise();
     }
 
-
     @Override
     public String toString() {
       return "AgeGestationalPrecise{" +
-        "days=" + days() +
+        "days=" + days +
         '}';
     }
   }
@@ -77,6 +86,16 @@ class AgeGestational {
     private AgeGestationalImprecise(int days, ConfidenceInterval ci) {
       super(days);
       this.ci = ci;
+    }
+
+    @Override
+    public TemporalPoint start() {
+      return TemporalPoint.of(days + ci.lowerBound(), isGestational());
+    }
+
+    @Override
+    public TemporalPoint end() {
+      return TemporalPoint.of(days + ci.upperBound(), isGestational());
     }
 
     @Override
@@ -101,7 +120,7 @@ class AgeGestational {
     @Override
     public String toString() {
       return "AgeGestationalImprecise{" +
-        "days=" + days() +
+        "days=" + days +
         "ci=" + ci +
         "}";
     }

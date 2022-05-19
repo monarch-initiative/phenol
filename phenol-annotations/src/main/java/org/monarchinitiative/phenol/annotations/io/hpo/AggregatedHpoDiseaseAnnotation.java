@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotationMetadata;
@@ -17,15 +17,15 @@ class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
 
   private final TermId id;
   private final Ratio ratio;
-  private final List<TemporalInterval> observationIntervals;
-  private final Age earliestOnset, latestOnset; // nullable
+  private final List<TemporalRange> observationIntervals;
+  private final TemporalPoint earliestOnset, latestOnset; // nullable
   private final List<AnnotationReference> references;
 
   AggregatedHpoDiseaseAnnotation(TermId id,
                                  Ratio ratio,
-                                 Age earliestOnset,
-                                 Age latestOnset,
-                                 List<TemporalInterval> observationIntervals,
+                                 TemporalPoint earliestOnset,
+                                 TemporalPoint latestOnset,
+                                 List<TemporalRange> observationIntervals,
                                  List<AnnotationReference> references) {
     this.id = Objects.requireNonNull(id);
     this.ratio = Objects.requireNonNull(ratio);
@@ -51,34 +51,35 @@ class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public List<TemporalInterval> observationIntervals() {
+  public List<TemporalRange> observationIntervals() {
     return observationIntervals;
   }
 
   @Override
-  public Optional<Ratio> observedInInterval(TemporalInterval target) {
+  public Optional<Ratio> observedInInterval(TemporalRange target) {
+    // TODO - investigate
     return Optional.empty();
   }
 
   @Override
-  public Optional<Age> earliestOnset() {
+  public Optional<TemporalPoint> earliestOnset() {
     return Optional.ofNullable(earliestOnset);
   }
 
   @Override
-  public Optional<Age> latestOnset() {
+  public Optional<TemporalPoint> latestOnset() {
     return Optional.ofNullable(latestOnset);
   }
 
   // we do not have the resolution data in HPOA file
   @Override
-  public Optional<Age> earliestResolution() {
+  public Optional<TemporalPoint> earliestResolution() {
     return Optional.empty();
   }
 
   // we do not have the resolution data in HPOA file
   @Override
-  public Optional<Age> latestResolution() {
+  public Optional<TemporalPoint> latestResolution() {
     return Optional.empty();
   }
 

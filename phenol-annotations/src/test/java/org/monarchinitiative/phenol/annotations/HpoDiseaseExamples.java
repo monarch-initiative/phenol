@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -26,14 +26,14 @@ public class HpoDiseaseExamples {
         )),
       HpoDiseaseAnnotation.of(TermId.of("HP:0032934"), // Spontaneous cerebrospinal fluid leak
         List.of(
-          HpoDiseaseAnnotationMetadata.of(HpoDiseaseAnnotationTest.createAnnotationReference("PMID:8530937"), TemporalInterval.openEnd(HpoOnset.YOUNG_ADULT_ONSET.start()), HpoFrequency.VERY_RARE, List.of(), null)
+          HpoDiseaseAnnotationMetadata.of(HpoDiseaseAnnotationTest.createAnnotationReference("PMID:8530937"), TemporalRange.openEnd(HpoOnset.YOUNG_ADULT_ONSET.start()), HpoFrequency.VERY_RARE, List.of(), null)
         ))
     );
     List<TermId> modesOfInheritance = List.of(TermId.of("HP:0000006")); // Autosomal dominant inheritance
 
     return HpoDisease.of(databaseId,
       diseaseName,
-      TemporalInterval.openEnd(HpoOnset.YOUNG_ADULT_ONSET.start()),
+      TemporalRange.openEnd(HpoOnset.YOUNG_ADULT_ONSET.start()),
       annotations,
       modesOfInheritance
     );

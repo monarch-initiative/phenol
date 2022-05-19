@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -25,12 +25,12 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
   private final Ratio ratio;
 
-  private final List<TemporalInterval> observationIntervals;
+  private final List<TemporalRange> observationIntervals;
 
   static HpoDiseaseAnnotationDefault of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
     // 1. Initialize
     int numerator = 0, denominator = 0;
-    List<TemporalInterval> observationIntervals = new LinkedList<>();
+    List<TemporalRange> observationIntervals = new LinkedList<>();
 
     // 2. Process ratio and observation intervals in a single loop
     for (HpoDiseaseAnnotationMetadata datum : metadata) {
@@ -43,17 +43,17 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       }
 
       // Observation intervals
-      Optional<TemporalInterval> interval = datum.observationInterval();
+      Optional<TemporalRange> interval = datum.observationInterval();
       if (interval.isPresent()) {
-        TemporalInterval current = interval.get();
+        TemporalRange current = interval.get();
 
         boolean overlapFound = false;
         for (int j = 0; j < observationIntervals.size(); j++) {
-          TemporalInterval other = observationIntervals.get(j);
+          TemporalRange other = observationIntervals.get(j);
           if (current.overlapsWith(other)) {
-            observationIntervals.set(j, TemporalInterval.of(
-              Age.min(current.start(), other.start()),
-              Age.max(current.end(), other.end()))
+            observationIntervals.set(j, TemporalRange.of(
+              TemporalPoint.min(current.start(), other.start()),
+              TemporalPoint.max(current.end(), other.end()))
             );
             overlapFound = true;
             break;
@@ -69,8 +69,8 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       ? null
       : Ratio.of(numerator, denominator);
 
-    List<TemporalInterval> intervals = observationIntervals.stream()
-      .sorted(TemporalInterval::compare)
+    List<TemporalRange> intervals = observationIntervals.stream()
+      .sorted(TemporalRange::compare)
       .collect(Collectors.toUnmodifiableList());
 
     return new HpoDiseaseAnnotationDefault(termId, metadata, ratio, intervals);
@@ -79,7 +79,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   private HpoDiseaseAnnotationDefault(TermId termId,
                                       Collection<HpoDiseaseAnnotationMetadata> metadata,
                                       Ratio ratio,
-                                      List<TemporalInterval> observationIntervals) {
+                                      List<TemporalRange> observationIntervals) {
     this.termId = Objects.requireNonNull(termId, "Term ID must not be null");
     this.metadata = metadata;
     this.ratio = Objects.requireNonNull(ratio, "Ratio must not be null!");
@@ -102,12 +102,12 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public List<TemporalInterval> observationIntervals() {
+  public List<TemporalRange> observationIntervals() {
     return observationIntervals;
   }
 
   @Override
-  public Optional<Ratio> observedInInterval(TemporalInterval target) {
+  public Optional<Ratio> observedInInterval(TemporalRange target) {
     return metadata.stream()
       .filter(meta -> meta.observationInterval().map(interval -> interval.overlapsWith(target)).orElse(false))
       .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))

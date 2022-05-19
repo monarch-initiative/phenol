@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
@@ -128,7 +128,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
     Optional<HpoOnset> earliest = termIds.stream()
       .map(HpoOnset::fromTermId)
       .flatMap(Optional::stream)
-      .min(Comparator.comparing(a -> a, TemporalInterval::compare));
+      .min(Comparator.comparing(a -> a, TemporalRange::compare));
 
     if (earliest.isPresent())
       return earliest.get();
@@ -142,7 +142,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
         if (onset == null)
           onset = candidate;
         else {
-          int result = TemporalInterval.compare(candidate, onset);
+          int result = TemporalRange.compare(candidate, onset);
           if (result < 0)
             onset = candidate;
         }

@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -80,53 +80,53 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
 
 
   /**
-   * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
+   * @return list of {@link TemporalRange}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
    */
-  List<TemporalInterval> observationIntervals();
+  List<TemporalRange> observationIntervals();
 
   /**
    * @param target temporal interval
-   * @return ratio of patients with {@link HpoDiseaseAnnotation} observable in given <code>target</code> {@link TemporalInterval}
+   * @return ratio of patients with {@link HpoDiseaseAnnotation} observable in given <code>target</code> {@link TemporalRange}
    * or an empty {@link Optional} if no occurrence data is available
    */
-  Optional<Ratio> observedInInterval(TemporalInterval target);
+  Optional<Ratio> observedInInterval(TemporalRange target);
 
   /* **************************************************************************************************************** */
 
-  default Optional<Age> earliestOnset() {
+  default Optional<TemporalPoint> earliestOnset() {
     return metadata()
       .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
-      .map(TemporalInterval::start)
-      .min(Age::compare);
+      .map(TemporalRange::start)
+      .min(TemporalPoint::compare);
   }
 
-  default Optional<Age> latestOnset() {
+  default Optional<TemporalPoint> latestOnset() {
     return metadata()
       .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
-      .map(TemporalInterval::start)
-      .max(Age::compare);
+      .map(TemporalRange::start)
+      .max(TemporalPoint::compare);
   }
 
-  default Optional<Age> earliestResolution() {
+  default Optional<TemporalPoint> earliestResolution() {
     return metadata()
       .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
-      .map(TemporalInterval::end)
-      .min(Age::compare);
+      .map(TemporalRange::end)
+      .min(TemporalPoint::compare);
   }
 
-  default Optional<Age> latestResolution() {
+  default Optional<TemporalPoint> latestResolution() {
     return metadata()
       .filter(HpoDiseaseAnnotationMetadata::isPresent)
       .map(HpoDiseaseAnnotationMetadata::observationInterval)
       .flatMap(Optional::stream)
-      .map(TemporalInterval::end)
-      .max(Age::compare);
+      .map(TemporalRange::end)
+      .max(TemporalPoint::compare);
   }
 
   default List<AnnotationReference> references() {

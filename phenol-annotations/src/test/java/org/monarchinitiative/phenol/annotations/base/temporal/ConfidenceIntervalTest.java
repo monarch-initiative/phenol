@@ -34,15 +34,6 @@ public class ConfidenceIntervalTest {
     assertThat(ConfidenceInterval.of(-5, 10), is(not(sameInstance(ci))));
   }
 
-  @Test
-  public void asTemporalInterval() {
-    ConfidenceInterval ci = ConfidenceInterval.of(-5, 10);
-    // note, it does not matter what CI the age has. We're testing the `ConfidenceInterval` here (hence precise).
-    TemporalInterval ti = ci.asTemporalInterval(Age.of(10, false, ConfidenceInterval.precise()));
-    assertThat(ti.start(), equalTo(Age.postnatal(5)));
-    assertThat(ti.end(), equalTo(Age.postnatal(20)));
-  }
-
   @ParameterizedTest
   @CsvSource({
     " 1,  2",

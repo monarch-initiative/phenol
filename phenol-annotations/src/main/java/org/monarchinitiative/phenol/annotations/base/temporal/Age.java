@@ -3,13 +3,10 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link Age} represents the duration since the start of the time-line.
- * Start of the timeline is represented by the {@link Age#lastMenstrualPeriod()} for prenatal events
- * and by {@link Age#birth()} for postnatal events.
- * <p>
- * Internally, the duration is stored as a non-negative number of days passed since the start of the time-line.
+ * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceInterval}. Based on the {@link ConfidenceInterval},
+ * the {@link Age} can be interpreted as a {@link TemporalRange}.
  */
-public interface Age {
+public interface Age extends TemporalPoint, TemporalRange {
 
   double DAYS_IN_JULIAN_YEAR = 365.25;
 
@@ -22,24 +19,10 @@ public interface Age {
   int MAX_DAYS = 20 * 36_525;
 
   /**
-   * @return age representing the last menstrual period before the conception.
-   */
-  static Age lastMenstrualPeriod() {
-    return AgeGestational.LMP;
-  }
-
-  /**
-   * @return age representing birth.
-   */
-  static Age birth() {
-    return AgePostnatal.BIRTH;
-  }
-
-  /**
    * Create a precise gestational {@link Age} representing the number of weeks and months
-   * since the {@link Age#lastMenstrualPeriod()}.
+   * since the {@link TemporalPoint#lastMenstrualPeriod()}.
    *
-   * @param weeks a non-negative number of completed weeks since the {@link Age#lastMenstrualPeriod()}.
+   * @param weeks a non-negative number of completed weeks since the {@link TemporalPoint#lastMenstrualPeriod()}.
    * @param days a non-negative number of additional days to the number of completed weeks.
    * @return precise gestational age.
    */
@@ -49,9 +32,9 @@ public interface Age {
 
   /**
    * Create a possibly imprecise gestational {@link Age} representing the number of weeks and months
-   * since the {@link Age#lastMenstrualPeriod()}.
+   * since the {@link TemporalPoint#lastMenstrualPeriod()}.
    *
-   * @param weeks a non-negative number of completed weeks since the {@link Age#lastMenstrualPeriod()}.
+   * @param weeks a non-negative number of completed weeks since the {@link TemporalPoint#lastMenstrualPeriod()}.
    * @param days a non-negative number of additional days to the number of completed weeks.
    * @param ci confidence interval determining if the age is precise or imprecise.
    * @return possibly imprecise gestational age.
@@ -66,7 +49,7 @@ public interface Age {
 
   /**
    * Create a precise postnatal {@link Age} representing the number of years, months, and days
-   * since {@link Age#birth()}.
+   * since {@link TemporalPoint#birth()}.
    *
    * @param years a non-negative number of years.
    * @param months a non-negative number of months.
@@ -80,7 +63,7 @@ public interface Age {
 
   /**
    * Create a possibly imprecise postnatal {@link Age} representing the number of years, months, and days
-   * since {@link Age#birth()}.
+   * since {@link TemporalPoint#birth()}.
    *
    * @param years a non-negative number of years.
    * @param months a non-negative number of months.
@@ -170,63 +153,24 @@ public interface Age {
   /* **************************************************************************************************************** */
 
   /**
-   * Get the number of days since start of the time-line. This is the number of days since {@link Age#lastMenstrualPeriod()}
-   * for {@link Age#isGestational()} and since {@link Age#birth()} for {@link Age#isPostnatal()}.
-   * The number is <em>non-negative</em>.
-   *
-   * @return the number of days.
-   */
-  int days();
-
-  /**
-   * @return true if the {@link Age} represents the time passed since conception but prior {@link Age#birth()}.
-   */
-  boolean isGestational();
-
-  boolean isOpen();
-
-  /**
-   * @return age confidence interval
+   * @return the {@link ConfidenceInterval} associated with the {@link Age}.
    */
   ConfidenceInterval confidenceInterval();
 
   /* **************************************************************************************************************** */
 
   /**
-   * @return true if the {@link Age} represents the time passed since {@link Age#birth()}.
+   * @return <code>true</code> if the associated {@link ConfidenceInterval} is precise.
    */
-  default boolean isPostnatal() {
-    return !isGestational();
-  }
-
-  default boolean isClosed() {
-    return !isOpen();
-  }
-
-  default boolean isZero() {
-    return days() == 0;
-  }
-
-  default boolean isPositive() {
-    return days() > 0;
-  }
-
   default boolean isPrecise() {
     return confidenceInterval().isPrecise();
   }
 
+  /**
+   * @return <code>true</code> if the associated {@link ConfidenceInterval} is <em>NOT</em> precise.
+   */
   default boolean isImprecise() {
     return !isPrecise();
-  }
-
-  /**
-   * Get a precise {@link TemporalInterval} spanning the confidence interval associated with this age. The {@link TemporalInterval}
-   * has length <code>0</code> if the {@link Age#isPrecise()}.
-   *
-   * @return the temporal interval.
-   */
-  default TemporalInterval asTemporalInterval() {
-    return confidenceInterval().asTemporalInterval(this);
   }
 
   /**
@@ -241,8 +185,6 @@ public interface Age {
     return Age.of(days, isGestational(), confidenceInterval());
   }
 
-  /* **************************************************************************************************************** */
-
   static Age max(Age a, Age b) {
     int compare = Age.compare(a, b);
     return compare >= 0 ? a : b;
@@ -253,28 +195,22 @@ public interface Age {
     return compare <= 0 ? a : b;
   }
 
-  /* **************************************************************************************************************** */
-
   static int compare(Age x, Age y) {
-    if (x.isGestational() ^ y.isGestational())
-      return x.isGestational() ? -1 : 1;
-
-    int result = Integer.compare(x.days(), y.days());
+    int result = TemporalPoint.compare(x, y);
     if (result != 0)
       return result;
 
     return ConfidenceInterval.compare(x.confidenceInterval(), y.confidenceInterval());
   }
 
-
   /**
-   * Ensure the confidence interval does not extend beyond {@link Age#lastMenstrualPeriod()} for gestational {@link Age}
-   * and beyond {@link Age#birth()} for postnatal {@link Age}.
+   * Ensure the confidence interval does not extend beyond {@link TemporalPoint#lastMenstrualPeriod()} for gestational {@link Age}
+   * and beyond {@link TemporalPoint#birth()} for postnatal {@link Age}.
    * <p>
-   * The clipping sets the lower bound to include at most {@link Age#lastMenstrualPeriod()} or {@link Age#birth()}.
+   * The clipping sets the lower bound to include at most {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
    *
    * @param ci confidence interval to clip.
-   * @param days number of days either since {@link Age#lastMenstrualPeriod()} or {@link Age#birth()}.
+   * @param days number of days either since {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
    * @return clipped {@link ConfidenceInterval} or the <code>ci</code> instance if clipping was not necessary.
    */
   private static ConfidenceInterval clipConfidenceInterval(ConfidenceInterval ci, int days) {

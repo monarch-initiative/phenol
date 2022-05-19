@@ -1,6 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -22,7 +22,7 @@ class HpoDiseaseDefault implements HpoDisease {
   /**
    * Global disease onset.
    */
-  private final TemporalInterval onset;
+  private final TemporalRange onset;
 
   /**
    * {@link TermId}s with phenotypic abnormalities and their frequencies.
@@ -36,7 +36,7 @@ class HpoDiseaseDefault implements HpoDisease {
 
   HpoDiseaseDefault(TermId diseaseDatabaseId,
                     String diseaseName,
-                    TemporalInterval onset,
+                    TemporalRange onset,
                     List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                     List<TermId> modesOfInheritance) {
     this.diseaseDatabaseId = Objects.requireNonNull(diseaseDatabaseId, "Disease database ID must not be null");
@@ -75,7 +75,7 @@ class HpoDiseaseDefault implements HpoDisease {
   }
 
   @Override
-  public Optional<TemporalInterval> diseaseOnset() {
+  public Optional<TemporalRange> diseaseOnset() {
     return Optional.ofNullable(onset);
   }
 

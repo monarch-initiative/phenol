@@ -36,6 +36,16 @@ class AgeOpen implements Age {
   }
 
   @Override
+  public TemporalPoint start() {
+    return TemporalPoints.OPEN_START;
+  }
+
+  @Override
+  public TemporalPoint end() {
+    return TemporalPoints.OPEN_END;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

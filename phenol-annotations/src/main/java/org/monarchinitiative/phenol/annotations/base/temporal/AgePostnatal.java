@@ -16,11 +16,9 @@ class AgePostnatal {
 
   private static abstract class AgePostnatalBase implements Age {
 
-    private final int days;
+    protected final int days;
 
     protected AgePostnatalBase(int days) {
-      if (days > MAX_DAYS)
-        throw new ArithmeticException(String.format("Number of days %d must not be greater than %d", days, MAX_DAYS));
       this.days = days;
     }
 
@@ -60,6 +58,16 @@ class AgePostnatal {
     }
 
     @Override
+    public TemporalPoint start() {
+      return TemporalPoint.of(days, isGestational());
+    }
+
+    @Override
+    public TemporalPoint end() {
+      return TemporalPoint.of(days, isGestational());
+    }
+
+    @Override
     public ConfidenceInterval confidenceInterval() {
       return ConfidenceInterval.precise();
     }
@@ -77,7 +85,7 @@ class AgePostnatal {
     @Override
     public String toString() {
       return "AgePostnatalPrecise{" +
-        "days=" + days() +
+        "days=" + days +
         '}';
     }
 
@@ -90,6 +98,16 @@ class AgePostnatal {
     private AgePostnatalImprecise(int days, ConfidenceInterval ci) {
       super(days);
       this.ci = ci;
+    }
+
+    @Override
+    public TemporalPoint start() {
+      return TemporalPoint.of(days + ci.lowerBound(), isGestational());
+    }
+
+    @Override
+    public TemporalPoint end() {
+      return TemporalPoint.of(days + ci.upperBound(), isGestational());
     }
 
     @Override
@@ -114,7 +132,7 @@ class AgePostnatal {
     @Override
     public String toString() {
       return "AgePostnatalImprecise{" +
-        "days=" + days() +
+        "days=" + days +
         "ci=" + ci +
         "}";
     }
