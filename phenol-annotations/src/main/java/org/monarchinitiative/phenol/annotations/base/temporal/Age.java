@@ -135,22 +135,22 @@ public interface Age extends TemporalPoint, TemporalRange {
       ci = clipConfidenceInterval(ci, days);
 
     return isGestational
-      ? AgeGestational.of(days, ci)
-      : AgePostnatal.of(days, ci);
+      ? Ages.gestational(days, ci)
+      : Ages.postnatal(days, ci);
   }
 
   /**
-   * @return age that represents event that occurred in unspecified distant past.
+   * @return {@link Age} that represents event that occurred in unspecified distant past.
    */
   static Age openStart() {
-    return AgeGestational.START;
+    return Ages.START;
   }
 
   /**
-   * @return age that represents event that occurs in unspecified distant future.
+   * @return {@link Age} that represents event that occurs in unspecified distant future.
    */
   static Age openEnd() {
-    return AgePostnatal.END;
+    return Ages.END;
   }
 
   /* **************************************************************************************************************** */
