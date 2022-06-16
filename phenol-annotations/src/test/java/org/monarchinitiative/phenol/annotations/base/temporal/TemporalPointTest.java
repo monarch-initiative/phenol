@@ -5,9 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+
+import static org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint.*;
 
 public class TemporalPointTest {
 
@@ -70,6 +75,28 @@ public class TemporalPointTest {
       TemporalPoint right = TemporalPoint.of(rightDays, rightGestational);
 
       assertThat(TemporalPoint.compare(left, right), equalTo(result));
+    }
+
+    @Test
+    public void compare_open() {
+      TemporalPoint openStart = openStart();
+      TemporalPoint lastMenstrualPeriod = lastMenstrualPeriod();
+      TemporalPoint gestational = of(10, true);
+      TemporalPoint birth = birth();
+      TemporalPoint postnatal = of(10, false);
+      TemporalPoint openEnd = openEnd();
+      List<TemporalPoint> sorted = List.of(openStart, lastMenstrualPeriod, gestational, birth, postnatal, openEnd);
+      List<TemporalPoint> points = new ArrayList<>(sorted);
+
+      // shuffle and re-sort the points using the comparator
+      Collections.shuffle(points);
+      points.sort(TemporalPoint::compare);
+
+      for (int i = 0; i < points.size(); i++) {
+        TemporalPoint a = points.get(i);
+        TemporalPoint b = sorted.get(i);
+        assertThat(a, equalTo(b));
+      }
     }
   }
 }

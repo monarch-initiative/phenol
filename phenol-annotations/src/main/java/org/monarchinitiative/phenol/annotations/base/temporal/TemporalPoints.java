@@ -2,21 +2,24 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
-public class TemporalPoints {
+/**
+ * Static utility class with default {@link TemporalPoint} implementation.
+ */
+class TemporalPoints {
 
-  static final TemporalPoint LMP = new TemporalPoints.ClosedTemporalPoint(0, true);
-  static final TemporalPoint BIRTH = new TemporalPoints.ClosedTemporalPoint(0, false);
+  static final TemporalPoint LMP = new ClosedTemporalPoint(0, true);
+  static final TemporalPoint BIRTH = new ClosedTemporalPoint(0, false);
   static final TemporalPoint OPEN_START = new OpenTemporalPoint(Integer.MIN_VALUE, true);
-  static final TemporalPoint OPEN_END = new OpenTemporalPoint(Integer.MAX_VALUE, true);
+  static final TemporalPoint OPEN_END = new OpenTemporalPoint(Integer.MAX_VALUE, false);
 
   private TemporalPoints() {
   }
 
-  public static TemporalPoint gestational(int days) {
+  static TemporalPoint gestational(int days) {
     return days == 0 ? LMP : new ClosedTemporalPoint(days, true);
   }
 
-  public static TemporalPoint postnatal(int days) {
+  static TemporalPoint postnatal(int days) {
     return days == 0 ? BIRTH : new ClosedTemporalPoint(days, false);
   }
 

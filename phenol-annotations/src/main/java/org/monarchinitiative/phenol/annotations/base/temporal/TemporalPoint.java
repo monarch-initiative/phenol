@@ -36,7 +36,6 @@ public interface TemporalPoint extends TimelineAware {
     return TemporalPoints.BIRTH;
   }
 
-
   static TemporalPoint of(int days, boolean isGestational) {
     return isGestational
       ? TemporalPoints.gestational(days)
