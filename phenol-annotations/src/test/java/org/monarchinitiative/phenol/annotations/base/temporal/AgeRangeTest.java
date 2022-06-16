@@ -11,10 +11,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AgeRangeTest {
 
   @Test
-  public void create() {
+  public void precise() {
     AgeRange interval = AgeRange.of(Age.postnatal(10), Age.postnatal(20));
     assertThat(interval.start(), equalTo(Age.postnatal(10)));
     assertThat(interval.end(), equalTo(Age.postnatal(20)));
+    assertThat(interval.isPrecise(), equalTo(true));
+    assertThat(interval.isImprecise(), equalTo(false));
+  }
+
+  @Test
+  public void imprecise() {
+    AgeRange interval = AgeRange.of(Age.postnatal(10, ConfidenceInterval.of(5, 16)), Age.postnatal(20));
+    assertThat(interval.start().days(), equalTo(10));
+    // TODO - test lower/upper bounds
+//    assertThat(interval.start(), equalTo(Age.postnatal(10)));
+//    assertThat(interval.start(), equalTo(Age.postnatal(10)));
+    assertThat(interval.end().days(), equalTo(20));
+    assertThat(interval.end().isPrecise(), equalTo(true));
+    assertThat(interval.isPrecise(), equalTo(false));
+    assertThat(interval.isImprecise(), equalTo(true));
   }
 
   @ParameterizedTest
@@ -32,18 +47,24 @@ public class AgeRangeTest {
   public void length_openEndpoints() {
     Age stamp = Age.postnatal(1);
 
-    assertThat(AgeRange.openStart(stamp).length(), equalTo(AgeRange.open()));
-    assertThat(AgeRange.openEnd(stamp).length(), equalTo(AgeRange.open()));
-    assertThat(AgeRange.open().length(), equalTo(AgeRange.open()));
+    assertThat(AgeRange.openStart(stamp).length(), equalTo(AgeRange.open().length()));
+    assertThat(AgeRange.openEnd(stamp).length(), equalTo(AgeRange.open().length()));
+    assertThat(AgeRange.open().length(), equalTo(AgeRange.open().length()));
   }
 
 
   @Test
   public void intersection_openEnds() {
-    AgeRange closed = AgeRange.of(Age.postnatal(1), Age.postnatal(2));
+    TemporalRange closed = TemporalRange.of(TemporalPoint.of(1, false), TemporalPoint.of(2, false));
 
-    assertThat(AgeRange.openStart(Age.postnatal(2)).intersection(closed), equalTo(closed)); // left open
-    assertThat(AgeRange.openEnd(Age.postnatal(1)).intersection(closed), equalTo(closed)); // right open
+    TemporalRange openStartIntersection = AgeRange.openStart(Age.postnatal(2)).intersection(closed);
+    assertThat(openStartIntersection.start().days(), equalTo(closed.start().days()));
+    assertThat(openStartIntersection.end().days(), equalTo(closed.end().days()));
+
+    TemporalRange openEndIntersection = AgeRange.openEnd(Age.postnatal(1)).intersection(closed);
+    assertThat(openEndIntersection.start().days(), equalTo(closed.start().days()));
+    assertThat(openEndIntersection.end().days(), equalTo(closed.end().days()));
+
     assertThat(AgeRange.open().intersection(closed), equalTo(closed)); // fully open
   }
 

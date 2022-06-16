@@ -66,23 +66,21 @@ public interface TemporalRange {
   }
 
   /**
-   * @return length represented as {@link TemporalRange} that starts on {@link TemporalPoint#birth()}.
-   * <p>
-   * If the start or the end of <code>this</code> {@link TemporalRange} is open,
-   * then the length is {@link TemporalRange#open()}.
+   * Get the number of days spanned by <code>this</code> {@link TemporalRange}.
+   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
+   *
+   * @return the number of days.
    */
   default int length() {
-    if (isFullyClosed()) {
-//      return TemporalRange.of(TemporalPoint.birth(), TemporalPoints.postnatal(end().days() - start().days()));
-      return end().days() - start().days();
-    } else {
-      return Integer.MAX_VALUE;
-    }
+    return isFullyClosed()
+      ? end().days() - start().days()
+      : Integer.MAX_VALUE;
   }
 
+  /**
+   * @return <code>true</code> if {@link #length()} is equal to <code>0</code>.
+   */
   default boolean isEmpty() {
-//    TemporalRange length = length();
-//    return length.end().isZero();
     return length() == 0;
   }
 

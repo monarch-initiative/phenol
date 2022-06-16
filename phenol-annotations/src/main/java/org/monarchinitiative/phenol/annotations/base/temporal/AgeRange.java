@@ -39,8 +39,14 @@ public interface AgeRange extends TemporalRange {
 
   /* **************************************************************************************************************** */
 
+  /**
+   * @return {@link Age} that represents start of the {@link AgeRange}. The start bound is <em>included</em>.
+   */
   Age start();
 
+  /**
+   * @return {@link Age} that represents end bound of the {@link AgeRange}. The end bound is <em>excluded</em>.
+   */
   Age end();
 
   /* **************************************************************************************************************** */
