@@ -177,11 +177,12 @@ public interface Age extends TemporalPoint, TemporalRange {
   }
 
   /**
-   * Add <code>other</code> age to <code>this</code>. Note, the {@link ConfidenceInterval} associated with
+   * Add <code>other</code> {@link Age} to <code>this</code>. Note, the {@link ConfidenceInterval} associated with
    * the <code>other</code> {@link Age} is not taken into account.
    *
-   * @param other age
-   * @return new {@link Age} representing the total number of days with this {@link ConfidenceInterval}.
+   * @param other gestational or postnatal {@link Age}.
+   * @return new {@link Age} representing the total number of days of <code>this</code> and <code>other</code>
+   * with <code>this</code>'s {@link ConfidenceInterval}.
    */
   default Age plus(Age other) {
     int days = days() + other.days();

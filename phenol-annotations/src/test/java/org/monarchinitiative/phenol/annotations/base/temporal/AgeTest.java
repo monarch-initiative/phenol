@@ -12,6 +12,59 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AgeTest {
 
   @Nested
+  public class AgeTests {
+
+    @ParameterizedTest
+    @CsvSource({
+      "15, false,  15,  true,     false",
+      "15,  true,  15, false,      true",
+
+      "10,  true,  20,  true,      true",
+      "20,  true,  10,  true,     false",
+
+      "10, false,  20, false,      true",
+      "20, false,  10, false,     false",
+    })
+    public void min(int leftDays, boolean leftIsGestational,
+                    int rightDays, boolean rightIsGestational,
+                    boolean leftIsSmaller) {
+      Age left = Age.of(leftDays, leftIsGestational, ConfidenceInterval.precise());
+      Age right = Age.of(rightDays, rightIsGestational, ConfidenceInterval.precise());
+      Age max = Age.min(left, right);
+
+      if (leftIsSmaller)
+        assertThat(max, equalTo(left));
+      else
+        assertThat(max, equalTo(right));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "15, false,  15,  true,      true",
+      "15,  true,  15, false,     false",
+
+      "10,  true,  20,  true,     false",
+      "20,  true,  10,  true,      true",
+
+      "10, false,  20, false,     false",
+      "20, false,  10, false,      true",
+    })
+    public void max(int leftDays, boolean leftIsGestational,
+                    int rightDays, boolean rightIsGestational,
+                    boolean leftIsGreater) {
+      Age left = Age.of(leftDays, leftIsGestational, ConfidenceInterval.precise());
+      Age right = Age.of(rightDays, rightIsGestational, ConfidenceInterval.precise());
+      Age max = Age.max(left, right);
+
+      if (leftIsGreater)
+        assertThat(max, equalTo(left));
+      else
+        assertThat(max, equalTo(right));
+    }
+
+  }
+
+  @Nested
   public class PreciseAgeTests {
 
     @Test
