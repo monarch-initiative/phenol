@@ -9,22 +9,29 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
   private final int lowerBound;
   private final int upperBound;
 
+  public static ConfidenceInterval precise() {
+    return PRECISE;
+  }
+
+  /**
+   * Create a {@link ConfidenceInterval} from the provided <em>lower</em> and <em>upper</em> bounds.
+   *
+   * @param lowerBound non-positive lower bound.
+   * @param upperBound non-negative upper bound.
+   * @return the {@link ConfidenceInterval}.
+   */
+  public static ConfidenceInterval of(int lowerBound, int upperBound) {
+    if (lowerBound == 0 && upperBound == 0)
+      return PRECISE;
+    return new ConfidenceInterval(lowerBound, upperBound);
+  }
+
   private ConfidenceInterval(int lowerBound, int upperBound) {
     if (lowerBound > 0 || upperBound < 0)
       throw new IllegalArgumentException("'" + lowerBound + ", " + upperBound + "' ConfidenceInterval must have non-positive lowerBound and non-negative upperBound!");
 
     this.lowerBound = lowerBound;
     this.upperBound = upperBound;
-  }
-
-  public static ConfidenceInterval precise() {
-    return PRECISE;
-  }
-
-  public static ConfidenceInterval of(int lowerBound, int upperBound) {
-    if (lowerBound == 0 && upperBound == 0)
-      return PRECISE;
-    return new ConfidenceInterval(lowerBound, upperBound);
   }
 
 

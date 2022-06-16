@@ -177,6 +177,28 @@ public interface Age extends TemporalPoint, TemporalRange {
   }
 
   /**
+   * @return the day corresponding to the <em>lower</em> bound of the {@link Age} when considering
+   * the associated {@link ConfidenceInterval}.
+   */
+  default int lowerBound() {
+    int days = days();
+    return isPrecise()
+      ? days
+      : days + confidenceInterval().lowerBound();
+  }
+
+  /**
+   * @return the day corresponding to the <em>upper</em> bound of the {@link Age} when considering
+   * the associated {@link ConfidenceInterval}.
+   */
+  default int upperBound() {
+    int days = days();
+    return isPrecise()
+      ? days
+      : days + confidenceInterval().upperBound();
+  }
+
+  /**
    * Add <code>other</code> {@link Age} to <code>this</code>. Note, the {@link ConfidenceInterval} associated with
    * the <code>other</code> {@link Age} is not taken into account.
    *
