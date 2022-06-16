@@ -86,7 +86,10 @@ public class HpoDiseaseAnnotationTest {
     public void observationIntervals() {
       List<TemporalRange> intervals = instance.observationIntervals();
       assertThat(intervals, hasSize(1));
-      assertThat(intervals, hasItem(TemporalRange.openEnd(TemporalPoint.of(1, false))));
+
+      TemporalRange item = intervals.get(0);
+      assertThat(item.start(), equalTo(TemporalPoint.of(1, false)));
+      assertThat(item.isEndOpen(), equalTo(true));
     }
 
     @ParameterizedTest
