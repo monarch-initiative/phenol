@@ -1,5 +1,10 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
+/**
+ * A pair of {@link Age}s where the {@link AgeRange#start()} is before or equal to {@link AgeRange#end()}.
+ * <p>
+ * {@link AgeRange} can be <em>precise</em> or <em>imprecise</em> based on the underlying {@link #start()} and {@link #end()}.
+ */
 public interface AgeRange extends TemporalRange {
 
   static AgeRange of(Age start, Age end) {

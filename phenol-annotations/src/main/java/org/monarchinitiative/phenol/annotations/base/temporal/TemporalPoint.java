@@ -2,13 +2,23 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 
 /**
- * {@link TemporalPoint} is an instant on a timeline.
+ * {@link TemporalPoint} is an instant on a timeline with the lowest resolution in days.
  * <p>
- * The {@link TemporalPoint} can be <em>open</em> ({@link #isOpen()})
- * or <em>closed</em> ({@link #isClosed()}). There are only two <em>open</em> {@link TemporalPoint}s to represent instants
- * that happened in unspecified future or past: {@link TemporalPoint#openStart()} and {@link TemporalPoint#openEnd()}.
+ * {@link TemporalPoint} is located either on the <em>gestational</em> timeline ({@link #isGestational()})
+ * or on the <em>postnatal</em> timeline ({@link #isPostnatal()}).
  * <p>
- * Internally, the duration is stored as a non-negative number of days passed since the start of the time-line.
+ * {@link TemporalPoint} can be <em>open</em> ({@link #isOpen()}) or <em>closed</em> ({@link #isClosed()}).
+ * There are only two <em>open</em> {@link TemporalPoint}s to represent instants
+ * that happened in unspecified future or past: {@link #openStart()} and {@link #openEnd()}.
+ * <p>
+ * Use {@link #compare(TemporalPoint, TemporalPoint)} for default sorting of the {@link TemporalPoint}s. The sorting
+ * uses the following invariants:
+ * <ul>
+ *   <li>gestational {@link TemporalPoint}s are <em>before</em> (less) than postnatal {@link TemporalPoint}s, and</li>
+ *   <li>{@link #openStart()} is <em>before</em> (less) and {@link #openEnd()} is <em>after</em> (more)
+ *   than any gestational or postnatal {@link TemporalPoint}.</li>
+ * </ul>
+ * <p>
  */
 public interface TemporalPoint extends TimelineAware {
 

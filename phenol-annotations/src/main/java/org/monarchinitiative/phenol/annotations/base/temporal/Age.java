@@ -3,8 +3,11 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceInterval}. Based on the {@link ConfidenceInterval},
- * the {@link Age} can be interpreted as a {@link TemporalRange}.
+ * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceInterval}. The {@link Age}
+ * can be <em>precise</em> or <em>imprecise</em> based on the associated {@link ConfidenceInterval}.
+ * The {@link ConfidenceInterval} also allows to interpret the {@link Age} as a {@link TemporalRange}.
+ * <p>
+ * As is the case of the {@link TemporalPoint}, {@link Age} has a day precision.
  */
 public interface Age extends TemporalPoint, TemporalRange {
 
