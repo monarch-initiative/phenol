@@ -13,11 +13,11 @@ import java.util.Optional;
 public interface HpoDiseaseAnnotationMetadata {
 
   static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
-                                         TemporalRange ageRange,
+                                         TemporalRange observationInterval,
                                          AnnotationFrequency frequency,
                                          Collection<TermId> modifiers,
                                          Sex sex) {
-    return new HpoDiseaseAnnotationMetadataDefault(reference, ageRange, frequency, modifiers, sex);
+    return new HpoDiseaseAnnotationMetadataDefault(reference, observationInterval, frequency, modifiers, sex);
   }
 
   /**
@@ -25,6 +25,9 @@ public interface HpoDiseaseAnnotationMetadata {
    */
   AnnotationReference reference();
 
+  /**
+   * @return {@link TemporalRange} that represents the interval when the {@link HpoDiseaseAnnotation} was observed.
+   */
   Optional<TemporalRange> observationInterval();
 
   /**
