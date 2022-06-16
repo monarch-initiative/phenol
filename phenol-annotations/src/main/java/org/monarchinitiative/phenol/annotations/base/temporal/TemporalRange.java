@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link TemporalRange} is a pair of {@link TemporalPoint}s <code>start</code> and <code>end</code> where
- * <code>start</code> starts at or before <code>end</code>.
+ * {@link TemporalRange} is a pair of {@link TemporalPoint}s {@link #start()} and {@link #end()} where
+ * {@link #start()} starts at or before {@link #end()}.
  */
 public interface TemporalRange {
 

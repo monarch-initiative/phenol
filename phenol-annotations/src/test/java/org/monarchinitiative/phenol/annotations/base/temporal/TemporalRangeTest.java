@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -12,12 +11,11 @@ public class TemporalRangeTest {
 
   @ParameterizedTest
   @CsvSource({
-    " 1,   0,   2,   0,      7",
-    " 1,   0,   1,   6,      6",
+    " 6,  16,     10",
   })
-  public void length_Gestational(int startWeeks, int startDays, int endWeeks, int endDays, int days) {
-    TemporalRange gestational = TemporalRange.of(Age.gestational(startWeeks, startDays), Age.gestational(endWeeks, endDays));
-    assertThat(gestational.length(), equalTo(TemporalRange.of(TemporalPoint.birth(), Age.postnatal(days))));
+  public void length_Gestational(int start, int end, int days) {
+    TemporalRange gestational = TemporalRange.of(TemporalPoint.of(start, true), TemporalPoint.of(end, true));
+    assertThat(gestational.length(), equalTo(days));
   }
 
   @ParameterizedTest
@@ -26,8 +24,8 @@ public class TemporalRangeTest {
     " 1,   1,      0",
   })
   public void length_Postnatal(int startDays, int endDays, int days) {
-    TemporalRange postnatal = TemporalRange.of(Age.postnatal(startDays), Age.postnatal(endDays));
-    assertThat(postnatal.length(), equalTo(TemporalRange.of(TemporalPoint.birth(), Age.postnatal(days))));
+    TemporalRange postnatal = TemporalRange.of(TemporalPoint.of(startDays, false), TemporalPoint.of(endDays, false));
+    assertThat(postnatal.length(), equalTo(days));
   }
 
   @ParameterizedTest
@@ -47,12 +45,14 @@ public class TemporalRangeTest {
     "1, 2,    3, 4,    0, 0",
     "3, 4,    1, 2,    0, 0",
   })
-  public void intersection(int leftStart, int leftEnd, int rightStart, int rightEnd, int expectedStart, int expectedEnd) {
-    AgeRange left = AgeRange.of(Age.postnatal(leftStart), Age.postnatal(leftEnd));
-    AgeRange right = AgeRange.of(Age.postnatal(rightStart), Age.postnatal(rightEnd));
+  public void intersection(int leftStart, int leftEnd,
+                           int rightStart, int rightEnd,
+                           int expectedStart, int expectedEnd) {
+    TemporalRange left = TemporalRange.of(TemporalPoint.of(leftStart,false), TemporalPoint.of(leftEnd, false));
+    TemporalRange right = TemporalRange.of(TemporalPoint.of(rightStart,false), TemporalPoint.of(rightEnd, false));
 
     TemporalRange intersection = left.intersection(right);
-    assertThat(intersection, equalTo(TemporalRange.of(Age.postnatal(expectedStart), Age.postnatal(expectedEnd))));
+    assertThat(intersection, equalTo(TemporalRange.of(TemporalPoint.of(expectedStart ,false), TemporalPoint.of(expectedEnd, false))));
   }
 
 }
