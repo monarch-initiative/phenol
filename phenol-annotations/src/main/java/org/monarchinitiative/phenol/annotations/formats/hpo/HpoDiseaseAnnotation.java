@@ -7,7 +7,6 @@ import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -33,26 +32,6 @@ import java.util.stream.Stream;
 public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseAnnotation> {
 
   Comparator<HpoDiseaseAnnotation> COMPARE_BY_ID = Comparator.comparing(HpoDiseaseAnnotation::id);
-
-  static HpoDiseaseAnnotation of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
-    float frequency = metadata.stream()
-      .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))
-      .flatMap(Optional::stream)
-      .reduce(Ratio::combine)
-      .map(Ratio::frequency)
-      .orElse(0F);
-
-    if (frequency > 1.0)
-      throw new IllegalArgumentException("Total frequency cannot be greater than 1: " + frequency);
-
-    return HpoDiseaseAnnotationDefault.of(termId, metadata);
-  }
-
-  /**
-   * @deprecated metadata are an implementation detail.
-   */
-  @Deprecated(forRemoval = true)
-  Stream<HpoDiseaseAnnotationMetadata> metadata();
 
   /**
    * @return ratio representing a total number of the cohort members who displayed presence of the phenotypic feature
@@ -140,6 +119,13 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
     return observationIntervals()
       .map(TemporalRange::end)
       .max(TemporalPoint::compare);
+  }
+
+  /**
+   * Compare two {@link HpoDiseaseAnnotation}s by their {@link #id()}s.
+   */
+  static int compareById(HpoDiseaseAnnotation x, HpoDiseaseAnnotation y) {
+    return COMPARE_BY_ID.compare(x, y);
   }
 
   /**

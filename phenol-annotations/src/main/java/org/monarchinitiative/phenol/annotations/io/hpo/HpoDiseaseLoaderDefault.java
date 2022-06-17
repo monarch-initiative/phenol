@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
+import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
@@ -15,6 +16,12 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * {@link HpoDiseaseLoaderDefault} first maps the phenotype terms into the deprecated {@link HpoAnnotation}
+ * and then maps it back to {@link HpoDiseaseAnnotation}.
+ * <p>
+ * The loader implements the parsing from the previous phenol versions.
+ */
 class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoDiseaseLoaderDefault.class);
@@ -38,7 +45,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
       .collect(Collectors.groupingBy(HpoAnnotation::id));
 
     List<HpoDiseaseAnnotation> diseaseAnnotations = phenotypeById.entrySet().stream()
-      .map(entry -> HpoDiseaseLoaderDefault.toDiseaseAnnotation(entry.getKey(), entry.getValue()))
+      .map(entry -> toDiseaseAnnotation(entry.getKey(), entry.getValue()))
       .collect(Collectors.toUnmodifiableList());
 
     return Optional.of(HpoDisease.of(diseaseId, diseaseData.diseaseName(),
@@ -96,7 +103,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
 
   private HpoAnnotation createHpoAnnotation(TermId phenotypeId, HpoAnnotationLine line) throws IllegalArgumentException {
     // frequency
-    AnnotationFrequency annotationFrequency = parseFrequency(line.isNOT(), line.getFrequency());
+    Ratio ratio = parseFrequency(line.isNOT(), line.getFrequency());
 
     // onset
     HpoOnset onset = HpoOnset.fromHpoIdString(line.getOnsetId())
@@ -115,7 +122,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
     Sex sex = Sex.parse(line.getSex()).orElse(null);
 
     return HpoAnnotation.of(phenotypeId,
-      annotationFrequency,
+      AnnotationFrequency.of(ratio),
       onset,
       modifiers,
       citations,
@@ -152,40 +159,36 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
     return onset;
   }
 
-  private static HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
-    List<HpoDiseaseAnnotationMetadata> metadata = annotations.stream()
-      .map(HpoDiseaseLoaderDefault::toHpoDiseaseAnnotationMetadata)
-      .flatMap(Collection::stream)
-      .collect(Collectors.toUnmodifiableList());
+  private HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
+    List<KnowsRatioAndMaybeTemporalRange> ratios = new ArrayList<>(annotations.size());
+    List<AnnotationReference> references = new ArrayList<>(annotations.size());
 
-    return HpoDiseaseAnnotation.of(phenotypeId, metadata);
-  }
+    // Assemble ratios and references in a single pass.
+    for (HpoAnnotation annotation : annotations) {
 
-  private static Collection<HpoDiseaseAnnotationMetadata> toHpoDiseaseAnnotationMetadata(HpoAnnotation annotation) {
-    List<HpoDiseaseAnnotationMetadata> metas = new ArrayList<>(annotation.citations().size());
-    EvidenceCode evidence = annotation.evidence();
-
-    boolean isFirst = true;
-    for (String citation : annotation.citations()) {
-      // We create metadata for each citation, but only the first citation gets the onset, frequency, modifiers, etc.
-      AnnotationReference reference;
-      try {
-        reference = AnnotationReference.of(TermId.of(citation), evidence);
-      } catch (PhenolRuntimeException e) {
-        LOGGER.warn("Skipping invalid citation {} in {}", citation, annotation.id());
+      // 1. TemporalRatio consists of 2 bits: ratio and reference.
+      Optional<Ratio> ratioOptional = annotation.annotationFrequency().ratio();
+      if (ratioOptional.isEmpty())
         continue;
-      }
-      HpoDiseaseAnnotationMetadata metadata;
-      if (isFirst)
-        metadata = HpoDiseaseAnnotationMetadata.of(reference, annotation.onset().orElse(null), annotation.annotationFrequency(), annotation.modifiers(), annotation.sex());
-      else
-        metadata = HpoDiseaseAnnotationMetadata.of(reference, null, null, annotation.modifiers(), annotation.sex());
 
-      metas.add(metadata);
-      isFirst = false;
+      Ratio ratio = ratioOptional.get();
+      TemporalRange temporalRange = annotation.onset()
+        .map(onset -> TemporalRange.openEnd(onset.start()))
+        .orElse(null);
+      ratios.add(KnowsRatioAndMaybeTemporalRange.of(ratio, temporalRange));
+
+      // 2. AnnotationReference
+      EvidenceCode evidence = annotation.evidence();
+      for (String citation : annotation.citations()) {
+        try {
+          references.add(AnnotationReference.of(TermId.of(citation), evidence));
+        } catch (PhenolRuntimeException e) {
+          LOGGER.warn("Skipping invalid citation {} in {}", citation, annotation.id());
+        }
+      }
     }
 
-    return metas;
+    return factory.create(phenotypeId, ratios, references);
   }
 
   /**

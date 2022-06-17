@@ -1,24 +1,27 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
+import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotationFrequency;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface HpoDiseaseAnnotationMetadata {
+// TODO(ielis) - consider removing.
+interface HpoDiseaseAnnotationMetadata {
 
-  static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
-                                         TemporalRange observationInterval,
-                                         AnnotationFrequency frequency,
-                                         Collection<TermId> modifiers,
-                                         Sex sex) {
-    return new HpoDiseaseAnnotationMetadataDefault(reference, observationInterval, frequency, modifiers, sex);
-  }
+//  static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
+//                                         TemporalRange observationInterval,
+//                                         AnnotationFrequency frequency,
+//                                         Collection<TermId> modifiers,
+//                                         Sex sex) {
+//    return new HpoDiseaseAnnotationMetadataDefault(reference, observationInterval, frequency, modifiers, sex);
+//  }
 
   /**
    * @return source of the annotation metadata.

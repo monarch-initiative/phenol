@@ -49,7 +49,7 @@ public class RatioTest {
   })
   public void combine(int leftNumerator, int leftDenominator, int rightNumerator, int rightDenominator, int finalNumerator, int finalDenominator) {
     Optional<Ratio> totalOptional = Stream.of(Ratio.of(leftNumerator, leftDenominator), Ratio.of(rightNumerator, rightDenominator))
-      .reduce(Ratio::combine);
+      .reduce(Ratio::sum);
 
     Ratio total = totalOptional.get();
 

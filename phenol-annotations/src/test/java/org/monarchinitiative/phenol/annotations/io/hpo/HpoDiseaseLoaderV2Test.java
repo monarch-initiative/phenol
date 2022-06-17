@@ -20,26 +20,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class AggregatedHpoDiseaseLoaderTest {
+public class HpoDiseaseLoaderV2Test {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
 
   private static Ontology HPO;
 
-  private HpoDiseaseLoader instance;
+  private HpoDiseaseLoaderV2 instance;
 
   @BeforeAll
-  public static void beforeAll() throws Exception {
+  public static void beforeAll() {
     HPO = OntologyLoader.loadOntology(HPO_PATH.toFile());
   }
 
   @BeforeEach
   public void setUp() {
-    instance = new AggregatedHpoDiseaseLoader(HPO, HpoDiseaseLoaderOptions.defaultOptions());
+    instance = new HpoDiseaseLoaderV2(HPO, HpoDiseaseLoaderOptions.defaultOptions());
   }
 
   @Test
@@ -64,29 +64,22 @@ public class AggregatedHpoDiseaseLoaderTest {
       .sorted()
       .collect(Collectors.toList());
 
-    assertThat(annotations, hasSize(3));
+    assertThat(annotations, hasSize(2));
     HpoDiseaseAnnotation first = annotations.get(0);
     assertThat(first.id().getValue(), equalTo("HP:0001167"));
-    assertThat(first.ratio(), equalTo(Ratio.of(1, 8)));
-    assertThat(first.references(), hasSize(1));
-    assertThat(first.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
-    assertThat(first.earliestOnset().get(), equalTo(Age.postnatal(1, 0, 0)));
-    assertThat(first.latestOnset().get(), equalTo(Age.postnatal(5, 0, 0)));
+    assertThat(first.ratio(), equalTo(Ratio.of(5, 13)));
+    assertThat(first.references(), hasSize(2));
+    assertThat(first.references(), hasItems(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
+      AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS)));
+    assertThat(first.earliestOnset().get(), equalTo(Age.postnatal(29)));
+    assertThat(first.latestOnset().get(), equalTo(Age.postnatal(1, 0, 0)));
 
     HpoDiseaseAnnotation second = annotations.get(1);
-    assertThat(second.id().getValue(), equalTo("HP:0001167"));
-    assertThat(second.ratio(), equalTo(Ratio.of(4, 5)));
+    assertThat(second.id().getValue(), equalTo("HP:0001238"));
+    assertThat(second.ratio(), equalTo(Ratio.of(0, 50)));
     assertThat(second.references(), hasSize(1));
-    assertThat(second.references(), hasItem(AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS)));
-    assertThat(second.earliestOnset().get(), equalTo(Age.postnatal(29)));
-    assertThat(second.latestOnset().get(), equalTo(Age.postnatal(16, 0, 0)));
-
-    HpoDiseaseAnnotation third = annotations.get(2);
-    assertThat(third.id().getValue(), equalTo("HP:0001238"));
-    assertThat(third.ratio(), equalTo(Ratio.of(0, 50)));
-    assertThat(third.references(), hasSize(1));
-    assertThat(third.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
-    assertThat(third.earliestOnset().isEmpty(), equalTo(true));
-    assertThat(third.latestOnset().isEmpty(), equalTo(true));
+    assertThat(second.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
+    assertThat(second.earliestOnset().isEmpty(), equalTo(true));
+    assertThat(second.latestOnset().isEmpty(), equalTo(true));
   }
 }
