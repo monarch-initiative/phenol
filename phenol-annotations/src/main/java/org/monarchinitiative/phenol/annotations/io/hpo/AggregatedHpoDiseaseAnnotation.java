@@ -51,14 +51,14 @@ class AggregatedHpoDiseaseAnnotation implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public List<TemporalRange> observationIntervals() {
-    return observationIntervals;
+  public Stream<TemporalRange> observationIntervals() {
+    return observationIntervals.stream();
   }
 
   @Override
-  public Optional<Ratio> observedInInterval(TemporalRange target) {
+  public Ratio observedInInterval(TemporalRange interval) {
     // TODO - investigate
-    return Optional.empty();
+    return null;
   }
 
   @Override

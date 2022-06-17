@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -33,9 +34,9 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
     List<TemporalRange> observationIntervals = new LinkedList<>();
 
     // 2. Process ratio and observation intervals in a single loop
-    for (HpoDiseaseAnnotationMetadata datum : metadata) {
+    for (HpoDiseaseAnnotationMetadata metadatum : metadata) {
       // Ratio
-      Optional<Ratio> ratio = datum.frequency().flatMap(AnnotationFrequency::ratio);
+      Optional<Ratio> ratio = metadatum.frequency().flatMap(AnnotationFrequency::ratio);
       if (ratio.isPresent()) {
         Ratio r = ratio.get();
         numerator += r.numerator();
@@ -43,7 +44,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       }
 
       // Observation intervals
-      Optional<TemporalRange> interval = datum.observationInterval();
+      Optional<TemporalRange> interval = metadatum.observationInterval();
       if (interval.isPresent()) {
         TemporalRange current = interval.get();
 
@@ -102,17 +103,25 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public List<TemporalRange> observationIntervals() {
-    return observationIntervals;
+  public Stream<TemporalRange> observationIntervals() {
+    return observationIntervals.stream();
   }
 
   @Override
-  public Optional<Ratio> observedInInterval(TemporalRange target) {
+  public Ratio observedInInterval(TemporalRange target) {
     return metadata.stream()
       .filter(meta -> meta.observationInterval().map(interval -> interval.overlapsWith(target)).orElse(false))
       .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))
       .flatMap(Optional::stream)
-      .reduce(Ratio::combine);
+      .reduce(Ratio::combine)
+      .orElse(Ratio.of(0, ratio.denominator()));
+  }
+
+  @Override
+  public List<AnnotationReference> references() {
+    return metadata.stream()
+      .map(HpoDiseaseAnnotationMetadata::reference)
+      .collect(Collectors.toList());
   }
 
   @Override

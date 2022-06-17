@@ -77,7 +77,7 @@ public interface HpoDisease extends Identified {
     return annotationStream()
       .filter(HpoDiseaseAnnotation::isPresent)
       .min((l, r) -> TemporalPoint.compare(l.earliestOnset().orElse(TemporalPoint.openEnd()), r.earliestOnset().orElse(TemporalPoint.openEnd())))
-      .map(a -> a.observationIntervals().stream())
+      .map(HpoDiseaseAnnotation::observationIntervals)
       .orElse(Stream.empty())
       .min(TemporalRange::compare);
   }

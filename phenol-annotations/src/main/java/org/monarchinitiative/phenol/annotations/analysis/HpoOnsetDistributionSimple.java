@@ -17,9 +17,8 @@ public class HpoOnsetDistributionSimple implements HpoOnsetDistribution {
   @Override
   public boolean isObservableInAge(HpoDisease disease, TemporalRange interval) {
     for (HpoDiseaseAnnotation annotation : disease.annotations()) {
-      boolean isObservable = annotation.observedInInterval(interval)
-        .map(Ratio::isPositive)
-        .orElse(false);
+      Ratio ratio = annotation.observedInInterval(interval);
+      boolean isObservable = ratio.isPositive();
       if (isObservable)
         return true;
     }

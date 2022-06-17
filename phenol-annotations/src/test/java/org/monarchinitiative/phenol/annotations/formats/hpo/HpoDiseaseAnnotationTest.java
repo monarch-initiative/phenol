@@ -15,6 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -84,7 +85,7 @@ public class HpoDiseaseAnnotationTest {
 
     @Test
     public void observationIntervals() {
-      List<TemporalRange> intervals = instance.observationIntervals();
+      List<TemporalRange> intervals = instance.observationIntervals().collect(Collectors.toList());
       assertThat(intervals, hasSize(1));
 
       TemporalRange item = intervals.get(0);
@@ -102,16 +103,15 @@ public class HpoDiseaseAnnotationTest {
     })
     public void observedInPeriod(int start, int end, int numerator, int denominator) {
       TemporalRange interval = TemporalRange.of(TemporalPoint.of(start, false), TemporalPoint.of(end, false));
-      Optional<Ratio> ratio = instance.observedInInterval(interval);
+      Ratio ratio = instance.observedInInterval(interval);
 
-      assertThat(ratio.isPresent(), equalTo(true));
-      assertThat(ratio.get(), equalTo(Ratio.of(numerator, denominator)));
+      assertThat(ratio, equalTo(Ratio.of(numerator, denominator)));
     }
 
     @Test
     public void observedInPeriod_noData() {
       TemporalRange interval = TemporalRange.of(TemporalPoint.of(0, false), TemporalPoint.of(1, false));
-      assertThat(instance.observedInInterval(interval).isPresent(), is(false));
+      assertThat(instance.observedInInterval(interval).isPositive(), is(false));
     }
   }
 
@@ -148,27 +148,26 @@ public class HpoDiseaseAnnotationTest {
     })
     public void observedInPeriod(int startDays, int endDays, int numerator, int denominator) {
       TemporalRange interval = TemporalRange.of(TemporalPoint.of(startDays, false), TemporalPoint.of(endDays, false));
-      Optional<Ratio> ratio = instance.observedInInterval(interval);
+      Ratio ratio = instance.observedInInterval(interval);
 
-      assertThat(ratio.isPresent(), equalTo(true));
-      assertThat(ratio.get(), equalTo(Ratio.of(numerator, denominator)));
+      assertThat(ratio, equalTo(Ratio.of(numerator, denominator)));
     }
 
     @Test
     public void observedInPeriod_noData() {
       TemporalRange before = TemporalRange.of(TemporalPoint.of(0, false), TemporalPoint.of(0, false));
-      assertThat(instance.observedInInterval(before).isPresent(), is(false));
+      assertThat(instance.observedInInterval(before).isPositive(), is(false));
 
       TemporalRange between = TemporalRange.of(TemporalPoint.of(20, false), TemporalPoint.of(30, false));
-      assertThat(instance.observedInInterval(between).isPresent(), is(false));
+      assertThat(instance.observedInInterval(between).isPositive(), is(false));
 
       TemporalRange after = TemporalRange.of(TemporalPoint.of(35, false), TemporalPoint.of(36, false));
-      assertThat(instance.observedInInterval(after).isPresent(), is(false));
+      assertThat(instance.observedInInterval(after).isPositive(), is(false));
     }
 
     @Test
     public void observationIntervals() {
-      List<TemporalRange> intervals = instance.observationIntervals();
+      List<TemporalRange> intervals = instance.observationIntervals().collect(Collectors.toList());
 
       assertThat(intervals, hasSize(2));
       assertThat(intervals, hasItems(
