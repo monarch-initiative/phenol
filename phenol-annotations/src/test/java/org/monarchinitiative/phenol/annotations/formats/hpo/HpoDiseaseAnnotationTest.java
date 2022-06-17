@@ -89,7 +89,7 @@ public class HpoDiseaseAnnotationTest {
       assertThat(intervals, hasSize(1));
 
       TemporalRange item = intervals.get(0);
-      assertThat(item.start(), equalTo(TemporalPoint.of(1, false)));
+      assertThat(item.start(), equalTo(TemporalPoint.of(2, false)));
       assertThat(item.isEndOpen(), equalTo(true));
     }
 

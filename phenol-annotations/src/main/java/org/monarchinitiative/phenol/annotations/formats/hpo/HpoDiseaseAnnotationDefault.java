@@ -41,28 +41,32 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
         Ratio r = ratio.get();
         numerator += r.numerator();
         denominator += r.denominator();
-      }
 
-      // Observation intervals
-      Optional<TemporalRange> interval = metadatum.observationInterval();
-      if (interval.isPresent()) {
-        TemporalRange current = interval.get();
+        if (r.isZero())
+          continue;
 
-        boolean overlapFound = false;
-        for (int j = 0; j < observationIntervals.size(); j++) {
-          TemporalRange other = observationIntervals.get(j);
-          if (current.overlapsWith(other)) {
-            observationIntervals.set(j, TemporalRange.of(
-              TemporalPoint.min(current.start(), other.start()),
-              TemporalPoint.max(current.end(), other.end()))
-            );
-            overlapFound = true;
-            break;
+        // Observation intervals
+        Optional<TemporalRange> interval = metadatum.observationInterval();
+        if (interval.isPresent()) {
+          TemporalRange current = interval.get();
+
+          boolean overlapFound = false;
+          for (int j = 0; j < observationIntervals.size(); j++) {
+            TemporalRange other = observationIntervals.get(j);
+            if (current.overlapsWith(other)) {
+              observationIntervals.set(j, TemporalRange.of(
+                TemporalPoint.min(current.start(), other.start()),
+                TemporalPoint.max(current.end(), other.end()))
+              );
+              overlapFound = true;
+              break;
+            }
           }
-        }
 
-        if (!overlapFound) observationIntervals.add(current);
+          if (!overlapFound) observationIntervals.add(current);
+        }
       }
+
     }
 
     // 3. Finalize
@@ -115,6 +119,27 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       .flatMap(Optional::stream)
       .reduce(Ratio::combine)
       .orElse(Ratio.of(0, ratio.denominator()));
+  }
+
+  @Override
+  public Optional<TemporalPoint> latestOnset() {
+    return temporalRangesOfPresentMetadata()
+      .map(TemporalRange::start)
+      .max(TemporalPoint::compare);
+  }
+
+  @Override
+  public Optional<TemporalPoint> earliestResolution() {
+    return temporalRangesOfPresentMetadata()
+      .map(TemporalRange::end)
+      .min(TemporalPoint::compare);
+  }
+
+  private Stream<TemporalRange> temporalRangesOfPresentMetadata() {
+    return metadata.stream()
+      .filter(HpoDiseaseAnnotationMetadata::isPresent)
+      .map(HpoDiseaseAnnotationMetadata::observationInterval)
+      .flatMap(Optional::stream);
   }
 
   @Override
