@@ -58,6 +58,45 @@ public class TemporalPointTest {
 
     @ParameterizedTest
     @CsvSource({
+      " 0,    .0",
+      " 6,    .8571428",
+      " 7,   1.",
+      "13,   1.8571428",
+      "14,   2.",
+    })
+    public void weeks(int days, double expectedWeeks) {
+      assertThat(TemporalPoint.of(days, false).weeks(), closeTo(expectedWeeks, 1E-6));
+      assertThat(TemporalPoint.of(days, true).weeks(), closeTo(expectedWeeks, 1E-6));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "  0,      .0",
+      " 30,      .9856262",
+      " 31,     1.0184804",
+
+      "365,    11.9917864", // Julian year is 365.25 days!
+      "366,    12.0246406",
+    })
+    public void months(int days, double expectedMonths) {
+      assertThat(TemporalPoint.of(days, false).months(), closeTo(expectedMonths, 1E-6));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "   0,     .0",
+      "   1,     .0027378",
+      " 365,     .9993155", // Julian year is 365.25 days!
+      " 366,    1.0020533",
+      " 730,    1.9986310",
+      " 731,    2.0013689",
+    })
+    public void years(int days, double expectedYears) {
+      assertThat(TemporalPoint.of(days, false).years(), closeTo(expectedYears, 1E-6));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
       "10,  true, 10,  true,    0",
       "10, false, 10, false,    0",
 

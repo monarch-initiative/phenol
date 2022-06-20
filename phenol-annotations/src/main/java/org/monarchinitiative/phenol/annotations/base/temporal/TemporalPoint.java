@@ -72,6 +72,42 @@ public interface TemporalPoint extends TimelineAware {
 
   /* **************************************************************************************************************** */
 
+
+  /**
+   * Get the number of weeks present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * and this {@link TemporalPoint}. Each week has 7 days. The number of weeks is non-negative.
+   *
+   * @return the number of weeks.
+   */
+  default double weeks() {
+    return days() / 7.;
+  }
+
+  /**
+   * Get the number of months present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * and this {@link TemporalPoint}. A month is one twelfth of a Julian year and Julian year consists
+   * of <code>365.25</code> days.
+   * <p>
+   * The number of months is non-negative.
+   *
+   * @return the number of months.
+   */
+  default double months() {
+    return days() / Age.DAYS_IN_MONTH;
+  }
+
+  /**
+   * Get the number of Julian years present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * and this {@link TemporalPoint}. Julian year consists of <code>365.25</code> days.
+   * <p>
+   * The number of years is non-negative.
+   *
+   * @return the number of years.
+   */
+  default double years() {
+    return days() / Age.DAYS_IN_JULIAN_YEAR;
+  }
+
   default boolean isClosed() {
     return !isOpen();
   }
