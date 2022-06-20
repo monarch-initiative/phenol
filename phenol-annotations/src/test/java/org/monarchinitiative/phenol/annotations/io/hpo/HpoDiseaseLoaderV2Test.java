@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.TestBase;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -27,6 +28,7 @@ public class HpoDiseaseLoaderV2Test {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
+  private static final double ERROR = 1E-6;
 
   private static Ontology HPO;
 
@@ -69,10 +71,14 @@ public class HpoDiseaseLoaderV2Test {
     assertThat(first.id().getValue(), equalTo("HP:0001167"));
     assertThat(first.ratio(), equalTo(Ratio.of(5, 13)));
     assertThat(first.references(), hasSize(2));
-    assertThat(first.references(), hasItems(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
-      AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS)));
-    assertThat(first.earliestOnset().get(), equalTo(Age.postnatal(29)));
-    assertThat(first.latestOnset().get(), equalTo(Age.postnatal(1, 0, 0)));
+    assertThat(first.references(), hasItems(
+      AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
+      AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS))
+    );
+    TemporalPoint earliestOnset = first.earliestOnset().get();
+    assertThat(earliestOnset.days(), equalTo(29));
+    TemporalPoint latestOnset = first.latestOnset().get();
+    assertThat(latestOnset.years(), closeTo(1., ERROR));
     assertThat(first.modifiers(), hasItems(TermId.of("HP:0012832"), TermId.of("HP:0012828")));
 
     HpoDiseaseAnnotation second = annotations.get(1);

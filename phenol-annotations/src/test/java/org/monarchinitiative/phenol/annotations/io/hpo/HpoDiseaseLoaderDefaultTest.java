@@ -100,8 +100,7 @@ public class HpoDiseaseLoaderDefaultTest {
     assertThat(second.isPresent(), equalTo(false));
     assertThat(second.ratio(), equalTo(Ratio.of(0, 50)));
 
-    earliestOnset = second.earliestOnset();
-    assertThat(earliestOnset.isPresent(), equalTo(false));
+    assertThat(second.earliestOnset().isEmpty(), equalTo(true));
 
     assertThat(second.references(), hasSize(1));
     assertThat(second.references().get(0).id().getValue(), equalTo("PMID:20375004"));
