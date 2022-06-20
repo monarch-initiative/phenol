@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -13,7 +14,7 @@ public class TemporalRangeTest {
   @CsvSource({
     " 6,  16,     10",
   })
-  public void length_Gestational(int start, int end, int days) {
+  public void length_Gestational(int start, int end, float days) {
     TemporalRange gestational = TemporalRange.of(TemporalPoint.of(start, true), TemporalPoint.of(end, true));
     assertThat(gestational.length(), equalTo(days));
   }
@@ -23,9 +24,18 @@ public class TemporalRangeTest {
     " 1,   2,      1",
     " 1,   1,      0",
   })
-  public void length_Postnatal(int startDays, int endDays, int days) {
+  public void length_Postnatal(int startDays, int endDays, float days) {
     TemporalRange postnatal = TemporalRange.of(TemporalPoint.of(startDays, false), TemporalPoint.of(endDays, false));
     assertThat(postnatal.length(), equalTo(days));
+  }
+
+  @Test
+  public void openTemporalRangeHasInfiniteLength() {
+    TemporalRange openStart = TemporalRange.openStart(TemporalPoint.of(10, false));
+    assertThat(Float.isInfinite(openStart.length()), equalTo(true));
+
+    TemporalRange openEnd = TemporalRange.openEnd(TemporalPoint.of(10, false));
+    assertThat(Float.isInfinite(openEnd.length()), equalTo(true));
   }
 
   @ParameterizedTest

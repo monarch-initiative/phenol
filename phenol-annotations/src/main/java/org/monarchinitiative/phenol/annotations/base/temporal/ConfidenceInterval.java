@@ -6,8 +6,8 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
 
   private static final ConfidenceInterval PRECISE = new ConfidenceInterval(0, 0);
 
-  private final int lowerBound;
-  private final int upperBound;
+  private final float lowerBound;
+  private final float upperBound;
 
   public static ConfidenceInterval precise() {
     return PRECISE;
@@ -21,12 +21,23 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
    * @return the {@link ConfidenceInterval}.
    */
   public static ConfidenceInterval of(int lowerBound, int upperBound) {
+    return of((float) lowerBound, (float) upperBound);
+  }
+
+  /**
+   * Create a {@link ConfidenceInterval} from the provided <em>lower</em> and <em>upper</em> bounds.
+   *
+   * @param lowerBound non-positive lower bound.
+   * @param upperBound non-negative upper bound.
+   * @return the {@link ConfidenceInterval}.
+   */
+  public static ConfidenceInterval of(float lowerBound, float upperBound) {
     if (lowerBound == 0 && upperBound == 0)
       return PRECISE;
     return new ConfidenceInterval(lowerBound, upperBound);
   }
 
-  private ConfidenceInterval(int lowerBound, int upperBound) {
+  private ConfidenceInterval(float lowerBound, float upperBound) {
     if (lowerBound > 0 || upperBound < 0)
       throw new IllegalArgumentException("'" + lowerBound + ", " + upperBound + "' ConfidenceInterval must have non-positive lowerBound and non-negative upperBound!");
 
@@ -35,11 +46,11 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
   }
 
 
-  public int lowerBound() {
+  public float lowerBound() {
     return lowerBound;
   }
 
-  public int upperBound() {
+  public float upperBound() {
     return upperBound;
   }
 
@@ -54,7 +65,7 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
   /**
    * @return length of the confidence interval, precise CI has length <code>0</code>.
    */
-  public int length() {
+  public float length() {
     return -lowerBound + upperBound;
   }
 
@@ -70,7 +81,7 @@ public class ConfidenceInterval implements Comparable<ConfidenceInterval> {
   }
 
   public static int compare(ConfidenceInterval x, ConfidenceInterval y) {
-    return Integer.compare(y.length(), x.length()); // !
+    return Float.compare(y.length(), x.length()); // !
   }
 
   @Override

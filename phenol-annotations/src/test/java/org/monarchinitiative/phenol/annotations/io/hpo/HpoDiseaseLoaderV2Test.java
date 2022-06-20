@@ -28,7 +28,6 @@ public class HpoDiseaseLoaderV2Test {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
-  private static final double ERROR = 1E-6;
 
   private static Ontology HPO;
 
@@ -76,9 +75,9 @@ public class HpoDiseaseLoaderV2Test {
       AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS))
     );
     TemporalPoint earliestOnset = first.earliestOnset().get();
-    assertThat(earliestOnset.days(), equalTo(29));
+    assertThat(earliestOnset.days(), equalTo(29f));
     TemporalPoint latestOnset = first.latestOnset().get();
-    assertThat(latestOnset.years(), closeTo(1., ERROR));
+    assertThat((double) latestOnset.years(), closeTo(1., TestBase.ERROR));
     assertThat(first.modifiers(), hasItems(TermId.of("HP:0012832"), TermId.of("HP:0012828")));
 
     HpoDiseaseAnnotation second = annotations.get(1);

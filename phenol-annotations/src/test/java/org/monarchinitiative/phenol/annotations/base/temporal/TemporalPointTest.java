@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.monarchinitiative.phenol.annotations.TestBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,7 @@ public class TemporalPointTest {
     @Test
     public void lastMenstrualPeriod() {
       TemporalPoint lmp = TemporalPoint.lastMenstrualPeriod();
-      assertThat(lmp.days(), equalTo(0));
+      assertThat(lmp.days(), equalTo(0f));
       assertThat(lmp.isZero(), equalTo(true));
       assertThat(lmp.isPositive(), equalTo(false));
       assertThat(lmp.isGestational(), equalTo(true));
@@ -32,7 +33,7 @@ public class TemporalPointTest {
     @Test
     public void birth() {
       TemporalPoint birth = TemporalPoint.birth();
-      assertThat(birth.days(), equalTo(0));
+      assertThat(birth.days(), equalTo(0f));
       assertThat(birth.isZero(), equalTo(true));
       assertThat(birth.isPositive(), equalTo(false));
       assertThat(birth.isPostnatal(), equalTo(true));
@@ -47,7 +48,7 @@ public class TemporalPointTest {
     public void basic() {
       TemporalPoint instance = TemporalPoint.of(10, false);
 
-      assertThat(instance.days(), equalTo(10));
+      assertThat(instance.days(), equalTo(10f));
       assertThat(instance.isPostnatal(), equalTo(true));
       assertThat(instance.isGestational(), equalTo(false));
       assertThat(instance.isOpen(), equalTo(false));
@@ -65,8 +66,8 @@ public class TemporalPointTest {
       "14,   2.",
     })
     public void weeks(int days, double expectedWeeks) {
-      assertThat(TemporalPoint.of(days, false).weeks(), closeTo(expectedWeeks, 1E-6));
-      assertThat(TemporalPoint.of(days, true).weeks(), closeTo(expectedWeeks, 1E-6));
+      assertThat((double) TemporalPoint.of(days, false).weeks(), closeTo(expectedWeeks, TestBase.ERROR));
+      assertThat((double) TemporalPoint.of(days, true).weeks(), closeTo(expectedWeeks, TestBase.ERROR));
     }
 
     @ParameterizedTest
@@ -79,7 +80,7 @@ public class TemporalPointTest {
       "366,    12.0246406",
     })
     public void months(int days, double expectedMonths) {
-      assertThat(TemporalPoint.of(days, false).months(), closeTo(expectedMonths, 1E-6));
+      assertThat((double) TemporalPoint.of(days, false).months(), closeTo(expectedMonths, TestBase.ERROR));
     }
 
     @ParameterizedTest
@@ -92,7 +93,7 @@ public class TemporalPointTest {
       " 731,    2.0013689",
     })
     public void years(int days, double expectedYears) {
-      assertThat(TemporalPoint.of(days, false).years(), closeTo(expectedYears, 1E-6));
+      assertThat((double) TemporalPoint.of(days, false).years(), closeTo(expectedYears, TestBase.ERROR));
     }
 
     @ParameterizedTest
@@ -120,9 +121,9 @@ public class TemporalPointTest {
     public void compare_open() {
       TemporalPoint openStart = openStart();
       TemporalPoint lastMenstrualPeriod = lastMenstrualPeriod();
-      TemporalPoint gestational = of(10, true);
+      TemporalPoint gestational = TemporalPoint.of(10, true);
       TemporalPoint birth = birth();
-      TemporalPoint postnatal = of(10, false);
+      TemporalPoint postnatal = TemporalPoint.of(10, false);
       TemporalPoint openEnd = openEnd();
       List<TemporalPoint> sorted = List.of(openStart, lastMenstrualPeriod, gestational, birth, postnatal, openEnd);
       List<TemporalPoint> points = new ArrayList<>(sorted);

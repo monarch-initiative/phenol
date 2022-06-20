@@ -36,7 +36,9 @@ public interface TemporalPoint extends TimelineAware {
     return TemporalPoints.BIRTH;
   }
 
-  static TemporalPoint of(int days, boolean isGestational) {
+  static TemporalPoint of(float days, boolean isGestational) {
+    Util.checkDays(days);
+
     return isGestational
       ? TemporalPoints.gestational(days)
       : TemporalPoints.postnatal(days);
@@ -66,7 +68,7 @@ public interface TemporalPoint extends TimelineAware {
    *
    * @return the number of days.
    */
-  int days();
+  float days();
 
   boolean isOpen();
 
@@ -79,8 +81,8 @@ public interface TemporalPoint extends TimelineAware {
    *
    * @return the number of weeks.
    */
-  default double weeks() {
-    return days() / 7.;
+  default float weeks() {
+    return days() / 7.f;
   }
 
   /**
@@ -92,7 +94,7 @@ public interface TemporalPoint extends TimelineAware {
    *
    * @return the number of months.
    */
-  default double months() {
+  default float months() {
     return days() / Age.DAYS_IN_MONTH;
   }
 
@@ -104,7 +106,7 @@ public interface TemporalPoint extends TimelineAware {
    *
    * @return the number of years.
    */
-  default double years() {
+  default float years() {
     return days() / Age.DAYS_IN_JULIAN_YEAR;
   }
 
@@ -134,7 +136,7 @@ public interface TemporalPoint extends TimelineAware {
     if (x.isGestational() ^ y.isGestational())
       return x.isGestational() ? -1 : 1;
 
-    return Integer.compare(x.days(), y.days());
+    return Float.compare(x.days(), y.days());
   }
 
 }

@@ -10,7 +10,7 @@ public interface AgeRange extends TemporalRange {
   static AgeRange of(Age start, Age end) {
     int result = Age.compare(start, end);
     if (result > 0)
-      throw new IllegalArgumentException(String.format("Start (%d days) must not be after end (%d days)",
+      throw new IllegalArgumentException(String.format("Start (%.1f days) must not be after end (%.1f days)",
         start.days(), end.days()));
 
     return AgeRangeDefault.of(start, end);
