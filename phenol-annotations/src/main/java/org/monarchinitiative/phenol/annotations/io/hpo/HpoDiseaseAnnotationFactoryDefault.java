@@ -26,7 +26,10 @@ class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory 
   }
 
   @Override
-  public HpoDiseaseAnnotation create(TermId id, Iterable<KnowsRatioAndMaybeTemporalRange> ratios, List<AnnotationReference> annotationReferences) {
+  public HpoDiseaseAnnotation create(TermId id,
+                                     Iterable<KnowsRatioAndMaybeTemporalRange> ratios,
+                                     List<TermId> modifiers,
+                                     List<AnnotationReference> annotationReferences) {
     // 1. Initialize
     int numerator = 0, denominator = 0;
     List<TemporalRange> observationIntervals = new LinkedList<>();
@@ -72,7 +75,7 @@ class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory 
       .collect(Collectors.toUnmodifiableList());
 
 
-    return new HpoDiseaseAnnotationDefault(id, ratio, sorted, ratios, annotationReferences);
+    return new HpoDiseaseAnnotationDefault(id, ratio, sorted, ratios, modifiers, annotationReferences);
   }
 
 }

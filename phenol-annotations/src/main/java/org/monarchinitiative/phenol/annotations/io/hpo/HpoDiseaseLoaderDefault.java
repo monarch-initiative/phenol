@@ -162,6 +162,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
   private HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
     List<KnowsRatioAndMaybeTemporalRange> ratios = new ArrayList<>(annotations.size());
     List<AnnotationReference> references = new ArrayList<>(annotations.size());
+    List<TermId> modifiers = new ArrayList<>();
 
     // Assemble ratios and references in a single pass.
     for (HpoAnnotation annotation : annotations) {
@@ -186,9 +187,12 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
           LOGGER.warn("Skipping invalid citation {} in {}", citation, annotation.id());
         }
       }
+
+      // 3. Modifiers
+      modifiers.addAll(annotation.modifiers());
     }
 
-    return factory.create(phenotypeId, ratios, references);
+    return factory.create(phenotypeId, ratios, modifiers, references);
   }
 
   /**

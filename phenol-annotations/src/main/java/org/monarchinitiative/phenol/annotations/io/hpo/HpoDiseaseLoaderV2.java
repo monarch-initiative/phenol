@@ -95,6 +95,15 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
         diseaseData.modesOfInheritance()));
   }
 
+  /**
+   * Map several {@link HpoAnnotationLine}s that describe phenotypic feature into one {@link HpoDiseaseAnnotation}.
+   * <p>
+   * In case the mapping fails, the reason of failure is logged and {@link Optional#empty()} is returned.
+   *
+   * @param phenotypeFeature ID of the phenotype feature, e.g. <code>HP:1234567</code>.
+   * @param annotationLines list of {@link HpoAnnotationLine}s that correspond to the <code>phenotypeFeature</code>.
+   * @return the new {@link HpoDiseaseAnnotation} or empty optional if the mapping fails.
+   */
   private Optional<HpoDiseaseAnnotation> toDiseaseAnnotation(String phenotypeFeature,
                                                              List<HpoAnnotationLine> annotationLines) {
     // 1. parse phenotype feature ID.
@@ -108,6 +117,7 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
 
     List<AnnotationReference> references = new LinkedList<>();
     List<KnowsRatioAndMaybeTemporalRange> ratios = new LinkedList<>();
+    List<TermId> modifiers = new LinkedList<>();
     for (HpoAnnotationLine line : annotationLines) {
       // 1. Combine `ratio` and `onset` into `TemporalRatio`.
       Ratio ratio = parseFrequency(line.isNOT(), line.getFrequency());
@@ -126,18 +136,18 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
         }
       }
 
-      // TODO - do we need these?
       // modifiers
-//      List<TermId> modifiers = Arrays.stream(line.modifiers().split(";"))
-//        .filter(token -> !token.isBlank())
-//        .map(TermId::of)
-//        .collect(Collectors.toList());
-//
+      Arrays.stream(line.modifiers().split(";"))
+        .filter(token -> !token.isBlank())
+        .map(TermId::of)
+        .forEach(modifiers::add);
+
+      // TODO - do we need this?
 //      Sex sex = Sex.parse(line.getSex()).orElse(null);
     }
 
 
-    return Optional.of(factory.create(phenotypeFeatureId, ratios, references));
+    return Optional.of(factory.create(phenotypeFeatureId, ratios, modifiers, references));
   }
 
   /**

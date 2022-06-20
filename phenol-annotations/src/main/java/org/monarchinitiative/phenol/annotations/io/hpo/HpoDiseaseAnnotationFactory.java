@@ -19,6 +19,7 @@ public interface HpoDiseaseAnnotationFactory {
 
   HpoDiseaseAnnotation create(TermId id,
                               Iterable<KnowsRatioAndMaybeTemporalRange> ratios,
+                              List<TermId> modifiers,
                               List<AnnotationReference> annotationReferences);
 
 }

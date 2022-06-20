@@ -53,6 +53,11 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   Ratio observedInInterval(TemporalRange interval);
 
   /**
+   * @return a list of disease annotation modifiers.
+   */
+  List<TermId> modifiers();
+
+  /**
    * @return {@link AnnotationReference}s that support presence/absence of the disease annotation.
    */
   List<AnnotationReference> references();

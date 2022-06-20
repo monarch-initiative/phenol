@@ -73,6 +73,7 @@ public class HpoDiseaseLoaderV2Test {
       AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS)));
     assertThat(first.earliestOnset().get(), equalTo(Age.postnatal(29)));
     assertThat(first.latestOnset().get(), equalTo(Age.postnatal(1, 0, 0)));
+    assertThat(first.modifiers(), hasItems(TermId.of("HP:0012832"), TermId.of("HP:0012828")));
 
     HpoDiseaseAnnotation second = annotations.get(1);
     assertThat(second.id().getValue(), equalTo("HP:0001238"));

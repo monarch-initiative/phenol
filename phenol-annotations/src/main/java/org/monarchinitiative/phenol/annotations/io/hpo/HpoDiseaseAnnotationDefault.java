@@ -19,17 +19,20 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   private final Ratio ratio;
   private final List<TemporalRange> observationIntervals;
   private final Iterable<KnowsRatioAndMaybeTemporalRange> ratios;
+  private final List<TermId> modifiers;
   private final List<AnnotationReference> annotationReferences;
 
   HpoDiseaseAnnotationDefault(TermId id,
                               Ratio ratio,
                               List<TemporalRange> observationIntervals,
                               Iterable<KnowsRatioAndMaybeTemporalRange> ratios,
+                              List<TermId> modifiers,
                               List<AnnotationReference> annotationReferences) {
     this.id = Objects.requireNonNull(id);
     this.ratio = Objects.requireNonNull(ratio);
     this.observationIntervals = Objects.requireNonNull(observationIntervals);
     this.ratios = Objects.requireNonNull(ratios);
+    this.modifiers = Objects.requireNonNull(modifiers);
     this.annotationReferences = Objects.requireNonNull(annotationReferences);
   }
 
@@ -55,6 +58,11 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       .map(KnowsRatioAndMaybeTemporalRange::ratio)
       .reduce(Ratio::sum)
       .orElse(Ratio.of(0, ratio.denominator()));
+  }
+
+  @Override
+  public List<TermId> modifiers() {
+    return modifiers;
   }
 
   @Override
@@ -107,12 +115,12 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HpoDiseaseAnnotationDefault that = (HpoDiseaseAnnotationDefault) o;
-    return Objects.equals(id, that.id) && Objects.equals(ratio, that.ratio) && Objects.equals(observationIntervals, that.observationIntervals) && Objects.equals(ratios, that.ratios) && Objects.equals(annotationReferences, that.annotationReferences);
+    return Objects.equals(id, that.id) && Objects.equals(ratio, that.ratio) && Objects.equals(observationIntervals, that.observationIntervals) && Objects.equals(ratios, that.ratios) && Objects.equals(modifiers, that.modifiers) && Objects.equals(annotationReferences, that.annotationReferences);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, ratio, observationIntervals, ratios, annotationReferences);
+    return Objects.hash(id, ratio, observationIntervals, ratios, modifiers, annotationReferences);
   }
 
   @Override
@@ -122,6 +130,7 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
       ", ratio=" + ratio +
       ", observationIntervals=" + observationIntervals +
       ", ratios=" + ratios +
+      ", modifiers=" + modifiers +
       ", annotationReferences=" + annotationReferences +
       '}';
   }
