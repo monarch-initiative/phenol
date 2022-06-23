@@ -9,7 +9,7 @@ class Util {
    * Check that <code>days</code> is not greater than {@link TemporalPoint#MAX_DAYS} or negative.
    *
    * @param days number of days to check.
-   * @throws {@link IllegalArgumentException} if the number of days does not pass the checks.
+   * @throws IllegalArgumentException if the number of days does not pass the checks.
    */
   static void checkDays(int days) {
     if (days > TemporalPoint.MAX_DAYS) {
