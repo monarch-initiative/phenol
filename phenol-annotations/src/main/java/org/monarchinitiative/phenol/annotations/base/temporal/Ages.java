@@ -13,13 +13,13 @@ class Ages {
   private static final Age LMP = new AgeGestational.AgeGestationalPrecise(0);
   private static final Age BIRTH = new AgePostnatal.AgePostnatalPrecise(0);
 
-  static Age gestational(int days, ConfidenceInterval ci) {
-    if (ci.isPrecise())
+  static Age gestational(int days, ConfidenceRange cr) {
+    if (cr.isPrecise())
       return days == 0 ? LMP : new AgeGestational.AgeGestationalPrecise(days);
-    return new AgeGestational.AgeGestationalImprecise(days, ci);
+    return new AgeGestational.AgeGestationalImprecise(days, cr);
   }
 
-  static Age postnatal(int days, ConfidenceInterval ci) {
+  static Age postnatal(int days, ConfidenceRange ci) {
     if (ci.isPrecise())
       return days == 0 ? BIRTH : new AgePostnatal.AgePostnatalPrecise(days);
 
@@ -82,8 +82,8 @@ class Ages {
       }
 
       @Override
-      public ConfidenceInterval confidenceInterval() {
-        return ConfidenceInterval.precise();
+      public ConfidenceRange confidenceRange() {
+        return ConfidenceRange.precise();
       }
 
       @Override
@@ -96,26 +96,26 @@ class Ages {
 
     private static class AgeGestationalImprecise extends AgeGestationalBase {
 
-      private final ConfidenceInterval ci;
+      private final ConfidenceRange cr;
 
-      private AgeGestationalImprecise(int days, ConfidenceInterval ci) {
+      private AgeGestationalImprecise(int days, ConfidenceRange cr) {
         super(days);
-        this.ci = ci;
+        this.cr = cr;
       }
 
       @Override
       public TemporalPoint start() {
-        return TemporalPoint.of(days + ci.lowerBound(), isGestational());
+        return TemporalPoint.of(days + cr.lowerBound(), isGestational());
       }
 
       @Override
       public TemporalPoint end() {
-        return TemporalPoint.of(days + ci.upperBound(), isGestational());
+        return TemporalPoint.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
-      public ConfidenceInterval confidenceInterval() {
-        return ci;
+      public ConfidenceRange confidenceRange() {
+        return cr;
       }
 
       @Override
@@ -124,19 +124,19 @@ class Ages {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         AgeGestationalImprecise that = (AgeGestationalImprecise) o;
-        return Objects.equals(ci, that.ci);
+        return Objects.equals(cr, that.cr);
       }
 
       @Override
       public int hashCode() {
-        return Objects.hash(super.hashCode(), ci);
+        return Objects.hash(super.hashCode(), cr);
       }
 
       @Override
       public String toString() {
         return "AgeGestationalImprecise{" +
           "days=" + days +
-          "ci=" + ci +
+          "cr=" + cr +
           "}";
       }
     }
@@ -199,8 +199,8 @@ class Ages {
       }
 
       @Override
-      public ConfidenceInterval confidenceInterval() {
-        return ConfidenceInterval.precise();
+      public ConfidenceRange confidenceRange() {
+        return ConfidenceRange.precise();
       }
 
       @Override
@@ -224,26 +224,26 @@ class Ages {
 
     private static class AgePostnatalImprecise extends AgePostnatalBase {
 
-      private final ConfidenceInterval ci;
+      private final ConfidenceRange cr;
 
-      private AgePostnatalImprecise(int days, ConfidenceInterval ci) {
+      private AgePostnatalImprecise(int days, ConfidenceRange cr) {
         super(days);
-        this.ci = ci;
+        this.cr = cr;
       }
 
       @Override
       public TemporalPoint start() {
-        return TemporalPoint.of(days + ci.lowerBound(), isGestational());
+        return TemporalPoint.of(days + cr.lowerBound(), isGestational());
       }
 
       @Override
       public TemporalPoint end() {
-        return TemporalPoint.of(days + ci.upperBound(), isGestational());
+        return TemporalPoint.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
-      public ConfidenceInterval confidenceInterval() {
-        return ci;
+      public ConfidenceRange confidenceRange() {
+        return cr;
       }
 
       @Override
@@ -252,19 +252,19 @@ class Ages {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         AgePostnatalImprecise that = (AgePostnatalImprecise) o;
-        return Objects.equals(ci, that.ci);
+        return Objects.equals(cr, that.cr);
       }
 
       @Override
       public int hashCode() {
-        return Objects.hash(super.hashCode(), ci);
+        return Objects.hash(super.hashCode(), cr);
       }
 
       @Override
       public String toString() {
         return "AgePostnatalImprecise{" +
           "days=" + days +
-          "ci=" + ci +
+          "cr=" + cr +
           "}";
       }
     }
@@ -300,8 +300,8 @@ class Ages {
     }
 
     @Override
-    public ConfidenceInterval confidenceInterval() {
-      return ConfidenceInterval.precise();
+    public ConfidenceRange confidenceRange() {
+      return ConfidenceRange.precise();
     }
 
     @Override

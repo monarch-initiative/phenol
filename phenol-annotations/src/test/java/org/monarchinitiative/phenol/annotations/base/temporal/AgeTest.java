@@ -28,8 +28,8 @@ public class AgeTest {
     public void min(int leftDays, boolean leftIsGestational,
                     int rightDays, boolean rightIsGestational,
                     boolean leftIsSmaller) {
-      Age left = Age.of(leftDays, leftIsGestational, ConfidenceInterval.precise());
-      Age right = Age.of(rightDays, rightIsGestational, ConfidenceInterval.precise());
+      Age left = Age.of(leftDays, leftIsGestational, ConfidenceRange.precise());
+      Age right = Age.of(rightDays, rightIsGestational, ConfidenceRange.precise());
       Age max = Age.min(left, right);
 
       if (leftIsSmaller)
@@ -52,8 +52,8 @@ public class AgeTest {
     public void max(int leftDays, boolean leftIsGestational,
                     int rightDays, boolean rightIsGestational,
                     boolean leftIsGreater) {
-      Age left = Age.of(leftDays, leftIsGestational, ConfidenceInterval.precise());
-      Age right = Age.of(rightDays, rightIsGestational, ConfidenceInterval.precise());
+      Age left = Age.of(leftDays, leftIsGestational, ConfidenceRange.precise());
+      Age right = Age.of(rightDays, rightIsGestational, ConfidenceRange.precise());
       Age max = Age.max(left, right);
 
       if (leftIsGreater)
@@ -143,14 +143,14 @@ public class AgeTest {
 
     @Test
     public void negativeNumberOfDaysThrowsAnException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(-1, true, ConfidenceInterval.precise()));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(-1, true, ConfidenceRange.precise()));
       assertThat(e.getMessage(), containsString("Days must not be negative, got '-1' days!"));
     }
 
 
     @Test
     public void tooGreatAgeThrowsAnException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Age.MAX_DAYS + 1, true, ConfidenceInterval.precise()));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Age.MAX_DAYS + 1, true, ConfidenceRange.precise()));
       assertThat(e.getMessage(), containsString("Normalized number of days must not be greater than '730500'. Got '730501'"));
     }
 
@@ -198,8 +198,8 @@ public class AgeTest {
     public void compareToImprecise(int left, int leftLower, int leftUpper,
                                    int right, int rightLower, int rightUpper,
                                    int expected) {
-      Age l = Age.postnatal(left, ConfidenceInterval.of(leftLower, leftUpper));
-      Age r = Age.postnatal(right, ConfidenceInterval.of(rightLower, rightUpper));
+      Age l = Age.postnatal(left, ConfidenceRange.of(leftLower, leftUpper));
+      Age r = Age.postnatal(right, ConfidenceRange.of(rightLower, rightUpper));
 
       assertThat(Age.compare(l, r), is(expected));
     }
@@ -255,7 +255,7 @@ public class AgeTest {
 
     @Test
     public void closedAge() {
-      Age age = Age.postnatal(10, ConfidenceInterval.of(-5, 10));
+      Age age = Age.postnatal(10, ConfidenceRange.of(-5, 10));
 
       assertThat(age.days(), is(10));
       assertThat(age.isOpen(), is(false));
@@ -265,7 +265,7 @@ public class AgeTest {
     }
 
     /**
-     * The test check that {@link ConfidenceInterval} that extends beyond the timeline start
+     * The test check that {@link ConfidenceRange} that extends beyond the timeline start
      * (either {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}) is clipped.
      */
     @ParameterizedTest
@@ -276,17 +276,17 @@ public class AgeTest {
       "15, false,  -10, 20,      -10",
     })
     public void closedAgeIsClipped(int days, boolean isGestational, int lowerBound, int upperBound, int expectedLowerBound) {
-      Age age = Age.of(days, isGestational, ConfidenceInterval.of(lowerBound, upperBound));
-      assertThat(age.confidenceInterval().lowerBound(), equalTo(expectedLowerBound));
+      Age age = Age.of(days, isGestational, ConfidenceRange.of(lowerBound, upperBound));
+      assertThat(age.confidenceRange().lowerBound(), equalTo(expectedLowerBound));
     }
 
     @Test
     public void reservedValueThrowsAnException() {
       // Check this also works with imprecise age.
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MAX_VALUE, ConfidenceInterval.of(-5, 10)));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MAX_VALUE, ConfidenceRange.of(-5, 10)));
       assertThat(e.getMessage(), is("Integer MAX_VALUE is reserved for open end age"));
 
-      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MIN_VALUE, ConfidenceInterval.of(-5, 10)));
+      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MIN_VALUE, ConfidenceRange.of(-5, 10)));
       assertThat(e.getMessage(), equalTo("Integer MIN_VALUE is reserved for open end age"));
     }
 
@@ -363,7 +363,7 @@ public class AgeTest {
 
     @Test
     public void asTemporalRange() {
-      Age age = Age.postnatal(10, ConfidenceInterval.of(-5, 10));
+      Age age = Age.postnatal(10, ConfidenceRange.of(-5, 10));
 
       assertThat(age.start().days(), equalTo(5));
       assertThat(age.end().days(), equalTo(20));

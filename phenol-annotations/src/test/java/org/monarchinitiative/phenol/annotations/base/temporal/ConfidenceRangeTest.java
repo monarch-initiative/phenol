@@ -8,30 +8,30 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ConfidenceIntervalTest {
+public class ConfidenceRangeTest {
 
   @Test
   public void basicPropertiesOfPreciseConfidenceInterval() {
-    ConfidenceInterval singleton = ConfidenceInterval.precise();
+    ConfidenceRange singleton = ConfidenceRange.precise();
     assertThat(singleton.lowerBound(), equalTo(0));
     assertThat(singleton.upperBound(), equalTo(0));
     assertThat(singleton.isPrecise(), equalTo(true));
     assertThat(singleton.isImprecise(), equalTo(false));
     assertThat(singleton.length(), equalTo(0));
 
-    assertThat(ConfidenceInterval.of(0, 0), is(sameInstance(singleton)));
+    assertThat(ConfidenceRange.of(0, 0), is(sameInstance(singleton)));
   }
 
   @Test
   public void basicPropertiesOfImpreciseConfidenceInterval() {
-    ConfidenceInterval ci = ConfidenceInterval.of(-5, 10);
+    ConfidenceRange ci = ConfidenceRange.of(-5, 10);
     assertThat(ci.lowerBound(), equalTo(-5));
     assertThat(ci.upperBound(), equalTo(10));
     assertThat(ci.isPrecise(), equalTo(false));
     assertThat(ci.isImprecise(), equalTo(true));
     assertThat(ci.length(), equalTo(15));
 
-    assertThat(ConfidenceInterval.of(-5, 10), is(not(sameInstance(ci))));
+    assertThat(ConfidenceRange.of(-5, 10), is(not(sameInstance(ci))));
   }
 
   @ParameterizedTest
@@ -41,8 +41,8 @@ public class ConfidenceIntervalTest {
   })
   public void failsOnWrongBoundSign(int lower, int upper) {
     //noinspection ResultOfMethodCallIgnored
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceInterval.of(lower, upper));
-    assertThat(e.getMessage(), containsString(String.format("'%d, %d' ConfidenceInterval must have non-positive lowerBound and non-negative upperBound!", lower, upper)));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceRange.of(lower, upper));
+    assertThat(e.getMessage(), containsString(String.format("'%d, %d' ConfidenceRange must have non-positive lowerBound and non-negative upperBound!", lower, upper)));
   }
 
   @ParameterizedTest
@@ -53,8 +53,8 @@ public class ConfidenceIntervalTest {
     "-5, 15,  -5, 10,  -1",
   })
   public void compareTo(int xLower, int xUpper, int yLower, int yUpper, int expected) {
-    ConfidenceInterval x = ConfidenceInterval.of(xLower, xUpper);
-    ConfidenceInterval y = ConfidenceInterval.of(yLower, yUpper);
+    ConfidenceRange x = ConfidenceRange.of(xLower, xUpper);
+    ConfidenceRange y = ConfidenceRange.of(yLower, yUpper);
     assertThat(x.compareTo(y), equalTo(expected));
   }
 

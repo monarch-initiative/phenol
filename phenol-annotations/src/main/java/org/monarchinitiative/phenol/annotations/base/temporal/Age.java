@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceInterval}. The {@link Age}
- * can be <em>precise</em> or <em>imprecise</em> based on the associated {@link ConfidenceInterval}.
- * The {@link ConfidenceInterval} also allows to interpret the {@link Age} as a {@link TemporalRange}.
+ * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceRange}. The {@link Age}
+ * can be <em>precise</em> or <em>imprecise</em> based on the associated {@link ConfidenceRange}.
+ * The {@link ConfidenceRange} also allows to interpret the {@link Age} as a {@link TemporalRange}.
  * <p>
  * As is the case of the {@link TemporalPoint}, {@link Age} has a day precision.
  */
@@ -31,7 +31,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @return precise gestational age.
    */
   static Age gestational(int weeks, int days) {
-    return gestational(weeks, days, ConfidenceInterval.precise());
+    return gestational(weeks, days, ConfidenceRange.precise());
   }
 
   /**
@@ -40,15 +40,15 @@ public interface Age extends TemporalPoint, TemporalRange {
    *
    * @param weeks a non-negative number of completed weeks since the {@link TemporalPoint#lastMenstrualPeriod()}.
    * @param days a non-negative number of additional days to the number of completed weeks.
-   * @param ci confidence interval determining if the age is precise or imprecise.
+   * @param cr {@link ConfidenceRange} determining if the {@link Age} is precise or imprecise.
    * @return possibly imprecise gestational age.
    * @throws IllegalArgumentException if <code>weeks</code> or <code>days</code> is negative.
    */
-  static Age gestational(int weeks, int days, ConfidenceInterval ci) throws IllegalArgumentException {
+  static Age gestational(int weeks, int days, ConfidenceRange cr) throws IllegalArgumentException {
     if (weeks < 0 || days < 0)
       throw new IllegalArgumentException("'" + weeks + ", " + days + "' Weeks and days must be non-negative!");
     days += weeks * 7;
-    return of(days, true, ci);
+    return of(days, true, cr);
   }
 
   /**
@@ -62,7 +62,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @throws IllegalArgumentException if <code>years</code>, <code>months</code>, or <code>days</code> is negative.
    */
   static Age postnatal(int years, int months, int days) {
-    return postnatal(years, months, days, ConfidenceInterval.precise());
+    return postnatal(years, months, days, ConfidenceRange.precise());
   }
 
   /**
@@ -72,14 +72,14 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @param years a non-negative number of years.
    * @param months a non-negative number of months.
    * @param days a non-negative number of days.
-   * @param ci confidence interval determining if the age is precise or imprecise.
+   * @param cr {@link ConfidenceRange} determining if the {@link Age} is precise or imprecise.
    * @return possibly imprecise postnatal {@link Age}.
    * @throws IllegalArgumentException if <code>years</code>, <code>months</code>, or <code>days</code> is negative.
    */
-  static Age postnatal(int years, int months, int days, ConfidenceInterval ci) throws IllegalArgumentException {
+  static Age postnatal(int years, int months, int days, ConfidenceRange cr) throws IllegalArgumentException {
     if (years < 0 || months < 0 || days < 0)
       throw new IllegalArgumentException("'" + years + ", " + months + ", " + days + "' Years, months and days must be non-negative!");
-    return postnatal(days + convertYearsAndMonthsToDays(years, months), ci);
+    return postnatal(days + convertYearsAndMonthsToDays(years, months), cr);
   }
 
   /**
@@ -107,18 +107,18 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @return precise postnatal {@link Age}.
    */
   static Age postnatal(int days) {
-    return of(days, false, ConfidenceInterval.precise());
+    return of(days, false, ConfidenceRange.precise());
   }
 
   /**
    * Create a possibly imprecise {@link Age} representing a number of days since birth.
    *
    * @param days number of days.
-   * @param ci confidence interval determining if the age is precise or imprecise.
+   * @param cr {@link ConfidenceRange} determining if the {@link Age} is precise or imprecise.
    * @return possibly imprecise postnatal {@link Age}.
    */
-  static Age postnatal(int days, ConfidenceInterval ci) {
-    return of(days, false, ci);
+  static Age postnatal(int days, ConfidenceRange cr) {
+    return of(days, false, cr);
   }
 
   /**
@@ -126,20 +126,20 @@ public interface Age extends TemporalPoint, TemporalRange {
    *
    * @param days    number of days.
    * @param isGestational true if the age should be gestational, false if the age should be postnatal.
-   * @param ci confidence interval determining if the age is precise or imprecise.
+   * @param cr {@link ConfidenceRange} determining if the {@link Age} is precise or imprecise.
    * @return possibly imprecise {@link Age}.
    * @throws IllegalArgumentException if <code>days</code> is negative or if the number of days ends up being more
    * than {@link #MAX_DAYS} after the normalization.
    */
-  static Age of(int days, boolean isGestational, ConfidenceInterval ci) throws IllegalArgumentException {
+  static Age of(int days, boolean isGestational, ConfidenceRange cr) throws IllegalArgumentException {
     Util.checkDays(days);
 
-    if (Objects.requireNonNull(ci).isImprecise())
-      ci = clipConfidenceInterval(ci, days);
+    if (Objects.requireNonNull(cr).isImprecise())
+      cr = clipConfidenceInterval(cr, days);
 
     return isGestational
-      ? Ages.gestational(days, ci)
-      : Ages.postnatal(days, ci);
+      ? Ages.gestational(days, cr)
+      : Ages.postnatal(days, cr);
   }
 
   /**
@@ -159,21 +159,21 @@ public interface Age extends TemporalPoint, TemporalRange {
   /* **************************************************************************************************************** */
 
   /**
-   * @return the {@link ConfidenceInterval} associated with the {@link Age}.
+   * @return the {@link ConfidenceRange} associated with the {@link Age}.
    */
-  ConfidenceInterval confidenceInterval();
+  ConfidenceRange confidenceRange();
 
   /* **************************************************************************************************************** */
 
   /**
-   * @return <code>true</code> if the associated {@link ConfidenceInterval} is precise.
+   * @return <code>true</code> if the associated {@link ConfidenceRange} is precise.
    */
   default boolean isPrecise() {
-    return confidenceInterval().isPrecise();
+    return confidenceRange().isPrecise();
   }
 
   /**
-   * @return <code>true</code> if the associated {@link ConfidenceInterval} is <em>NOT</em> precise.
+   * @return <code>true</code> if the associated {@link ConfidenceRange} is <em>NOT</em> precise.
    */
   default boolean isImprecise() {
     return !isPrecise();
@@ -181,37 +181,37 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * @return the day corresponding to the <em>lower</em> bound of the {@link Age} when considering
-   * the associated {@link ConfidenceInterval}.
+   * the associated {@link ConfidenceRange}.
    */
   default int lowerBound() {
     int days = days();
     return isPrecise()
       ? days
-      : days + confidenceInterval().lowerBound();
+      : days + confidenceRange().lowerBound();
   }
 
   /**
    * @return the day corresponding to the <em>upper</em> bound of the {@link Age} when considering
-   * the associated {@link ConfidenceInterval}.
+   * the associated {@link ConfidenceRange}.
    */
   default int upperBound() {
     int days = days();
     return isPrecise()
       ? days
-      : days + confidenceInterval().upperBound();
+      : days + confidenceRange().upperBound();
   }
 
   /**
-   * Add <code>other</code> {@link Age} to <code>this</code>. Note, the {@link ConfidenceInterval} associated with
+   * Add <code>other</code> {@link Age} to <code>this</code>. Note, the {@link ConfidenceRange} associated with
    * the <code>other</code> {@link Age} is not taken into account.
    *
    * @param other gestational or postnatal {@link Age}.
    * @return new {@link Age} representing the total number of days of <code>this</code> and <code>other</code>
-   * with <code>this</code>'s {@link ConfidenceInterval}.
+   * with <code>this</code>'s {@link ConfidenceRange}.
    */
   default Age plus(Age other) {
     int days = days() + other.days();
-    return Age.of(days, isGestational(), confidenceInterval());
+    return Age.of(days, isGestational(), confidenceRange());
   }
 
   static Age max(Age a, Age b) {
@@ -229,22 +229,22 @@ public interface Age extends TemporalPoint, TemporalRange {
     if (result != 0)
       return result;
 
-    return ConfidenceInterval.compare(x.confidenceInterval(), y.confidenceInterval());
+    return ConfidenceRange.compare(x.confidenceRange(), y.confidenceRange());
   }
 
   /**
-   * Ensure the confidence interval does not extend beyond {@link TemporalPoint#lastMenstrualPeriod()} for gestational {@link Age}
+   * Ensure the {@link ConfidenceRange} does not extend beyond {@link TemporalPoint#lastMenstrualPeriod()} for gestational {@link Age}
    * and beyond {@link TemporalPoint#birth()} for postnatal {@link Age}.
    * <p>
    * The clipping sets the lower bound to include at most {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
    *
-   * @param ci confidence interval to clip.
+   * @param cr {@link ConfidenceRange} to clip.
    * @param days number of days either since {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
-   * @return clipped {@link ConfidenceInterval} or the <code>ci</code> instance if clipping was not necessary.
+   * @return clipped {@link ConfidenceRange} or the <code>cr</code> instance if clipping was not necessary.
    */
-  private static ConfidenceInterval clipConfidenceInterval(ConfidenceInterval ci, int days) {
-    if (ci.lowerBound() < -days)
-      return ConfidenceInterval.of(-days, ci.upperBound());
-    return ci;
+  private static ConfidenceRange clipConfidenceInterval(ConfidenceRange cr, int days) {
+    if (cr.lowerBound() < -days)
+      return ConfidenceRange.of(-days, cr.upperBound());
+    return cr;
   }
 }

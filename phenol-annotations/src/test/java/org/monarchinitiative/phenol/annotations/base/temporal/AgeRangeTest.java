@@ -21,7 +21,7 @@ public class AgeRangeTest {
 
   @Test
   public void imprecise() {
-    AgeRange interval = AgeRange.of(Age.postnatal(10, ConfidenceInterval.of(-5, 15)), Age.postnatal(20));
+    AgeRange interval = AgeRange.of(Age.postnatal(10, ConfidenceRange.of(-5, 15)), Age.postnatal(20));
     assertThat(interval.start().days(), equalTo(10));
     assertThat(interval.start().lowerBound(), equalTo(5));
     assertThat(interval.start().upperBound(), equalTo(25));
