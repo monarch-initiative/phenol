@@ -11,15 +11,16 @@ import java.util.Objects;
  */
 public interface Age extends TemporalPoint, TemporalRange {
 
+  /**
+   * The number of days in Julian year (<code>365.25</code>).
+   */
   float DAYS_IN_JULIAN_YEAR = 365.25f;
 
-  float DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
-
   /**
-   * To prevent numerical overflow, we do not allow creation of a {@link Age} corresponding to more
-   * than 2,000 Julian years (730,500 days). It should be enough for our use case of modeling life-span of organisms.
+   * The average number of days in one month corresponding to one twelfth of {@link #DAYS_IN_JULIAN_YEAR}:
+   * (<code>365.25 / 12 = 30.4166667</code>).
    */
-  float MAX_DAYS = 2_000 * DAYS_IN_JULIAN_YEAR;
+  float DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
 
   /**
    * Create a precise gestational {@link Age} representing the number of weeks and months
@@ -96,7 +97,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @param days number of days.
    * @return precise postnatal {@link Age}.
    */
-  static Age postnatal(float days) {
+  static Age postnatal(int days) {
     return of(days, false, ConfidenceInterval.precise());
   }
 
@@ -107,7 +108,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @param ci confidence interval determining if the age is precise or imprecise.
    * @return possibly imprecise postnatal {@link Age}.
    */
-  static Age postnatal(float days, ConfidenceInterval ci) {
+  static Age postnatal(int days, ConfidenceInterval ci) {
     return of(days, false, ci);
   }
 
@@ -121,11 +122,8 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @throws IllegalArgumentException if <code>days</code> is negative or equal to {@link Integer#MAX_VALUE}.
    * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization.
    */
-  static Age of(float days, boolean isGestational, ConfidenceInterval ci) throws IllegalArgumentException, ArithmeticException {
+  static Age of(int days, boolean isGestational, ConfidenceInterval ci) throws IllegalArgumentException {
     Util.checkDays(days);
-
-    if (days > MAX_DAYS)
-      throw new ArithmeticException("Normalized number of days must not be greater than '" + MAX_DAYS + "'. Got '" + days + '\'');
 
     if (Objects.requireNonNull(ci).isImprecise())
       ci = clipConfidenceInterval(ci, days);
@@ -176,8 +174,8 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @return the day corresponding to the <em>lower</em> bound of the {@link Age} when considering
    * the associated {@link ConfidenceInterval}.
    */
-  default float lowerBound() {
-    float days = days();
+  default int lowerBound() {
+    int days = days();
     return isPrecise()
       ? days
       : days + confidenceInterval().lowerBound();
@@ -187,8 +185,8 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @return the day corresponding to the <em>upper</em> bound of the {@link Age} when considering
    * the associated {@link ConfidenceInterval}.
    */
-  default float upperBound() {
-    float days = days();
+  default int upperBound() {
+    int days = days();
     return isPrecise()
       ? days
       : days + confidenceInterval().upperBound();
@@ -203,7 +201,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * with <code>this</code>'s {@link ConfidenceInterval}.
    */
   default Age plus(Age other) {
-    float days = days() + other.days();
+    int days = days() + other.days();
     return Age.of(days, isGestational(), confidenceInterval());
   }
 
@@ -235,7 +233,7 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @param days number of days either since {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
    * @return clipped {@link ConfidenceInterval} or the <code>ci</code> instance if clipping was not necessary.
    */
-  private static ConfidenceInterval clipConfidenceInterval(ConfidenceInterval ci, float days) {
+  private static ConfidenceInterval clipConfidenceInterval(ConfidenceInterval ci, int days) {
     if (ci.lowerBound() < -days)
       return ConfidenceInterval.of(-days, ci.upperBound());
     return ci;

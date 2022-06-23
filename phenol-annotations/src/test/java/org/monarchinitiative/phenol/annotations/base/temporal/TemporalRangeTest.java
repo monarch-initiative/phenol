@@ -14,7 +14,7 @@ public class TemporalRangeTest {
   @CsvSource({
     " 6,  16,     10",
   })
-  public void length_Gestational(int start, int end, float days) {
+  public void length_Gestational(int start, int end, int days) {
     TemporalRange gestational = TemporalRange.of(TemporalPoint.of(start, true), TemporalPoint.of(end, true));
     assertThat(gestational.length(), equalTo(days));
   }
@@ -24,18 +24,18 @@ public class TemporalRangeTest {
     " 1,   2,      1",
     " 1,   1,      0",
   })
-  public void length_Postnatal(int startDays, int endDays, float days) {
+  public void length_Postnatal(int startDays, int endDays, int days) {
     TemporalRange postnatal = TemporalRange.of(TemporalPoint.of(startDays, false), TemporalPoint.of(endDays, false));
     assertThat(postnatal.length(), equalTo(days));
   }
 
   @Test
-  public void openTemporalRangeHasInfiniteLength() {
+  public void openTemporalRangeHasIntegerMaxValueLength() {
     TemporalRange openStart = TemporalRange.openStart(TemporalPoint.of(10, false));
-    assertThat(Float.isInfinite(openStart.length()), equalTo(true));
+    assertThat(openStart.length(), equalTo(Integer.MAX_VALUE));
 
     TemporalRange openEnd = TemporalRange.openEnd(TemporalPoint.of(10, false));
-    assertThat(Float.isInfinite(openEnd.length()), equalTo(true));
+    assertThat(openEnd.length(), equalTo(Integer.MAX_VALUE));
   }
 
   @ParameterizedTest

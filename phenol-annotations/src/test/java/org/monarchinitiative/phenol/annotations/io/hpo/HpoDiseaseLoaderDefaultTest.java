@@ -84,7 +84,7 @@ public class HpoDiseaseLoaderDefaultTest {
     Optional<TemporalPoint> earliestOnset = first.earliestOnset();
     assertThat(earliestOnset.isPresent(), equalTo(true));
     TemporalPoint onset = earliestOnset.get();
-    assertThat(onset.days(), equalTo(29f));
+    assertThat(onset.days(), equalTo(29));
     assertThat(onset.isPostnatal(), equalTo(true));
 
     assertThat(first.references(), hasSize(2));

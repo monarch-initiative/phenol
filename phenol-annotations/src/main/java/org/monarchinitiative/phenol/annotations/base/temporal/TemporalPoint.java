@@ -23,6 +23,13 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 public interface TemporalPoint extends TimelineAware {
 
   /**
+   * To prevent numerical overflow, creation of a {@link TemporalPoint} corresponding to more than
+   * 2,000 Julian years (730,500 days) is not allowed.
+   * 2,000 years should be enough for our use case of modeling life-span of organisms.
+   */
+  int MAX_DAYS = 20 * 36_525;
+
+  /**
    * @return {@link TemporalPoint} representing the last menstrual period before the conception.
    */
   static TemporalPoint lastMenstrualPeriod() {
@@ -36,7 +43,7 @@ public interface TemporalPoint extends TimelineAware {
     return TemporalPoints.BIRTH;
   }
 
-  static TemporalPoint of(float days, boolean isGestational) {
+  static TemporalPoint of(int days, boolean isGestational) {
     Util.checkDays(days);
 
     return isGestational
@@ -68,7 +75,7 @@ public interface TemporalPoint extends TimelineAware {
    *
    * @return the number of days.
    */
-  float days();
+  int days();
 
   boolean isOpen();
 
@@ -76,38 +83,42 @@ public interface TemporalPoint extends TimelineAware {
 
 
   /**
-   * Get the number of weeks present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * Get the number of complete weeks present between {@link #lastMenstrualPeriod()} or {@link #birth()}
    * and this {@link TemporalPoint}. Each week has 7 days. The number of weeks is non-negative.
+   * <p>
+   * For instance, there are 2 complete weeks in 20 days, 3 complete weeks in 21 days, and so on.
    *
    * @return the number of weeks.
    */
-  default float weeks() {
-    return days() / 7.f;
+  default int completeWeeks() {
+    return days() / 7;
   }
 
   /**
-   * Get the number of months present between {@link #lastMenstrualPeriod()} or {@link #birth()}
-   * and this {@link TemporalPoint}. A month is one twelfth of a Julian year and Julian year consists
+   * Get the number of complete months present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * and this {@link TemporalPoint}. A month is defined as one twelfth of a Julian year and Julian year consists
    * of <code>365.25</code> days.
    * <p>
    * The number of months is non-negative.
+   * <p>
+   * For instance, there are 2 complete weeks in 20 days, 3 complete weeks in 21 days, and so on.
    *
    * @return the number of months.
    */
-  default float months() {
-    return days() / Age.DAYS_IN_MONTH;
+  default int completeMonths() {
+    return (int) (days() / Age.DAYS_IN_MONTH);
   }
 
   /**
-   * Get the number of Julian years present between {@link #lastMenstrualPeriod()} or {@link #birth()}
+   * Get the number of complete Julian years present between {@link #lastMenstrualPeriod()} or {@link #birth()}
    * and this {@link TemporalPoint}. Julian year consists of <code>365.25</code> days.
    * <p>
    * The number of years is non-negative.
    *
    * @return the number of years.
    */
-  default float years() {
-    return days() / Age.DAYS_IN_JULIAN_YEAR;
+  default int completeYears() {
+    return (int) (days() / Age.DAYS_IN_JULIAN_YEAR);
   }
 
   default boolean isClosed() {
@@ -136,7 +147,7 @@ public interface TemporalPoint extends TimelineAware {
     if (x.isGestational() ^ y.isGestational())
       return x.isGestational() ? -1 : 1;
 
-    return Float.compare(x.days(), y.days());
+    return Integer.compare(x.days(), y.days());
   }
 
 }

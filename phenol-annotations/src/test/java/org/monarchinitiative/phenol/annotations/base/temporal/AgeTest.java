@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.monarchinitiative.phenol.annotations.TestBase;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -72,7 +71,7 @@ public class AgeTest {
     public void closedAge() {
       Age age = Age.postnatal(10);
 
-      assertThat(age.days(), is(10f));
+      assertThat(age.days(), is(10));
       assertThat(age.isOpen(), is(false));
       assertThat(age.isClosed(), is(true));
       assertThat(age.isPostnatal(), is(true));
@@ -103,17 +102,11 @@ public class AgeTest {
 
     @Test
     public void reservedValueThrowsAnException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.POSITIVE_INFINITY));
-      assertThat(e.getMessage(), is("Infinite value is reserved for open end age"));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MAX_VALUE));
+      assertThat(e.getMessage(), is("Integer MAX_VALUE is reserved for open end age"));
 
-      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.NEGATIVE_INFINITY));
-      assertThat(e.getMessage(), is("Infinite value is reserved for open end age"));
-    }
-
-    @Test
-    public void nanThrowsAnException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.NaN));
-      assertThat(e.getMessage(), is("NaN values are not allowed"));
+      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MIN_VALUE));
+      assertThat(e.getMessage(), is("Integer MIN_VALUE is reserved for open end age"));
     }
 
     @ParameterizedTest
@@ -140,14 +133,14 @@ public class AgeTest {
     @Test
     public void negativeNumberOfDaysThrowsAnException() {
       IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(-1, true, ConfidenceInterval.precise()));
-      assertThat(e.getMessage(), containsString("Days must not be negative, got '-1.0' days!"));
+      assertThat(e.getMessage(), containsString("Days must not be negative, got '-1' days!"));
     }
 
 
     @Test
     public void tooGreatAgeThrowsAnException() {
-      ArithmeticException e = assertThrows(ArithmeticException.class, () -> Age.of(Age.MAX_DAYS + 1, true, ConfidenceInterval.precise()));
-      assertThat(e.getMessage(), containsString("Normalized number of days must not be greater than '730500.0'. Got '730501.0'"));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.of(Age.MAX_DAYS + 1, true, ConfidenceInterval.precise()));
+      assertThat(e.getMessage(), containsString("Normalized number of days must not be greater than '730500'. Got '730501'"));
     }
 
     @ParameterizedTest
@@ -241,8 +234,8 @@ public class AgeTest {
     public void asTemporalRange() {
       Age age = Age.postnatal(0, 0, 14);
 
-      assertThat(age.start().days(), equalTo(14f));
-      assertThat(age.end().days(), equalTo(14f));
+      assertThat(age.start().days(), equalTo(14));
+      assertThat(age.end().days(), equalTo(14));
     }
   }
 
@@ -253,13 +246,17 @@ public class AgeTest {
     public void closedAge() {
       Age age = Age.postnatal(10, ConfidenceInterval.of(-5, 10));
 
-      assertThat(age.days(), is(10f));
+      assertThat(age.days(), is(10));
       assertThat(age.isOpen(), is(false));
       assertThat(age.isClosed(), is(true));
       assertThat(age.isGestational(), is(false));
       assertThat(age.isPrecise(), is(false));
     }
 
+    /**
+     * The test check that {@link ConfidenceInterval} that extends beyond the timeline start
+     * (either {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}) is clipped.
+     */
     @ParameterizedTest
     @CsvSource({
       "15,  true,  -20, 20,      -15",
@@ -267,7 +264,7 @@ public class AgeTest {
       "15, false,  -20, 20,      -15",
       "15, false,  -10, 20,      -10",
     })
-    public void closedAgeIsClipped(int days, boolean isGestational, int lowerBound, int upperBound, float expectedLowerBound) {
+    public void closedAgeIsClipped(int days, boolean isGestational, int lowerBound, int upperBound, int expectedLowerBound) {
       Age age = Age.of(days, isGestational, ConfidenceInterval.of(lowerBound, upperBound));
       assertThat(age.confidenceInterval().lowerBound(), equalTo(expectedLowerBound));
     }
@@ -275,17 +272,11 @@ public class AgeTest {
     @Test
     public void reservedValueThrowsAnException() {
       // Check this also works with imprecise age.
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.POSITIVE_INFINITY, ConfidenceInterval.of(-5, 10)));
-      assertThat(e.getMessage(), is("Infinite value is reserved for open end age"));
+      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MAX_VALUE, ConfidenceInterval.of(-5, 10)));
+      assertThat(e.getMessage(), is("Integer MAX_VALUE is reserved for open end age"));
 
-      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.NEGATIVE_INFINITY, ConfidenceInterval.of(-5, 10)));
-      assertThat(e.getMessage(), equalTo("Infinite value is reserved for open end age"));
-    }
-
-    @Test
-    public void nanThrowsAnException() {
-      IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Float.NaN, ConfidenceInterval.of(-5, 10)));
-      assertThat(e.getMessage(), is("NaN values are not allowed"));
+      e = assertThrows(IllegalArgumentException.class, () -> Age.postnatal(Integer.MIN_VALUE, ConfidenceInterval.of(-5, 10)));
+      assertThat(e.getMessage(), equalTo("Integer MIN_VALUE is reserved for open end age"));
     }
 
     @ParameterizedTest
@@ -363,8 +354,8 @@ public class AgeTest {
     public void asTemporalRange() {
       Age age = Age.postnatal(10, ConfidenceInterval.of(-5, 10));
 
-      assertThat(age.start().days(), equalTo(5f));
-      assertThat(age.end().days(), equalTo(20f));
+      assertThat(age.start().days(), equalTo(5));
+      assertThat(age.end().days(), equalTo(20));
     }
   }
 

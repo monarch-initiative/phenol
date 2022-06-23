@@ -3,7 +3,6 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.monarchinitiative.phenol.annotations.TestBase;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -14,11 +13,11 @@ public class ConfidenceIntervalTest {
   @Test
   public void basicPropertiesOfPreciseConfidenceInterval() {
     ConfidenceInterval singleton = ConfidenceInterval.precise();
-    assertThat((double) singleton.lowerBound(), closeTo(0f, TestBase.ERROR));
-    assertThat((double) singleton.upperBound(), closeTo(0f, TestBase.ERROR));
+    assertThat(singleton.lowerBound(), equalTo(0));
+    assertThat(singleton.upperBound(), equalTo(0));
     assertThat(singleton.isPrecise(), equalTo(true));
     assertThat(singleton.isImprecise(), equalTo(false));
-    assertThat(singleton.length(), equalTo(0f));
+    assertThat(singleton.length(), equalTo(0));
 
     assertThat(ConfidenceInterval.of(0, 0), is(sameInstance(singleton)));
   }
@@ -26,11 +25,11 @@ public class ConfidenceIntervalTest {
   @Test
   public void basicPropertiesOfImpreciseConfidenceInterval() {
     ConfidenceInterval ci = ConfidenceInterval.of(-5, 10);
-    assertThat(ci.lowerBound(), equalTo(-5f));
-    assertThat(ci.upperBound(), equalTo(10f));
+    assertThat(ci.lowerBound(), equalTo(-5));
+    assertThat(ci.upperBound(), equalTo(10));
     assertThat(ci.isPrecise(), equalTo(false));
     assertThat(ci.isImprecise(), equalTo(true));
-    assertThat(ci.length(), equalTo(15f));
+    assertThat(ci.length(), equalTo(15));
 
     assertThat(ConfidenceInterval.of(-5, 10), is(not(sameInstance(ci))));
   }
@@ -40,10 +39,10 @@ public class ConfidenceIntervalTest {
     " 1,  2",
     "-1, -2",
   })
-  public void failsOnWrongBoundSign(float lower, float upper) {
+  public void failsOnWrongBoundSign(int lower, int upper) {
     //noinspection ResultOfMethodCallIgnored
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ConfidenceInterval.of(lower, upper));
-    assertThat(e.getMessage(), containsString(String.format("'%.1f, %.1f' ConfidenceInterval must have non-positive lowerBound and non-negative upperBound!", lower, upper)));
+    assertThat(e.getMessage(), containsString(String.format("'%d, %d' ConfidenceInterval must have non-positive lowerBound and non-negative upperBound!", lower, upper)));
   }
 
   @ParameterizedTest

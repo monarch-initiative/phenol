@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.monarchinitiative.phenol.annotations.TestBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +11,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-
-import static org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint.*;
 
 public class TemporalPointTest {
 
@@ -23,7 +20,7 @@ public class TemporalPointTest {
     @Test
     public void lastMenstrualPeriod() {
       TemporalPoint lmp = TemporalPoint.lastMenstrualPeriod();
-      assertThat(lmp.days(), equalTo(0f));
+      assertThat(lmp.days(), equalTo(0));
       assertThat(lmp.isZero(), equalTo(true));
       assertThat(lmp.isPositive(), equalTo(false));
       assertThat(lmp.isGestational(), equalTo(true));
@@ -33,7 +30,7 @@ public class TemporalPointTest {
     @Test
     public void birth() {
       TemporalPoint birth = TemporalPoint.birth();
-      assertThat(birth.days(), equalTo(0f));
+      assertThat(birth.days(), equalTo(0));
       assertThat(birth.isZero(), equalTo(true));
       assertThat(birth.isPositive(), equalTo(false));
       assertThat(birth.isPostnatal(), equalTo(true));
@@ -48,7 +45,7 @@ public class TemporalPointTest {
     public void basic() {
       TemporalPoint instance = TemporalPoint.of(10, false);
 
-      assertThat(instance.days(), equalTo(10f));
+      assertThat(instance.days(), equalTo(10));
       assertThat(instance.isPostnatal(), equalTo(true));
       assertThat(instance.isGestational(), equalTo(false));
       assertThat(instance.isOpen(), equalTo(false));
@@ -59,41 +56,41 @@ public class TemporalPointTest {
 
     @ParameterizedTest
     @CsvSource({
-      " 0,    .0",
-      " 6,    .8571428",
-      " 7,   1.",
-      "13,   1.8571428",
-      "14,   2.",
+      " 0,    0",
+      " 6,    0",
+      " 7,    1",
+      "13,    1", // still just one complete week
+      "14,    2", // now we have two weeks
     })
-    public void weeks(int days, double expectedWeeks) {
-      assertThat((double) TemporalPoint.of(days, false).weeks(), closeTo(expectedWeeks, TestBase.ERROR));
-      assertThat((double) TemporalPoint.of(days, true).weeks(), closeTo(expectedWeeks, TestBase.ERROR));
+    public void completeWeeksFromDays(int days, int expectedWeeks) {
+      assertThat(TemporalPoint.of(days, false).completeWeeks(), equalTo(expectedWeeks));
+      assertThat(TemporalPoint.of(days, true).completeWeeks(), equalTo(expectedWeeks));
     }
 
     @ParameterizedTest
     @CsvSource({
-      "  0,      .0",
-      " 30,      .9856262",
-      " 31,     1.0184804",
+      "  0,       0",
+      " 30,       0",
+      " 31,       1",
 
-      "365,    11.9917864", // Julian year is 365.25 days!
-      "366,    12.0246406",
+      "365,       11", // Julian year is 365.25 days!
+      "366,       12",
     })
-    public void months(int days, double expectedMonths) {
-      assertThat((double) TemporalPoint.of(days, false).months(), closeTo(expectedMonths, TestBase.ERROR));
+    public void completeMonthsFromDays(int days, int expectedMonths) {
+      assertThat(TemporalPoint.of(days, false).completeMonths(), equalTo(expectedMonths));
     }
 
     @ParameterizedTest
     @CsvSource({
-      "   0,     .0",
-      "   1,     .0027378",
-      " 365,     .9993155", // Julian year is 365.25 days!
-      " 366,    1.0020533",
-      " 730,    1.9986310",
-      " 731,    2.0013689",
+      "   0,      0",
+      "   1,      0",
+      " 365,      0", // Julian year is 365.25 days!
+      " 366,      1",
+      " 730,      1",
+      " 731,      2",
     })
-    public void years(int days, double expectedYears) {
-      assertThat((double) TemporalPoint.of(days, false).years(), closeTo(expectedYears, TestBase.ERROR));
+    public void completeYearsFromYears(int days, int expectedYears) {
+      assertThat(TemporalPoint.of(days, false).completeYears(), equalTo(expectedYears));
     }
 
     @ParameterizedTest
@@ -119,12 +116,12 @@ public class TemporalPointTest {
 
     @Test
     public void compare_open() {
-      TemporalPoint openStart = openStart();
-      TemporalPoint lastMenstrualPeriod = lastMenstrualPeriod();
+      TemporalPoint openStart = TemporalPoint.openStart();
+      TemporalPoint lastMenstrualPeriod = TemporalPoint.lastMenstrualPeriod();
       TemporalPoint gestational = TemporalPoint.of(10, true);
-      TemporalPoint birth = birth();
+      TemporalPoint birth = TemporalPoint.birth();
       TemporalPoint postnatal = TemporalPoint.of(10, false);
-      TemporalPoint openEnd = openEnd();
+      TemporalPoint openEnd = TemporalPoint.openEnd();
       List<TemporalPoint> sorted = List.of(openStart, lastMenstrualPeriod, gestational, birth, postnatal, openEnd);
       List<TemporalPoint> points = new ArrayList<>(sorted);
 

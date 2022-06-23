@@ -67,14 +67,14 @@ public interface TemporalRange {
 
   /**
    * Get the number of days spanned by <code>this</code> {@link TemporalRange}.
-   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Float#POSITIVE_INFINITY}.
+   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
    *
    * @return the number of days.
    */
-  default float length() {
+  default int length() {
     return isFullyClosed()
       ? end().days() - start().days()
-      : Float.POSITIVE_INFINITY;
+      : Integer.MAX_VALUE;
   }
 
   /**

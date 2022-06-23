@@ -22,12 +22,12 @@ public class AgeRangeTest {
   @Test
   public void imprecise() {
     AgeRange interval = AgeRange.of(Age.postnatal(10, ConfidenceInterval.of(-5, 15)), Age.postnatal(20));
-    assertThat(interval.start().days(), equalTo(10f));
-    assertThat(interval.start().lowerBound(), equalTo(5f));
-    assertThat(interval.start().upperBound(), equalTo(25f));
-    assertThat(interval.end().days(), equalTo(20f));
-    assertThat(interval.end().lowerBound(), equalTo(20f));
-    assertThat(interval.end().upperBound(), equalTo(20f));
+    assertThat(interval.start().days(), equalTo(10));
+    assertThat(interval.start().lowerBound(), equalTo(5));
+    assertThat(interval.start().upperBound(), equalTo(25));
+    assertThat(interval.end().days(), equalTo(20));
+    assertThat(interval.end().lowerBound(), equalTo(20));
+    assertThat(interval.end().upperBound(), equalTo(20));
     assertThat(interval.end().isPrecise(), equalTo(true));
     assertThat(interval.isPrecise(), equalTo(false));
     assertThat(interval.isImprecise(), equalTo(true));
@@ -35,12 +35,12 @@ public class AgeRangeTest {
 
   @ParameterizedTest
   @CsvSource({
-    "1.,  0.",
+    "1,  0",
   })
-  public void errorOnStartAfterEnd(float startDays, float endDays) {
+  public void errorOnStartAfterEnd(int startDays, int endDays) {
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
       () -> AgeRange.of(Age.postnatal(startDays), Age.postnatal(endDays)));
-    assertThat(e.getMessage(), is(String.format("Start (%.1f days) must not be after end (%.1f days)", startDays, endDays)));
+    assertThat(e.getMessage(), is(String.format("Start (%d days) must not be after end (%d days)", startDays, endDays)));
   }
 
 

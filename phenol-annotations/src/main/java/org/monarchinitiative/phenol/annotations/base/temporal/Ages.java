@@ -13,15 +13,15 @@ class Ages {
   private static final Age LMP = new AgeGestational.AgeGestationalPrecise(0);
   private static final Age BIRTH = new AgePostnatal.AgePostnatalPrecise(0);
 
-  static Age gestational(float days, ConfidenceInterval ci) {
+  static Age gestational(int days, ConfidenceInterval ci) {
     if (ci.isPrecise())
-      return days < TemporalPoints.TOLERANCE ? LMP : new AgeGestational.AgeGestationalPrecise(days);
+      return days == 0 ? LMP : new AgeGestational.AgeGestationalPrecise(days);
     return new AgeGestational.AgeGestationalImprecise(days, ci);
   }
 
-  static Age postnatal(float days, ConfidenceInterval ci) {
+  static Age postnatal(int days, ConfidenceInterval ci) {
     if (ci.isPrecise())
-      return days < TemporalPoints.TOLERANCE ? BIRTH : new AgePostnatal.AgePostnatalPrecise(days);
+      return days == 0 ? BIRTH : new AgePostnatal.AgePostnatalPrecise(days);
 
     return new AgePostnatal.AgePostnatalImprecise(days, ci);
   }
@@ -29,14 +29,14 @@ class Ages {
   static class AgeGestational {
 
     private static abstract class AgeGestationalBase implements Age {
-      protected final float days;
+      protected final int days;
 
-      protected AgeGestationalBase(float days) {
+      protected AgeGestationalBase(int days) {
         this.days = days;
       }
 
       @Override
-      public float days() {
+      public int days() {
         return days;
       }
 
@@ -67,7 +67,7 @@ class Ages {
 
     private static class AgeGestationalPrecise extends AgeGestationalBase {
 
-      private AgeGestationalPrecise(float days) {
+      private AgeGestationalPrecise(int days) {
         super(days);
       }
 
@@ -98,7 +98,7 @@ class Ages {
 
       private final ConfidenceInterval ci;
 
-      private AgeGestationalImprecise(float days, ConfidenceInterval ci) {
+      private AgeGestationalImprecise(int days, ConfidenceInterval ci) {
         super(days);
         this.ci = ci;
       }
@@ -147,14 +147,14 @@ class Ages {
 
     private static abstract class AgePostnatalBase implements Age {
 
-      protected final float days;
+      protected final int days;
 
-      protected AgePostnatalBase(float days) {
+      protected AgePostnatalBase(int days) {
         this.days = days;
       }
 
       @Override
-      public float days() {
+      public int days() {
         return days;
       }
 
@@ -184,7 +184,7 @@ class Ages {
 
     private static class AgePostnatalPrecise extends AgePostnatalBase {
 
-      private AgePostnatalPrecise(float days) {
+      private AgePostnatalPrecise(int days) {
         super(days);
       }
 
@@ -226,7 +226,7 @@ class Ages {
 
       private final ConfidenceInterval ci;
 
-      private AgePostnatalImprecise(float days, ConfidenceInterval ci) {
+      private AgePostnatalImprecise(int days, ConfidenceInterval ci) {
         super(days);
         this.ci = ci;
       }
@@ -276,16 +276,16 @@ class Ages {
    */
   static class AgeOpen implements Age {
 
-    private final float days;
+    private final int days;
     private final boolean isGestational;
 
-    AgeOpen(float days, boolean isGestational) {
+    AgeOpen(int days, boolean isGestational) {
       this.days = days;
       this.isGestational = isGestational;
     }
 
     @Override
-    public float days() {
+    public int days() {
       return days;
     }
 
