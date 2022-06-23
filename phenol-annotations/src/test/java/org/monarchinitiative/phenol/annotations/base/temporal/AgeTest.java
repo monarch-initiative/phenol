@@ -62,6 +62,17 @@ public class AgeTest {
         assertThat(max, equalTo(right));
     }
 
+    @Test
+    public void completeYearsMonthsWeeksAreIntuitive() {
+      Age oneWeek = Age.gestational(1, 0);
+      assertThat(oneWeek.completeWeeks(), equalTo(1));
+
+      Age oneMonth = Age.postnatal(0, 1, 0);
+      assertThat(oneMonth.completeMonths(), equalTo(1));
+
+      Age oneYear = Age.postnatal(1, 0, 0);
+      assertThat(oneYear.completeYears(), equalTo(1));
+    }
   }
 
   @Nested
@@ -85,19 +96,19 @@ public class AgeTest {
     @ParameterizedTest
     @CsvSource({
       // check rounding of Julian years
-      "  1,  0,  0,       365.25",
-      " 10,  0,  0,      3652.5",
+      "  1,  0,  0,       366",
+      " 10,  0,  0,      3653",
       "100,  0,  0,     36525",
 
       // months
-      "  0,  1,  0,        30.4375",
-      "  0,  2,  0,        60.875",
-      "  0,  3,  0,        91.3125",
-      "  0,  4,  0,       121.75",
-      "  0, 12,  0,       365.25",
+      "  0,  1,  0,        31",
+      "  0,  2,  0,        61",
+      "  0,  3,  0,        92",
+      "  0,  4,  0,       122",
+      "  0, 12,  0,       366",
     })
-    public void createUsingDays(int years, int months, int days, float expectedDays) {
-      assertThat((double) Age.postnatal(years, months, days).days(), closeTo(expectedDays, TestBase.ERROR));
+    public void createUsingYearsMonthsAndDays(int years, int months, int days, int expectedDays) {
+      assertThat(Age.postnatal(years, months, days).days(), equalTo(expectedDays));
     }
 
     @Test

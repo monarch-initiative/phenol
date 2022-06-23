@@ -84,11 +84,20 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * The preferred way for converting <code>years</code> and <code>months</code> to days.
+   * <p>
+   * The result is a sum of <code>years</code> multiplied by {@link #DAYS_IN_JULIAN_YEAR}
+   * and <code>months</code> multiplied by {@link #DAYS_IN_MONTH}, <b>rounded up</b> to the nearest day.
    *
    * @return number of days that occur in given <code>years</code> and <code>months</code>
    */
-  private static float convertYearsAndMonthsToDays(int years, int months) {
-    return years * DAYS_IN_JULIAN_YEAR + months * DAYS_IN_MONTH;
+  private static int convertYearsAndMonthsToDays(int years, int months) {
+    /*
+     * The result is rounded up at the cost of introducing a small imprecision to ensure that
+     * the following assertions are valid:
+     * assertThat(Age.postnatal(0, 1, 0).completeMonths(), equalTo(1));
+     * assertThat(Age.postnatal(1, 0, 0).completeYears(), equalTo(1));
+     */
+    return Math.toIntExact((long) Math.ceil(years * DAYS_IN_JULIAN_YEAR + months * DAYS_IN_MONTH));
   }
 
   /**
@@ -119,8 +128,8 @@ public interface Age extends TemporalPoint, TemporalRange {
    * @param isGestational true if the age should be gestational, false if the age should be postnatal.
    * @param ci confidence interval determining if the age is precise or imprecise.
    * @return possibly imprecise {@link Age}.
-   * @throws IllegalArgumentException if <code>days</code> is negative or equal to {@link Integer#MAX_VALUE}.
-   * @throws ArithmeticException if the number of days ends up being more than {@link #MAX_DAYS} after the normalization.
+   * @throws IllegalArgumentException if <code>days</code> is negative or if the number of days ends up being more
+   * than {@link #MAX_DAYS} after the normalization.
    */
   static Age of(int days, boolean isGestational, ConfidenceInterval ci) throws IllegalArgumentException {
     Util.checkDays(days);
