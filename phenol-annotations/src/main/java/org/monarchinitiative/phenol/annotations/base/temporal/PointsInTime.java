@@ -55,7 +55,7 @@ class PointsInTime {
 
       @Override
       public int hashCode() {
-        return Objects.hash(days, true);
+        return Objects.hash(days, isOpen(), isGestational());
       }
 
       @Override
@@ -98,7 +98,7 @@ class PointsInTime {
 
       @Override
       public int hashCode() {
-        return Objects.hash(days, false);
+        return Objects.hash(days, isOpen(), isGestational());
       }
 
       @Override
@@ -144,7 +144,7 @@ class PointsInTime {
 
     @Override
     public int hashCode() {
-      return Objects.hash(days, isGestational);
+      return Objects.hash(days, isOpen(), isGestational());
     }
 
     @Override

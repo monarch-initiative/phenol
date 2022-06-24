@@ -101,7 +101,7 @@ class TemporalIntervals {
 
     @Override
     public int hashCode() {
-      return Objects.hash(start);
+      return Objects.hash(start, end());
     }
 
     @Override
@@ -140,7 +140,7 @@ class TemporalIntervals {
 
     @Override
     public int hashCode() {
-      return Objects.hash(end);
+      return Objects.hash(start(), end);
     }
 
     @Override
