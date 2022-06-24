@@ -44,11 +44,7 @@ public interface PointInTime extends TimelineAware {
   }
 
   static PointInTime of(int days, boolean isGestational) {
-    Util.checkDays(days);
-
-    return isGestational
-      ? PointsInTime.gestational(days)
-      : PointsInTime.postnatal(days);
+    return PointsInTime.of(Util.checkDays(days), isGestational);
   }
 
   /**

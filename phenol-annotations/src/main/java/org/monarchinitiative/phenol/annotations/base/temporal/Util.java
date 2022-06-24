@@ -9,9 +9,10 @@ class Util {
    * Check that <code>days</code> is not greater than {@link PointInTime#MAX_DAYS} or negative.
    *
    * @param days number of days to check.
+   * @return the number of days inputted as <code>days</code>
    * @throws IllegalArgumentException if the number of days does not pass the checks.
    */
-  static void checkDays(int days) {
+  static int checkDays(int days) {
     if (days > PointInTime.MAX_DAYS) {
       if (days == Integer.MAX_VALUE)
         throw new IllegalArgumentException("Integer MAX_VALUE is reserved for open end age");
@@ -25,6 +26,7 @@ class Util {
       else
         throw new IllegalArgumentException("Days must not be negative, got '" + days + "' days!");
     }
+    return days;
   }
 
 }

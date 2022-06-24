@@ -7,68 +7,114 @@ import java.util.Objects;
  */
 class PointsInTime {
 
-  static final PointInTime LMP = new ClosedPointInTime(0, true);
-  static final PointInTime BIRTH = new ClosedPointInTime(0, false);
+  static final PointInTime LMP = new ClosedPointInTime.GestationalClosedPointInTime(0);
+  static final PointInTime BIRTH = new ClosedPointInTime.PostnatalClosedPointInTime(0);
   static final PointInTime OPEN_START = new OpenPointInTime(Integer.MIN_VALUE, true);
   static final PointInTime OPEN_END = new OpenPointInTime(Integer.MAX_VALUE, false);
 
   private PointsInTime() {
   }
 
-  static PointInTime gestational(int days) {
-    return days == 0 ? LMP : new ClosedPointInTime(days, true);
+  static PointInTime of(int days, boolean isGestational) {
+    return isGestational
+      ? days == 0 ? LMP : new ClosedPointInTime.GestationalClosedPointInTime(days)
+      : days == 0 ? BIRTH : new ClosedPointInTime.PostnatalClosedPointInTime(days);
   }
 
-  static PointInTime postnatal(int days) {
-    return days == 0 ? BIRTH : new ClosedPointInTime(days, false);
-  }
+  /**
+   * The static subclasses mess here is aimed to reduce memory footprint of PointInTime objects, as we anticipate
+   * loads of these to be required in a temporal-aware application.
+   * <p>
+   * Each PointInTime implementation residing in ClosedPointInTime is anticipated to have Java object header (12 bytes)
+   * and the number of days (4 bytes), without requiring alignment padding.
+   */
+  private static class ClosedPointInTime {
 
-  static class ClosedPointInTime implements PointInTime {
+    private static class GestationalClosedPointInTime implements PointInTime {
 
-    // TODO split further into sub-classes
+      private final int days;
 
-    private final int days;
-    private final boolean isGestational;
+      private GestationalClosedPointInTime(int days) {
+        this.days = days;
+      }
 
-    ClosedPointInTime(int days, boolean isGestational) {
-      this.days = days;
-      this.isGestational = isGestational;
+      @Override
+      public int days() {
+        return days;
+      }
+
+      @Override
+      public boolean isOpen() {
+        return false;
+      }
+
+      @Override
+      public boolean isGestational() {
+        return true;
+      }
+
+      @Override
+      public int hashCode() {
+        return Objects.hash(days, true);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GestationalClosedPointInTime that = (GestationalClosedPointInTime) o;
+        return days == that.days;
+      }
+
+      @Override
+      public String toString() {
+        return "PointInTime{" +
+          "days=" + days +
+          ", isGestational=true, isOpen=false}";
+      }
     }
 
-    @Override
-    public int days() {
-      return days;
-    }
+    private static class PostnatalClosedPointInTime implements PointInTime {
+      private final int days;
 
-    @Override
-    public boolean isOpen() {
-      return false;
-    }
+      private PostnatalClosedPointInTime(int days) {
+        this.days = days;
+      }
 
-    @Override
-    public boolean isGestational() {
-      return isGestational;
-    }
+      @Override
+      public int days() {
+        return days;
+      }
 
-    @Override
-    public int hashCode() {
-      return Objects.hash(days, isGestational);
-    }
+      @Override
+      public boolean isOpen() {
+        return false;
+      }
 
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      ClosedPointInTime that = (ClosedPointInTime) o;
-      return days == that.days && isGestational == that.isGestational;
-    }
+      @Override
+      public boolean isGestational() {
+        return false;
+      }
 
-    @Override
-    public String toString() {
-      return "ClosedPointInTime{" +
-        "days=" + days +
-        ", isGestational=" + isGestational +
-        '}';
+      @Override
+      public int hashCode() {
+        return Objects.hash(days, false);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostnatalClosedPointInTime that = (PostnatalClosedPointInTime) o;
+        return days == that.days;
+      }
+
+      @Override
+      public String toString() {
+        return "PointInTime{" +
+          "days=" + days +
+          ", isGestational=false, isOpen=false}";
+      }
     }
   }
 
