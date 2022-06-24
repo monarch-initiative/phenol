@@ -72,13 +72,13 @@ class Ages {
       }
 
       @Override
-      public TemporalPoint start() {
-        return TemporalPoint.of(days, isGestational());
+      public PointInTime start() {
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
-      public TemporalPoint end() {
-        return TemporalPoint.of(days, isGestational());
+      public PointInTime end() {
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
@@ -104,13 +104,13 @@ class Ages {
       }
 
       @Override
-      public TemporalPoint start() {
-        return TemporalPoint.of(days + cr.lowerBound(), isGestational());
+      public PointInTime start() {
+        return PointInTime.of(days + cr.lowerBound(), isGestational());
       }
 
       @Override
-      public TemporalPoint end() {
-        return TemporalPoint.of(days + cr.upperBound(), isGestational());
+      public PointInTime end() {
+        return PointInTime.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
@@ -189,13 +189,13 @@ class Ages {
       }
 
       @Override
-      public TemporalPoint start() {
-        return TemporalPoint.of(days, isGestational());
+      public PointInTime start() {
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
-      public TemporalPoint end() {
-        return TemporalPoint.of(days, isGestational());
+      public PointInTime end() {
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
@@ -232,13 +232,13 @@ class Ages {
       }
 
       @Override
-      public TemporalPoint start() {
-        return TemporalPoint.of(days + cr.lowerBound(), isGestational());
+      public PointInTime start() {
+        return PointInTime.of(days + cr.lowerBound(), isGestational());
       }
 
       @Override
-      public TemporalPoint end() {
-        return TemporalPoint.of(days + cr.upperBound(), isGestational());
+      public PointInTime end() {
+        return PointInTime.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
@@ -305,13 +305,13 @@ class Ages {
     }
 
     @Override
-    public TemporalPoint start() {
-      return TemporalPoints.OPEN_START;
+    public PointInTime start() {
+      return PointsInTime.OPEN_START;
     }
 
     @Override
-    public TemporalPoint end() {
-      return TemporalPoints.OPEN_END;
+    public PointInTime end() {
+      return PointsInTime.OPEN_END;
     }
 
     @Override

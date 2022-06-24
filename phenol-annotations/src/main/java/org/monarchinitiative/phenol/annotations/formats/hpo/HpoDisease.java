@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -29,7 +29,7 @@ public interface HpoDisease extends Identified {
 
   static HpoDisease of(TermId diseaseId,
                        String diseaseName,
-                       TemporalRange globalOnset,
+                       TemporalInterval globalOnset,
                        List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                        List<TermId> modesOfInheritance) {
     return new HpoDiseaseDefault(diseaseId, diseaseName, globalOnset, phenotypicAbnormalities, modesOfInheritance);
@@ -75,12 +75,12 @@ public interface HpoDisease extends Identified {
   /**
    * @return temporal interval representing onset of the earliest {@link HpoDiseaseAnnotation}.
    */
-  default Optional<TemporalRange> diseaseOnset() {
+  default Optional<TemporalInterval> diseaseOnset() {
     return presentAnnotationsStream()
-      .min((l, r) -> TemporalPoint.compare(l.earliestOnset().orElse(TemporalPoint.openEnd()), r.earliestOnset().orElse(TemporalPoint.openEnd())))
+      .min((l, r) -> PointInTime.compare(l.earliestOnset().orElse(PointInTime.openEnd()), r.earliestOnset().orElse(PointInTime.openEnd())))
       .map(HpoDiseaseAnnotation::observationIntervals)
       .orElse(Stream.empty())
-      .min(TemporalRange::compare);
+      .min(TemporalInterval::compare);
   }
 
   /**

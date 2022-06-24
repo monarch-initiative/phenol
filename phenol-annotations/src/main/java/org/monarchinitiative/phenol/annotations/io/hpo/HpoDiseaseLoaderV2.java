@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -85,7 +85,7 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    TemporalRange globalOnset = null; // TODO - address
+    TemporalInterval globalOnset = null; // TODO - address
     return Optional.of(
       HpoDisease.of(
         diseaseId,
@@ -116,15 +116,15 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
     }
 
     List<AnnotationReference> references = new LinkedList<>();
-    List<KnowsRatioAndMaybeTemporalRange> ratios = new LinkedList<>();
+    List<KnowsRatioAndMaybeTemporalInterval> ratios = new LinkedList<>();
     List<TermId> modifiers = new LinkedList<>();
     for (HpoAnnotationLine line : annotationLines) {
       // 1. Combine `ratio` and `onset` into `TemporalRatio`.
       Ratio ratio = parseFrequency(line.isNOT(), line.getFrequency());
-      TemporalRange temporalRange = HpoOnset.fromHpoIdString(line.getOnsetId())
-        .map(onset -> TemporalRange.openEnd(onset.start()))
+      TemporalInterval temporalInterval = HpoOnset.fromHpoIdString(line.getOnsetId())
+        .map(onset -> TemporalInterval.openEnd(onset.start()))
         .orElse(null);
-      ratios.add(KnowsRatioAndMaybeTemporalRange.of(ratio, temporalRange));
+      ratios.add(KnowsRatioAndMaybeTemporalInterval.of(ratio, temporalInterval));
 
       // 2. Assemble `AnnotationReference`.
       EvidenceCode evidence = EvidenceCode.parse(line.getEvidence());

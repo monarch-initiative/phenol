@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -23,9 +23,9 @@ import java.util.stream.Stream;
  * {@link #frequency()}.
  * <p>
  * The temporal aspect of the feature presentation is exposed via {@link #observationIntervals()} that provides
- * {@link TemporalRange}s when the {@link HpoDiseaseAnnotation} is observable in one or more patient or via
- * {@link #observedInInterval(TemporalRange)} to get a {@link Ratio} of patients presenting the feature in provided
- * {@link TemporalRange}.
+ * {@link TemporalInterval}s when the {@link HpoDiseaseAnnotation} is observable in one or more patient or via
+ * {@link #observedInInterval(TemporalInterval)} to get a {@link Ratio} of patients presenting the feature in provided
+ * {@link TemporalInterval}.
  * <p>
  * The evidence supporting the phenotypic feature is available via {@link #references()}.
  */
@@ -40,17 +40,17 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   Ratio ratio();
 
   /**
-   * @return stream of {@link TemporalRange}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
+   * @return stream of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
    * at least one cohort individual.
    */
-  Stream<TemporalRange> observationIntervals();
+  Stream<TemporalInterval> observationIntervals();
 
   /**
-   * Get the {@link Ratio} of patients presenting a phenotypic feature in given {@link TemporalRange}.
+   * Get the {@link Ratio} of patients presenting a phenotypic feature in given {@link TemporalInterval}.
    *
    * @param interval target temporal interval.
    */
-  Ratio observedInInterval(TemporalRange interval);
+  Ratio observedInInterval(TemporalInterval interval);
 
   /**
    * @return a list of disease annotation modifiers.
@@ -91,39 +91,39 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   }
 
   /**
-   * @return {@link TemporalPoint} representing the earliest onset of the phenotypic feature in patient cohort.
+   * @return {@link PointInTime} representing the earliest onset of the phenotypic feature in patient cohort.
    */
-  default Optional<TemporalPoint> earliestOnset() {
+  default Optional<PointInTime> earliestOnset() {
     return observationIntervals()
-      .map(TemporalRange::start)
-      .min(TemporalPoint::compare);
+      .map(TemporalInterval::start)
+      .min(PointInTime::compare);
   }
 
   /**
-   * @return {@link TemporalPoint} representing the latest onset of the phenotypic feature in patient cohort.
+   * @return {@link PointInTime} representing the latest onset of the phenotypic feature in patient cohort.
    */
-  default Optional<TemporalPoint> latestOnset() {
+  default Optional<PointInTime> latestOnset() {
     return observationIntervals()
-      .map(TemporalRange::start)
-      .max(TemporalPoint::compare);
+      .map(TemporalInterval::start)
+      .max(PointInTime::compare);
   }
 
   /**
-   * @return {@link TemporalPoint} representing the earliest resolution of the phenotypic feature in patient cohort.
+   * @return {@link PointInTime} representing the earliest resolution of the phenotypic feature in patient cohort.
    */
-  default Optional<TemporalPoint> earliestResolution() {
+  default Optional<PointInTime> earliestResolution() {
     return observationIntervals()
-      .map(TemporalRange::end)
-      .min(TemporalPoint::compare);
+      .map(TemporalInterval::end)
+      .min(PointInTime::compare);
   }
 
   /**
-   * @return {@link TemporalPoint} representing the latest resolution of the phenotypic feature in patient cohort.
+   * @return {@link PointInTime} representing the latest resolution of the phenotypic feature in patient cohort.
    */
-  default Optional<TemporalPoint> latestResolution() {
+  default Optional<PointInTime> latestResolution() {
     return observationIntervals()
-      .map(TemporalRange::end)
-      .max(TemporalPoint::compare);
+      .map(TemporalInterval::end)
+      .max(PointInTime::compare);
   }
 
   /**

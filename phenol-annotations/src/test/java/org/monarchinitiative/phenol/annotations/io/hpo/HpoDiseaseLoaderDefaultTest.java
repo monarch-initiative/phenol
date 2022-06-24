@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.TestBase;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -81,9 +81,9 @@ public class HpoDiseaseLoaderDefaultTest {
     assertThat(first.isPresent(), equalTo(true));
     assertThat(first.ratio(), equalTo(Ratio.of(5, 13)));
 
-    Optional<TemporalPoint> earliestOnset = first.earliestOnset();
+    Optional<PointInTime> earliestOnset = first.earliestOnset();
     assertThat(earliestOnset.isPresent(), equalTo(true));
-    TemporalPoint onset = earliestOnset.get();
+    PointInTime onset = earliestOnset.get();
     assertThat(onset.days(), equalTo(29));
     assertThat(onset.isPostnatal(), equalTo(true));
 

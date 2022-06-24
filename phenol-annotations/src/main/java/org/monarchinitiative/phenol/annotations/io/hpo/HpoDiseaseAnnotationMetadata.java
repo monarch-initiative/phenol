@@ -2,8 +2,8 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotationFrequency;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
@@ -29,9 +29,9 @@ interface HpoDiseaseAnnotationMetadata {
   AnnotationReference reference();
 
   /**
-   * @return {@link TemporalRange} that represents the interval when the {@link HpoDiseaseAnnotation} was observed.
+   * @return {@link TemporalInterval} that represents the interval when the {@link HpoDiseaseAnnotation} was observed.
    */
-  Optional<TemporalRange> observationInterval();
+  Optional<TemporalInterval> observationInterval();
 
   /**
    * @return frequency of the disease annotation.
@@ -62,14 +62,14 @@ interface HpoDiseaseAnnotationMetadata {
 
   Optional<Sex> sex();
 
-  default Optional<TemporalPoint> start() {
+  default Optional<PointInTime> start() {
     return observationInterval()
-      .map(TemporalRange::start);
+      .map(TemporalInterval::start);
   }
 
-  default Optional<TemporalPoint> end() {
+  default Optional<PointInTime> end() {
     return observationInterval()
-      .map(TemporalRange::end);
+      .map(TemporalInterval::end);
   }
 
 }

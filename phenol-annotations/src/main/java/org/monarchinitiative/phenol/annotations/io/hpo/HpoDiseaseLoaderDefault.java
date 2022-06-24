@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
@@ -135,7 +135,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
     Optional<HpoOnset> earliest = termIds.stream()
       .map(HpoOnset::fromTermId)
       .flatMap(Optional::stream)
-      .min(Comparator.comparing(a -> a, TemporalRange::compare));
+      .min(Comparator.comparing(a -> a, TemporalInterval::compare));
 
     if (earliest.isPresent())
       return earliest.get();
@@ -149,7 +149,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
         if (onset == null)
           onset = candidate;
         else {
-          int result = TemporalRange.compare(candidate, onset);
+          int result = TemporalInterval.compare(candidate, onset);
           if (result < 0)
             onset = candidate;
         }
@@ -160,7 +160,7 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
   }
 
   private HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
-    List<KnowsRatioAndMaybeTemporalRange> ratios = new ArrayList<>(annotations.size());
+    List<KnowsRatioAndMaybeTemporalInterval> ratios = new ArrayList<>(annotations.size());
     List<AnnotationReference> references = new ArrayList<>(annotations.size());
     List<TermId> modifiers = new ArrayList<>();
 
@@ -173,10 +173,10 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
         continue;
 
       Ratio ratio = ratioOptional.get();
-      TemporalRange temporalRange = annotation.onset()
-        .map(onset -> TemporalRange.openEnd(onset.start()))
+      TemporalInterval temporalInterval = annotation.onset()
+        .map(onset -> TemporalInterval.openEnd(onset.start()))
         .orElse(null);
-      ratios.add(KnowsRatioAndMaybeTemporalRange.of(ratio, temporalRange));
+      ratios.add(KnowsRatioAndMaybeTemporalInterval.of(ratio, temporalInterval));
 
       // 2. AnnotationReference
       EvidenceCode evidence = annotation.evidence();

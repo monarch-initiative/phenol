@@ -3,13 +3,13 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link Age} is a {@link TemporalPoint} with associated {@link ConfidenceRange}. The {@link Age}
+ * {@link Age} is a {@link PointInTime} with associated {@link ConfidenceRange}. The {@link Age}
  * can be <em>precise</em> or <em>imprecise</em> based on the associated {@link ConfidenceRange}.
- * The {@link ConfidenceRange} also allows to interpret the {@link Age} as a {@link TemporalRange}.
+ * The {@link ConfidenceRange} also allows to interpret the {@link Age} as a {@link TemporalInterval}.
  * <p>
- * As is the case of the {@link TemporalPoint}, {@link Age} has a day precision.
+ * As is the case of the {@link PointInTime}, {@link Age} has a day precision.
  */
-public interface Age extends TemporalPoint, TemporalRange {
+public interface Age extends PointInTime, TemporalInterval {
 
   /**
    * The number of days in Julian year (<code>365.25</code>).
@@ -24,9 +24,9 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * Create a precise gestational {@link Age} representing the number of weeks and months
-   * since the {@link TemporalPoint#lastMenstrualPeriod()}.
+   * since the {@link PointInTime#lastMenstrualPeriod()}.
    *
-   * @param weeks a non-negative number of completed weeks since the {@link TemporalPoint#lastMenstrualPeriod()}.
+   * @param weeks a non-negative number of completed weeks since the {@link PointInTime#lastMenstrualPeriod()}.
    * @param days a non-negative number of additional days to the number of completed weeks.
    * @return precise gestational age.
    */
@@ -36,9 +36,9 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * Create a possibly imprecise gestational {@link Age} representing the number of weeks and months
-   * since the {@link TemporalPoint#lastMenstrualPeriod()}.
+   * since the {@link PointInTime#lastMenstrualPeriod()}.
    *
-   * @param weeks a non-negative number of completed weeks since the {@link TemporalPoint#lastMenstrualPeriod()}.
+   * @param weeks a non-negative number of completed weeks since the {@link PointInTime#lastMenstrualPeriod()}.
    * @param days a non-negative number of additional days to the number of completed weeks.
    * @param cr {@link ConfidenceRange} determining if the {@link Age} is precise or imprecise.
    * @return possibly imprecise gestational age.
@@ -53,7 +53,7 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * Create a precise postnatal {@link Age} representing the number of years, months, and days
-   * since {@link TemporalPoint#birth()}.
+   * since {@link PointInTime#birth()}.
    *
    * @param years a non-negative number of years.
    * @param months a non-negative number of months.
@@ -67,7 +67,7 @@ public interface Age extends TemporalPoint, TemporalRange {
 
   /**
    * Create a possibly imprecise postnatal {@link Age} representing the number of years, months, and days
-   * since {@link TemporalPoint#birth()}.
+   * since {@link PointInTime#birth()}.
    *
    * @param years a non-negative number of years.
    * @param months a non-negative number of months.
@@ -225,7 +225,7 @@ public interface Age extends TemporalPoint, TemporalRange {
   }
 
   static int compare(Age x, Age y) {
-    int result = TemporalPoint.compare(x, y);
+    int result = PointInTime.compare(x, y);
     if (result != 0)
       return result;
 
@@ -233,13 +233,13 @@ public interface Age extends TemporalPoint, TemporalRange {
   }
 
   /**
-   * Ensure the {@link ConfidenceRange} does not extend beyond {@link TemporalPoint#lastMenstrualPeriod()} for gestational {@link Age}
-   * and beyond {@link TemporalPoint#birth()} for postnatal {@link Age}.
+   * Ensure the {@link ConfidenceRange} does not extend beyond {@link PointInTime#lastMenstrualPeriod()} for gestational {@link Age}
+   * and beyond {@link PointInTime#birth()} for postnatal {@link Age}.
    * <p>
-   * The clipping sets the lower bound to include at most {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
+   * The clipping sets the lower bound to include at most {@link PointInTime#lastMenstrualPeriod()} or {@link PointInTime#birth()}.
    *
    * @param cr {@link ConfidenceRange} to clip.
-   * @param days number of days either since {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}.
+   * @param days number of days either since {@link PointInTime#lastMenstrualPeriod()} or {@link PointInTime#birth()}.
    * @return clipped {@link ConfidenceRange} or the <code>cr</code> instance if clipping was not necessary.
    */
   private static ConfidenceRange clipConfidenceInterval(ConfidenceRange cr, int days) {

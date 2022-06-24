@@ -3,41 +3,41 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * {@link TemporalRange} is a pair of {@link TemporalPoint}s {@link #start()} and {@link #end()} where
+ * {@link TemporalInterval} is a pair of {@link PointInTime}s {@link #start()} and {@link #end()} where
  * {@link #start()} starts at or before {@link #end()}.
  */
-public interface TemporalRange {
+public interface TemporalInterval {
 
-  static TemporalRange of(TemporalPoint start, TemporalPoint end) {
-    int result = TemporalPoint.compare(Objects.requireNonNull(start), Objects.requireNonNull(end));
+  static TemporalInterval of(PointInTime start, PointInTime end) {
+    int result = PointInTime.compare(Objects.requireNonNull(start), Objects.requireNonNull(end));
     if (result > 0)
       throw new IllegalArgumentException(String.format("Start (%d days) must not be after end (%d days)",
         start.days(), end.days()));
 
-    return TemporalRangeDefault.of(start, end);
+    return TemporalIntervals.of(start, end);
   }
 
-  static TemporalRange open() {
-    return TemporalRanges.OPEN;
+  static TemporalInterval open() {
+    return TemporalIntervals.OPEN;
   }
 
-  static TemporalRange openStart(TemporalPoint end) {
+  static TemporalInterval openStart(PointInTime end) {
     return Objects.requireNonNull(end).isOpen()
-      ? TemporalRanges.OPEN
-      : new TemporalRanges.TemporalRangeOpenStart(end);
+      ? TemporalIntervals.OPEN
+      : new TemporalIntervals.TemporalIntervalWithOpenStart(end);
   }
 
-  static TemporalRange openEnd(TemporalPoint start) {
+  static TemporalInterval openEnd(PointInTime start) {
     return Objects.requireNonNull(start).isOpen()
-      ? TemporalRanges.OPEN
-      : new TemporalRanges.TemporalRangeOpenEnd(start);
+      ? TemporalIntervals.OPEN
+      : new TemporalIntervals.TemporalIntervalWithOpenEnd(start);
   }
 
   /* **************************************************************************************************************** */
 
-  TemporalPoint start();
+  PointInTime start();
 
-  TemporalPoint end();
+  PointInTime end();
 
   /* **************************************************************************************************************** */
 
@@ -66,7 +66,7 @@ public interface TemporalRange {
   }
 
   /**
-   * Get the number of days spanned by <code>this</code> {@link TemporalRange}.
+   * Get the number of days spanned by <code>this</code> {@link TemporalInterval}.
    * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
    *
    * @return the number of days.
@@ -84,33 +84,33 @@ public interface TemporalRange {
     return length() == 0;
   }
 
-  default TemporalRange intersection(TemporalRange other) {
-    TemporalPoint start = TemporalPoint.max(start(), other.start());
-    TemporalPoint end = TemporalPoint.min(end(), other.end());
-    int compare = TemporalPoint.compare(start, end);
+  default TemporalInterval intersection(TemporalInterval other) {
+    PointInTime start = PointInTime.max(start(), other.start());
+    PointInTime end = PointInTime.min(end(), other.end());
+    int compare = PointInTime.compare(start, end);
     if (compare > 0)
-      return TemporalRanges.BIRTH;
+      return TemporalIntervals.BIRTH;
 
-    return TemporalRange.of(start, end);
+    return TemporalInterval.of(start, end);
   }
 
-  default boolean overlapsWith(TemporalRange other) {
+  default boolean overlapsWith(TemporalInterval other) {
     return !intersection(other).isEmpty();
   }
 
-  default boolean contains(TemporalPoint age) {
-    int start = TemporalPoint.compare(start(), age);
-    int end = TemporalPoint.compare(end(), age);
+  default boolean contains(PointInTime age) {
+    int start = PointInTime.compare(start(), age);
+    int end = PointInTime.compare(end(), age);
 
     return start <= 0 && 0 < end;
   }
 
-  static int compare(TemporalRange x, TemporalRange y) {
-    int result = TemporalPoint.compare(x.start(), y.start());
+  static int compare(TemporalInterval x, TemporalInterval y) {
+    int result = PointInTime.compare(x.start(), y.start());
     if (result != 0)
       return result;
 
-    return TemporalPoint.compare(x.end(), y.end());
+    return PointInTime.compare(x.end(), y.end());
   }
 
 }

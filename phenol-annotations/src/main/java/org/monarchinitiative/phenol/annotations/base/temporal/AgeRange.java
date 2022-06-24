@@ -5,7 +5,7 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
  * <p>
  * {@link AgeRange} can be <em>precise</em> or <em>imprecise</em> based on the underlying {@link #start()} and {@link #end()}.
  */
-public interface AgeRange extends TemporalRange {
+public interface AgeRange extends TemporalInterval {
 
   static AgeRange of(Age start, Age end) {
     int result = Age.compare(start, end);

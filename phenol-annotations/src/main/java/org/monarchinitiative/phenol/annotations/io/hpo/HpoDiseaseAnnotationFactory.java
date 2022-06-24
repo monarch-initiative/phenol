@@ -7,9 +7,9 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.util.List;
 
 /**
- * Create {@link HpoDiseaseAnnotation} from {@link TermId}, {@link KnowsRatioAndMaybeTemporalRange}s, and {@link AnnotationReference}s.
+ * Create {@link HpoDiseaseAnnotation} from {@link TermId}, {@link KnowsRatioAndMaybeTemporalInterval}s, and {@link AnnotationReference}s.
  * <p>
- * The implementors implement one of multiple ways of integrating {@link KnowsRatioAndMaybeTemporalRange}s into {@link HpoDiseaseAnnotation}.
+ * The implementors implement one of multiple ways of integrating {@link KnowsRatioAndMaybeTemporalInterval}s into {@link HpoDiseaseAnnotation}.
  */
 public interface HpoDiseaseAnnotationFactory {
 
@@ -18,7 +18,7 @@ public interface HpoDiseaseAnnotationFactory {
   }
 
   HpoDiseaseAnnotation create(TermId id,
-                              Iterable<KnowsRatioAndMaybeTemporalRange> ratios,
+                              Iterable<KnowsRatioAndMaybeTemporalInterval> ratios,
                               List<TermId> modifiers,
                               List<AnnotationReference> annotationReferences);
 

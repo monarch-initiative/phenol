@@ -1,24 +1,8 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.Sex;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 
 public class HpoDiseaseAnnotationTest {
 //

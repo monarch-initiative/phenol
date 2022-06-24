@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.TestBase;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
@@ -73,9 +73,9 @@ public class HpoDiseaseLoaderV2Test {
       AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
       AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS))
     );
-    TemporalPoint earliestOnset = first.earliestOnset().get();
+    PointInTime earliestOnset = first.earliestOnset().get();
     assertThat(earliestOnset.days(), equalTo(29));
-    TemporalPoint latestOnset = first.latestOnset().get();
+    PointInTime latestOnset = first.latestOnset().get();
     assertThat(latestOnset.completeYears(), equalTo(1));
     assertThat(first.modifiers(), hasItems(TermId.of("HP:0012832"), TermId.of("HP:0012828")));
 

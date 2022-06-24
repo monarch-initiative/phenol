@@ -6,14 +6,14 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 public interface TimelineAware {
 
   /**
-   * @return true if the {@link TemporalPoint} represents the time passed since conception but prior {@link TemporalPoint#()}.
+   * @return true if the temporal concept resides on the <em>gestational</em> timeline, occurring at or after the last menstrual period but prior birth.
    */
   boolean isGestational();
 
   /* **************************************************************************************************************** */
 
   /**
-   * @return true if the {@link Age} represents the time passed since {@link Age#birth()}.
+   * @return true if the temporal concept resides on the <em>postnatal</em> timeline, occurring at or after birth.
    */
   default boolean isPostnatal() {
     return !isGestational();

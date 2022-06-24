@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * {@link HpoDiseaseAnnotationDefault} aggregates {@link KnowsRatioAndMaybeTemporalRange}s into a global ratio and observation intervals.
+ * {@link HpoDiseaseAnnotationDefault} aggregates {@link KnowsRatioAndMaybeTemporalInterval}s into a global ratio and observation intervals.
  * The global ratio represents the total number of patients presenting the {@link HpoDiseaseAnnotation} at any time,
- * and the observation intervals represent {@link TemporalRange}s when one or more proband presented
+ * and the observation intervals represent {@link TemporalInterval}s when one or more proband presented
  * the phenotype feature.
  */
 class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory {
@@ -27,15 +27,15 @@ class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory 
 
   @Override
   public HpoDiseaseAnnotation create(TermId id,
-                                     Iterable<KnowsRatioAndMaybeTemporalRange> ratios,
+                                     Iterable<KnowsRatioAndMaybeTemporalInterval> ratios,
                                      List<TermId> modifiers,
                                      List<AnnotationReference> annotationReferences) {
     // 1. Initialize
     int numerator = 0, denominator = 0;
-    List<TemporalRange> observationIntervals = new LinkedList<>();
+    List<TemporalInterval> observationIntervals = new LinkedList<>();
 
     // 2. Process ratio and observation intervals in a single loop
-    for (KnowsRatioAndMaybeTemporalRange tr : ratios) {
+    for (KnowsRatioAndMaybeTemporalInterval tr : ratios) {
       // Ratio
       Ratio r = tr.ratio();
       numerator += r.numerator();
@@ -45,16 +45,16 @@ class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory 
         continue;
 
       // Observation intervals
-      if (tr.temporalRange().isPresent()) {
-        TemporalRange current = tr.temporalRange().get();
+      if (tr.temporalInterval().isPresent()) {
+        TemporalInterval current = tr.temporalInterval().get();
 
         boolean overlapFound = false;
         for (int j = 0; j < observationIntervals.size(); j++) {
-          TemporalRange other = observationIntervals.get(j);
+          TemporalInterval other = observationIntervals.get(j);
           if (current.overlapsWith(other)) {
-            observationIntervals.set(j, TemporalRange.of(
-              TemporalPoint.min(current.start(), other.start()),
-              TemporalPoint.max(current.end(), other.end()))
+            observationIntervals.set(j, TemporalInterval.of(
+              PointInTime.min(current.start(), other.start()),
+              PointInTime.max(current.end(), other.end()))
             );
             overlapFound = true;
             break;
@@ -70,8 +70,8 @@ class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory 
       ? null
       : Ratio.of(numerator, denominator);
 
-    List<TemporalRange> sorted = observationIntervals.stream()
-      .sorted(TemporalRange::compare)
+    List<TemporalInterval> sorted = observationIntervals.stream()
+      .sorted(TemporalInterval::compare)
       .collect(Collectors.toUnmodifiableList());
 
 

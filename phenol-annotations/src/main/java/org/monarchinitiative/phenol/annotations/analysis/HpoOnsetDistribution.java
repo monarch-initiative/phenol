@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.analysis;
 
 
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalPoint;
-import org.monarchinitiative.phenol.annotations.base.temporal.TemporalRange;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 
 /**
@@ -25,7 +25,7 @@ public interface HpoOnsetDistribution {
    * @param interval representing the age of a patient
    * @return true if the age corresponds to the onset information of the disease
    */
-  boolean isObservableInAge(HpoDisease disease, TemporalRange interval);
+  boolean isObservableInAge(HpoDisease disease, TemporalInterval interval);
 
   /* **************************************************************************************************************** */
   /**
@@ -37,8 +37,8 @@ public interface HpoOnsetDistribution {
    * @param age of the patient
    * @return true if the age corresponds to the onset information of the disease
    */
-  default boolean isObservableInAge(HpoDisease disease, TemporalPoint age) {
-    return isObservableInAge(disease, TemporalRange.openEnd(age));
+  default boolean isObservableInAge(HpoDisease disease, PointInTime age) {
+    return isObservableInAge(disease, TemporalInterval.openEnd(age));
   }
 
   /**
@@ -48,7 +48,7 @@ public interface HpoOnsetDistribution {
    *
    * @param interval representing the age of a patient
    */
-  default double probabilityOfPresentationAtAge(HpoDisease disease, TemporalRange interval) {
+  default double probabilityOfPresentationAtAge(HpoDisease disease, TemporalInterval interval) {
     return isObservableInAge(disease, interval) ? 1.0 : 0.0;
   }
 

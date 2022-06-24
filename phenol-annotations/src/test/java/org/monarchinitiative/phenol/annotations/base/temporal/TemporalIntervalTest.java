@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-public class TemporalRangeTest {
+public class TemporalIntervalTest {
 
 
   @ParameterizedTest
@@ -15,7 +15,7 @@ public class TemporalRangeTest {
     " 6,  16,     10",
   })
   public void length_Gestational(int start, int end, int days) {
-    TemporalRange gestational = TemporalRange.of(TemporalPoint.of(start, true), TemporalPoint.of(end, true));
+    TemporalInterval gestational = TemporalInterval.of(PointInTime.of(start, true), PointInTime.of(end, true));
     assertThat(gestational.length(), equalTo(days));
   }
 
@@ -25,16 +25,16 @@ public class TemporalRangeTest {
     " 1,   1,      0",
   })
   public void length_Postnatal(int startDays, int endDays, int days) {
-    TemporalRange postnatal = TemporalRange.of(TemporalPoint.of(startDays, false), TemporalPoint.of(endDays, false));
+    TemporalInterval postnatal = TemporalInterval.of(PointInTime.of(startDays, false), PointInTime.of(endDays, false));
     assertThat(postnatal.length(), equalTo(days));
   }
 
   @Test
   public void openTemporalRangeHasIntegerMaxValueLength() {
-    TemporalRange openStart = TemporalRange.openStart(TemporalPoint.of(10, false));
+    TemporalInterval openStart = TemporalInterval.openStart(PointInTime.of(10, false));
     assertThat(openStart.length(), equalTo(Integer.MAX_VALUE));
 
-    TemporalRange openEnd = TemporalRange.openEnd(TemporalPoint.of(10, false));
+    TemporalInterval openEnd = TemporalInterval.openEnd(PointInTime.of(10, false));
     assertThat(openEnd.length(), equalTo(Integer.MAX_VALUE));
   }
 
@@ -58,11 +58,11 @@ public class TemporalRangeTest {
   public void intersection(int leftStart, int leftEnd,
                            int rightStart, int rightEnd,
                            int expectedStart, int expectedEnd) {
-    TemporalRange left = TemporalRange.of(TemporalPoint.of(leftStart,false), TemporalPoint.of(leftEnd, false));
-    TemporalRange right = TemporalRange.of(TemporalPoint.of(rightStart,false), TemporalPoint.of(rightEnd, false));
+    TemporalInterval left = TemporalInterval.of(PointInTime.of(leftStart,false), PointInTime.of(leftEnd, false));
+    TemporalInterval right = TemporalInterval.of(PointInTime.of(rightStart,false), PointInTime.of(rightEnd, false));
 
-    TemporalRange intersection = left.intersection(right);
-    assertThat(intersection, equalTo(TemporalRange.of(TemporalPoint.of(expectedStart ,false), TemporalPoint.of(expectedEnd, false))));
+    TemporalInterval intersection = left.intersection(right);
+    assertThat(intersection, equalTo(TemporalInterval.of(PointInTime.of(expectedStart ,false), PointInTime.of(expectedEnd, false))));
   }
 
 }

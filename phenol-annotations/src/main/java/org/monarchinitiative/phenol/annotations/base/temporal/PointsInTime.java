@@ -3,32 +3,34 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 import java.util.Objects;
 
 /**
- * Static utility class with default {@link TemporalPoint} implementation.
+ * The default {@link PointInTime} implementations.
  */
-class TemporalPoints {
+class PointsInTime {
 
-  static final TemporalPoint LMP = new ClosedTemporalPoint(0, true);
-  static final TemporalPoint BIRTH = new ClosedTemporalPoint(0, false);
-  static final TemporalPoint OPEN_START = new OpenTemporalPoint(Integer.MIN_VALUE, true);
-  static final TemporalPoint OPEN_END = new OpenTemporalPoint(Integer.MAX_VALUE, false);
+  static final PointInTime LMP = new ClosedPointInTime(0, true);
+  static final PointInTime BIRTH = new ClosedPointInTime(0, false);
+  static final PointInTime OPEN_START = new OpenPointInTime(Integer.MIN_VALUE, true);
+  static final PointInTime OPEN_END = new OpenPointInTime(Integer.MAX_VALUE, false);
 
-  private TemporalPoints() {
+  private PointsInTime() {
   }
 
-  static TemporalPoint gestational(int days) {
-    return days == 0 ? LMP : new ClosedTemporalPoint(days, true);
+  static PointInTime gestational(int days) {
+    return days == 0 ? LMP : new ClosedPointInTime(days, true);
   }
 
-  static TemporalPoint postnatal(int days) {
-    return days == 0 ? BIRTH : new ClosedTemporalPoint(days, false);
+  static PointInTime postnatal(int days) {
+    return days == 0 ? BIRTH : new ClosedPointInTime(days, false);
   }
 
-  static class ClosedTemporalPoint implements TemporalPoint {
+  static class ClosedPointInTime implements PointInTime {
+
+    // TODO split further into sub-classes
 
     private final int days;
     private final boolean isGestational;
 
-    ClosedTemporalPoint(int days, boolean isGestational) {
+    ClosedPointInTime(int days, boolean isGestational) {
       this.days = days;
       this.isGestational = isGestational;
     }
@@ -57,24 +59,24 @@ class TemporalPoints {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      ClosedTemporalPoint that = (ClosedTemporalPoint) o;
+      ClosedPointInTime that = (ClosedPointInTime) o;
       return days == that.days && isGestational == that.isGestational;
     }
 
     @Override
     public String toString() {
-      return "ClosedTemporalPoint{" +
+      return "ClosedPointInTime{" +
         "days=" + days +
         ", isGestational=" + isGestational +
         '}';
     }
   }
 
-  static class OpenTemporalPoint implements TemporalPoint {
+  static class OpenPointInTime implements PointInTime {
     private final int days;
     private final boolean isGestational;
 
-    OpenTemporalPoint(int days, boolean isGestational) {
+    OpenPointInTime(int days, boolean isGestational) {
       this.days = days;
       this.isGestational = isGestational;
     }
@@ -103,13 +105,13 @@ class TemporalPoints {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      OpenTemporalPoint that = (OpenTemporalPoint) o;
+      OpenPointInTime that = (OpenPointInTime) o;
       return days == that.days && isGestational == that.isGestational;
     }
 
     @Override
     public String toString() {
-      return "OpenTemporalPoint{" +
+      return "OpenPointInTime{" +
         "days=" + days +
         ", isGestational=" + isGestational +
         '}';

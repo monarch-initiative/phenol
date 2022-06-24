@@ -266,7 +266,7 @@ public class AgeTest {
 
     /**
      * The test check that {@link ConfidenceRange} that extends beyond the timeline start
-     * (either {@link TemporalPoint#lastMenstrualPeriod()} or {@link TemporalPoint#birth()}) is clipped.
+     * (either {@link PointInTime#lastMenstrualPeriod()} or {@link PointInTime#birth()}) is clipped.
      */
     @ParameterizedTest
     @CsvSource({

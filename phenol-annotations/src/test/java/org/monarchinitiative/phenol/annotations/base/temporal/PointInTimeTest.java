@@ -12,14 +12,14 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-public class TemporalPointTest {
+public class PointInTimeTest {
 
   @Nested
-  public class TemporalPointConstantsTests {
+  public class PointInTimeConstantsTests {
 
     @Test
     public void lastMenstrualPeriod() {
-      TemporalPoint lmp = TemporalPoint.lastMenstrualPeriod();
+      PointInTime lmp = PointInTime.lastMenstrualPeriod();
       assertThat(lmp.days(), equalTo(0));
       assertThat(lmp.isZero(), equalTo(true));
       assertThat(lmp.isPositive(), equalTo(false));
@@ -29,7 +29,7 @@ public class TemporalPointTest {
 
     @Test
     public void birth() {
-      TemporalPoint birth = TemporalPoint.birth();
+      PointInTime birth = PointInTime.birth();
       assertThat(birth.days(), equalTo(0));
       assertThat(birth.isZero(), equalTo(true));
       assertThat(birth.isPositive(), equalTo(false));
@@ -39,11 +39,11 @@ public class TemporalPointTest {
   }
 
   @Nested
-  public class TemporalPointMethodTests {
+  public class PointInTimeMethodTests {
 
     @Test
     public void basic() {
-      TemporalPoint instance = TemporalPoint.of(10, false);
+      PointInTime instance = PointInTime.of(10, false);
 
       assertThat(instance.days(), equalTo(10));
       assertThat(instance.isPostnatal(), equalTo(true));
@@ -63,8 +63,8 @@ public class TemporalPointTest {
       "14,    2", // now we have two weeks
     })
     public void completeWeeksFromDays(int days, int expectedWeeks) {
-      assertThat(TemporalPoint.of(days, false).completeWeeks(), equalTo(expectedWeeks));
-      assertThat(TemporalPoint.of(days, true).completeWeeks(), equalTo(expectedWeeks));
+      assertThat(PointInTime.of(days, false).completeWeeks(), equalTo(expectedWeeks));
+      assertThat(PointInTime.of(days, true).completeWeeks(), equalTo(expectedWeeks));
     }
 
     @ParameterizedTest
@@ -77,7 +77,7 @@ public class TemporalPointTest {
       "366,       12",
     })
     public void completeMonthsFromDays(int days, int expectedMonths) {
-      assertThat(TemporalPoint.of(days, false).completeMonths(), equalTo(expectedMonths));
+      assertThat(PointInTime.of(days, false).completeMonths(), equalTo(expectedMonths));
     }
 
     @ParameterizedTest
@@ -90,7 +90,7 @@ public class TemporalPointTest {
       " 731,      2",
     })
     public void completeYearsFromYears(int days, int expectedYears) {
-      assertThat(TemporalPoint.of(days, false).completeYears(), equalTo(expectedYears));
+      assertThat(PointInTime.of(days, false).completeYears(), equalTo(expectedYears));
     }
 
     @ParameterizedTest
@@ -108,30 +108,30 @@ public class TemporalPointTest {
       "11, false, 10, false,    1",
     })
     public void compare(int leftDays, boolean leftGestational, int rightDays, boolean rightGestational, int result) {
-      TemporalPoint left = TemporalPoint.of(leftDays, leftGestational);
-      TemporalPoint right = TemporalPoint.of(rightDays, rightGestational);
+      PointInTime left = PointInTime.of(leftDays, leftGestational);
+      PointInTime right = PointInTime.of(rightDays, rightGestational);
 
-      assertThat(TemporalPoint.compare(left, right), equalTo(result));
+      assertThat(PointInTime.compare(left, right), equalTo(result));
     }
 
     @Test
     public void compare_open() {
-      TemporalPoint openStart = TemporalPoint.openStart();
-      TemporalPoint lastMenstrualPeriod = TemporalPoint.lastMenstrualPeriod();
-      TemporalPoint gestational = TemporalPoint.of(10, true);
-      TemporalPoint birth = TemporalPoint.birth();
-      TemporalPoint postnatal = TemporalPoint.of(10, false);
-      TemporalPoint openEnd = TemporalPoint.openEnd();
-      List<TemporalPoint> sorted = List.of(openStart, lastMenstrualPeriod, gestational, birth, postnatal, openEnd);
-      List<TemporalPoint> points = new ArrayList<>(sorted);
+      PointInTime openStart = PointInTime.openStart();
+      PointInTime lastMenstrualPeriod = PointInTime.lastMenstrualPeriod();
+      PointInTime gestational = PointInTime.of(10, true);
+      PointInTime birth = PointInTime.birth();
+      PointInTime postnatal = PointInTime.of(10, false);
+      PointInTime openEnd = PointInTime.openEnd();
+      List<PointInTime> sorted = List.of(openStart, lastMenstrualPeriod, gestational, birth, postnatal, openEnd);
+      List<PointInTime> points = new ArrayList<>(sorted);
 
       // shuffle and re-sort the points using the comparator
       Collections.shuffle(points);
-      points.sort(TemporalPoint::compare);
+      points.sort(PointInTime::compare);
 
       for (int i = 0; i < points.size(); i++) {
-        TemporalPoint a = points.get(i);
-        TemporalPoint b = sorted.get(i);
+        PointInTime a = points.get(i);
+        PointInTime b = sorted.get(i);
         assertThat(a, equalTo(b));
       }
     }

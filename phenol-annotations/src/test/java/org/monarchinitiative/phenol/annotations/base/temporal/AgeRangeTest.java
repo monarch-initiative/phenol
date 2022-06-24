@@ -56,13 +56,13 @@ public class AgeRangeTest {
 
   @Test
   public void intersection_openEnds() {
-    TemporalRange closed = TemporalRange.of(TemporalPoint.of(1, false), TemporalPoint.of(2, false));
+    TemporalInterval closed = TemporalInterval.of(PointInTime.of(1, false), PointInTime.of(2, false));
 
-    TemporalRange openStartIntersection = AgeRange.openStart(Age.postnatal(2)).intersection(closed);
+    TemporalInterval openStartIntersection = AgeRange.openStart(Age.postnatal(2)).intersection(closed);
     assertThat(openStartIntersection.start().days(), equalTo(closed.start().days()));
     assertThat(openStartIntersection.end().days(), equalTo(closed.end().days()));
 
-    TemporalRange openEndIntersection = AgeRange.openEnd(Age.postnatal(1)).intersection(closed);
+    TemporalInterval openEndIntersection = AgeRange.openEnd(Age.postnatal(1)).intersection(closed);
     assertThat(openEndIntersection.start().days(), equalTo(closed.start().days()));
     assertThat(openEndIntersection.end().days(), equalTo(closed.end().days()));
 
