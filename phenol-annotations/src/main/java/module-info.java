@@ -10,6 +10,8 @@ module org.monarchinitiative.phenol.annotations {
   exports org.monarchinitiative.phenol.annotations.base;
   exports org.monarchinitiative.phenol.annotations.base.temporal;
 
+  exports org.monarchinitiative.phenol.annotations.constants.hpo;
+
   exports org.monarchinitiative.phenol.annotations.formats;
   exports org.monarchinitiative.phenol.annotations.formats.go;
   exports org.monarchinitiative.phenol.annotations.formats.hpo;

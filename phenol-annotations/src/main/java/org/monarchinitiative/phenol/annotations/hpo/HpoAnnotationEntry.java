@@ -4,9 +4,9 @@ package org.monarchinitiative.phenol.annotations.hpo;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.constants.hpo.HpoClinicalModifierTermIds;
-import org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds;
-import org.monarchinitiative.phenol.constants.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoClinicalModifierTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.existsPath;
-import static org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.*;
-import static org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds.*;
+import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoFrequencyTermIds.*;
+import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTermIds.*;
 
 
 /**

@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -14,24 +15,24 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * <b>Note:</b> we assume a cohort of 50 subjects was used to determine the feature of the frequency.
  * As such, the {@link #denominator()} value is always equal to <code>50</code>.
  *
- * @see org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds
+ * @see HpoFrequencyTermIds
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
 public enum HpoFrequency implements Identified, Ratio {
 
   /** Always present (100% of the cases). */
-  OBLIGATE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OBLIGATE, "Obligate", 50),
+  OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate", 50),
   /** Very frequent (80-99% of the cases). */
-  VERY_FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", 45),
+  VERY_FREQUENT(HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", 45),
   /** Frequent (30-79% of the cases). */
-  FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.FREQUENT, "Frequent", 27),
+  FREQUENT(HpoFrequencyTermIds.FREQUENT, "Frequent", 27),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OCCASIONAL, "Occasional", 20),
+  OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", 20),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_RARE, "Very rare", 2),
+  VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", 2),
   /** Excluded (0% of the cases). */
-  EXCLUDED(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.EXCLUDED, "Excluded", 0);
+  EXCLUDED(HpoFrequencyTermIds.EXCLUDED, "Excluded", 0);
 
   private final TermId termId;
   private final String label;
@@ -44,7 +45,7 @@ public enum HpoFrequency implements Identified, Ratio {
   }
 
   /**
-   * Return the {@link TermId} that corresponds to this HpoFrequency. The default is {@link org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds#OBLIGATE}.
+   * Return the {@link TermId} that corresponds to this HpoFrequency. The default is {@link HpoFrequencyTermIds#OBLIGATE}.
    *
    * @return Corresponding {@link TermId} in the HPO of {@code this} frequency category.
    * @deprecated use {@link #id()} instead
