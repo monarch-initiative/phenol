@@ -28,6 +28,7 @@ public class HpoDiseaseLoaderDefaultTest {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
+  private static final HpoDiseaseLoaderOptions OPTIONS = HpoDiseaseLoaderOptions.defaultOptions();
 
   private static Ontology HPO;
 
@@ -40,7 +41,7 @@ public class HpoDiseaseLoaderDefaultTest {
 
   @BeforeEach
   public void setUp() {
-    instance = HpoDiseaseLoaders.defaultLoader(HPO, HpoDiseaseLoaderOptions.defaultOptions());
+    instance = HpoDiseaseLoaders.defaultLoader(HPO, OPTIONS);
   }
 
   @Test
@@ -98,7 +99,7 @@ public class HpoDiseaseLoaderDefaultTest {
     HpoDiseaseAnnotation second = annotations.get(1);
     assertThat(second.id().getValue(), equalTo("HP:0001238"));
     assertThat(second.isPresent(), equalTo(false));
-    assertThat(second.ratio(), equalTo(Ratio.of(0, 50)));
+    assertThat(second.ratio(), equalTo(Ratio.of(0, OPTIONS.cohortSize())));
 
     assertThat(second.earliestOnset().isEmpty(), equalTo(true));
 
