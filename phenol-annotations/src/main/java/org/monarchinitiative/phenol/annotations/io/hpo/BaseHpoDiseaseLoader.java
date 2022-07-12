@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.constants.hpo.HpoClinicalModifierTermIds;
-import org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoClinicalModifierTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
     this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
       ? hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds()
       : Set.of();
-    this.inheritanceSubHierarchy = hpo.containsTerm(org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
+    this.inheritanceSubHierarchy = hpo.containsTerm(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
       ? hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds()
       : Set.of();
   }

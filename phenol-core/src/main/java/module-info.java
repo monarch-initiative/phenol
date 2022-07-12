@@ -1,6 +1,5 @@
 module org.monarchinitiative.phenol.core {
   exports org.monarchinitiative.phenol.base;
-  exports org.monarchinitiative.phenol.constants.hpo;
   exports org.monarchinitiative.phenol.graph;
   exports org.monarchinitiative.phenol.ontology.data;
   exports org.monarchinitiative.phenol.ontology.algo;

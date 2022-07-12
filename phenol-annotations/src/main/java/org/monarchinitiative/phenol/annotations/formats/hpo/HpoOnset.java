@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
-import org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTermIds;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
