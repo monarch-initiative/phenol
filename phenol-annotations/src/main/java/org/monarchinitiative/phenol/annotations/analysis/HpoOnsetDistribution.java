@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.annotations.analysis;
 
 
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 
 /**
@@ -27,6 +27,7 @@ public interface HpoOnsetDistribution {
    */
   boolean isObservableInAge(HpoDisease disease, TemporalInterval interval);
 
+  /* **************************************************************************************************************** */
   /**
    * This method can be used to determine whether a patient (as represented in a Phenopacket, for example) has come
    * to medical attention at an <code>age</code> that corresponds to what we expect for a disease.
@@ -36,7 +37,7 @@ public interface HpoOnsetDistribution {
    * @param age of the patient
    * @return true if the age corresponds to the onset information of the disease
    */
-  default boolean isObservableInAge(HpoDisease disease, Age age) {
+  default boolean isObservableInAge(HpoDisease disease, PointInTime age) {
     return isObservableInAge(disease, TemporalInterval.openEnd(age));
   }
 

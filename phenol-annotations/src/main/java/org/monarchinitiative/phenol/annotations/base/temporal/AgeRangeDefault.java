@@ -2,26 +2,26 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
 
 import java.util.Objects;
 
-class TemporalIntervalDefault implements TemporalInterval {
+class AgeRangeDefault implements AgeRange {
 
-  static TemporalInterval of(Age start, Age end) {
+  static AgeRange of(Age start, Age end) {
     if (start.isOpen() || end.isOpen()) {
       if (!start.isOpen()) {
-        return new TemporalIntervalOpenEnd(start);
+        return new AgeRangeOpenEnd(start);
       } else if (!end.isOpen()) {
-        return new TemporalIntervalOpenStart(end);
+        return new AgeRangeOpenStart(end);
       } else {
-        return TemporalIntervalOpen.instance();
+        return AgeRangeOpen.instance();
       }
     } else {
-      return new TemporalIntervalDefault(start, end);
+      return new AgeRangeDefault(start, end);
     }
   }
 
   private final Age start;
   private final Age end;
 
-  private TemporalIntervalDefault(Age start, Age end) {
+  private AgeRangeDefault(Age start, Age end) {
     this.start = start;
     this.end = end;
   }
@@ -40,7 +40,7 @@ class TemporalIntervalDefault implements TemporalInterval {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TemporalIntervalDefault that = (TemporalIntervalDefault) o;
+    AgeRangeDefault that = (AgeRangeDefault) o;
     return Objects.equals(start, that.start) && Objects.equals(end, that.end);
   }
 
@@ -51,17 +51,17 @@ class TemporalIntervalDefault implements TemporalInterval {
 
   @Override
   public String toString() {
-    return "DefaultTemporalInterval{" +
+    return "AgeRangeDefault{" +
       "start=" + start +
       ", end=" + end +
       '}';
   }
 
-  private static class TemporalIntervalOpenEnd implements TemporalInterval {
+  private static class AgeRangeOpenEnd implements AgeRange {
 
     private final Age start;
 
-    private TemporalIntervalOpenEnd(Age start) {
+    private AgeRangeOpenEnd(Age start) {
       this.start = start;
     }
 
@@ -79,7 +79,7 @@ class TemporalIntervalDefault implements TemporalInterval {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      TemporalIntervalOpenEnd that = (TemporalIntervalOpenEnd) o;
+      AgeRangeOpenEnd that = (AgeRangeOpenEnd) o;
       return Objects.equals(start, that.start);
     }
 
@@ -90,17 +90,17 @@ class TemporalIntervalDefault implements TemporalInterval {
 
     @Override
     public String toString() {
-      return "OpenEndTemporalInterval{" +
+      return "AgeRangeOpenEnd{" +
         "start=" + start +
         '}';
     }
   }
 
-  private static class TemporalIntervalOpenStart implements TemporalInterval {
+  private static class AgeRangeOpenStart implements AgeRange {
 
     private final Age end;
 
-    private TemporalIntervalOpenStart(Age end) {
+    private AgeRangeOpenStart(Age end) {
       this.end = end;
     }
 
@@ -123,27 +123,27 @@ class TemporalIntervalDefault implements TemporalInterval {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      TemporalIntervalOpenStart that = (TemporalIntervalOpenStart) o;
+      AgeRangeOpenStart that = (AgeRangeOpenStart) o;
       return Objects.equals(end, that.end);
     }
 
     @Override
     public String toString() {
-      return "OpenStartTemporalInterval{" +
+      return "AgeRangeOpenStart{" +
         "end=" + end +
         '}';
     }
   }
 
-  private static class TemporalIntervalOpen implements TemporalInterval {
+  private static class AgeRangeOpen implements AgeRange {
 
-    private static final TemporalIntervalOpen INSTANCE = new TemporalIntervalOpen();
+    private static final AgeRangeOpen INSTANCE = new AgeRangeOpen();
 
-    static TemporalIntervalOpen instance() {
+    static AgeRangeOpen instance() {
       return INSTANCE;
     }
 
-    private TemporalIntervalOpen() {}
+    private AgeRangeOpen() {}
 
     @Override
     public Age start() {
@@ -157,7 +157,7 @@ class TemporalIntervalDefault implements TemporalInterval {
 
     @Override
     public String toString() {
-      return "OpenTemporalInterval";
+      return "AgeRangeOpen";
     }
   }
 }

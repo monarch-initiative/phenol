@@ -7,6 +7,6 @@ ORPHA:123456	Made-up Orphanet disease, autosomal dominant		HP:0001167	ORPHA:1660
 ORPHA:123456	Made-up Orphanet disease, autosomal dominant	NOT	HP:0001238	ORPHA:166035	TAS					P	ORPHA:orphadata[2021-08-02]
 ORPHA:123456	Made-up Orphanet disease, autosomal dominant		HP:0000006	ORPHA:166035	TAS		HP:0040280			I	ORPHA:orphadata[2021-08-02]
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:20375004	PCS	HP:0011463	1/8			P	HPO:probinson[2021-05-26]
-OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:22736615	PCS	HP:0410280	4/5			P	HPO:probinson[2021-05-26]
+OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:22736615	PCS	HP:0410280	4/5		HP:0012832;HP:0012828	P	HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive	NOT	HP:0001238	PMID:20375004	PCS		HP:0040283			P	HPO:skoehler[2010-06-20];HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0000007	PMID:20375004	PCS					I	HPO:iea[2009-02-17];HPO:probinson[2021-05-26]

@@ -4,45 +4,43 @@ import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Optional;
-
 /**
  * Enumeration mapping to the "frequency" sub ontology of the HPO.
  *
- * <p>Further provides methods for accessing lower and upper bounds as well as converting from and
+ * <p>
+ * Further, it provides methods for accessing lower and upper bounds as well as converting from and
  * to HPO {@link TermId} and from frequency in percent.
+ * <p>
+ * <b>Note:</b> we assume a cohort of 50 subjects was used to determine the feature of the frequency.
+ * As such, the {@link #denominator()} value is always equal to <code>50</code>.
  *
  * @see org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  */
-public enum HpoFrequency implements Identified, AnnotationFrequency {
-
-  /*
-  We assume a cohort size of 50 was used to determine the feature frequency.
-   */
+public enum HpoFrequency implements Identified, Ratio {
 
   /** Always present (100% of the cases). */
-  OBLIGATE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OBLIGATE, "Obligate", Ratio.of(50, 50)),
+  OBLIGATE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OBLIGATE, "Obligate", 50),
   /** Very frequent (80-99% of the cases). */
-  VERY_FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", Ratio.of(45, 50)),
+  VERY_FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", 45),
   /** Frequent (30-79% of the cases). */
-  FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.FREQUENT, "Frequent", Ratio.of(27, 50)),
+  FREQUENT(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.FREQUENT, "Frequent", 27),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OCCASIONAL, "Occasional", Ratio.of(20, 50)),
+  OCCASIONAL(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.OCCASIONAL, "Occasional", 20),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_RARE, "Very rare", Ratio.of(2, 50)),
+  VERY_RARE(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.VERY_RARE, "Very rare", 2),
   /** Excluded (0% of the cases). */
-  EXCLUDED(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.EXCLUDED, "Excluded", Ratio.of(0, 50));
+  EXCLUDED(org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds.EXCLUDED, "Excluded", 0);
 
   private final TermId termId;
   private final String label;
-  private final Ratio ratio;
+  private final int numerator;
 
-  HpoFrequency(TermId termId, String label, Ratio ratio) {
+  HpoFrequency(TermId termId, String label, int numerator) {
     this.termId = termId;
     this.label = label;
-    this.ratio = ratio;
+    this.numerator = numerator;
   }
 
   /**
@@ -66,6 +64,16 @@ public enum HpoFrequency implements Identified, AnnotationFrequency {
   }
 
   @Override
+  public int numerator() {
+    return numerator;
+  }
+
+  @Override
+  public int denominator() {
+    return 50;
+  }
+
+  @Override
   public float frequency() {
     switch (this) {
       case EXCLUDED:
@@ -82,11 +90,6 @@ public enum HpoFrequency implements Identified, AnnotationFrequency {
       default:
         return 1F;
     }
-  }
-
-  @Override
-  public Optional<Ratio> ratio() {
-    return Optional.of(ratio);
   }
 
   /**

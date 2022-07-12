@@ -17,11 +17,14 @@ public class HpoDiseaseLoaders {
   }
 
   /**
+   * Get {@link HpoDiseaseLoader} that does not use deprecated APIs and is, therefore, faster than {@link #defaultLoader(Ontology, HpoDiseaseLoaderOptions)}.
+   *
    * @param hpo HPO ontology.
-   * @param options loader options. <b>Note</b>: the default options are at {@link HpoDiseaseLoaderOptions#defaultOptions()}.
-   * @return aggregated disease loader.
+   * @param options loader options. <b>Note</b>: the default options are at {@link HpoDiseaseLoaderOptions#defaultOptions()}).
+   * @return v2 disease loader.
    */
-  public static HpoDiseaseLoader aggregated(Ontology hpo, HpoDiseaseLoaderOptions options) {
-    return new AggregatedHpoDiseaseLoader(hpo, options);
+  public static HpoDiseaseLoader v2(Ontology hpo, HpoDiseaseLoaderOptions options) {
+    return new HpoDiseaseLoaderV2(hpo, options);
   }
+
 }

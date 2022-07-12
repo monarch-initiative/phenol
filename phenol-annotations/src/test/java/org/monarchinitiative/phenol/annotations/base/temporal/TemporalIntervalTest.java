@@ -4,37 +4,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TemporalIntervalTest {
 
-  @Test
-  public void create() {
-    TemporalInterval interval = TemporalInterval.of(Age.postnatal(10), Age.postnatal(20));
-    assertThat(interval.start(), equalTo(Age.postnatal(10)));
-    assertThat(interval.end(), equalTo(Age.postnatal(20)));
-  }
 
   @ParameterizedTest
   @CsvSource({
-    "1,  0",
+    " 6,  16,     10",
   })
-  public void errorOnStartAfterEnd(int startDays, int endDays) {
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-      () -> TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays)));
-    assertThat(e.getMessage(), is(String.format("Start (%d days) must not be after end (%d days)", startDays, endDays)));
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    " 1,   0,   2,   0,      7",
-    " 1,   0,   1,   6,      6",
-  })
-  public void length_Gestational(int startWeeks, int startDays, int endWeeks, int endDays, int days) {
-    TemporalInterval gestational = TemporalInterval.of(Age.gestational(startWeeks, startDays), Age.gestational(endWeeks, endDays));
-    assertThat(gestational.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days))));
+  public void length_Gestational(int start, int end, int days) {
+    TemporalInterval gestational = TemporalInterval.of(PointInTime.of(start, true), PointInTime.of(end, true));
+    assertThat(gestational.length(), equalTo(days));
   }
 
   @ParameterizedTest
@@ -43,17 +26,17 @@ public class TemporalIntervalTest {
     " 1,   1,      0",
   })
   public void length_Postnatal(int startDays, int endDays, int days) {
-    TemporalInterval postnatal = TemporalInterval.of(Age.postnatal(startDays), Age.postnatal(endDays));
-    assertThat(postnatal.length(), equalTo(TemporalInterval.of(Age.birth(), Age.postnatal(days))));
+    TemporalInterval postnatal = TemporalInterval.of(PointInTime.of(startDays, false), PointInTime.of(endDays, false));
+    assertThat(postnatal.length(), equalTo(days));
   }
 
   @Test
-  public void length_openEndpoints() {
-    Age stamp = Age.postnatal(1);
+  public void openTemporalRangeHasIntegerMaxValueLength() {
+    TemporalInterval openStart = TemporalInterval.openStart(PointInTime.of(10, false));
+    assertThat(openStart.length(), equalTo(Integer.MAX_VALUE));
 
-    assertThat(TemporalInterval.openStart(stamp).length(), equalTo(TemporalInterval.open()));
-    assertThat(TemporalInterval.openEnd(stamp).length(), equalTo(TemporalInterval.open()));
-    assertThat(TemporalInterval.open().length(), equalTo(TemporalInterval.open()));
+    TemporalInterval openEnd = TemporalInterval.openEnd(PointInTime.of(10, false));
+    assertThat(openEnd.length(), equalTo(Integer.MAX_VALUE));
   }
 
   @ParameterizedTest
@@ -73,72 +56,50 @@ public class TemporalIntervalTest {
     "1, 2,    3, 4,    0, 0",
     "3, 4,    1, 2,    0, 0",
   })
-  public void intersection(int leftStart, int leftEnd, int rightStart, int rightEnd, int expectedStart, int expectedEnd) {
-    TemporalInterval left = TemporalInterval.of(Age.postnatal(leftStart), Age.postnatal(leftEnd));
-    TemporalInterval right = TemporalInterval.of(Age.postnatal(rightStart), Age.postnatal(rightEnd));
+  public void intersection(int leftStart, int leftEnd,
+                           int rightStart, int rightEnd,
+                           int expectedStart, int expectedEnd) {
+    TemporalInterval left = TemporalInterval.of(PointInTime.of(leftStart,false), PointInTime.of(leftEnd, false));
+    TemporalInterval right = TemporalInterval.of(PointInTime.of(rightStart,false), PointInTime.of(rightEnd, false));
 
     TemporalInterval intersection = left.intersection(right);
-    assertThat(intersection, equalTo(TemporalInterval.of(Age.postnatal(expectedStart), Age.postnatal(expectedEnd))));
+    assertThat(intersection, equalTo(TemporalInterval.of(PointInTime.of(expectedStart ,false), PointInTime.of(expectedEnd, false))));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    // left                       right                          result
+    "10,  true, 11,  true,        11,  true, 11,  true,         -1",
+    "11,  true, 11,  true,        11,  true, 11,  true,          0",
+    "11,  true, 12,  true,        11,  true, 11,  true,          1",
+
+    "11,  true, 11,  true,        10,  true, 11,  true,          1",
+    "11,  true, 11,  true,        11,  true, 11,  true,          0",
+    "11,  true, 11,  true,        11,  true, 12,  true,         -1",
+
+    // left is less due to start on gestational timeline
+    "12,  true, 11, false,        11, false, 11, false,         -1",
+    // left is less due to start & end on gestational timeline
+    "12,  true, 12,  true,        11, false, 11, false,         -1",
+  })
+  public void compare(int leftStartDays, boolean leftStartGestational, int leftEndDays, boolean leftEndGestational,
+                      int rightStartDays, boolean rightStartGestational, int rightEndDays, boolean rightEndGestational,
+                      int result) {
+    PointInTime leftStart = PointInTime.of(leftStartDays, leftStartGestational);
+    PointInTime leftEnd = PointInTime.of(leftEndDays, leftEndGestational);
+    TemporalInterval left = TemporalInterval.of(leftStart, leftEnd);
+
+    PointInTime rightStart = PointInTime.of(rightStartDays, rightStartGestational);
+    PointInTime rightEnd = PointInTime.of(rightEndDays, rightEndGestational);
+    TemporalInterval right = TemporalInterval.of(rightStart, rightEnd);
+
+    assertThat(TemporalInterval.compare(left, right), equalTo(result));
   }
 
   @Test
-  public void intersection_openEnds() {
-    TemporalInterval closed = TemporalInterval.of(Age.postnatal(1), Age.postnatal(2));
-
-    assertThat(TemporalInterval.openStart(Age.postnatal(2)).intersection(closed), equalTo(closed)); // left open
-    assertThat(TemporalInterval.openEnd(Age.postnatal(1)).intersection(closed), equalTo(closed)); // right open
-    assertThat(TemporalInterval.open().intersection(closed), equalTo(closed)); // fully open
+  public void throwsAnExceptionWhenStartIsAfterEnd() {
+     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+       () -> TemporalInterval.of(PointInTime.of(1, false), PointInTime.of(0, false)));
+     assertThat(e.getMessage(), containsString("Start (1 days) must not be after end (0 days)"));
   }
-
-  @ParameterizedTest
-  @CsvSource({
-    // intersecting
-    "1, 3,    2, 4,    true",
-
-    // boundaries
-    "1, 2,    1, 1,    false",
-    "1, 2,    2, 2,    false",
-
-    // adjacent
-    "1, 2,    2, 3,    false",
-    "2, 3,    1, 2,    false",
-
-    // disjoint
-    "1, 2,    3, 4,    false",
-    "3, 4,    1, 2,    false",
-  })
-  public void overlapsWith(int leftStart, int leftEnd, int rightStart, int rightEnd, boolean expected) {
-    TemporalInterval left = TemporalInterval.of(Age.postnatal(leftStart), Age.postnatal(leftEnd));
-    TemporalInterval right = TemporalInterval.of(Age.postnatal(rightStart), Age.postnatal(rightEnd));
-
-    assertThat(left.overlapsWith(right), equalTo(expected));
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    " 0, 1,   true, false",
-    " 0, 2,   true,  true",
-    " 1, 2,  false,  true",
-  })
-  public void overlapsWith_openEndpoints(int start, int end, boolean openStartExpected, boolean openEndExpected) {
-    TemporalInterval interval = TemporalInterval.of(Age.postnatal(start), Age.postnatal(end));
-
-    TemporalInterval openStart = TemporalInterval.openStart(Age.postnatal(1));
-    assertThat(openStart.overlapsWith(interval), equalTo(openStartExpected));
-
-    TemporalInterval openEnd = TemporalInterval.openEnd(Age.postnatal(1));
-    assertThat(openEnd.overlapsWith(interval), equalTo(openEndExpected));
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    "1, 2,    0,    false",
-    "1, 2,    1,    true",
-    "1, 2,    2,    false",
-    "1, 2,    3,    false",
-  })
-  public void contains(int start, int end, int position, boolean expected) {
-    assertThat(TemporalInterval.of(Age.postnatal(start), Age.postnatal(end)).contains(Age.postnatal(position)), equalTo(expected));
-  }
-
 }
