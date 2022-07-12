@@ -17,7 +17,7 @@ public class HpoDiseaseLoaderOptions {
   private final int cohortSize;
 
   /**
-   * Get options where:
+   * Get {@link HpoDiseaseLoaderOptions} where:
    * <ul>
    *   <li><em>OMIM</em>, <em>ORPHA</em>, and <em>DECIPHER</em> diseases will be loaded</li>
    *   <li>suspicious frequencies of negated terms will be salvaged, if possible, and</li>
@@ -26,6 +26,24 @@ public class HpoDiseaseLoaderOptions {
    */
   public static HpoDiseaseLoaderOptions defaultOptions() {
     return of(DATABASE_PREFIXES, true, DEFAULT_COHORT_SIZE);
+  }
+
+  /**
+   * Get {@link HpoDiseaseLoaderOptions} for instructing the {@link HpoDiseaseLoader} to load
+   * {@link DiseaseDatabase#OMIM} diseases, to try to salvage the suspicious frequencies of negated terms,
+   * and to assume a cohort size corresponding to {@link #DEFAULT_COHORT_SIZE}.
+   */
+  public static HpoDiseaseLoaderOptions defaultOmim() {
+    return of(Set.of(DiseaseDatabase.OMIM));
+  }
+
+  /**
+   * Get {@link HpoDiseaseLoaderOptions} for instructing the {@link HpoDiseaseLoader} to load diseases
+   * with given {@code databasePrefixes}, to try to salvage the suspicious frequencies of negated terms,
+   * and to assume a cohort size corresponding to {@link #DEFAULT_COHORT_SIZE}.
+   */
+  public static HpoDiseaseLoaderOptions of(Set<DiseaseDatabase> databasePrefixes) {
+    return of(databasePrefixes, true, DEFAULT_COHORT_SIZE);
   }
 
   public static HpoDiseaseLoaderOptions of(Set<DiseaseDatabase> databasePrefixes, boolean salvageNegatedFrequencies, int cohortSize) {
