@@ -1,10 +1,12 @@
-package org.monarchinitiative.phenol.annotations.io.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo.annodef;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseAnnotationFactory;
+import org.monarchinitiative.phenol.annotations.io.hpo.KnowsRatioAndMaybeTemporalInterval;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.LinkedList;
@@ -12,16 +14,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * {@link HpoDiseaseAnnotationDefault} aggregates {@link KnowsRatioAndMaybeTemporalInterval}s into a global ratio and observation intervals.
+ * {@link HpoDiseaseAnnotationFactoryDefault} aggregates {@link KnowsRatioAndMaybeTemporalInterval}s into a global ratio and observation intervals.
  * The global ratio represents the total number of patients presenting the {@link HpoDiseaseAnnotation} at any time,
  * and the observation intervals represent {@link TemporalInterval}s when one or more proband presented
  * the phenotype feature.
  */
-class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory {
+public class HpoDiseaseAnnotationFactoryDefault implements HpoDiseaseAnnotationFactory {
 
   private static final HpoDiseaseAnnotationFactoryDefault INSTANCE = new HpoDiseaseAnnotationFactoryDefault();
 
-  static HpoDiseaseAnnotationFactoryDefault instance() {
+  public static HpoDiseaseAnnotationFactoryDefault instance() {
     return INSTANCE;
   }
 

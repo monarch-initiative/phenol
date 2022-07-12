@@ -73,17 +73,6 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return temporal interval representing onset of the earliest {@link HpoDiseaseAnnotation}.
-   */
-  default Optional<TemporalInterval> diseaseOnset() {
-    return presentAnnotationsStream()
-      .min((l, r) -> PointInTime.compare(l.earliestOnset().orElse(PointInTime.openEnd()), r.earliestOnset().orElse(PointInTime.openEnd())))
-      .map(HpoDiseaseAnnotation::observationIntervals)
-      .orElse(Stream.empty())
-      .min(TemporalInterval::compare);
-  }
-
-  /**
    * @return stream of <em>ALL</em> disease annotations, both present and absent.
    */
   default Stream<HpoDiseaseAnnotation> annotationStream() {
@@ -106,6 +95,29 @@ public interface HpoDisease extends Identified {
   default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
     return annotationStream()
       .filter(HpoDiseaseAnnotation::isAbsent);
+  }
+
+  /**
+   * @return temporal interval representing earliest and latest onset of {@link HpoDiseaseAnnotation}s of the disease.
+   */
+  default Optional<TemporalInterval> diseaseOnset() {
+    PointInTime start = null, end = null;
+
+    for (HpoDiseaseAnnotation annotation : presentAnnotations()) {
+      Optional<PointInTime> onset = annotation.earliestOnset();
+      if (onset.isPresent()) {
+        start = start == null
+          ? onset.get()
+          : PointInTime.min(onset.get(), start);
+        end = end == null
+          ? onset.get()
+          : PointInTime.max(onset.get(), end);
+      }
+    }
+
+    return start != null && end != null
+      ? Optional.of(TemporalInterval.of(start, end))
+      : Optional.empty();
   }
 
   /**

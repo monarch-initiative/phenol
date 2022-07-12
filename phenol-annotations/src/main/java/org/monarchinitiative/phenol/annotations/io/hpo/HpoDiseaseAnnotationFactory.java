@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
+import org.monarchinitiative.phenol.annotations.io.hpo.annodef.HpoDiseaseAnnotationFactoryDefault;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
