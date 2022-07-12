@@ -9,14 +9,16 @@ v2.0.0
 - Support for GO GAF 2.2 files
 - Speed up build by adding a new build profile
 - ``phenol-core``
-  - Consolidate hardcoded HPO constants (``TermId``s) into ``org.monarchinitiative.phenol.constants.hpo`` package
+
 - ``phenol-io``
   - Dropping support for reading OBO/OWL ontologies
+  - drop non-modular `curie-util` dependency
 - ``phenol-annotations``
   - Remodel ``HpoDisease``, ``HpoAnnotation``, ``HpoAssociationData``, ``GeneIdentifier``s, etc..
   - Model temporal elements
   - Implement ``HGNCGeneIdentifierLoader`` for reading ``GeneIdentifiers`` from HGNC complete set archive.
   - Add new ``HpoOnset`` terms.
+  - Consolidate hardcoded HPO constants (``TermId``s) into ``org.monarchinitiative.phenol.annotations.constants.hpo`` package
 
 ------
 v1.6.3
