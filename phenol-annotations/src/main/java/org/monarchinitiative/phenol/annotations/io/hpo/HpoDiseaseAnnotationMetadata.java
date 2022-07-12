@@ -1,30 +1,36 @@
-package org.monarchinitiative.phenol.annotations.formats.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.Sex;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
+import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotationFrequency;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface HpoDiseaseAnnotationMetadata {
+// TODO(ielis) - consider removing.
+interface HpoDiseaseAnnotationMetadata {
 
-  static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
-                                         TemporalInterval temporalInterval,
-                                         AnnotationFrequency frequency,
-                                         Collection<TermId> modifiers,
-                                         Sex sex) {
-    return new HpoDiseaseAnnotationMetadataDefault(reference, temporalInterval, frequency, modifiers, sex);
-  }
+//  static HpoDiseaseAnnotationMetadata of(AnnotationReference reference,
+//                                         TemporalRange observationInterval,
+//                                         AnnotationFrequency frequency,
+//                                         Collection<TermId> modifiers,
+//                                         Sex sex) {
+//    return new HpoDiseaseAnnotationMetadataDefault(reference, observationInterval, frequency, modifiers, sex);
+//  }
 
   /**
    * @return source of the annotation metadata.
    */
   AnnotationReference reference();
 
+  /**
+   * @return {@link TemporalInterval} that represents the interval when the {@link HpoDiseaseAnnotation} was observed.
+   */
   Optional<TemporalInterval> observationInterval();
 
   /**
@@ -56,12 +62,12 @@ public interface HpoDiseaseAnnotationMetadata {
 
   Optional<Sex> sex();
 
-  default Optional<Age> start() {
+  default Optional<PointInTime> start() {
     return observationInterval()
       .map(TemporalInterval::start);
   }
 
-  default Optional<Age> end() {
+  default Optional<PointInTime> end() {
     return observationInterval()
       .map(TemporalInterval::end);
   }

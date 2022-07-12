@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
-import org.monarchinitiative.phenol.constants.hpo.HpoSubOntologyRootTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

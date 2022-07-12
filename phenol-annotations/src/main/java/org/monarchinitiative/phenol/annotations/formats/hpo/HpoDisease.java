@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
@@ -27,12 +28,177 @@ import java.util.stream.StreamSupport;
 public interface HpoDisease extends Identified {
 
   static HpoDisease of(TermId diseaseId,
-                       String name,
+                       String diseaseName,
                        TemporalInterval globalOnset,
                        List<HpoDiseaseAnnotation> phenotypicAbnormalities,
                        List<TermId> modesOfInheritance) {
-    return new HpoDiseaseDefault(diseaseId, name, globalOnset, phenotypicAbnormalities, modesOfInheritance);
+    return new HpoDiseaseDefault(diseaseId, diseaseName, globalOnset, phenotypicAbnormalities, modesOfInheritance);
   }
+
+  /**
+   * @return disease name, e.g. <em>Marfan syndrome</em>.
+   */
+  String diseaseName();
+
+  /**
+   * @return iterable over <em>ALL</em> disease annotations, both present and absent.
+   */
+  Iterable<HpoDiseaseAnnotation> annotations();
+
+  /**
+   * @return number of annotations present in the disease.
+   */
+  int annotationCount();
+
+  List<TermId> modesOfInheritance();
+
+  /*\
+   *  ****************************************** Default/derived members ********************************************* *
+  \*/
+
+  /**
+   * @return iterable over <em>PRESENT</em> disease annotations. These are the annotations that were observed in at least
+   * one individual of a cohort.
+   */
+  default Iterable<HpoDiseaseAnnotation> presentAnnotations() {
+    return Utils.filterIterable(annotations(), HpoDiseaseAnnotation::isPresent);
+  }
+
+  /**
+   * @return iterable over <em>ABSENT</em> disease annotations. These are the annotations that were <em>NOT</em>
+   * observed in any individuals of a cohort.
+   */
+  default Iterable<HpoDiseaseAnnotation> absentAnnotations() {
+    return Utils.filterIterable(annotations(), HpoDiseaseAnnotation::isAbsent);
+  }
+
+  /**
+   * @return stream of <em>ALL</em> disease annotations, both present and absent.
+   */
+  default Stream<HpoDiseaseAnnotation> annotationStream() {
+    return StreamSupport.stream(annotations().spliterator(), false);
+  }
+
+  /**
+   * @return stream of <em>PRESENT</em> disease annotations. These are the annotations that were observed in at least
+   *  one individual of a cohort.
+   */
+  default Stream<HpoDiseaseAnnotation> presentAnnotationsStream() {
+    return annotationStream()
+      .filter(HpoDiseaseAnnotation::isPresent);
+  }
+
+  /**
+   * @return stream of <em>ABSENT</em> disease annotations. These are the annotations that were <em>NOT</em>
+   * observed in any individuals of a cohort.
+   */
+  default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
+    return annotationStream()
+      .filter(HpoDiseaseAnnotation::isAbsent);
+  }
+
+  /**
+   * @return temporal interval representing earliest and latest onset of {@link HpoDiseaseAnnotation}s of the disease.
+   */
+  default Optional<TemporalInterval> diseaseOnset() {
+    PointInTime start = null, end = null;
+
+    for (HpoDiseaseAnnotation annotation : presentAnnotations()) {
+      Optional<PointInTime> onset = annotation.earliestOnset();
+      if (onset.isPresent()) {
+        start = start == null
+          ? onset.get()
+          : PointInTime.min(onset.get(), start);
+        end = end == null
+          ? onset.get()
+          : PointInTime.max(onset.get(), end);
+      }
+    }
+
+    return start != null && end != null
+      ? Optional.of(TemporalInterval.of(start, end))
+      : Optional.empty();
+  }
+
+  /**
+   * Users can user this function to get the HpoTermId corresponding to a TermId
+   *
+   * @param termId id of the plain {@link TermId} for which we want to have the {@link HpoDiseaseAnnotation}.
+   * @return optional with {@link HpoDiseaseAnnotation}
+   */
+  default Optional<HpoDiseaseAnnotation> getAnnotation(TermId termId) {
+    return annotationStream()
+      .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
+      .findAny();
+  }
+
+  /**
+   * Returns the mean frequency of the feature in the disease.
+   *
+   * @param termId id of an HPO term
+   * @return frequency of the phenotypic feature in individuals with the annotated disease
+   */
+  default Optional<Ratio> getFrequencyOfTermInDisease(TermId termId) {
+    return getAnnotation(termId)
+      .map(HpoDiseaseAnnotation::ratio);
+  }
+
+  /**
+   * @return stream of disease annotation IDs.
+   */
+  default Stream<TermId> annotationTermIds() {
+    return annotationStream()
+      .map(Identified::id);
+  }
+
+  /**
+   * @return a list of disease annotation IDs.
+   */
+  default List<TermId> annotationTermIdList() {
+    return annotationTermIds()
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Check if {@code termId} is annotated to any of the terms to which this disease is annotated including their
+   * ancestors.
+   *
+   * @param termId a query term.
+   * @param hpo HPO ontology.
+   * @return true iff this disease is annotated to the term directly or via annotation propagation.
+   */
+  default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
+    List<TermId> directAnnotations = presentAnnotationsStream()
+      .map(Identified::id)
+      .collect(Collectors.toList());
+    Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);
+
+    return ancestors.contains(termId);
+  }
+
+  /**
+   * @param termId ID of an HPO Term
+   * @return true if there is a direct annotation to termId. Does not include indirect annotations from
+   * annotation propagation rule.
+   */
+  default boolean isDirectlyAnnotatedTo(TermId termId) {
+    return presentAnnotationsStream()
+      .anyMatch(annotation -> annotation.id().equals(termId));
+  }
+
+  /**
+   * @param termIds Set of ids of HPO Terms
+   * @return true if there is a direct annotation to any of the terms in termIds. Does not include
+   * indirect annotations from annotation propagation rule.
+   */
+  default boolean isDirectlyAnnotatedToAnyOf(Set<TermId> termIds) {
+    return presentAnnotationsStream()
+      .anyMatch(annotation -> termIds.contains(annotation.id()));
+  }
+
+  /*\
+   *  ********************************************** Deprecated members ********************************************** *
+  \*/
 
   /**
    * @deprecated to be removed in v3.0.0, use {@link #id()} instead.
@@ -49,9 +215,6 @@ public interface HpoDisease extends Identified {
   default TermId getDiseaseDatabaseTermId() {
     return id();
   }
-
-  // TODO - add String getName() and getDiseaseName() and deprecate since v3.0.0
-  String diseaseName();
 
   /**
    * @deprecated to be removed in v3.0.0, use {@link #diseaseName()} instead.
@@ -70,13 +233,6 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return temporal interval representing onset of the earliest {@link HpoDiseaseAnnotation}.
-   */
-  Optional<TemporalInterval> diseaseOnset();
-
-  List<TermId> modesOfInheritance();
-
-  /**
    * @deprecated to be removed in v3.0.0, use {@link #modesOfInheritance()} instead.
    */
   @Deprecated(forRemoval = true, since = "2.0.0-RC2")
@@ -84,22 +240,6 @@ public interface HpoDisease extends Identified {
     return modesOfInheritance();
   }
 
-  /**
-   * @return iterable over <em>ALL</em> disease annotations, both present and absent.
-   */
-  Iterable<HpoDiseaseAnnotation> annotations();
-
-  /**
-   * @return number of annotations present in the disease.
-   */
-  int annotationCount();
-
-  /**
-   * @return stream of <em>ALL</em> disease annotations, both present and absent.
-   */
-  default Stream<HpoDiseaseAnnotation> annotationStream() {
-    return StreamSupport.stream(annotations().spliterator(), false);
-  }
 
   /**
    * @return iterator of <em>ALL</em> phenotypic abnormalities of the disease, both present and absent.
@@ -139,15 +279,6 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return stream of absent disease annotations,
-   * i.e. ones that were observed in <em>zero</em> out of <em>n</em> affected individuals.
-   */
-  default Stream<HpoDiseaseAnnotation> absentAnnotationsStream() {
-    return phenotypicAbnormalitiesStream()
-      .filter(a -> a.ratio().isZero());
-  }
-
-  /**
    *
    * @deprecated to be removed in v3.0.0, use {@link #absentAnnotationsStream()} instead.
    */
@@ -164,31 +295,6 @@ public interface HpoDisease extends Identified {
   @Deprecated(since = "2.0.0-RC2", forRemoval = true)
   default List<TermId> getNegativeAnnotations() {
     return negativeAnnotations();
-  }
-
-  /**
-   * Users can user this function to get the HpoTermId corresponding to a TermId
-   *
-   * @param termId id of the plain {@link TermId} for which we want to have the {@link HpoDiseaseAnnotation}.
-   * @return optional with {@link HpoDiseaseAnnotation}
-   */
-  default Optional<HpoDiseaseAnnotation> getAnnotation(TermId termId) {
-    return phenotypicAbnormalitiesStream()
-      .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
-      .findAny();
-  }
-
-  /**
-   * Returns the mean frequency of the feature in the disease.
-   *
-   * @param termId id of an HPO term
-   * @return frequency of the phenotypic feature in individuals with the annotated disease
-   */
-  default Optional<Ratio> getFrequencyOfTermInDisease(TermId termId) {
-    return phenotypicAbnormalitiesStream()
-      .filter(diseaseAnnotation -> diseaseAnnotation.id().equals(termId))
-      .findFirst()
-      .map(HpoDiseaseAnnotation::ratio);
   }
 
   /**
@@ -209,22 +315,6 @@ public interface HpoDisease extends Identified {
   }
 
   /**
-   * @return stream of disease annotation IDs.
-   */
-  default Stream<TermId> annotationTermIds() {
-    return annotationStream()
-      .map(Identified::id);
-  }
-
-  /**
-   * @return a list of disease annotation IDs.
-   */
-  default List<TermId> annotationTermIdList() {
-    return annotationTermIds()
-      .collect(Collectors.toList());
-  }
-
-  /**
    * @return the count of the non-negated annotations excluding mode of inheritance
    * @deprecated use {@link #annotationCount()}
    */
@@ -233,40 +323,4 @@ public interface HpoDisease extends Identified {
     return annotationCount();
   }
 
-  /**
-   * Check if {@code termId} is annotated to any of the terms to which this disease is annotated including their
-   * ancestors.
-   *
-   * @param termId a query term.
-   * @param hpo HPO ontology.
-   * @return true iff this disease is annotated to the term directly or via annotation propagation.
-   */
-  default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
-    List<TermId> directAnnotations = phenotypicAbnormalitiesStream()
-      .filter(HpoDiseaseAnnotation::isPresent)
-      .map(Identified::id)
-      .collect(Collectors.toList());
-    Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);
-
-    return ancestors.contains(termId);
-  }
-
-  /**
-   * @param termId ID of an HPO Term
-   * @return true if there is a direct annotation to termId. Does not include indirect annotations from
-   * annotation propagation rule.
-   */
-  default boolean isDirectlyAnnotatedTo(TermId termId) {
-    return phenotypicAbnormalitiesStream()
-      .anyMatch(annotation -> annotation.id().equals(termId));
-  }
-
-  /**
-   * @param termIds Set of ids of HPO Terms
-   * @return true if there is a direct annotation to any of the terms in termIds. Does not include
-   * indirect annotations from annotation propagation rule.
-   */
-  default boolean isDirectlyAnnotatedToAnyOf(Set<TermId> termIds) {
-    return phenotypicAbnormalitiesStream().anyMatch(tiwm -> termIds.contains(tiwm.id()));
-  }
 }

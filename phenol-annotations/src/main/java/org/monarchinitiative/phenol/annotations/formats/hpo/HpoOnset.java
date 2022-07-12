@@ -2,31 +2,34 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.constants.hpo.HpoOnsetTermIds;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTermIds;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.List;
 import java.util.Optional;
 
-public enum HpoOnset implements TemporalInterval, Identified {
+public enum HpoOnset implements Identified, TemporalInterval {
   /**
    * Onset between the time of mother's last menstrual period and birth.
    */
-  ANTENATAL_ONSET(HpoOnsetTermIds.ANTENATAL_ONSET, Age.lastMenstrualPeriod(), Age.birth()),
+  ANTENATAL_ONSET(HpoOnsetTermIds.ANTENATAL_ONSET, PointInTime.lastMenstrualPeriod(), PointInTime.birth()),
   /**
-   * Onset during embryonal period, i.e. in the first 10 weeks of gestation.
+   * Onset during embryonal period, which is defined as last menstrual period to 10 6/7 weeks of gestation (inclusive).
    */
-  EMBRYONAL_ONSET(HpoOnsetTermIds.EMBRYONAL_ONSET, Age.lastMenstrualPeriod(), Age.gestational(10, 0)),
+  EMBRYONAL_ONSET(HpoOnsetTermIds.EMBRYONAL_ONSET, PointInTime.lastMenstrualPeriod(), Age.gestational(11, 0)),
   /**
-   * Onset prior to birth but after 8 weeks of embryonic development (corresponding to a gestational age of 10 weeks).
+   * Onset prior to birth but after completed 8 weeks of embryonic development
+   * (corresponding to a gestational age of completed 10 weeks).
    */
-  FETAL_ONSET(HpoOnsetTermIds.FETAL_ONSET, Age.gestational(10, 0), Age.birth()),
+  FETAL_ONSET(HpoOnsetTermIds.FETAL_ONSET, Age.gestational(11, 0), PointInTime.birth()),
   /**
    * This term refers to a phenotypic feature that was first observed prior to birth in the first trimester during
    * the early fetal period, which is defined as 11 0/7 to 13 6/7 weeks of gestation (inclusive).
    */
   // Note, the end age is EXCLUDED in TemporalInterval, hence `Age.gestational(14, 0)`.
-  LATE_FIRST_TRIMESTER_ONSET(HpoOnsetTermIds.LATE_FIRST_TRIMESTER_ONSET, Age.gestational(10, 6), Age.gestational(14, 0)),
+  LATE_FIRST_TRIMESTER_ONSET(HpoOnsetTermIds.LATE_FIRST_TRIMESTER_ONSET, Age.gestational(11, 0), Age.gestational(14, 0)),
   /**
    * This term refers to a phenotypic feature that was first observed prior to birth during the second trimester,
    * which comprises the range of gestational ages from 14 0/7 weeks to 27 6/7 (inclusive).
@@ -37,15 +40,15 @@ public enum HpoOnset implements TemporalInterval, Identified {
    * This term refers to a phenotypic feature that was first observed prior to birth during the third trimester,
    * which is defined as 28 weeks and zero days (28+0) of gestation and beyond.
    */
-  THIRD_TRIMESTER_ONSET(HpoOnsetTermIds.THIRD_TRIMESTER_ONSET, Age.gestational(28, 0), Age.birth()),
+  THIRD_TRIMESTER_ONSET(HpoOnsetTermIds.THIRD_TRIMESTER_ONSET, Age.gestational(28, 0), PointInTime.birth()),
   /**
    * Onset at birth.
    */
-  CONGENITAL_ONSET(HpoOnsetTermIds.CONGENITAL_ONSET, Age.birth(), Age.birth()),
+  CONGENITAL_ONSET(HpoOnsetTermIds.CONGENITAL_ONSET, PointInTime.birth(), PointInTime.birth()),
   /**
    * Onset in the first 28 days of life, including the 28th day.
    */
-  NEONATAL_ONSET(HpoOnsetTermIds.NEONATAL_ONSET, Age.birth(), Age.postnatal(29)),
+  NEONATAL_ONSET(HpoOnsetTermIds.NEONATAL_ONSET, PointInTime.birth(), Age.postnatal(29)),
   /**
    * Onset of disease manifestations before adulthood, defined here as before the age of 15 years,
    * but excluding neonatal or congenital onset.
@@ -94,9 +97,9 @@ public enum HpoOnset implements TemporalInterval, Identified {
   LATE_ONSET(HpoOnsetTermIds.LATE_ONSET, Age.postnatal(60, 0, 0), Age.openEnd());
 
   private final TermId id;
-  private final Age start, end;
+  private final PointInTime start, end;
 
-  HpoOnset(TermId id, Age start, Age end) {
+  HpoOnset(TermId id, PointInTime start, PointInTime end) {
     this.id = id;
     this.start = start;
     this.end = end;
@@ -108,12 +111,12 @@ public enum HpoOnset implements TemporalInterval, Identified {
   }
 
   @Override
-  public Age start() {
+  public PointInTime start() {
     return start;
   }
 
   @Override
-  public Age end() {
+  public PointInTime end() {
     return end;
   }
 
@@ -176,6 +179,30 @@ public enum HpoOnset implements TemporalInterval, Identified {
       default:
         return Optional.empty();
     }
+  }
+
+  /**
+   * Convert Age {@link Age} to HPO {@link HpoOnset}
+   * @param age The {@link Age} to convert
+   * @return Optional with {@link HpoOnset}
+   */
+  public static Optional<HpoOnset> fromAge(Age age){
+    // Loop over hpo onsets and find the first one we cross
+    for(HpoOnset onset : specificOnsets()){
+        if(onset.contains(age)){
+          return Optional.of(onset);
+        }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * @return the set of onsets that are most specific
+   */
+  public static List<HpoOnset> specificOnsets(){
+    return List.of(EMBRYONAL_ONSET, LATE_FIRST_TRIMESTER_ONSET, SECOND_TRIMESTER_ONSET, THIRD_TRIMESTER_ONSET,
+      CONGENITAL_ONSET, NEONATAL_ONSET, INFANTILE_ONSET, CHILDHOOD_ONSET, JUVENILE_ONSET, EARLY_YOUNG_ADULT_ONSET,
+      INTERMEDIATE_YOUNG_ADULT_ONSET, LATE_YOUNG_ADULT_ONSET, MIDDLE_AGE_ONSET, LATE_ONSET);
   }
 
   /**

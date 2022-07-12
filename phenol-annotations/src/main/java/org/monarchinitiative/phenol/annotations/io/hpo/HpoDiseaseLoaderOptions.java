@@ -11,23 +11,49 @@ public class HpoDiseaseLoaderOptions {
   /**
    * The assumed cohort size used to parse annotation lines with no explicit phenotype frequency data.
    */
-  public static final int DEFAULT_COHORT_SIZE = 50;
+  public static final int DEFAULT_COHORT_SIZE = 5;
   private final Set<DiseaseDatabase> includedDatabases;
   private final boolean salvageNegatedFrequencies;
   private final int cohortSize;
 
   /**
-   * Get options where:
+   * Get {@link HpoDiseaseLoaderOptions} where:
    * <ul>
-   *   <li><em>OMIM</em>, <em>ORPHA</em>, and <em>DECIPHER</em> diseases will be loaded</li>
+   *   <li>{@link DiseaseDatabase#OMIM}, {@link DiseaseDatabase#ORPHANET}, and {@link DiseaseDatabase#DECIPHER} diseases will be loaded</li>
    *   <li>suspicious frequencies of negated terms will be salvaged, if possible, and</li>
-   *   <li>a cohort is assumed to have <code>50</code> members by default</li>
+   *   <li>a cohort is assumed to include {@link #DEFAULT_COHORT_SIZE} members by default</li>
    * </ul>
    */
   public static HpoDiseaseLoaderOptions defaultOptions() {
     return of(DATABASE_PREFIXES, true, DEFAULT_COHORT_SIZE);
   }
 
+  /**
+   * Get {@link HpoDiseaseLoaderOptions} for instructing the {@link HpoDiseaseLoader} to load
+   * {@link DiseaseDatabase#OMIM} diseases, to try to salvage the suspicious frequencies of negated terms,
+   * and to assume a cohort size corresponding to {@link #DEFAULT_COHORT_SIZE}.
+   */
+  public static HpoDiseaseLoaderOptions defaultOmim() {
+    return of(Set.of(DiseaseDatabase.OMIM));
+  }
+
+  /**
+   * Get {@link HpoDiseaseLoaderOptions} for instructing the {@link HpoDiseaseLoader} to load diseases
+   * with given {@code databasePrefixes}, to try to salvage the suspicious frequencies of negated terms,
+   * and to assume a cohort size corresponding to {@link #DEFAULT_COHORT_SIZE}.
+   */
+  public static HpoDiseaseLoaderOptions of(Set<DiseaseDatabase> databasePrefixes) {
+    return of(databasePrefixes, true, DEFAULT_COHORT_SIZE);
+  }
+
+  /**
+   * Create {@link HpoDiseaseLoaderOptions} for parameterizing the disease loading by {@link HpoDiseaseLoader}.
+   *
+   * @param databasePrefixes a set of {@link DiseaseDatabase} prefixes of diseases to load.
+   * @param salvageNegatedFrequencies set to {@code true} if the loader should try to salvage suspicious frequencies of the negated terms.
+   * @param cohortSize a positive integer corresponding to the assumed cohort size to parse annotation lines with
+   *                   no explicit phenotype frequency data.
+   */
   public static HpoDiseaseLoaderOptions of(Set<DiseaseDatabase> databasePrefixes, boolean salvageNegatedFrequencies, int cohortSize) {
     return new HpoDiseaseLoaderOptions(databasePrefixes, salvageNegatedFrequencies, cohortSize);
   }
@@ -67,7 +93,7 @@ public class HpoDiseaseLoaderOptions {
 
   @Override
   public String toString() {
-    return "Options{" +
+    return "HpoDiseaseLoaderOptions{" +
       "includedDatabases=" + includedDatabases +
       ", salvageNegatedFrequencies=" + salvageNegatedFrequencies +
       ", cohortSize=" + cohortSize +

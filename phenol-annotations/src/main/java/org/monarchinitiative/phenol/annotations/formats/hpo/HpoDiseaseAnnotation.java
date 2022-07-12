@@ -1,56 +1,69 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.annotations.base.temporal.Age;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * Represents a single phenotypic annotation for a disease, i.e. <em>Ectopia lentis</em> for Marfan syndrome.
+ * {@link HpoDiseaseAnnotation} aggregates the presentation of single phenotypic feature observed in a cohort of patients
+ * diagnosed with a disease (i.e. <a href="https://hpo.jax.org/app/browse/term/HP:0001166">Arachnodactyly (HP:0001166)</a>
+ * in <a href="https://hpo.jax.org/app/browse/disease/OMIM:154700">Marfan syndrome (OMIM:154700)</a>).
+ * <p>
+ * {@link HpoDiseaseAnnotation} aggregates <em>frequency</em> of the phenotypic feature in patients diagnosed with a disease.
+ * The frequency is modeled as a {@link #ratio()} <code>n/m</code> where <code>n</code> is the number of patients
+ * presenting the feature, and <code>m</code> is the cohort size. The feature frequency is available through
+ * {@link #frequency()}.
+ * <p>
+ * The temporal aspect of the feature presentation is exposed via {@link #observationIntervals()} that provides
+ * {@link TemporalInterval}s when the {@link HpoDiseaseAnnotation} is observable in one or more patient or via
+ * {@link #observedInInterval(TemporalInterval)} to get a {@link Ratio} of patients presenting the feature in provided
+ * {@link TemporalInterval}.
+ * <p>
+ * The evidence supporting the phenotypic feature is available via {@link #references()}.
  */
 public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseAnnotation> {
 
-  // TODO - implement real comparator
-  Comparator<HpoDiseaseAnnotation> COMPARATOR = Comparator.comparing(HpoDiseaseAnnotation::id);
-
-  static HpoDiseaseAnnotation of(TermId termId, Collection<HpoDiseaseAnnotationMetadata> metadata) {
-    float frequency = metadata.stream()
-      .map(meta -> meta.frequency().flatMap(AnnotationFrequency::ratio))
-      .flatMap(Optional::stream)
-      .reduce(Ratio::combine)
-      .map(Ratio::frequency)
-      .orElse(0F);
-
-    if (frequency > 1.0)
-      throw new IllegalArgumentException("Total frequency cannot be greater than 1: " + frequency);
-
-    return HpoDiseaseAnnotationDefault.of(termId, metadata);
-  }
-
+  Comparator<HpoDiseaseAnnotation> COMPARE_BY_ID = Comparator.comparing(HpoDiseaseAnnotation::id);
 
   /**
-   * @deprecated use {@link #id()}.
-   */
-  @Deprecated(since = "2.0.0-RC1", forRemoval = true)
-  default TermId termId() {
-    return id();
-  }
-
-  Stream<HpoDiseaseAnnotationMetadata> metadata();
-
-  /**
-   * @return ratio representing number of individuals with this {@link HpoDiseaseAnnotation}.
+   * @return ratio representing a total number of the cohort members who displayed presence of the phenotypic feature
+   * represented by {@link HpoDiseaseAnnotation} at some point in their life.
    */
   Ratio ratio();
+
+  /**
+   * @return stream of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
+   * at least one cohort individual.
+   */
+  Iterable<TemporalInterval> observationIntervals();
+
+  /**
+   * Get the {@link Ratio} of patients presenting a phenotypic feature in given {@link TemporalInterval}.
+   *
+   * @param interval target temporal interval.
+   */
+  Ratio observedInInterval(TemporalInterval interval);
+
+  /**
+   * @return a list of disease annotation modifiers.
+   */
+  List<TermId> modifiers();
+
+  /**
+   * @return {@link AnnotationReference}s that support presence/absence of the disease annotation.
+   */
+  List<AnnotationReference> references();
+
+  /* **************************************************************************************************************** */
 
   /**
    * @return frequency of this {@link HpoDiseaseAnnotation} in the cohort of individuals used to assert
@@ -78,66 +91,69 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
     return !isAbsent();
   }
 
+  /**
+   * @return {@link PointInTime} representing the earliest onset of the phenotypic feature in patient cohort.
+   */
+  default Optional<PointInTime> earliestOnset() {
+    return observationIntervalStream()
+      .map(TemporalInterval::start)
+      .min(PointInTime::compare);
+  }
 
   /**
-   * @return list of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} is observable.
+   * @return {@link PointInTime} representing the latest onset of the phenotypic feature in patient cohort.
    */
-  List<TemporalInterval> observationIntervals();
+  default Optional<PointInTime> latestOnset() {
+    return observationIntervalStream()
+      .map(TemporalInterval::start)
+      .max(PointInTime::compare);
+  }
 
   /**
-   * @param target temporal interval
-   * @return ratio of patients with {@link HpoDiseaseAnnotation} observable in given <code>target</code> {@link TemporalInterval}
-   * or an empty {@link Optional} if no occurrence data is available
+   * @return {@link PointInTime} representing the earliest resolution of the phenotypic feature in patient cohort.
    */
-  Optional<Ratio> observedInInterval(TemporalInterval target);
-
-  /* **************************************************************************************************************** */
-
-  default Optional<Age> earliestOnset() {
-    return metadata()
-      .filter(HpoDiseaseAnnotationMetadata::isPresent)
-      .map(HpoDiseaseAnnotationMetadata::observationInterval)
-      .flatMap(Optional::stream)
-      .map(TemporalInterval::start)
-      .min(Age::compare);
-  }
-
-  default Optional<Age> latestOnset() {
-    return metadata()
-      .filter(HpoDiseaseAnnotationMetadata::isPresent)
-      .map(HpoDiseaseAnnotationMetadata::observationInterval)
-      .flatMap(Optional::stream)
-      .map(TemporalInterval::start)
-      .max(Age::compare);
-  }
-
-  default Optional<Age> earliestResolution() {
-    return metadata()
-      .filter(HpoDiseaseAnnotationMetadata::isPresent)
-      .map(HpoDiseaseAnnotationMetadata::observationInterval)
-      .flatMap(Optional::stream)
+  default Optional<PointInTime> earliestResolution() {
+    return observationIntervalStream()
       .map(TemporalInterval::end)
-      .min(Age::compare);
+      .min(PointInTime::compare);
   }
 
-  default Optional<Age> latestResolution() {
-    return metadata()
-      .filter(HpoDiseaseAnnotationMetadata::isPresent)
-      .map(HpoDiseaseAnnotationMetadata::observationInterval)
-      .flatMap(Optional::stream)
+  /**
+   * @return {@link PointInTime} representing the latest resolution of the phenotypic feature in patient cohort.
+   */
+  default Optional<PointInTime> latestResolution() {
+    return observationIntervalStream()
       .map(TemporalInterval::end)
-      .max(Age::compare);
+      .max(PointInTime::compare);
   }
 
-  default List<AnnotationReference> references() {
-    return metadata()
-      .map(HpoDiseaseAnnotationMetadata::reference)
-      .collect(Collectors.toList());
+  private Stream<TemporalInterval> observationIntervalStream() {
+    return StreamSupport.stream(observationIntervals().spliterator(), false);
   }
 
+  /**
+   * Compare two {@link HpoDiseaseAnnotation}s by their {@link #id()}s.
+   */
+  static int compareById(HpoDiseaseAnnotation x, HpoDiseaseAnnotation y) {
+    return COMPARE_BY_ID.compare(x, y);
+  }
+
+  /**
+   * @deprecated {@link HpoDiseaseAnnotation} will not be {@link Comparable} as there are multiple ways how to compare
+   * the instances.
+   */
   @Override
+  @Deprecated(forRemoval = true)
   default int compareTo(HpoDiseaseAnnotation other) {
-    return COMPARATOR.compare(this, other);
+    return COMPARE_BY_ID.compare(this, other);
+  }
+
+  /**
+   * @deprecated use {@link #id()}.
+   */
+  @Deprecated(since = "2.0.0-RC1", forRemoval = true)
+  default TermId termId() {
+    return id();
   }
 
 }

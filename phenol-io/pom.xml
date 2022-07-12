@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol</artifactId>
-    <version>2.0.0-RC3</version>
+    <version>2.0.0-RC4</version>
   </parent>
 
   <artifactId>phenol-io</artifactId>
@@ -22,21 +22,7 @@
     <dependency>
        <groupId>org.geneontology.obographs</groupId>
        <artifactId>obographs-core</artifactId>
-       <version>0.3.0</version>
     </dependency>
-
-    <dependency>
-       <groupId>org.prefixcommons</groupId>
-       <artifactId>curie-util</artifactId>
-       <version>0.0.2</version>
-       <exclusions>
-          <exclusion>
-              <groupId>com.github.jsonld-java</groupId>
-              <artifactId>jsonld-java</artifactId>
-          </exclusion>
-       </exclusions>
-    </dependency>
-
   </dependencies>
 
   <build>

@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.constants.hpo.HpoFrequencyTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoFrequencyTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;

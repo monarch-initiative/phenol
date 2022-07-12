@@ -3,8 +3,8 @@ package org.monarchinitiative.phenol.annotations.io.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.constants.hpo.HpoClinicalModifierTermIds;
-import org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoClinicalModifierTermIds;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -27,6 +27,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
   private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
   private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
   private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
+  protected final HpoDiseaseAnnotationFactory factory = HpoDiseaseAnnotationFactory.defaultInstance();
 
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
@@ -47,7 +48,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
     this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
       ? hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds()
       : Set.of();
-    this.inheritanceSubHierarchy = hpo.containsTerm(org.monarchinitiative.phenol.constants.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
+    this.inheritanceSubHierarchy = hpo.containsTerm(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
       ? hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds()
       : Set.of();
   }
@@ -94,18 +95,18 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
    * Assemble {@link HpoDisease} from a number of {@link HpoAnnotationLine}s.
    * @param annotationLines the annotation lines.
    */
-  protected abstract Optional<HpoDisease> assembleHpoDisease(TermId diseaseId, Iterable<HpoAnnotationLine> annotationLines);
+  protected abstract Optional<? extends HpoDisease> assembleHpoDisease(TermId diseaseId, Iterable<HpoAnnotationLine> annotationLines);
 
 
-  protected AnnotationFrequency parseFrequency(boolean isNegated, String frequency) throws IllegalArgumentException {
+  protected Ratio parseFrequency(boolean isNegated, String frequency) throws IllegalArgumentException {
     boolean notDone = true;
     int numerator = -1, denominator = -1;
 
-    if ("".equals(frequency)) {
+    if (frequency == null || "".equals(frequency)) {
       // The empty string is assumed to represent a case study
       numerator = (isNegated) ? 0 : 1;
       denominator = 1;
-      return AnnotationFrequency.of(Ratio.of(numerator, denominator));
+      return Ratio.of(numerator, denominator);
     }
 
     // HPO term, e.g. HP:0040280 (Obligate)
@@ -155,7 +156,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
       // we should be done at this point
       throw new IllegalArgumentException();
 
-    return AnnotationFrequency.of(Ratio.of(numerator, denominator));
+    return Ratio.of(numerator, denominator);
   }
 
 }

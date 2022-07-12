@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.constants.hpo;
+package org.monarchinitiative.phenol.annotations.constants.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

@@ -1,44 +1,70 @@
 package org.monarchinitiative.phenol.annotations.base.temporal;
 
+import java.util.Objects;
+
+/**
+ * {@link TemporalInterval} is a pair of {@link PointInTime}s {@link #start()} and {@link #end()} where
+ * {@link #start()} starts at or before {@link #end()}.
+ */
 public interface TemporalInterval {
 
-  static TemporalInterval birth() {
-    return TemporalIntervalDefault.of(Age.birth(), Age.birth());
-  }
-
-  static TemporalInterval of(Age start, Age end) {
-    int result = Age.compare(start, end);
+  /**
+   * Create a {@link TemporalInterval} using <code>start</code> and <code>end</code>.
+   * The <code>start</code> must <em>not</em> be after end.
+   *
+   * @param start non-null {@code start}
+   * @param end non-null {@code end}
+   * @throws IllegalArgumentException if {@code start} is after {@code end}
+   * @return a {@link TemporalInterval}
+   */
+  static TemporalInterval of(PointInTime start, PointInTime end) {
+    int result = PointInTime.compare(Objects.requireNonNull(start), Objects.requireNonNull(end));
     if (result > 0)
       throw new IllegalArgumentException(String.format("Start (%d days) must not be after end (%d days)",
         start.days(), end.days()));
 
-    return TemporalIntervalDefault.of(start, end);
+    return TemporalIntervals.of(start, end);
   }
 
   /**
-   * @return interval spanning the temporal domain starting at negative infinity and ending in <code>end</code>.
-   */
-  static TemporalInterval openStart(Age end) {
-    return TemporalIntervalDefault.of(Age.openStart(), end);
-  }
-
-  /**
-   * @return interval spanning the temporal domain starting at <code>start</code> and ending in positive infinity.
-   */
-  static TemporalInterval openEnd(Age start) {
-    return TemporalIntervalDefault.of(start, Age.openEnd());
-  }
-
-  /**
-   * @return interval spanning the entire temporal domain.
+   * @return an <em>open</em> {@link TemporalInterval}; an instance where both {@link #isStartOpen()}
+   * {@link #isEndOpen()} is <code>true</code>.
    */
   static TemporalInterval open() {
-    return TemporalInterval.of(Age.openStart(), Age.openEnd());
+    return TemporalIntervals.OPEN;
   }
 
-  Age start();
+  /**
+   * Create a {@link TemporalInterval} with an open start.
+   *
+   * @param end {@link PointInTime} to be used as an end. The {@code end} can be open.
+   * @return a {@link TemporalInterval} with an open start if {@code end} is closed, or an open {@link TemporalInterval}
+   * if {@code end} is open.
+   */
+  static TemporalInterval openStart(PointInTime end) {
+    return Objects.requireNonNull(end).isOpen()
+      ? TemporalIntervals.OPEN
+      : new TemporalIntervals.TemporalIntervalWithOpenStart(end);
+  }
 
-  Age end();
+  /**
+   * Create a {@link TemporalInterval} with an open end.
+   *
+   * @param start {@link PointInTime} to be used as a start. The {@code start} can be open.
+   * @return a {@link TemporalInterval} with an open end if {@code start} is closed, or an open {@link TemporalInterval}
+   * if {@code start} is open.
+   */
+  static TemporalInterval openEnd(PointInTime start) {
+    return Objects.requireNonNull(start).isOpen()
+      ? TemporalIntervals.OPEN
+      : new TemporalIntervals.TemporalIntervalWithOpenEnd(start);
+  }
+
+  /* **************************************************************************************************************** */
+
+  PointInTime start();
+
+  PointInTime end();
 
   /* **************************************************************************************************************** */
 
@@ -66,61 +92,59 @@ public interface TemporalInterval {
     return isStartClosed() && isEndClosed();
   }
 
-  /* **************************************************************************************************************** */
-
   /**
-   * @return length represented as {@link TemporalInterval} that starts either on {@link Age#lastMenstrualPeriod()} or
-   * on {@link Age#birth()}.
-   * <p>
-   * If the start or the end of <code>this</code> {@link TemporalInterval} is open,
-   * then the length is {@link TemporalInterval#open()}.
+   * Get the number of days spanned by <code>this</code> {@link TemporalInterval}.
+   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
+   *
+   * @return the number of days.
    */
-  default TemporalInterval length() {
-    if (isFullyClosed()) {
-      return TemporalInterval.of(Age.birth(), Age.postnatal(end().days() - start().days()));
-    } else {
-      return TemporalInterval.open();
-    }
+  default int length() {
+    return isFullyClosed()
+      ? end().days() - start().days()
+      : Integer.MAX_VALUE;
   }
 
+  /**
+   * @return <code>true</code> if {@link #length()} is equal to <code>0</code>.
+   */
   default boolean isEmpty() {
-    TemporalInterval length = length();
-    return length.end().isZero();
+    return length() == 0;
   }
 
   default TemporalInterval intersection(TemporalInterval other) {
-    Age start = Age.max(start(), other.start());
-    Age end = Age.min(end(), other.end());
-    int compare = Age.compare(start, end);
+    PointInTime start = PointInTime.max(start(), other.start());
+    PointInTime end = PointInTime.min(end(), other.end());
+    int compare = PointInTime.compare(start, end);
     if (compare > 0)
-      return birth();
+      return TemporalIntervals.BIRTH;
 
     return TemporalInterval.of(start, end);
   }
 
   default boolean overlapsWith(TemporalInterval other) {
+    // TODO - calculate without allocating
     return !intersection(other).isEmpty();
   }
 
-  default boolean contains(Age age) {
-    int start = Age.compare(start(), age);
-    int end = Age.compare(end(), age);
+  default boolean contains(PointInTime age) {
+    int start = PointInTime.compare(start(), age);
+    int end = PointInTime.compare(end(), age);
 
     return start <= 0 && 0 < end;
   }
 
-  /* **************************************************************************************************************** */
-
+  /**
+   * A comparator-like function for default sorting of {@link TemporalInterval} instances.
+   * <p>
+   * In the comparison, the {@link #start()} is compared first.
+   * In case of a tie, instances are compared based on {@link #end()}.
+   */
   static int compare(TemporalInterval x, TemporalInterval y) {
-    int result = Age.compare(x.start(), y.start());
+    int result = PointInTime.compare(x.start(), y.start());
     if (result != 0)
       return result;
 
-    return Age.compare(x.end(), y.end());
+    return PointInTime.compare(x.end(), y.end());
   }
-
-
-
-  /* **************************************************************************************************************** */
 
 }

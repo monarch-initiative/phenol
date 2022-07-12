@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Implementation of immutable {@link Dbxref}s.
@@ -45,6 +46,19 @@ public class Dbxref {
 
   public Map<String, String> getTrailingModifiers() {
     return trailingModifiers;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Dbxref dbxref = (Dbxref) o;
+    return Objects.equals(name, dbxref.name) && Objects.equals(description, dbxref.description) && Objects.equals(trailingModifiers, dbxref.trailingModifiers);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, description, trailingModifiers);
   }
 
   @Override
