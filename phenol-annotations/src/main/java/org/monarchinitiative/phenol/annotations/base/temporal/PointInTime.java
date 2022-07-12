@@ -29,7 +29,14 @@ public interface PointInTime extends TimelineAware {
    * 2,000 Julian years (730,500 days) is not allowed.
    * 2,000 years should be enough for our use case of modeling life-span of organisms.
    */
-  int MAX_DAYS = 20 * 36_525;
+  int MAX_YEARS = 2_000;
+
+  /**
+   * To prevent numerical overflow, creation of a {@link PointInTime} corresponding to more than
+   * 2,000 Julian years (730,500 days) is not allowed.
+   * 2,000 years should be enough for our use case of modeling life-span of organisms.
+   */
+  int MAX_DAYS = MAX_YEARS / 100 * 36_525; // dividing by 100 since 36_525 is 100 * 365.25 (Julian year).
 
   /**
    * @return {@link PointInTime} representing the last menstrual period before the conception.

@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -72,6 +76,26 @@ public class AgeTest {
 
       Age oneYear = Age.postnatal(1, 0, 0);
       assertThat(oneYear.completeYears(), equalTo(1));
+    }
+
+    @Test
+    public void completeMonthsFromMonths() {
+      List<Integer> months = IntStream.range(0, 1000)
+        .boxed()
+        .collect(Collectors.toList());
+      for (Integer month : months) {
+        assertThat(Age.postnatal(0, month, 0).completeMonths(), equalTo(month));
+      }
+    }
+
+    @Test
+    public void completeYearsFromYears() {
+      List<Integer> years = IntStream.range(0, PointInTime.MAX_YEARS)
+        .boxed()
+        .collect(Collectors.toList());
+      for (Integer year : years) {
+        assertThat(Age.postnatal(year, 0, 0).completeYears(), equalTo(year));
+      }
     }
   }
 

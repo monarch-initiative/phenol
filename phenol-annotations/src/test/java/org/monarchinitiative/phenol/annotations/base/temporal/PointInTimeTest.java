@@ -89,7 +89,7 @@ public class PointInTimeTest {
       " 730,      1",
       " 731,      2",
     })
-    public void completeYearsFromYears(int days, int expectedYears) {
+    public void completeYearsFromDays(int days, int expectedYears) {
       assertThat(PointInTime.of(days, false).completeYears(), equalTo(expectedYears));
     }
 
