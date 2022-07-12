@@ -214,16 +214,31 @@ public interface Age extends PointInTime, TemporalInterval {
     return Age.of(days, isGestational(), confidenceRange());
   }
 
+  /**
+   * @return the greater {@link Age} based on comparing {@code a} and {@code b} using {@link #compare(Age, Age)}.
+   * {@code a} is returned in case of a tie.
+   */
   static Age max(Age a, Age b) {
     int compare = Age.compare(a, b);
     return compare >= 0 ? a : b;
   }
 
+  /**
+   * @return the smaller {@link Age} based on comparing {@code a} and {@code b} using {@link #compare(Age, Age)}.
+   * {@code a} is returned in case of a tie.
+   */
   static Age min(Age a, Age b) {
     int compare = Age.compare(a, b);
     return compare <= 0 ? a : b;
   }
 
+  /**
+   * A comparator-like function for default sorting of {@link Age} instances.
+   * <p>
+   * The {@link Age}s are first compared based on the {@link PointInTime} attributes. In case of a tie,
+   * the {@link Age}s are compared based on the {@link ConfidenceRange}, where the {@link Age} with a narrower
+   * {@link ConfidenceRange} is better/greater.
+   */
   static int compare(Age x, Age y) {
     int result = PointInTime.compare(x, y);
     if (result != 0)

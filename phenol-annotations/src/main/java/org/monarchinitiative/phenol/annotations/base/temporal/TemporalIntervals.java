@@ -12,19 +12,14 @@ class TemporalIntervals {
   static final TemporalInterval OPEN = new OpenTemporalInterval();
 
   static TemporalInterval of(PointInTime start, PointInTime end) {
-    // TODO - implement
-    //    if (start.isOpen() || end.isOpen()) {
-    //      if (!start.isOpen()) {
-    //        return new AgeRangeDefault.AgeRangeOpenEnd(start);
-    //      } else if (!end.isOpen()) {
-    //        return new AgeRangeDefault.AgeRangeOpenStart(end);
-    //      } else {
-    //        return AgeRangeDefault.AgeRangeOpen.instance();
-    //      }
-    //    } else {
-    //      return new AgeRangeDefault(start, end);
-    //    }
-
+    if (start.isOpen() || end.isOpen()) {
+      if (start.isOpen())
+        return new TemporalIntervalWithOpenStart(end);
+      else if (end.isOpen())
+        return new TemporalIntervalWithOpenEnd(start);
+      else
+        return OPEN;
+    }
     return new DefaultTemporalInterval(start, end);
   }
 

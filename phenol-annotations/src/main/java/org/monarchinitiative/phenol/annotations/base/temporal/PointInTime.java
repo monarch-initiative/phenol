@@ -8,8 +8,10 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
  * or on the <em>postnatal</em> timeline ({@link #isPostnatal()}).
  * <p>
  * {@link PointInTime} can be <em>open</em> ({@link #isOpen()}) or <em>closed</em> ({@link #isClosed()}).
- * There are only two <em>open</em> {@link PointInTime}s to represent instants
- * that happened in unspecified future or past: {@link #openStart()} and {@link #openEnd()}.
+ * The <em>open</em> {@link PointInTime}s represent instants that happened in unspecified past or future.
+ * Use {@link #openStart()} to get the {@link PointInTime} for instant in unspecified past,
+ * and {@link #openEnd()} to get the {@link PointInTime} for instant in unspecified future.
+ * Note, this has nothing in common with a concept of including/excluding range endpoints.
  * <p>
  * Use {@link #compare(PointInTime, PointInTime)} for default sorting of the {@link PointInTime}s. The sorting
  * uses the following invariants:
@@ -43,6 +45,13 @@ public interface PointInTime extends TimelineAware {
     return PointsInTime.BIRTH;
   }
 
+  /**
+   * Create a {@link PointInTime} to represent a specific day on a timeline.
+   *
+   * @param days a day to represent on the timeline.
+   * @param isGestational {@code true} if {@link PointInTime} is on gestational timeline {@code false}.
+   * @return a {@link PointInTime} instance.
+   */
   static PointInTime of(int days, boolean isGestational) {
     return PointsInTime.of(Util.checkDays(days), isGestational);
   }
@@ -73,6 +82,9 @@ public interface PointInTime extends TimelineAware {
    */
   int days();
 
+  /**
+   * @return <code>true</code> if the {@link PointInTime} is <em>open</em>.
+   */
   boolean isOpen();
 
   /* **************************************************************************************************************** */
@@ -117,28 +129,56 @@ public interface PointInTime extends TimelineAware {
     return (int) (days() / Age.DAYS_IN_JULIAN_YEAR);
   }
 
+  /**
+   * @return <code>true</code> if the {@link PointInTime} is <em>closed</em>.
+   */
   default boolean isClosed() {
     return !isOpen();
   }
 
+  /**
+   * @return <code>true</code> if the {@link PointInTime} represents a beginning of a timeline.
+   */
   default boolean isZero() {
     return days() == 0;
   }
 
+  /**
+   * @return <code>true</code> if the {@link PointInTime} does not represent a beginning of a timeline.
+   */
   default boolean isPositive() {
     return days() > 0;
   }
 
+  /**
+   * @return the greater {@link PointInTime} based on comparing {@code a} and {@code b} using {@link #compare(PointInTime, PointInTime)}.
+   * {@code a} is returned in case of a tie.
+   */
   static PointInTime max(PointInTime a, PointInTime b) {
     int compare = PointInTime.compare(a, b);
     return compare >= 0 ? a : b;
   }
 
+  /**
+   * @return the smaller {@link PointInTime} based on comparing {@code a} and {@code b} using {@link #compare(PointInTime, PointInTime)}.
+   * {@code a} is returned in case of a tie.
+   */
   static PointInTime min(PointInTime a, PointInTime b) {
     int compare = PointInTime.compare(a, b);
     return compare <= 0 ? a : b;
   }
 
+  /**
+   * A comparator-like function for default sorting of {@link PointInTime} instances.
+   * <p>
+   * The sorting uses the following invariants:
+   * <ul>
+   *   <li>gestational {@link PointInTime}s are <em>before</em> (less) than postnatal {@link PointInTime}s,</li>
+   *   <li>a {@link PointInTime} with fewer days is less than a {@link PointInTime} with more days,</li>
+   *   <li>{@link #openStart()} is <em>before</em> (less) and {@link #openEnd()} is <em>after</em> (more)
+   *   than any closed {@link PointInTime}.</li>
+   * </ul>
+   */
   static int compare(PointInTime x, PointInTime y) {
     if (x.isGestational() ^ y.isGestational())
       return x.isGestational() ? -1 : 1;

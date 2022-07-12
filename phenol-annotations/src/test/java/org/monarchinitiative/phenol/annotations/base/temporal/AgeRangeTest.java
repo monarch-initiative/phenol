@@ -99,14 +99,14 @@ public class AgeRangeTest {
     " 0, 2,   true,  true",
     " 1, 2,  false,  true",
   })
-  public void overlapsWith_openEndpoints(int start, int end, boolean openStartExpected, boolean openEndExpected) {
+  public void overlapsWith_openEndpoints(int start, int end, boolean overlapsWithOpenStart, boolean overlapsWithOpenEnd) {
     AgeRange interval = AgeRange.of(Age.postnatal(start), Age.postnatal(end));
 
     AgeRange openStart = AgeRange.openStart(Age.postnatal(1));
-    assertThat(openStart.overlapsWith(interval), equalTo(openStartExpected));
+    assertThat(openStart.overlapsWith(interval), equalTo(overlapsWithOpenStart));
 
     AgeRange openEnd = AgeRange.openEnd(Age.postnatal(1));
-    assertThat(openEnd.overlapsWith(interval), equalTo(openEndExpected));
+    assertThat(openEnd.overlapsWith(interval), equalTo(overlapsWithOpenEnd));
   }
 
   @ParameterizedTest

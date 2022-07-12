@@ -8,6 +8,15 @@ import java.util.Objects;
  */
 public interface TemporalInterval {
 
+  /**
+   * Create a {@link TemporalInterval} using <code>start</code> and <code>end</code>.
+   * The <code>start</code> must <em>not</em> be after end.
+   *
+   * @param start non-null {@code start}
+   * @param end non-null {@code end}
+   * @throws IllegalArgumentException if {@code start} is after {@code end}
+   * @return a {@link TemporalInterval}
+   */
   static TemporalInterval of(PointInTime start, PointInTime end) {
     int result = PointInTime.compare(Objects.requireNonNull(start), Objects.requireNonNull(end));
     if (result > 0)
@@ -17,16 +26,34 @@ public interface TemporalInterval {
     return TemporalIntervals.of(start, end);
   }
 
+  /**
+   * @return an <em>open</em> {@link TemporalInterval}; an instance where both {@link #isStartOpen()}
+   * {@link #isEndOpen()} is <code>true</code>.
+   */
   static TemporalInterval open() {
     return TemporalIntervals.OPEN;
   }
 
+  /**
+   * Create a {@link TemporalInterval} with an open start.
+   *
+   * @param end {@link PointInTime} to be used as an end. The {@code end} can be open.
+   * @return a {@link TemporalInterval} with an open start if {@code end} is closed, or an open {@link TemporalInterval}
+   * if {@code end} is open.
+   */
   static TemporalInterval openStart(PointInTime end) {
     return Objects.requireNonNull(end).isOpen()
       ? TemporalIntervals.OPEN
       : new TemporalIntervals.TemporalIntervalWithOpenStart(end);
   }
 
+  /**
+   * Create a {@link TemporalInterval} with an open end.
+   *
+   * @param start {@link PointInTime} to be used as a start. The {@code start} can be open.
+   * @return a {@link TemporalInterval} with an open end if {@code start} is closed, or an open {@link TemporalInterval}
+   * if {@code start} is open.
+   */
   static TemporalInterval openEnd(PointInTime start) {
     return Objects.requireNonNull(start).isOpen()
       ? TemporalIntervals.OPEN
@@ -95,6 +122,7 @@ public interface TemporalInterval {
   }
 
   default boolean overlapsWith(TemporalInterval other) {
+    // TODO - calculate without allocating
     return !intersection(other).isEmpty();
   }
 
@@ -105,6 +133,12 @@ public interface TemporalInterval {
     return start <= 0 && 0 < end;
   }
 
+  /**
+   * A comparator-like function for default sorting of {@link TemporalInterval} instances.
+   * <p>
+   * In the comparison, the {@link #start()} is compared first.
+   * In case of a tie, instances are compared based on {@link #end()}.
+   */
   static int compare(TemporalInterval x, TemporalInterval y) {
     int result = PointInTime.compare(x.start(), y.start());
     if (result != 0)

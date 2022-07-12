@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TemporalIntervalTest {
 
@@ -65,4 +66,40 @@ public class TemporalIntervalTest {
     assertThat(intersection, equalTo(TemporalInterval.of(PointInTime.of(expectedStart ,false), PointInTime.of(expectedEnd, false))));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    // left                       right                          result
+    "10,  true, 11,  true,        11,  true, 11,  true,         -1",
+    "11,  true, 11,  true,        11,  true, 11,  true,          0",
+    "11,  true, 12,  true,        11,  true, 11,  true,          1",
+
+    "11,  true, 11,  true,        10,  true, 11,  true,          1",
+    "11,  true, 11,  true,        11,  true, 11,  true,          0",
+    "11,  true, 11,  true,        11,  true, 12,  true,         -1",
+
+    // left is less due to start on gestational timeline
+    "12,  true, 11, false,        11, false, 11, false,         -1",
+    // left is less due to start & end on gestational timeline
+    "12,  true, 12,  true,        11, false, 11, false,         -1",
+  })
+  public void compare(int leftStartDays, boolean leftStartGestational, int leftEndDays, boolean leftEndGestational,
+                      int rightStartDays, boolean rightStartGestational, int rightEndDays, boolean rightEndGestational,
+                      int result) {
+    PointInTime leftStart = PointInTime.of(leftStartDays, leftStartGestational);
+    PointInTime leftEnd = PointInTime.of(leftEndDays, leftEndGestational);
+    TemporalInterval left = TemporalInterval.of(leftStart, leftEnd);
+
+    PointInTime rightStart = PointInTime.of(rightStartDays, rightStartGestational);
+    PointInTime rightEnd = PointInTime.of(rightEndDays, rightEndGestational);
+    TemporalInterval right = TemporalInterval.of(rightStart, rightEnd);
+
+    assertThat(TemporalInterval.compare(left, right), equalTo(result));
+  }
+
+  @Test
+  public void throwsAnExceptionWhenStartIsAfterEnd() {
+     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+       () -> TemporalInterval.of(PointInTime.of(1, false), PointInTime.of(0, false)));
+     assertThat(e.getMessage(), containsString("Start (1 days) must not be after end (0 days)"));
+  }
 }
