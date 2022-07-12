@@ -1,10 +1,11 @@
-package org.monarchinitiative.phenol.annotations.io.hpo;
+package org.monarchinitiative.phenol.annotations.io.hpo.annodef;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
+import org.monarchinitiative.phenol.annotations.io.hpo.KnowsRatioAndMaybeTemporalInterval;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
@@ -13,6 +14,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * An {@link HpoDiseaseAnnotation} implementation that overrides earliest/latest onset/resolution methods.
+ */
 class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
   private final TermId id;
@@ -47,8 +51,8 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
   }
 
   @Override
-  public Stream<TemporalInterval> observationIntervals() {
-    return observationIntervals.stream();
+  public Iterable<TemporalInterval> observationIntervals() {
+    return observationIntervals;
   }
 
   @Override
@@ -67,36 +71,28 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
   @Override
   public Optional<PointInTime> earliestOnset() {
-    return ratioStream()
-      .map(KnowsRatioAndMaybeTemporalInterval::temporalInterval)
-      .flatMap(Optional::stream)
+    return temporalIntervals()
       .map(TemporalInterval::start)
       .min(PointInTime::compare);
   }
 
   @Override
   public Optional<PointInTime> latestOnset() {
-    return ratioStream()
-      .map(KnowsRatioAndMaybeTemporalInterval::temporalInterval)
-      .flatMap(Optional::stream)
+    return temporalIntervals()
       .map(TemporalInterval::start)
       .max(PointInTime::compare);
   }
 
   @Override
   public Optional<PointInTime> earliestResolution() {
-    return ratioStream()
-      .map(KnowsRatioAndMaybeTemporalInterval::temporalInterval)
-      .flatMap(Optional::stream)
+    return temporalIntervals()
       .map(TemporalInterval::end)
       .min(PointInTime::compare);
   }
 
   @Override
   public Optional<PointInTime> latestResolution() {
-    return ratioStream()
-      .map(KnowsRatioAndMaybeTemporalInterval::temporalInterval)
-      .flatMap(Optional::stream)
+    return temporalIntervals()
       .map(TemporalInterval::end)
       .max(PointInTime::compare);
   }
@@ -108,6 +104,13 @@ class HpoDiseaseAnnotationDefault implements HpoDiseaseAnnotation {
 
   private Stream<KnowsRatioAndMaybeTemporalInterval> ratioStream() {
     return StreamSupport.stream(ratios.spliterator(), false);
+  }
+
+  private Stream<TemporalInterval> temporalIntervals() {
+    return ratioStream()
+      .filter(k -> k.ratio().isPositive())
+      .map(KnowsRatioAndMaybeTemporalInterval::temporalInterval)
+      .flatMap(Optional::stream);
   }
 
   @Override

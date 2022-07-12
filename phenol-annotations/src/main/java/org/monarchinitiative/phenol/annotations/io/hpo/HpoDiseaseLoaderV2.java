@@ -26,21 +26,20 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
   }
 
   @Override
-  protected Optional<HpoDisease> assembleHpoDisease(TermId diseaseId,
+  protected Optional<? extends HpoDisease> assembleHpoDisease(TermId diseaseId,
                                                     Iterable<HpoAnnotationLine> annotationLines) {
-    return partitionDiseaseAnnotationLines(annotationLines)
-      .flatMap(diseaseData -> assembleIntoDisease(diseaseId, diseaseData));
+    return assembleIntoDisease(diseaseId, partitionDiseaseAnnotationLines(annotationLines));
   }
 
-  private Optional<HpoDiseaseData> partitionDiseaseAnnotationLines(Iterable<HpoAnnotationLine> annotationLines) {
-    List<HpoAnnotationLine> phenotypes = new ArrayList<>();
+  private HpoDiseaseData partitionDiseaseAnnotationLines(Iterable<HpoAnnotationLine> annotationLines) {
+    List<HpoAnnotationLine> phenotypes = new LinkedList<>();
     List<TermId> modesOfInheritance = new LinkedList<>();
-    List<TermId> clinicalModifierListBuilder = new ArrayList<>();
-    List<TermId> clinicalCourse = new ArrayList<>();
+    List<TermId> clinicalModifierListBuilder = new LinkedList<>();
+    List<TermId> clinicalCourse = new LinkedList<>();
     String diseaseName = null;
     for (HpoAnnotationLine line : annotationLines) {
       // disease name
-      if (line.getDatabaseObjectName() != null)
+      if (diseaseName == null)
         diseaseName = line.getDatabaseObjectName();
 
       // phenotype term
@@ -67,13 +66,11 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
       }
     }
 
-    return Optional.of(
-      new HpoDiseaseData(diseaseName,
-        phenotypes,
-        modesOfInheritance,
-        clinicalModifierListBuilder,
-        clinicalCourse)
-    );
+    return new HpoDiseaseData(diseaseName,
+      phenotypes,
+      modesOfInheritance,
+      clinicalModifierListBuilder,
+      clinicalCourse);
   }
 
   private Optional<? extends HpoDisease> assembleIntoDisease(TermId diseaseId, HpoDiseaseData diseaseData) {
@@ -105,7 +102,7 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
    * @return the new {@link HpoDiseaseAnnotation} or empty optional if the mapping fails.
    */
   private Optional<HpoDiseaseAnnotation> toDiseaseAnnotation(String phenotypeFeature,
-                                                             List<HpoAnnotationLine> annotationLines) {
+                                                             Iterable<HpoAnnotationLine> annotationLines) {
     // 1. parse phenotype feature ID.
     TermId phenotypeFeatureId;
     try {
@@ -119,14 +116,20 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
     List<KnowsRatioAndMaybeTemporalInterval> ratios = new LinkedList<>();
     List<TermId> modifiers = new LinkedList<>();
     for (HpoAnnotationLine line : annotationLines) {
-      // 1. Combine `ratio` and `onset` into `TemporalRatio`.
+      // 1) Combine `ratio` and `onset` into `TemporalRatio`.
       Ratio ratio = parseFrequency(line.isNOT(), line.getFrequency());
       TemporalInterval temporalInterval = HpoOnset.fromHpoIdString(line.getOnsetId())
         .map(onset -> TemporalInterval.openEnd(onset.start()))
         .orElse(null);
       ratios.add(KnowsRatioAndMaybeTemporalInterval.of(ratio, temporalInterval));
 
-      // 2. Assemble `AnnotationReference`.
+      // 2) Modifiers.
+      Arrays.stream(line.modifiers().split(";"))
+        .filter(token -> !token.isBlank())
+        .map(TermId::of)
+        .forEach(modifiers::add);
+
+      // 3) Assemble `AnnotationReference`.
       EvidenceCode evidence = EvidenceCode.parse(line.getEvidence());
       for (String citation : line.getPublication()) {
         try {
@@ -136,16 +139,9 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
         }
       }
 
-      // modifiers
-      Arrays.stream(line.modifiers().split(";"))
-        .filter(token -> !token.isBlank())
-        .map(TermId::of)
-        .forEach(modifiers::add);
-
       // TODO - do we need this?
 //      Sex sex = Sex.parse(line.getSex()).orElse(null);
     }
-
 
     return Optional.of(factory.create(phenotypeFeatureId, ratios, modifiers, references));
   }

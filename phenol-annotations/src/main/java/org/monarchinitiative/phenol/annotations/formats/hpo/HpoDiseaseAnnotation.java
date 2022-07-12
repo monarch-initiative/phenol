@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * {@link HpoDiseaseAnnotation} aggregates the presentation of single phenotypic feature observed in a cohort of patients
@@ -43,7 +44,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * @return stream of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
    * at least one cohort individual.
    */
-  Stream<TemporalInterval> observationIntervals();
+  Iterable<TemporalInterval> observationIntervals();
 
   /**
    * Get the {@link Ratio} of patients presenting a phenotypic feature in given {@link TemporalInterval}.
@@ -94,7 +95,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * @return {@link PointInTime} representing the earliest onset of the phenotypic feature in patient cohort.
    */
   default Optional<PointInTime> earliestOnset() {
-    return observationIntervals()
+    return observationIntervalStream()
       .map(TemporalInterval::start)
       .min(PointInTime::compare);
   }
@@ -103,7 +104,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * @return {@link PointInTime} representing the latest onset of the phenotypic feature in patient cohort.
    */
   default Optional<PointInTime> latestOnset() {
-    return observationIntervals()
+    return observationIntervalStream()
       .map(TemporalInterval::start)
       .max(PointInTime::compare);
   }
@@ -112,7 +113,7 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * @return {@link PointInTime} representing the earliest resolution of the phenotypic feature in patient cohort.
    */
   default Optional<PointInTime> earliestResolution() {
-    return observationIntervals()
+    return observationIntervalStream()
       .map(TemporalInterval::end)
       .min(PointInTime::compare);
   }
@@ -121,9 +122,13 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
    * @return {@link PointInTime} representing the latest resolution of the phenotypic feature in patient cohort.
    */
   default Optional<PointInTime> latestResolution() {
-    return observationIntervals()
+    return observationIntervalStream()
       .map(TemporalInterval::end)
       .max(PointInTime::compare);
+  }
+
+  private Stream<TemporalInterval> observationIntervalStream() {
+    return StreamSupport.stream(observationIntervals().spliterator(), false);
   }
 
   /**

@@ -27,7 +27,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
   private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
   private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
   private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
-  protected final HpoDiseaseAnnotationFactory factory = HpoDiseaseAnnotationFactoryDefault.instance();;
+  protected final HpoDiseaseAnnotationFactory factory = HpoDiseaseAnnotationFactory.defaultInstance();
 
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
@@ -95,14 +95,14 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
    * Assemble {@link HpoDisease} from a number of {@link HpoAnnotationLine}s.
    * @param annotationLines the annotation lines.
    */
-  protected abstract Optional<HpoDisease> assembleHpoDisease(TermId diseaseId, Iterable<HpoAnnotationLine> annotationLines);
+  protected abstract Optional<? extends HpoDisease> assembleHpoDisease(TermId diseaseId, Iterable<HpoAnnotationLine> annotationLines);
 
 
   protected Ratio parseFrequency(boolean isNegated, String frequency) throws IllegalArgumentException {
     boolean notDone = true;
     int numerator = -1, denominator = -1;
 
-    if ("".equals(frequency)) {
+    if (frequency == null || "".equals(frequency)) {
       // The empty string is assumed to represent a case study
       numerator = (isNegated) ? 0 : 1;
       denominator = 1;
