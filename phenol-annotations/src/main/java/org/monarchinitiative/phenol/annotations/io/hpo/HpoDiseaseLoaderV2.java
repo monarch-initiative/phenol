@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
@@ -82,7 +83,8 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    TemporalInterval globalOnset = null; // TODO - address
+    TemporalInterval globalOnset = calculateOnset(annotations);
+
     return Optional.of(
       HpoDisease.of(
         diseaseId,
@@ -144,6 +146,28 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
     }
 
     return Optional.of(factory.create(phenotypeFeatureId, ratios, modifiers, references));
+  }
+
+  private static TemporalInterval calculateOnset(Iterable<HpoDiseaseAnnotation> annotations) {
+    PointInTime start = null, end = null;
+
+    for (HpoDiseaseAnnotation annotation : annotations) {
+      if (annotation.isPresent()) {
+        Optional<PointInTime> onset = annotation.earliestOnset();
+        if (onset.isPresent()) {
+          start = start == null
+            ? onset.get()
+            : PointInTime.min(onset.get(), start);
+          end = end == null
+            ? onset.get()
+            : PointInTime.max(onset.get(), end);
+        }
+      }
+    }
+
+    return start == null || end == null
+      ? null
+      : TemporalInterval.of(start, end);
   }
 
   /**
