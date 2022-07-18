@@ -121,9 +121,31 @@ public interface TemporalInterval {
     return TemporalInterval.of(start, end);
   }
 
+  /**
+   * @return {@code true} if {@code this} and {@code other} overlap.
+   */
   default boolean overlapsWith(TemporalInterval other) {
-    // TODO - calculate without allocating
-    return !intersection(other).isEmpty();
+    switch (overlapStatus(other)) {
+      case UPSTREAM:
+      case DOWNSTREAM:
+        return false;
+      case OVERLAPS_UPSTREAM:
+      case CONTAINS:
+      case CONTAINED_IN:
+      case OVERLAPS_DOWNSTREAM:
+        return true;
+      default:
+        throw new RuntimeException(String.format("Unknown item %s", overlapStatus(other)));
+    }
+  }
+
+  /**
+   * Get {@link OverlapStatus} for {@link TemporalInterval}s {@code this} and {@code other}.
+   * <p>
+   * Note: the method returns {@link OverlapStatus#CONTAINED_IN} if {@code this} and {@code other} are equal.
+   */
+  default OverlapStatus overlapStatus(TemporalInterval other) {
+    return overlapStatus(this, other);
   }
 
   default boolean contains(PointInTime age) {
@@ -150,7 +172,7 @@ public interface TemporalInterval {
   /**
    * Get {@link OverlapStatus} for {@link TemporalInterval}s {@code x} and {@code y}.
    * <p>
-   * Note: the method returns {@link OverlapStatus#CONTAINED_IN} if {@code x} and {@code  y} are equal.
+   * Note: the method returns {@link OverlapStatus#CONTAINED_IN} if {@code x} and {@code y} are equal.
    */
   static OverlapStatus overlapStatus(TemporalInterval x, TemporalInterval y) {
     if (x.end().isAtOrBefore(y.start())) {

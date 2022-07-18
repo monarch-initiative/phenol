@@ -135,6 +135,7 @@ public class TemporalIntervalTest {
     TemporalInterval right = TemporalInterval.of(rightStart, rightEnd);
 
     assertThat(TemporalInterval.overlapStatus(left, right), equalTo(expected));
+    assertThat(left.overlapStatus(right), equalTo(expected));
   }
 
 }
