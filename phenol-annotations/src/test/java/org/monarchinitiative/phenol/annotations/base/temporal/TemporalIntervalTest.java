@@ -102,4 +102,39 @@ public class TemporalIntervalTest {
        () -> TemporalInterval.of(PointInTime.of(1, false), PointInTime.of(0, false)));
      assertThat(e.getMessage(), containsString("Start (1 days) must not be after end (0 days)"));
   }
+
+  @ParameterizedTest
+  @CsvSource({
+    // LEFT          RIGHT             EXPECTED
+    // General cases:
+    "10,  12,        12,  14,          UPSTREAM",
+    "11,  13,        12,  14,          OVERLAPS_UPSTREAM",
+    "11,  14,        12,  14,          CONTAINS",
+    "12,  13,        12,  14,          CONTAINED_IN",
+    "13,  14,        12,  14,          CONTAINED_IN",
+    "12,  15,        12,  14,          CONTAINS",
+    "13,  15,        12,  14,          OVERLAPS_DOWNSTREAM",
+    "14,  16,        12,  14,          DOWNSTREAM",
+
+    // Special cases:
+    // Empty intervals at the borders are contained in.
+    "12,  12,        12,  14,          CONTAINED_IN",
+    "14,  14,        12,  14,          CONTAINED_IN",
+    // Equal intervals are contained in.
+    "12,  14,        12,  14,          CONTAINED_IN",
+  })
+  public void overlapStatus(int leftStartDays, int leftEndDays,
+                            int rightStartDays, int rightEndDays,
+                            OverlapStatus expected) {
+    PointInTime leftStart = PointInTime.of(leftStartDays, false);
+    PointInTime leftEnd = PointInTime.of(leftEndDays, false);
+    TemporalInterval left = TemporalInterval.of(leftStart, leftEnd);
+
+    PointInTime rightStart = PointInTime.of(rightStartDays, false);
+    PointInTime rightEnd = PointInTime.of(rightEndDays, false);
+    TemporalInterval right = TemporalInterval.of(rightStart, rightEnd);
+
+    assertThat(TemporalInterval.overlapStatus(left, right), equalTo(expected));
+  }
+
 }

@@ -147,4 +147,38 @@ public interface TemporalInterval {
     return PointInTime.compare(x.end(), y.end());
   }
 
+  /**
+   * Get {@link OverlapStatus} for {@link TemporalInterval}s {@code x} and {@code y}.
+   * <p>
+   * Note: the method returns {@link OverlapStatus#CONTAINED_IN} if {@code x} and {@code  y} are equal.
+   */
+  static OverlapStatus overlapStatus(TemporalInterval x, TemporalInterval y) {
+    if (x.end().isAtOrBefore(y.start())) {
+      return x.isEmpty()
+        ? OverlapStatus.CONTAINED_IN
+        : OverlapStatus.UPSTREAM;
+    } else if (x.start().isAtOrAfter(y.end())) {
+      return x.isEmpty()
+        ? OverlapStatus.CONTAINED_IN
+        : OverlapStatus.DOWNSTREAM;
+    }
+    else {
+      // We have some sort of overlap here.
+      int startCompare = PointInTime.compare(x.start(), y.start());
+      if (startCompare < 0) {
+        // The block handles `x.start().isBefore(y.start())`.
+        if (x.end().isBefore(y.end()))
+          return OverlapStatus.OVERLAPS_UPSTREAM;
+        else
+          return OverlapStatus.CONTAINS;
+      } else { // The block handles `x.start().isAtOrAfter(y.start())`.
+        if (x.end().isAtOrBefore(y.end())) {
+          return OverlapStatus.CONTAINED_IN;
+        } else return startCompare == 0 // This is true if `x.start().isAt(y.start())`.
+          ? OverlapStatus.CONTAINS
+          : OverlapStatus.OVERLAPS_DOWNSTREAM;
+      }
+    }
+  }
+
 }
