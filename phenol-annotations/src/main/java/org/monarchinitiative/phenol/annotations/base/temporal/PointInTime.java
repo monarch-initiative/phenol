@@ -158,6 +158,41 @@ public interface PointInTime extends TimelineAware {
   }
 
   /**
+   * @return {@code true} if {@code this} {@link PointInTime} occurs <em>before</em> the {@code other}.
+   */
+  default boolean isBefore(PointInTime other) {
+    return compare(this, other) < 0;
+  }
+
+  /**
+   * @return {@code true} if {@code this} {@link PointInTime} occurs <em>at the same time</em> or <em>before</em> the {@code other}.
+   */
+  default boolean isAtOrBefore(PointInTime other) {
+    return compare(this, other) <= 0;
+  }
+
+  /**
+   * @return {@code true} if {@code this} {@link PointInTime} occurs <em>after</em> the {@code other}.
+   */
+  default boolean isAfter(PointInTime other) {
+    return !isAtOrBefore(other);
+  }
+
+  /**
+   * @return {@code true} if {@code this} {@link PointInTime} occurs <em>at the same time</em> or <em>after</em> the {@code other}.
+   */
+  default boolean isAtOrAfter(PointInTime other) {
+    return !isBefore( other);
+  }
+
+  /**
+   * @return {@code true} if {@code this} {@link PointInTime} occurs <em>at the same time</em> as the {@code other}.
+   */
+  default boolean isAt(PointInTime other) {
+    return compare(this, other) == 0;
+  }
+
+  /**
    * @return the greater {@link PointInTime} based on comparing {@code a} and {@code b} using {@link #compare(PointInTime, PointInTime)}.
    * {@code a} is returned in case of a tie.
    */
