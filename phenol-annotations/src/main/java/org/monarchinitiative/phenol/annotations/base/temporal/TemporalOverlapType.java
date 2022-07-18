@@ -11,35 +11,71 @@ public enum TemporalOverlapType {
 
   /**
    * Indicates that {@code x} starts and ends before {@code y}.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x: |----------|
+   *  y:                |----------|
+   * </pre>
    */
   BEFORE,
 
   /**
    * Indicates that {@code x} starts before {@code y}'s start and ends during {@code y}, implying a certain overlap.
    * However, {@code x} does <em>not</em> contain {@code y}.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x: |----------|
+   *  y:         |----------|
+   * </pre>
    */
   BEFORE_AND_DURING,
 
   /**
    * Indicates that {@code x} contains {@code y}.
    * In other words, {@code x} starts before {@code y}'s start and ends after {@code y}'s end.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x: |----------|
+   *  y:    |----|
+   * </pre>
    */
   CONTAINS,
 
   /**
    * Indicates that {@code x} is contained in {@code y}.
    * In other words, {@code x} starts at or after {@code y}'s start, and ends before or at {@code y}'s end.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x:     |--------|
+   *  y: |----------------|
+   * </pre>
    */
   CONTAINED_IN,
 
   /**
    * Indicates that {@code x} starts during {@code y} and ends after {@code y}'s end, implying a certain overlap.
    * However, {@code x} does <em>not</em> contain {@code y}.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x:       |----------|
+   *  y: |----------|
+   * </pre>
    */
   DURING_AND_AFTER,
 
   /**
    * Indicates that {@code x} starts and ends after of {@code y}.
+   * <p>
+   * For instance:
+   * <pre>
+   *  x:               |----------|
+   *  y: |----------|
+   * </pre>
    */
   AFTER
 
