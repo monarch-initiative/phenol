@@ -78,12 +78,17 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days, isGestational());
+        return PointInTime.of(days + 1, isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return ConfidenceRange.precise();
+      }
+
+      @Override
+      public int length() {
+        return 1;
       }
 
       @Override
@@ -110,12 +115,17 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + cr.upperBound(), isGestational());
+        return PointInTime.of(days + 1 + cr.upperBound(), isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return cr;
+      }
+
+      @Override
+      public int length() {
+        return 1 + cr.length();
       }
 
       @Override
@@ -195,12 +205,17 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days, isGestational());
+        return PointInTime.of(days + 1, isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return ConfidenceRange.precise();
+      }
+
+      @Override
+      public int length() {
+        return 1;
       }
 
       @Override
@@ -238,12 +253,17 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + cr.upperBound(), isGestational());
+        return PointInTime.of(days + 1 + cr.upperBound(), isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return cr;
+      }
+
+      @Override
+      public int length() {
+        return 1 + cr.length();
       }
 
       @Override

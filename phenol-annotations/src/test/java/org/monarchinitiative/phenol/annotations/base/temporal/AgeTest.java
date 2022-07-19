@@ -270,7 +270,8 @@ public class AgeTest {
       Age age = Age.postnatal(0, 0, 14);
 
       assertThat(age.start().days(), equalTo(14));
-      assertThat(age.end().days(), equalTo(14));
+      assertThat(age.end().days(), equalTo(15));
+      assertThat(age.length(), equalTo(1));
     }
   }
 
@@ -387,10 +388,12 @@ public class AgeTest {
 
     @Test
     public void asTemporalRange() {
-      Age age = Age.postnatal(10, ConfidenceRange.of(-5, 10));
+      ConfidenceRange cr = ConfidenceRange.of(-5, 10);
+      Age age = Age.postnatal(10, cr);
 
       assertThat(age.start().days(), equalTo(5));
-      assertThat(age.end().days(), equalTo(20));
+      assertThat(age.end().days(), equalTo(21));
+      assertThat(age.length(), equalTo(1 + cr.length())); // 1 day has length 1 + whatever length the `cr` is.
     }
   }
 
