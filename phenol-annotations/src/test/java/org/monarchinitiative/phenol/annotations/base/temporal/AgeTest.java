@@ -270,8 +270,8 @@ public class AgeTest {
       Age age = Age.postnatal(0, 0, 14);
 
       assertThat(age.start().days(), equalTo(14));
-      assertThat(age.end().days(), equalTo(15));
-      assertThat(age.length(), equalTo(1));
+      assertThat(age.end().days(), equalTo(14));
+      assertThat(age.length(), equalTo(0));
     }
   }
 
@@ -392,8 +392,8 @@ public class AgeTest {
       Age age = Age.postnatal(10, cr);
 
       assertThat(age.start().days(), equalTo(5));
-      assertThat(age.end().days(), equalTo(21));
-      assertThat(age.length(), equalTo(1 + cr.length())); // 1 day has length 1 + whatever length the `cr` is.
+      assertThat(age.end().days(), equalTo(20));
+      assertThat(age.length(), equalTo(cr.length())); // 1 day has length 1 + whatever length the `cr` is.
     }
   }
 

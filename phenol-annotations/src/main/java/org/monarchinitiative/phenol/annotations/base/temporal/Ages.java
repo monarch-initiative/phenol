@@ -51,6 +51,11 @@ class Ages {
       }
 
       @Override
+      public int length() {
+        return confidenceRange().length();
+      }
+
+      @Override
       public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -78,17 +83,12 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + 1, isGestational());
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return ConfidenceRange.precise();
-      }
-
-      @Override
-      public int length() {
-        return 1;
       }
 
       @Override
@@ -115,17 +115,12 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + 1 + cr.upperBound(), isGestational());
+        return PointInTime.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return cr;
-      }
-
-      @Override
-      public int length() {
-        return 1 + cr.length();
       }
 
       @Override
@@ -179,6 +174,11 @@ class Ages {
       }
 
       @Override
+      public int length() {
+        return confidenceRange().length();
+      }
+
+      @Override
       public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -205,17 +205,12 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + 1, isGestational());
+        return PointInTime.of(days, isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return ConfidenceRange.precise();
-      }
-
-      @Override
-      public int length() {
-        return 1;
       }
 
       @Override
@@ -253,17 +248,12 @@ class Ages {
 
       @Override
       public PointInTime end() {
-        return PointInTime.of(days + 1 + cr.upperBound(), isGestational());
+        return PointInTime.of(days + cr.upperBound(), isGestational());
       }
 
       @Override
       public ConfidenceRange confidenceRange() {
         return cr;
-      }
-
-      @Override
-      public int length() {
-        return 1 + cr.length();
       }
 
       @Override
