@@ -114,6 +114,65 @@ public class PointInTimeTest {
       assertThat(PointInTime.compare(left, right), equalTo(result));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+      "10,  true,  10,  true,         false",  // at
+      " 9,  true,  10,  true,         true",   // before
+      "11,  true,  10,  true,         false",  // after
+
+      // other timeline
+      "10,  true,  10,  false,        true",   // before
+      "10,  true,  10,   true,        false",  // at
+      "10, false,  10,  false,        false",  // at
+      "10, false,  10,   true,        false",  // after
+    })
+    public void isBefore(int leftDays, boolean leftGestational, int rightDays, boolean rightGestational, boolean expected) {
+      PointInTime left = PointInTime.of(leftDays, leftGestational);
+      PointInTime right = PointInTime.of(rightDays, rightGestational);
+
+      assertThat(left.isBefore(right), equalTo(expected));
+      assertThat(left.isAtOrAfter(right), equalTo(!expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "10,  true,  10,  true,         true",   // at
+      " 9,  true,  10,  true,         true",   // before
+      "11,  true,  10,  true,         false",  // after
+
+      // other timeline
+      "10,  true,  10,  false,        true",   // before
+      "10,  true,  10,   true,        true",   // at
+      "10, false,  10,  false,        true",   // at
+      "10, false,  10,   true,        false",  // after
+    })
+    public void isAtOrBefore(int leftDays, boolean leftGestational, int rightDays, boolean rightGestational, boolean expected) {
+      PointInTime left = PointInTime.of(leftDays, leftGestational);
+      PointInTime right = PointInTime.of(rightDays, rightGestational);
+
+      assertThat(left.isAtOrBefore(right), equalTo(expected));
+      assertThat(left.isAfter(right), equalTo(!expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "10,  true,  10,  true,         true",   // at
+      " 9,  true,  10,  true,         false",  // before
+      "11,  true,  10,  true,         false",  // after
+
+      // other timeline
+      "10,  true,  10,  false,        false",   // before
+      "10,  true,  10,   true,        true",   // at
+      "10, false,  10,  false,        true",   // at
+      "10, false,  10,   true,        false",  // after
+    })
+    public void isAt(int leftDays, boolean leftGestational, int rightDays, boolean rightGestational, boolean expected) {
+      PointInTime left = PointInTime.of(leftDays, leftGestational);
+      PointInTime right = PointInTime.of(rightDays, rightGestational);
+
+      assertThat(left.isAt(right), equalTo(expected));
+    }
+
     @Test
     public void compare_open() {
       PointInTime openStart = PointInTime.openStart();

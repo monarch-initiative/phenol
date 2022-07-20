@@ -51,6 +51,11 @@ class Ages {
       }
 
       @Override
+      public int length() {
+        return confidenceRange().length();
+      }
+
+      @Override
       public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -166,6 +171,11 @@ class Ages {
       @Override
       public boolean isOpen() {
         return false;
+      }
+
+      @Override
+      public int length() {
+        return confidenceRange().length();
       }
 
       @Override
