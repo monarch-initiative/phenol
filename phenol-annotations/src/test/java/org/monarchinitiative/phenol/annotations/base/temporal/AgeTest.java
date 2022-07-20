@@ -393,7 +393,7 @@ public class AgeTest {
 
       assertThat(age.start().days(), equalTo(5));
       assertThat(age.end().days(), equalTo(20));
-      assertThat(age.length(), equalTo(cr.length())); // 1 day has length 1 + whatever length the `cr` is.
+      assertThat(age.length(), equalTo(cr.length())); // 1 day has length 0 + whatever length the `cr` is.
     }
   }
 
