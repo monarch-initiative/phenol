@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.analysis;
 
 
+import org.monarchinitiative.phenol.analysis.util.Util;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
@@ -114,18 +115,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
 
   @Override
   public Set<TermId> getDomainItemsAnnotatedByOntologyTerm(TermId tid) {
-    Set<TermId> domainItemSet = new HashSet<>();
-    // the following includes tid in the descendent set
-    Set<TermId> descendentSet = OntologyAlgorithm.getDescendents(this.ontology, tid);
-    for (Map.Entry<TermId, GeneAnnotations> entry : gene2associationMap.entrySet()) {
-      TermId gene = entry.getKey();
-      for (TermId ontologyTermId : entry.getValue().getAnnotatingTermIds()) {
-        if (descendentSet.contains(ontologyTermId) || ontologyTermId.equals(tid)) {
-          domainItemSet.add(gene);
-        }
-      }
-    }
-    return domainItemSet;
+    return Util.getDomainItemsAnnotatedByOntologyTerm(tid, ontology, gene2associationMap);
   }
 
   /**
