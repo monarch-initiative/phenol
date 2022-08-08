@@ -15,7 +15,7 @@ public class Util {
                                                                   Ontology ontology,
                                                                   Map<TermId, ? extends ItemAnnotations<TermId>> gene2associationMap) {
     Set<TermId> domainItemSet = new HashSet<>();
-    // the following includes tid in the descendent set
+    // the following includes termId in the descendent set
     Set<TermId> descendentSet = OntologyAlgorithm.getDescendents(ontology, termId);
 
     for (Map.Entry<TermId, ? extends ItemAnnotations<TermId>> entry : gene2associationMap.entrySet()) {
