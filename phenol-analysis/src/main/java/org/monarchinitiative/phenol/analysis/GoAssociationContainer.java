@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.analysis;
 
+import org.monarchinitiative.phenol.analysis.util.Util;
 import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
@@ -84,6 +85,11 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
   @Override
   public Set<TermId> getAllAnnotatedGenes() {
     return this.gene2associationMap.keySet();
+  }
+
+  @Override
+  public Set<TermId> getDomainItemsAnnotatedByOntologyTerm(TermId tid) {
+    return Util.getDomainItemsAnnotatedByOntologyTerm(tid, ontology, gene2associationMap);
   }
 
   /**
