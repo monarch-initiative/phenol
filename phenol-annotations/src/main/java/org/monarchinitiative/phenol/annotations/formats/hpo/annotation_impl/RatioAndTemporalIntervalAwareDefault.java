@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.annotations.io.hpo;
+package org.monarchinitiative.phenol.annotations.formats.hpo.annotation_impl;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
@@ -6,12 +6,12 @@ import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import java.util.Objects;
 import java.util.Optional;
 
-class KnowsRatioAndMaybeTemporalIntervalDefault implements KnowsRatioAndMaybeTemporalInterval {
+class RatioAndTemporalIntervalAwareDefault implements RatioAndTemporalIntervalAware {
 
   private final TemporalInterval temporalInterval;
   private final Ratio ratio;
 
-  KnowsRatioAndMaybeTemporalIntervalDefault(Ratio ratio, TemporalInterval temporalInterval) {
+  RatioAndTemporalIntervalAwareDefault(Ratio ratio, TemporalInterval temporalInterval) {
     this.ratio = Objects.requireNonNull(ratio);
     this.temporalInterval = temporalInterval; // nullable
   }
@@ -30,7 +30,7 @@ class KnowsRatioAndMaybeTemporalIntervalDefault implements KnowsRatioAndMaybeTem
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    KnowsRatioAndMaybeTemporalIntervalDefault that = (KnowsRatioAndMaybeTemporalIntervalDefault) o;
+    RatioAndTemporalIntervalAwareDefault that = (RatioAndTemporalIntervalAwareDefault) o;
     return Objects.equals(temporalInterval, that.temporalInterval) && Objects.equals(ratio, that.ratio);
   }
 
@@ -41,7 +41,7 @@ class KnowsRatioAndMaybeTemporalIntervalDefault implements KnowsRatioAndMaybeTem
 
   @Override
   public String toString() {
-    return "KnowsRatioAndMaybeTemporalIntervalDefault{" +
+    return "RatioAndTemporalIntervalAwareDefault{" +
       "temporalRange=" + temporalInterval +
       ", ratio=" + ratio +
       '}';

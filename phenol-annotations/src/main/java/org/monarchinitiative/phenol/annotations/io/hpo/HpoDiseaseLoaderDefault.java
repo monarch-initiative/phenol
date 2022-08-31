@@ -6,6 +6,7 @@ import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
+import org.monarchinitiative.phenol.annotations.formats.hpo.annotation_impl.RatioAndTemporalIntervalAware;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -160,26 +161,23 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
   }
 
   private HpoDiseaseAnnotation toDiseaseAnnotation(TermId phenotypeId, List<HpoAnnotation> annotations) {
-    List<KnowsRatioAndMaybeTemporalInterval> ratios = new ArrayList<>(annotations.size());
-    List<AnnotationReference> references = new ArrayList<>(annotations.size());
-    List<TermId> modifiers = new ArrayList<>();
-
+    List<HpoDiseaseAnnotationRecord> records = new ArrayList<>(annotations.size());
     // Assemble ratios and references in a single pass.
     for (HpoAnnotation annotation : annotations) {
 
       // 1. TemporalRatio consists of 2 bits: ratio and reference.
       Optional<Ratio> ratioOptional = annotation.annotationFrequency().ratio();
-      if (ratioOptional.isEmpty())
+      if (ratioOptional.isEmpty()) // ratio is mandatory attribute
         continue;
 
       Ratio ratio = ratioOptional.get();
       TemporalInterval temporalInterval = annotation.onset()
         .map(onset -> TemporalInterval.openEnd(onset.start()))
         .orElse(null);
-      ratios.add(KnowsRatioAndMaybeTemporalInterval.of(ratio, temporalInterval));
 
       // 2. AnnotationReference
       EvidenceCode evidence = annotation.evidence();
+      List<AnnotationReference> references = new ArrayList<>(annotation.citations().size());
       for (String citation : annotation.citations()) {
         try {
           references.add(AnnotationReference.of(TermId.of(citation), evidence));
@@ -188,11 +186,10 @@ class HpoDiseaseLoaderDefault extends BaseHpoDiseaseLoader {
         }
       }
 
-      // 3. Modifiers
-      modifiers.addAll(annotation.modifiers());
+      records.add(HpoDiseaseAnnotationRecord.of(ratio, temporalInterval, references, null, annotation.modifiers()));
     }
 
-    return factory.create(phenotypeId, ratios, modifiers, references);
+    return HpoDiseaseAnnotation.of(phenotypeId, records);
   }
 
   /**

@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
+import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoClinicalModifierTermIds;
@@ -27,7 +29,6 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
   private static final Pattern HPO_PATTERN = Pattern.compile("HP:\\d{7}");
   private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
   private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
-  protected final HpoDiseaseAnnotationFactory factory = HpoDiseaseAnnotationFactory.defaultInstance();
 
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
@@ -75,6 +76,7 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
 
       HpoAnnotationLine annotationLine;
       try {
+        // TODO - this must be properly parsed
         annotationLine = HpoAnnotationLine.constructFromString(line);
       } catch (PhenolException e) {
         LOGGER.warn("Error {} while parsing line: {}", e.getMessage(), line);
@@ -159,4 +161,25 @@ abstract class BaseHpoDiseaseLoader implements HpoDiseaseLoader {
     return Ratio.of(numerator, denominator);
   }
 
+  protected static TemporalInterval calculateGlobalOnset(Iterable<HpoDiseaseAnnotation> annotations) {
+    PointInTime start = null, end = null;
+
+    for (HpoDiseaseAnnotation annotation : annotations) {
+      if (annotation.isPresent()) {
+        Optional<PointInTime> onset = annotation.earliestOnset();
+        if (onset.isPresent()) {
+          start = start == null
+            ? onset.get()
+            : PointInTime.min(onset.get(), start);
+          end = end == null
+            ? onset.get()
+            : PointInTime.max(onset.get(), end);
+        }
+      }
+    }
+
+    return start == null || end == null
+      ? null
+      : TemporalInterval.of(start, end);
+  }
 }

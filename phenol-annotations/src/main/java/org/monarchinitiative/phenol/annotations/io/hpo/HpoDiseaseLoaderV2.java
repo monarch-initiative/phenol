@@ -1,13 +1,11 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.Ratio;
-import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.Sex;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
+import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -83,7 +81,7 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    TemporalInterval globalOnset = calculateOnset(annotations);
+    TemporalInterval globalOnset = calculateGlobalOnset(annotations);
 
     return Optional.of(
       HpoDisease.of(
@@ -91,7 +89,9 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
         diseaseData.diseaseName(),
         globalOnset,
         annotations,
-        diseaseData.modesOfInheritance()));
+        diseaseData.modesOfInheritance()
+      )
+    );
   }
 
   /**
@@ -105,7 +105,7 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
    */
   private Optional<HpoDiseaseAnnotation> toDiseaseAnnotation(String phenotypeFeature,
                                                              Iterable<HpoAnnotationLine> annotationLines) {
-    // 1. parse phenotype feature ID.
+    // (*) First, parse phenotype feature ID.
     TermId phenotypeFeatureId;
     try {
       phenotypeFeatureId = TermId.of(phenotypeFeature);
@@ -114,24 +114,25 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
       return Optional.empty();
     }
 
-    List<AnnotationReference> references = new LinkedList<>();
-    List<KnowsRatioAndMaybeTemporalInterval> ratios = new LinkedList<>();
-    List<TermId> modifiers = new LinkedList<>();
+    // (*) Then, parse the annotation lines.
+
+    // Use the same two lists to avoid unnecessary allocation.
+    List<AnnotationReference> references = new ArrayList<>();
+    List<TermId> modifiers = new ArrayList<>();
+
+    List<HpoDiseaseAnnotationRecord> records = new ArrayList<>();
     for (HpoAnnotationLine line : annotationLines) {
-      // 1) Combine `ratio` and `onset` into `TemporalRatio`.
+      // 1) Ratio
       Ratio ratio = parseFrequency(line.isNOT(), line.getFrequency());
-      TemporalInterval temporalInterval = HpoOnset.fromHpoIdString(line.getOnsetId())
-        .map(onset -> TemporalInterval.openEnd(onset.start()))
+
+      // 2) Onset
+      //    We take the earliest, most conservative, start point and assume each feature is permanent.
+      //    This is a wild, wild assumption, but it is the best we can do at the current stage.
+      TemporalInterval onset = HpoOnset.fromHpoIdString(line.getOnsetId())
+        .map(interval -> TemporalInterval.openEnd(interval.start()))
         .orElse(null);
-      ratios.add(KnowsRatioAndMaybeTemporalInterval.of(ratio, temporalInterval));
 
-      // 2) Modifiers.
-      Arrays.stream(line.modifiers().split(";"))
-        .filter(token -> !token.isBlank())
-        .map(TermId::of)
-        .forEach(modifiers::add);
-
-      // 3) Assemble `AnnotationReference`.
+      // 3) AnnotationReferences
       EvidenceCode evidence = EvidenceCode.parse(line.getEvidence());
       for (String citation : line.getPublication()) {
         try {
@@ -141,33 +142,25 @@ class HpoDiseaseLoaderV2 extends BaseHpoDiseaseLoader {
         }
       }
 
-      // TODO - do we need this?
-//      Sex sex = Sex.parse(line.getSex()).orElse(null);
+      // 4) Sex
+      Sex sex = Sex.parse(line.getSex())
+        .orElse(null);
+
+      // 5) Modifiers
+      Arrays.stream(line.modifiers().split(";"))
+        .filter(token -> !token.isBlank())
+        .map(TermId::of)
+        .forEach(modifiers::add);
+
+
+      records.add(HpoDiseaseAnnotationRecord.of(ratio, onset, List.copyOf(references), sex, List.copyOf(modifiers)));
+
+      references.clear();
+      modifiers.clear();
     }
 
-    return Optional.of(factory.create(phenotypeFeatureId, ratios, modifiers, references));
-  }
-
-  private static TemporalInterval calculateOnset(Iterable<HpoDiseaseAnnotation> annotations) {
-    PointInTime start = null, end = null;
-
-    for (HpoDiseaseAnnotation annotation : annotations) {
-      if (annotation.isPresent()) {
-        Optional<PointInTime> onset = annotation.earliestOnset();
-        if (onset.isPresent()) {
-          start = start == null
-            ? onset.get()
-            : PointInTime.min(onset.get(), start);
-          end = end == null
-            ? onset.get()
-            : PointInTime.max(onset.get(), end);
-        }
-      }
-    }
-
-    return start == null || end == null
-      ? null
-      : TemporalInterval.of(start, end);
+    // (*) Last, assemble the disease annotation.
+    return Optional.of(HpoDiseaseAnnotation.of(phenotypeFeatureId, records));
   }
 
   /**

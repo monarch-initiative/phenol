@@ -26,6 +26,20 @@ public interface Age extends PointInTime, TemporalInterval {
   float DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
 
   /**
+   * @return {@link Age} representing the last menstrual period before the conception.
+   */
+  static Age lastMenstrualPeriod() {
+    return Ages.LMP;
+  }
+
+  /**
+   * @return {@link Age} representing birth.
+   */
+  static Age birth() {
+    return Ages.BIRTH;
+  }
+
+  /**
    * Create a precise gestational {@link Age} representing the number of weeks and months
    * since the {@link PointInTime#lastMenstrualPeriod()}.
    *

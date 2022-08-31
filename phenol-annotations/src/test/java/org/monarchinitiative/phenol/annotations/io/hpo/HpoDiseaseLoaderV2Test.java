@@ -68,7 +68,8 @@ public class HpoDiseaseLoaderV2Test {
     assertThat(annotations, hasSize(2));
     HpoDiseaseAnnotation first = annotations.get(0);
     assertThat(first.id().getValue(), equalTo("HP:0001167"));
-    assertThat(first.ratio(), equalTo(Ratio.of(5, 13)));
+    assertThat(first.ratio().numerator(), equalTo(5));
+    assertThat(first.ratio().denominator(), equalTo(13));
     assertThat(first.references(), hasSize(2));
     assertThat(first.references(), hasItems(
       AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
@@ -82,7 +83,9 @@ public class HpoDiseaseLoaderV2Test {
 
     HpoDiseaseAnnotation second = annotations.get(1);
     assertThat(second.id().getValue(), equalTo("HP:0001238"));
-    assertThat(second.ratio(), equalTo(Ratio.of(0, OPTIONS.cohortSize())));
+    assertThat(second.isAbsent(), equalTo(true));
+    assertThat(second.ratio().numerator(), equalTo(0));
+    assertThat(second.ratio().denominator(), equalTo(OPTIONS.cohortSize()));
     assertThat(second.references(), hasSize(1));
     assertThat(second.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
     assertThat(second.earliestOnset().isEmpty(), equalTo(true));

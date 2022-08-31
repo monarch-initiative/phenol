@@ -10,8 +10,8 @@ class Ages {
   static final Age START = new AgeOpen(Integer.MIN_VALUE, true);
   static final Age END = new AgeOpen(Integer.MAX_VALUE, false);
 
-  private static final Age LMP = new AgeGestational.AgeGestationalPrecise(0);
-  private static final Age BIRTH = new AgePostnatal.AgePostnatalPrecise(0);
+  static final Age LMP = new AgeGestational.AgeGestationalPrecise(0);
+  static final Age BIRTH = new AgePostnatal.AgePostnatalPrecise(0);
 
   static Age gestational(int days, ConfidenceRange cr) {
     if (cr.isPrecise())

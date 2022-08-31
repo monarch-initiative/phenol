@@ -4,14 +4,14 @@ import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
+import org.monarchinitiative.phenol.annotations.formats.hpo.annotation_impl.HpoDiseaseAnnotationRecordBacked;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * {@link HpoDiseaseAnnotation} aggregates the presentation of single phenotypic feature observed in a cohort of patients
@@ -23,16 +23,26 @@ import java.util.stream.StreamSupport;
  * presenting the feature, and <code>m</code> is the cohort size. The feature frequency is available through
  * {@link #frequency()}.
  * <p>
- * The temporal aspect of the feature presentation is exposed via {@link #observationIntervals()} that provides
- * {@link TemporalInterval}s when the {@link HpoDiseaseAnnotation} is observable in one or more patient or via
- * {@link #observedInInterval(TemporalInterval)} to get a {@link Ratio} of patients presenting the feature in provided
- * {@link TemporalInterval}.
+ * The temporal aspect of the feature presentation is exposed via the following methods:
+ * <ul>
+ *   <li>{@link #earliestOnset()}</li>
+ *   <li>{@link #latestOnset()}</li>
+ *   <li>{@link #earliestResolution()}</li>
+ *   <li>{@link #latestResolution()}</li>
+ * </ul>
+ * In addition, {@link #observedInInterval(TemporalInterval)} provides a {@link Ratio} of patients presenting
+ * the feature in provided {@link TemporalInterval}.
  * <p>
- * The evidence supporting the phenotypic feature is available via {@link #references()}.
+ * The evidence supporting the phenotypic feature is available via {@link #references()}. The modifiers are exposed via
+ * {@link #modifiers()}.
  */
 public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseAnnotation> {
 
   Comparator<HpoDiseaseAnnotation> COMPARE_BY_ID = Comparator.comparing(HpoDiseaseAnnotation::id);
+
+  static HpoDiseaseAnnotation of(TermId id, Collection<HpoDiseaseAnnotationRecord> records) {
+    return HpoDiseaseAnnotationRecordBacked.of(id, records);
+  }
 
   /**
    * @return ratio representing a total number of the cohort members who displayed presence of the phenotypic feature
@@ -41,17 +51,31 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   Ratio ratio();
 
   /**
-   * @return stream of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
-   * at least one cohort individual.
+   * @return {@link PointInTime} representing the earliest onset of the phenotypic feature in patient cohort.
    */
-  Iterable<TemporalInterval> observationIntervals();
+  Optional<PointInTime> earliestOnset();
 
   /**
-   * Get the {@link Ratio} of patients presenting a phenotypic feature in given {@link TemporalInterval}.
-   *
-   * @param interval target temporal interval.
+   * @return {@link PointInTime} representing the latest onset of the phenotypic feature in patient cohort.
    */
-  Ratio observedInInterval(TemporalInterval interval);
+  Optional<PointInTime> latestOnset();
+
+  /**
+   * @return {@link PointInTime} representing the earliest resolution of the phenotypic feature in patient cohort.
+   */
+  Optional<PointInTime> earliestResolution();
+
+  /**
+   * @return {@link PointInTime} representing the latest resolution of the phenotypic feature in patient cohort.
+   */
+  Optional<PointInTime> latestResolution();
+
+  /**
+   * Get the number of patients presenting a phenotypic feature in given {@link TemporalInterval}.
+   *
+   * @param query query temporal interval.
+   */
+  int observedInInterval(TemporalInterval query);
 
   /**
    * @return a list of disease annotation modifiers.
@@ -92,46 +116,6 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   }
 
   /**
-   * @return {@link PointInTime} representing the earliest onset of the phenotypic feature in patient cohort.
-   */
-  default Optional<PointInTime> earliestOnset() {
-    return observationIntervalStream()
-      .map(TemporalInterval::start)
-      .min(PointInTime::compare);
-  }
-
-  /**
-   * @return {@link PointInTime} representing the latest onset of the phenotypic feature in patient cohort.
-   */
-  default Optional<PointInTime> latestOnset() {
-    return observationIntervalStream()
-      .map(TemporalInterval::start)
-      .max(PointInTime::compare);
-  }
-
-  /**
-   * @return {@link PointInTime} representing the earliest resolution of the phenotypic feature in patient cohort.
-   */
-  default Optional<PointInTime> earliestResolution() {
-    return observationIntervalStream()
-      .map(TemporalInterval::end)
-      .min(PointInTime::compare);
-  }
-
-  /**
-   * @return {@link PointInTime} representing the latest resolution of the phenotypic feature in patient cohort.
-   */
-  default Optional<PointInTime> latestResolution() {
-    return observationIntervalStream()
-      .map(TemporalInterval::end)
-      .max(PointInTime::compare);
-  }
-
-  private Stream<TemporalInterval> observationIntervalStream() {
-    return StreamSupport.stream(observationIntervals().spliterator(), false);
-  }
-
-  /**
    * Compare two {@link HpoDiseaseAnnotation}s by their {@link #id()}s.
    */
   static int compareById(HpoDiseaseAnnotation x, HpoDiseaseAnnotation y) {
@@ -154,6 +138,16 @@ public interface HpoDiseaseAnnotation extends Identified, Comparable<HpoDiseaseA
   @Deprecated(since = "2.0.0-RC1", forRemoval = true)
   default TermId termId() {
     return id();
+  }
+
+  /**
+   * @return iterable of {@link TemporalInterval}s representing periods when the {@link HpoDiseaseAnnotation} was observable in
+   * at least one cohort individual.
+   * @deprecated will not stay in the API
+   */
+  @Deprecated(forRemoval = true, since = "2.0.0")
+  default Iterable<TemporalInterval> observationIntervals() {
+    return null;
   }
 
 }
