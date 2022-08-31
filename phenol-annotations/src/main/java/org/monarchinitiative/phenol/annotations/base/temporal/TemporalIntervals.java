@@ -8,6 +8,8 @@ import java.util.Objects;
 class TemporalIntervals {
 
   static final TemporalInterval BIRTH = TemporalInterval.of(PointsInTime.BIRTH, PointsInTime.BIRTH);
+  static final TemporalInterval GESTATIONAL_PERIOD = TemporalInterval.of(PointInTime.lastMenstrualPeriod(), PointInTime.birth());
+  static final TemporalInterval POSTNATAL_PERIOD = TemporalInterval.of(PointInTime.birth(), PointInTime.openEnd());
 
   static final TemporalInterval OPEN = new OpenTemporalInterval();
 

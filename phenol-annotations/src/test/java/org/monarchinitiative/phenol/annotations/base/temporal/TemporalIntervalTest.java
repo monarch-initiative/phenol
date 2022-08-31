@@ -30,13 +30,28 @@ public class TemporalIntervalTest {
     assertThat(postnatal.length(), equalTo(days));
   }
 
+  /**
+   * Verify that the length of the intervals with endpoints located on different timelines is {@link Integer#MAX_VALUE}
+   */
   @Test
-  public void openTemporalRangeHasIntegerMaxValueLength() {
+  public void length_wholePeriods() {
+    assertThat(TemporalInterval.gestationalPeriod().length(), equalTo(Integer.MAX_VALUE));
+  }
+
+  /**
+   * Verify that the length of the half-open or fully open intervals is {@link Integer#MAX_VALUE}.
+   */
+  @Test
+  public void openTemporalIntervalHasIntegerMaxValueLength() {
     TemporalInterval openStart = TemporalInterval.openStart(PointInTime.of(10, false));
     assertThat(openStart.length(), equalTo(Integer.MAX_VALUE));
 
     TemporalInterval openEnd = TemporalInterval.openEnd(PointInTime.of(10, false));
     assertThat(openEnd.length(), equalTo(Integer.MAX_VALUE));
+
+    assertThat(TemporalInterval.open().length(), equalTo(Integer.MAX_VALUE));
+
+    assertThat(TemporalInterval.postnatalPeriod().length(), equalTo(Integer.MAX_VALUE));
   }
 
   @ParameterizedTest
@@ -107,6 +122,7 @@ public class TemporalIntervalTest {
   @CsvSource({
     // LEFT          RIGHT             EXPECTED
     // General cases:
+    "10,  10,        12,  14,          BEFORE",
     "10,  12,        12,  14,          BEFORE",
     "11,  13,        12,  14,          BEFORE_AND_DURING",
     "11,  14,        12,  14,          CONTAINS",
@@ -115,6 +131,7 @@ public class TemporalIntervalTest {
     "12,  15,        12,  14,          CONTAINS",
     "13,  15,        12,  14,          DURING_AND_AFTER",
     "14,  16,        12,  14,          AFTER",
+    "16,  16,        12,  14,          AFTER",
 
     // Special cases:
     // Empty intervals at the borders are contained in.
@@ -134,7 +151,6 @@ public class TemporalIntervalTest {
     PointInTime rightEnd = PointInTime.of(rightEndDays, false);
     TemporalInterval right = TemporalInterval.of(rightStart, rightEnd);
 
-    assertThat(TemporalInterval.temporalOverlapType(left, right), equalTo(expected));
     assertThat(left.temporalOverlapType(right), equalTo(expected));
   }
 

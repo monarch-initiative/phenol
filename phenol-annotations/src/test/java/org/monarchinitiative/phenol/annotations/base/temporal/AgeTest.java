@@ -266,7 +266,7 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalRange() {
+    public void asTemporalInterval() {
       Age age = Age.postnatal(0, 0, 14);
 
       assertThat(age.start().days(), equalTo(14));
@@ -387,7 +387,7 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalRange() {
+    public void asTemporalInterval() {
       ConfidenceRange cr = ConfidenceRange.of(-5, 10);
       Age age = Age.postnatal(10, cr);
 

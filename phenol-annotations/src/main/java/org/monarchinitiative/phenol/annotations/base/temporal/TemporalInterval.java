@@ -9,6 +9,32 @@ import java.util.Objects;
 public interface TemporalInterval {
 
   /**
+   * Provide {@link TemporalInterval} to represent the span of the gestational lifetime.
+   * The {@link TemporalInterval} is delimited by {@link PointInTime#lastMenstrualPeriod()}
+   * and {@link PointInTime#birth()}.
+   * <p>
+   * Note that length of the gestational lifetime is {@link Integer#MAX_VALUE}
+   *
+   * @return the {@link TemporalInterval} representing the gestational lifetime
+   */
+  static TemporalInterval gestationalPeriod() {
+    return TemporalIntervals.GESTATIONAL_PERIOD;
+  }
+
+  /**
+   * Provide {@link TemporalInterval} to represent the span of the postnatal lifetime.
+   * The {@link TemporalInterval} is delimited by {@link PointInTime#birth()} ()}
+   * and {@link PointInTime#openEnd()}.
+   * <p>
+   * Note that the postnatal lifetime is half-open, hence the length is {@link Integer#MAX_VALUE}.
+   *
+   * @return the {@link TemporalInterval} representing the postnatal lifetime
+   */
+  static TemporalInterval postnatalPeriod() {
+    return TemporalIntervals.POSTNATAL_PERIOD;
+  }
+
+  /**
    * Create a {@link TemporalInterval} using <code>start</code> and <code>end</code>.
    * The <code>start</code> must <em>not</em> be after end.
    *
@@ -94,12 +120,14 @@ public interface TemporalInterval {
 
   /**
    * Get the number of days spanned by <code>this</code> {@link TemporalInterval}.
-   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
+   * <p>
+   * Note: the length of a half-open or fully-open interval, or an interval with endpoints located
+   * on different timelines (e.g. {@link TemporalInterval#gestationalPeriod()}) is equal to {@link Integer#MAX_VALUE}.
    *
    * @return the number of days.
    */
   default int length() {
-    return isFullyClosed()
+    return isFullyClosed() && start().isGestational() == end().isGestational()
       ? end().days() - start().days()
       : Integer.MAX_VALUE;
   }
@@ -174,13 +202,13 @@ public interface TemporalInterval {
    * <p>
    * Note: the method returns {@link TemporalOverlapType#CONTAINED_IN} if {@code x} and {@code y} are equal.
    */
-  static TemporalOverlapType temporalOverlapType(TemporalInterval x, TemporalInterval y) {
+  private static TemporalOverlapType temporalOverlapType(TemporalInterval x, TemporalInterval y) {
     if (x.end().isAtOrBefore(y.start())) {
-      return x.isEmpty()
+      return x.isEmpty() && x.end().isAt(y.start())
         ? TemporalOverlapType.CONTAINED_IN
         : TemporalOverlapType.BEFORE;
     } else if (x.start().isAtOrAfter(y.end())) {
-      return x.isEmpty()
+      return x.isEmpty() && x.start().isAt(y.end())
         ? TemporalOverlapType.CONTAINED_IN
         : TemporalOverlapType.AFTER;
     } else {
