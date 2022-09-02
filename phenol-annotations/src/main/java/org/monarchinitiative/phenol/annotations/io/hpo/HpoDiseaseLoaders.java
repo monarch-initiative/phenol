@@ -8,6 +8,8 @@ public class HpoDiseaseLoaders {
   }
 
   /**
+   * Get default {@link HpoDiseaseLoader} implementation.
+   *
    * @param hpo HPO ontology.
    * @param options loader options. <b>Note</b>: the default options are at {@link HpoDiseaseLoaderOptions#defaultOptions()}).
    * @return default disease loader.
@@ -22,9 +24,11 @@ public class HpoDiseaseLoaders {
    * @param hpo HPO ontology.
    * @param options loader options. <b>Note</b>: the default options are at {@link HpoDiseaseLoaderOptions#defaultOptions()}).
    * @return v2 disease loader.
+   * @deprecated use {@link #defaultLoader(Ontology, HpoDiseaseLoaderOptions)} instead.
    */
+  @Deprecated(forRemoval = true, since = "2.0.0-RC5")
   public static HpoDiseaseLoader v2(Ontology hpo, HpoDiseaseLoaderOptions options) {
-    return new HpoDiseaseLoaderV2(hpo, options);
+    return new HpoDiseaseLoaderDefault(hpo, options);
   }
 
 }

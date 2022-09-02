@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.assoc.*;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
+import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -27,7 +28,7 @@ import java.util.*;
  * <p>
  *   <b>Disease to gene associations</b>: {@link #mim2GeneMedgen(Path)} and {@link #orphaToGenePath(Path)} (optional).
  * <p>
- *   <b>HPO gene annotations</b>: {@link #hpoDiseases(HpoDiseases)}.
+ *   <b>HPO gene annotations</b>: {@link #hpoDiseases(AnnotatedItemContainer)}.
  * <p>
  * The builder throws {@link MissingFormatArgumentException} if any of the primary components is missing
  * and the secondary components are not provided.
@@ -51,7 +52,8 @@ public class HpoAssociationDataBuilder {
   private DiseaseToGeneAssociations diseaseToGeneAssociations;
 
   // HpoGeneAnnotations
-  private HpoDiseases diseases;
+  // TODO - this is actually a mandatory argument, hence it should be provided in constructor.
+  private AnnotatedItemContainer<? extends AnnotatedItem> diseases;
   private HpoGeneAnnotations hpoGeneAnnotations;
 
   HpoAssociationDataBuilder(Ontology hpo) {
@@ -93,7 +95,7 @@ public class HpoAssociationDataBuilder {
     return this;
   }
 
-  public HpoAssociationDataBuilder hpoDiseases(HpoDiseases diseases) {
+  public HpoAssociationDataBuilder hpoDiseases(AnnotatedItemContainer<? extends AnnotatedItem> diseases) {
     this.diseases = diseases;
     return this;
   }
@@ -158,13 +160,13 @@ public class HpoAssociationDataBuilder {
     return HpoAssociationData.of(geneIdentifiers, hpoGeneAnnotations, diseaseToGeneAssociations);
   }
 
-  private static HpoGeneAnnotations loadHpoGeneAnnotations(HpoDiseases diseases,
+  private static HpoGeneAnnotations loadHpoGeneAnnotations(AnnotatedItemContainer<? extends AnnotatedItem> diseases,
                                                            Map<TermId, Term> termIdToTerm,
                                                            Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
-    for (HpoDisease disease : diseases) {
-      for (HpoDiseaseAnnotation annotation: disease.annotations()) {
-        TermId hpoId = annotation.id();
+    for (AnnotatedItem disease : diseases) {
+      for (Identified phenotype: disease.annotations()) {
+        TermId hpoId = phenotype.id();
         phenotypeToDisease.computeIfAbsent(hpoId, k -> new HashSet<>())
           .add(disease.id());
       }

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public interface HpoDiseases extends Iterable<HpoDisease> {
+public interface HpoDiseases extends AnnotatedItemContainer<HpoDisease> {
 
   static HpoDiseases of(List<HpoDisease> diseases) {
     return new HpoDiseasesDefault(diseases);

@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoModeOfInheritanceTermIds;
 import org.monarchinitiative.phenol.base.PhenolException;
@@ -139,7 +138,7 @@ public class HpoDiseaseAnnotationParser {
    */
   public Map<TermId, HpoDisease> parse() throws PhenolException {
     // First stage of parsing is to get the lines parsed and sorted according to disease.
-    Map<TermId, List<HpoAnnotationLine>> disease2AnnotLineMap = new HashMap<>();
+    Map<TermId, List<HpoAnnotationLineOld>> disease2AnnotLineMap = new HashMap<>();
     Map<TermId, List<TermId>> termToDisease = new HashMap<>();
     this.errors = new ArrayList<>();
     try (BufferedReader br = Files.newBufferedReader(annotationFilePath)) {
@@ -148,7 +147,7 @@ public class HpoDiseaseAnnotationParser {
         line = br.readLine();
       } // this skips the comments (including the definition of the header)
       while ((line = br.readLine()) != null) {
-        HpoAnnotationLine aline = HpoAnnotationLine.constructFromString(line);
+        HpoAnnotationLineOld aline = HpoAnnotationLineOld.constructFromString(line);
         if (!aline.hasValidNumberOfFields()) {
           this.errors.add(String.format("Invalid number of fields: %s", line));
           continue;
@@ -174,14 +173,14 @@ public class HpoDiseaseAnnotationParser {
       if (!databasePrefixes.contains(diseaseDb)) {
         continue; // skip unless we want to keep this database
       }
-      List<HpoAnnotationLine> annots = disease2AnnotLineMap.get(diseaseId);
-      List<HpoAnnotation> phenoListBuilder = new ArrayList<>();
+      List<HpoAnnotationLineOld> annots = disease2AnnotLineMap.get(diseaseId);
+      List<HpoAnnotationLine> phenoListBuilder = new ArrayList<>();
       List<TermId> inheritanceListBuilder = new ArrayList<>();
       List<TermId> negativeTermListBuilder = new ArrayList<>();
       List<TermId> clinicalModifierListBuilder = new ArrayList<>();
       List<TermId> clinicalCourseListBuilder = new ArrayList<>();
       String diseaseName = null;
-      for (HpoAnnotationLine line : annots) {
+      for (HpoAnnotationLineOld line : annots) {
         try {
           TermId phenotypeId = TermId.of(line.getPhenotypeId());
           if (isInheritanceTerm(phenotypeId)) {
@@ -193,7 +192,7 @@ public class HpoDiseaseAnnotationParser {
           } else if (line.isNOT()) {
             negativeTermListBuilder.add(phenotypeId);
           } else {
-            HpoAnnotation tidm = HpoAnnotationLine.toHpoAnnotation(line, ontology);
+            HpoAnnotationLine tidm = HpoAnnotationLineOld.toHpoAnnotation(line, ontology);
             phenoListBuilder.add(tidm);
           }
           if (line.getDatabaseObjectName() != null)
