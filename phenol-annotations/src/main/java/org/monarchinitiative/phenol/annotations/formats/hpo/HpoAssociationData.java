@@ -16,6 +16,47 @@ import java.util.stream.Collectors;
 // TODO - should this be a one-stop-shop for all association data? If yes, then we should add HpoDiseases.
 public interface HpoAssociationData {
 
+  static HpoAssociationData of(GeneIdentifiers geneIdentifiers,
+                               HpoGeneAnnotations hpoGeneAnnotations,
+                               DiseaseToGeneAssociations associations) {
+    return new HpoAssociationDataDefault(geneIdentifiers, hpoGeneAnnotations, associations);
+  }
+
+  /**
+   * Get a builder for creating {@link HpoAssociationData}.
+   *
+   * @param hpo Human phenotype ontology.
+   * @return a builder for building {@link HpoAssociationData}.
+   * @see HpoAssociationDataBuilder
+   */
+  static HpoAssociationDataBuilder builder(Ontology hpo) {
+    return new HpoAssociationDataBuilder(hpo);
+  }
+
+  GeneIdentifiers getGeneIdentifiers();
+
+  HpoGeneAnnotations hpoToGeneAnnotations();
+
+  DiseaseToGeneAssociations associations();
+
+  /* *******************************************************************************************************************
+   * Derived methods.
+   */
+
+  default Map<TermId, String> geneIdToSymbol() {
+    return geneIdentifiers().stream()
+      .collect(Collectors.toUnmodifiableMap(Identified::id, GeneIdentifier::symbol));
+  };
+
+  default Map<TermId, DiseaseToGeneAssociation> associationsByDiseaseId() {
+    return associations().diseaseToGeneAssociations()
+      .collect(Collectors.toUnmodifiableMap(DiseaseToGeneAssociation::diseaseId, Function.identity()));
+  }
+
+  /* *******************************************************************************************************************
+   * Deprecated methods.
+   */
+
   /**
    * @deprecated to be removed in v2.0.0, use the other constructor instead.
    */
@@ -37,25 +78,6 @@ public interface HpoAssociationData {
                                DiseaseToGeneAssociations associations) {
     return of(geneIdentifiers, HpoGeneAnnotations.of(hpoGeneAnnotations), associations);
   }
-
-  static HpoAssociationData of(GeneIdentifiers geneIdentifiers,
-                               HpoGeneAnnotations hpoGeneAnnotations,
-                               DiseaseToGeneAssociations associations) {
-    return new HpoAssociationDataDefault(geneIdentifiers, hpoGeneAnnotations, associations);
-  }
-
-  /**
-   * Get a builder for creating {@link HpoAssociationData}.
-   *
-   * @param hpo Human phenotype ontology.
-   * @return a builder for building {@link HpoAssociationData}.
-   * @see HpoAssociationDataBuilder
-   */
-  static HpoAssociationDataBuilder builder(Ontology hpo) {
-    return new HpoAssociationDataBuilder(hpo);
-  }
-
-  GeneIdentifiers getGeneIdentifiers();
 
   /**
    * @deprecated use {@link #getGeneIdentifiers()} instead (to be removed in v2.0.0).
@@ -89,22 +111,4 @@ public interface HpoAssociationData {
     return hpoToGeneAnnotations().stream().collect(Collectors.toList());
   }
 
-  HpoGeneAnnotations hpoToGeneAnnotations();
-
-  DiseaseToGeneAssociations associations();
-
-
-  /* *******************************************************************************************************************
-   * Derived methods.
-   */
-
-  default Map<TermId, String> geneIdToSymbol() {
-    return geneIdentifiers().stream()
-      .collect(Collectors.toUnmodifiableMap(Identified::id, GeneIdentifier::symbol));
-  };
-
-  default Map<TermId, DiseaseToGeneAssociation> associationsByDiseaseId() {
-    return associations().diseaseToGeneAssociations()
-      .collect(Collectors.toUnmodifiableMap(DiseaseToGeneAssociation::diseaseId, Function.identity()));
-  }
 }

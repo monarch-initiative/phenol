@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HpoAnnotationLineTest {
 
-  private static HpoAnnotationLine makeLine(String[] items) throws PhenolException {
+  private static HpoAnnotationLineOld makeLine(String[] items) throws PhenolException {
     String line = String.join("\t", items);
-    return HpoAnnotationLine.constructFromString(line);
+    return HpoAnnotationLineOld.constructFromString(line);
   }
 
   @Test
@@ -33,7 +33,7 @@ public class HpoAnnotationLineTest {
       "HPO:skoehler[2017-07-13]"};
     List<String> publist = new ArrayList<>();
     publist.add("OMIM:269150");
-    HpoAnnotationLine hpoAnnot = makeLine(items);
+    HpoAnnotationLineOld hpoAnnot = makeLine(items);
     assertEquals("OMIM:269150", hpoAnnot.getDiseaseId());
     assertEquals("SCHINZEL-GIEDION MIDFACE RETRACTION SYNDROME", hpoAnnot.getDatabaseObjectName());
     assertEquals("TAS", hpoAnnot.getEvidence());
@@ -92,7 +92,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
     assertEquals("OMIM:123456", line.getDiseaseId());
     assertEquals("HP:0040281", line.getFrequency());
   }
@@ -118,7 +118,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
 
     assertEquals("OMIM:123456", line.getDiseaseId());
     assertEquals("HP:0040284", line.getFrequency());
@@ -144,7 +144,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
     assertEquals("OMIM:123456", line.getDiseaseId());
     assertEquals("HP:0040283", line.getFrequency());
   }
@@ -170,7 +170,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
     assertEquals("OMIM:123456", line.getDiseaseId());
 
   }
@@ -195,7 +195,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
     assertEquals("OMIM:123456", line.getDiseaseId());
     assertEquals("HP:0040280", line.getFrequency());
   }
@@ -220,7 +220,7 @@ public class HpoAnnotationLineTest {
       "P",           //Aspect
       "HPO:skoehler[2017-07-13]" //Biocuration
     };
-    HpoAnnotationLine line = makeLine(items);
+    HpoAnnotationLineOld line = makeLine(items);
     assertEquals("OMIM:123456", line.getDiseaseId());
     assertEquals("HP:0040285", line.getFrequency());
   }

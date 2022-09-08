@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoAnnotationLine;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -25,7 +26,7 @@ import java.util.stream.StreamSupport;
  * @author <a href="mailto:daniel.danis@jax.org">Daniel Danis</a>
  * @version 0.2.1 (2017-11-16)
  */
-public interface HpoDisease extends Identified {
+public interface HpoDisease extends AnnotatedItem {
 
   static HpoDisease of(TermId diseaseId,
                        String diseaseName,
@@ -43,12 +44,16 @@ public interface HpoDisease extends Identified {
   /**
    * @return iterable over <em>ALL</em> disease annotations, both present and absent.
    */
-  Iterable<HpoDiseaseAnnotation> annotations();
+  Collection<HpoDiseaseAnnotation> annotations();
 
   /**
    * @return number of annotations present in the disease.
+   * @deprecated use {@link #annotations()} size.
    */
-  int annotationCount();
+  @Deprecated(forRemoval = true, since = "2.0.0-RC5")
+  default int annotationCount() {
+    return annotations().size();
+  }
 
   List<TermId> modesOfInheritance();
 
@@ -274,7 +279,7 @@ public interface HpoDisease extends Identified {
    * @throws PhenolRuntimeException upon each invocation.
    */
   @Deprecated(forRemoval = true, since = "2.0.0-RC2")
-  default List<HpoAnnotation> getPhenotypicAbnormalities() {
+  default List<HpoAnnotationLine> getPhenotypicAbnormalities() {
     throw new PhenolRuntimeException("The 'getPhenotypicAbnormalities()` method was deprecated. Use `phenotypicAbnormalities()` instead!");
   }
 
