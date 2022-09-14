@@ -29,7 +29,7 @@ public class OntologyLoaderHpoTest {
 
   @BeforeEach
   public void beforeEach() {
-    hpo = OntologyLoader.loadOntology(Paths.get("src/test/resources/hpo_toy.json").toFile());
+    hpo = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp.module.json").toFile());
   }
 
   @Test
@@ -106,6 +106,8 @@ public class OntologyLoaderHpoTest {
       .collect(Collectors.toList());
     assertEquals(3, synonymValues.size());
     assertThat(synonymValues, hasItems("Long slender fingers", "Spider fingers", "Long, slender fingers"));
+    assertThat(arachnodactyly.getAltTermIds(), hasSize(1));
+    assertThat(arachnodactyly.getAltTermIds(), hasItems(TermId.of("HP:0001505")));
 
     TermSynonym syn1 = synonyms.get(0);
     assertThat(syn1.getValue(), is("Long slender fingers"));
