@@ -259,6 +259,11 @@ public class ImmutableOntology implements Ontology {
     }
   }
 
+  @Override
+  public Optional<String> version() {
+    return Optional.ofNullable(metaInfo.get("release"));
+  }
+
   public static Builder builder() {
     return new Builder();
   }
