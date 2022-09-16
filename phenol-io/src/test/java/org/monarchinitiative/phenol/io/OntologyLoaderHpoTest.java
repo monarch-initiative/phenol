@@ -15,6 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -29,7 +30,7 @@ public class OntologyLoaderHpoTest {
 
   @BeforeEach
   public void beforeEach() {
-    hpo = OntologyLoader.loadOntology(Paths.get("src/test/resources/hpo_toy.json").toFile());
+    hpo = OntologyLoader.loadOntology(Paths.get("src/test/resources/hp.module.json").toFile());
   }
 
   @Test
@@ -106,6 +107,8 @@ public class OntologyLoaderHpoTest {
       .collect(Collectors.toList());
     assertEquals(3, synonymValues.size());
     assertThat(synonymValues, hasItems("Long slender fingers", "Spider fingers", "Long, slender fingers"));
+    assertThat(arachnodactyly.getAltTermIds(), hasSize(1));
+    assertThat(arachnodactyly.getAltTermIds(), hasItems(TermId.of("HP:0001505")));
 
     TermSynonym syn1 = synonyms.get(0);
     assertThat(syn1.getValue(), is("Long slender fingers"));
@@ -125,4 +128,10 @@ public class OntologyLoaderHpoTest {
     assertThat(syn3.isLayperson(), is(false));
   }
 
+  @Test
+  public void ontologyHasVersion() {
+    Optional<String> version = hpo.version();
+    assertThat(version.isPresent(), equalTo(true));
+    assertThat(version.get(), equalTo("2021-06-08"));
+  }
 }

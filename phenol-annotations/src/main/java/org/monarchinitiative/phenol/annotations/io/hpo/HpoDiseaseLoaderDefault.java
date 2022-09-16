@@ -63,7 +63,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    return HpoDiseases.of(diseases);
+    return HpoDiseases.of(container.version().orElse(null), diseases);
   }
 
   /**

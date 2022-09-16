@@ -12,11 +12,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoaDiseaseDataLoaderDefault.class);
+  // To match a line like `#date: 2021-08-02`
+  private static final Pattern VERSION_PATTERN = Pattern.compile("#date: (?<version>[\\w\\d-]+)$");
 
   private final Set<String> databasePrefixes;
 
@@ -29,9 +33,19 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
     Map<TermId, List<HpoAnnotationLine>> annotationLinesByDiseaseId = new HashMap<>();
+    String version = null;
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-      if (line.startsWith("#"))
+      if (line.startsWith("#")) {
+
+        if (version == null) {
+          // We don't have the version yet.
+          Matcher matcher = VERSION_PATTERN.matcher(line);
+          if (matcher.matches())
+            version = matcher.group("version");
+        }
+
         continue;
+      }
 
       HpoAnnotationLine annotationLine;
       try {
@@ -48,11 +62,14 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
         .add(annotationLine);
     }
 
+    if (version == null)
+      LOGGER.warn("HPOA disease data version was not found");
+
     List<HpoaDiseaseData> data = annotationLinesByDiseaseId.entrySet().stream()
       .map(processAnnotationEntry())
       .collect(Collectors.toList());
 
-    return new HpoaDiseaseDataContainer(data);
+    return new HpoaDiseaseDataContainer(version, data);
   }
 
   private static Function<Map.Entry<TermId, List<HpoAnnotationLine>>, HpoaDiseaseData> processAnnotationEntry() {
