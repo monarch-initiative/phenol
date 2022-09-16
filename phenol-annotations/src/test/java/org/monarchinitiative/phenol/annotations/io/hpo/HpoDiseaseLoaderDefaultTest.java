@@ -94,4 +94,12 @@ public class HpoDiseaseLoaderDefaultTest {
     assertThat(second.earliestOnset().isEmpty(), equalTo(true));
     assertThat(second.latestOnset().isEmpty(), equalTo(true));
   }
+
+  @Test
+  public void diseaseDataHasVersion() throws Exception {
+    HpoDiseases diseases = instance.load(HPOA);
+
+    assertThat(diseases.version().isPresent(), equalTo(true));
+    assertThat(diseases.version().get(), equalTo("2021-08-02"));
+  }
 }

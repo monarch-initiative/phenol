@@ -64,7 +64,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public interface MinimalOntology extends Serializable {
+public interface MinimalOntology extends Serializable, Versioned {
   long serialVersionUID = 2L;
   /** @return {@link Map} with ontology meta information, e.g., as loaded from file. */
   Map<String, String> getMetaInfo();

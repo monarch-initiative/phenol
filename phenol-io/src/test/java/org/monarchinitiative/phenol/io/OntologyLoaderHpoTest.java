@@ -15,6 +15,7 @@ import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -127,4 +128,10 @@ public class OntologyLoaderHpoTest {
     assertThat(syn3.isLayperson(), is(false));
   }
 
+  @Test
+  public void ontologyHasVersion() {
+    Optional<String> version = hpo.version();
+    assertThat(version.isPresent(), equalTo(true));
+    assertThat(version.get(), equalTo("2021-06-08"));
+  }
 }

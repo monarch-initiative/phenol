@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  */
 class HpoDiseasesDefault implements HpoDiseases {
 
+  private final String version; // nullable
   private final List<HpoDisease> hpoDiseases;
   /*
   We use double check locking for lazy initialization.
@@ -19,7 +20,8 @@ class HpoDiseasesDefault implements HpoDiseases {
    */
   private volatile Map<TermId, HpoDisease> diseaseById;
 
-  HpoDiseasesDefault(List<HpoDisease> hpoDiseases) {
+  HpoDiseasesDefault(String version, List<HpoDisease> hpoDiseases) {
+    this.version = version; // nullable
     this.hpoDiseases = Objects.requireNonNull(hpoDiseases, "HPO diseases must not be null");
   }
 
@@ -57,5 +59,10 @@ class HpoDiseasesDefault implements HpoDiseases {
   @Override
   public Set<TermId> diseaseIds() {
     return diseaseById().keySet();
+  }
+
+  @Override
+  public Optional<String> version() {
+    return Optional.ofNullable(version);
   }
 }
