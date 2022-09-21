@@ -4,10 +4,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.TestBase;
-import org.monarchinitiative.phenol.annotations.base.Ratio;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
-import org.monarchinitiative.phenol.annotations.formats.hpo.*;
+import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -32,16 +34,16 @@ public class HpoDiseaseLoaderDefaultTest {
 
   private static Ontology HPO;
 
-  private HpoDiseaseLoader instance;
+  private HpoDiseaseLoaderDefault instance;
 
   @BeforeAll
-  public static void beforeAll() throws Exception {
+  public static void beforeAll() {
     HPO = OntologyLoader.loadOntology(HPO_PATH.toFile());
   }
 
   @BeforeEach
   public void setUp() {
-    instance = HpoDiseaseLoaders.defaultLoader(HPO, OPTIONS);
+    instance = new HpoDiseaseLoaderDefault(HPO, OPTIONS);
   }
 
   @Test
@@ -52,6 +54,7 @@ public class HpoDiseaseLoaderDefaultTest {
     assertThat(hpoDiseases.diseaseIds(), hasItems(TermId.of("OMIM:987654"), TermId.of("ORPHA:123456")));
   }
 
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
   @Test
   public void testPresenceOfExpectedPhenotypesInOmimSyndrome() throws Exception {
     HpoDiseases hpoDiseases = instance.load(HPOA);
@@ -61,49 +64,42 @@ public class HpoDiseaseLoaderDefaultTest {
 
     HpoDisease omimSyndrome = omimSyndromeOptional.get();
 
-    assertThat(omimSyndrome.annotationCount(), equalTo(2));
+    List<HpoDiseaseAnnotation> annotations = omimSyndrome.annotationStream()
+      .sorted()
+      .collect(Collectors.toList());
+
+    assertThat(annotations, hasSize(2));
+    HpoDiseaseAnnotation first = annotations.get(0);
+    assertThat(first.id().getValue(), equalTo("HP:0001167"));
+    assertThat(first.ratio().numerator(), equalTo(5));
+    assertThat(first.ratio().denominator(), equalTo(13));
+    assertThat(first.references(), hasSize(2));
+    assertThat(first.references(), hasItems(
+      AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS),
+      AnnotationReference.of(TermId.of("PMID:22736615"), EvidenceCode.PCS))
+    );
+    PointInTime earliestOnset = first.earliestOnset().get();
+    assertThat(earliestOnset.days(), equalTo(29));
+    PointInTime latestOnset = first.latestOnset().get();
+    assertThat(latestOnset.completeYears(), equalTo(1));
+    assertThat(first.modifiers(), hasItems(TermId.of("HP:0012832"), TermId.of("HP:0012828")));
+
+    HpoDiseaseAnnotation second = annotations.get(1);
+    assertThat(second.id().getValue(), equalTo("HP:0001238"));
+    assertThat(second.isAbsent(), equalTo(true));
+    assertThat(second.ratio().numerator(), equalTo(0));
+    assertThat(second.ratio().denominator(), equalTo(OPTIONS.cohortSize()));
+    assertThat(second.references(), hasSize(1));
+    assertThat(second.references(), hasItem(AnnotationReference.of(TermId.of("PMID:20375004"), EvidenceCode.PCS)));
+    assertThat(second.earliestOnset().isEmpty(), equalTo(true));
+    assertThat(second.latestOnset().isEmpty(), equalTo(true));
   }
 
   @Test
-  public void checkPhenotypeTerms() throws Exception {
-    HpoDiseases hpoDiseases = instance.load(HPOA);
+  public void diseaseDataHasVersion() throws Exception {
+    HpoDiseases diseases = instance.load(HPOA);
 
-    Optional<HpoDisease> omimSyndromeOptional = hpoDiseases.diseaseById(TermId.of("OMIM:987654"));
-    assertThat(omimSyndromeOptional.isPresent(), equalTo(true));
-
-    HpoDisease disease = omimSyndromeOptional.get();
-    List<HpoDiseaseAnnotation> annotations = disease.annotationStream()
-      .sorted(HpoDiseaseAnnotation::compareById)
-      .collect(Collectors.toList());
-
-    // first HpoDiseaseAnnotation
-    HpoDiseaseAnnotation first = annotations.get(0);
-    assertThat(first.id().getValue(), equalTo("HP:0001167"));
-    assertThat(first.isPresent(), equalTo(true));
-    assertThat(first.ratio(), equalTo(Ratio.of(5, 13)));
-
-    Optional<PointInTime> earliestOnset = first.earliestOnset();
-    assertThat(earliestOnset.isPresent(), equalTo(true));
-    PointInTime onset = earliestOnset.get();
-    assertThat(onset.days(), equalTo(29));
-    assertThat(onset.isPostnatal(), equalTo(true));
-
-    assertThat(first.references(), hasSize(2));
-    String referenceString = first.references().stream().map(AnnotationReference::id)
-      .map(TermId::getValue)
-      .sorted()
-      .collect(Collectors.joining(";"));
-    assertThat(referenceString, equalTo("PMID:20375004;PMID:22736615"));
-
-    // second HpoDiseaseAnnotation
-    HpoDiseaseAnnotation second = annotations.get(1);
-    assertThat(second.id().getValue(), equalTo("HP:0001238"));
-    assertThat(second.isPresent(), equalTo(false));
-    assertThat(second.ratio(), equalTo(Ratio.of(0, OPTIONS.cohortSize())));
-
-    assertThat(second.earliestOnset().isEmpty(), equalTo(true));
-
-    assertThat(second.references(), hasSize(1));
-    assertThat(second.references().get(0).id().getValue(), equalTo("PMID:20375004"));
+    assertThat(diseases.version().isPresent(), equalTo(true));
+    assertThat(diseases.version().get(), equalTo("2021-08-02"));
   }
 }

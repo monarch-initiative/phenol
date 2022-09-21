@@ -1,23 +1,8 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAnnotation;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

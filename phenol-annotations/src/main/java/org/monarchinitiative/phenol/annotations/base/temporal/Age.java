@@ -6,6 +6,9 @@ import java.util.Objects;
  * {@link Age} is a {@link PointInTime} with associated {@link ConfidenceRange}. The {@link Age}
  * can be <em>precise</em> or <em>imprecise</em> based on the associated {@link ConfidenceRange}.
  * The {@link ConfidenceRange} also allows to interpret the {@link Age} as a {@link TemporalInterval}.
+ * <em>Precise</em> {@link Age} has {@link #length()} equal to <code>0</code>,
+ * while <em>imprecise</em> {@link Age} has {@link #length()} equal to <code>0 + len(cr)</code>, where <em>cr</em>
+ * is {@link #confidenceRange()}.
  * <p>
  * As is the case of the {@link PointInTime}, {@link Age} has a day precision.
  */
@@ -21,6 +24,20 @@ public interface Age extends PointInTime, TemporalInterval {
    * (<code>365.25 / 12 = 30.4166667</code>).
    */
   float DAYS_IN_MONTH = DAYS_IN_JULIAN_YEAR / 12;
+
+  /**
+   * @return {@link Age} representing the last menstrual period before the conception.
+   */
+  static Age lastMenstrualPeriod() {
+    return Ages.LMP;
+  }
+
+  /**
+   * @return {@link Age} representing birth.
+   */
+  static Age birth() {
+    return Ages.BIRTH;
+  }
 
   /**
    * Create a precise gestational {@link Age} representing the number of weeks and months

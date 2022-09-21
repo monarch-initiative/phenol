@@ -65,13 +65,8 @@ class HpoDiseaseDefault implements HpoDisease {
   }
 
   @Override
-  public Iterable<HpoDiseaseAnnotation> annotations() {
+  public Collection<HpoDiseaseAnnotation> annotations() {
     return phenotypicAbnormalities;
-  }
-
-  @Override
-  public int annotationCount() {
-    return phenotypicAbnormalities.size();
   }
 
   @Override

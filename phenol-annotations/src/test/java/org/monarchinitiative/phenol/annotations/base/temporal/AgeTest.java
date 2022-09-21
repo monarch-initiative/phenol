@@ -266,11 +266,12 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalRange() {
+    public void asTemporalInterval() {
       Age age = Age.postnatal(0, 0, 14);
 
       assertThat(age.start().days(), equalTo(14));
       assertThat(age.end().days(), equalTo(14));
+      assertThat(age.length(), equalTo(0));
     }
   }
 
@@ -386,11 +387,13 @@ public class AgeTest {
     }
 
     @Test
-    public void asTemporalRange() {
-      Age age = Age.postnatal(10, ConfidenceRange.of(-5, 10));
+    public void asTemporalInterval() {
+      ConfidenceRange cr = ConfidenceRange.of(-5, 10);
+      Age age = Age.postnatal(10, cr);
 
       assertThat(age.start().days(), equalTo(5));
       assertThat(age.end().days(), equalTo(20));
+      assertThat(age.length(), equalTo(cr.length())); // 1 day has length 0 + whatever length the `cr` is.
     }
   }
 

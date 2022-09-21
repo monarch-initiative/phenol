@@ -9,6 +9,32 @@ import java.util.Objects;
 public interface TemporalInterval {
 
   /**
+   * Provide {@link TemporalInterval} to represent the span of the gestational lifetime.
+   * The {@link TemporalInterval} is delimited by {@link PointInTime#lastMenstrualPeriod()}
+   * and {@link PointInTime#birth()}.
+   * <p>
+   * Note that length of the gestational lifetime is {@link Integer#MAX_VALUE}
+   *
+   * @return the {@link TemporalInterval} representing the gestational lifetime
+   */
+  static TemporalInterval gestationalPeriod() {
+    return TemporalIntervals.GESTATIONAL_PERIOD;
+  }
+
+  /**
+   * Provide {@link TemporalInterval} to represent the span of the postnatal lifetime.
+   * The {@link TemporalInterval} is delimited by {@link PointInTime#birth()} ()}
+   * and {@link PointInTime#openEnd()}.
+   * <p>
+   * Note that the postnatal lifetime is half-open, hence the length is {@link Integer#MAX_VALUE}.
+   *
+   * @return the {@link TemporalInterval} representing the postnatal lifetime
+   */
+  static TemporalInterval postnatalPeriod() {
+    return TemporalIntervals.POSTNATAL_PERIOD;
+  }
+
+  /**
    * Create a {@link TemporalInterval} using <code>start</code> and <code>end</code>.
    * The <code>start</code> must <em>not</em> be after end.
    *
@@ -94,12 +120,14 @@ public interface TemporalInterval {
 
   /**
    * Get the number of days spanned by <code>this</code> {@link TemporalInterval}.
-   * If {@link #isStartOpen()} or {@link #isEndOpen()}, then the length is equal to {@link Integer#MAX_VALUE}.
+   * <p>
+   * Note: the length of a half-open or fully-open interval, or an interval with endpoints located
+   * on different timelines (e.g. {@link TemporalInterval#gestationalPeriod()}) is equal to {@link Integer#MAX_VALUE}.
    *
    * @return the number of days.
    */
   default int length() {
-    return isFullyClosed()
+    return isFullyClosed() && start().isGestational() == end().isGestational()
       ? end().days() - start().days()
       : Integer.MAX_VALUE;
   }
@@ -121,9 +149,31 @@ public interface TemporalInterval {
     return TemporalInterval.of(start, end);
   }
 
+  /**
+   * @return {@code true} if {@code this} and {@code other} overlap.
+   */
   default boolean overlapsWith(TemporalInterval other) {
-    // TODO - calculate without allocating
-    return !intersection(other).isEmpty();
+    switch (temporalOverlapType(other)) {
+      case BEFORE:
+      case AFTER:
+        return false;
+      case BEFORE_AND_DURING:
+      case CONTAINS:
+      case CONTAINED_IN:
+      case DURING_AND_AFTER:
+        return true;
+      default:
+        throw new RuntimeException(String.format("Unknown item %s", temporalOverlapType(other)));
+    }
+  }
+
+  /**
+   * Get {@link TemporalOverlapType} for {@link TemporalInterval}s {@code this} and {@code other}.
+   * <p>
+   * Note: the method returns {@link TemporalOverlapType#CONTAINED_IN} if {@code this} and {@code other} are equal.
+   */
+  default TemporalOverlapType temporalOverlapType(TemporalInterval other) {
+    return temporalOverlapType(this, other);
   }
 
   default boolean contains(PointInTime age) {
@@ -145,6 +195,39 @@ public interface TemporalInterval {
       return result;
 
     return PointInTime.compare(x.end(), y.end());
+  }
+
+  /**
+   * Get {@link TemporalOverlapType} for {@link TemporalInterval}s {@code x} and {@code y}.
+   * <p>
+   * Note: the method returns {@link TemporalOverlapType#CONTAINED_IN} if {@code x} and {@code y} are equal.
+   */
+  private static TemporalOverlapType temporalOverlapType(TemporalInterval x, TemporalInterval y) {
+    if (x.end().isAtOrBefore(y.start())) {
+      return x.isEmpty() && x.end().isAt(y.start())
+        ? TemporalOverlapType.CONTAINED_IN
+        : TemporalOverlapType.BEFORE;
+    } else if (x.start().isAtOrAfter(y.end())) {
+      return x.isEmpty() && x.start().isAt(y.end())
+        ? TemporalOverlapType.CONTAINED_IN
+        : TemporalOverlapType.AFTER;
+    } else {
+      // We have some sort of overlap here.
+      int startCompare = PointInTime.compare(x.start(), y.start()); // Cache the start comparison result.
+      if (startCompare < 0) {
+        // The block handles `x.start().isBefore(y.start())`.
+        if (x.end().isBefore(y.end()))
+          return TemporalOverlapType.BEFORE_AND_DURING;
+        else
+          return TemporalOverlapType.CONTAINS;
+      } else { // The block handles `x.start().isAtOrAfter(y.start())`.
+        if (x.end().isAtOrBefore(y.end())) {
+          return TemporalOverlapType.CONTAINED_IN;
+        } else return startCompare == 0 // This is true if `x.start().isAt(y.start())`.
+          ? TemporalOverlapType.CONTAINS
+          : TemporalOverlapType.DURING_AND_AFTER;
+      }
+    }
   }
 
 }

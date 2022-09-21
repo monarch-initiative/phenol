@@ -9,12 +9,13 @@ v2.0.0
 - Support for GO GAF 2.2 files
 - Speed up build by adding a new build profile
 - ``phenol-core``
-
+  - ``MinimalOntology`` has a version
 - ``phenol-io``
   - Dropping support for reading OBO/OWL ontologies
   - drop non-modular `curie-util` dependency
 - ``phenol-annotations``
   - Remodel ``HpoDisease``, ``HpoAnnotation``, ``HpoAssociationData``, ``GeneIdentifier``s, etc..
+  - ``HpoDiseases`` has a version
   - Model temporal elements
   - Implement ``HGNCGeneIdentifierLoader`` for reading ``GeneIdentifiers`` from HGNC complete set archive.
   - Add new ``HpoOnset`` terms.

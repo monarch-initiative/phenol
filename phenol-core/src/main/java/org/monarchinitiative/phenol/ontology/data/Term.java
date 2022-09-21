@@ -15,7 +15,7 @@ public class Term implements Identified {
   private final TermId id;
 
   /**
-   * Alternative term Ids.
+   * {@link TermId}s of {@link Term}s that have been obsoleted and replaced by this {@link Term}.
    */
   private final List<TermId> altTermIds;
 
@@ -120,6 +120,9 @@ public class Term implements Identified {
     return id;
   }
 
+  /**
+   * @return a list of {@link TermId}s of {@link Term}s that have been obsoleted and replaced by this {@link Term}.
+   */
   public List<TermId> getAltTermIds() {
     return altTermIds;
   }

@@ -27,6 +27,12 @@ public interface AssociationContainer<T> {
   Map<T, DirectAndIndirectTermAnnotations> getAssociationMap(Set<TermId> annotatedItemTermIds);
 
   Set<T> getAllAnnotatedGenes();
+
+  /**
+   * @param tid The {@link TermId} of an ontology term (e.g. Gene Ontology) used to annotated domain items
+   * @return A set of domain items (e.g., genes) annotated by the ontology term
+   */
+  Set<T> getDomainItemsAnnotatedByOntologyTerm(TermId tid);
   /**
    * @return total number of GO (or HP, MP, etc) terms that are annotating the items in this container.
    */

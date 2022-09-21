@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.Versioned;
 
 import java.util.*;
 import java.util.function.Function;
@@ -9,10 +10,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public interface HpoDiseases extends Iterable<HpoDisease> {
+/**
+ * A {@link Versioned} container for {@link HpoDisease}s with a bunch of convenience methods for getting
+ * the individual {@link HpoDisease}s.
+ */
+public interface HpoDiseases extends AnnotatedItemContainer<HpoDisease>, Versioned {
 
+  /**
+   * @deprecated use {@link #of(String, List)} instead.
+   */
+  @Deprecated(forRemoval = true)
   static HpoDiseases of(List<HpoDisease> diseases) {
-    return new HpoDiseasesDefault(diseases);
+    return of(null, diseases);
+  }
+
+  static HpoDiseases of(String version, List<HpoDisease> diseases) {
+    return new HpoDiseasesDefault(version, diseases);
   }
 
   Optional<HpoDisease> diseaseById(TermId diseaseId);
