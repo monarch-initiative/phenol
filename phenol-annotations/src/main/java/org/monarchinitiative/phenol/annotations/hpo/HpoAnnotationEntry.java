@@ -35,7 +35,11 @@ import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTer
  */
 public class HpoAnnotationEntry {
   private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
-  private final static String EMPTY_STRING = "";
+  // To match e.g. 10/20
+  private static final Pattern RATIO_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
+  // To match an int of optionally a float percentage (e.g. 1% or 1.23456789%).
+  private static final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
+  private static final String EMPTY_STRING = "";
   /**
    * The CURIE of the disease, e.g., OMIM:600201 (Field #0).
    */
@@ -700,8 +704,7 @@ public class HpoAnnotationEntry {
     if (freq == null || freq.isEmpty()) {
       return;
     }
-    final Pattern FREQUENCY_PATTERN = Pattern.compile("(?<numerator>\\d+)/(?<denominator>\\d+)");
-    Matcher matcher = FREQUENCY_PATTERN.matcher(freq);
+    Matcher matcher = RATIO_PATTERN.matcher(freq);
     if(matcher.matches()) {
       int numerator = Integer.parseInt(matcher.group("numerator"));
       int denominator = Integer.parseInt(matcher.group("denominator"));
@@ -711,7 +714,6 @@ public class HpoAnnotationEntry {
         return;
       }
     }
-    final Pattern PERCENTAGE_PATTERN = Pattern.compile("(?<value>\\d+\\.?(\\d+)?)%");
     matcher = PERCENTAGE_PATTERN.matcher(freq);
     if(matcher.matches()){
       float percent = Float.parseFloat(matcher.group("value"));
