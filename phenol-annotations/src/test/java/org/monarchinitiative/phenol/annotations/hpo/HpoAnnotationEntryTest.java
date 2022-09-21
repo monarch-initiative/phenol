@@ -205,4 +205,46 @@ public class HpoAnnotationEntryTest {
     assertEquals("7/42", entry.getFrequencyModifier());
     }
 
+  @Test
+  public void testIncorrectFrequencyFraction() {
+    String[] fields = {
+      "OMIM:123456",
+      "MADE-UP SYNDROME",
+      "HP:0001166",
+      "Arachnodactyly",
+      "",
+      "",
+      "112/15",
+      "FEMALE",
+      "",
+      "",
+      "",
+      "PMID:9843983",
+      "PCS",
+      "HPO:probinson[2013-01-09]"};
+    String line = String.join("\t", fields);
+    assertThrows(HpoAnnotationModelException.class, () -> HpoAnnotationEntry.fromLine(line, ONTOLOGY));
+  }
+
+  @Test
+  public void testIncorrectFrequencyPercentage() {
+    String[] fields = {
+      "OMIM:123456",
+      "MADE-UP SYNDROME",
+      "HP:0001166",
+      "Arachnodactyly",
+      "",
+      "",
+      "102%",
+      "FEMALE",
+      "",
+      "",
+      "",
+      "PMID:9843983",
+      "PCS",
+      "HPO:probinson[2013-01-09]"};
+    String line = String.join("\t", fields);
+    assertThrows(HpoAnnotationModelException.class, () -> HpoAnnotationEntry.fromLine(line, ONTOLOGY));
+  }
+
 }
