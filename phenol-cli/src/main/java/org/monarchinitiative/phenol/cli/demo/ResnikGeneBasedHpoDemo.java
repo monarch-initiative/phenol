@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.cli.demo;
 
+import org.monarchinitiative.phenol.annotations.assoc.GeneInfoGeneType;
+import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
-import org.monarchinitiative.phenol.annotations.assoc.HpoAssociationLoader;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
-import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaders;
@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase.OMIM;
 
@@ -34,57 +33,73 @@ public class ResnikGeneBasedHpoDemo {
   private final Map<TermId, Collection<TermId>> diseaseIdToTermIds;
 
   public ResnikGeneBasedHpoDemo(Path hpoPath, Path hpoaPath, Path geneInfoPath, Path mim2genMedgenPath) throws IOException {
-    Instant t1 = Instant.now();
-    this.hpo = OntologyLoader.loadOntology(hpoPath.toFile());
-    Instant t2 = Instant.now();
-    System.out.printf("[INFO] Loaded hp.obo in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
-    t1 = Instant.now();
-    Set<DiseaseDatabase> databases = Set.of(OMIM); // restrict ourselves to OMIM entries
+    hpo = loadHpo(hpoPath);
 
-    HpoDiseaseLoader loader = HpoDiseaseLoaders.defaultLoader(hpo, HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
-    HpoDiseases hpoDiseases = loader.load(hpoaPath);
+    HpoDiseases hpoDiseases = loadHpoDiseases(hpo, hpoaPath);
     diseaseMap = hpoDiseases.diseaseById();
 
-    t2 = Instant.now();
-    System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
-    // Compute list of annoations and mapping from OMIM ID to term IDs.
-    t1 = Instant.now();
+    // Compute list of annotations and mapping from OMIM ID to term IDs.
+    Instant t1 = Instant.now();
     this.diseaseIdToTermIds = new HashMap<>();
-    final Map<TermId, Collection<TermId>> termIdToDiseaseIds = new HashMap<>();
-    for (HpoDisease disease:hpoDiseases) {
+    // Number of diseases the term is observed in.
+    Map<TermId, Integer> phenotypeIdToDiseaseIds = new HashMap<>();
+    for (HpoDisease disease: hpoDiseases) {
       List<TermId> hpoTerms = disease.annotationTermIdList();
 
       // add term ancestors
-      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, new HashSet<>(hpoTerms), true);
+      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, hpoTerms, true);
 
       for (TermId tid : inclAncestorTermIds) {
-        termIdToDiseaseIds.computeIfAbsent(tid, key -> new HashSet<>()).add(disease.id());
-        diseaseIdToTermIds.computeIfAbsent(disease.id(), key -> new HashSet<>()).add(tid);
+        phenotypeIdToDiseaseIds.compute(tid, (key, val) -> val == null ? 0 : val + 1);
+        diseaseIdToTermIds.computeIfAbsent(disease.id(), key -> new HashSet<>()).add(tid); // Note that this MUST be a Set
       }
     }
-    t2 = Instant.now();
+    Instant t2 = Instant.now();
     System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     t1 = Instant.now();
 
-    HpoAssociationData hpoAssociationData = HpoAssociationLoader.loadHpoAssociationData(hpo, geneInfoPath, mim2genMedgenPath, null, hpoaPath, null);
-
-    this.geneToDiseaseMap = hpoAssociationData.geneToDiseases();
+    HpoAssociationData hpoAssociationData = HpoAssociationData.builder(hpo)
+      .hpoDiseases(hpoDiseases)
+      .homoSapiensGeneInfo(geneInfoPath, Set.of(GeneInfoGeneType.protein_coding))
+      .mim2GeneMedgen(mim2genMedgenPath)
+      .build();
+    t2 = Instant.now();
+    System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
+    this.geneToDiseaseMap = hpoAssociationData.associations().geneIdToDiseaseIds();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationData.geneIdToSymbol();
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
-    t2 = Instant.now();
-    System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
-    TermId ROOT_HPO = TermId.of("HP:0000118");//Phenotypic abnormality
-    int totalPopulationHpoTerms = termIdToDiseaseIds.get(ROOT_HPO).size();
+
+
+    TermId ROOT_HPO = HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY;
+    int totalPopulationHpoTerms = phenotypeIdToDiseaseIds.get(ROOT_HPO);
     t1 = Instant.now();
     termToIc = new HashMap<>();
-    for (TermId tid : termIdToDiseaseIds.keySet()) {
-      int annotatedCount = termIdToDiseaseIds.get(tid).size();
-      double ic = -1*Math.log((double)annotatedCount/totalPopulationHpoTerms);
-      termToIc.put(tid, ic);
+    for (Map.Entry<TermId, Integer> e : phenotypeIdToDiseaseIds.entrySet()) {
+      int annotatedCount = e.getValue();
+      double ic = -1 * Math.log((double)annotatedCount/totalPopulationHpoTerms);
+      termToIc.put(e.getKey(), ic);
     }
     t2 = Instant.now();
     System.out.printf("[INFO] Calculated information content in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+  }
+
+  private static Ontology loadHpo(Path hpoPath) {
+    Instant t1 = Instant.now();
+    Ontology hpo = OntologyLoader.loadOntology(hpoPath.toFile());
+    Instant t2 = Instant.now();
+    System.out.printf("[INFO] Loaded HPO in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+    return hpo;
+  }
+
+  private static HpoDiseases loadHpoDiseases(Ontology hpo, Path hpoaPath) throws IOException {
+    Instant t1 = Instant.now();
+    HpoDiseaseLoaderOptions options = HpoDiseaseLoaderOptions.of(Set.of(OMIM), true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE);
+    HpoDiseaseLoader loader = HpoDiseaseLoaders.defaultLoader(hpo, options);
+    HpoDiseases hpoDiseases = loader.load(hpoaPath);
+    Instant t2 = Instant.now();
+    System.out.printf("[INFO] Loaded phenotype.hpoa in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+    return hpoDiseases;
   }
 
   public void run() {
