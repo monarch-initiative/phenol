@@ -25,6 +25,7 @@ public class Main implements Callable<Integer> {
       .addSubcommand("mpo", new MpDemoCommand())
       .addSubcommand("precompute-scores", new PrecomputeScoresCommand())
       .addSubcommand("resnik-gene", new ResnikCommand())
+      .addSubcommand("precompute-resnik", new PrecomputeResnikMapCommand())
       ;
     cline.setToggleBooleanFlags(false);
     int exitCode = cline.execute(args);

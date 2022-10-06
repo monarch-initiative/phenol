@@ -42,56 +42,13 @@ import java.util.*;
  * </pre>
  * @author Peter Robinson
  */
-public class HpoResnikSimilarity {
-
-  /** Pairwise term similarity computation. */
-  //private final PairwiseSimilarity pairwiseSimilarity;
+public class HpoResnikSimilarity implements PairwiseSimilarity {
 
   private final Map<TermPair, Double> termPairResnikSimilarityMap;
 
 
   public HpoResnikSimilarity(Ontology hpo, Map<TermId, Double> termToIc) {
-    termPairResnikSimilarityMap = new HashMap<>();
-    // Compute for relevant subontologies in HPO
-    for (TermId topTerm : toplevelTerms()) {
-      if (! hpo.containsTerm(topTerm)) {
-        continue; // should never happen, but avoid crash in testing.
-      }
-      Ontology subontology = hpo.subOntology(topTerm);
-      final Set<TermId> terms = subontology.getNonObsoleteTermIds();
-      List<TermId> list = new ArrayList<>(terms);
-      for (int i = 0; i < list .size(); i++) {
-        // start the second interation at i to get self-similarity
-        for (int j = i; j < list.size(); j++) {
-          TermId a = list.get(i);
-          TermId b = list.get(j);
-          double similarity = computeResnikSimilarity(a, b, termToIc, subontology);
-          TermPair tpair = TermPair.symmetric(a, b);
-          // a few terms belong to multiple subontologies. This will take the maximum similarity.
-          double d = this.termPairResnikSimilarityMap.getOrDefault(tpair, 0.0);
-          if (similarity > d) {
-            this.termPairResnikSimilarityMap.put(tpair, similarity);
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Compute similarity as the information content of the Most Informative Common Ancestor (MICA)
-   * @param a The first TermId
-   * @param b The second TermId
-   * @param termToIc Map from TermId to information content of the term
-   * @param ontology Here, a subontology of the HPO
-   * @return the Resnik similarity
-   */
-  private double computeResnikSimilarity(TermId a, TermId b, Map<TermId, Double> termToIc, Ontology ontology) {
-    final Set<TermId> commonAncestors = ontology.getCommonAncestors(a, b);
-    double maxValue = 0.0;
-    for (TermId termId : commonAncestors) {
-      maxValue = Double.max(maxValue, termToIc.getOrDefault(termId, 0.0));
-    }
-    return maxValue;
+    termPairResnikSimilarityMap = precomputeSimilaritiesForTermPairs(hpo, termToIc);
   }
 
   /**
@@ -101,12 +58,18 @@ public class HpoResnikSimilarity {
    * @param a The first TermId
    * @param b The second TermId
    * @return the Resnik similarity
+   * @deprecated use {@link #computeScore(TermId, TermId)} instead.
    */
+  @Deprecated(forRemoval = true)
   public double getResnikTermSimilarity(TermId a, TermId b) {
-    TermPair tpair = TermPair.symmetric(a,b);
-    return this.termPairResnikSimilarityMap.getOrDefault(tpair, 0.0);
+    return computeScore(a, b);
   }
 
+  @Override
+  public double computeScore(TermId t1, TermId t2) {
+    TermPair pair = TermPair.symmetric(t1, t2);
+    return termPairResnikSimilarityMap.getOrDefault(pair, 0.0);
+  }
 
   public double computeScoreSymmetric(Collection<TermId> query, Collection<TermId> target) {
     return 0.5 * (computeScoreImpl(query, target) + computeScoreImpl(target, query));
@@ -117,6 +80,9 @@ public class HpoResnikSimilarity {
     return computeScoreImpl(query, target);
   }
 
+  public Map<TermPair, Double> getTermPairResnikSimilarityMap() {
+    return termPairResnikSimilarityMap;
+  }
 
   /**
    * Compute directed score between a query and a target set of {@link TermId}s.
@@ -130,7 +96,7 @@ public class HpoResnikSimilarity {
     for (TermId q : query) {
       double maxValue = 0.0;
       for (TermId t : target) {
-        maxValue = Math.max(maxValue, getResnikTermSimilarity(q, t));
+        maxValue = Math.max(maxValue, computeScore(q, t));
       }
       sum += maxValue;
     }
@@ -138,6 +104,50 @@ public class HpoResnikSimilarity {
   }
 
 
+  private static Map<TermPair, Double> precomputeSimilaritiesForTermPairs(Ontology hpo, Map<TermId, Double> termToIc) {
+    Map<TermPair, Double> termPairResnikSimilarityMap = new HashMap<>();
+    // Compute for relevant sub-ontologies in HPO
+    for (TermId topTerm : toplevelTerms()) {
+      if (! hpo.containsTerm(topTerm)) {
+        continue; // should never happen, but avoid crash in testing.
+      }
+      Ontology subOntology = hpo.subOntology(topTerm);
+      Set<TermId> terms = subOntology.getNonObsoleteTermIds();
+      List<TermId> list = new ArrayList<>(terms);
+      for (int i = 0; i < list.size(); i++) {
+        // start the second iteration at i to get self-similarity
+        for (int j = i; j < list.size(); j++) {
+          TermId a = list.get(i);
+          TermId b = list.get(j);
+          double similarity = computeResnikSimilarity(a, b, termToIc, subOntology);
+          TermPair pair = TermPair.symmetric(a, b);
+          // a few terms belong to multiple sub-ontologies. This will take the maximum similarity.
+          double d = termPairResnikSimilarityMap.getOrDefault(pair, 0.0);
+          if (similarity > d) {
+            termPairResnikSimilarityMap.put(pair, similarity);
+          }
+        }
+      }
+    }
+    return termPairResnikSimilarityMap;
+  }
+
+  /**
+   * Compute similarity as the information content of the Most Informative Common Ancestor (MICA)
+   * @param a The first TermId
+   * @param b The second TermId
+   * @param termToIc Map from TermId to information content of the term
+   * @param ontology Here, a subontology of the HPO
+   * @return the Resnik similarity
+   */
+  private static double computeResnikSimilarity(TermId a, TermId b,
+                                                Map<TermId, Double> termToIc,
+                                                Ontology ontology) {
+    return ontology.getCommonAncestors(a, b).stream()
+      .map(termToIc::get)
+      .filter(Objects::nonNull)
+      .reduce(0., Double::max);
+  }
 
   /**
    * List of top level terms that with a few rare exceptions which we will ignore, do
@@ -145,7 +155,7 @@ public class HpoResnikSimilarity {
    * TODO we can refactor this if we move the annotation module here.
    * @return list of top-level HPO terms (i.e., children of Phenotype abnormality)
    */
-  private TermId[] toplevelTerms() {
+  private static TermId[] toplevelTerms() {
     TermId ABNORMAL_CELLULAR_ID = TermId.of("HP:0025354");
     TermId BLOOD_ID = TermId.of("HP:0001871");
     TermId CONNECTIVE_TISSUE_ID = TermId.of("HP:0003549");

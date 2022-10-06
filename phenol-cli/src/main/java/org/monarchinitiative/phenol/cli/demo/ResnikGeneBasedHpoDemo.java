@@ -38,50 +38,24 @@ public class ResnikGeneBasedHpoDemo {
     HpoDiseases hpoDiseases = loadHpoDiseases(hpo, hpoaPath);
     diseaseMap = hpoDiseases.diseaseById();
 
-    // Compute list of annotations and mapping from OMIM ID to term IDs.
     Instant t1 = Instant.now();
-    this.diseaseIdToTermIds = new HashMap<>();
-    // Number of diseases the term is observed in.
-    Map<TermId, Integer> phenotypeIdToDiseaseIds = new HashMap<>();
-    for (HpoDisease disease: hpoDiseases) {
-      List<TermId> hpoTerms = disease.annotationTermIdList();
-
-      // add term ancestors
-      Set<TermId> inclAncestorTermIds = TermIds.augmentWithAncestors(hpo, hpoTerms, true);
-
-      for (TermId tid : inclAncestorTermIds) {
-        phenotypeIdToDiseaseIds.compute(tid, (key, val) -> val == null ? 0 : val + 1);
-        diseaseIdToTermIds.computeIfAbsent(disease.id(), key -> new HashSet<>()).add(tid); // Note that this MUST be a Set
-      }
-    }
-    Instant t2 = Instant.now();
-    System.out.printf("[INFO] Calculated gene-disease links in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
-    t1 = Instant.now();
-
     HpoAssociationData hpoAssociationData = HpoAssociationData.builder(hpo)
       .hpoDiseases(hpoDiseases)
       .homoSapiensGeneInfo(geneInfoPath, Set.of(GeneInfoGeneType.protein_coding))
       .mim2GeneMedgen(mim2genMedgenPath)
       .build();
-    t2 = Instant.now();
+    Instant t2 = Instant.now();
     System.out.printf("[INFO] Loaded geneInfo and mim2gene in %.3f seconds.\n", Duration.between(t1,t2).toMillis()/1000d);
     this.geneToDiseaseMap = hpoAssociationData.associations().geneIdToDiseaseIds();
     System.out.println("[INFO] geneToDiseaseMap with " + geneToDiseaseMap.size() + " entries");
     this.geneIdToSymbolMap = hpoAssociationData.geneIdToSymbol();
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
 
-
-    TermId ROOT_HPO = HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY;
-    int totalPopulationHpoTerms = phenotypeIdToDiseaseIds.get(ROOT_HPO);
-    t1 = Instant.now();
-    termToIc = new HashMap<>();
-    for (Map.Entry<TermId, Integer> e : phenotypeIdToDiseaseIds.entrySet()) {
-      int annotatedCount = e.getValue();
-      double ic = -1 * Math.log((double)annotatedCount/totalPopulationHpoTerms);
-      termToIc.put(e.getKey(), ic);
-    }
-    t2 = Instant.now();
-    System.out.printf("[INFO] Calculated information content in %.3f seconds.\n",Duration.between(t1,t2).toMillis()/1000d);
+    // Compute list of annotations and mapping from OMIM ID to term IDs.
+    MicaCalculator calculator = new MicaCalculator(hpo);
+    MicaData micaData = calculator.calculateMica(hpoDiseases);
+    diseaseIdToTermIds = micaData.diseaseIdToTermIds();
+    termToIc = micaData.termToIc();
   }
 
   private static Ontology loadHpo(Path hpoPath) {
