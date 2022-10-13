@@ -24,8 +24,14 @@ public class MicaCalculator {
   private static final Logger LOGGER = LoggerFactory.getLogger(MicaCalculator.class);
 
   private final Ontology hpo;
+  private final boolean assumeAnnotated;
 
   public MicaCalculator(Ontology hpo) {
+    this(hpo, false);
+  }
+
+  public MicaCalculator(Ontology hpo, boolean assumeAnnotated) {
+    this.assumeAnnotated = assumeAnnotated;
     this.hpo = Objects.requireNonNull(hpo);
   }
 
@@ -50,7 +56,7 @@ public class MicaCalculator {
     Map<TermId, Double> termToIc = new HashMap<>();
     int totalPopulationHpoTerms = phenotypeIdToDiseaseIds.get(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
     for (Map.Entry<TermId, Integer> e : phenotypeIdToDiseaseIds.entrySet()) {
-      int annotatedCount = e.getValue();
+      int annotatedCount = assumeAnnotated ? Math.max(e.getValue(), 1) : e.getValue();
       double ic = -1 * Math.log((double)annotatedCount/totalPopulationHpoTerms);
       termToIc.put(e.getKey(), ic);
     }

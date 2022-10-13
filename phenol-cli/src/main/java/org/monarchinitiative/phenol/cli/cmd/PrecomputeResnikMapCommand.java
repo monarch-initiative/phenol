@@ -48,6 +48,10 @@ public class PrecomputeResnikMapCommand implements Callable<Integer> {
     required = true)
   public Path hpoaPath;
 
+  @CommandLine.Option(names = {"--assume-annotated"},
+    description = {"Assume that each term annotates at least one disease.", "This prevents IC=Infinity for the absent terms"})
+  public boolean assumeAnnotated;
+
   @CommandLine.Option(names = {"--output"},
     description = "Where to write the term pair similarity table (default: ${DEFAULT-VALUE})")
   public Path output = Path.of("term-pair-similarity.csv.gz");
@@ -77,8 +81,8 @@ public class PrecomputeResnikMapCommand implements Callable<Integer> {
     return 0;
   }
 
-  private static Map<TermId, Double> calculateTermToIc(Ontology hpo, HpoDiseases diseases) {
-    MicaCalculator micaCalculator = new MicaCalculator(hpo);
+  private Map<TermId, Double> calculateTermToIc(Ontology hpo, HpoDiseases diseases) {
+    MicaCalculator micaCalculator = new MicaCalculator(hpo, assumeAnnotated);
     return micaCalculator.calculateMica(diseases).termToIc();
   }
 

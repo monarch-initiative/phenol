@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.annotations.assoc.GeneInfoGeneType;
-import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
@@ -11,7 +10,6 @@ import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaders;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.data.TermIds;
 import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
 
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class ResnikGeneBasedHpoDemo {
     System.out.println("[INFO] geneIdToSymbolMap with " + geneIdToSymbolMap.size() + " entries");
 
     // Compute list of annotations and mapping from OMIM ID to term IDs.
-    MicaCalculator calculator = new MicaCalculator(hpo);
+    MicaCalculator calculator = new MicaCalculator(hpo, false);
     MicaData micaData = calculator.calculateMica(hpoDiseases);
     diseaseIdToTermIds = micaData.diseaseIdToTermIds();
     termToIc = micaData.termToIc();
