@@ -5,4 +5,6 @@ module org.monarchinitiative.phenol.cli {
   requires commons.csv;
   requires info.picocli;
   requires org.slf4j;
+
+  exports org.monarchinitiative.phenol.cli.cmd to info.picocli;
 }
