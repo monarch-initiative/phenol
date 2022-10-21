@@ -13,6 +13,16 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.*;
 
 public class OntologyAlgorithmTest {
 
+  /*
+     The example graph:
+                  id5
+                 ^ ^ ^
+                /  |  \
+              id2 id3 id4
+                ^  ^  ^
+                 \ | /
+                  id1
+   */
   private ImmutableOntology ontology;
 
   private TermId id1;

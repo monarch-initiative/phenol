@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Implementation of several commonly needed algorithms for traversing and searching in and {@link
@@ -54,8 +55,7 @@ public class OntologyAlgorithm {
   }
 
   /**
-   * Find all of the direct children of parentTermId (do not include "grandchildren" and other
-   * descendents).
+   * Find all the direct children of parentTermId (do not include "grandchildren" and other descendents).
    *
    * @param ontology            The ontology to which parentTermId belongs
    * @param parentTermId        The term whose children were are seeking
@@ -64,12 +64,22 @@ public class OntologyAlgorithm {
    * @return A set of all child terms of parentTermId
    */
   public static Set<TermId> getChildTerms(Ontology ontology, TermId parentTermId, boolean includeOriginalTerm) {
-    Set<TermId> kids = new HashSet<>();
-    if (includeOriginalTerm) kids.add(parentTermId);
-    for (IdLabeledEdge edge : ontology.getGraph().incomingEdgesOf(parentTermId)) {
-      TermId sourceId = (TermId) edge.getSource();
-      kids.add(sourceId);
+    Set<IdLabeledEdge> incomingEdges = ontology.getGraph().incomingEdgesOf(parentTermId);
+
+    // We'll be adding at most this many term IDs.
+    List<TermId> kids = includeOriginalTerm
+      ? new ArrayList<>(incomingEdges.size() + 1)
+      : new ArrayList<>(incomingEdges.size());
+
+    if (includeOriginalTerm)
+      kids.add(parentTermId);
+
+    for (IdLabeledEdge edge : incomingEdges) {
+      // We extract TermId of the edge source when getting children.
+      extractTermIdIfEdgeHasPropagatingRelationship(ontology, edge, e -> (TermId) e.getSource())
+        .ifPresent(kids::add);
     }
+
     return Set.copyOf(kids);
   }
 
@@ -134,8 +144,7 @@ public class OntologyAlgorithm {
   }
 
   /**
-   * Find all of the direct parents of childTermId (do not include "grandchildren" and other
-   * descendents).
+   * Find all direct parents of childTermId (do not include "grandchildren" and other descendents).
    *
    * @param ontology The ontology to which parentTermId belongs
    * @param childTermId The term whose parents were are seeking
@@ -144,23 +153,22 @@ public class OntologyAlgorithm {
    * @return A set of all parent terms of childTermId
    */
   public static Set<TermId> getParentTerms(Ontology ontology, TermId childTermId, boolean includeOriginalTerm) {
-    Set<TermId> anccset = new HashSet<>();
-    if (includeOriginalTerm) anccset.add(childTermId);
-    for (IdLabeledEdge edge : ontology.getGraph().outgoingEdgesOf(childTermId)) {
-      int edgeId = edge.getId();
-      Relationship rel = ontology.getRelationMap().get(edgeId);
-      if (rel == null) {
-        logger.error("Could not retrieve relation for id={} [child term={}]", edgeId, ontology.getTermMap().get(childTermId).getName());
-        continue;
-      }
-      RelationshipType reltyp = rel.getRelationshipType();
-      if (! reltyp.propagates()) {
-        continue; // this is a relationship that does not follow the annotation-propagation rule (aka true path rule)
-      }
-      TermId destId = (TermId) edge.getTarget();
-      anccset.add(destId);
+    Set<IdLabeledEdge> outgoingEdges = ontology.getGraph().outgoingEdgesOf(childTermId);
+
+    // We'll be adding at most this many term IDs.
+    List<TermId> parents = includeOriginalTerm
+      ? new ArrayList<>(outgoingEdges.size() + 1)
+      : new ArrayList<>(outgoingEdges.size());
+
+    if (includeOriginalTerm)
+      parents.add(childTermId);
+
+    for (IdLabeledEdge edge : outgoingEdges) {
+      // We extract TermId of the edge source when getting children.
+      extractTermIdIfEdgeHasPropagatingRelationship(ontology, edge, e -> (TermId) e.getTarget())
+        .ifPresent(parents::add);
     }
-    return Set.copyOf(anccset);
+    return Set.copyOf(parents);
   }
 
   // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm.
@@ -257,4 +265,23 @@ public class OntologyAlgorithm {
     Ontology ontology, TermId t1, TermId t2) {
     return (!termsAreRelated(ontology, t1, t2));
   }
+
+  private static Optional<TermId> extractTermIdIfEdgeHasPropagatingRelationship(Ontology ontology,
+                                                                                IdLabeledEdge edge,
+                                                                                Function<IdLabeledEdge, TermId> termIdExtractor) {
+    int edgeId = edge.getId();
+    Relationship relationship = ontology.getRelationMap().get(edgeId);
+    if (relationship == null) {
+      logger.error("Could not retrieve relation for edge id={}, source={}, target={}", edgeId, edge.getSource(), edge.getTarget());
+      return Optional.empty();
+    }
+    RelationshipType relationshipType = relationship.getRelationshipType();
+    if (!relationshipType.propagates()) {
+      // We won't use this edge if it does not "propagate"
+      return Optional.empty();
+    }
+
+    return Optional.of(termIdExtractor.apply(edge));
+  }
+
 }
