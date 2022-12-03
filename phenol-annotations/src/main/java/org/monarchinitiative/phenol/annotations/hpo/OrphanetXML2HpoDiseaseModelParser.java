@@ -54,6 +54,7 @@ import javax.xml.stream.events.XMLEvent;
  *
  * @author Peter Robinson
  */
+@Deprecated(forRemoval = true)
 public class OrphanetXML2HpoDiseaseModelParser {
   private final static Logger logger = LoggerFactory.getLogger(OrphanetXML2HpoDiseaseModelParser.class);
   /**
