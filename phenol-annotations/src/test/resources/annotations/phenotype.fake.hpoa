@@ -1,15 +1,11 @@
-#description: Fake HPO annotation file for testing `HpoDiseaseLoader` implementations with descriptions in line.
-#date: 2021-08-02
-#tracker: https://github.com/obophenotype/human-phenotype-ontology
-#HPO-version: http://purl.obolibrary.org/obo/hp.obo/hp/releases/2021-08-02/hp.obo.owl
-#DatabaseID	DiseaseName	Qualifier	HPO_ID	Reference	Evidence	Onset	Frequency	Sex	Modifier	Aspect	Biocuration
-# Made up AD disease with Abnormality of finger (HP:0001167) and NOT Slender finger (HP:0001238).
+#description: "Fake HPO annotation file for testing `HpoDiseaseLoader` implementations with descriptions in line."
+#version: "2021-08-02"
+#tracker: "https://github.com/obophenotype/human-phenotype-ontology/issues"
+#hpo-version: "http://purl.obolibrary.org/obo/hp.obo/hp/releases/2021-08-02/hp.obo.owl"
+database_id disease_name  qualifier hpo_id  reference evidence onset frequency sex modifier  aspect  biocuration
 ORPHA:123456	Made-up Orphanet disease, autosomal dominant		HP:0001167	ORPHA:166035	TAS	HP:0003581	HP:0040283			P	ORPHA:orphadata[2021-08-02]
 ORPHA:123456	Made-up Orphanet disease, autosomal dominant	NOT	HP:0001238	ORPHA:166035	TAS					P	ORPHA:orphadata[2021-08-02]
 ORPHA:123456	Made-up Orphanet disease, autosomal dominant		HP:0000006	ORPHA:166035	TAS		HP:0040280			I	ORPHA:orphadata[2021-08-02]
-# Made up AR disease with Abnormality of finger (HP:0001167) and NOT Slender finger (HP:0001238).
-# Abnormality of finger is observed in 1/8 with childhood onset and in 4/5 with pediatric onset.
-# Slender finger is occasionally (HP:0040283) absent.
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:20375004	PCS	HP:0011463	1/8			P	HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:22736615	PCS	HP:0410280	4/5		HP:0012832;HP:0012828	P	HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive	NOT	HP:0001238	PMID:20375004	PCS		HP:0040283			P	HPO:skoehler[2010-06-20];HPO:probinson[2021-05-26]

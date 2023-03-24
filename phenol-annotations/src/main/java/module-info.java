@@ -3,8 +3,10 @@ module org.monarchinitiative.phenol.annotations {
 
   requires java.xml;
   requires org.slf4j;
+  requires org.yaml.snakeyaml;
+  requires org.apache.commons.text;
 
-  /*                                             Exports                                                              */
+    /*                                             Exports                                                              */
   exports org.monarchinitiative.phenol.annotations.analysis;
   exports org.monarchinitiative.phenol.annotations.assoc;
   exports org.monarchinitiative.phenol.annotations.base;
