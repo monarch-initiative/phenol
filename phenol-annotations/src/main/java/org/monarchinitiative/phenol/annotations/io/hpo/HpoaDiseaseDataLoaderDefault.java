@@ -24,9 +24,9 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoaDiseaseDataLoaderDefault.class);
 
-  private final Set<String> databasePrefixes;
+  private final Set<DiseaseDatabase> databasePrefixes;
 
-  HpoaDiseaseDataLoaderDefault(Set<String> prefixes) {
+  HpoaDiseaseDataLoaderDefault(Set<DiseaseDatabase> prefixes) {
     this.databasePrefixes = Objects.requireNonNull(prefixes);
   }
 
@@ -70,7 +70,7 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
         continue;
       }
 
-      if (!databasePrefixes.contains(annotationLine.diseaseId().getPrefix()))
+      if (!databasePrefixes.contains(DiseaseDatabase.fromString(annotationLine.diseaseId().getPrefix())))
         continue; // skip unless we want to keep this database
 
       annotationLinesByDiseaseId.computeIfAbsent(annotationLine.diseaseId(), k -> new ArrayList<>())

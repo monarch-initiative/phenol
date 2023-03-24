@@ -12,8 +12,8 @@ public class PhenotypeDotHpoaFileWriterTest {
     /** Note that the header should have a #
      */
     @Test
-    public void testV2Header() {
-        String expected="#DatabaseID\tDiseaseName\tQualifier\tHPO_ID\tReference\tEvidence\tOnset\tFrequency\tSex\tModifier\tAspect\tBiocuration";
+    public void testHpoaHeader() {
+        String expected="database_id\tdisease_name\tqualifier\thpo_id\treference\tevidence\tonset\tfrequency\tsex\tmodifier\taspect\tbiocuration";
         assertEquals(expected,PhenotypeDotHpoaFileWriter.getHeaderLine());
     }
 

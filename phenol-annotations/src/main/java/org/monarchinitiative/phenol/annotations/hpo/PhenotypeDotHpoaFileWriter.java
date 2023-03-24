@@ -271,7 +271,7 @@ public class PhenotypeDotHpoaFileWriter {
    * @return Header line for the big file (indicating column names for the data).
    */
   static String getHeaderLine() {
-    String[] fields = {"DatabaseID",
+    String[] fields = {"database_id",
       "disease_name",
       "qualifier",
       "hpo_id",

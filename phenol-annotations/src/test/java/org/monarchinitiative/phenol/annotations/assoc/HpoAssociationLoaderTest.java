@@ -3,12 +3,11 @@ package org.monarchinitiative.phenol.annotations.assoc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
-import org.monarchinitiative.phenol.annotations.formats.hpo.AssociationType;
-import org.monarchinitiative.phenol.annotations.formats.hpo.DiseaseToGeneAssociation;
-import org.monarchinitiative.phenol.annotations.formats.hpo.GeneToAssociation;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoAssociationData;
+import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoaDiseaseDataContainer;
+import org.monarchinitiative.phenol.annotations.io.hpo.HpoaDiseaseDataLoader;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -35,13 +34,13 @@ public class HpoAssociationLoaderTest {
     File hpoJson = new File(HpoAssociationLoaderTest.class.getResource("/hpo_toy.json").toURI());
     Ontology hpo = OntologyLoader.loadOntology(hpoJson);
 
-    Path homoSapiensGeneInfo = Path.of(HpoAssociationLoaderTest.class.getResource("/Homo_sapiens.gene_info.excerpt.gz").toURI());
+    Path homoSapiensGeneInfo = Path.of(HpoAssociationLoaderTest.class.getResource("/hgnc_complete_set.special.tsv").toURI());
     Path mimToMedgen = Path.of(HpoAssociationLoaderTest.class.getResource("/mim2gene_medgen.excerpt").toURI());
     Path orphaToGene = Path.of(HpoAssociationLoaderTest.class.getResource("/orphanet_disease2gene_en_product6_head.xml").toURI());
     Path hpoAssociations = Path.of(HpoAssociationLoaderTest.class.getResource("/annotations/phenotype.excerpt.hpoa").toURI());
     Set<DiseaseDatabase> diseaseDatabases = Set.of(DiseaseDatabase.OMIM, DiseaseDatabase.ORPHANET);
-
-    ASSOCIATION_DATA = HpoAssociationLoader.loadHpoAssociationData(hpo, homoSapiensGeneInfo, mimToMedgen, orphaToGene, hpoAssociations, HpoDiseaseLoaderOptions.of(diseaseDatabases, true, HpoDiseaseLoaderOptions.DEFAULT_COHORT_SIZE));
+    HpoaDiseaseDataContainer hpoDiseases = HpoaDiseaseDataLoader.of(diseaseDatabases).loadDiseaseData(hpoAssociations);
+    ASSOCIATION_DATA = HpoAssociationData.builder(hpo).orphaToGenePath(orphaToGene).hpoDiseases(hpoDiseases).mim2GeneMedgen(mimToMedgen).hgncCompleteSetArchive(homoSapiensGeneInfo).build();
   }
 
   @Test
@@ -63,7 +62,7 @@ public class HpoAssociationLoaderTest {
     assertThat(holtOramAssociations.diseaseId(), equalTo(holtOramSyndromeId));
     assertThat(holtOramAssociations.associations(), hasItem(GeneToAssociation.of(tbx5, AssociationType.MENDELIAN)));
 
-    Collection<TermId> diseasesAssociatedWithTbx5 = ASSOCIATION_DATA.geneToDiseases().get(tbx5.id());
+    Collection<TermId> diseasesAssociatedWithTbx5 = ASSOCIATION_DATA.associations().geneIdToDiseaseIds().get(tbx5.id());
     assertThat(diseasesAssociatedWithTbx5, hasSize(1));
     assertThat(diseasesAssociatedWithTbx5, hasItem(holtOramSyndromeId));
   }
@@ -82,7 +81,7 @@ public class HpoAssociationLoaderTest {
   @Test
   public void testFbn1() {
     TermId fbn1 = TermId.of("NCBIGene:2200");
-    Collection<TermId> diseasesAssociatedWithFbn1 = ASSOCIATION_DATA.geneToDiseases().get(fbn1);
+    Collection<TermId> diseasesAssociatedWithFbn1 = ASSOCIATION_DATA.associations().geneIdToDiseaseIds().get(fbn1);
     assertThat(diseasesAssociatedWithFbn1, hasSize(8));
     TermId[] expectedDiseases = new TermId[]{
       TermId.of("OMIM:102370"),
@@ -101,7 +100,7 @@ public class HpoAssociationLoaderTest {
   public void testFamilialHypercholesterolemiaGenes() {
     TermId familialHypercholesterolemia = TermId.of("OMIM:143890");
 
-    Collection<GeneIdentifier> genesAssociatedWithFH = ASSOCIATION_DATA.diseaseToGenes().get(familialHypercholesterolemia);
+    Collection<GeneIdentifier> genesAssociatedWithFH = ASSOCIATION_DATA.associations().diseaseIdToGeneIds().get(familialHypercholesterolemia);
 
     assertThat(genesAssociatedWithFH, hasSize(7));
     assertThat(genesAssociatedWithFH, hasItems(
@@ -117,7 +116,7 @@ public class HpoAssociationLoaderTest {
 
   @Test
   public void testDiseaseToGene() {
-    Collection<GeneIdentifier> geneIdentifiers = ASSOCIATION_DATA.diseaseToGenes().get(TermId.of("OMIM:143890"));
+    Collection<GeneIdentifier> geneIdentifiers = ASSOCIATION_DATA.associations().diseaseIdToGeneIds().get(TermId.of("OMIM:143890"));
     assertThat(geneIdentifiers, hasSize(7));
   }
 
