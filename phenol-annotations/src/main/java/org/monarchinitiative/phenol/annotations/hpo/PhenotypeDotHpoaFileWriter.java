@@ -218,19 +218,18 @@ public class PhenotypeDotHpoaFileWriter {
    * @throws IOException if we cannot write to file.
    */
   public void outputBigFile() throws IOException {
-    String description = String.format("#description: HPO annotations for rare diseases [%d: OMIM; %d: DECIPHER; %d ORPHANET]", n_omim, n_decipher, n_orphanet);
+    String description = String.format("#description: \"HPO annotations for rare diseases [%d: OMIM; %d: DECIPHER; %d ORPHANET]\"", n_omim, n_decipher, n_orphanet);
     if (n_unknown > 0)
       description = String.format("%s -- warning: %d entries could not be assigned to a database", description, n_unknown);
     BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
     writer.write(description + "\n");
-    writer.write(String.format("#date: %s\n", getDate()));
-    writer.write("#tracker: https://github.com/obophenotype/human-phenotype-ontology\n");
+    writer.write(String.format("#version: %s\n", getDate()));
+    writer.write("#tracker: https://github.com/obophenotype/human-phenotype-ontology/issues\n");
+
     if (ontologyMetaInfo.containsKey("data-version")) {
-      writer.write(String.format("#HPO-version: %s\n", ontologyMetaInfo.get("data-version")));
+      writer.write(String.format("#hpo-version: %s\n", ontologyMetaInfo.get("data-version")));
     }
-    if (ontologyMetaInfo.containsKey("saved-by")) {
-      writer.write(String.format("#HPO-contributors: %s\n", ontologyMetaInfo.get("saved-by")));
-    }
+
     int n = 0;
     writer.write(getHeaderLine() + "\n");
     for (HpoAnnotationModel smallFile : this.internalAnnotationModelList) {
@@ -269,23 +268,23 @@ public class PhenotypeDotHpoaFileWriter {
   }
 
   /**
-   * Create header line with all of the fields. Prepend a '#' symbol
+   * Create header line with the fields. Prepend a '#' symbol
    * @return Header line for the big file (indicating column names for the data).
    */
   static String getHeaderLine() {
-    String[] fields = {"DatabaseID",
-      "DiseaseName",
-      "Qualifier",
-      "HPO_ID",
-      "Reference",
-      "Evidence",
-      "Onset",
-      "Frequency",
-      "Sex",
-      "Modifier",
-      "Aspect",
-      "Biocuration"};
-    return "#" + String.join("\t", fields);
+    String[] fields = {"database_id",
+      "disease_name",
+      "qualifier",
+      "hpo_id",
+      "reference",
+      "evidence",
+      "onset",
+      "frequency",
+      "sex",
+      "modifier",
+      "aspect",
+      "biocuration"};
+    return String.join("\t", fields);
   }
 
 

@@ -30,7 +30,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
   private final HpoaDiseaseDataLoader loader;
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
-  protected final Set<String> databasePrefixes;
+  protected final Set<DiseaseDatabase> databasePrefixes;
   protected final Set<TermId> clinicalCourseSubHierarchy;
   protected final Set<TermId> inheritanceSubHierarchy;
 
@@ -39,9 +39,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     Objects.requireNonNull(options, "Options must not be null.");
     this.cohortSize = options.cohortSize();
     this.salvageNegatedFrequencies = options.salvageNegatedFrequencies();
-    this.databasePrefixes = options.includedDatabases().stream()
-      .map(DiseaseDatabase::prefix)
-      .collect(Collectors.toUnmodifiableSet());
+    this.databasePrefixes = options.includedDatabases();
     this.loader = HpoaDiseaseDataLoader.of(databasePrefixes);
 
     this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
