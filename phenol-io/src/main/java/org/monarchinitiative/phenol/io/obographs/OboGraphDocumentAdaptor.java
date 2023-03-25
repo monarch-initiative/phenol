@@ -69,6 +69,8 @@ public class OboGraphDocumentAdaptor {
     private Map<String, String> metaInfo;
     private List<Term> terms;
     private List<Relationship> relationships;
+    // An option used for discarding non-propagating relationships during loading.
+    private boolean discardNonPropagatingRelationships = false;
 
     public Builder curieUtil(CurieUtil curieUtil) {
       Objects.requireNonNull(curieUtil);
@@ -79,6 +81,11 @@ public class OboGraphDocumentAdaptor {
     public Builder wantedTermIdPrefixes(Set<String> wantedTermIdPrefixes) {
       Objects.requireNonNull(wantedTermIdPrefixes);
       this.wantedTermIdPrefixes = wantedTermIdPrefixes;
+      return this;
+    }
+
+    public Builder discardNonPropagatingRelationships(boolean value) {
+      this.discardNonPropagatingRelationships = value;
       return this;
     }
 
@@ -222,6 +229,10 @@ public class OboGraphDocumentAdaptor {
 
         if (subjectTermId != null && objectTermId != null) {
           RelationshipType relType = RelationshipType.of(edge.getPred(), propertyIdLabels.getOrDefault(edge.getPred(), "unknown"));
+          if (discardNonPropagatingRelationships && !relType.propagates())
+            // The user decided to drop non-propagating relationships.
+            continue;
+
           Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, relType);
           relationshipsList.add(relationship);
         }

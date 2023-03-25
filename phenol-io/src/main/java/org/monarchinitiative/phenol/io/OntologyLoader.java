@@ -53,16 +53,31 @@ public class OntologyLoader {
   }
 
   public static Ontology loadOntology(InputStream inputStream, CurieUtil curieUtil, String... termIdPrefixes) {
+    return loadOntology(inputStream, curieUtil, OntologyLoaderOptions.defaultOptions(), termIdPrefixes);
+  }
+
+  public static Ontology loadOntology(InputStream inputStream,
+                                      CurieUtil curieUtil,
+                                      OntologyLoaderOptions options,
+                                      String... termIdPrefixes) {
     GraphDocument graphDocument = loadGraphDocument(inputStream);
-    return loadOntology(graphDocument, curieUtil, termIdPrefixes);
+    return loadOntology(graphDocument, curieUtil, options, termIdPrefixes);
   }
 
   public static Ontology loadOntology(GraphDocument graphDocument, CurieUtil curieUtil, String... termIdPrefixes) {
+    return loadOntology(graphDocument, curieUtil, OntologyLoaderOptions.defaultOptions(), termIdPrefixes);
+  }
+
+  public static Ontology loadOntology(GraphDocument graphDocument,
+                                      CurieUtil curieUtil,
+                                      OntologyLoaderOptions options,
+                                      String... termIdPrefixes) {
     logger.debug("Finished loading ontology");
     logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
       .wantedTermIdPrefixes(Set.of(termIdPrefixes))
+      .discardNonPropagatingRelationships(options.discardNonPropagatingRelationships())
       .build(graphDocument);
 
     Ontology ontology = graphDocumentAdaptor.buildOntology();
@@ -71,8 +86,8 @@ public class OntologyLoader {
   }
 
   private static GraphDocument loadGraphDocument(File file) {
-    try {
-      return loadGraphDocument(new FileInputStream(file));
+    try (InputStream is = new BufferedInputStream(new FileInputStream(file))){
+      return loadGraphDocument(is);
     } catch (IOException e) {
       throw new PhenolRuntimeException("Unable to load ontology", e);
     }
