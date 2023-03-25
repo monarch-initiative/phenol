@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,8 +22,9 @@ public final class TermIds {
    * @param includeRoot Whether or not to include the root.
    * @return Augmented version of {@code termIds} (not a copy) with ancestors of all elements.
    */
-  public static Set<TermId> augmentWithAncestors(Ontology ontology, Set<TermId> termIds, boolean includeRoot) {
-    termIds.addAll(ontology.getAllAncestorTermIds(termIds, includeRoot));
-    return termIds;
+  public static Set<TermId> augmentWithAncestors(Ontology ontology, Collection<TermId> termIds, boolean includeRoot) {
+    Set<TermId> augmented = new HashSet<>(termIds);
+    augmented.addAll(ontology.getAllAncestorTermIds(termIds, includeRoot));
+    return augmented;
   }
 }

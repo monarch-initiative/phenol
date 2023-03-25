@@ -11,15 +11,15 @@ import java.util.concurrent.Callable;
 public class GoCommand implements Callable<Integer> {
 
   @CommandLine.Option(names = {"-o", "--obo"}, description = "path to go.obo file", required = true)
-  private String pathGoObo;
+  public String pathGoObo;
   @CommandLine.Option(names = {"-a", "--annot"}, description = "path to go association file (e.g., goa_human.gaf", required = true)
-  private String pathGoGaf;
+  public String pathGoGaf;
   /**
    * For the demo, We will create a study set that has 1/3 of the genes associated with this term
    * and three times as many other terms. The default GO:0070997 is 'neuron death'.
    */
   @CommandLine.Option(names = {"-i", "--id"}, description = "term ID to search for enrichment")
-  private String goTermId = "GO:0097190";
+  public String goTermId = "GO:0097190";
 
   @Override
   public Integer call() {

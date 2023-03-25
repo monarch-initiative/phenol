@@ -12,9 +12,9 @@ import java.util.concurrent.Callable;
 public class HpDemoCommand implements Callable<Integer> {
 
     @CommandLine.Option(names = {"-o","--obo"}, description = "path to hp.obo file", required = true)
-    private String hpoPath;
+    public String hpoPath;
     @CommandLine.Option(names = {"-a","--annot"}, description = "path to HPO annotation file (phenotyoe.hpoa", required = true)
-    private String annotPath;
+    public String annotPath;
 
 
 
