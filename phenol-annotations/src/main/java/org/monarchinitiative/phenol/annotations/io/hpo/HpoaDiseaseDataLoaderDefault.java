@@ -1,15 +1,9 @@
 package org.monarchinitiative.phenol.annotations.io.hpo;
 
-import org.apache.commons.text.CaseUtils;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +12,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoaDiseaseDataLoaderDefault.class);
+  private static final Pattern VERSION_PATTERN = Pattern.compile("#(version|date): (?<version>[\\w\\d-]+)$");
+  private static final Pattern HPO_VERSION_PATTERN = Pattern.compile("#(HPO-version|hpo-version): .*/(?<hpoversion>[^/]+)/hp\\.obo\\.owl$");
 
   private final Set<DiseaseDatabase> databasePrefixes;
 
@@ -36,30 +34,40 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
 
     Map<TermId, List<HpoAnnotationLine>> annotationLinesByDiseaseId = new HashMap<>();
     boolean header = false;
-    HpoAnnotationMetadata metadata = new HpoAnnotationMetadata();
-    StringBuilder metaDataBuilder = new StringBuilder();
+    String version = null;
+    String hpoVersion = null;
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
       // Comment Lines
       if (line.startsWith("#")) {
-        metaDataBuilder.append(String.format("%s\n", line.replace("#", "")));
+        if(line.startsWith("#version:") || line.startsWith("#date:")){
+          Matcher matcher = VERSION_PATTERN.matcher(line);
+          if (matcher.matches()){
+            version = matcher.group("version");
+          }
+        } else if(line.toLowerCase().startsWith("#hpo-version:")){
+            Matcher matcher = HPO_VERSION_PATTERN.matcher(line);
+            if (matcher.matches()){
+              hpoVersion = matcher.group("hpoversion");
+            }
+        }
         continue;
       }
 
       // Header Line
-      // Build our yml for metadata to HpoaMetadata
       if (!header) {
-        Constructor c = new Constructor(HpoAnnotationMetadata.class, new LoaderOptions());
-        c.setPropertyUtils(new PropertyUtils() {
-          @Override
-          public Property getProperty(Class<? extends Object> type, String name){
-            name = CaseUtils.toCamelCase(String.join(" ", name.split("\\-")), false);
-            return super.getProperty(type, name);
-          }
-        });
-        final Yaml yaml = new Yaml(c);
-        metadata = yaml.load(metaDataBuilder.toString());
+        if (version == null || (!version.equals(hpoVersion))){
+          LOGGER.error("HPOA disease data version was not found or ontology mismatch.");
+          throw new IOException("HPOA disease data version was not found or ontology mismatch.");
+        }
         header = true;
-        continue;
+        // Old format catcher
+        if(line.startsWith("database_id")){
+          if (line.split("\t").length != 12){
+            LOGGER.error("HPOA header column does not have expected column length.");
+            throw new IOException("HPOA header column does not have expected column length.");
+          }
+          continue;
+        }
       }
 
       HpoAnnotationLine annotationLine;
@@ -77,17 +85,11 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
         .add(annotationLine);
     }
 
-    if (metadata.version == null || metadata.version.isEmpty()){
-        LOGGER.error("HPOA disease data version was not found");
-        throw new IOException("Missing version header line.");
-    }
-
-
     List<HpoaDiseaseData> data = annotationLinesByDiseaseId.entrySet().stream()
       .map(processAnnotationEntry())
       .collect(Collectors.toList());
 
-    return new HpoaDiseaseDataContainer(metadata.version, data);
+    return new HpoaDiseaseDataContainer(version, data);
   }
 
   private static Function<Map.Entry<TermId, List<HpoAnnotationLine>>, HpoaDiseaseData> processAnnotationEntry() {

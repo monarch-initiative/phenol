@@ -3,8 +3,6 @@ module org.monarchinitiative.phenol.annotations {
 
   requires java.xml;
   requires org.slf4j;
-  requires org.yaml.snakeyaml;
-  requires org.apache.commons.text;
 
     /*                                             Exports                                                              */
   exports org.monarchinitiative.phenol.annotations.analysis;

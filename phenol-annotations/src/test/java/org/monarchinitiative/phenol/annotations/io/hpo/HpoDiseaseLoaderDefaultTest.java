@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.*;
 public class HpoDiseaseLoaderDefaultTest {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
+  private static final Path HPOA_OLD = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.old.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
   private static final HpoDiseaseLoaderOptions OPTIONS = HpoDiseaseLoaderOptions.defaultOptions();
 
@@ -97,9 +98,10 @@ public class HpoDiseaseLoaderDefaultTest {
 
   @Test
   public void diseaseDataHasVersion() throws Exception {
-    HpoDiseases diseases = instance.load(HPOA);
-
-    assertThat(diseases.version().isPresent(), equalTo(true));
-    assertThat(diseases.version().get(), equalTo("2021-08-02"));
+    for (Path test: List.of(HPOA, HPOA_OLD)) {
+      HpoDiseases diseases = instance.load(test);
+      assertThat(diseases.version().isPresent(), equalTo(true));
+      assertThat(diseases.version().get(), equalTo("2021-08-02"));
+    }
   }
 }

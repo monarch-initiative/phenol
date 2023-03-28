@@ -19,6 +19,7 @@ import java.util.*;
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@Deprecated // Move to annotqc
 public class PhenotypeDotHpoaFileWriter {
   private final static Logger logger = LoggerFactory.getLogger(PhenotypeDotHpoaFileWriter.class);
   /**
