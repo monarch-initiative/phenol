@@ -32,6 +32,7 @@ import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTer
  * This class represents the contents of a single annotation line.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  */
 @Deprecated(forRemoval = true)
 public class HpoAnnotationEntry {

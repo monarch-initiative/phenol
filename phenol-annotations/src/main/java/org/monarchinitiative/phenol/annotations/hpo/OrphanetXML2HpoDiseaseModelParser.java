@@ -53,6 +53,7 @@ import javax.xml.stream.events.XMLEvent;
  * That is, we extract the Orphanumber and the name and then there is a list of annotations.
  *
  * @author Peter Robinson
+ * @deprecated to be removed in v3.0.0.
  */
 @Deprecated(forRemoval = true)
 public class OrphanetXML2HpoDiseaseModelParser {

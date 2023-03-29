@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoaDiseaseDataLoaderDefault.class);
-  private static final Pattern VERSION_PATTERN = Pattern.compile("#(version|date): (?<version>[\\w\\d-]+)$");
-  private static final Pattern HPO_VERSION_PATTERN = Pattern.compile("#(HPO-version|hpo-version): .*/(?<hpoversion>[^/]+)/hp\\.obo\\.owl$");
+  private static final Pattern VERSION_PATTERN = Pattern.compile("#(version|date): (?<version>[\\w-]+)$");
+  private static final Pattern HPO_VERSION_PATTERN = Pattern.compile("#hpo-version: .*/(?<hpoversion>[^/]+)/hp\\.(json|obo\\.owl|obo|owl)$", Pattern.CASE_INSENSITIVE);
 
   private final Set<DiseaseDatabase> databasePrefixes;
 
@@ -33,7 +33,7 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
     Map<TermId, List<HpoAnnotationLine>> annotationLinesByDiseaseId = new HashMap<>();
-    boolean header = false;
+    boolean finishedParsingHeader = false;
     String version = null;
     String hpoVersion = null;
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
@@ -43,29 +43,30 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
           Matcher matcher = VERSION_PATTERN.matcher(line);
           if (matcher.matches()){
             version = matcher.group("version");
+            LOGGER.debug("Detected HPO annotations version {}", version);
+          } else {
+            LOGGER.warn("Could not parse HPO annotations version from the line {}", line);
           }
         } else if(line.toLowerCase().startsWith("#hpo-version:")){
             Matcher matcher = HPO_VERSION_PATTERN.matcher(line);
             if (matcher.matches()){
               hpoVersion = matcher.group("hpoversion");
+              LOGGER.debug("HPO version used to generate the annotations {}", hpoVersion);
+            } else {
+              LOGGER.warn("Could not determine HPO version from the line {}", line);
             }
         }
         continue;
       }
 
-      // Header Line
-      if (!header) {
-        if (version == null || (!version.equals(hpoVersion))){
-          LOGGER.error("HPOA disease data version was not found or ontology mismatch.");
-          throw new IOException("HPOA disease data version was not found or ontology mismatch.");
-        }
-        header = true;
-        // Old format catcher
-        if(line.startsWith("database_id")){
-          if (line.split("\t").length != 12){
+      // The new format has a header that does not start with `#`
+      if (!finishedParsingHeader) {
+        if (line.startsWith("database_id")) {
+          if (line.split("\t").length != 12) {
             LOGGER.error("HPOA header column does not have expected column length.");
             throw new IOException("HPOA header column does not have expected column length.");
           }
+          finishedParsingHeader = true;
           continue;
         }
       }
@@ -89,7 +90,7 @@ class HpoaDiseaseDataLoaderDefault implements HpoaDiseaseDataLoader {
       .map(processAnnotationEntry())
       .collect(Collectors.toList());
 
-    return new HpoaDiseaseDataContainer(version, data);
+    return new HpoaDiseaseDataContainer(version, hpoVersion, data);
   }
 
   private static Function<Map.Entry<TermId, List<HpoAnnotationLine>>, HpoaDiseaseData> processAnnotationEntry() {

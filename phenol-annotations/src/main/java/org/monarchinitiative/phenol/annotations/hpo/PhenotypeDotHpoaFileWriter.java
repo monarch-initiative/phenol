@@ -18,9 +18,9 @@ import java.util.*;
  * aggregated from the ca. 7000 small files.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  */
-
-@Deprecated()
+@Deprecated
 public class PhenotypeDotHpoaFileWriter {
   private final static Logger logger = LoggerFactory.getLogger(PhenotypeDotHpoaFileWriter.class);
   /**

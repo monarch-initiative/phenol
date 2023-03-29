@@ -19,6 +19,7 @@ import java.util.*;
  * (and which colloquially we have called the "big-file").
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  * Created by peter on 2/05/2018.
  */
 @Deprecated(forRemoval = true)
