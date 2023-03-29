@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * Created by peter on 1/20/2018.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationModel {
   /**
    * The base name of the HPO Annotation file.

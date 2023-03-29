@@ -16,6 +16,7 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * and import into {@link HpoDisease} objects).
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationAlgorithms {
 
   /**

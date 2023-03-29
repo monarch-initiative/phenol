@@ -21,6 +21,7 @@ import java.util.*;
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationFileIngestor {
   /**
    * Reference to the HPO object.

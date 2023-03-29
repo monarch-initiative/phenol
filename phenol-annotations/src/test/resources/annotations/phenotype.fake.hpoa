@@ -10,3 +10,11 @@ OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:20375004	
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0001167	PMID:22736615	PCS	HP:0410280	4/5		HP:0012832;HP:0012828	P	HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive	NOT	HP:0001238	PMID:20375004	PCS		HP:0040283			P	HPO:skoehler[2010-06-20];HPO:probinson[2021-05-26]
 OMIM:987654	Made-up OMIM disease, autosomal recessive		HP:0000007	PMID:20375004	PCS					I	HPO:iea[2009-02-17];HPO:probinson[2021-05-26]
+# Made up AR disease with Abnormality of the upper limb (HP:0002817) with Adult onset (HP:0003581)
+# (obviously odd, but just for the sake of testing),
+# autosomal recessive inheritance (HP:0000007), and Childhood onset (HP:0011463).
+# The disease is used to test if global disease onset is parsed correctly. The global disease onset
+# should be Childhood and not Adult.
+OMIM:111111	Made-up OMIM disease with childhood global onset, AR		HP:0002817	PMID:1234567	PCS	HP:0003581				P	HPO:iea[2009-02-17]
+OMIM:111111	Made-up OMIM disease with childhood global onset, AR		HP:0000007	PMID:1234567	PCS					I	HPO:iea[2009-02-17]
+OMIM:111111	Made-up OMIM disease with childhood global onset, AR		HP:0011463	PMID:1234567	PCS					C	HPO:iea[2022-02-17]
