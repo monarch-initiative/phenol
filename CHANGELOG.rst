@@ -3,6 +3,11 @@ Changelog
 =========
 
 ------
+latest
+------
+
+
+------
 v2.0.0
 ------
 - Upgrade to Java 11+, add ``module-info`` files
