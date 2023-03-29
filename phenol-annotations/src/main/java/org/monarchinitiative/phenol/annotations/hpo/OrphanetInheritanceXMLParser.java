@@ -17,6 +17,10 @@ import java.util.*;
 
 import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds.*;
 
+/**
+ * @deprecated to be removed in v3.0.0.
+ */
+@Deprecated(forRemoval = true)
 public class OrphanetInheritanceXMLParser {
   /**
    * Path to {@code en_product9_age.xml} file.

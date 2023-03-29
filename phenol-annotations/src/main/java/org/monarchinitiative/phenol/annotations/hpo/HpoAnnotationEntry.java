@@ -32,7 +32,9 @@ import static org.monarchinitiative.phenol.annotations.constants.hpo.HpoOnsetTer
  * This class represents the contents of a single annotation line.
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationEntry {
   private final static Logger logger = LoggerFactory.getLogger(HpoAnnotationEntry.class);
   // To match e.g. 10/20
@@ -627,7 +629,7 @@ public class HpoAnnotationEntry {
     } else {
       TermId current = ontology.getTermMap().get(id).id();
       if (!current.equals(id)) {
-        throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
+        throw new ObsoleteTermIdRuntimeException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
           id.getValue(),
           current.getValue(),
           ontology.getTermMap().get(id).getName()));
@@ -665,7 +667,7 @@ public class HpoAnnotationEntry {
     }
     TermId current = ontology.getTermMap().get(tid).id();
     if (!current.equals(tid)) {
-      throw new ObsoleteTermIdException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
+      throw new ObsoleteTermIdRuntimeException(String.format("Usage of (obsolete) alt_id %s for %s (%s)",
         tid.getValue(),
         current.getValue(),
         ontology.getTermMap().get(tid).getName()));

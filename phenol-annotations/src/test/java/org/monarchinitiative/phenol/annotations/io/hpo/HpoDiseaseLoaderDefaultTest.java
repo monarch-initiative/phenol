@@ -5,11 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.annotations.TestBase;
 import org.monarchinitiative.phenol.annotations.base.temporal.PointInTime;
+import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.formats.AnnotationReference;
 import org.monarchinitiative.phenol.annotations.formats.EvidenceCode;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseaseAnnotation;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDiseases;
+import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.*;
 public class HpoDiseaseLoaderDefaultTest {
 
   private static final Path HPOA = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.hpoa");
+  private static final Path HPOA_OLD = TestBase.TEST_BASE.resolve("annotations").resolve("phenotype.fake.old.hpoa");
   private static final Path HPO_PATH = TestBase.TEST_BASE.resolve("hpo_toy.json");
   private static final HpoDiseaseLoaderOptions OPTIONS = HpoDiseaseLoaderOptions.defaultOptions();
 
@@ -50,8 +53,8 @@ public class HpoDiseaseLoaderDefaultTest {
   public void testPresenceOfExpectedDiseaseIds() throws Exception {
     HpoDiseases hpoDiseases = instance.load(HPOA);
 
-    assertThat(hpoDiseases.diseaseIds(), hasSize(2));
-    assertThat(hpoDiseases.diseaseIds(), hasItems(TermId.of("OMIM:987654"), TermId.of("ORPHA:123456")));
+    assertThat(hpoDiseases.diseaseIds(), hasSize(3));
+    assertThat(hpoDiseases.diseaseIds(), hasItems(TermId.of("OMIM:987654"), TermId.of("ORPHA:123456"), TermId.of("OMIM:111111")));
   }
 
   @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -97,9 +100,28 @@ public class HpoDiseaseLoaderDefaultTest {
 
   @Test
   public void diseaseDataHasVersion() throws Exception {
-    HpoDiseases diseases = instance.load(HPOA);
+    for (Path test: List.of(HPOA, HPOA_OLD)) {
+      HpoDiseases diseases = instance.load(test);
+      assertThat(diseases.version().isPresent(), equalTo(true));
+      assertThat(diseases.version().get(), equalTo("2021-08-02"));
+    }
+  }
 
-    assertThat(diseases.version().isPresent(), equalTo(true));
-    assertThat(diseases.version().get(), equalTo("2021-08-02"));
+  @Test
+  public void globalOnset() throws Exception {
+    HpoDiseases hpoDiseases = instance.load(HPOA);
+
+    Optional<HpoDisease> diseaseOptional = hpoDiseases.diseaseById(TermId.of("OMIM:111111"));
+
+    assertThat(diseaseOptional.isPresent(), equalTo(true));
+
+    HpoDisease syndrome = diseaseOptional.get();
+
+    Optional<TemporalInterval> onsetOpt = syndrome.diseaseOnset();
+    assertThat(onsetOpt.isPresent(), equalTo(true));
+
+    TemporalInterval onset = onsetOpt.get();
+    assertThat(onset.start().days(), equalTo(HpoOnset.CHILDHOOD_ONSET.start().days()));
+    assertThat(onset.end().days(), equalTo(HpoOnset.CHILDHOOD_ONSET.end().days()));
   }
 }

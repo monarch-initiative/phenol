@@ -20,7 +20,9 @@ import java.util.*;
  * omitted. The output of this class is a list of {@link HpoAnnotationModel} objects
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationFileIngestor {
   /**
    * Reference to the HPO object.

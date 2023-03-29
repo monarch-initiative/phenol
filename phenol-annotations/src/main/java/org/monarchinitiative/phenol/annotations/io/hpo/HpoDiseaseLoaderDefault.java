@@ -30,7 +30,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
   private final HpoaDiseaseDataLoader loader;
   private final int cohortSize;
   private final boolean salvageNegatedFrequencies;
-  protected final Set<String> databasePrefixes;
+  protected final Set<DiseaseDatabase> databasePrefixes;
   protected final Set<TermId> clinicalCourseSubHierarchy;
   protected final Set<TermId> inheritanceSubHierarchy;
 
@@ -39,9 +39,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     Objects.requireNonNull(options, "Options must not be null.");
     this.cohortSize = options.cohortSize();
     this.salvageNegatedFrequencies = options.salvageNegatedFrequencies();
-    this.databasePrefixes = options.includedDatabases().stream()
-      .map(DiseaseDatabase::prefix)
-      .collect(Collectors.toUnmodifiableSet());
+    this.databasePrefixes = options.includedDatabases();
     this.loader = HpoaDiseaseDataLoader.of(databasePrefixes);
 
     this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
@@ -66,9 +64,33 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     return HpoDiseases.of(container.version().orElse(null), diseases);
   }
 
-  private static TemporalInterval calculateGlobalOnset(Iterable<HpoDiseaseAnnotation> annotations) {
+  /**
+   * Calculate global onset based on {@code clinicalCourseTerms} (with help of {@link HpoOnset}) or from disease
+   * {@code annotations}. The annotations are used if onset cannot be found based on {@code clinicalCourseTerms}.
+   * {@code null} is returned if both methods fail.
+   */
+  private static TemporalInterval calculateGlobalOnset(Iterable<TermId> clinicalCourseTerms,
+                                                Iterable<HpoDiseaseAnnotation> annotations) {
     PointInTime start = null, end = null;
 
+    for (TermId clinicalCourse : clinicalCourseTerms) {
+      Optional<HpoOnset> onset = HpoOnset.fromTermId(clinicalCourse);
+      if (onset.isPresent()) {
+        HpoOnset current = onset.get();
+        start = start == null
+          ? current.start()
+          : PointInTime.min(current.start(), start);
+        end = end == null
+          ? current.end()
+          : PointInTime.max(current.end(), end);
+      }
+    }
+
+    if (start != null && end != null)
+      // We're done, let's use the onset based on the clinical course terms.
+      return TemporalInterval.of(start, end);
+
+    // Derive the global onset from the phenotype features
     for (HpoDiseaseAnnotation annotation : annotations) {
       if (annotation.isPresent()) {
         Optional<PointInTime> onset = annotation.earliestOnset();
@@ -157,7 +179,8 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     String diseaseName = null;
     for (HpoAnnotationLine line : annotationLines) {
       // disease name
-      diseaseName = line.diseaseName();
+      if (diseaseName == null)
+        diseaseName = line.diseaseName();
 
       // phenotype term
       TermId phenotypeId = line.phenotypeTermId();
@@ -193,7 +216,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
       .flatMap(Optional::stream)
       .collect(Collectors.toUnmodifiableList());
 
-    TemporalInterval globalOnset = calculateGlobalOnset(annotations);
+    TemporalInterval globalOnset = calculateGlobalOnset(partitioned.clinicalCourseTerms, annotations);
 
     return Optional.of(
       HpoDisease.of(

@@ -1,9 +1,5 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry;
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel;
-import org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModelException;
-import org.monarchinitiative.phenol.annotations.hpo.ObsoleteTermIdException;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
@@ -23,8 +19,10 @@ import java.util.*;
  * (and which colloquially we have called the "big-file").
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  * Created by peter on 2/05/2018.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationFileParser {
   private final static Logger logger = LoggerFactory.getLogger(OrphanetXML2HpoDiseaseModelParser.class);
   /**
@@ -98,7 +96,7 @@ public class HpoAnnotationFileParser {
         try {
           HpoAnnotationEntry entry = HpoAnnotationEntry.fromLine(line, ontology);
           entryList.add(entry);
-        } catch (ObsoleteTermIdException obsE) {
+        } catch (ObsoleteTermIdRuntimeException obsE) {
           // try to rescue obsolete termid!
           Optional<HpoAnnotationEntry> entryOpt = HpoAnnotationEntry.fromLineReplaceObsoletePhenotypeData(line, ontology);
           entryOpt.ifPresent(entryList::add);

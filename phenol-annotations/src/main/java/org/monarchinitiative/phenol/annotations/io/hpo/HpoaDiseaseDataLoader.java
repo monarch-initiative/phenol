@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream;
 
 public interface HpoaDiseaseDataLoader {
 
-  static HpoaDiseaseDataLoader of(Set<String> databasePrefixes) {
+  static HpoaDiseaseDataLoader of(Set<DiseaseDatabase> databasePrefixes) {
     return new HpoaDiseaseDataLoaderDefault(databasePrefixes);
   }
 

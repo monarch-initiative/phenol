@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease;
-import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -15,7 +14,9 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getAn
  * of HPO annotations (generally, following parsing of the HPO annotation file {@code phenotype.hpoa}
  * and import into {@link HpoDisease} objects).
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @deprecated to be removed in v3.0.0.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationAlgorithms {
 
   /**

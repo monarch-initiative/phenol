@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "phenol demo",
   mixinStandardHelpOptions = true,
-  version = "2.0.0-RC5",
+  version = "2.0.0",
   description = "phenol demo programs")
 public class Main implements Callable<Integer> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -25,6 +25,7 @@ public class Main implements Callable<Integer> {
       .addSubcommand("mpo", new MpDemoCommand())
       .addSubcommand("precompute-scores", new PrecomputeScoresCommand())
       .addSubcommand("resnik-gene", new ResnikCommand())
+      .addSubcommand("precompute-resnik", new PrecomputeResnikMapCommand())
       ;
     cline.setToggleBooleanFlags(false);
     int exitCode = cline.execute(args);

@@ -11,9 +11,9 @@ import java.util.concurrent.Callable;
 public class MondoDemoCommand implements Callable<Integer> {
 
   @CommandLine.Option(names = {"-m", "--mondo"}, description = "path to mondo.obo file", required = true)
-  private String mondoPath;
+  public String mondoPath;
   @CommandLine.Option(names = {"-o", "--outfile"}, description = "name/path of output file", required = true)
-  private String outPath;
+  public String outPath;
 
 
   @Override

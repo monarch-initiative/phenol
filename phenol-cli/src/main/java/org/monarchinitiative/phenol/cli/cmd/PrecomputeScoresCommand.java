@@ -20,53 +20,53 @@ public class PrecomputeScoresCommand implements Callable<Integer> {
     names = {"-t", "--num-threads"},
     description = "Number of threads to use."
   )
-  private int numThreads = 1;
+  public int numThreads = 1;
 
 
   @CommandLine.Option(
     names = {"--min-num-terms"},
     description = "Minimal number of terms to precompute for."
   )
-  private int minNumTerms = 1;
+  public int minNumTerms = 1;
 
   @CommandLine.Option(
     names = {"--max-num-terms"},
     description = "Maximal number of terms to precompute for."
   )
-  private int maxNumTerms = 20;
+  public int maxNumTerms = 20;
 
   @CommandLine.Option(
     names = {"--num-iterations"},
     description = "Number of iterations to run."
   )
-  private int numIterations = 10_000;
+  public int numIterations = 10_000;
 
   @CommandLine.Option(
     names = {"--seed"},
     description = "Seed to use for RNG."
   )
-  private int seed = 42;
+  public int seed = 42;
 
   @CommandLine.Option(
     names = {"--input-obo-file"},
     description = "Path to (HPO) OBO file to load.",
     required = true
   )
-  private String oboFile;
+  public String oboFile;
 
   @CommandLine.Option(
     names = {"--gene-to-term-file"},
     description = "Path to gene-to-term link file.",
     required = true
   )
-  private String geneToTermLinkFile;
+  public String geneToTermLinkFile;
 
   @CommandLine.Option(
     names = {"--output-score-dist"},
     description = "Path to output score distribution file",
     required = true
   )
-  private String outputScoreDistFile;
+  public String outputScoreDistFile;
 
   /** @return Return number of threads to use. */
   public int getNumThreads() {

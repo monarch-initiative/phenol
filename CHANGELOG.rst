@@ -10,6 +10,7 @@ v2.0.0
 - Speed up build by adding a new build profile
 - ``phenol-core``
   - ``MinimalOntology`` has a version
+  - do not use non-propagating relationships during ontology traversals
 - ``phenol-io``
   - Dropping support for reading OBO/OWL ontologies
   - drop non-modular `curie-util` dependency
@@ -20,6 +21,8 @@ v2.0.0
   - Implement ``HGNCGeneIdentifierLoader`` for reading ``GeneIdentifiers`` from HGNC complete set archive.
   - Add new ``HpoOnset`` terms.
   - Consolidate hardcoded HPO constants (``TermId``s) into ``org.monarchinitiative.phenol.annotations.constants.hpo`` package
+  - Standardize HPO annotations header, ensure the parsers can read the older releases.
+  - Deprecate the code for parsing small files and move to hpoannotQC
 
 ------
 v1.6.3

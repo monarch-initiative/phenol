@@ -7,7 +7,9 @@ import org.monarchinitiative.phenol.base.PhenolException;
  * generation of a {@link org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationModel} or
  * {@link org.monarchinitiative.phenol.annotations.hpo.HpoAnnotationEntry} (single line of an HPO annotation file)
  * @author Peter Robinson
+ * @deprecated to be removed in v3.0.0.
  */
+@Deprecated(forRemoval = true)
 public class HpoAnnotationModelException extends PhenolException {
   private final static long serialVersionUID = 2;
     public HpoAnnotationModelException(String msg) {super(msg);}
