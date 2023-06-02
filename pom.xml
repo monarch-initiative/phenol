@@ -9,8 +9,8 @@
 
   <name>Phenol</name>
 
-  <description>Phenotype Ontology Library: phenol</description>
-  <url>https://github.com/monarchinitiative/phenol</url>
+  <description>Phenotype Ontology Library</description>
+  <url>https://github.com/monarch-initiative/phenol</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
