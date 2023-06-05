@@ -10,4 +10,7 @@ module org.monarchinitiative.phenol.core {
   requires transitive org.jgrapht.core; // due to DefaultDirectedGraph being exposed in MinimalOntology
   requires com.fasterxml.jackson.databind; // for annotating model classes
   requires org.slf4j;
+
+  // To enable custom `TermId` serialization
+  opens org.monarchinitiative.phenol.ontology.serialize;
 }
