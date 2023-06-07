@@ -5,12 +5,12 @@
   <groupId>org.monarchinitiative.phenol</groupId>
   <artifactId>phenol</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 
   <name>Phenol</name>
 
-  <description>Phenotype Ontology Library: phenol</description>
-  <url>https://github.com/monarchinitiative/phenol</url>
+  <description>Phenotype Ontology Library</description>
+  <url>https://github.com/monarch-initiative/phenol</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,18 +20,19 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <obographs.version>0.3.0</obographs.version>
-    <jackson.version>2.12.1</jackson.version>
+    <jackson.version>2.14.3</jackson.version>
     <guava.version>30.1-jre</guava.version>
-    <jgrapht.version>1.5.1</jgrapht.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <snakeyaml.version>2.0</snakeyaml.version>
+    <jgrapht.version>1.5.2</jgrapht.version>
+    <slf4j.version>2.0.7</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
-    <commons-csv.version>1.9.0</commons-csv.version>
+    <commons-csv.version>1.10.0</commons-csv.version>
     <h2.version>1.4.200</h2.version>
     <picocli.version>4.6.3</picocli.version>
 
-    <hamcrest.version>1.3</hamcrest.version>
-    <junit.jupiter.version>5.7.0</junit.jupiter.version>
-    <mockito.version>3.7.7</mockito.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <junit.jupiter.version>5.9.3</junit.jupiter.version>
+    <mockito.version>5.3.1</mockito.version>
   </properties>
 
   <modules>
@@ -148,9 +149,19 @@
         <version>${guava.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
         <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${snakeyaml.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -165,7 +176,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.7</version>
       </dependency>
 
       <dependency>
@@ -186,19 +197,16 @@
         <version>${junit.jupiter.version}</version>
         <scope>test</scope>
       </dependency>
-
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
-        <version>2.2</version>
-        <scope>test</scope>
-      </dependency>
-
-      <!-- Mockito mocking -->
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
+        <version>${hamcrest.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -224,7 +232,7 @@
     <!-- Mockito mocking -->
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <artifactId>mockito-junit-jupiter</artifactId>
     </dependency>
 
     <dependency>
@@ -252,7 +260,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M5</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
