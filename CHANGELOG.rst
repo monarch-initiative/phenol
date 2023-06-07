@@ -6,6 +6,15 @@ Changelog
 latest
 ------
 
+------
+v2.0.1
+------
+
+Minor changes
+#############
+
+- Use Jackson annotations to configure serialization of `TermId` and `Identified`
+- update dependencies
 
 ------
 v2.0.0
