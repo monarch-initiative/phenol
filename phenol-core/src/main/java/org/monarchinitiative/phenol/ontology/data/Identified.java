@@ -2,8 +2,6 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.monarchinitiative.phenol.ontology.serialize.TermIdSerializer;
 
 /**
  * The interface implemented by entities that have an identifier.
@@ -11,7 +9,6 @@ import org.monarchinitiative.phenol.ontology.serialize.TermIdSerializer;
 public interface Identified {
 
   @JsonGetter
-  @JsonSerialize(using = TermIdSerializer.class)
   TermId id();
 
   /**

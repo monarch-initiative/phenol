@@ -1,8 +1,8 @@
 package org.monarchinitiative.phenol.ontology.data;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.ontology.serialize.TermIdSerializer;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,6 +13,7 @@ import java.util.Objects;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@JsonSerialize(using = TermIdSerializer.class)
 public final class TermId implements Comparable<TermId>, Serializable {
 
   /** Serial UId for serialization. */
@@ -62,17 +63,14 @@ public final class TermId implements Comparable<TermId>, Serializable {
     this.value = termId;
   }
 
-  @JsonIgnore
   public String getPrefix() {
     return value.substring(0, separatorPos);
   }
 
-  @JsonIgnore
   public String getId() {
     return value.substring(separatorPos + 1);
   }
 
-  @JsonGetter
   public String getValue() {
     return value;
   }

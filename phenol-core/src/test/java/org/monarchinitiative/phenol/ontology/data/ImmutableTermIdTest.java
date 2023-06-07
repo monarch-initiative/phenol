@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
@@ -58,6 +59,16 @@ public class ImmutableTermIdTest {
     assertEquals("HP", termId.getPrefix());
     assertEquals("0000001", termId.getId());
     assertEquals("HP:0000001", termId.getValue());
+  }
+
+  /**
+   * Check that the `TermId` is serialized into a simple quoted string and NOT into a JSON object.
+   */
+  @Test
+  public void testSerializeToJson() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    assertEquals("\"HP:0000001\"", mapper.writeValueAsString(termId));
+    assertEquals("\"HP:0000002\"", mapper.writeValueAsString(termId2));
   }
 
   @Test
