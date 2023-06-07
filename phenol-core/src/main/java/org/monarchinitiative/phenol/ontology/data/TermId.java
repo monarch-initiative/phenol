@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.ontology.serialize.TermIdSerializer;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,6 +13,7 @@ import java.util.Objects;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
+@JsonSerialize(using = TermIdSerializer.class)
 public final class TermId implements Comparable<TermId>, Serializable {
 
   /** Serial UId for serialization. */
