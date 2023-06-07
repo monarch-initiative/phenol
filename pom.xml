@@ -23,16 +23,16 @@
     <jackson.version>2.14.3</jackson.version>
     <guava.version>30.1-jre</guava.version>
     <snakeyaml.version>2.0</snakeyaml.version>
-    <jgrapht.version>1.5.1</jgrapht.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <jgrapht.version>1.5.2</jgrapht.version>
+    <slf4j.version>2.0.7</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
-    <commons-csv.version>1.9.0</commons-csv.version>
+    <commons-csv.version>1.10.0</commons-csv.version>
     <h2.version>1.4.200</h2.version>
     <picocli.version>4.6.3</picocli.version>
 
-    <hamcrest.version>1.3</hamcrest.version>
-    <junit.jupiter.version>5.7.0</junit.jupiter.version>
-    <mockito.version>3.7.7</mockito.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <junit.jupiter.version>5.9.3</junit.jupiter.version>
+    <mockito.version>5.3.1</mockito.version>
   </properties>
 
   <modules>
@@ -176,7 +176,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.7</version>
       </dependency>
 
       <dependency>
@@ -201,7 +201,7 @@
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
-        <version>2.2</version>
+        <version>${hamcrest.version}</version>
         <scope>test</scope>
       </dependency>
 
