@@ -1,0 +1,43 @@
+package org.monarchinitiative.phenol.graph;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.monarchinitiative.phenol.graph.csr.CsrOntologyGraph;
+import org.monarchinitiative.phenol.graph.csr.ImmutableCsrMatrix;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+
+import java.util.stream.Stream;
+
+/**
+ * Base for {@link org.monarchinitiative.phenol.graph.OntologyGraph} tests that provides small CSR graph for testing.
+ */
+public class BaseOntologyGraphTest {
+
+  private static final byte P = 0b01; // parent
+  private static final byte C = 0b10; // child
+
+  protected static final TermId UNKNOWN = TermId.of("HP:999");
+  protected static CsrOntologyGraph<TermId> GRAPH;
+
+  @BeforeAll
+  public static void setUpBefore() {
+    GRAPH = prepareSimpleGraph();
+  }
+
+  protected static CsrOntologyGraph<TermId> prepareSimpleGraph() {
+    TermId root = TermId.of("HP:1");
+
+    TermId[] nodes = Stream.of(
+        "HP:01", "HP:010", "HP:011", "HP:0110",
+        "HP:02", "HP:020", "HP:021", "HP:022",
+        "HP:03", "HP:1")
+      .map(TermId::of)
+      .toArray(TermId[]::new);
+
+    int[] indptr = new int[] {0, 3, 5, 7, 9, 13, 14, 15, 16, 17, 20};
+    int[] indices = new int[] {1, 2, 9, 0, 3, 0, 3, 1, 2, 5, 6, 7, 9, 4, 4, 4, 9, 0, 4, 8};
+    Byte[] data = new Byte[] {P, P, C, C, P, C, P, C, C, P, P, P, C, C, C, C, C, P, P, P};
+    ImmutableCsrMatrix<Byte> am = new ImmutableCsrMatrix<>(indptr, indices, data);
+
+    return new CsrOntologyGraph<>(root, nodes, TermId::compareTo, am);
+  }
+}

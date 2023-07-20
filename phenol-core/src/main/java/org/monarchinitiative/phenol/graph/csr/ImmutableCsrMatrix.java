@@ -11,6 +11,7 @@ import java.util.function.Predicate;
  * that match a provided predicate.
  *
  * @param <T> entry type.
+ * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
 public class ImmutableCsrMatrix<T> {
 
@@ -18,7 +19,7 @@ public class ImmutableCsrMatrix<T> {
   private final int[] indices;
   private final T[] data;
 
-  ImmutableCsrMatrix(int[] indptr, int[] indices, T[] data) {
+  public ImmutableCsrMatrix(int[] indptr, int[] indices, T[] data) {
     this.indptr = checkSequenceOfNonNegativeInts(indptr);
     this.indices = checkSequenceOfNonNegativeInts(indices);
     this.data = data;
