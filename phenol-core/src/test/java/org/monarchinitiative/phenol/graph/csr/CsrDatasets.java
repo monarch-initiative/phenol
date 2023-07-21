@@ -2,9 +2,8 @@ package org.monarchinitiative.phenol.graph.csr;
 
 /**
  * Some test data for testing the CSR matrix logic.
- * @param <T>
  */
-class CsrData<T> {
+class CsrDatasets {
 
   /**
    * <pre>
@@ -67,25 +66,4 @@ class CsrData<T> {
     );
   }
 
-  private final int[] indptr;
-  private final int[] indices;
-  private final T[] data;
-
-  private CsrData(int[] indptr, int[] indices, T[] data) {
-    this.indptr = indptr;
-    this.indices = indices;
-    this.data = data;
-  }
-
-  public int[] getIndptr() {
-    return indptr;
-  }
-
-  public int[] getIndices() {
-    return indices;
-  }
-
-  public T[] getData() {
-    return data;
-  }
 }

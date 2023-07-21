@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.monarchinitiative.phenol.graph.RelationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
-public class RelationshipType {
+public class RelationshipType implements RelationType {
 
   private static final Map<String, RelationshipType> cache = new ConcurrentHashMap<>();
 
@@ -121,6 +122,16 @@ public class RelationshipType {
       default:
         return cache.computeIfAbsent(id, key -> new RelationshipType(id, label));
     }
+  }
+
+  @Override
+  public String id() {
+    return id;
+  }
+
+  @Override
+  public String label() {
+    return label;
   }
 
   /**

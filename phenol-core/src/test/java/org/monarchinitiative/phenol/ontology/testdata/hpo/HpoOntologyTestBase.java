@@ -108,7 +108,7 @@ public class HpoOntologyTestBase {
 
   private static void createRelationship(Map<Integer, Relationship> relationshipMap, TermId source, TermId target) {
     int id = counter.incrementAndGet();
-    relationshipMap.put(id, Relationship.IS_A(source, target, id));
+    relationshipMap.put(id, new Relationship(source, target, id, RelationshipType.IS_A));
   }
 
 

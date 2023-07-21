@@ -84,8 +84,8 @@ public class OntologyLoaderTest {
     Relationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
     assertNotNull(gr1);
     assertNotNull(gr2);
-    assertEquals(RelationshipType.IS_A, gr1.getRelationshipType());
-    assertEquals(RelationshipType.IS_A, gr2.getRelationshipType());
+    assertEquals(RelationshipType.IS_A, gr1.relationType());
+    assertEquals(RelationshipType.IS_A, gr2.relationType());
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     assertEquals(TermId.of("owl:Thing"), ontology.getRootTermId());
@@ -139,7 +139,7 @@ public class OntologyLoaderTest {
 
     ecto.getRelationMap()
       .values()
-      .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.getRelationshipType()));
+      .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.relationType()));
     Term rootT = ecto.getTermMap().get(ecto.getRootTermId());
     assertEquals("artificial root term", rootT.getName());
     assertEquals(TermId.of("owl:Thing"), ecto.getRootTermId());

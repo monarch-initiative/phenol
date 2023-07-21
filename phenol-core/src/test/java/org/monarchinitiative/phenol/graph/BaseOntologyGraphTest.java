@@ -5,6 +5,7 @@ import org.monarchinitiative.phenol.graph.csr.CsrOntologyGraph;
 import org.monarchinitiative.phenol.graph.csr.ImmutableCsrMatrix;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -16,14 +17,14 @@ public class BaseOntologyGraphTest {
   private static final byte C = 0b10; // child
 
   protected static final TermId UNKNOWN = TermId.of("HP:999");
-  protected static CsrOntologyGraph<TermId> GRAPH;
+  protected static CsrOntologyGraph<TermId, Byte> GRAPH;
 
   @BeforeAll
   public static void setUpBefore() {
     GRAPH = prepareSimpleGraph();
   }
 
-  protected static CsrOntologyGraph<TermId> prepareSimpleGraph() {
+  protected static CsrOntologyGraph<TermId, Byte> prepareSimpleGraph() {
     TermId root = TermId.of("HP:1");
 
     TermId[] nodes = Stream.of(
@@ -37,7 +38,9 @@ public class BaseOntologyGraphTest {
     int[] indices = new int[] {1, 2, 9, 0, 3, 0, 3, 1, 2, 5, 6, 7, 9, 4, 4, 4, 9, 0, 4, 8};
     Byte[] data = new Byte[] {P, P, C, C, P, C, P, C, C, P, P, P, C, C, C, C, C, P, P, P};
     ImmutableCsrMatrix<Byte> am = new ImmutableCsrMatrix<>(indptr, indices, data);
+    Predicate<Byte> hierarchy = b -> (b & C) > 0;
+    Predicate<Byte> hierarchyInverted = b -> (b & P) > 0;
 
-    return new CsrOntologyGraph<>(root, nodes, TermId::compareTo, am);
+    return new CsrOntologyGraph<>(root, nodes, am, TermId::compareTo, hierarchy, hierarchyInverted);
   }
 }

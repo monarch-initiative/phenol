@@ -1,6 +1,9 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 
+import org.monarchinitiative.phenol.graph.OntologyGraphEdge;
+import org.monarchinitiative.phenol.graph.RelationType;
+
 import java.util.Objects;
 
 /**
@@ -8,7 +11,7 @@ import java.util.Objects;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class Relationship {
+public class Relationship implements OntologyGraphEdge<TermId> {
   private static final long serialVersionUID = 2L;
 
   /** Source {@link TermId}. */
@@ -55,6 +58,21 @@ public class Relationship {
     return relationshipType;
   }
 
+  public RelationType relationType() {
+    return relationshipType;
+  }
+
+
+  @Override
+  public TermId subject() {
+    return source;
+  }
+
+  @Override
+  public TermId object() {
+    return target;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -84,7 +102,10 @@ public class Relationship {
         + "]";
   }
 
-
+  /**
+   * @deprecated without replacement.
+   */
+  @Deprecated(forRemoval = true)
   public static Relationship IS_A(TermId source, TermId target, int id) {
     return new Relationship(source, target, id, RelationshipType.IS_A);
   }

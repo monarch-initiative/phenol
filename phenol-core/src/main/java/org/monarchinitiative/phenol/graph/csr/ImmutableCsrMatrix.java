@@ -25,6 +25,18 @@ public class ImmutableCsrMatrix<T> {
     this.data = data;
   }
 
+  int[] indptr() {
+    return indptr;
+  }
+
+  int[] indices() {
+    return indices;
+  }
+
+  T[] data() {
+    return data;
+  }
+
   /**
    * Get an iterator over the column indices of entries match the {@code predicate}.
    */

@@ -56,7 +56,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
     @Test
     public void getChildrenUnknownSource() {
       NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.getChildren(UNKNOWN, false));
-      assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
     @ParameterizedTest
@@ -104,7 +104,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
     @Test
     public void getDescendantsUnknownSource() {
       NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.getDescendants(UNKNOWN, false));
-      assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
     @ParameterizedTest
@@ -138,7 +138,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
     @Test
     public void getParentsUnknownSource() {
       NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.getParents(UNKNOWN, false));
-      assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
     @ParameterizedTest
@@ -174,7 +174,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
     @Test
     public void getAncestorsUnknownSource() {
       NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.getAncestors(UNKNOWN, false));
-      assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
     private Set<TermId> parsePayload(String payload) {
@@ -211,7 +211,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
   @Test
   public void isLeaf_unknownSource() {
     NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isLeaf(UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
   }
 
   @Test

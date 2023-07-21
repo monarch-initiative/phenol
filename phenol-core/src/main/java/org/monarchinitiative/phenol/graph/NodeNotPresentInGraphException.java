@@ -1,9 +1,11 @@
 package org.monarchinitiative.phenol.graph;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+
 /**
  * An exception thrown when the {@link OntologyGraph} is queried with a node that does not exist in the graph.
  */
-public class NodeNotPresentInGraphException extends RuntimeException {
+public class NodeNotPresentInGraphException extends PhenolRuntimeException {
 
   public NodeNotPresentInGraphException() {
     super();

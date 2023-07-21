@@ -22,7 +22,7 @@ public class ImmutableCsrMatrixTest {
     "3, 0;1;2;3",
   })
   public void colIndicesOfVal_full(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.full());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.full());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -36,7 +36,7 @@ public class ImmutableCsrMatrixTest {
     "3, 0;3",
   })
   public void colIndicesOfVal_allEdges(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.allEdges());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -50,7 +50,7 @@ public class ImmutableCsrMatrixTest {
     "3, 3,   0",
   })
   public void colIndicesOfVal_allEdges_evenAndOddValues(int idx, String evenPayload, String oddPayload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.allEdges());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
 
     List<Integer> evenExpected = decodeExpectedPayload(evenPayload);
     List<Integer> evenActual = intoList(matrix.colIndicesOfVal(idx, k -> k % 2 == 0));
@@ -68,7 +68,7 @@ public class ImmutableCsrMatrixTest {
     "2, ''",
   })
   public void colIndicesOfVal_zeroes(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.zeroes());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.zeroes());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -80,7 +80,7 @@ public class ImmutableCsrMatrixTest {
     "1, '0;2;3'",
   })
   public void colIndicesOfVal_rect(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.rect());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -92,7 +92,7 @@ public class ImmutableCsrMatrixTest {
     "1, 2,   0;3"
   })
   public void colIndicesOfVal_rect_evenAndOddValues(int idx, String evenPayload, String oddPayload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.rect());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
 
     List<Integer> evenExpected = decodeExpectedPayload(evenPayload);
     List<Integer> evenActual = intoList(matrix.colIndicesOfVal(idx, k -> k % 2 == 0));
@@ -105,7 +105,7 @@ public class ImmutableCsrMatrixTest {
 
   @Test
   public void colIndicesOfVal_rect_unfound() {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.rect());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
 
     // Here we're searching for `3` in the 0th row, but it is not there.
     assertThat(intoList(matrix.colIndicesOfVal(0, k -> k == 3)),
@@ -118,7 +118,7 @@ public class ImmutableCsrMatrixTest {
 
   @Test
   public void accessingNegativeOrBeyondBoundsIndexThrows() {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrData.allEdges());
+    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
 
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
       () -> matrix.colIndicesOfVal(-1, entry -> true));

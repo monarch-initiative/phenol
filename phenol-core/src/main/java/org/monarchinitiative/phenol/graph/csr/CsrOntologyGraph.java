@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.graph.csr;
 
-import org.monarchinitiative.phenol.graph.NodeNotPresentInGraphException;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 
 import java.util.*;
@@ -8,79 +7,130 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * The nodes array must be sorted
+ * {@link OntologyGraph} backed by an adjacency matrix in CSR format.
+ * <p>
+ * The traversals are implemented using iterators to prevent unnecessary allocation.
+ * <p>
  *
- * @param <T>
+ * The array of nodes must be sorted and no duplicate elements must be present. An exception is thrown otherwise.
+ *
+ * @param <T> node type.
+ * @param <E> data type for storing the relationships between graph nodes.
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
-public class CsrOntologyGraph<T> implements OntologyGraph<T> {
+public class CsrOntologyGraph<T, E> implements OntologyGraph<T> {
 
   private final T root;
   private final T[] nodes;
+  private final ImmutableCsrMatrix<E> adjacencyMatrix;
   private final Comparator<T> comparator;
-  private final ImmutableCsrMatrix<Byte> adjacencyMatrix;
+  private final Predicate<E> hierarchy;
+  private final Predicate<E> hierarchyInverted;
 
   public CsrOntologyGraph(T root,
                           T[] nodes,
+                          ImmutableCsrMatrix<E> adjacencyMatrix,
                           Comparator<T> comparator,
-                          ImmutableCsrMatrix<Byte> adjacencyMatrix) {
+                          Predicate<E> hierarchy,
+                          Predicate<E> hierarchyInverted) {
     this.root = Objects.requireNonNull(root);
-    this.nodes = Objects.requireNonNull(nodes);
-    this.comparator = Objects.requireNonNull(comparator);
+    this.nodes = checkSorted(Objects.requireNonNull(nodes), Objects.requireNonNull(comparator));
     this.adjacencyMatrix = Objects.requireNonNull(adjacencyMatrix);
+    this.comparator = comparator;
+    this.hierarchy = Objects.requireNonNull(hierarchy);
+    this.hierarchyInverted = Objects.requireNonNull(hierarchyInverted);
   }
 
+  ImmutableCsrMatrix<E> adjacencyMatrix() {
+    return adjacencyMatrix;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public T root() {
     return root;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<T> getChildren(T source, boolean includeSource) {
-    Iterator<Integer> base = getNodeIndicesWithRelationship(source, RelationshipPredicates.IS_PARENT, includeSource);
+    Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchyInverted, includeSource);
     return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<T> getDescendants(T source, boolean includeSource) {
-    Iterator<Integer> base = traverseGraph(source, RelationshipPredicates.IS_PARENT, includeSource);
+    Iterator<Integer> base = traverseGraph(source, hierarchyInverted, includeSource);
     return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<T> getParents(T source, boolean includeSource) {
-    Iterator<Integer> base = getNodeIndicesWithRelationship(source, RelationshipPredicates.IS_CHILD, includeSource);
+    Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchy, includeSource);
     return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<T> getAncestors(T source, boolean includeSource) {
-    Iterator<Integer> base = traverseGraph(source, RelationshipPredicates.IS_CHILD, includeSource);
+    Iterator<Integer> base = traverseGraph(source, hierarchy, includeSource);
     return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int size() {
+    return nodes.length;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Iterator<T> iterator() {
     return Stream.of(nodes).iterator();
   }
 
+  private static <T> T[] checkSorted(T[] a, Comparator<T> comparator) {
+    if (a.length == 0)
+      return a;
+
+    T previous = a[0];
+    for (int i = 1; i < a.length; i++) {
+      T current = a[i];
+      if (comparator.compare(previous, current) >= 0) {
+        throw new ItemsNotSortedException(
+          String.format("Unsorted sequence. Item #%d (%s) was less than #%d (%s)", i, current, i-1, previous)
+        );
+      }
+    }
+
+    return a;
+  }
+
   private Iterator<Integer> getNodeIndicesWithRelationship(T source,
-                                                           Predicate<Byte> relationship,
+                                                           Predicate<E> relationship,
                                                            boolean includeSource) {
-    int rowIdx = getRowIndexForNode(source);
+    int rowIdx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
     return getColsWithRelationship(rowIdx, relationship, includeSource);
   }
 
-  private int getRowIndexForNode(T node) {
-    int idx = Arrays.binarySearch(nodes, node, comparator);
-    if (idx >= 0)
-      return idx;
-    else
-      throw new NodeNotPresentInGraphException(String.format("Term ID not found in the graph: %s", node));
-  }
-
   private Iterator<Integer> getColsWithRelationship(int source,
-                                                    Predicate<Byte> relationship,
+                                                    Predicate<E> relationship,
                                                     boolean includeSource) {
     Iterator<Integer> base = adjacencyMatrix.colIndicesOfVal(source, relationship);
     return new NodeIndexIterator(source, includeSource, base);
@@ -91,7 +141,7 @@ public class CsrOntologyGraph<T> implements OntologyGraph<T> {
   }
 
   private Iterator<Integer> traverseGraph(T source,
-                                          Predicate<Byte> relationship,
+                                          Predicate<E> relationship,
                                           boolean includeSource) {
     return new TraversingIterator(source, relationship, includeSource);
   }
@@ -103,10 +153,10 @@ public class CsrOntologyGraph<T> implements OntologyGraph<T> {
 
     private final Set<Integer> seen = new HashSet<>();
     private final Deque<Integer> buffer = new ArrayDeque<>();
-    private final Predicate<Byte> relationship;
+    private final Predicate<E> relationship;
 
     private TraversingIterator(T source,
-                              Predicate<Byte> relationship,
+                              Predicate<E> relationship,
                               boolean includeSource) {
       this.relationship = relationship;
       Iterator<Integer> base = getNodeIndicesWithRelationship(source, relationship, includeSource);

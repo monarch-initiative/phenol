@@ -41,7 +41,7 @@ public class OntologyGraphTest extends BaseOntologyGraphTest {
   public void isChildOfUnknownSource() {
     TermId ok = TermId.of("HP:01");
     NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isChildOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
 
     assertThat(GRAPH.isChildOf(UNKNOWN, ok), equalTo(false));
   }
@@ -71,7 +71,7 @@ public class OntologyGraphTest extends BaseOntologyGraphTest {
   public void isDescendantOfUnknownSource() {
     TermId ok = TermId.of("HP:01");
     NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isDescendantOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
 
     assertThat(GRAPH.isDescendantOf(UNKNOWN, ok), equalTo(false));
   }
@@ -106,7 +106,7 @@ public class OntologyGraphTest extends BaseOntologyGraphTest {
   public void isParentOfUnknownSource() {
     TermId ok = TermId.of("HP:01");
     NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isParentOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
 
     assertThat(GRAPH.isParentOf(UNKNOWN, ok), equalTo(false));
   }
@@ -136,7 +136,7 @@ public class OntologyGraphTest extends BaseOntologyGraphTest {
   public void isAncestorOfUnknownSource() {
     TermId ok = TermId.of("HP:01");
     NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isAncestorOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Term ID not found in the graph: HP:999"));
+    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
 
     assertThat(GRAPH.isAncestorOf(UNKNOWN, ok), equalTo(false));
   }
