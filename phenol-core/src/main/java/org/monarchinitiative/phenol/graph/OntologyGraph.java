@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.graph;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 /**
@@ -24,48 +23,48 @@ public interface OntologyGraph<T> extends Iterable<T> {
   T root();
 
   /**
-   * Get an {@linkplain Iterator} over <em>children</em> of the {@code source} node.
+   * Get an {@linkplain Iterable} over <em>children</em> of the {@code source} node.
    *
    * @param source        node whose children we are interested in.
-   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterator}
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterable}
    *                      or {@code false} otherwise.
-   * @return an iterator as described above.
+   * @return an iterable as described above.
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
-  Iterator<T> getChildren(T source, boolean includeSource);
+  Iterable<T> getChildren(T source, boolean includeSource);
 
   /**
-   * Get an {@linkplain Iterator} over <em>descendants</em> of the {@code source} node.
+   * Get an {@linkplain Iterable} over <em>descendants</em> of the {@code source} node.
    *
    * @param source        node whose descendants we are interested in.
-   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterator}
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterable}
    *                      or {@code false} otherwise.
-   * @return an iterator as described above.
+   * @return an iterable as described above.
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
-  Iterator<T> getDescendants(T source, boolean includeSource);
+  Iterable<T> getDescendants(T source, boolean includeSource);
 
   /**
-   * Get an {@linkplain Iterator} over <em>parents</em> of the {@code source} node.
+   * Get an {@linkplain Iterable} over <em>parents</em> of the {@code source} node.
    *
    * @param source        node whose parents we are interested in.
-   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterator}
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterable}
    *                      or {@code false} otherwise.
-   * @return an iterator as described above.
+   * @return an iterable as described above.
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
-  Iterator<T> getParents(T source, boolean includeSource);
+  Iterable<T> getParents(T source, boolean includeSource);
 
   /**
-   * Get an {@linkplain Iterator} over <em>ancestors</em> of the {@code source} node.
+   * Get an {@linkplain Iterable} over <em>ancestors</em> of the {@code source} node.
    *
    * @param source        node whose ancestors we are interested in.
-   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterator}
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Iterable}
    *                      or {@code false} otherwise.
-   * @return an iterator as described above.
+   * @return an iterable as described above.
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
-  Iterator<T> getAncestors(T source, boolean includeSource);
+  Iterable<T> getAncestors(T source, boolean includeSource);
 
   /**
    * Return <code>true</code> if the {@code source} is a leaf node - a node with no children.
@@ -75,6 +74,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default boolean isLeaf(T source) {
     return !getChildren(source, false)
+      .iterator()
       .hasNext();
   }
 
@@ -125,10 +125,8 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   int size();
 
-  private static <T> boolean runQuery(Function<T, Iterator<T>> func, T subject, T object) {
-    Iterator<T> iterator = func.apply(object);
-    while (iterator.hasNext()) {
-      T termId = iterator.next();
+  private static <T> boolean runQuery(Function<T, Iterable<T>> func, T subject, T object) {
+    for (T termId : func.apply(object)) {
       if (termId.equals(subject))
         return true;
     }

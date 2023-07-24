@@ -57,36 +57,44 @@ public class CsrOntologyGraph<T, E> implements OntologyGraph<T> {
    * {@inheritDoc}
    */
   @Override
-  public Iterator<T> getChildren(T source, boolean includeSource) {
+  public Iterable<T> getChildren(T source, boolean includeSource) {
     Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchyInverted, includeSource);
-    return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
+    return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Iterator<T> getDescendants(T source, boolean includeSource) {
+  public Iterable<T> getDescendants(T source, boolean includeSource) {
     Iterator<Integer> base = traverseGraph(source, hierarchyInverted, includeSource);
-    return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
+    return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Iterator<T> getParents(T source, boolean includeSource) {
+  public Iterable<T> getParents(T source, boolean includeSource) {
     Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchy, includeSource);
-    return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
+    return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Iterator<T> getAncestors(T source, boolean includeSource) {
+  public Iterable<T> getAncestors(T source, boolean includeSource) {
     Iterator<Integer> base = traverseGraph(source, hierarchy, includeSource);
-    return new InfallibleMappingIterator<>(base, this::getNodeForIndex);
+    return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isLeaf(T source) {
+    return !getNodeIndicesWithRelationship(source, hierarchyInverted, false).hasNext();
   }
 
   /**
