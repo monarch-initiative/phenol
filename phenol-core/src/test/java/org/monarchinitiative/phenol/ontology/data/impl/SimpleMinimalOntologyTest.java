@@ -1,8 +1,11 @@
-package org.monarchinitiative.phenol.ontology.data;
+package org.monarchinitiative.phenol.ontology.data.impl;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.phenol.ontology.data.impl.SimpleMinimalOntology;
+import org.monarchinitiative.phenol.ontology.data.Relationship;
+import org.monarchinitiative.phenol.ontology.data.RelationshipType;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
 import java.util.stream.Collectors;
