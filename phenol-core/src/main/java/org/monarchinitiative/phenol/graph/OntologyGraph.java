@@ -1,6 +1,9 @@
 package org.monarchinitiative.phenol.graph;
 
+import java.util.Spliterator;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * {@linkplain OntologyGraph} is a directed acyclic graph that supports methods required for ontology-related tasks,
@@ -34,6 +37,19 @@ public interface OntologyGraph<T> extends Iterable<T> {
   Iterable<T> getChildren(T source, boolean includeSource);
 
   /**
+   * Get a {@linkplain Stream} over <em>children</em> of the {@code source} node.
+   *
+   * @param source        node whose children we are interested in.
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Stream}
+   *                      or {@code false} otherwise.
+   * @return a stream as described above.
+   * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
+   */
+  default Stream<T> getChildrenStream(T source, boolean includeSource) {
+    return getSequentialStream(getChildren(source, includeSource).spliterator());
+  }
+
+  /**
    * Get an {@linkplain Iterable} over <em>descendants</em> of the {@code source} node.
    *
    * @param source        node whose descendants we are interested in.
@@ -43,6 +59,19 @@ public interface OntologyGraph<T> extends Iterable<T> {
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
   Iterable<T> getDescendants(T source, boolean includeSource);
+
+  /**
+   * Get a {@linkplain Stream} over <em>descendants</em> of the {@code source} node.
+   *
+   * @param source        node whose descendants we are interested in.
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Stream}
+   *                      or {@code false} otherwise.
+   * @return a stream as described above.
+   * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
+   */
+  default Stream<T> getDescendantsStream(T source, boolean includeSource) {
+    return getSequentialStream(getDescendants(source, includeSource).spliterator());
+  }
 
   /**
    * Get an {@linkplain Iterable} over <em>parents</em> of the {@code source} node.
@@ -56,6 +85,19 @@ public interface OntologyGraph<T> extends Iterable<T> {
   Iterable<T> getParents(T source, boolean includeSource);
 
   /**
+   * Get a {@linkplain Stream} over <em>parents</em> of the {@code source} node.
+   *
+   * @param source        node whose parents we are interested in.
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Stream}
+   *                      or {@code false} otherwise.
+   * @return a stream as described above.
+   * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
+   */
+  default Stream<T> getParentsStream(T source, boolean includeSource) {
+    return getSequentialStream(getParents(source, includeSource).spliterator());
+  }
+
+  /**
    * Get an {@linkplain Iterable} over <em>ancestors</em> of the {@code source} node.
    *
    * @param source        node whose ancestors we are interested in.
@@ -65,6 +107,19 @@ public interface OntologyGraph<T> extends Iterable<T> {
    * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
    */
   Iterable<T> getAncestors(T source, boolean includeSource);
+
+  /**
+   * Get a {@linkplain Stream} over <em>ancestors</em> of the {@code source} node.
+   *
+   * @param source        node whose ancestors we are interested in.
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Stream}
+   *                      or {@code false} otherwise.
+   * @return a stream as described above.
+   * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
+   */
+  default Stream<T> getAncestorsStream(T source, boolean includeSource) {
+    return getSequentialStream(getAncestors(source, includeSource).spliterator());
+  }
 
   /**
    * Return <code>true</code> if the {@code source} is a leaf node - a node with no children.
@@ -131,5 +186,9 @@ public interface OntologyGraph<T> extends Iterable<T> {
         return true;
     }
     return false;
+  }
+
+  private static <T> Stream<T> getSequentialStream(Spliterator<T> spliterator) {
+    return StreamSupport.stream(spliterator, false);
   }
 }

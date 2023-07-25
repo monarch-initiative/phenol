@@ -2,6 +2,8 @@ package org.monarchinitiative.phenol.ontology.data;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
@@ -142,6 +144,15 @@ public interface MinimalOntology extends Serializable, Versioned {
   Iterable<TermId> allTermIds();
 
   /**
+   * Get a {@linkplain Stream} with all term IDs (obsolete and non-obsolete).
+   *
+   * @return the {@linkplain Stream}.
+   */
+  default Stream<TermId> allTermIdsStream() {
+    return getSequentialStream(allTermIds().spliterator());
+  }
+
+  /**
    * @return {@link Collection} of <b>all</b> primary {@link TermId}s.
    * @deprecated use {@link #allTermIds()} instead. The method will be removed in <code>3.0.0</code>.
    */
@@ -157,6 +168,15 @@ public interface MinimalOntology extends Serializable, Versioned {
    * @return the {@linkplain Iterable}.
    */
   Iterable<TermId> nonObsoleteTermIds();
+
+  /**
+   * Get a {@linkplain Stream} with <em>non-obsolete</em> term IDs.
+   *
+   * @return the {@linkplain Stream}.
+   */
+  default Stream<TermId> nonObsoleteTermIdsStream() {
+    return getSequentialStream(nonObsoleteTermIds().spliterator());
+  }
 
   /**
    * @return {@link Collection} of the <b>non-obsolete</b>, primary {@link TermId}s.
@@ -185,15 +205,32 @@ public interface MinimalOntology extends Serializable, Versioned {
     return putIntoSet(obsoleteTermIds());
   }
 
+  /**
+   * Get a {@linkplain Stream} with <em>obsolete</em> term IDs.
+   *
+   * @return the {@linkplain Stream}.
+   */
+  default Stream<TermId> obsoleteTermIdsStream() {
+    return getSequentialStream(obsoleteTermIds().spliterator());
+  }
+
   /** @return {@link Collection} of all term ({@code T}) objects, including the obsolete ones. */
   Collection<Term> getTerms();
 
-  /** @return The number of all non-obsolete terms in the ontology. */
+  /**
+   * @return The number of all non-obsolete terms in the ontology.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
   default int countAllTerms() {
     return getNonObsoleteTermIds().size();
   }
 
-  /** @return The number of obsolete TermIds (alt_id in the OBO file). */
+  /**
+   * @return The number of obsolete TermIds (alt_id in the OBO file).
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
   default int countAlternateTermIds() {
     return getObsoleteTermIds().size();
   }
@@ -216,5 +253,9 @@ public interface MinimalOntology extends Serializable, Versioned {
       iterable.forEach(termIds::add);
       return termIds;
     }
+  }
+
+  private static <T> Stream<T> getSequentialStream(Spliterator<T> spliterator) {
+    return StreamSupport.stream(spliterator, false);
   }
 }

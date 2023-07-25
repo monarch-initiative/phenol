@@ -117,8 +117,8 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
     private RelationshipType hierarchyRelationshipType = RelationshipType.IS_A;
     private Map<String, String> metaInfo = Map.of();
-    private List<Term> terms;
-    private List<Relationship> relationships;
+    private final List<Term> terms = new ArrayList<>();
+    private final List<Relationship> relationships = new ArrayList<>();
 
     private Builder() {}
 
@@ -133,12 +133,14 @@ public class SimpleMinimalOntology implements MinimalOntology {
     }
 
     public Builder terms(List<Term> terms) {
-      this.terms = Objects.requireNonNull(terms);
+      this.terms.clear();
+      this.terms.addAll(Objects.requireNonNull(terms));
       return this;
     }
 
     public Builder relationships(List<Relationship> relationships) {
-      this.relationships = Objects.requireNonNull(relationships);
+      this.relationships.clear();
+      this.relationships.addAll(Objects.requireNonNull(relationships));
       return this;
     }
 

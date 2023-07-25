@@ -6,6 +6,7 @@ import java.util.Objects;
  * A record-like class with options for parameterizing the ontology loader process.
  *
  * @see OntologyLoader
+ * @see MinimalOntologyLoader
  */
 public class OntologyLoaderOptions {
 
