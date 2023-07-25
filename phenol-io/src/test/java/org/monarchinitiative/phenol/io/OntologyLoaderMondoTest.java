@@ -35,7 +35,7 @@ public class OntologyLoaderMondoTest {
    */
   @Test
   public void ifThreeTermsFound_thenOK() {
-    assertEquals(4, mondo.countAllTerms());
+    assertEquals(3, mondo.countAllTerms());
   }
 
   @Test

@@ -9,11 +9,13 @@ import static org.hamcrest.Matchers.*;
 
 public class OntologyGraphBuilderTest {
 
+  private static final TermId ROOT = TermId.of("HP:1");
+
   @Test
   public void csrBuilder() {
     OntologyGraph<TermId> graph = OntologyGraphBuilders.csrBuilder(Byte.class)
       .hierarchyRelation(RelationTypes.isA())
-      .build(OntologyGraphEdges.makeHierarchyAndPartOfEdges());
+      .build(ROOT, OntologyGraphEdges.makeHierarchyAndPartOfEdges());
 
     assertThat(graph.root(), equalTo(TermId.of("HP:1")));
     assertThat(graph.size(), equalTo(13));

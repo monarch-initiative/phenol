@@ -21,28 +21,23 @@ public class TestOntology {
 
   static {
     List<Term> terms = List.of(
-      Term.builder()
-        .id(TERM_ID_1)
+      Term.builder(TERM_ID_1)
         .name("term1")
         .definition("some definition 1")
         .build(),
-      Term.builder()
-        .id(TERM_ID_2)
+      Term.builder(TERM_ID_2)
         .name("term2")
         .definition("some definition 2")
         .build(),
-      Term.builder()
-        .id(TERM_ID_3)
+      Term.builder(TERM_ID_3)
         .name("term3")
         .definition("some definition 3")
         .build(),
-      Term.builder()
-        .id(TERM_ID_4)
+      Term.builder(TERM_ID_4)
         .name("term4")
         .definition("some definition 4")
         .build(),
-      Term.builder()
-        .id(TERM_ID_5)
+      Term.builder(TERM_ID_5)
         .name("term5")
         .definition("some definition 5")
         .build());

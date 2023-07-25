@@ -22,7 +22,7 @@ public class DataIndexerShort implements DataIndexer<Short> {
 
   @Override
   public boolean isSet(Short value, int n) {
-    return ((1 << n) & value) > 0;
+    return (value & (1 << n)) > 0;
   }
 
   @Override

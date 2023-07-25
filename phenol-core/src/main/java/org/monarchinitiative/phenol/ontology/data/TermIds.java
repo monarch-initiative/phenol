@@ -11,6 +11,12 @@ import java.util.Set;
  */
 public final class TermIds {
 
+  private static final TermId OWL_THING = TermId.of("owl:Thing");
+
+  public static TermId owlThing() {
+    return OWL_THING;
+  }
+
   private TermIds() {
   }
 

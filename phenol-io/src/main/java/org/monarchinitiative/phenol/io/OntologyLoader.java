@@ -6,6 +6,7 @@ import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,11 @@ public class OntologyLoader {
       .discardNonPropagatingRelationships(options.discardNonPropagatingRelationships())
       .build(graphDocument);
 
-    Ontology ontology = graphDocumentAdaptor.buildOntology();
+    Ontology ontology = ImmutableOntology.builder()
+      .metaInfo(graphDocumentAdaptor.getMetaInfo())
+      .terms(graphDocumentAdaptor.getTerms())
+      .relationships(graphDocumentAdaptor.getRelationships())
+      .build();
     logger.debug("Parsed a total of {} terms", ontology.countAllTerms());
     return ontology;
   }

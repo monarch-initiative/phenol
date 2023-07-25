@@ -141,7 +141,7 @@ public class OntologyLoaderTest {
       .values()
       .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.relationType()));
     Term rootT = ecto.getTermMap().get(ecto.getRootTermId());
-    assertEquals("artificial root term", rootT.getName());
+    assertEquals("Artificial root term", rootT.getName());
     assertEquals(TermId.of("owl:Thing"), ecto.getRootTermId());
 
     Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());

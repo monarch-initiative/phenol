@@ -139,14 +139,13 @@ public class ImmutableOntologyTest {
 
     TermId child3Id = TermId.of("HP:0000003");
     TermId child3SecondaryId = TermId.of("HP:3333333");
-    Term child3 = Term.builder()
-      .id(child3Id)
+    Term child3 = Term.builder(child3Id)
       .name("child3")
       .altTermIds(List.of(child3SecondaryId))
       .build();
 
     TermId obsoleteId = TermId.of("HP:0000004");
-    Term obsolete = Term.builder().id(obsoleteId).name("obsolete").obsolete(true).build();
+    Term obsolete = Term.builder(obsoleteId).name("obsolete").obsolete(true).build();
 
     List<Term> terms = List.of(root, child, child2, child3, obsolete);
 
@@ -199,7 +198,7 @@ public class ImmutableOntologyTest {
     Term child3 = Term.of(child3Id, "child3");
 
     TermId obsoleteId = TermId.of("HP:0000004");
-    Term obsolete = Term.builder().id(obsoleteId).name("obsolete").obsolete(true).build();
+    Term obsolete = Term.builder(obsoleteId).name("obsolete").obsolete(true).build();
 
     List<Term> terms = List.of(child, child2, child3, obsolete);
 

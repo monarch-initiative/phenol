@@ -18,6 +18,6 @@ public interface OntologyGraphBuilder<T> {
   /**
    * Build the graph from the edges.
    */
-  OntologyGraph<T> build(Collection<OntologyGraphEdge<T>> edges);
+  OntologyGraph<T> build(T root, Collection<? extends OntologyGraphEdge<T>> edges);
 
 }

@@ -22,7 +22,7 @@ public class DataIndexerByte implements DataIndexer<Byte> {
 
   @Override
   public boolean isSet(Byte value, int n) {
-    return ((1 << n) & value) > 0;
+    return (value & (1 << n)) > 0;
   }
 
   @Override

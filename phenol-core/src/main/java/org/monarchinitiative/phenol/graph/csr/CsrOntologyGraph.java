@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.graph.csr;
 
 import org.monarchinitiative.phenol.graph.OntologyGraph;
+import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 
 import java.util.*;
 import java.util.function.Predicate;

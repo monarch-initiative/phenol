@@ -37,7 +37,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getChildren(source, false);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @ParameterizedTest
@@ -50,7 +50,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getChildren(source, true);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getDescendants(source, false);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @ParameterizedTest
@@ -98,7 +98,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getDescendants(source, true);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getParents(source, false);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @ParameterizedTest
@@ -132,7 +132,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getParents(source, true);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getAncestors(source, false);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @ParameterizedTest
@@ -168,7 +168,7 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       Iterable<TermId> iterable = GRAPH.getAncestors(source, true);
       Set<TermId> expected = parsePayload(payload);
 
-      iteratorYieldsTheExpectedItems(iterable, expected);
+      iterableContainsTheExpectedItems(iterable, expected);
     }
 
     @Test
@@ -223,13 +223,13 @@ public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
       .map(TermId::of)
       .collect(Collectors.toList());
 
-    iteratorYieldsTheExpectedItems(GRAPH, expected);
+    iterableContainsTheExpectedItems(GRAPH, expected);
   }
 
   /**
    * Test that the {@code iterator} yields a sequence of unique elements from the {@code expected} collection.
    */
-  private static <T> void iteratorYieldsTheExpectedItems(Iterable<T> iterable, Collection<T> expected) {
+  private static <T> void iterableContainsTheExpectedItems(Iterable<T> iterable, Collection<T> expected) {
     List<T> list = new ArrayList<>();
     iterable.forEach(list::add);
     HashSet<T> set = new HashSet<>(list);

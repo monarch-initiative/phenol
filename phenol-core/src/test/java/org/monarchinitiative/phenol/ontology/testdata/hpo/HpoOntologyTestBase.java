@@ -113,8 +113,7 @@ public class HpoOntologyTestBase {
 
 
   private static Term createTerm(TermId tid, String label) {
-    return Term.builder()
-      .id(tid)
+    return Term.builder(tid)
       .name(label)
       .definition("n/a")
       .build();

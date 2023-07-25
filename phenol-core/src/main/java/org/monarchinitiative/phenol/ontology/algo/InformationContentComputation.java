@@ -142,7 +142,7 @@ public final class InformationContentComputation {
           maxIC=ic;
         }
       }
-      for (TermId p : ontology.getParentTermIds(t)) {
+      for (TermId p : ontology.graph().getParents(t, false)) {
         stack.push(p);
       }
     }

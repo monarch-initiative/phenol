@@ -68,9 +68,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
   }
 
   @Override
-  public CsrOntologyGraph<TermId, E> build(Collection<OntologyGraphEdge<TermId>> edges) {
-    TermId root = findRootCandidates(edges, hierarchyRelation);
-
+  public CsrOntologyGraph<TermId, E> build(TermId root, Collection<? extends OntologyGraphEdge<TermId>> edges) {
     List<RelationType> relationTypes = edges.stream()
       .map(OntologyGraphEdge::relationType)
       .distinct()
@@ -98,41 +96,8 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
     return new CsrOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, hierarchy, hierarchyInverted);
   }
 
-  private static TermId findRootCandidates(Collection<OntologyGraphEdge<TermId>> edges,
-                                           RelationType hierarchy) {
-    Set<TermId> rootCandidates = new HashSet<>();
-    Set<TermId> removeMark = new HashSet<>();
-    for (OntologyGraphEdge<TermId> edge : edges) {
-      if (hierarchy.equals(edge.relationType())) {
-        rootCandidates.add(edge.object());
-        removeMark.add(edge.subject());
-      }
-    }
-
-    rootCandidates.removeAll(removeMark);
-    if (rootCandidates.size() == 0) {
-      throw new PhenolRuntimeException("No root candidate found");
-    } else if (rootCandidates.size() == 1) {
-      TermId root = rootCandidates.iterator().next();
-      LOGGER.debug("Found root candidate {}", root);
-
-      return root;
-    } else {
-      // No single root candidate, so create a new one and add it into the nodes and edges
-      // As per suggestion https://github.com/monarch-initiative/phenol/issues/163#issuecomment-452880405
-      // We'll use owl:Thing instead of ID:0000000 so as not to potentially conflict with an existing term id.
-      LOGGER.debug("Found {} root candidates. Adding owl:Thing", rootCandidates.size());
-      TermId root = TermId.of("owl:Thing");
-      for (TermId candidate : rootCandidates) {
-        edges.add(OntologyGraphEdge.of(candidate, root, hierarchy));
-      }
-
-      return root;
-    }
-  }
-
   private CsrData<E> makeCsrData(TermId[] nodes,
-                                 Collection<OntologyGraphEdge<TermId>> edges,
+                                 Collection<? extends OntologyGraphEdge<TermId>> edges,
                                  RelationCodec<E> codec) {
     List<Integer> indptr = new ArrayList<>();
     indptr.add(0);
@@ -147,8 +112,8 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
       List<OntologyGraphEdge<TermId>> adjacent = adjacentEdges.getOrDefault(rowIdx, List.of());
 
       for (OntologyGraphEdge<TermId> edge : adjacent) {
-        boolean inverted = source.equals(edge.subject());
-        TermId target = inverted ? edge.object() : edge.subject();
+        boolean inverted = source.equals(edge.object());
+        TermId target = inverted ? edge.subject() : edge.object();
 
         // encode the relationship into the edge.
         int colIdx = Util.getIndexOfUsingBinarySearch(target, nodes, TermId::compareTo);
@@ -171,7 +136,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
    * Here we prepare a mapping from the row index to a list of all adjacent edges.
    */
   private static Map<Integer, List<OntologyGraphEdge<TermId>>> findAdjacentEdges(TermId[] nodes,
-                                                                                 Collection<OntologyGraphEdge<TermId>> edges) {
+                                                                                 Collection<? extends OntologyGraphEdge<TermId>> edges) {
     Map<Integer, List<OntologyGraphEdge<TermId>>> data = new HashMap<>();
 
     TermId lastSub = null;

@@ -11,8 +11,13 @@ public class DataIndexerTest {
   public void byteIndexer() {
     DataIndexer<Byte> indexer = DataIndexer.byteIndexer();
     assertThat(indexer.empty(), equalTo((byte) 0));
-    assertThat(indexer.setNthSlot((byte) 0b1001, 2), equalTo((byte) 0b1101));
+    assertThat(indexer.setNthSlot((byte) 0b0000, 0), equalTo((byte) 0b0001));
+    assertThat(indexer.setNthSlot((byte) 0b0000, 1), equalTo((byte) 0b0010));
+    assertThat(indexer.setNthSlot((byte) 0b0000, 2), equalTo((byte) 0b0100));
+    assertThat(indexer.setNthSlot((byte) 0b0000, 3), equalTo((byte) 0b1000));
     assertThat(indexer.isSet((byte) 0b1001, 0), equalTo(true));
+    assertThat(indexer.isSet((byte) 0b1001, 1), equalTo(false));
+    assertThat(indexer.isSet((byte) 0b1001, 2), equalTo(false));
     assertThat(indexer.isSet((byte) 0b1001, 3), equalTo(true));
     assertThat(indexer.isSet((byte) 0b1001, 4), equalTo(false));
     assertThat(indexer.isSet((byte) 0b1000_1001, 7), equalTo(true));

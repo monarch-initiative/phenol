@@ -22,7 +22,7 @@ public class DataIndexerLong implements DataIndexer<Long> {
 
   @Override
   public boolean isSet(Long value, int n) {
-    return ((1L << n) & value) > 0;
+    return (value & (1L << n)) > 0;
   }
 
   @Override

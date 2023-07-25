@@ -17,12 +17,12 @@ public class DataIndexerInteger implements DataIndexer<Integer> {
 
   @Override
   public Integer setNthSlot(Integer previous, int n) {
-    return (int) (previous | (1 << n));
+    return previous | (1 << n);
   }
 
   @Override
   public boolean isSet(Integer value, int n) {
-    return ((1 << n) & value) > 0;
+    return (value & (1 << n)) > 0;
   }
 
   @Override

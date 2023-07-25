@@ -13,8 +13,8 @@ import java.util.stream.Stream;
  */
 public class BaseOntologyGraphTest {
 
-  private static final byte P = 0b01; // parent
-  private static final byte C = 0b10; // child
+  private static final byte C = 0b01; // child
+  private static final byte P = 0b10; // parent
 
   protected static final TermId UNKNOWN = TermId.of("HP:999");
   protected static CsrOntologyGraph<TermId, Byte> GRAPH;
@@ -36,10 +36,10 @@ public class BaseOntologyGraphTest {
 
     int[] indptr = new int[] {0, 3, 5, 7, 9, 13, 14, 15, 16, 17, 20};
     int[] indices = new int[] {1, 2, 9, 0, 3, 0, 3, 1, 2, 5, 6, 7, 9, 4, 4, 4, 9, 0, 4, 8};
-    Byte[] data = new Byte[] {P, P, C, C, P, C, P, C, C, P, P, P, C, C, C, C, C, P, P, P};
+    Byte[] data = new Byte[] {C, C, P, P, C, P, C, P, P, C, C, C, P, P, P, P, P, C, C, C};
     ImmutableCsrMatrix<Byte> am = new ImmutableCsrMatrix<>(indptr, indices, data);
-    Predicate<Byte> hierarchy = b -> (b & C) > 0;
-    Predicate<Byte> hierarchyInverted = b -> (b & P) > 0;
+    Predicate<Byte> hierarchy = b -> (b & P) > 0;
+    Predicate<Byte> hierarchyInverted = b -> (b & C) > 0;
 
     return new CsrOntologyGraph<>(root, nodes, am, TermId::compareTo, hierarchy, hierarchyInverted);
   }

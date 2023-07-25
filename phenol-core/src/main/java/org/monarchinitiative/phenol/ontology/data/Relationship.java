@@ -103,8 +103,9 @@ public class Relationship implements OntologyGraphEdge<TermId> {
   }
 
   /**
-   * @deprecated without replacement.
+   * @deprecated without replacement. The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(v3.0.0)
   @Deprecated(forRemoval = true)
   public static Relationship IS_A(TermId source, TermId target, int id) {
     return new Relationship(source, target, id, RelationshipType.IS_A);
