@@ -13,5 +13,5 @@ module org.monarchinitiative.phenol.core {
   requires org.slf4j;
 
   // To enable custom `TermId` serialization
-  opens org.monarchinitiative.phenol.ontology.serialize;
+  opens org.monarchinitiative.phenol.ontology.serialize to com.fasterxml.jackson.databind;
 }

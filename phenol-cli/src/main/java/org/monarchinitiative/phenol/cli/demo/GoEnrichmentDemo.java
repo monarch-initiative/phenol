@@ -74,7 +74,7 @@ public final class GoEnrichmentDemo {
     this.targetGoTerm = TermId.of(goTermId);
     System.out.println("[INFO] parsing  " + pathGoObo);
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
-    int n_terms = gontology.countAllTerms();
+    int n_terms = gontology.allTermIdCount();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     Path goGaf = Paths.get(pathGoGaf);
     System.out.println("[INFO] parsing  " + goGaf.toAbsolutePath());

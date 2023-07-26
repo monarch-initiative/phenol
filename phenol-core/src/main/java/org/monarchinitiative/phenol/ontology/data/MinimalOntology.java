@@ -44,11 +44,8 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
  * <h5>Iterating</h5>
  *
  * <p>For iterating over terms and term IDs <b>only</b> use the functions {@link #getTerms()},
- * {@link #nonObsoleteTermIds()}, {@link #obsoleteTermIds()}, and {@link #getTerms()},
- * . These functions will only return containers with
- * elements from this ontology. The term ID and relation maps might contain more elements in the
- * case of creating sub ontologies and might refer to elements that are not present in the term id
- * sets or the graph.
+ * {@link #nonObsoleteTermIds()}, {@link #obsoleteTermIds()}, and {@link #getTerms()}. These functions return iterables
+ * with elements from this ontology.
  *
  * <h5>Ontology hierarchy</h5>
  *
@@ -219,30 +216,57 @@ public interface MinimalOntology extends Serializable, Versioned {
 
   /**
    * @return The number of all non-obsolete terms in the ontology.
+   * @throws ArithmeticException if the term count overflows an {@code int}.
+   * @deprecated use {@link #allTermIdCount()} instead. The method will be removed in <code>3.0.0</code>.
    */
   // REMOVE(3.0.0)
   @Deprecated(since = "2.0.2", forRemoval = true)
   default int countAllTerms() {
-    return getNonObsoleteTermIds().size();
+    return allTermIdCount();
+  }
+
+  /**
+   * @return The number of all non-obsolete terms in the ontology.
+   * @throws ArithmeticException if the term count overflows an {@code int}.
+   */
+  default int allTermIdCount() {
+    return Math.toIntExact(allTermIdsStream().count());
   }
 
   /**
    * @return The number of obsolete TermIds (alt_id in the OBO file).
+   * @deprecated use {@link #obsoleteTermIdsCount()} instead. The method will be removed in <code>3.0.0</code>.
    */
   // REMOVE(3.0.0)
   @Deprecated(since = "2.0.2", forRemoval = true)
   default int countAlternateTermIds() {
-    return getObsoleteTermIds().size();
+    return obsoleteTermIdsCount();
+  }
+
+  /**
+   * @return the number of obsolete TermIds.
+   * @throws ArithmeticException if the term ID count overflows an {@code int}.
+   */
+  default int obsoleteTermIdsCount() {
+    return Math.toIntExact(obsoleteTermIdsStream().count());
   }
 
   /**
    * @return The number of all primary term ids in the ontology (It is the equivalent to the number of non-obsolete terms).
-   * @deprecated use {@link #countAllTerms()} instead. The method will be removed in <em>3.0.0</em>.
+   * @deprecated use {@link #nonObsoleteTermIdCount()} instead. The method will be removed in <code>3.0.0</code>.
    */
-  // REMOVE(v3.0.0)
-  @Deprecated(forRemoval = true, since = "2.0.2")
+  // REMOVE(3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
   default int countNonObsoleteTerms() {
-    return countAllTerms();
+    return nonObsoleteTermIdCount();
+  }
+
+  /**
+   * @return The number of all primary term ids in the ontology (It is the equivalent to the number of non-obsolete terms).
+   * @throws ArithmeticException if the term ID count overflows an {@code int}.
+   */
+  default int nonObsoleteTermIdCount() {
+    return Math.toIntExact(nonObsoleteTermIdsStream().count());
   }
 
   private static <T> Set<T> putIntoSet(Iterable<T> iterable) {

@@ -58,7 +58,7 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
    * @return container with precomputed scores.
    */
   private static PrecomputedScores precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
-    LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.countAllTerms());
+    LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.nonObsoleteTermIdCount());
 
     PrecomputedScores scores = new PrecomputedScores(ontology.getAllTermIds());
 
@@ -66,7 +66,7 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
     PairwiseResnikSimilarity pairwiseSimilarity = new PairwiseResnikSimilarity(ontology, termToIc);
 
     // Split the input into chunks to reduce task startup overhead
-    ontology.getNonObsoleteTermIds().parallelStream()
+    ontology.nonObsoleteTermIdsStream().parallel()
       .map(computeSimilarities(ontology, pairwiseSimilarity))
       .flatMap(Collection::stream)
       .forEach(score -> scores.put(score.query, score.target, score.value));
@@ -78,7 +78,7 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
   private static Function<TermId, List<SimilarityScoreContainer>> computeSimilarities(Ontology ontology, PairwiseResnikSimilarity pairwiseSimilarity) {
     return queryId -> {
       List<SimilarityScoreContainer> results = new LinkedList<>();
-      for (TermId targetId : ontology.getNonObsoleteTermIds()) {
+      for (TermId targetId : ontology.nonObsoleteTermIds()) {
         if (queryId.compareTo(targetId) <= 0) {
           results.add(new SimilarityScoreContainer(queryId, targetId, pairwiseSimilarity.computeScore(queryId, targetId)));
         }

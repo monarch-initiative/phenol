@@ -49,7 +49,7 @@ public class OntologyLoaderHpoTest {
   @Test
   public void testGetRightNumberOfTerms() {
     int expectedTermCount = 265; // there are 265 non-obsolete terms in hp_head.obo
-    assertEquals(expectedTermCount, hpo.countAllTerms());
+    assertEquals(expectedTermCount, hpo.nonObsoleteTermIdCount());
   }
 
   @Test
@@ -78,7 +78,7 @@ public class OntologyLoaderHpoTest {
   @Test
   public void ifHpoHas265Terms_thenOK() {
     int expectedTermCount = 265; // hpo_toy.json
-    assertEquals(expectedTermCount, hpo.countAllTerms());
+    assertEquals(expectedTermCount, hpo.nonObsoleteTermIdCount());
   }
 
   @Test

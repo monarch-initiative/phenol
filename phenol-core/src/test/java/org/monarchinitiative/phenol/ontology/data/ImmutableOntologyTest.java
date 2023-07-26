@@ -70,7 +70,7 @@ public class ImmutableOntologyTest {
       ),
       ontology.getAllTermIds());
 
-    assertEquals(5, ontology.countAllTerms());
+    assertEquals(5, ontology.allTermIdCount());
 
     assertEquals(
       Set.of(

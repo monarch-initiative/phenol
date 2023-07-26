@@ -48,7 +48,7 @@ public class UberphenoOboParserTest {
 
   @Test
   public void testGetAllFiveTerms() {
-    assertEquals(5, ontology.countAllTerms());
+    assertEquals(5, ontology.allTermIdCount());
   }
 
   @Test

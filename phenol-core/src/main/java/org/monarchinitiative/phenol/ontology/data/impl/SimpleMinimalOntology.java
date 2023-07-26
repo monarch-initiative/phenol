@@ -25,17 +25,20 @@ public class SimpleMinimalOntology implements MinimalOntology {
   private final Map<TermId, Term> termMap;
   private final RelationshipContainer relationships;
   private final SortedMap<String, String> metaInfo;
+  private final TermIdCount termIdCount;
 
   SimpleMinimalOntology(OntologyGraph<TermId> ontologyGraph,
                         List<Term> terms,
                         Map<TermId, Term> termMap,
                         RelationshipContainer relationships,
-                        SortedMap<String, String> metaInfo) {
+                        SortedMap<String, String> metaInfo,
+                        TermIdCount termIdCount) {
     this.ontologyGraph = Objects.requireNonNull(ontologyGraph);
     this.terms = Objects.requireNonNull(terms);
     this.termMap = Objects.requireNonNull(termMap);
     this.relationships = Objects.requireNonNull(relationships);
     this.metaInfo = Objects.requireNonNull(metaInfo);
+    this.termIdCount = Objects.requireNonNull(termIdCount);
   }
 
 
@@ -85,13 +88,28 @@ public class SimpleMinimalOntology implements MinimalOntology {
   }
 
   @Override
+  public int allTermIdCount() {
+    return termIdCount.allTermIdCount;
+  }
+
+  @Override
   public Iterable<TermId> nonObsoleteTermIds() {
     return new IterableIteratorWrapper<>(() -> terms.stream().map(Term::id).iterator());
   }
 
   @Override
+  public int nonObsoleteTermIdCount() {
+    return termIdCount.nonObsoleteTermIdCount;
+  }
+
+  @Override
   public Iterable<TermId> obsoleteTermIds() {
     return new IterableIteratorWrapper<>(() -> new AltTermIdIterator(terms.iterator()));
+  }
+
+  @Override
+  public int obsoleteTermIdsCount() {
+    return termIdCount.obsoleteTermIdCount;
   }
 
   @Override
@@ -102,6 +120,18 @@ public class SimpleMinimalOntology implements MinimalOntology {
   @Override
   public Optional<String> version() {
     return Optional.ofNullable(metaInfo.get("release"));
+  }
+
+  private static class TermIdCount {
+    private final int allTermIdCount;
+    private final int obsoleteTermIdCount;
+    private final int nonObsoleteTermIdCount;
+
+    private TermIdCount(int allTermIdCount, int obsoleteTermIdCount, int nonObsoleteTermIdCount) {
+      this.allTermIdCount = allTermIdCount;
+      this.obsoleteTermIdCount = obsoleteTermIdCount;
+      this.nonObsoleteTermIdCount = nonObsoleteTermIdCount;
+    }
   }
 
   /**
@@ -162,24 +192,30 @@ public class SimpleMinimalOntology implements MinimalOntology {
       // Then, build the term and relationship maps.
       Map<TermId, Term> termMap = new HashMap<>();
       List<Term> primaryTerms = new ArrayList<>();
+      int all = 0, nonObsolete = 0;
       for (Term term : terms) {
         if (!term.isObsolete()) {
           primaryTerms.add(term);
           termMap.put(term.id(), term);
+          all++;
+          nonObsolete++;
           for (TermId altTermId : term.getAltTermIds()) {
             termMap.put(altTermId, term);
+            all++;
           }
         }
       }
 
       RelationshipContainer relationshipContainer = packageRelationships(relationships);
+      TermIdCount termIdCount = new TermIdCount(all, all - nonObsolete, nonObsolete);
 
       // Finally, wrap everything into the ontology!
       return new SimpleMinimalOntology(ontologyGraph,
         primaryTerms,
         termMap,
         relationshipContainer,
-        Collections.unmodifiableSortedMap(new TreeMap<>(metaInfo)));
+        Collections.unmodifiableSortedMap(new TreeMap<>(metaInfo)),
+        termIdCount);
     }
 
     private RelationshipContainer packageRelationships(List<Relationship> relationships) {

@@ -1,9 +1,7 @@
 package org.monarchinitiative.phenol.io;
 
 import org.geneontology.obographs.core.model.GraphDocument;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
-import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
@@ -86,7 +84,7 @@ public class OntologyLoader {
       .terms(graphDocumentAdaptor.getTerms())
       .relationships(graphDocumentAdaptor.getRelationships())
       .build();
-    logger.debug("Parsed a total of {} terms", ontology.countAllTerms());
+    logger.debug("Parsed a total of {} terms", ontology.getTerms().size());
     return ontology;
   }
 

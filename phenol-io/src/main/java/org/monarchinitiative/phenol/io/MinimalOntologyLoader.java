@@ -88,7 +88,7 @@ public class MinimalOntologyLoader {
       .terms(graphDocumentAdaptor.getTerms())
       .relationships(graphDocumentAdaptor.getRelationships())
       .build();
-    logger.debug("Parsed a total of {} terms", ontology.countAllTerms());
+    logger.debug("Parsed a total of {} terms", ontology.getTerms().size());
     return ontology;
   }
 }

@@ -86,7 +86,7 @@ public class MpEnrichmentDemo {
   }
 
   public void run() {
-    int n_terms = ontology.countAllTerms();
+    int n_terms = ontology.allTermIdCount();
     System.out.println("[INFO] parsed " + n_terms + " MP terms.");
     List<TermAnnotation> annots = getTermAnnotations();
     System.out.println("[INFO] parsed " + annots.size() + " MP annotations.");

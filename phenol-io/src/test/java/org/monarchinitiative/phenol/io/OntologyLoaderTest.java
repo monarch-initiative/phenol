@@ -29,14 +29,14 @@ public class OntologyLoaderTest {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
     // this file has 5 example HP terms
-    assertEquals(5, ontology.countAllTerms());
+    assertEquals(5, ontology.nonObsoleteTermIdCount());
   }
 
   @Test
   public void loadJsonStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    assertThat(ontology.countAllTerms(), is(5));
+    assertThat(ontology.nonObsoleteTermIdCount(), is(5));
   }
 
   @Test
@@ -149,8 +149,8 @@ public class OntologyLoaderTest {
     assertFalse(termPrefixes.contains("CHEBI"));
     assertFalse(termPrefixes.contains("GO"));
     // 2270 ECTO terms plus owl:thing
-    assertEquals(2271, ecto.countNonObsoleteTerms());
-    assertEquals(0, ecto.countAlternateTermIds());
+    assertEquals(2271, ecto.nonObsoleteTermIdCount());
+    assertEquals(0, ecto.obsoleteTermIdsCount());
   }
 
   /**
@@ -168,8 +168,8 @@ public class OntologyLoaderTest {
     Ontology permissiveOntology = OntologyLoader.loadOntology(ectoPath.toFile());
 
     assertEquals(TermId.of("owl:Thing"), permissiveOntology.getRootTermId());
-    assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
-    assertEquals(4, permissiveOntology.countAlternateTermIds());
+    assertEquals(8343, permissiveOntology.nonObsoleteTermIdCount());
+    assertEquals(4, permissiveOntology.obsoleteTermIdsCount());
 
     Set<String> prefixes = permissiveOntology.getAllTermIds()
       .stream()

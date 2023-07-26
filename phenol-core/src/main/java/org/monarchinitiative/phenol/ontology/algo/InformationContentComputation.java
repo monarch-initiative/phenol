@@ -47,7 +47,7 @@ public final class InformationContentComputation {
   public Map<TermId, Double> computeInformationContent(Map<TermId, Collection<TermId>> termLabels) {
     LOGGER.info(
         "Computing IC of {} terms using {} labels...",
-            ontology.countAllTerms(), termLabels.values().stream().mapToInt(Collection::size).sum()
+            ontology.nonObsoleteTermIdCount(), termLabels.values().stream().mapToInt(Collection::size).sum()
         );
 
     // Build mapping from TermId -> absolute frequency
@@ -55,7 +55,7 @@ public final class InformationContentComputation {
     final TermId root = ontology.getRootTermId();//TermId.of("HP:0000118");
 
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
-    for (TermId termId : ontology.getNonObsoleteTermIds()) {
+    for (TermId termId : ontology.nonObsoleteTermIds()) {
       termToFrequency.put(termId, 0);
     }
     for (Entry<TermId, Collection<TermId>> e : termLabels.entrySet()) {
