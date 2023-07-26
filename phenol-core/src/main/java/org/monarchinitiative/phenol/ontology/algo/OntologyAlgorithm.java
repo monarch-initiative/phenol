@@ -25,7 +25,7 @@ public class OntologyAlgorithm {
   private OntologyAlgorithm() {
   }
 
-  public static boolean existsPath(Ontology ontology, TermId sourceID, TermId destID) {
+  public static boolean existsPath(MinimalOntology ontology, TermId sourceID, TermId destID) {
     // special case -- a term cannot have a path to itself in an ontology (DAG)
     if (sourceID.equals(destID)) return false;
 
@@ -49,7 +49,13 @@ public class OntologyAlgorithm {
    * @param ontology The ontology to which parentTermId belongs
    * @param parentTermId The term whose children were are seeking
    * @return A set of all child terms of parentTermId (including parentTermId itself)
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getChildrenStream(Object, boolean)} instead,
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getChildTerms(Ontology ontology, TermId parentTermId) {
     return getChildTerms(ontology, parentTermId, true);
   }
@@ -62,8 +68,13 @@ public class OntologyAlgorithm {
    * @param includeOriginalTerm true if we should include the term itself in the set of returned
    *                            child terms
    * @return A set of all child terms of parentTermId
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getChildrenStream(Object, boolean)} instead.
+   * The method will be removed in <code>3.0.0</code>.
    */
-  public static Set<TermId> getChildTerms(Ontology ontology, TermId parentTermId, boolean includeOriginalTerm) {
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
+  public static Set<TermId> getChildTerms(MinimalOntology ontology, TermId parentTermId, boolean includeOriginalTerm) {
     Set<IdLabeledEdge> incomingEdges = ontology.getGraph().incomingEdgesOf(parentTermId);
 
     // We'll be adding at most this many term IDs.
@@ -89,7 +100,13 @@ public class OntologyAlgorithm {
    * @param ontology        The ontology to which the set of parentTermIds belong
    * @param parentTermIdSet The terms whose children were are seeking
    * @return set of children of parentTermIdSet
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()},
+   * use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getChildrenStream(Object, boolean)} for each parent term
+   * and concatenate the streams.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getChildTerms(Ontology ontology, Set<TermId> parentTermIdSet) {
     Set<TermId> kids = new HashSet<>();
     for (TermId tid : parentTermIdSet) {
@@ -104,7 +121,13 @@ public class OntologyAlgorithm {
    * @param ontology The ontology to which the set of childTermIds belong
    * @param childTermIdSet The terms whose parents we are seeking
    * @return set of parents of childTermIdSet
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)},
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getParentTerms(Ontology ontology, Set<TermId> childTermIdSet) {
     Set<TermId> parents = new HashSet<>();
     for (TermId tid : childTermIdSet) {
@@ -113,6 +136,14 @@ public class OntologyAlgorithm {
     return Set.copyOf(parents);
   }
 
+  /**
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)} for each child,
+   * and concatenate the streams.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getParentTerms(Ontology ontology, Set<TermId> childTermIdSet, boolean includeOriginalTerm) {
     Set<TermId> parents = new HashSet<>();
 
@@ -129,7 +160,13 @@ public class OntologyAlgorithm {
    * @param ontology The ontology to which parentTermId belongs
    * @param parentTermId The term whose descendents were are seeking
    * @return A set of all descendents of parentTermId (including the parentTermId itself)
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getDescendantsStream(Object, boolean)},
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getDescendents(Ontology ontology, TermId parentTermId) {
     Set<TermId> descset = new HashSet<>();
     Deque<TermId> stack = new ArrayDeque<>();
@@ -151,7 +188,12 @@ public class OntologyAlgorithm {
    * @param includeOriginalTerm true if we should include the term itself in the set of returned
    *     parent terms
    * @return A set of all parent terms of childTermId
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getParentTerms(Ontology ontology, TermId childTermId, boolean includeOriginalTerm) {
     Set<IdLabeledEdge> outgoingEdges = ontology.getGraph().outgoingEdgesOf(childTermId);
 
@@ -174,16 +216,25 @@ public class OntologyAlgorithm {
   // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm.
   // All nodes above that root node in the original ontology will be ignored.
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, Set<TermId> children, boolean includeOriginalTerm) {
+    // TODO - implement or deprecate
     Ontology subontology = ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, children, includeOriginalTerm);
   }
 
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, TermId child, boolean includeOriginalTerm) {
-    ImmutableOntology subontology =
-      (ImmutableOntology) ontology.subOntology(rootTerm);
+    // TODO - implement or deprecate
+    Ontology subontology = ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, child, includeOriginalTerm);
   }
 
+  /**
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getAncestorsStream(Object, boolean)} for each child,
+   * setting {@code includeSource=true}, and concatenate the streams.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getAncestorTerms(Ontology ontology, Set<TermId> children, boolean includeOriginalTerm) {
     Set<TermId> builder = new HashSet<>();
     if (includeOriginalTerm) builder.addAll(children);
@@ -199,6 +250,14 @@ public class OntologyAlgorithm {
     return Set.copyOf(builder);
   }
 
+  /**
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getAncestorsStream(Object, boolean)},
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId child, boolean includeOriginalTerm) {
     return getAncestorTerms(ontology, Set.of(child), includeOriginalTerm);
   }
@@ -210,7 +269,13 @@ public class OntologyAlgorithm {
    * @param ontology The ontology to which parentTermId belongs
    * @param childTermId The term whose parents were are seeking
    * @return A set of all parent terms of childTermId including childTermId itself
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)},
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getParentTerms(
     Ontology ontology, TermId childTermId) {
     return getParentTerms(ontology, childTermId, true);
@@ -224,18 +289,39 @@ public class OntologyAlgorithm {
    * @param ontology The ontology to which childTermId belongs
    * @param childTermId The term whose ancestors were are seeking
    * @return A set of all ancestors of childTermId
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getAncestors(Object, boolean)},
+   * setting {@code includeSource=true}.
+   * The method will be removed in <code>3.0.0</code>.
    */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static Set<TermId> getAncestorTerms(
     Ontology ontology, TermId childTermId) {
     return ontology.getAncestorTermIds(childTermId);
   }
 
-  public static boolean isSubclass(
+  /**
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#isAncestorOf(Object, Object)},.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
+   public static boolean isSubclass(
     Ontology ontology, TermId source, TermId dest) {
     return ontology.getAncestorTermIds(source).contains(dest);
   }
 
-  public static boolean termsAreSiblings(
+  /**
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)} for {@code t1}
+   * and {@code t2} and search for intersecting elements.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
+   public static boolean termsAreSiblings(
     Ontology ontology, TermId t1, TermId t2) {
     Set<TermId> parents1 = getParentTerms(ontology, t1, false); // false=do not include t1 itself
     Set<TermId> parents2 = getParentTerms(ontology, t2, false); // ditto
@@ -266,16 +352,16 @@ public class OntologyAlgorithm {
     return (!termsAreRelated(ontology, t1, t2));
   }
 
-  private static Optional<TermId> extractTermIdIfEdgeHasPropagatingRelationship(Ontology ontology,
+  private static Optional<TermId> extractTermIdIfEdgeHasPropagatingRelationship(MinimalOntology ontology,
                                                                                 IdLabeledEdge edge,
                                                                                 Function<IdLabeledEdge, TermId> termIdExtractor) {
     int edgeId = edge.getId();
-    Relationship relationship = ontology.getRelationMap().get(edgeId);
-    if (relationship == null) {
+    Optional<Relationship> relationship = ontology.relationshipById(edgeId);
+    if (relationship.isEmpty()) {
       logger.error("Could not retrieve relation for edge id={}, source={}, target={}", edgeId, edge.getSource(), edge.getTarget());
       return Optional.empty();
     }
-    RelationshipType relationshipType = relationship.getRelationshipType();
+    RelationshipType relationshipType = relationship.get().getRelationshipType();
     if (!relationshipType.propagates()) {
       // We won't use this edge if it does not "propagate"
       return Optional.empty();

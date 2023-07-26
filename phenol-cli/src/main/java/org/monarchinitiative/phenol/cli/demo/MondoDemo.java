@@ -2,10 +2,7 @@ package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
-import org.monarchinitiative.phenol.ontology.data.Dbxref;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,7 +20,7 @@ public class MondoDemo {
   private final String mondoPath;
   private final String outPath;
 
-  private Ontology mondo;
+  private MinimalOntology mondo;
   private List<Term> phenoseriesRoots;
   private Map<Term, Collection<TermId>> phenoseries2omimMap;
 
@@ -61,12 +58,7 @@ public class MondoDemo {
       return;
     }
     mondo = OntologyLoader.loadOntology(file);
-    Set<TermId> obsolete = mondo.getObsoleteTermIds();
-    for (Map.Entry<TermId, Term> entry : mondo.getTermMap().entrySet()) {
-      if (obsolete.contains(entry.getKey())) {
-        continue;
-      }
-      Term term = entry.getValue();
+    for (Term term : mondo.getTerms()) {
       for (Dbxref xref : term.getXrefs()) {
         if (xref.getName().startsWith("OMIMPS"))
           phenoseriesRoots.add(term);
@@ -74,12 +66,11 @@ public class MondoDemo {
       }
     }
     for (Term psterm : phenoseriesRoots) {
-      Set<TermId> members = OntologyAlgorithm.getDescendents(mondo, psterm.id());
-      for (TermId member : members) {
-        Term candidate = mondo.getTermMap().get(member);
-        if (isOmimEntry(candidate)) {
+      for (TermId member : mondo.graph().getDescendants(psterm.id(), true)) {
+        Optional<Term> candidate = mondo.termForTermId(member);
+        if (candidate.isPresent() && isOmimEntry(candidate.get())) {
           phenoseries2omimMap.computeIfAbsent(psterm, key -> new HashSet<>())
-            .add(candidate.id());
+            .add(candidate.get().id());
         }
       }
     }
@@ -89,14 +80,17 @@ public class MondoDemo {
       for (Term psterm : phenoseries2omimMap.keySet()) {
         Collection<TermId> coll = phenoseries2omimMap.get(psterm);
         for (TermId tid : coll) {
-          Term omimentry = mondo.getTermMap().get(tid);
-          Optional<TermId> omimIdopt = getOMIMid(omimentry);
+          Optional<Term> omimentry = mondo.termForTermId(tid);
+          if (omimentry.isEmpty())
+            continue;
+
+          Optional<TermId> omimIdopt = getOMIMid(omimentry.get());
           if (omimIdopt.isPresent()) {
             TermId omimId = omimIdopt.get();
             String line = psterm.id().getValue() + "\t" +
               psterm.getName() + "\t" +
               omimId.getValue() + "\t" +
-              omimentry.getName();
+              omimentry.get().getName();
             System.out.println(line);
             writer.write(line + "\n");
           }

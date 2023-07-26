@@ -1,9 +1,11 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Calculate pairwise similarity between HPO terms using Resnik. Offer symmetric and asymmetric similarity functions
@@ -104,22 +106,23 @@ public class HpoResnikSimilarity implements PairwiseSimilarity {
   }
 
 
-  private static Map<TermPair, Double> precomputeSimilaritiesForTermPairs(Ontology hpo, Map<TermId, Double> termToIc) {
+  private static Map<TermPair, Double> precomputeSimilaritiesForTermPairs(MinimalOntology hpo, Map<TermId, Double> termToIc) {
     Map<TermPair, Double> termPairResnikSimilarityMap = new HashMap<>();
     // Compute for relevant sub-ontologies in HPO
     for (TermId topTerm : toplevelTerms()) {
-      if (! hpo.containsTerm(topTerm)) {
+      if (hpo.termForTermId(topTerm).isEmpty()) {
         continue; // should never happen, but avoid crash in testing.
       }
-      Ontology subOntology = hpo.subOntology(topTerm);
-      Set<TermId> terms = subOntology.getNonObsoleteTermIds();
-      List<TermId> list = new ArrayList<>(terms);
+
+      List<TermId> list = hpo.graph().getDescendantsStream(topTerm, true)
+        .distinct()
+        .collect(Collectors.toList());
       for (int i = 0; i < list.size(); i++) {
         // start the second iteration at i to get self-similarity
         for (int j = i; j < list.size(); j++) {
           TermId a = list.get(i);
           TermId b = list.get(j);
-          double similarity = computeResnikSimilarity(a, b, termToIc, subOntology);
+          double similarity = computeResnikSimilarity(a, b, termToIc, hpo);
           TermPair pair = TermPair.symmetric(a, b);
           // a few terms belong to multiple sub-ontologies. This will take the maximum similarity.
           double d = termPairResnikSimilarityMap.getOrDefault(pair, 0.0);
@@ -142,8 +145,13 @@ public class HpoResnikSimilarity implements PairwiseSimilarity {
    */
   private static double computeResnikSimilarity(TermId a, TermId b,
                                                 Map<TermId, Double> termToIc,
-                                                Ontology ontology) {
-    return ontology.getCommonAncestors(a, b).stream()
+                                                MinimalOntology ontology) {
+    Set<TermId> aAnc = ontology.graph().getAncestorsStream(a, true)
+      .collect(Collectors.toSet());
+    Set<TermId> bAnc = ontology.graph().getAncestorsStream(b, true)
+      .collect(Collectors.toSet());
+    aAnc.retainAll(bAnc);
+    return aAnc.stream()
       .map(termToIc::get)
       .filter(Objects::nonNull)
       .reduce(0., Double::max);

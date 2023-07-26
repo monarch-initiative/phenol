@@ -4,6 +4,7 @@ package org.monarchinitiative.phenol.analysis.mgsa;
 import org.monarchinitiative.phenol.analysis.GoAssociationContainer;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,9 @@ public class MgsaGOTermsResultContainer
         }
         List<String> items = new ArrayList<>();
         items.add(agtp.getTermId().getValue());
-        items.add(go.getTermMap().get(agtp.getTermId()).getName());
+        items.add(go.termForTermId(agtp.getTermId())
+          .map(Term::getName)
+          .orElse(null));
         items.add(String.format("%d/%d (%.1f%%)",
           agtp.getAnnotatedStudyGenes(),
           agtp.getAnnotatedPopulationGenes(),

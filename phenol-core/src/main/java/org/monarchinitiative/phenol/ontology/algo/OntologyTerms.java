@@ -25,7 +25,10 @@ import org.monarchinitiative.phenol.ontology.data.TermVisitor;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @deprecated use {@link org.monarchinitiative.phenol.graph.OntologyGraph} methods instead.
  */
+// REMOVE(3.0.0)
+@Deprecated(forRemoval = true, since = "2.0.2")
 public final class OntologyTerms {
 
   /**

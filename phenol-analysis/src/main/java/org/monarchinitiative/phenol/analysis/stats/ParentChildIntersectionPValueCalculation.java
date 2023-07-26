@@ -26,7 +26,7 @@ public class ParentChildIntersectionPValueCalculation extends ParentChildPValues
 	}
 
   @Override
-  protected Counts getCounts(TermId goId, Set<TermId> parents) {
+  protected Counts getCounts(TermId goId, Iterable<TermId> parents) {
     Set<TermId> parentsIntersection = new HashSet<>();
     Set<TermId> genesAnnotatedToGoId = populationSet.getAnnotationMap().get(goId).getTotalAnnotatedDomainItemSet();
     int m_t = genesAnnotatedToGoId.size(); // number of genes in population annotated to t

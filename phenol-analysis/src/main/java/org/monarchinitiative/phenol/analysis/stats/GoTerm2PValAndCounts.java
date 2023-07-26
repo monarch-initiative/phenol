@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.analysis.stats;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -49,7 +50,9 @@ public class GoTerm2PValAndCounts extends PValue {
    * @return array of fields with data about this
    */
   public  String[] getRowData(Ontology ontology) {
-    String label = ontology.getTermMap().get(this.item).getName();
+    String label = ontology.termForTermId(item)
+      .map(Term::getName)
+      .orElse(null);
     String study = String.format("%d/%d(%.1f%%)",
       this.annotatedStudyGenes, this.totalStudyGenes,
       100.0*(double)this.annotatedStudyGenes/this.totalStudyGenes);

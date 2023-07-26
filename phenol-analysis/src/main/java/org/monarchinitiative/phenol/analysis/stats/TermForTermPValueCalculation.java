@@ -4,7 +4,7 @@ package org.monarchinitiative.phenol.analysis.stats;
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class TermForTermPValueCalculation extends PValueCalculation {
   Logger LOGGER = LoggerFactory.getLogger(TermForTermPValueCalculation.class);
-  public TermForTermPValueCalculation(Ontology graph,
+  public TermForTermPValueCalculation(MinimalOntology graph,
                                       StudySet populationSet,
                                       StudySet studySet,
                                       MultipleTestingCorrection mtc) {

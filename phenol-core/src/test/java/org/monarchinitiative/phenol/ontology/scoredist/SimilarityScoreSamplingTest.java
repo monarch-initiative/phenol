@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.scoredist;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -29,7 +30,11 @@ public class SimilarityScoreSamplingTest extends VegetableOntologyTestBase {
     ResnikSimilarity resnikSimilarity = new ResnikSimilarity(pairwise, true);
 
     ScoreSamplingOptions options = new ScoreSamplingOptions(1, null, null, 2, 2, 10_000, 42);
-    scoreSampling = new SimilarityScoreSampling(ontology, resnikSimilarity, options,termLabels);
+    scoreSampling = new SimilarityScoreSampling(ontology.nonObsoleteTermIdsStream()
+      .collect(Collectors.toList()),
+      resnikSimilarity,
+      options,
+      termLabels);
   }
 
  @Test

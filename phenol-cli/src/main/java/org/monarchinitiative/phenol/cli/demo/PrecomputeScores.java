@@ -3,9 +3,9 @@ package org.monarchinitiative.phenol.cli.demo;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.annotations.formats.hpo.HpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
-import org.monarchinitiative.phenol.io.OntologyLoader;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
 import org.monarchinitiative.phenol.ontology.algo.InformationContentComputation;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.monarchinitiative.phenol.analysis.scoredist.ScoreDistributionWriter;
 import org.monarchinitiative.phenol.analysis.scoredist.TextFileScoreDistributionWriter;
@@ -34,7 +35,8 @@ public class PrecomputeScores {
   private static final Logger LOGGER = LoggerFactory.getLogger(PrecomputeScores.class);
 
   /** The phenotypic abnormality sub ontology. */
-  private final Ontology phenotypicAbnormalitySubOntology;
+  private final MinimalOntology hpo;
+  private final List<TermId> phenotypicAbnormalityPrimaryTermIds;
 
   private final int numIterations;
 
@@ -64,8 +66,9 @@ public class PrecomputeScores {
   /** Constructor. */
   public PrecomputeScores(String hpOboPath, int numIter, int seed,int numThreads, String outfile) {
     LOGGER.info("Loading ontology from OBO...");
-      Ontology hpo = OntologyLoader.loadOntology(new File(hpOboPath));
-    phenotypicAbnormalitySubOntology = hpo.subOntology(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY);
+    hpo = MinimalOntologyLoader.loadOntology(new File(hpOboPath));
+    phenotypicAbnormalityPrimaryTermIds = hpo.graph().getDescendantsStream(HpoSubOntologyRootTermIds.PHENOTYPIC_ABNORMALITY, true)
+      .collect(Collectors.toList());
     LOGGER.info("Done loading ontology.");
     this.numIterations = numIter;
     this.seed = seed;
@@ -98,8 +101,7 @@ public class PrecomputeScores {
     LOGGER.info("Loading gene-to-term link file...");
     final ArrayList<HpoGeneAnnotation> termAnnotations = new ArrayList<>();
 
-    TermAnnotations.constructTermLabelToAnnotationsMap(phenotypicAbnormalitySubOntology, termAnnotations)
-        .forEach(objectIdToTermId::put);
+    objectIdToTermId.putAll(TermAnnotations.constructTermLabelToAnnotationsMap(hpo, termAnnotations));
 
     LOGGER.info("Done loading gene-phenotype links.");
   }
@@ -107,15 +109,14 @@ public class PrecomputeScores {
   private void precomputePairwiseResnik() {
     LOGGER.info("Performing information content precomputation...");
     final InformationContentComputation icPrecomputation =
-        new InformationContentComputation(phenotypicAbnormalitySubOntology);
+        new InformationContentComputation(hpo);
     final Map<TermId, Double> termToIc =
         icPrecomputation.computeInformationContent(termIdToObjectId);
     LOGGER.info("Done with precomputing information content.");
 
     LOGGER.info("Performing pairwise Resnik similarity precomputation...");
     resnikSimilarity =
-        new ResnikSimilarity(
-            phenotypicAbnormalitySubOntology, termToIc, /* symmetric= */ false);
+        new ResnikSimilarity(hpo, termToIc, /* symmetric= */ false);
     LOGGER.info("Done with precomputing pairwise Resnik similarity.");
   }
 
@@ -133,8 +134,8 @@ public class PrecomputeScores {
             this.numIterations);
 
     final SimilarityScoreSampling sampling =
-        new SimilarityScoreSampling(
-            phenotypicAbnormalitySubOntology, resnikSimilarity, samplingOptions,objectIdToTermId);
+        new SimilarityScoreSampling(phenotypicAbnormalityPrimaryTermIds,
+          resnikSimilarity, samplingOptions, objectIdToTermId);
     scoreDistribution = sampling.performSampling();
 
     LOGGER.info("Done with sampling.");

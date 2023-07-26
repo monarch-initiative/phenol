@@ -5,7 +5,6 @@ import org.monarchinitiative.phenol.annotations.formats.go.GoGaf22Annotation;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -119,8 +118,7 @@ public class GoAssociationContainer implements AssociationContainer<TermId> {
         /* At first add the direct counts and remember the terms */
         TermId ontologyTermId = termAnnotation.id();
         // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
-        Term term = this.ontology.getTermMap().get(ontologyTermId);
-        if (term == null) {
+        if (ontology.termForTermId(ontologyTermId).isEmpty()) {
           not_found++;
           if (verbose) {
             LOGGER.warn("[WARNING(phenol:AssociationContainer)] Unable to retrieve term {} (omitted).",
