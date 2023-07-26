@@ -23,18 +23,18 @@ public class SimpleMinimalOntology implements MinimalOntology {
   private final OntologyGraph<TermId> ontologyGraph;
   private final List<Term> terms;
   private final Map<TermId, Term> termMap;
-  private final Map<Integer, Relationship> relationMap;
+  private final RelationshipContainer relationships;
   private final SortedMap<String, String> metaInfo;
 
   SimpleMinimalOntology(OntologyGraph<TermId> ontologyGraph,
                         List<Term> terms,
                         Map<TermId, Term> termMap,
-                        Map<Integer, Relationship> relationMap,
+                        RelationshipContainer relationships,
                         SortedMap<String, String> metaInfo) {
     this.ontologyGraph = Objects.requireNonNull(ontologyGraph);
     this.terms = Objects.requireNonNull(terms);
     this.termMap = Objects.requireNonNull(termMap);
-    this.relationMap = Objects.requireNonNull(relationMap);
+    this.relationships = Objects.requireNonNull(relationships);
     this.metaInfo = Objects.requireNonNull(metaInfo);
   }
 
@@ -66,12 +66,12 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
   @Override
   public Map<Integer, Relationship> getRelationMap() {
-    return relationMap;
+    return relationships.getRelationMap();
   }
 
   @Override
   public Optional<Relationship> relationshipById(int relationshipId) {
-    return Optional.ofNullable(relationMap.get(relationshipId));
+    return relationships.relationshipById(relationshipId);
   }
 
   @Override
@@ -146,16 +146,16 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
     public SimpleMinimalOntology build() {
       // Check if we've got everything we need.
-      if (terms == null || terms.isEmpty())
+      if (terms.isEmpty())
         throw new IllegalStateException("No terms were provided to build the ontology");
-      if (relationships == null || relationships.isEmpty())
+      if (relationships.isEmpty())
         throw new IllegalStateException("No relationships were provided to build the ontology");
 
       // First, find the root term.
       TermId rootId = OntologyUtils.findRootTermId(terms, relationships, () -> hierarchyRelationshipType);
 
       // Next, build the graph.
-      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Short.class)
+      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
         .hierarchyRelation(hierarchyRelationshipType)
         .build(rootId, relationships);
 
@@ -172,11 +172,39 @@ public class SimpleMinimalOntology implements MinimalOntology {
         }
       }
 
-      Map<Integer, Relationship> relationshipMap = relationships.stream()
-        .collect(Collectors.toUnmodifiableMap(Relationship::getId, Function.identity()));
+      RelationshipContainer relationshipContainer = packageRelationships(relationships);
 
       // Finally, wrap everything into the ontology!
-      return new SimpleMinimalOntology(ontologyGraph, primaryTerms, termMap, relationshipMap, new TreeMap<>(metaInfo));
+      return new SimpleMinimalOntology(ontologyGraph,
+        primaryTerms,
+        termMap,
+        relationshipContainer,
+        Collections.unmodifiableSortedMap(new TreeMap<>(metaInfo)));
+    }
+
+    private RelationshipContainer packageRelationships(List<Relationship> relationships) {
+      int max = -1, min = 0;
+      for (Relationship relationship : relationships) {
+        int id = relationship.getId();
+        max = Math.max(id, max);
+        min = Math.min(id, min);
+      }
+      if (min < 0) {
+        // We have >=1 negative relationship indices, therefore we cannot use `ArrayRelationshipContainer`
+        return new MapRelationshipContainer(relationships.stream()
+          .collect(Collectors.toMap(Relationship::getId, Function.identity())));
+      } else {
+        // All relationship indices are positive ints.
+        int span = max - min;
+        float occupancy = (float) (span) / (relationships.size() -1); // -1 due to 0-based indexing.
+        if (occupancy > .90f) {
+          // >90% entries are used
+          return ArrayRelationshipContainer.of(relationships);
+        } else {
+          return new MapRelationshipContainer(relationships.stream()
+            .collect(Collectors.toMap(Relationship::getId, Function.identity())));
+        }
+      }
     }
 
   }
