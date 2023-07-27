@@ -71,7 +71,7 @@ jobs:
             cd docs/
             # Replace the `release_tag` placeholder to the right value in place.
             # This must be done *prior* generating docs in several files
-            sed -i "s/release_tag/${DOCDIR}/g" examples.rst
+            #sed -i "s/release_tag/${DOCDIR}/g" examples.rst
             make clean html
             cd ..
             mv docs/_build/html/* gh-pages/${DOCDIR}
