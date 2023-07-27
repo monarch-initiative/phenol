@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+
 import java.util.*;
 
 /**
@@ -73,7 +75,7 @@ public interface Term extends Identified {
   class Builder {
 
     //Primary identifiers for the Term - cannot be null
-    TermId id = null;
+    final TermId id;
     // The human-readable name of the term.
     String name = null;
 
@@ -94,6 +96,9 @@ public interface Term extends Identified {
     List<Dbxref> xrefs = List.of();
 
     private Builder(TermId id) {
+      // REMOVE(3.0.0) - as of 3.0.0 `id` is non-null since we can remove the noarg builder() above.
+      //  Then uncomment the below and delete the 2 lines below.
+//      this.id = Objects.requireNonNull(id);
       this.id = id;
     }
 
@@ -107,10 +112,10 @@ public interface Term extends Identified {
 
     /**
      * @param id The term's ID.
+     * @deprecated set the primary {@link TermId} via {@link #builder(TermId)}.
      */
     public Builder id(TermId id) {
-      this.id = id;
-      return this;
+      throw new PhenolRuntimeException("id was deprecated, set the primary term via builder instead.");
     }
 
     /**

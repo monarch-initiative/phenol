@@ -12,23 +12,27 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
 /**
  * Interface for ontologies without the all-ancestor-related convenience functions.
  *
- * <p>Most classes will want to work with {@link Ontology} instead of {@link MinimalOntology} as the
+ * <p>
+ * Most classes will want to work with {@link Ontology} instead of {@link MinimalOntology} as the
  * more interesting algorithms on ontologies need fast access to all ancestors of a term.
  *
- * <p>Following the "composition over inheritance" paradigm, an <code>Ontology</code> is composed
+ * <p>
+ * Following the "composition over inheritance" paradigm, an <code>Ontology</code> is composed
  * of a {@link OntologyGraph} and methods {@link #termForTermId(TermId)}s {@link #relationshipById(int)}
  * for assigning {@link TermId}s and edge ids to the corresponding labels.
  *
- * <p>The graph contains one vertex for each {@linkplain TermId} in the loaded ontology
+ * <p>
+ * The graph contains one vertex for each {@linkplain TermId} in the loaded ontology
  * (corresponding to <code>[TermI]</code> stanzas in OBO).
  * Terms that are just referred to are not represented in the ontology.
  *
- * <p>While {@link MinimalOntology} allows access to {@linkplain TermId}s of obsolete {@link Term}s
+ * <p>
+ * While {@link MinimalOntology} allows access to {@linkplain TermId}s of obsolete {@link Term}s
  * in the ontology, the obsolete {@linkplain Term}s are excluded from the underlying graph structure.
  *
  * <h5>Terms vs. Term IDs</h5>
  *
- * <p>OBO files contain lists of terms (besides other entry types). Each term has one primary
+ * OBO files contain lists of terms (besides other entry types). Each term has one primary
  * identifier and a (possibly empty) list of alternative IDs. Terms can also be marked as obsolete.
  * While appearing simple on the surface, this has several implications for this interface:
  *
@@ -43,7 +47,7 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
  *
  * <h5>Iterating</h5>
  *
- * <p>For iterating over terms and term IDs <b>only</b> use the functions {@link #getTerms()},
+ * For iterating over terms and term IDs <b>only</b> use the functions {@link #getTerms()},
  * {@link #nonObsoleteTermIds()}, {@link #obsoleteTermIds()}, and {@link #getTerms()}. These functions return iterables
  * with elements from this ontology.
  *
@@ -63,7 +67,7 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
- * @author <a href="mailto:daniel.danis@jax.org">Daniel Danis</a>
+ * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
 public interface MinimalOntology extends Serializable, Versioned {
   long serialVersionUID = 2L;
@@ -133,7 +137,7 @@ public interface MinimalOntology extends Serializable, Versioned {
   /** @return The root's {@link TermId}. */
   default TermId getRootTermId() {
     return graph().root();
-  };
+  }
 
   /**
    * Get an {@linkplain Iterable} with all term IDs (obsolete and non-obsolete).
@@ -213,7 +217,13 @@ public interface MinimalOntology extends Serializable, Versioned {
     return getSequentialStream(obsoleteTermIds().spliterator());
   }
 
-  /** @return {@link Collection} of all term ({@code T}) objects, including the obsolete ones. */
+  /**
+   * Get a {@linkplain Collection} of the primary {@link Term}s.
+   * <p>
+   * Note, since {@code 2.0.2} the method <em>does not</em> provide the obsolete {@link Term}s.
+   *
+   * @return a {@linkplain Collection} of the primary {@link Term}s.
+   */
   Collection<Term> getTerms();
 
   /**

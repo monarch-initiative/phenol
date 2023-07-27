@@ -4,7 +4,6 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.analysis.util.Util;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,7 +200,8 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @param ontology {@link Ontology} object
    * @return an AssociationContainer
    */
-  public static TermAssociationContainer fromGoTermAnnotations(List<? extends TermAnnotation> goAnnots, MinimalOntology ontology) {
+  public static TermAssociationContainer fromGoTermAnnotations(List<? extends TermAnnotation> goAnnots,
+                                                               MinimalOntology ontology) {
     // key: a gene id; value: set of direct GO annotations
     Map<TermId, Set<TermAnnotation>> domainItemToAnnotationMap = new HashMap<>();
     for (TermAnnotation annot : goAnnots) {

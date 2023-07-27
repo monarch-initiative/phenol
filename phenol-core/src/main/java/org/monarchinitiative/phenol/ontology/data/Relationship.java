@@ -12,7 +12,6 @@ import java.util.Objects;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public class Relationship implements OntologyGraphEdge<TermId> {
-  private static final long serialVersionUID = 2L;
 
   /** Source {@link TermId}. */
   protected final TermId source;
@@ -61,7 +60,6 @@ public class Relationship implements OntologyGraphEdge<TermId> {
   public RelationType relationType() {
     return relationshipType;
   }
-
 
   @Override
   public TermId subject() {

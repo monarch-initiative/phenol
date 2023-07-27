@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.analysis.stats;
 
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -49,7 +50,7 @@ public class GoTerm2PValAndCounts extends PValue {
    * @param ontology reference to Gene (or other) Ontology
    * @return array of fields with data about this
    */
-  public  String[] getRowData(Ontology ontology) {
+  public  String[] getRowData(MinimalOntology ontology) {
     String label = ontology.termForTermId(item)
       .map(Term::getName)
       .orElse(null);

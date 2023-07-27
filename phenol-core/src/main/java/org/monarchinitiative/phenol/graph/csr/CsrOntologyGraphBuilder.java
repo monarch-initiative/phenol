@@ -76,7 +76,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
     RelationCodec<E> codec = RelationCodec.of(relationTypes, indexer);
     int maxIndex = codec.maxIdx();
     if (maxIndex > indexer.maxIdx())
-      throw new IllegalArgumentException(String.format("Unable to encode %d relation types using %d slots",
+      throw new InsufficientWidthException(String.format("Unable to encode %d relation types using %d slots",
         maxIndex, indexer.maxIdx()));
 
     LOGGER.debug("Sorting graph nodes");

@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.cli.demo;
 
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.*;
 
 import java.io.BufferedWriter;
