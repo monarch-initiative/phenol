@@ -7,7 +7,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.algo.VertexVisitor;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermVisitor;
 
@@ -35,10 +35,10 @@ public final class OntologyTerms {
    * Visit all children terms of {@code termId} in {@code ontology} using {@code termVisitor}.
    *
    * @param termId The root of the sub ontology DAG to query for.
-   * @param ontology The {@link Ontology} to iterate in.
-   * @param <O> {@link Ontology} specialization to use.
+   * @param ontology The {@link MinimalOntology} to iterate in.
+   * @param <O> {@link MinimalOntology} specialization to use.
    */
-  public static <O extends Ontology> void visitChildrenOf(
+  public static <O extends MinimalOntology> void visitChildrenOf(
     TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
@@ -61,12 +61,12 @@ public final class OntologyTerms {
    * Return set of all children of {@code termId} in {@code ontology}.
    *
    * @param termId The root of the sub ontology DAG to query for.
-   * @param ontology The {@link Ontology} to iterate in.
+   * @param ontology The {@link MinimalOntology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of children of the term corresponding to
    *     {@link TermId} (including {@link TermId}).
-   * @param <O> {@link Ontology} specialization to use.
+   * @param <O> {@link MinimalOntology} specialization to use.
    */
-  public static <O extends Ontology> Set<TermId> childrenOf(TermId termId, O ontology) {
+  public static <O extends MinimalOntology> Set<TermId> childrenOf(TermId termId, O ontology) {
     Set<TermId> result = new HashSet<>();
 
     visitChildrenOf(
@@ -87,10 +87,10 @@ public final class OntologyTerms {
    * Visit all parets terms of {@code termId} in {@code ontology} using {@code termVisitor}.
    *
    * @param termId The {@link TermId} of the term to visit the parents of.
-   * @param ontology The {@link Ontology} to iterate in.
-   * @param <O> {@link Ontology} specialization to use.
+   * @param ontology The {@link MinimalOntology} to iterate in.
+   * @param <O> {@link MinimalOntology} specialization to use.
    */
-  public static <O extends Ontology> void visitParentsOf(
+  public static <O extends MinimalOntology> void visitParentsOf(
     TermId termId, O ontology, TermVisitor<O> termVisitor) {
     // Setup BFS for visiting the termds.
     BreadthFirstSearch<TermId, IdLabeledEdge> bfs = new BreadthFirstSearch<>();
@@ -113,12 +113,12 @@ public final class OntologyTerms {
    * Return set of all praents of {@code termId} in {@code ontology}.
    *
    * @param termId The {@link TermId} of the term to visit the parents of.
-   * @param ontology The {@link Ontology} to iterate in.
+   * @param ontology The {@link MinimalOntology} to iterate in.
    * @return Newly created {@link Set} with {@link TermId}s of parents of the term corresponding to
    *     {@link TermId}).
-   * @param <O> {@link Ontology} specialization to use.
+   * @param <O> {@link MinimalOntology} specialization to use.
    */
-  public static <O extends Ontology> Set<TermId> parentsOf(TermId termId, O ontology) {
+  public static <O extends MinimalOntology> Set<TermId> parentsOf(TermId termId, O ontology) {
     Set<TermId> result = new HashSet<>();
 
     visitParentsOf(

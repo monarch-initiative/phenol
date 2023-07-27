@@ -78,11 +78,6 @@ public class SimpleMinimalOntology implements MinimalOntology {
   }
 
   @Override
-  public TermId getRootTermId() {
-    return ontologyGraph.root();
-  }
-
-  @Override
   public Iterable<TermId> allTermIds() {
     return new IterableIteratorWrapper<>(() -> new AllTermIdIterator(terms.iterator()));
   }

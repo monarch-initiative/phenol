@@ -131,7 +131,9 @@ public interface MinimalOntology extends Serializable, Versioned {
   }
 
   /** @return The root's {@link TermId}. */
-  TermId getRootTermId();
+  default TermId getRootTermId() {
+    return graph().root();
+  };
 
   /**
    * Get an {@linkplain Iterable} with all term IDs (obsolete and non-obsolete).
