@@ -8,7 +8,10 @@ import org.jgrapht.graph.DefaultEdge;
  * relevant Relationship instance.
  *
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
+ * @deprecated to be removed with removal of JGraphT without replacement in <em>3.0.0</em>.
  */
+// REMOVE(3.0.0)
+@Deprecated(forRemoval = true, since = "2.0.2")
 public class IdLabeledEdge extends DefaultEdge {
   private static final long serialVersionUID = 1L;
   private final int id;

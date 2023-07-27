@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.graph;
 import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 
 /**
- * Some common {@link RelationType}s, including {@link #isA()} and {@link #partOf()}.
+ * Static factory class with common {@link RelationType}s, including {@link #isA()} and {@link #partOf()}.
  *
  * @see RelationType
  * @see OntologyGraphEdge
