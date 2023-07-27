@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.testdata.vegetables;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,76 +46,68 @@ public class VegetableOntologyTestBase {
     Map<TermId, Term> termMapBuilder = new HashMap<>();
     termMapBuilder.put(
       idVegetable,
-      Term.builder()
-        .id(idVegetable)
+      Term.builder(idVegetable)
         .name("vegetable")
         .definition("part of a plant that is consumed")
         .build()
     );
     termMapBuilder.put(
       idRootVegetable,
-      Term.builder()
-        .id(idRootVegetable)
+      Term.builder(idRootVegetable)
         .name("root vegetable")
         .definition("consumed root part of plant")
         .build()
     );
     termMapBuilder.put(
       idLeafVegetable,
-      Term.builder()
-        .id(idLeafVegetable)
+      Term.builder(idLeafVegetable)
         .name("leaf vegetable")
         .definition("consumed leaf part of plant")
         .build()
     );
     termMapBuilder.put(
       idCarrot,
-      Term.builder()
-        .id(idCarrot)
+      Term.builder(idCarrot)
         .name("carrot")
         .definition("carrots are very tasty root vegetables")
         .build()
     );
     termMapBuilder.put(
       idBlueCarrot,
-      Term.builder()
-        .id(idBlueCarrot)
+      Term.builder(idBlueCarrot)
         .name("blue carrot")
         .definition("blue ones are even better")
         .build()
     );
     termMapBuilder.put(
       idBeet,
-      Term.builder()
-        .id(idBeet)
+      Term.builder(idBeet)
         .name("beet root")
         .definition("beets are tasty and can be used for coloring")
         .build()
     );
     termMapBuilder.put(
       idPumpkin,
-      Term.builder()
-        .id(idPumpkin)
+      Term.builder(idPumpkin)
         .name("pumpkin")
         .definition("pumpkins are great for soup and pickling")
         .build()
     );
     Map<TermId, Term> termMap = Map.copyOf(termMapBuilder);
 
-    Map<Integer, Relationship> relationMapBuilder = new HashMap<>();
-    relationMapBuilder.put(1, new Relationship(idRootVegetable, idVegetable, 1, RelationshipType.IS_A));
-    relationMapBuilder.put(2, new Relationship(idLeafVegetable, idVegetable, 2, RelationshipType.IS_A));
-    relationMapBuilder.put(3, new Relationship(idCarrot, idRootVegetable, 3, RelationshipType.IS_A));
-    relationMapBuilder.put(4, new Relationship(idBeet, idRootVegetable, 4, RelationshipType.IS_A));
-    relationMapBuilder.put(5, new Relationship(idBeet, idLeafVegetable, 5, RelationshipType.IS_A));
-    relationMapBuilder.put(6, new Relationship(idPumpkin, idRootVegetable, 6, RelationshipType.IS_A));
-    relationMapBuilder.put(7, new Relationship(idBlueCarrot, idCarrot, 7, RelationshipType.IS_A));
-    Map<Integer, Relationship> relationMap = Map.copyOf(relationMapBuilder);
+    List<Relationship> relationships = new ArrayList<>();
+    relationships.add(new Relationship(idRootVegetable, idVegetable, 1, RelationshipType.IS_A));
+    relationships.add(new Relationship(idLeafVegetable, idVegetable, 2, RelationshipType.IS_A));
+    relationships.add(new Relationship(idCarrot, idRootVegetable, 3, RelationshipType.IS_A));
+    relationships.add(new Relationship(idBeet, idRootVegetable, 4, RelationshipType.IS_A));
+    relationships.add(new Relationship(idBeet, idLeafVegetable, 5, RelationshipType.IS_A));
+    relationships.add(new Relationship(idPumpkin, idRootVegetable, 6, RelationshipType.IS_A));
+    relationships.add(new Relationship(idBlueCarrot, idCarrot, 7, RelationshipType.IS_A));
 
     ontology = ImmutableOntology.builder()
       .metaInfo(Map.of())
       .terms(termMap.values())
-      .relationships(relationMap.values())
+      .relationships(relationships)
       .build();
 
     recipeAnnotations = List.of(

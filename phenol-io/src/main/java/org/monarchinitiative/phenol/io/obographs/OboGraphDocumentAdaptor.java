@@ -48,6 +48,11 @@ public class OboGraphDocumentAdaptor {
     return relationships;
   }
 
+  /**
+   * @deprecated deprecated without replacement. The method will be removed in <code>3.0.0</code>
+   */
+  // REMOVE(v3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
   public Ontology buildOntology() {
     return ImmutableOntology.builder()
       .metaInfo(metaInfo)
@@ -61,8 +66,6 @@ public class OboGraphDocumentAdaptor {
   }
 
   public static class Builder {
-    // Factory object that adds OBO-typical data to each term.
-    private OboGraphTermFactory factory = new OboGraphTermFactory();
     private CurieUtil curieUtil = CurieUtilBuilder.defaultCurieUtil();
     private Set<String> wantedTermIdPrefixes = Collections.emptySet();
 
@@ -194,7 +197,7 @@ public class OboGraphDocumentAdaptor {
       List<Term> termsList = new ArrayList<>();
       if (nodes == null || nodes.isEmpty()) {
         LOGGER.warn("No nodes found in loaded ontology.");
-        throw new PhenolRuntimeException("PhenolException: No nodes found in loaded ontology.");
+        throw new PhenolRuntimeException("No nodes found in loaded ontology.");
       }
       // Mapping nodes in obographs to termIds in phenol
       for (Node node : nodes) {
@@ -203,7 +206,7 @@ public class OboGraphDocumentAdaptor {
         if (node.getType() != null && node.getType() == Node.RDFTYPES.CLASS) {
           TermId termId = getTermIdOrNull(node.getId());
           if (termId != null) {
-            Term term = factory.constructTerm(node, termId);
+            Term term = OboGraphTermFactory.constructTerm(node, termId);
             termsList.add(term);
           }
         }
@@ -222,7 +225,7 @@ public class OboGraphDocumentAdaptor {
         LOGGER.warn("No edges found in loaded ontology.");
         throw new PhenolRuntimeException("No edges found in loaded ontology.");
       }
-      int edgeId = 1;
+      int edgeId = 0;
       for (Edge edge : edges) {
         TermId subjectTermId = getTermIdOrNull(edge.getSub());
         TermId objectTermId = getTermIdOrNull(edge.getObj());

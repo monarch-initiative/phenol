@@ -4,11 +4,7 @@ package org.monarchinitiative.phenol.analysis;
 import org.monarchinitiative.phenol.analysis.util.Util;
 import org.monarchinitiative.phenol.annotations.io.go.GoGeneAnnotationParser;
 import org.monarchinitiative.phenol.base.PhenolException;
-import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +31,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    */
   private final int annotatingTermCount;
 
-  private final Ontology ontology;
+  private final MinimalOntology ontology;
 
 
   /**
@@ -46,7 +42,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @param gene2associationMap key - domain object (e.g., gene), value, list of GO annotations
    * @param annotatingTermCount number of annotating terms TODO DO WE NEED THIS?
    */
-  private TermAssociationContainer(Ontology ontology,
+  private TermAssociationContainer(MinimalOntology ontology,
                                   List<? extends TermAnnotation> rawAssociations,
                                   Map<TermId, GeneAnnotations> gene2associationMap,
                                   int annotatingTermCount) {
@@ -163,14 +159,14 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         /* In this step add the direct annotations only */
         TermId ontologyTermId = termAnnotation.id();
         // check if the term is in the ontology (sometimes, obsoletes are used in the bla32 files)
-        Term term = this.ontology.getTermMap().get(ontologyTermId);
-        if (term == null) {
+        Optional<TermId> primary = ontology.termForTermId(ontologyTermId).map(Term::id);
+        if (primary.isEmpty()) {
           not_found++;
           LOGGER.warn("Unable to retrieve ontology term {} (omitted).", ontologyTermId.getValue());
           continue;
         }
         // if necessary, replace with the latest primary term id
-        ontologyTermId = this.ontology.getPrimaryTermId(ontologyTermId);
+        ontologyTermId = primary.get();
         directAnnotationMap.computeIfAbsent(domainTermId, k -> new HashSet<>()).add(ontologyTermId);
       }
     }
@@ -185,8 +181,7 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
         annotationMap.get(ontologyId).addDirectAnnotatedItem(domainItemTermId);
         // In addition to the direct annotation, the gene is also indirectly annotated
         // to all of the GO Term's ancestors
-        Set<TermId> ancs = OntologyAlgorithm.getAncestorTerms(ontology, ontologyId, false);
-        for (TermId ancestor : ancs) {
+        for (TermId ancestor : ontology.graph().getAncestors(ontologyId, false)) {
           annotationMap.putIfAbsent(ancestor, new DirectAndIndirectTermAnnotations(ancestor));
           annotationMap.get(ancestor).addIndirectAnnotatedItem(domainItemTermId);
         }
@@ -205,7 +200,8 @@ public class TermAssociationContainer implements AssociationContainer<TermId> {
    * @param ontology {@link Ontology} object
    * @return an AssociationContainer
    */
-  public static TermAssociationContainer fromGoTermAnnotations(List<? extends TermAnnotation> goAnnots, Ontology ontology) {
+  public static TermAssociationContainer fromGoTermAnnotations(List<? extends TermAnnotation> goAnnots,
+                                                               MinimalOntology ontology) {
     // key: a gene id; value: set of direct GO annotations
     Map<TermId, Set<TermAnnotation>> domainItemToAnnotationMap = new HashMap<>();
     for (TermAnnotation annot : goAnnots) {

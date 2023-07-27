@@ -1,3 +1,6 @@
+/**
+ * Module with common ontology algorithms.
+ */
 module org.monarchinitiative.phenol.analysis {
   requires transitive org.monarchinitiative.phenol.annotations;
 

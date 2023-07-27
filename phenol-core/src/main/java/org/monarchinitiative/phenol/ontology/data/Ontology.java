@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.ontology.data;
 import java.io.Serializable;
 import java.util.*;
 
-import org.monarchinitiative.phenol.graph.util.GraphUtil;
+import org.monarchinitiative.phenol.utils.Sets;
 
 /**
  * Interface for most ontology implementations to implement.
@@ -26,12 +26,13 @@ public interface Ontology extends MinimalOntology, Serializable {
    *     none could be found.
    */
   default TermId getPrimaryTermId(TermId termId) {
-    final Term term = getTermMap().get(termId);
-    if (term == null) {
-      return null;
-    } else {
-      return term.id();
-    }
+    return termForTermId(termId)
+      .map(Term::id)
+      .orElse(null);
+  }
+
+  default Optional<String> getTermLabel(TermId tid) {
+    return termForTermId(tid).map(Term::getName);
   }
 
   /**
@@ -42,7 +43,16 @@ public interface Ontology extends MinimalOntology, Serializable {
    * @return {@link Set} of {@link TermId}s of the ancestors of {@code termId} (including itself),
    *     an empty {@link Set} if {@code termId} is not a valid term ID in the ontology.
    */
-  Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot);
+  default Set<TermId> getAncestorTermIds(TermId termId, boolean includeRoot) {
+    TermId root = getRootTermId();
+    Set<TermId> result = new HashSet<>();
+    for (TermId ancestor : graph().getAncestors(termId, true)) {
+      if (includeRoot || !ancestor.equals(root))
+        result.add(ancestor);
+    }
+
+    return result;
+  }
 
   /**
    * Return all the {@link TermId}s of all ancestors from {@code termId}, including root.
@@ -63,11 +73,18 @@ public interface Ontology extends MinimalOntology, Serializable {
    * @return {@link Set} of {@link TermId}s including all {@link TermId}s from {@code termIds},
    *     including all ancestors.
    */
-  Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot);
+  default Set<TermId> getAllAncestorTermIds(Collection<TermId> termIds, boolean includeRoot) {
+    TermId root = getRootTermId();
+    Set<TermId> result = new HashSet<>();
+    for (TermId termId : termIds) {
+      for (TermId ancestor : graph().getAncestors(termId, true)) {
+        if (includeRoot || !ancestor.equals(root))
+          result.add(ancestor);
+      }
+    }
 
-  Set<TermId> getCommonAncestors(TermId a, TermId b);
-
-  boolean containsTerm(TermId tid);
+    return result;
+  }
 
   /**
    * Return all the {@link TermId}s of all ancestors from {@code termIds}, including root.
@@ -80,19 +97,34 @@ public interface Ontology extends MinimalOntology, Serializable {
     return getAllAncestorTermIds(termIds, true);
   }
 
+  default Set<TermId> getCommonAncestors(TermId a, TermId b) {
+    Set<TermId> ancA = new HashSet<>();
+    graph().getAncestors(a, false).forEach(ancA::add);
+
+    Set<TermId> ancB = new HashSet<>();
+    graph().getAncestors(b, false).forEach(ancB::add);
+
+    return Sets.intersection(ancA, ancB);
+  }
+
+  default boolean containsTerm(TermId tid) {
+    return termForTermId(tid).isPresent();
+  }
+
   /**
    * Return the {@link TermId}s of the parents of {@code termId}.
    *
    * @param termId The ID of the term to query the parents for.
    * @return The resulting parent {@link TermId}s of {@code termId}.
+   * @deprecated use {@link #graph()} to get an instance of {@link org.monarchinitiative.phenol.graph.OntologyGraph}
+   * and then call {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParents(Object, boolean)}.
+   * The method will be removed in <em>2.0.2</em>.
    */
+  @Deprecated(forRemoval = true, since = "2.0.2")
   default Set<TermId> getParentTermIds(TermId termId) {
-    final Set<TermId> result = new HashSet<>();
-    final Iterator<TermId> it = GraphUtil.viaOutEdgeIterator(getGraph(), termId);
-    while (it.hasNext()) {
-      result.add(it.next());
-    }
-    return result;
+    Set<TermId> parents = new HashSet<>();
+    graph().getParents(termId, false).forEach(parents::add);
+    return parents;
   }
 
   /**
@@ -110,10 +142,13 @@ public interface Ontology extends MinimalOntology, Serializable {
    *
    * @param subOntologyRoot {@link TermId} to use as root of sub ontology.
    * @return Freshly created sub ontology.
+   * @deprecated the method's purpose is questionable, it is non-trivial to implement, and it is very likely that all
+   * the intended functionality can be implemented by working with iterators and other methods of the {@linkplain MinimalOntology}.
+   * The method will be removed <em>without replacement</em> in <em>3.0.0</em>.
    */
+  // REMOVE(v3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   Ontology subOntology(TermId subOntologyRoot);
-
-  Optional<String> getTermLabel(TermId tid);
 
 
 }

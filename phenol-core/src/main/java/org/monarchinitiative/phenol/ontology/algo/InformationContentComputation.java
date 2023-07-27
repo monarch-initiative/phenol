@@ -22,15 +22,15 @@ public final class InformationContentComputation {
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(InformationContentComputation.class);
 
-  /** {@link Ontology} to work on for computations. */
-  private final Ontology ontology;
+  /** {@link MinimalOntology} to work on for computations. */
+  private final MinimalOntology ontology;
 
   /**
    * Constructor.
    *
    * @param ontology {@link Ontology} to use for the computations.
    */
-  public InformationContentComputation(Ontology ontology) {
+  public InformationContentComputation(MinimalOntology ontology) {
     this.ontology = ontology;
   }
 
@@ -39,7 +39,7 @@ public final class InformationContentComputation {
    * Perform the actual computation.
    *
    * <p>Note that {@code termLabels} must already contain the implicit ancestor annotations. You can
-   * achieve this using {@link TermIds#augmentWithAncestors(Ontology, Set, boolean)}.
+   * achieve this using {@link TermIds#augmentWithAncestors(Ontology, Collection, boolean)}.
    *
    * @param termLabels Labels (for diseases, genes, ie., the objects being annotated to ontology terms() for each {@link Term}, identified by {@link TermId}
    * @return {@link Map} from {@link TermId} to information content.
@@ -47,7 +47,7 @@ public final class InformationContentComputation {
   public Map<TermId, Double> computeInformationContent(Map<TermId, Collection<TermId>> termLabels) {
     LOGGER.info(
         "Computing IC of {} terms using {} labels...",
-            ontology.countAllTerms(), termLabels.values().stream().mapToInt(Collection::size).sum()
+            ontology.nonObsoleteTermIdCount(), termLabels.values().stream().mapToInt(Collection::size).sum()
         );
 
     // Build mapping from TermId -> absolute frequency
@@ -55,7 +55,7 @@ public final class InformationContentComputation {
     final TermId root = ontology.getRootTermId();//TermId.of("HP:0000118");
 
     final Map<TermId, Integer> termToFrequency = new HashMap<>();
-    for (TermId termId : ontology.getNonObsoleteTermIds()) {
+    for (TermId termId : ontology.nonObsoleteTermIds()) {
       termToFrequency.put(termId, 0);
     }
     for (Entry<TermId, Collection<TermId>> e : termLabels.entrySet()) {
@@ -142,7 +142,7 @@ public final class InformationContentComputation {
           maxIC=ic;
         }
       }
-      for (TermId p : ontology.getParentTermIds(t)) {
+      for (TermId p : ontology.graph().getParents(t, false)) {
         stack.push(p);
       }
     }

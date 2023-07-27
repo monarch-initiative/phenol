@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.similarity.Similarity;
 import org.monarchinitiative.phenol.utils.ProgressReporter;
@@ -42,8 +41,8 @@ public final class SimilarityScoreSampling {
   /** {@link Logger} object to use. */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityScoreSampling.class);
 
-  /** {@link Ontology} to use for computation. */
-  private final Ontology ontology;
+  /** Primary (non-obsolete) term IDs. */
+  private final List<TermId> primaryTermIds;
 
   /** {@link Similarity} to use for the precomputation. */
   private final Similarity similarity;
@@ -60,8 +59,8 @@ public final class SimilarityScoreSampling {
    *
    * @param labels {@link Map} from "world object" Id to a {@link Collection} of {@link TermId} labels.
    */
-  public SimilarityScoreSampling(Ontology ontology, Similarity similarity, ScoreSamplingOptions options, Map<TermId, ? extends Collection<TermId>> labels) {
-    this.ontology = ontology;
+  public SimilarityScoreSampling(List<TermId> primaryTermIds, Similarity similarity, ScoreSamplingOptions options, Map<TermId, ? extends Collection<TermId>> labels) {
+    this.primaryTermIds = primaryTermIds;
     this.similarity = similarity;
     // Clone configuration so it cannot be changed.
     this.options = (ScoreSamplingOptions) options.clone();
@@ -178,8 +177,6 @@ public final class SimilarityScoreSampling {
    *     computation).
    */
   private TreeMap<Double, Double> sampleScoreCumulativeRelFreq(Collection<TermId> terms, int numTerms, int numIterations) {
-    final List<TermId> allTermIds = new ArrayList<>(ontology.getNonObsoleteTermIds());
-
     // Now, perform the iterations: pick random terms, compute score, and increment absolute
     // frequency
     Map<Double, Long> counts =
@@ -188,7 +185,7 @@ public final class SimilarityScoreSampling {
             .map(
                 i -> {
                   // Sample numTerms TermI objects from ontology.
-                  final List<TermId> randomTerms = selectRandomElements(allTermIds, numTerms);
+                  final List<TermId> randomTerms = selectRandomElements(primaryTermIds, numTerms);
                   final double score = similarity.computeScore(randomTerms, terms);
                   // Round to four decimal places.
                   return Math.round(score * 1000.) / 1000.0;

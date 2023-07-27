@@ -2,7 +2,9 @@ package org.monarchinitiative.phenol.ontology.similarity;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -20,8 +22,8 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 public final class PairwiseResnikSimilarity
     implements PairwiseSimilarity {
 
-  /** {@link Ontology} to base computations on. */
-  private final Ontology ontology;
+  /** {@link MinimalOntology} to base computations on. */
+  private final MinimalOntology ontology;
 
   /** {@link Map} from {@link TermId} to its information content. */
   private final Map<TermId, Double> termToIc;
@@ -35,10 +37,10 @@ public final class PairwiseResnikSimilarity
   /**
    * Construct new {@link PairwiseResnikSimilarity}.
    *
-   * @param ontology {@link Ontology} to base computations on.
+   * @param ontology {@link MinimalOntology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
-  public PairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc) {
+  public PairwiseResnikSimilarity(MinimalOntology ontology, Map<TermId, Double> termToIc) {
     this.ontology = ontology;
     this.termToIc = termToIc;
   }
@@ -57,8 +59,8 @@ public final class PairwiseResnikSimilarity
    * @return Precomputed pairwise Resnik similarity score.
    */
   private double computeScoreImpl(TermId query, TermId target) {
-    final Set<TermId> queryTerms = getOntology().getAncestorTermIds(query, true);
-    final Set<TermId> targetTerms = getOntology().getAncestorTermIds(target, true);
+    final Set<TermId> queryTerms = ontology.graph().getAncestorsStream(query, true).collect(Collectors.toSet());
+    final Set<TermId> targetTerms = ontology.graph().getAncestorsStream(target, true).collect(Collectors.toSet());
 
     double maxValue = 0.0;
     for (TermId termId : queryTerms) {
@@ -75,7 +77,7 @@ public final class PairwiseResnikSimilarity
   }
 
   /** @return Underlying {@link Ontology}. */
-  public Ontology getOntology() {
+  public MinimalOntology getOntology() {
     return ontology;
   }
 

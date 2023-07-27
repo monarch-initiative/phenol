@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,16 +39,16 @@ public class HpDemo {
   public void run() throws IOException {
     Ontology hpo = OntologyLoader.loadOntology(new File(hpoPath));
     TermId rootTermId = hpo.getRootTermId();
-    String rootLabel = hpo.getTermMap().get(rootTermId).getName();
+    String rootLabel = hpo.termForTermId(rootTermId).map(Term::getName).orElse(null);
 
     System.out.println("root term: " + rootLabel + " (" + rootTermId.getValue() + ")");
 
     TermId tid = TermId.of("HP:0001807");
-    Term ridgedNail = hpo.getTermMap().get(tid);
-    System.out.println("Data contained in term: " + ridgedNail.getName() +" ("+tid.getValue()+")");
-    String definition = ridgedNail.getDefinition();
+    Optional<Term> ridgedNail = hpo.termForTermId(tid);
+    System.out.println("Data contained in term: " + ridgedNail.map(Term::getName).orElse(null) +" ("+tid.getValue()+")");
+    String definition = ridgedNail.map(Term::getDefinition).orElse(null);
     System.out.println("Definition: "+definition);
-    List<TermSynonym> synonyms = ridgedNail.getSynonyms();
+    List<TermSynonym> synonyms = ridgedNail.map(Term::getSynonyms).orElse(List.of());
     System.out.println("Synonyms:");
     for (TermSynonym syn : synonyms) {
       String val = syn.getValue();
@@ -57,28 +58,28 @@ public class HpDemo {
       System.out.println("\tval:" + val + ", scope: " + scope + ", xrefs: " + xrefstring);
     }
     System.out.println("Alternative IDs:");
-    List<TermId> alternateIds = ridgedNail.getAltTermIds();
+    List<TermId> alternateIds = ridgedNail.map(Term::getAltTermIds).orElse(List.of());
     for (TermId altId : alternateIds) {
       System.out.println("\t" + altId.getValue());
     }
-    String comment = ridgedNail.getComment();
+    String comment = ridgedNail.map(Term::getComment).orElse(null);
     System.out.println("Comment: " + comment);
-    List<Dbxref> xrefs = ridgedNail.getXrefs();
+    List<Dbxref> xrefs = ridgedNail.map(Term::getXrefs).orElse(List.of());
     System.out.println("Cross references:");
     for (Dbxref xref: xrefs) {
       System.out.println("\t" + xref.getName());
     }
     System.out.println("Database Cross references:");
-    List<SimpleXref> databaseXrefs = ridgedNail.getDatabaseXrefs();
+    List<SimpleXref> databaseXrefs = ridgedNail.map(Term::getDatabaseXrefs).orElse(List.of());
     for (SimpleXref dbxref : databaseXrefs) {
       System.out.println("\t" + dbxref.toString());
     }
-    List<SimpleXref> pmids = ridgedNail.getPmidXrefs();
+    List<SimpleXref> pmids = ridgedNail.map(Term::getPmidXrefs).orElse(List.of());
     System.out.println("PubMed ids:");
     for (SimpleXref pmid : pmids) {
       System.out.println("\t" + pmid.toString());
     }
-    List<String> subsets = ridgedNail.getSubsets();
+    List<String> subsets = ridgedNail.map(Term::getSubsets).orElse(List.of());
     System.out.println("Subsets:");
     for (String sset : subsets) {
       System.out.println("\t" + sset);

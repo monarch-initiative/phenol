@@ -108,13 +108,12 @@ public class HpoOntologyTestBase {
 
   private static void createRelationship(Map<Integer, Relationship> relationshipMap, TermId source, TermId target) {
     int id = counter.incrementAndGet();
-    relationshipMap.put(id, Relationship.IS_A(source, target, id));
+    relationshipMap.put(id, new Relationship(source, target, id, RelationshipType.IS_A));
   }
 
 
   private static Term createTerm(TermId tid, String label) {
-    return Term.builder()
-      .id(tid)
+    return Term.builder(tid)
       .name(label)
       .definition("n/a")
       .build();

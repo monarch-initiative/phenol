@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.ontology.similarity;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -27,8 +28,7 @@ public final class ResnikSimilarity
    * @param termToIc {@link Map} from {@link TermId} to information content.
    * @param symmetric Whether or not to compute score in symmetric fashion.
    */
-  public ResnikSimilarity(
-    Ontology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
+  public ResnikSimilarity(MinimalOntology ontology, Map<TermId, Double> termToIc, boolean symmetric) {
     super(new PrecomputingPairwiseResnikSimilarity(ontology, termToIc), symmetric);
   }
 

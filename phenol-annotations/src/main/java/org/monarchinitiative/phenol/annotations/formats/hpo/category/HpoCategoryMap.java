@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +174,7 @@ public class HpoCategoryMap {
       HpoCategory cat = getCategory(tid, ontology);
       if (cat == null) {
         LOGGER.warn("Could not get upper level HPO category for "
-          + ontology.getTermMap().get(tid).getName());
+          + ontology.termForTermId(tid).map(Term::getName).orElse(null));
         return;
       }
       cat.addAnnotatedTerm(tid);

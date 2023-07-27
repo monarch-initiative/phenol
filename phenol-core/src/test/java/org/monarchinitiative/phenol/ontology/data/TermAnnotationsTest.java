@@ -39,7 +39,7 @@ public class TermAnnotationsTest {
   private void debugPrint(Map<TermId, Collection<TermId>> map, Ontology ontology) {
     for (Map.Entry<TermId, Collection<TermId>> e : map.entrySet()) {
       TermId k = e.getKey();
-      System.out.printf("%s [%s]", ontology.getTermMap().get(k), k.getValue());
+      System.out.printf("%s [%s]", ontology.termForTermId(k).orElse(null), k.getValue());
       for (TermId tid : e.getValue()) {
         System.out.println("\t"+ tid.getValue());
       }

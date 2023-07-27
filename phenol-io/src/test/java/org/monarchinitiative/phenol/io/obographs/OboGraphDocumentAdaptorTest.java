@@ -250,14 +250,18 @@ public class OboGraphDocumentAdaptorTest {
 
     assertEquals(List.of(rootTerm, moiTerm, paTerm), instance.getTerms());
 
-    Relationship moiRootRel = new Relationship(moiTerm.id(), rootTerm.id(), 1, RelationshipType.IS_A);
-    Relationship paRootRel = new Relationship(paTerm.id(), rootTerm.id(), 2, RelationshipType.IS_A);
+    Relationship moiRootRel = new Relationship(moiTerm.id(), rootTerm.id(), 0, RelationshipType.IS_A);
+    Relationship paRootRel = new Relationship(paTerm.id(), rootTerm.id(), 1, RelationshipType.IS_A);
 
     assertEquals(List.of(moiRootRel, paRootRel), instance.getRelationships());
     assertEquals(Map.of("data-version", "releases/2018-10-09", "release", "2018-10-09"), instance.getMetaInfo());
 
-    Ontology hpoOntology = instance.buildOntology();
-    assertEquals(TermId.of("HP:0000001"), hpoOntology.getRootTermId());
+    Ontology ontology = ImmutableOntology.builder()
+            .metaInfo(instance.getMetaInfo())
+            .terms(instance.getTerms())
+            .relationships(instance.getRelationships())
+            .build();
+    assertEquals(TermId.of("HP:0000001"), ontology.getRootTermId());
   }
 
 }

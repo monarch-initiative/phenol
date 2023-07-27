@@ -1,3 +1,6 @@
+/**
+ * Routines for deserialization of ontology data.
+ */
 module org.monarchinitiative.phenol.io {
   exports org.monarchinitiative.phenol.io;
   exports org.monarchinitiative.phenol.io.utils;

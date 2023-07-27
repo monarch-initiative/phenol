@@ -1,263 +1,121 @@
 package org.monarchinitiative.phenol.ontology.data;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Representation of an OBO term (forked and modified from GoTerm)
  *
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
+ * @author <a href="mailto:daniel.danis@jax.org">Daniel Danis</a>
  */
-public class Term implements Identified {
-  /**
-   * The term's Id.
-   */
-  private final TermId id;
+public interface Term extends Identified {
 
   /**
-   * {@link TermId}s of {@link Term}s that have been obsoleted and replaced by this {@link Term}.
+   * @deprecated use {@link #of(TermId, String)} instead. The method will be removed in {@code v3.0.0}.
    */
-  private final List<TermId> altTermIds;
-
-  /**
-   * The human-readable name of the term.
-   */
-  private final String name;
-
-  /**
-   * The term's definition.
-   */
-  private final String definition;
-  /**
-   * These are the cross-references that go along with the definition. In the case of the HPO, these
-   * are often PubMed ids.
-   */
-  private final List<SimpleXref> databaseXrefs;
-
-  /**
-   * The term's comment string.
-   */
-  private final String comment;
-
-  /**
-   * The names of the subsets that the term is in, empty if none.
-   */
-  private final List<String> subsets;
-
-  /**
-   * The list of term synonyms.
-   */
-  private final List<TermSynonym> synonyms;
-
-  /**
-   * Whether or not the term is obsolete.
-   */
-  private final boolean obsolete;
-
-  /**
-   * The term's author name.
-   */
-  private final String createdBy;
-
-  /**
-   * The term's creation date.
-   */
-  private final Date creationDate;
-
-  /**
-   * The term's xrefs.
-   */
-  private final List<Dbxref> xrefs;
-
-  public static Term of(String termIdString, String name) {
+  // REMOVE(v3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
+  static Term of(String termIdString, String name) {
     Objects.requireNonNull(termIdString);
     Objects.requireNonNull(name);
     TermId termId = TermId.of(termIdString);
-    return new Term(termId, name);
+    return Term.of(termId, name);
   }
 
-  public static Term of(TermId termId, String name) {
+  static Term of(TermId termId, String name) {
     Objects.requireNonNull(termId);
     Objects.requireNonNull(name);
-    return new Term(termId, name);
-  }
-
-  private Term(TermId termId, String name) {
-    this.id = termId;
-    this.name = name;
-    //other fields...
-    this.altTermIds = List.of();
-    this.definition = "";
-    this.databaseXrefs = List.of();
-    this.comment = "";
-    this.subsets = List.of();
-    this.synonyms = List.of();
-    this.obsolete = false;
-    this.createdBy = "";
-    // creation date can be null - it returns an Optional
-    this.creationDate = null;
-    this.xrefs = List.of();
-  }
-
-  private Term(Builder builder) {
-    this.id = Objects.requireNonNull(builder.id, "ID must not be null");
-    this.name = Objects.requireNonNull(builder.name, "Name must not be null");
-    this.altTermIds = List.copyOf(builder.altTermIds);
-    this.definition = Objects.requireNonNull(builder.definition, "Definition must not be null");
-    this.databaseXrefs = List.copyOf(builder.databaseXrefs);
-    this.comment = Objects.requireNonNull(builder.comment, "Comment must not be null");
-    this.subsets = List.copyOf(builder.subsets);
-    this.synonyms = List.copyOf(builder.synonyms);
-    this.obsolete = builder.obsolete;
-    this.createdBy = Objects.requireNonNull(builder.createdBy, "Created by must not be null");
-    // creation date can be null - it returns an Optional
-    this.creationDate = builder.creationDate;
-    this.xrefs = List.copyOf(builder.xrefs);
-  }
-
-  @Override
-  public TermId id() {
-    return id;
+    return new TermMinimal(termId,
+      name);
   }
 
   /**
-   * @return a list of {@link TermId}s of {@link Term}s that have been obsoleted and replaced by this {@link Term}.
+   * @deprecated use {@link #builder(TermId)} instead. The method will be removed in {@code v3.0.0}.
    */
-  public List<TermId> getAltTermIds() {
-    return altTermIds;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getDefinition() {
-    return definition;
-  }
-
-  public List<SimpleXref> getDatabaseXrefs() {
-    return this.databaseXrefs;
+  // REMOVE(v3.0.0)
+  @Deprecated(since = "2.0.2", forRemoval = true)
+  static Builder builder() {
+    return builder(null);
   }
 
   /**
-   * Get all of the pub med references attached to the definition of this term
+   * Create a builder to build a {@linkplain Term} with given primary {@code termId}.
    */
-  public List<SimpleXref> getPmidXrefs() {
-    return databaseXrefs.stream().filter(SimpleXref::isPmid).collect(Collectors.toList());
+  static Builder builder(TermId termId) {
+    return new Builder(termId);
   }
 
-  public String getComment() {
-    return comment;
-  }
+  List<TermId> getAltTermIds();
 
-  public List<String> getSubsets() {
-    return subsets;
-  }
+  String getName();
 
-  public List<TermSynonym> getSynonyms() {
-    return synonyms;
-  }
+  String getDefinition();
 
-  public boolean isObsolete() {
-    return obsolete;
-  }
+  List<SimpleXref> getDatabaseXrefs();
 
-  public String getCreatedBy() {
-    return createdBy;
-  }
+  List<SimpleXref> getPmidXrefs();
 
-  public Optional<Date> getCreationDate() {
-    return Optional.ofNullable(creationDate);
-  }
+  String getComment();
 
-  public List<Dbxref> getXrefs() {
-    return xrefs;
-  }
+  List<String> getSubsets();
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Term term = (Term) o;
-    return obsolete == term.obsolete &&
-      Objects.equals(id, term.id) &&
-      Objects.equals(altTermIds, term.altTermIds) &&
-      Objects.equals(name, term.name) &&
-      Objects.equals(definition, term.definition) &&
-      Objects.equals(databaseXrefs, term.databaseXrefs) &&
-      Objects.equals(comment, term.comment) &&
-      Objects.equals(subsets, term.subsets) &&
-      Objects.equals(synonyms, term.synonyms) &&
-      Objects.equals(createdBy, term.createdBy) &&
-      Objects.equals(creationDate, term.creationDate) &&
-      Objects.equals(xrefs, term.xrefs);
-  }
+  List<TermSynonym> getSynonyms();
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, altTermIds, name, definition, databaseXrefs, comment, subsets, synonyms, obsolete, createdBy, creationDate, xrefs);
-  }
+  boolean isObsolete();
 
-  @Override
-  public String toString() {
-    return "Term [id="
-      + id
-      + ", altTermIds="
-      + altTermIds
-      + ", name="
-      + name
-      + ", definition="
-      + definition
-      + ", comment="
-      + comment
-      + ", subsets="
-      + subsets
-      + ", synonyms="
-      + synonyms
-      + ", obsolete="
-      + obsolete
-      + ", createdBy="
-      + createdBy
-      + ", creationDate="
-      + creationDate
-      + ", xrefs="
-      + xrefs
-      + "]";
-  }
+  String getCreatedBy();
 
-  public static Builder builder() {
-    return new Builder();
-  }
+  Optional<Date> getCreationDate();
 
-  public static class Builder {
+  List<Dbxref> getXrefs();
+
+
+  class Builder {
 
     //Primary identifiers for the Term - cannot be null
-    private TermId id = null;
+    final TermId id;
     // The human-readable name of the term.
-    private String name = null;
+    String name = null;
 
     //Optional attributes
-    private List<TermId> altTermIds = List.of();
-    private String definition = "";
+    List<TermId> altTermIds = List.of();
+    String definition = "";
     //  These are the cross-references that go along with the definition. In the case of the HPO, these
     //  are often PubMed ids.
-    private List<SimpleXref> databaseXrefs = List.of();
-    private String comment = "";
+    List<SimpleXref> databaseXrefs = List.of();
+    String comment = "";
     //  The names of the subsets that the term is in, empty if none. */
-    private List<String> subsets = List.of();
-    private List<TermSynonym> synonyms = List.of();
-    private boolean obsolete = false;
+    List<String> subsets = List.of();
+    List<TermSynonym> synonyms = List.of();
+    boolean obsolete = false;
     //  The term's author name. */
-    private String createdBy = "";
-    private Date creationDate;
-    private List<Dbxref> xrefs = List.of();
+    String createdBy = "";
+    Date creationDate;
+    List<Dbxref> xrefs = List.of();
+
+    private Builder(TermId id) {
+      // REMOVE(3.0.0) - as of 3.0.0 `id` is non-null since we can remove the noarg builder() above.
+      //  Then uncomment the below and delete the 2 lines below.
+//      this.id = Objects.requireNonNull(id);
+      this.id = id;
+    }
+
+    private static <T> boolean isNullOrEmpty(Collection<T> collection) {
+      return collection == null || collection.isEmpty();
+    }
+
+    private static boolean isNullOrBlank(String value) {
+      return value == null || value.isBlank();
+    }
 
     /**
      * @param id The term's ID.
+     * @deprecated set the primary {@link TermId} via {@link #builder(TermId)}.
      */
     public Builder id(TermId id) {
-      this.id = id;
-      return this;
+      throw new PhenolRuntimeException("id was deprecated, set the primary term via builder instead.");
     }
 
     /**
@@ -325,7 +183,12 @@ public class Term implements Identified {
     }
 
     public Term build() {
-      return new Term(this);
+      if (isNullOrEmpty(altTermIds) && isNullOrBlank(definition) && isNullOrEmpty(databaseXrefs) && isNullOrBlank(comment)
+        && isNullOrEmpty(subsets) && isNullOrEmpty(synonyms) && !obsolete && isNullOrBlank(createdBy) && creationDate == null
+        && isNullOrEmpty(xrefs))
+        return new TermMinimal(id, name);
+      else
+        return new TermDefault(this);
     }
   }
 }

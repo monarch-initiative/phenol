@@ -1,3 +1,6 @@
+/**
+ * Module with data model definitions and IO of HPO annotation data.
+ */
 module org.monarchinitiative.phenol.annotations {
   requires transitive org.monarchinitiative.phenol.core;
 

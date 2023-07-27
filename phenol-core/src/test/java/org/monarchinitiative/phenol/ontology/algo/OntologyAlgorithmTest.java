@@ -40,28 +40,23 @@ public class OntologyAlgorithmTest {
     id5 = TermId.of("HP:0000005");
 
     List<Term> terms = List.of(
-      Term.builder()
-        .id(id1)
+      Term.builder(id1)
         .name("term1")
         .definition("some definition 1")
         .build(),
-      Term.builder()
-        .id(id2)
+      Term.builder(id2)
         .name("term2")
         .definition("some definition 2")
         .build(),
-      Term.builder()
-        .id(id3)
+      Term.builder(id3)
         .name("term3")
         .definition("some definition 3")
         .build(),
-      Term.builder()
-        .id(id4)
+      Term.builder(id4)
         .name("term4")
         .definition("some definition 4")
         .build(),
-      Term.builder()
-        .id(id5)
+      Term.builder(id5)
         .name("term5")
         .definition("some definition 5")
         .build());

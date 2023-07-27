@@ -6,7 +6,7 @@ package org.monarchinitiative.phenol.ontology.data;
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public interface TermVisitor<O extends Ontology> {
+public interface TermVisitor<O extends MinimalOntology> {
 
   /**
    * Algorithms using <code>TermVisitor</code> will call this function for each visited term.
