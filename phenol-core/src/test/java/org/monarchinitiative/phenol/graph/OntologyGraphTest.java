@@ -141,4 +141,24 @@ public class OntologyGraphTest extends BaseOntologyGraphTest {
     assertThat(GRAPH.isAncestorOf(UNKNOWN, ok), equalTo(false));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    // True examples
+    "HP:010, HP:1, true",
+    "HP:011, HP:1, true",
+    "HP:0110, HP:1, true",
+    "HP:0110, HP:01, true",
+
+    "HP:020, HP:1, true",
+    "HP:021, HP:1, true",
+    "HP:022, HP:1, true",
+
+    // False examples
+    "HP:1, HP:1, false",
+    "HP:1, HP:01, false",
+  })
+  public void existsPath(TermId subject, TermId object, boolean expected) {
+    assertThat(GRAPH.existsPath(subject, object), equalTo(expected));
+  }
+
 }

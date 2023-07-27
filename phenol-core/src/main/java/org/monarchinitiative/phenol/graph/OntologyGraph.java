@@ -134,6 +134,22 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
+   * Test if there is a path from {@code subject} to {@code object}. In other words, if {@code object} is an ancestor
+   * of the {@code subject}.
+   * <p>
+   * Note: the function is equivalent to calling:
+   * <pre>
+   * getAncestorsStream(subject, false).anyMatch(t -> t.equals(object));
+   * </pre>
+   *
+   * @return {@code true} if path exists from {@code subject} to {@code object} and {@code false} otherwise.
+   * @throws NodeNotPresentInGraphException if the {@code source} is not a graph node.
+   */
+  default boolean existsPath(T subject, T object) {
+    return getAncestorsStream(subject, false).anyMatch(t -> t.equals(object));
+  }
+
+  /**
    * Return <code>true</code> if the {@code subject} is a parent of the {@code object} and {@code false} otherwise
    * (including if the {@code subject} is not in the graph).
    *

@@ -25,6 +25,14 @@ public class OntologyAlgorithm {
   private OntologyAlgorithm() {
   }
 
+  /**
+   *
+   * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#existsPath(Object, Object)} instead.
+   * The method will be removed in <code>3.0.0</code>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.2")
   public static boolean existsPath(MinimalOntology ontology, TermId sourceID, TermId destID) {
     // special case -- a term cannot have a path to itself in an ontology (DAG)
     if (sourceID.equals(destID)) return false;
