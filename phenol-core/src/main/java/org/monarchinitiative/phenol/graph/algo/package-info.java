@@ -13,5 +13,4 @@
 // TODO: add tests and then copy over demo code as examples in <h5>s
 // TODO: add Dijkstra's algorithm?
 // REMOVE(3.0.0)
-@Deprecated(forRemoval = true, since = "2.0.2")
 package org.monarchinitiative.phenol.graph.algo;
