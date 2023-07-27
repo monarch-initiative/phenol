@@ -5,7 +5,7 @@ import org.monarchinitiative.phenol.graph.csr.CsrOntologyGraphBuilder;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
- * Static functions for obtaining builders for building {@link OntologyGraph}s.
+ * Static factory functions for getting {@link OntologyGraphBuilder}s.
  *
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */

@@ -1,3 +1,6 @@
+/**
+ * Module with data model definitions and code for common ontology tasks.
+ */
 module org.monarchinitiative.phenol.core {
   exports org.monarchinitiative.phenol.base;
   exports org.monarchinitiative.phenol.graph;

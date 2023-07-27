@@ -1,3 +1,6 @@
+/**
+ * Command-line interface for the common ontology algorithms.
+ */
 module org.monarchinitiative.phenol.cli {
   requires org.monarchinitiative.phenol.io;
   requires org.monarchinitiative.phenol.analysis;
