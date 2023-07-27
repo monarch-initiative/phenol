@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"org.monarchinitiative.phenol.analysis"},{"l":"org.monarchinitiative.phenol.annotations"},{"l":"org.monarchinitiative.phenol.cli"},{"l":"org.monarchinitiative.phenol.core"},{"l":"org.monarchinitiative.phenol.io"}];updateSearchResults();
