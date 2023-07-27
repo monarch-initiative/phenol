@@ -2,10 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.assoc.*;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
-import org.monarchinitiative.phenol.ontology.data.Identified;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +148,7 @@ public class HpoAssociationDataBuilder {
       LOGGER.debug("HPO gene annotations are unset.");
       if (diseases != null) {
         LOGGER.debug("Loading HPO gene annotations.");
-        hpoGeneAnnotations = loadHpoGeneAnnotations(diseases, hpo.getTermMap(), diseaseToGeneAssociations.diseaseIdToGeneAssociations());
+        hpoGeneAnnotations = loadHpoGeneAnnotations(diseases, hpo, diseaseToGeneAssociations.diseaseIdToGeneAssociations());
       } else {
         throw new MissingPhenolResourceException("HPO diseases are unset!");
       }
@@ -161,7 +158,7 @@ public class HpoAssociationDataBuilder {
   }
 
   private static HpoGeneAnnotations loadHpoGeneAnnotations(AnnotatedItemContainer<? extends AnnotatedItem> diseases,
-                                                           Map<TermId, Term> termIdToTerm,
+                                                           MinimalOntology hpo,
                                                            Map<TermId, Collection<GeneToAssociation>> diseaseToGeneMap) {
     Map<TermId, Collection<TermId>> phenotypeToDisease = new HashMap<>();
     for (AnnotatedItem disease : diseases) {
@@ -176,8 +173,8 @@ public class HpoAssociationDataBuilder {
 
     Set<TermId> mappedGenesTracker = new HashSet<>();
     for (TermId phenotype : phenotypeToDisease.keySet()) {
-      Term phenotypeTerm = termIdToTerm.get(phenotype);
-      if (phenotypeTerm != null) {
+      Optional<Term> phenotypeTerm = hpo.termForTermId(phenotype);
+      if (phenotypeTerm.isPresent()) {
         phenotypeToDisease.get(phenotype).stream()
           .flatMap(disease -> diseaseToGeneMap.getOrDefault(disease, List.of()).stream())
           .map(GeneToAssociation::geneIdentifier)
@@ -187,7 +184,7 @@ public class HpoAssociationDataBuilder {
                 int entrezId = Integer.parseInt(geneId.id().getId());
                 String entrezGeneSymbol = geneId.symbol();
 
-                HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, phenotype, phenotypeTerm.getName());
+                HpoGeneAnnotation geneAnnotation = new HpoGeneAnnotation(entrezId, entrezGeneSymbol, phenotype, phenotypeTerm.get().getName());
                 geneAnnotationListBuilder.add(geneAnnotation);
                 mappedGenesTracker.add(geneId.id());
               }

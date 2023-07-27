@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.io.obographs;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +20,17 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
-public class OboGraphTermFactory {
+class OboGraphTermFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphTermFactory.class);
 
-  public Term constructTerm(Node node, TermId termId) {
-    Term.Builder termBuilder = Term.builder();
-    termBuilder.id(termId);
+  private OboGraphTermFactory(){}
+
+  static Term constructTerm(Node node, TermId termId) {
+    Term.Builder termBuilder = Term.builder(termId);
     String label = node.getLabel();
     // labels for obsolete terms ids found in the alt_id section are null
-    termBuilder.name((label == null) ? "" : label);
+    termBuilder.name(label == null ? "" : label);
 
     Meta meta = node.getMeta();
     if (meta == null) {
@@ -81,11 +81,11 @@ public class OboGraphTermFactory {
     return termBuilder.build();
   }
 
-  private String getDefinition(DefinitionPropertyValue definitionPropertyValue) {
+  private static String getDefinition(DefinitionPropertyValue definitionPropertyValue) {
     return (definitionPropertyValue == null)? "" : definitionPropertyValue.getVal();
   }
 
-  private List<SimpleXref> convertToXrefs(DefinitionPropertyValue definitionPropertyValue) {
+  private static List<SimpleXref> convertToXrefs(DefinitionPropertyValue definitionPropertyValue) {
     if (definitionPropertyValue == null) {
       return List.of();
     }
@@ -107,7 +107,7 @@ public class OboGraphTermFactory {
   }
 
   /** @return list of synoynms (can be an empty list but cannot be null). */
-  private List<TermSynonym> convertToSynonyms(List<SynonymPropertyValue> spvs) {
+  private static List<TermSynonym> convertToSynonyms(List<SynonymPropertyValue> spvs) {
     if (spvs == null) return List.of();
     List<TermSynonym> termSynonymBuilder = new ArrayList<>();
     for (SynonymPropertyValue spv : spvs) {
@@ -145,7 +145,7 @@ public class OboGraphTermFactory {
    * @param xrefs list of cross references as Strings
    * @return list of cross references as {@link TermXref} objects. Can be empty but not null.
    */
-  private List<TermXref> mapXref(List<String>  xrefs) {
+  private static List<TermXref> mapXref(List<String>  xrefs) {
     List<TermXref> termXrefBuilder = new ArrayList<>();
     for (String xref : xrefs) {
       try {
@@ -160,7 +160,7 @@ public class OboGraphTermFactory {
     return List.copyOf(termXrefBuilder);
   }
 
-  private List<Dbxref> convertToDbXrefs(List<XrefPropertyValue> xrefPropertyValues) {
+  private static List<Dbxref> convertToDbXrefs(List<XrefPropertyValue> xrefPropertyValues) {
     if (xrefPropertyValues == null || xrefPropertyValues.isEmpty()) {
       return List.of();
     }
@@ -175,23 +175,16 @@ public class OboGraphTermFactory {
   }
 
 
-  private boolean isObsolete(Meta meta) {
+  private static boolean isObsolete(Meta meta) {
     try {
-      Field f = Meta.class.getDeclaredField("deprecated");
-      f.setAccessible(true);
-      Boolean deprecated = (Boolean) f.get(meta);
-      if (deprecated == null) {
-        return false;
-      } else {
-        return deprecated;
-      }
+      return meta.getDeprecated();
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
     }
     return false;
   }
 
-  private List<TermId> convertToAltIds(List<BasicPropertyValue> basicPropertyValues) {
+  private static List<TermId> convertToAltIds(List<BasicPropertyValue> basicPropertyValues) {
     if (basicPropertyValues == null || basicPropertyValues.isEmpty()) {
       return List.of();
     }

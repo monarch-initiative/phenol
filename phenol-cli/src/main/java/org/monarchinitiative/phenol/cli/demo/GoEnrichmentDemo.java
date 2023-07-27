@@ -74,7 +74,7 @@ public final class GoEnrichmentDemo {
     this.targetGoTerm = TermId.of(goTermId);
     System.out.println("[INFO] parsing  " + pathGoObo);
     gontology = OntologyLoader.loadOntology(new File(pathGoObo), "GO");
-    int n_terms = gontology.countAllTerms();
+    int n_terms = gontology.allTermIdCount();
     System.out.println("[INFO] parsed " + n_terms + " GO terms.");
     Path goGaf = Paths.get(pathGoGaf);
     System.out.println("[INFO] parsing  " + goGaf.toAbsolutePath());
@@ -118,18 +118,18 @@ public final class GoEnrichmentDemo {
     System.out.println("[INFO] Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
     System.out.printf("[INFO] Target term %s [%s]\n",
-      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue());
+      gontology.termForTermId(targetGoTerm).map(Term::getName).orElse(null), targetGoTerm.getValue());
     System.out.printf("[INFO] Study set: %d genes. Population set: %d genes\n", studysize, popsize);
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
       TermId tid = item.getItem();
-      Term term = gontology.getTermMap().get(tid);
-      if (term == null) {
+      Optional<Term> term = gontology.termForTermId(tid);
+      if (term.isEmpty()) {
         System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
         continue;
       }
-      String label = term.getName();
+      String label = term.get().getName();
       if (pval_adj > ALPHA) {
         continue;
       }
@@ -158,19 +158,19 @@ public final class GoEnrichmentDemo {
     System.err.println("Total number of retrieved p values: " + pvals.size());
     int n_sig = 0;
     System.out.printf("GO Parent Child Intersection Enrichment Demo for target term %s [%s]\n",
-      gontology.getTermMap().get(targetGoTerm).getName(), targetGoTerm.getValue());
+      gontology.termForTermId(targetGoTerm).map(Term::getName).orElse(null), targetGoTerm.getValue());
     System.out.printf("Study set: %d genes. Population set: %d genes\n",
       studysize, popsize);
     for (GoTerm2PValAndCounts item : pvals) {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
       TermId tid = item.getItem();
-      Term term = gontology.getTermMap().get(tid);
-      if (term == null) {
+      Optional<Term> term = gontology.termForTermId(tid);
+      if (term.isEmpty()) {
         System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
         continue;
       }
-      String label = term.getName();
+      String label = term.get().getName();
       if (pval_adj > ALPHA) {
         continue;
       }
@@ -238,7 +238,7 @@ public final class GoEnrichmentDemo {
 
 
   public void run()  {
-    System.out.println("[INFO] Target term: " + this.gontology.getTermMap().get(targetGoTerm).getName());
+    System.out.println("[INFO] Target term: " + this.gontology.termForTermId(targetGoTerm).map(Term::getName).orElse(null));
     performTermForTermAnalysis();
     performParentChildIntersectionAnalysis();
     performMgsaAnalysis();

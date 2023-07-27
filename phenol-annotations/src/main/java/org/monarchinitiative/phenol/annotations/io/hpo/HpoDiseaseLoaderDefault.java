@@ -7,7 +7,7 @@ import org.monarchinitiative.phenol.annotations.constants.hpo.HpoClinicalModifie
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds;
 import org.monarchinitiative.phenol.annotations.formats.hpo.*;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
   protected final Set<TermId> clinicalCourseSubHierarchy;
   protected final Set<TermId> inheritanceSubHierarchy;
 
-  HpoDiseaseLoaderDefault(Ontology hpo, HpoDiseaseLoaderOptions options) {
+  HpoDiseaseLoaderDefault(MinimalOntology hpo, HpoDiseaseLoaderOptions options) {
     Objects.requireNonNull(hpo, "HPO ontology must not be null.");
     Objects.requireNonNull(options, "Options must not be null.");
     this.cohortSize = options.cohortSize();
@@ -42,11 +42,11 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     this.databasePrefixes = options.includedDatabases();
     this.loader = HpoaDiseaseDataLoader.of(databasePrefixes);
 
-    this.clinicalCourseSubHierarchy = hpo.containsTerm(HpoClinicalModifierTermIds.CLINICAL_COURSE)
-      ? hpo.subOntology(HpoClinicalModifierTermIds.CLINICAL_COURSE).getNonObsoleteTermIds()
+    this.clinicalCourseSubHierarchy = hpo.termForTermId(HpoClinicalModifierTermIds.CLINICAL_COURSE).isPresent()
+      ? hpo.graph().getDescendantsStream(HpoClinicalModifierTermIds.CLINICAL_COURSE, true).collect(Collectors.toSet())
       : Set.of();
-    this.inheritanceSubHierarchy = hpo.containsTerm(org.monarchinitiative.phenol.annotations.constants.hpo.HpoModeOfInheritanceTermIds.INHERITANCE_ROOT)
-      ? hpo.subOntology(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).getNonObsoleteTermIds()
+    this.inheritanceSubHierarchy = hpo.termForTermId(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT).isPresent()
+      ? hpo.graph().getDescendantsStream(HpoModeOfInheritanceTermIds.INHERITANCE_ROOT, true).collect(Collectors.toSet())
       : Set.of();
   }
 

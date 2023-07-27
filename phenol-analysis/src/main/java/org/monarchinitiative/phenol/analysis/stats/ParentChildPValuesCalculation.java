@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.analysis.stats;
 
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
 import org.monarchinitiative.phenol.analysis.StudySet;
-import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
@@ -70,9 +69,8 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
          */
 
         // get parents of current GO term. Do not include original term in this set
-        Set<TermId> parents = OntologyAlgorithm.getParentTerms(ontology, goId, false);
+        Counts count = getCounts(goId, ontology.graph().getParents(goId, false));
         double raw_pval;
-        Counts count = getCounts(goId, parents);
         int m_pa_t = count.m_pa_t;
         int n_pa_t = count.n_pa_t;
         int m_t = count.m_t;
@@ -153,7 +151,7 @@ public abstract class ParentChildPValuesCalculation extends PValueCalculation {
    *
    * @return the count structure.
    */
-  protected abstract Counts getCounts(TermId goId, Set<TermId> parents);
+  protected abstract Counts getCounts(TermId goId, Iterable<TermId> parents);
 
 
 }

@@ -8,10 +8,10 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The class serves for extracting terms for a small HP ontology JSON <em>hpo_toy.json</em> containing ancestors of
@@ -57,7 +57,10 @@ public class PrepareToyHpoJsonTest {
   }
 
   private static Set<TermId> subOntologyTerms(Ontology ontology, TermId subRoot) {
-    Ontology subOntology = ontology.subOntology(subRoot);
-    return subOntology.getTermMap().keySet();
+    return ontology.termForTermId(subRoot)
+      .map(value -> ontology.graph()
+        .getDescendantsStream(value.id(), true)
+        .collect(Collectors.toSet()))
+      .orElseGet(Set::of);
   }
 }

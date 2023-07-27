@@ -1,11 +1,10 @@
 package org.monarchinitiative.phenol.io;
 
 import org.geneontology.obographs.core.model.GraphDocument;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
-import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,7 @@ public class OntologyLoader {
   }
 
   public static Ontology loadOntology(File file, CurieUtil curieUtil, String... termIdPrefixes) {
-    GraphDocument graphDocument = loadGraphDocument(file);
+    GraphDocument graphDocument = OntologyLoadingRoutines.loadGraphDocument(file);
     return loadOntology(graphDocument, curieUtil, termIdPrefixes);
   }
 
@@ -60,7 +59,7 @@ public class OntologyLoader {
                                       CurieUtil curieUtil,
                                       OntologyLoaderOptions options,
                                       String... termIdPrefixes) {
-    GraphDocument graphDocument = loadGraphDocument(inputStream);
+    GraphDocument graphDocument = OntologyLoadingRoutines.loadGraphDocument(inputStream);
     return loadOntology(graphDocument, curieUtil, options, termIdPrefixes);
   }
 
@@ -80,58 +79,13 @@ public class OntologyLoader {
       .discardNonPropagatingRelationships(options.discardNonPropagatingRelationships())
       .build(graphDocument);
 
-    Ontology ontology = graphDocumentAdaptor.buildOntology();
-    logger.debug("Parsed a total of {} terms", ontology.countAllTerms());
+    Ontology ontology = ImmutableOntology.builder()
+      .metaInfo(graphDocumentAdaptor.getMetaInfo())
+      .terms(graphDocumentAdaptor.getTerms())
+      .relationships(graphDocumentAdaptor.getRelationships())
+      .build();
+    logger.debug("Parsed a total of {} terms", ontology.getTerms().size());
     return ontology;
   }
 
-  private static GraphDocument loadGraphDocument(File file) {
-    try (InputStream is = new BufferedInputStream(new FileInputStream(file))){
-      return loadGraphDocument(is);
-    } catch (IOException e) {
-      throw new PhenolRuntimeException("Unable to load ontology", e);
-    }
-  }
-
-  private static GraphDocument loadGraphDocument(InputStream inputStream) {
-    // The input file might be json or obo/owl. Try to make an educated guess.
-    try (InputStream bufferedStream = new BufferedInputStream(inputStream)) {
-      int readlimit = 16;
-      bufferedStream.mark(readlimit);
-      String firstBytes = readBytes(bufferedStream, readlimit);
-      logger.debug("Read first bytes: " + firstBytes);
-      if (isJsonGraphDoc(firstBytes)) {
-        logger.debug("Looks like a JSON file...");
-        try {
-          bufferedStream.reset();
-          return OboGraphDocumentLoader.loadJson(bufferedStream);
-        } catch (Exception e) {
-          throw new PhenolRuntimeException("Error loading JSON", e);
-        }
-      } else {
-        try {
-          bufferedStream.reset();
-        } catch (Exception e) {
-          throw new PhenolRuntimeException("Error loading OBO/OWL", e);
-        }
-      }
-      logger.debug("Looks like a OBO/OWL file...");
-      logger.error("OBO/OWL support was removed since 2.0.0");
-      throw new PhenolRuntimeException("OBO/OWL support was removed since 2.0.0, use JSON instead");
-    } catch (IOException e) {
-      throw new PhenolRuntimeException("Unable to load ontology", e);
-    }
-  }
-
-  private static String readBytes(InputStream bufferedStream, int readlimit) throws IOException {
-    byte[] firstFewBytes = new byte[readlimit];
-    if (bufferedStream.read(firstFewBytes) == readlimit) {
-      return new String(firstFewBytes);
-    }
-    return null;
-  }
-
-  private static boolean isJsonGraphDoc(String firstBytes) {
-    return firstBytes != null && firstBytes.replace("\\W+", "").startsWith("{");
-  }
 }

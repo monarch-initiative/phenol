@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.analysis.stats;
 
 import org.monarchinitiative.phenol.analysis.StudySet;
 import org.monarchinitiative.phenol.analysis.DirectAndIndirectTermAnnotations;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.analysis.stats.mtc.MultipleTestingCorrection;
 
 
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class PValueCalculation {
 
-  protected Ontology ontology;
+  protected MinimalOntology ontology;
   /**
    * The population of items (e.g., genes) investigated in some study.
    */
@@ -41,7 +41,7 @@ public abstract class PValueCalculation {
   }
 
 
-  public PValueCalculation(Ontology graph,
+  public PValueCalculation(MinimalOntology graph,
                            StudySet populationSet,
                            StudySet studySet,
                            MultipleTestingCorrection mtc) {

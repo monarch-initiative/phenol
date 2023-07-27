@@ -45,11 +45,11 @@ public final class ShortestPathTable {
    * @param ontology reference to Ontology object
    */
   public ShortestPathTable(Ontology ontology) {
-    termIdCount = ontology.getNonObsoleteTermIds().size();
+    termIdCount = ontology.nonObsoleteTermIdCount();
     distances = new int[termIdCount * termIdCount];
     termIdToIdx = new HashMap<>(termIdCount);
 
-    List<TermId> sortedNonObsoleteTermIds = ontology.getNonObsoleteTermIds().stream()
+    List<TermId> sortedNonObsoleteTermIds = ontology.nonObsoleteTermIdsStream()
       .sorted()
       .collect(Collectors.toList());
 

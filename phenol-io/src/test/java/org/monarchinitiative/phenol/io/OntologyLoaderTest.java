@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -29,14 +30,14 @@ public class OntologyLoaderTest {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(ontologyPath.toFile());
     // this file has 5 example HP terms
-    assertEquals(5, ontology.countAllTerms());
+    assertEquals(5, ontology.nonObsoleteTermIdCount());
   }
 
   @Test
   public void loadJsonStream() throws Exception {
     Path ontologyPath = Paths.get("src/test/resources/hp_small.json");
     Ontology ontology = OntologyLoader.loadOntology(Files.newInputStream(ontologyPath));
-    assertThat(ontology.countAllTerms(), is(5));
+    assertThat(ontology.nonObsoleteTermIdCount(), is(5));
   }
 
   @Test
@@ -71,21 +72,27 @@ public class OntologyLoaderTest {
 
     // 3. Checking TermIds
     // This is essentially the same as checking vertices.
-    assertTrue(ontology.getAllTermIds().contains(t1));
-    assertTrue(ontology.getAllTermIds().contains(t2));
-    assertTrue(ontology.getAllTermIds().contains(t3));
-    assertTrue(ontology.getAllTermIds().contains(t4));
-    assertTrue(ontology.getAllTermIds().contains(t5));
-    assertFalse(ontology.getAllTermIds().contains(t6));
+    List<TermId> allTermIds = ontology.allTermIdsStream().collect(toList());
+    assertTrue(allTermIds.contains(t1));
+    assertTrue(allTermIds.contains(t2));
+    assertTrue(allTermIds.contains(t3));
+    assertTrue(allTermIds.contains(t4));
+    assertTrue(allTermIds.contains(t5));
+    assertFalse(allTermIds.contains(t6));
 
     // 4. Checking RelationMap
     // All meta-information on edges are available in RelationMap instance.
-    Relationship gr1 = ontology.getRelationMap().get(graph.getEdge(t1, t2).getId());
-    Relationship gr2 = ontology.getRelationMap().get(graph.getEdge(t1, t3).getId());
+    Optional<Relationship> gr1Optional = ontology.relationshipById(graph.getEdge(t1, t2).getId());
+    assertTrue(gr1Optional.isPresent());
+    Relationship gr1 = gr1Optional.get();
+
+    Optional<Relationship> gr2Optional = ontology.relationshipById(graph.getEdge(t1, t3).getId());
+    assertTrue(gr2Optional.isPresent());
+    Relationship gr2 = gr1Optional.get();
     assertNotNull(gr1);
     assertNotNull(gr2);
-    assertEquals(RelationshipType.IS_A, gr1.getRelationshipType());
-    assertEquals(RelationshipType.IS_A, gr2.getRelationshipType());
+    assertEquals(RelationshipType.IS_A, gr1.relationType());
+    assertEquals(RelationshipType.IS_A, gr2.relationType());
 
     // 5. The example file contains multiple roots; thus we just put owl:Thing as the root.
     assertEquals(TermId.of("owl:Thing"), ontology.getRootTermId());
@@ -139,18 +146,20 @@ public class OntologyLoaderTest {
 
     ecto.getRelationMap()
       .values()
-      .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.getRelationshipType()));
-    Term rootT = ecto.getTermMap().get(ecto.getRootTermId());
-    assertEquals("artificial root term", rootT.getName());
+      .forEach(relationship -> assertEquals(RelationshipType.IS_A, relationship.relationType()));
+    Optional<Term> rootTOptional = ecto.termForTermId(ecto.getRootTermId());
+    assertTrue(rootTOptional.isPresent());
+    Term rootT = rootTOptional.get();
+    assertEquals("Artificial root term", rootT.getName());
     assertEquals(TermId.of("owl:Thing"), ecto.getRootTermId());
 
-    Set<String> termPrefixes = ecto.getAllTermIds().stream().map(TermId::getPrefix).collect(toSet());
+    Set<String> termPrefixes = ecto.allTermIdsStream().map(TermId::getPrefix).collect(toSet());
     assertFalse(termPrefixes.contains("NCIT"));
     assertFalse(termPrefixes.contains("CHEBI"));
     assertFalse(termPrefixes.contains("GO"));
     // 2270 ECTO terms plus owl:thing
-    assertEquals(2271, ecto.countNonObsoleteTerms());
-    assertEquals(0, ecto.countAlternateTermIds());
+    assertEquals(2271, ecto.nonObsoleteTermIdCount());
+    assertEquals(0, ecto.obsoleteTermIdsCount());
   }
 
   /**
@@ -168,11 +177,10 @@ public class OntologyLoaderTest {
     Ontology permissiveOntology = OntologyLoader.loadOntology(ectoPath.toFile());
 
     assertEquals(TermId.of("owl:Thing"), permissiveOntology.getRootTermId());
-    assertEquals(8343, permissiveOntology.countNonObsoleteTerms());
-    assertEquals(4, permissiveOntology.countAlternateTermIds());
+    assertEquals(8343, permissiveOntology.nonObsoleteTermIdCount());
+    assertEquals(4, permissiveOntology.obsoleteTermIdsCount());
 
-    Set<String> prefixes = permissiveOntology.getAllTermIds()
-      .stream()
+    Set<String> prefixes = permissiveOntology.allTermIdsStream()
       .map(TermId::getPrefix)
       .collect(toSet());
 
@@ -183,11 +191,10 @@ public class OntologyLoaderTest {
     // Only a subset of the terms are ECTO
     // $ grep 'id: ECTO' phenol/phenol-io/src/test/resources/ecto.obo | wc -l
     // 2270
-   long ectoTermCount = permissiveOntology.getTermMap().values().
-                        stream().
-                        filter(term -> term.id().getPrefix().equals("ECTO")).
-                        count();
-   assertEquals(2270, ectoTermCount);
+   long ectoTermCount = permissiveOntology.getTerms().stream()
+     .filter(term -> term.id().getPrefix().equals("ECTO"))
+     .count();
+   assertEquals(2270L, ectoTermCount);
   }
 
 

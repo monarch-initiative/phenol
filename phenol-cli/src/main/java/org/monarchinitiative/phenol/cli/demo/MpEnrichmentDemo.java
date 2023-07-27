@@ -11,8 +11,8 @@ import org.monarchinitiative.phenol.annotations.formats.mpo.MpGeneModel;
 import org.monarchinitiative.phenol.annotations.formats.mpo.MpoGeneAnnotation;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpAnnotationParser;
 import org.monarchinitiative.phenol.annotations.obo.mpo.MpGeneParser;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermAnnotation;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class MpEnrichmentDemo {
 
-  private final Ontology ontology;
+  private final MinimalOntology ontology;
 
   private final Map<TermId, MpGeneModel> mpgenemap;
 
@@ -53,7 +53,7 @@ public class MpEnrichmentDemo {
     System.out.println("[INFO] parsed " + markermap.size() + " MP markers.");
     System.out.println("[INFO] parsed " + mpgenemap.size() + " MP gene models.");
 
-    ontology = OntologyLoader.loadOntology(new File(mpPath));
+    ontology = MinimalOntologyLoader.loadOntology(new File(mpPath));
     System.out.println("[INFO] Parsed phenotyped info associated with " + mpgenemap.size() + " genes.");
 
   }
@@ -74,7 +74,7 @@ public class MpEnrichmentDemo {
           System.err.println("[ERROR] mp term id was null");
         }
         try {
-          String label = ontology.getTermMap().get(mpId).getName();
+          String label = ontology.termForTermId(mpId).map(Term::getName).orElse(null);
           MpoGeneAnnotation mpoGeneAnnotation = new MpoGeneAnnotation(markerId, symbol, label, mpId);
           builder.add(mpoGeneAnnotation);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class MpEnrichmentDemo {
   }
 
   public void run() {
-    int n_terms = ontology.countAllTerms();
+    int n_terms = ontology.allTermIdCount();
     System.out.println("[INFO] parsed " + n_terms + " MP terms.");
     List<TermAnnotation> annots = getTermAnnotations();
     System.out.println("[INFO] parsed " + annots.size() + " MP annotations.");
@@ -120,12 +120,12 @@ public class MpEnrichmentDemo {
       double pval = item.getRawPValue();
       double pval_adj = item.getAdjustedPValue();
       TermId tid = item.getItem();
-      Term term = ontology.getTermMap().get(tid);
-      if (term == null) {
+      Optional<Term> term = ontology.termForTermId(tid);
+      if (term.isEmpty()) {
         System.err.println("[ERROR] Could not retrieve term for " + tid.getValue());
         continue;
       }
-      String label = term.getName();
+      String label = term.get().getName();
       if (pval_adj > ALPHA) {
         continue;
       }

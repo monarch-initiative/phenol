@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import javax.xml.stream.XMLEventReader;
@@ -141,11 +142,12 @@ public class OrphanetInheritanceXMLParser {
             if (hpoInheritanceId == null) {
               continue;
             }
-            if (!ontology.getTermMap().containsKey(hpoInheritanceId)) {
+            Optional<Term> term = ontology.termForTermId(hpoInheritanceId);
+            if (term.isEmpty()) {
               this.errorlist.add("[WARNING] Could not find HPO label for Orphanet inheritance term" + hpoInheritanceId.getValue());
               continue;
             }
-            String hpoLabel = ontology.getTermMap().get(hpoInheritanceId).getName();
+            String hpoLabel = term.map(Term::getName).orElse(null);
             HpoAnnotationEntry entry = HpoAnnotationEntry.fromOrphaInheritanceData(disId.getValue(),
               currentDiseaseName,
               hpoInheritanceId,

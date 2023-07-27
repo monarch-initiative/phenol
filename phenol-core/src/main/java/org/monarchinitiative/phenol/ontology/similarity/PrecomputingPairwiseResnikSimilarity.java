@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.ontology.similarity;
 
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +51,7 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
    *  @param ontology {@link Ontology} to base computations on.
    * @param termToIc {@link Map} from{@link TermId} to its information content.
    */
-  public PrecomputingPairwiseResnikSimilarity(Ontology ontology, Map<TermId, Double> termToIc) {
+  public PrecomputingPairwiseResnikSimilarity(MinimalOntology ontology, Map<TermId, Double> termToIc) {
     this.precomputedScores = precomputeScores(ontology, termToIc);
   }
 
@@ -57,16 +59,15 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
    *
    * @return container with precomputed scores.
    */
-  private static PrecomputedScores precomputeScores(Ontology ontology, Map<TermId, Double> termToIc) {
-    LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.countAllTerms());
-
-    PrecomputedScores scores = new PrecomputedScores(ontology.getAllTermIds());
+  private static PrecomputedScores precomputeScores(MinimalOntology ontology, Map<TermId, Double> termToIc) {
+    LOGGER.info("Precomputing pairwise scores for {} terms...", ontology.nonObsoleteTermIdCount());
+    PrecomputedScores scores = new PrecomputedScores(ontology.nonObsoleteTermIds());
 
     // Setup PairwiseResnikSimilarity to use for computing scores.
     PairwiseResnikSimilarity pairwiseSimilarity = new PairwiseResnikSimilarity(ontology, termToIc);
 
     // Split the input into chunks to reduce task startup overhead
-    ontology.getNonObsoleteTermIds().parallelStream()
+    ontology.nonObsoleteTermIdsStream().parallel()
       .map(computeSimilarities(ontology, pairwiseSimilarity))
       .flatMap(Collection::stream)
       .forEach(score -> scores.put(score.query, score.target, score.value));
@@ -75,10 +76,11 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
     return scores;
   }
 
-  private static Function<TermId, List<SimilarityScoreContainer>> computeSimilarities(Ontology ontology, PairwiseResnikSimilarity pairwiseSimilarity) {
+  private static Function<TermId, List<SimilarityScoreContainer>> computeSimilarities(MinimalOntology ontology,
+                                                                                      PairwiseResnikSimilarity pairwiseSimilarity) {
     return queryId -> {
       List<SimilarityScoreContainer> results = new LinkedList<>();
-      for (TermId targetId : ontology.getNonObsoleteTermIds()) {
+      for (TermId targetId : ontology.nonObsoleteTermIds()) {
         if (queryId.compareTo(targetId) <= 0) {
           results.add(new SimilarityScoreContainer(queryId, targetId, pairwiseSimilarity.computeScore(queryId, targetId)));
         }
@@ -120,14 +122,16 @@ public final class PrecomputingPairwiseResnikSimilarity implements PairwiseSimil
     /** Internal storage of the similarity scores as matrix of floats. */
     private final float[][] data;
 
-    PrecomputedScores(Collection<TermId> termIds) {
-      int termIdCount = termIds.size();
+    PrecomputedScores(Iterable<TermId> termIds) {
+      List<TermId> sortedTermIds = StreamSupport.stream(termIds.spliterator(), false)
+        .sorted()
+        .collect(Collectors.toList());
+
+      int termIdCount = sortedTermIds.size();
       data = new float[termIdCount][termIdCount];
       termIdToIdx = new HashMap<>(termIdCount);
 
-      List<TermId> sortedTermIds = termIds.stream()
-        .sorted()
-        .collect(Collectors.toList());
+
       int i = 0;
       for (TermId termId : sortedTermIds) {
         termIdToIdx.put(termId, i++);

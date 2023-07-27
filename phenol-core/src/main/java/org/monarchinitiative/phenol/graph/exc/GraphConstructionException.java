@@ -1,12 +1,14 @@
 package org.monarchinitiative.phenol.graph.exc;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+
 /**
  * Exception raised when there are problems with graph components such as incompatibility between
  * vertex and edge list or the graph is not simple.
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  */
-public class GraphConstructionException extends RuntimeException {
+public class GraphConstructionException extends PhenolRuntimeException {
 
   /** Serial UID for serialization. */
   private static final long serialVersionUID = 1L;

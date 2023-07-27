@@ -1,12 +1,14 @@
 package org.monarchinitiative.phenol.ontology.data;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
+import org.monarchinitiative.phenol.graph.OntologyGraph;
+import org.monarchinitiative.phenol.graph.OntologyGraphBuilders;
 import org.monarchinitiative.phenol.graph.algo.BreadthFirstSearch;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.graph.util.GraphUtil;
 import org.monarchinitiative.phenol.ontology.algo.OntologyTerms;
+import org.monarchinitiative.phenol.utils.OntologyUtils;
 import org.monarchinitiative.phenol.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ public class ImmutableOntology implements Ontology {
 
   /** The graph storing the ontology's structure. */
   private final DefaultDirectedGraph<TermId, IdLabeledEdge> graph;
+  private final OntologyGraph<TermId> ontologyGraph;
 
   /** Id of the root term. */
   private final TermId rootTermId;
@@ -45,12 +48,12 @@ public class ImmutableOntology implements Ontology {
   private final Map<TermId, Term> termMap;
 
   /**
-   * Set of non-obselete term ids, separate so maps can remain for sub ontology construction.
+   * Set of non-obsolete term ids, separate so maps can remain for sub ontology construction.
    */
   private final Set<TermId> nonObsoleteTermIds;
 
   /**
-   * Set of obselete term ids, separate so maps can remain for sub ontology construction. These are the alt_id entries
+   * Set of obsolete term ids, separate so maps can remain for sub ontology construction. These are the alt_id entries
    */
   private final Set<TermId> obsoleteTermIds;
 
@@ -74,6 +77,7 @@ public class ImmutableOntology implements Ontology {
    *
    * @param metaInfo           {@link Map} with meta information.
    * @param graph              Graph to use for underlying structure.
+   * @param ontologyGraph      Internal graph representation intended to replace {@code graph}.
    * @param rootTermId         Root node's {@link TermId}.
    * @param nonObsoleteTermIds {@link Collection} of {@link TermId}s of non-obsolete terms.
    * @param obsoleteTermIds    {@link Collection} of {@link TermId}s of obsolete terms.
@@ -82,12 +86,14 @@ public class ImmutableOntology implements Ontology {
    */
   private ImmutableOntology(SortedMap<String, String> metaInfo,
                             DefaultDirectedGraph<TermId, IdLabeledEdge> graph,
+                            OntologyGraph<TermId> ontologyGraph,
                             TermId rootTermId,
                             Set<TermId> nonObsoleteTermIds,
                             Set<TermId> obsoleteTermIds,
                             Map<TermId, Term> termMap,
                             Map<Integer, Relationship> relationMap) {
     this.metaInfo = Objects.requireNonNull(metaInfo, "Meta info must not be null");
+    this.ontologyGraph = ontologyGraph; // nullable to allow creating a sub-ontology.
     this.graph = Objects.requireNonNull(graph, "Graph must not be null");
     this.rootTermId = Objects.requireNonNull(rootTermId, "Root term ID must not be null");
     this.termMap = Objects.requireNonNull(termMap, "Term map must not be null");
@@ -129,8 +135,18 @@ public class ImmutableOntology implements Ontology {
   }
 
   @Override
+  public OntologyGraph<TermId> graph() {
+    return ontologyGraph;
+  }
+
+  @Override
   public Map<TermId, Term> getTermMap() {
     return termMap;
+  }
+
+  @Override
+  public Optional<Term> termForTermId(TermId termId) {
+    return Optional.ofNullable(termMap.get(Objects.requireNonNull(termId)));
   }
 
   @Override
@@ -139,8 +155,8 @@ public class ImmutableOntology implements Ontology {
   }
 
   @Override
-  public boolean isRootTerm(TermId termId) {
-    return termId.equals(rootTermId);
+  public Optional<Relationship> relationshipById(int relationshipId) {
+    return Optional.ofNullable(relationMap.get(relationshipId));
   }
 
   @Override
@@ -183,18 +199,12 @@ public class ImmutableOntology implements Ontology {
   }
 
   @Override
-  public boolean containsTerm(TermId tid){
-    return this.termMap.containsKey(tid);
-  }
-
-
-  @Override
   public TermId getRootTermId() {
     return rootTermId;
   }
 
   @Override
-  public Set<TermId> getAllTermIds() {
+  public Iterable<TermId> allTermIds() {
     return allTermIds;
   }
 
@@ -204,12 +214,12 @@ public class ImmutableOntology implements Ontology {
   }
 
   @Override
-  public Set<TermId> getNonObsoleteTermIds() {
+  public Iterable<TermId> nonObsoleteTermIds() {
     return nonObsoleteTermIds;
   }
 
   @Override
-  public Set<TermId> getObsoleteTermIds() {
+  public Iterable<TermId> obsoleteTermIds() {
     return obsoleteTermIds;
   }
 
@@ -243,20 +253,12 @@ public class ImmutableOntology implements Ontology {
 
     return new ImmutableOntology(Collections.unmodifiableSortedMap(metaInfoBuilder),
       subGraph,
+      null,
       subOntologyRoot,
       intersectingTerms,
       Sets.intersection(obsoleteTermIds, childTermIds),
       subsetTermMap,
       relationMap);
-  }
-
-  @Override
-  public Optional<String> getTermLabel(TermId tid) {
-    if (this.termMap.containsKey(tid)) {
-      return Optional.of(this.termMap.get(tid).getName());
-    } else {
-      return Optional.empty();
-    }
   }
 
   @Override
@@ -298,7 +300,12 @@ public class ImmutableOntology implements Ontology {
       // A heuristic for determining root node(s).
       // If there are multiple candidate roots, we will just put owl:Thing as the root one.
       // WARNING - this method could mutate the terms and relationships, so DO NOT MOVE THIS METHOD CALL!
-      TermId rootId = findRootTermId();
+      RelationshipType isA = RelationshipType.IS_A;
+      TermId rootId = OntologyUtils.findRootTermId(terms, relationships, () -> isA);
+
+      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Short.class)
+        .hierarchyRelation(isA)
+        .build(rootId, relationships);
 
       Set<TermId> obsoleteTermIds = new HashSet<>();
       Set<TermId> nonObsoleteTermIds = new HashSet<>();
@@ -325,6 +332,7 @@ public class ImmutableOntology implements Ontology {
 
       return new ImmutableOntology(Collections.unmodifiableSortedMap(metaInfo),
         phenolGraph,
+        ontologyGraph,
         rootId,
         nonObsoleteTermIds,
         obsoleteTermIds,
@@ -350,50 +358,5 @@ public class ImmutableOntology implements Ontology {
       return phenolGraph;
     }
 
-    private TermId findRootTermId() {
-      List<TermId> rootCandidates = findRootCandidates(relationships);
-      if (rootCandidates.isEmpty()) {
-        throw new PhenolRuntimeException("No root candidate found.");
-      }
-      if (rootCandidates.size() == 1) {
-        return rootCandidates.get(0);
-      }
-      // No single root candidate, so create a new one and add it into the nodes and edges
-      // As per suggestion https://github.com/monarch-initiative/phenol/issues/163#issuecomment-452880405
-      // We'll use owl:Thing instead of ID:0000000 so as not to potentially conflict with an existing term id.
-      Term artificialRootTerm = Term.of(TermId.of("owl", "Thing"), "artificial root term");
-      logger.debug("Created new artificial root term {} {}", artificialRootTerm.id(), artificialRootTerm.getName());
-      addArtificialRootTerm(artificialRootTerm, rootCandidates);
-
-      return artificialRootTerm.id();
-    }
-
-    private List<TermId> findRootCandidates(Collection<Relationship> relationships) {
-      Set<TermId> rootCandidateSet = new HashSet<>();
-      Set<TermId> removeMarkSet = new HashSet<>();
-      for (Relationship relationship : relationships) {
-        TermId subjectTermId = relationship.getSource();
-        TermId objectTermId = relationship.getTarget();
-        // For each edge and connected nodes,
-        // we add candidate obj nodes in rootCandidateSet, i.e. nodes that have incoming edges.
-        rootCandidateSet.add(objectTermId);
-        // we then remove subj nodes from rootCandidateSet, i.e. nodes that have outgoing edges.
-        removeMarkSet.add(subjectTermId);
-      }
-      rootCandidateSet.removeAll(removeMarkSet);
-      return new ArrayList<>(rootCandidateSet);
-    }
-
-    private void addArtificialRootTerm(Term rootTerm, List<TermId> rootCandidates) {
-      terms.add(rootTerm);
-      int edgeId = 1 + relationships.stream().mapToInt(Relationship::getId).max().orElse(0);
-      for (TermId rootCandidate : rootCandidates) {
-        IdLabeledEdge idLabeledEdge = new IdLabeledEdge(edgeId++);
-        //Note-for the "artificial root term, we use the IS_A relation
-        Relationship relationship = new Relationship(rootCandidate, rootTerm.id(), idLabeledEdge.getId(), RelationshipType.IS_A);
-        logger.debug("Adding new artificial root relationship {}", relationship);
-        relationships.add(relationship);
-      }
-    }
   }
 }

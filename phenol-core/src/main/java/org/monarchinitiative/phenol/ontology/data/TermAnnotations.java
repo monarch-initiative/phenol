@@ -33,12 +33,12 @@ public final class TermAnnotations {
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *     labels.
    */
-  public static Map<TermId, Collection<TermId>> constructTermAnnotationToLabelsMap(Ontology ontology,
+  public static Map<TermId, Collection<TermId>> constructTermAnnotationToLabelsMap(MinimalOntology ontology,
                                                                                    Collection<? extends TermAnnotation> annotations) {
     Map<TermId, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      for (TermId termId : ontology.getAncestorTermIds(anno.id(), true)) {
+      for (TermId termId : ontology.graph().getAncestors(anno.id(), true)) {
         result.computeIfAbsent(termId, k -> new HashSet<>())
           .add(anno.getItemId());
       }
@@ -61,12 +61,12 @@ public final class TermAnnotations {
    * @return Constructed {@link Map} from {@link TermId} to {@link Collection} of "world object"
    *     labels.
    */
-  public static Map<TermId, Collection<TermId>> constructTermLabelToAnnotationsMap(Ontology ontology,
+  public static Map<TermId, Collection<TermId>> constructTermLabelToAnnotationsMap(MinimalOntology ontology,
                                                                                    Collection<? extends TermAnnotation> annotations) {
     Map<TermId, Collection<TermId>> result = new HashMap<>();
 
     for (TermAnnotation anno : annotations) {
-      for (TermId termId : ontology.getAncestorTermIds(anno.id(), true)) {
+      for (TermId termId : ontology.graph().getAncestors(anno.id(), true)) {
         result.computeIfAbsent(anno.getItemId(), key -> new HashSet<>())
           .add(termId);
       }

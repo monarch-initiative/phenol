@@ -34,7 +34,7 @@ public class OntologyLoaderMpoTest {
   @Test
   public void testNumberOfTermsParsed() {
     // mp_head.json has four valid MP terms
-    assertEquals(4, ontology.countNonObsoleteTerms());
+    assertEquals(4, ontology.nonObsoleteTermIdCount());
   }
 
   @Test
