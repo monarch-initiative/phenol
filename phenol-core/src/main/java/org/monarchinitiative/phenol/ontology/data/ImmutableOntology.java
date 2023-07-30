@@ -303,7 +303,7 @@ public class ImmutableOntology implements Ontology {
       RelationshipType isA = RelationshipType.IS_A;
       TermId rootId = OntologyUtils.findRootTermId(terms, relationships, () -> isA);
 
-      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Short.class)
+      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
         .hierarchyRelation(isA)
         .build(rootId, relationships);
 

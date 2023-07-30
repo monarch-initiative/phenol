@@ -2,7 +2,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getPa
  * <p>
  * <p>
  * The main function takes a list of HPO terms and returns a compatible list but sorted according to the
- * categories. Client code should use {@link #addAnnotatedTerms(List, Ontology)}  to initialize the
+ * categories. Client code should use {@link #addAnnotatedTerms(List, org.monarchinitiative.phenol.ontology.data.MinimalOntology)}  to initialize the
  * Category map. The function {@link #getActiveCategoryList()} returns an immutable list of categories
  * that include at least one HPO term used for annotation.
  * </p>
@@ -170,7 +170,7 @@ public class HpoCategoryMap {
    * @param ontology reference to HPO ontology object
    * @throws PhenolRuntimeException if we try to add an invalid term (i.e., that does not correspond to a category).
    */
-  public void addAnnotatedTerm(TermId tid, Ontology ontology) throws PhenolRuntimeException {
+  public void addAnnotatedTerm(TermId tid, MinimalOntology ontology) throws PhenolRuntimeException {
       HpoCategory cat = getCategory(tid, ontology);
       if (cat == null) {
         LOGGER.warn("Could not get upper level HPO category for "
@@ -181,12 +181,12 @@ public class HpoCategoryMap {
   }
 
   /**
-   * Add a list of {@link TermId} objects using the method {@link #addAnnotatedTerm(TermId, Ontology)}
+   * Add a list of {@link TermId} objects using the method {@link #addAnnotatedTerm(TermId, MinimalOntology)}
    *
    * @param tidlist  list of HPO terms to be added
    * @param ontology reference to HPO ontology object
    */
-  public void addAnnotatedTerms(List<TermId> tidlist, Ontology ontology) {
+  public void addAnnotatedTerms(List<TermId> tidlist, MinimalOntology ontology) {
     for (TermId tid : tidlist) {
       addAnnotatedTerm(tid, ontology);
     }
@@ -199,14 +199,13 @@ public class HpoCategoryMap {
    * @param childTermId TermId for which we will find the category or categories
    * @return an immutable Set of all category ids for childTermId
    */
-  private Set<TermId> getAncestorCategories(Ontology ontology, TermId childTermId) {
+  private Set<TermId> getAncestorCategories(MinimalOntology ontology, TermId childTermId) {
     Set<TermId> builder = new HashSet<>();
     Deque<TermId> stack = new ArrayDeque<>();
     stack.push(childTermId);
     while (!stack.isEmpty()) {
       TermId tid = stack.pop();
-      Set<TermId> parents = getParentTerms(ontology, tid, false);
-      for (TermId p : parents) {
+      for (TermId p : ontology.graph().getParents(tid, false)) {
         if (categorymap.containsKey(p)) {
           builder.add(p);
         } else {
@@ -222,7 +221,7 @@ public class HpoCategoryMap {
    * Identify the category that best matches the term id (usually just
    * find the category that represents an ancestor term).
    */
-  private HpoCategory getCategory(TermId tid, Ontology ontology) {
+  private HpoCategory getCategory(TermId tid, MinimalOntology ontology) {
     if (tid == null) {
       LOGGER.warn("Trying to get HPO Category but input TermId was null...");
       return null;

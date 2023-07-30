@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.annotations.formats.hpo;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifier;
 import org.monarchinitiative.phenol.annotations.formats.GeneIdentifiers;
 import org.monarchinitiative.phenol.ontology.data.Identified;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ public interface HpoAssociationData {
    * @return a builder for building {@link HpoAssociationData}.
    * @see HpoAssociationDataBuilder
    */
-  static HpoAssociationDataBuilder builder(Ontology hpo) {
+  static HpoAssociationDataBuilder builder(MinimalOntology hpo) {
     return new HpoAssociationDataBuilder(hpo);
   }
 
