@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo;
 
 import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -113,7 +113,7 @@ class HpoDiseaseDefault implements HpoDisease {
    * @param ontology Reference to the HPO ontology
    * @return frequency of the term in the disease (including annotation propagation)
    */
-  private double getFrequencyOfTermInDiseaseWithAnnotationPropagation(TermId tid, Ontology ontology) {
+  private double getFrequencyOfTermInDiseaseWithAnnotationPropagation(TermId tid, MinimalOntology ontology) {
 //    return getPhenotypicAbnormalityTermIds()
 //      .map(term -> {
 //        Set<TermId> ancs = ontology.getAncestorTermIds(term, true);
