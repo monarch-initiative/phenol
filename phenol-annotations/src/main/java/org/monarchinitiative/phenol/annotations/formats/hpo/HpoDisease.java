@@ -6,7 +6,7 @@ import org.monarchinitiative.phenol.annotations.base.temporal.TemporalInterval;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoAnnotationLine;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Identified;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
@@ -172,13 +172,10 @@ public interface HpoDisease extends AnnotatedItem {
    * @param hpo HPO ontology.
    * @return true iff this disease is annotated to the term directly or via annotation propagation.
    */
-  default boolean isAnnotatedTo(TermId termId, Ontology hpo) {
-    List<TermId> directAnnotations = presentAnnotationsStream()
-      .map(Identified::id)
-      .collect(Collectors.toList());
-    Set<TermId> ancestors = hpo.getAllAncestorTermIds(directAnnotations, true);
-
-    return ancestors.contains(termId);
+  default boolean isAnnotatedTo(TermId termId, MinimalOntology hpo) {
+    return presentAnnotationsStream()
+      .flatMap(a -> hpo.graph().getAncestorsStream(a.id(), true))
+      .anyMatch(termId::equals);
   }
 
   /**

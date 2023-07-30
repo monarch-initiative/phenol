@@ -35,7 +35,7 @@ public class HpoAssociationDataBuilder {
   private static final Logger LOGGER = LoggerFactory.getLogger(HpoAssociationDataBuilder.class);
 
   // Ontology
-  private final Ontology hpo;
+  private final MinimalOntology hpo;
 
   // GeneIdentifierLoader
   private Path homoSapiensGeneInfoPath;
@@ -53,7 +53,7 @@ public class HpoAssociationDataBuilder {
   private AnnotatedItemContainer<? extends AnnotatedItem> diseases;
   private HpoGeneAnnotations hpoGeneAnnotations;
 
-  HpoAssociationDataBuilder(Ontology hpo) {
+  HpoAssociationDataBuilder(MinimalOntology hpo) {
     // private no-op
     this.hpo = Objects.requireNonNull(hpo);
   }
