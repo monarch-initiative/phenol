@@ -84,16 +84,18 @@ public class CompatibilityChecker {
 
   private static <V extends TermId> void checkIfGraphIsSimple(Collection<V> vertices,
                                                               Collection<? extends OntologyGraphEdge<V>> edges) {
-    Map<V, Set<V>> seen = new HashMap<>(vertices.size());
+    Map<V, List<RelationshipStub<V>>> seen = new HashMap<>(vertices.size());
     for (OntologyGraphEdge<V> edge : edges) {
       if (edge.subject().equals(edge.object()))
-        throw new GraphNotSimpleException("Self-loop edge for " + edge.subject());
+        throw new GraphNotSimpleException("Self-loop edge: " + edge);
 
-      Set<V> objects = seen.computeIfAbsent(edge.subject(), w -> new HashSet<>());
-      if (objects.contains(edge.object()))
-        throw new GraphNotSimpleException("Seen edge twice: " + edge);
+      List<RelationshipStub<V>> stubs = seen.computeIfAbsent(edge.subject(), w -> new ArrayList<>());
+      boolean seenBefore = stubs.stream()
+        .anyMatch(stub -> stub.object.equals(edge.object()) && stub.relationType.equals(edge.relationType()));
+      if (seenBefore)
+        throw new GraphNotSimpleException("Saw edge twice: " + edge);
 
-      objects.add(edge.object());
+      stubs.add(new RelationshipStub<>(edge.object(), edge.relationType()));
     }
   }
 
@@ -192,5 +194,16 @@ public class CompatibilityChecker {
       seen.get(edge.getSource()).add((V) edge.getTarget());
     }
     LOGGER.debug("Graph is simple!");
+  }
+
+  // This would be an excellent record if we were at or above Java 17.
+  private static class RelationshipStub<V extends TermId> {
+    private final V object;
+    private final RelationType relationType;
+
+    private RelationshipStub(V object, RelationType relationType) {
+      this.object = object;
+      this.relationType = relationType;
+    }
   }
 }

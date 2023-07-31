@@ -41,7 +41,7 @@ public class CompatibilityCheckerTest {
     List<OntologyGraphEdge<TermId>> edges = new ArrayList<>(OntologyGraphEdges.hierarchyEdges());
     edges.add(OntologyGraphEdge.of(OntologyGraphEdges.HP01, OntologyGraphEdges.HP01, RelationTypes.isA()));
     GraphNotSimpleException e = assertThrows(GraphNotSimpleException.class, () -> CompatibilityChecker.checkCompatibility(vertices, edges));
-    assertThat(e.getMessage(), equalTo("Self-loop edge for HP:01"));
+    assertThat(e.getMessage(), equalTo("Self-loop edge: OntologyGraphEdgeDefault{subject=HP:01, object=HP:01, relationshipType=RelationshipType{id='is_a', label='is_a'}}"));
   }
 
   @Test
@@ -50,7 +50,7 @@ public class CompatibilityCheckerTest {
     List<OntologyGraphEdge<TermId>> edges = new ArrayList<>(OntologyGraphEdges.hierarchyEdges());
     edges.add(OntologyGraphEdge.of(OntologyGraphEdges.HP01, OntologyGraphEdges.HP1, RelationshipType.IS_A));
     GraphNotSimpleException e = assertThrows(GraphNotSimpleException.class, () -> CompatibilityChecker.checkCompatibility(vertices, edges));
-    assertThat(e.getMessage(), equalTo("Seen edge twice: OntologyGraphEdgeDefault{subject=HP:01, object=HP:1, relationshipType=RelationshipType{id='is_a', label='is_a'}}"));
+    assertThat(e.getMessage(), equalTo("Saw edge twice: OntologyGraphEdgeDefault{subject=HP:01, object=HP:1, relationshipType=RelationshipType{id='is_a', label='is_a'}}"));
   }
 
   @Test

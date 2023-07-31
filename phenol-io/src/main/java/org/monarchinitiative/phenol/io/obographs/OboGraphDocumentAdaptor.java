@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.io.obographs;
 import org.geneontology.obographs.core.model.*;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.graph.RelationType;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -74,6 +75,7 @@ public class OboGraphDocumentAdaptor {
     private List<Relationship> relationships;
     // An option used for discarding non-propagating relationships during loading.
     private boolean discardNonPropagatingRelationships = false;
+    private boolean discardDuplicatedRelationships = false;
 
     public Builder curieUtil(CurieUtil curieUtil) {
       Objects.requireNonNull(curieUtil);
@@ -89,6 +91,11 @@ public class OboGraphDocumentAdaptor {
 
     public Builder discardNonPropagatingRelationships(boolean value) {
       this.discardNonPropagatingRelationships = value;
+      return this;
+    }
+
+    public Builder discardDuplicatedRelationships(boolean value) {
+      this.discardDuplicatedRelationships = value;
       return this;
     }
 
@@ -225,6 +232,12 @@ public class OboGraphDocumentAdaptor {
         LOGGER.warn("No edges found in loaded ontology.");
         throw new PhenolRuntimeException("No edges found in loaded ontology.");
       }
+
+      Map<TermId, List<Relationship>> relationshipStubs = null;
+      if (discardDuplicatedRelationships)
+        // Only create the map if we need it!
+        relationshipStubs = new HashMap<>(edges.size());
+
       int edgeId = 0;
       for (Edge edge : edges) {
         TermId subjectTermId = getTermIdOrNull(edge.getSub());
@@ -232,12 +245,26 @@ public class OboGraphDocumentAdaptor {
 
         if (subjectTermId != null && objectTermId != null) {
           RelationshipType relType = RelationshipType.of(edge.getPred(), propertyIdLabels.getOrDefault(edge.getPred(), "unknown"));
-          if (discardNonPropagatingRelationships && !relType.propagates())
+          if (discardNonPropagatingRelationships && !relType.propagates()) {
             // The user decided to drop non-propagating relationships.
+            LOGGER.trace("Dropping non-propagating relationship {} {} {}",
+              subjectTermId.getValue(), relType.getLabel(), objectTermId.getValue());
             continue;
+          }
+
+          if (discardDuplicatedRelationships) {
+            List<Relationship> existing = relationshipStubs.get(subjectTermId);
+            if (existing != null && relationshipsAreEqual(subjectTermId, objectTermId, relType, existing)) {
+              LOGGER.trace("Dropping duplicated relationship {} {} {}",
+                subjectTermId.getValue(), relType.getLabel(), objectTermId.getValue());
+              continue;
+            }
+          }
 
           Relationship relationship = new Relationship(subjectTermId, objectTermId, edgeId++, relType);
           relationshipsList.add(relationship);
+          if (discardDuplicatedRelationships)
+            relationshipStubs.computeIfAbsent(subjectTermId, whatever -> new ArrayList<>()).add(relationship);
         }
       }
       return List.copyOf(relationshipsList);
@@ -258,5 +285,14 @@ public class OboGraphDocumentAdaptor {
       }
       return null;
     }
+  }
+
+  private static boolean relationshipsAreEqual(TermId subject,
+                                               TermId object,
+                                               RelationType relationType,
+                                               List<Relationship> existing) {
+    // The Relationship.id() is ignored here.
+    return existing.stream()
+      .anyMatch(r -> r.subject().equals(subject) && r.object().equals(object) && r.relationType().equals(relationType));
   }
 }
