@@ -53,7 +53,7 @@ public class CompatibilityChecker {
    * @throws GraphNotConnectedException if the vertices and edges represent a disconnected graph.
    */
   public static <V extends TermId> boolean checkCompatibility(Collection<V> vertices,
-                                                              Collection<OntologyGraphEdge<V>> edges) {
+                                                              Collection<? extends OntologyGraphEdge<V>> edges) {
     LOGGER.debug("Checking vertices ({}) and edges ({}) for compatibility...", vertices.size(), edges.size());
     if (vertices.isEmpty() || edges.isEmpty())
       throw new VerticesAndEdgesIncompatibleException(
@@ -72,7 +72,7 @@ public class CompatibilityChecker {
   }
 
   private static <V extends TermId> void checkVertexEdgeCompatibility(Collection<V> vertices,
-                                                                      Collection<OntologyGraphEdge<V>> edges) {
+                                                                      Collection<? extends OntologyGraphEdge<V>> edges) {
     Set<V> vertexSet = new HashSet<>(vertices);
     for (OntologyGraphEdge<V> edge : edges) {
       if (!vertexSet.contains(edge.subject()))
@@ -83,7 +83,7 @@ public class CompatibilityChecker {
   }
 
   private static <V extends TermId> void checkIfGraphIsSimple(Collection<V> vertices,
-                                                              Collection<OntologyGraphEdge<V>> edges) {
+                                                              Collection<? extends OntologyGraphEdge<V>> edges) {
     Map<V, Set<V>> seen = new HashMap<>(vertices.size());
     for (OntologyGraphEdge<V> edge : edges) {
       if (edge.subject().equals(edge.object()))
@@ -98,7 +98,7 @@ public class CompatibilityChecker {
   }
 
   private static <V extends TermId> void checkIfGraphIsConnected(Collection<V> vertices,
-                                                                 Collection<OntologyGraphEdge<V>> edges) {
+                                                                 Collection<? extends OntologyGraphEdge<V>> edges) {
     // I) First, find the root
     V root;
     {
