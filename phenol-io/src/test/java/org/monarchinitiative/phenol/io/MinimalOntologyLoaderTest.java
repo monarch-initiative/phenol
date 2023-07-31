@@ -2,8 +2,10 @@ package org.monarchinitiative.phenol.io;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,8 @@ public class MinimalOntologyLoaderTest {
   @Nested
   public class LoadHpo {
 
-    private final MinimalOntology hpo = MinimalOntologyLoader.loadOntology(Paths.get("src/test/resources/hp.module.json").toFile());
+    private final File file = Paths.get("src/test/resources/hp.module.json").toFile();
+    private final MinimalOntology hpo = MinimalOntologyLoader.loadOntology(file);
 
     @Test
     public void metaInfoIsCorrect() {
@@ -45,9 +48,9 @@ public class MinimalOntologyLoaderTest {
 
     @Test
     public void testTheNumberOfParsedTermIds() {
-      assertThat(hpo.allTermIdsStream().count(), equalTo(362L));
-      assertThat(hpo.nonObsoleteTermIdsStream().count(), equalTo(265L));
-      assertThat(hpo.obsoleteTermIdsStream().count(), equalTo(362L - 265L));
+      assertThat(hpo.allTermIdsStream().count(), equalTo(381L));
+      assertThat(hpo.nonObsoleteTermIdsStream().count(), equalTo(280L));
+      assertThat(hpo.obsoleteTermIdsStream().count(), equalTo(381L - 280L));
     }
 
     @Test
@@ -68,22 +71,20 @@ public class MinimalOntologyLoaderTest {
       assertThat(arachnodactyly.getAltTermIds(), hasSize(1));
       assertThat(arachnodactyly.getAltTermIds(), hasItems(TermId.of("HP:0001505")));
 
-      TermSynonym syn1 = synonyms.get(0);
+      TermSynonym syn0 = synonyms.get(0);
+      assertThat(syn0.getValue(), is("Long, slender fingers"));
+      assertThat(syn0.getScope(), is(EXACT));
+      assertThat(syn0.isLayperson(), is(false));
+
+      TermSynonym syn1 = synonyms.get(1);
       assertThat(syn1.getValue(), is("Long slender fingers"));
       assertThat(syn1.getScope(), is(EXACT));
       assertThat(syn1.isLayperson(), is(true));
 
-      // "Abnormality of the eye"
-      TermSynonym syn2 = synonyms.get(1);
+      TermSynonym syn2 = synonyms.get(2);
       assertThat(syn2.getValue(), is("Spider fingers"));
       assertThat(syn2.getScope(), is(EXACT));
       assertThat(syn2.isLayperson(), is(true));
-
-      //  "Eye disease"
-      TermSynonym syn3 = synonyms.get(2);
-      assertThat(syn3.getValue(), is("Long, slender fingers"));
-      assertThat(syn3.getScope(), is(EXACT));
-      assertThat(syn3.isLayperson(), is(false));
     }
 
     @Test
@@ -104,17 +105,19 @@ public class MinimalOntologyLoaderTest {
         .getChildrenStream(TermId.of("HP:0000118"), false)
         .map(TermId::getValue)
         .collect(Collectors.toList());
-      assertThat(children, hasItems("HP:0000119", "HP:0000152", "HP:0000478", "HP:0000598", "HP:0000707", "HP:0000769",
-        "HP:0000818", "HP:0001197", "HP:0001507", "HP:0001574", "HP:0001608", "HP:0001626", "HP:0001871", "HP:0001939",
-        "HP:0002086", "HP:0002664", "HP:0002715", "HP:0025031", "HP:0025142", "HP:0025354", "HP:0033127", "HP:0040064",
-        "HP:0045027"));
-      assertThat(children, hasSize(23));
+      // We only have Arachnodactyly here, which inherits from the two ancestors below:
+      assertThat(children, containsInAnyOrder("HP:0033127", "HP:0040064"));
+      assertThat(children, hasSize(2));
     }
   }
 
   @Nested
   public class LoadMondo {
-    private final MinimalOntology mondo = MinimalOntologyLoader.loadOntology(Paths.get("src/test/resources/mondo_small.json").toFile());
+    private final File mondoSmall = Paths.get("src/test/resources/mondo_small.json").toFile();
+    private final MinimalOntology mondo = MinimalOntologyLoader.loadOntology(mondoSmall,
+      CurieUtilBuilder.defaultCurieUtil(),
+      OntologyLoaderOptions.builder().discardNonPropagatingRelationships(true).build(),
+      "MONDO");
 
     @Test
     public void metaInfoIsCorrect() {

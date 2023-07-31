@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class OntologyLoaderOptions {
 
-  private static final OntologyLoaderOptions DEFAULT_OPTIONS = new OntologyLoaderOptions(false);
+  private static final OntologyLoaderOptions DEFAULT_OPTIONS = new Builder().build();
 
   /**
    * @return options that keep non-propagating relationships
@@ -20,18 +20,33 @@ public class OntologyLoaderOptions {
     return DEFAULT_OPTIONS;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * @deprecated use {@link #builder()} instead. The method will be removed in <em>3.0.0</em>.
+   */
+  // REMOVE(3.0.0)
+  @Deprecated(forRemoval = true, since = "2.0.3")
   public static OntologyLoaderOptions of(boolean discardNonPropagatingRelationships) {
-    return new OntologyLoaderOptions(discardNonPropagatingRelationships);
+    return new Builder().discardNonPropagatingRelationships(discardNonPropagatingRelationships).build();
   }
 
   private final boolean discardNonPropagatingRelationships;
+  private final boolean discardDuplicatedRelationships;
 
-  private OntologyLoaderOptions(boolean discardNonPropagatingRelationships) {
-    this.discardNonPropagatingRelationships = discardNonPropagatingRelationships;
+  private OntologyLoaderOptions(Builder builder) {
+    this.discardNonPropagatingRelationships = builder.discardNonPropagatingRelationships;
+    this.discardDuplicatedRelationships = builder.discardDuplicatedRelationships;
   }
 
   public boolean discardNonPropagatingRelationships() {
     return discardNonPropagatingRelationships;
+  }
+
+  public boolean discardDuplicatedRelationships() {
+    return discardDuplicatedRelationships;
   }
 
   @Override
@@ -52,5 +67,29 @@ public class OntologyLoaderOptions {
     return "OntologyLoaderOptions{" +
       "discardNonPropagatingRelationships=" + discardNonPropagatingRelationships +
       '}';
+  }
+
+  /**
+   * A builder for {@linkplain OntologyLoaderOptions}.
+   */
+  public static class Builder {
+    private boolean discardNonPropagatingRelationships = false;
+    private boolean discardDuplicatedRelationships = false;
+
+    private Builder(){}
+
+    public Builder discardNonPropagatingRelationships(boolean value) {
+      this.discardNonPropagatingRelationships = value;
+      return this;
+    }
+
+    public Builder discardDuplicatedRelationships(boolean value) {
+      this.discardDuplicatedRelationships = value;
+      return this;
+    }
+
+    public OntologyLoaderOptions build() {
+      return new OntologyLoaderOptions(this);
+    }
   }
 }

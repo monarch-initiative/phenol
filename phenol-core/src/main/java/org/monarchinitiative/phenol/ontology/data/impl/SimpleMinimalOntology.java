@@ -4,6 +4,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 import org.monarchinitiative.phenol.graph.OntologyGraphBuilders;
+import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 import org.monarchinitiative.phenol.utils.OntologyUtils;
@@ -176,13 +177,10 @@ public class SimpleMinimalOntology implements MinimalOntology {
       if (relationships.isEmpty())
         throw new IllegalStateException("No relationships were provided to build the ontology");
 
-      // First, find the root term.
+      // Then, find the root term and build the graph.
+      // IMPORTANT - this must be done before working with terms and relationships because an artificial root
+      // may be added!
       TermId rootId = OntologyUtils.findRootTermId(terms, relationships, () -> hierarchyRelationshipType);
-
-      // Next, build the graph.
-      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
-        .hierarchyRelation(hierarchyRelationshipType)
-        .build(rootId, relationships);
 
       // Then, build the term and relationship maps.
       Map<TermId, Term> termMap = new HashMap<>();
@@ -203,6 +201,19 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
       RelationshipContainer relationshipContainer = packageRelationships(relationships);
       TermIdCount termIdCount = new TermIdCount(all, all - nonObsolete, nonObsolete);
+
+      {
+        // Check if the vertices and edges meet the ontology graph requirements.
+        List<TermId> vertices = primaryTerms.stream()
+          .map(Term::id)
+          .collect(Collectors.toList());
+        CompatibilityChecker.checkCompatibility(vertices, relationships);
+      }
+
+      // Build the graph.
+      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
+        .hierarchyRelation(hierarchyRelationshipType)
+        .build(rootId, relationships);
 
       // Finally, wrap everything into the ontology!
       return new SimpleMinimalOntology(ontologyGraph,

@@ -48,8 +48,7 @@ public class OntologyLoaderHpoTest {
 
   @Test
   public void testGetRightNumberOfTerms() {
-    int expectedTermCount = 265; // there are 265 non-obsolete terms in hp_head.obo
-    assertEquals(expectedTermCount, hpo.nonObsoleteTermIdCount());
+    assertEquals(280, hpo.nonObsoleteTermIdCount());
   }
 
   @Test
@@ -73,12 +72,6 @@ public class OntologyLoaderHpoTest {
   @Test
   public void ifHpoNotNull_thenOK() {
     assertNotNull(hpo);
-  }
-
-  @Test
-  public void ifHpoHas265Terms_thenOK() {
-    int expectedTermCount = 265; // hpo_toy.json
-    assertEquals(expectedTermCount, hpo.nonObsoleteTermIdCount());
   }
 
   @Test
@@ -110,22 +103,20 @@ public class OntologyLoaderHpoTest {
     assertThat(arachnodactyly.getAltTermIds(), hasSize(1));
     assertThat(arachnodactyly.getAltTermIds(), hasItems(TermId.of("HP:0001505")));
 
-    TermSynonym syn1 = synonyms.get(0);
+    TermSynonym syn0 = synonyms.get(0);
+    assertThat(syn0.getValue(), is("Long, slender fingers"));
+    assertThat(syn0.getScope(), is(EXACT));
+    assertThat(syn0.isLayperson(), is(false));
+
+    TermSynonym syn1 = synonyms.get(1);
     assertThat(syn1.getValue(), is("Long slender fingers"));
     assertThat(syn1.getScope(), is(EXACT));
     assertThat(syn1.isLayperson(), is(true));
 
-    // "Abnormality of the eye"
-    TermSynonym syn2 = synonyms.get(1);
+    TermSynonym syn2 = synonyms.get(2);
     assertThat(syn2.getValue(), is("Spider fingers"));
     assertThat(syn2.getScope(), is(EXACT));
     assertThat(syn2.isLayperson(), is(true));
-
-    //  "Eye disease"
-    TermSynonym syn3 = synonyms.get(2);
-    assertThat(syn3.getValue(), is("Long, slender fingers"));
-    assertThat(syn3.getScope(), is(EXACT));
-    assertThat(syn3.isLayperson(), is(false));
   }
 
   @Test
