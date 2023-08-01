@@ -27,7 +27,7 @@
     <slf4j.version>2.0.7</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-csv.version>1.10.0</commons-csv.version>
-    <h2.version>1.4.200</h2.version>
+    <h2.version>2.2.220</h2.version>
     <picocli.version>4.6.3</picocli.version>
 
     <hamcrest.version>2.2</hamcrest.version>
