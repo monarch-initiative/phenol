@@ -92,6 +92,7 @@ public class MinimalOntologyLoader {
       .build(graphDocument);
 
     SimpleMinimalOntology ontology = SimpleMinimalOntology.builder()
+      .forceBuild(options.forceBuild())
       .hierarchyRelationshipType(RelationshipType.IS_A)
       .metaInfo(graphDocumentAdaptor.getMetaInfo())
       .terms(graphDocumentAdaptor.getTerms())
