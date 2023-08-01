@@ -4,6 +4,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 import org.monarchinitiative.phenol.graph.OntologyGraphBuilders;
+import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 import org.monarchinitiative.phenol.utils.OntologyUtils;
@@ -132,43 +133,86 @@ public class SimpleMinimalOntology implements MinimalOntology {
   /**
    * Create a new builder for the {@linkplain SimpleMinimalOntology}.
    *
-   * @return
+   * @return the builder.
    */
   public static Builder builder() {
     return new Builder();
   }
 
+  /**
+   * Builder for building {@linkplain SimpleMinimalOntology}.
+   */
   public static class Builder {
 
     private RelationshipType hierarchyRelationshipType = RelationshipType.IS_A;
     private Map<String, String> metaInfo = Map.of();
     private final List<Term> terms = new ArrayList<>();
     private final List<Relationship> relationships = new ArrayList<>();
+    private boolean forceBuild = false;
 
     private Builder() {}
 
+    /**
+     * Set the relationship type to be used to represent the ontology hierarchy.
+     *
+     * @param relationshipType a non-null {@linkplain RelationshipType}.
+     * @return the builder.
+     */
     public Builder hierarchyRelationshipType(RelationshipType relationshipType) {
       this.hierarchyRelationshipType = Objects.requireNonNull(relationshipType);
       return this;
     }
 
+    /**
+     * Set the ontology meta information.
+     *
+     * @param metaInfo a non-null {@linkplain Map} with key-value meta information.
+     * @return the builder.
+     */
     public Builder metaInfo(Map<String, String> metaInfo) {
       this.metaInfo = Objects.requireNonNull(metaInfo);
       return this;
     }
 
-    public Builder terms(List<Term> terms) {
+    /**
+     * Set the ontology terms.
+     *
+     * @param terms a non-null {@linkplain Collection} of terms.
+     * @return the builder.
+     */
+    public Builder terms(Collection<? extends Term> terms) {
       this.terms.clear();
       this.terms.addAll(Objects.requireNonNull(terms));
       return this;
     }
 
-    public Builder relationships(List<Relationship> relationships) {
+    /**
+     * Set the ontology relationships.
+     *
+     * @param relationships a non-null {@linkplain Collection} of relationships.
+     * @return the builder.
+     */
+    public Builder relationships(Collection<? extends Relationship> relationships) {
       this.relationships.clear();
       this.relationships.addAll(Objects.requireNonNull(relationships));
       return this;
     }
 
+    /**
+     * Force the build by skipping the compatibility checks.
+     *
+     * @param value {@code true} if the checks should be skipped.
+     * @return the builder.
+     */
+    public Builder forceBuild(boolean value) {
+      this.forceBuild = value;
+      return this;
+    }
+
+    /**
+     * Build the ontology from the provided {@code metaInfo}, {@code terms}, and {@code relationships}.
+     * @return the built {@link SimpleMinimalOntology}.
+     */
     public SimpleMinimalOntology build() {
       // Check if we've got everything we need.
       if (terms.isEmpty())
@@ -176,13 +220,10 @@ public class SimpleMinimalOntology implements MinimalOntology {
       if (relationships.isEmpty())
         throw new IllegalStateException("No relationships were provided to build the ontology");
 
-      // First, find the root term.
+      // Then, find the root term and build the graph.
+      // IMPORTANT - this must be done before working with terms and relationships because an artificial root
+      // may be added!
       TermId rootId = OntologyUtils.findRootTermId(terms, relationships, () -> hierarchyRelationshipType);
-
-      // Next, build the graph.
-      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
-        .hierarchyRelation(hierarchyRelationshipType)
-        .build(rootId, relationships);
 
       // Then, build the term and relationship maps.
       Map<TermId, Term> termMap = new HashMap<>();
@@ -203,6 +244,19 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
       RelationshipContainer relationshipContainer = packageRelationships(relationships);
       TermIdCount termIdCount = new TermIdCount(all, all - nonObsolete, nonObsolete);
+
+      if (!forceBuild) {
+        // Check if the vertices and edges meet the ontology graph requirements.
+        List<TermId> vertices = primaryTerms.stream()
+          .map(Term::id)
+          .collect(Collectors.toList());
+        CompatibilityChecker.checkCompatibility(vertices, relationships);
+      }
+
+      // Build the graph.
+      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
+        .hierarchyRelation(hierarchyRelationshipType)
+        .build(rootId, relationships);
 
       // Finally, wrap everything into the ontology!
       return new SimpleMinimalOntology(ontologyGraph,

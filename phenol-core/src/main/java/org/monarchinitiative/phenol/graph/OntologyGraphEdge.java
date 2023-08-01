@@ -6,6 +6,9 @@ package org.monarchinitiative.phenol.graph;
  * The edge is directed and thanks to its directionality, the edge can be read as a triple
  * <em>subject</em>-<em>predicate</em>-<em>object</em>
  * where the {@link #relationType()} is used as a <em>predicate</em>.
+ * <p>
+ * IMPORTANT: The implementor must ensure an appropriate implementation of {@linkplain #equals(Object)}
+ * and {@linkplain #hashCode()}!
  *
  * @param <T> type of the {@link OntologyGraph} node.
  * @see OntologyGraph
@@ -37,5 +40,9 @@ public interface OntologyGraphEdge<T> {
    * @return the object.
    */
   T object();
+
+  int hashCode();
+
+  boolean equals(Object o);
 
 }

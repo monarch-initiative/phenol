@@ -7,6 +7,30 @@ latest
 ------
 
 ------
+2.0.3
+------
+
+Minor release, no breaking changes.
+
+- `MinimalOntology` is enough for the `phenol-annotations` functionality to work.
+- Add checks to see if the ontology meets the following:
+  - we have `Term`s for all subjects and objects of the ontology graph edges
+  - the ontology graph is simple - no self-loops and duplicated edges are present.
+    Note: >1 edges between a pair of nodes is allowed as long as the edges are of a different relation type.
+  - the ontology graph is *connected* - the graph consists of one connected component.
+- Allow to opt out of compatibility checks by setting `OntologyLoaderOptions.forceBuild` to `true`.
+- Improve Javadocs
+
+------
+2.0.2
+------
+
+Minor release, no breaking changes.
+
+* deprecate several `MinimalOntology` and `Ontology` methods (to be removed in `v3.0.0`), and introduction of the `OntologyGraph` API.
+* setup Javadoc & documentation deployment via CI
+
+------
 v2.0.1
 ------
 

@@ -62,6 +62,14 @@ public class MinimalOntologyLoader {
     return loadOntology(graphDocument, curieUtil, OntologyLoaderOptions.defaultOptions(), termIdPrefixes);
   }
 
+  public static MinimalOntology loadOntology(File file,
+                                             CurieUtil curieUtil,
+                                             OntologyLoaderOptions options,
+                                             String... termIdPrefixes) {
+    GraphDocument graphDocument = OntologyLoadingRoutines.loadGraphDocument(file);
+    return loadOntology(graphDocument, curieUtil, options, termIdPrefixes);
+  }
+
   public static MinimalOntology loadOntology(InputStream inputStream,
                                              CurieUtil curieUtil,
                                              OntologyLoaderOptions options,
@@ -80,9 +88,11 @@ public class MinimalOntologyLoader {
       .curieUtil(curieUtil)
       .wantedTermIdPrefixes(Set.of(termIdPrefixes))
       .discardNonPropagatingRelationships(options.discardNonPropagatingRelationships())
+      .discardDuplicatedRelationships(options.discardDuplicatedRelationships())
       .build(graphDocument);
 
     SimpleMinimalOntology ontology = SimpleMinimalOntology.builder()
+      .forceBuild(options.forceBuild())
       .hierarchyRelationshipType(RelationshipType.IS_A)
       .metaInfo(graphDocumentAdaptor.getMetaInfo())
       .terms(graphDocumentAdaptor.getTerms())

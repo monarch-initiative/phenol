@@ -55,6 +55,14 @@ public class OntologyLoader {
     return loadOntology(inputStream, curieUtil, OntologyLoaderOptions.defaultOptions(), termIdPrefixes);
   }
 
+  public static Ontology loadOntology(File file,
+                                      CurieUtil curieUtil,
+                                      OntologyLoaderOptions options,
+                                      String... termIdPrefixes) {
+    GraphDocument graphDocument = OntologyLoadingRoutines.loadGraphDocument(file);
+    return loadOntology(graphDocument, curieUtil, options, termIdPrefixes);
+  }
+
   public static Ontology loadOntology(InputStream inputStream,
                                       CurieUtil curieUtil,
                                       OntologyLoaderOptions options,
