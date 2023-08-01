@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm.getParentTerms;
-
 /**
  * Model of the upper-level HPO classes. This allows a canonical view of HPO Annotation per disease
  * according to categories such as Heart, Eye, Brain etc.

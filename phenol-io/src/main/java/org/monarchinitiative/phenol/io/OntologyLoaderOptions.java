@@ -20,6 +20,11 @@ public class OntologyLoaderOptions {
     return DEFAULT_OPTIONS;
   }
 
+  /**
+   * Create a new builder for building {@linkplain OntologyLoaderOptions}.
+   *
+   * @return the builder
+   */
   public static Builder builder() {
     return new Builder();
   }
@@ -93,7 +98,6 @@ public class OntologyLoaderOptions {
     private boolean discardNonPropagatingRelationships = false;
     private boolean discardDuplicatedRelationships = false;
     private boolean forceBuild = false;
-
 
     private Builder(){}
 
