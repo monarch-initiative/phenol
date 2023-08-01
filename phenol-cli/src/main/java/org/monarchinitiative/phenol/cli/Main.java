@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "phenol demo",
   mixinStandardHelpOptions = true,
-  version = "2.0.2",
+  version = "2.0.3",
   description = "phenol demo programs")
 public class Main implements Callable<Integer> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
