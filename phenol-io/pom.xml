@@ -23,6 +23,11 @@
        <groupId>org.geneontology.obographs</groupId>
        <artifactId>obographs-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.biopragmatics.curies</groupId>
+      <artifactId>curies</artifactId>
+      <version>0.1.0</version>
+    </dependency>
     <!-- We can drop the dependency after obographs-core updates the vulnerable snakeyaml 1.33 to >=2.0. -->
     <dependency>
       <groupId>org.yaml</groupId>
