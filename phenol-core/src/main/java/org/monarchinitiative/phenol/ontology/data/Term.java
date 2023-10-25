@@ -71,6 +71,8 @@ public interface Term extends Identified {
 
   List<Dbxref> getXrefs();
 
+  List<TermId> getExactMatches();
+
 
   class Builder {
 
@@ -94,6 +96,7 @@ public interface Term extends Identified {
     String createdBy = "";
     Date creationDate;
     List<Dbxref> xrefs = List.of();
+    List<TermId> exactMatches = List.of();
 
     private Builder(TermId id) {
       // REMOVE(3.0.0) - as of 3.0.0 `id` is non-null since we can remove the noarg builder() above.
@@ -177,6 +180,11 @@ public interface Term extends Identified {
       return this;
     }
 
+    public Builder exactMatches(List<TermId> exactMatches) {
+      this.exactMatches = exactMatches;
+      return this;
+    }
+
     public Builder xrefs(List<Dbxref> xrefs) {
       this.xrefs = xrefs;
       return this;
@@ -185,7 +193,7 @@ public interface Term extends Identified {
     public Term build() {
       if (isNullOrEmpty(altTermIds) && isNullOrBlank(definition) && isNullOrEmpty(databaseXrefs) && isNullOrBlank(comment)
         && isNullOrEmpty(subsets) && isNullOrEmpty(synonyms) && !obsolete && isNullOrBlank(createdBy) && creationDate == null
-        && isNullOrEmpty(xrefs))
+        && isNullOrEmpty(xrefs) && isNullOrEmpty(exactMatches))
         return new TermMinimal(id, name);
       else
         return new TermDefault(this);
