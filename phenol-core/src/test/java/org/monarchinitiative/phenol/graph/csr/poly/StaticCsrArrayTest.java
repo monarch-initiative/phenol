@@ -1,8 +1,10 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.monarchinitiative.phenol.graph.csr.CsrData;
+import org.monarchinitiative.phenol.graph.csr.CsrDatasets;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ImmutableCsrMatrixTest {
+public class StaticCsrArrayTest {
 
   @ParameterizedTest
   @CsvSource({
@@ -22,7 +24,7 @@ public class ImmutableCsrMatrixTest {
     "3, 0;1;2;3",
   })
   public void colIndicesOfVal_full(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.full());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.full());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -36,7 +38,7 @@ public class ImmutableCsrMatrixTest {
     "3, 0;3",
   })
   public void colIndicesOfVal_allEdges(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -50,7 +52,7 @@ public class ImmutableCsrMatrixTest {
     "3, 3,   0",
   })
   public void colIndicesOfVal_allEdges_evenAndOddValues(int idx, String evenPayload, String oddPayload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
 
     List<Integer> evenExpected = decodeExpectedPayload(evenPayload);
     List<Integer> evenActual = intoList(matrix.colIndicesOfVal(idx, k -> k % 2 == 0));
@@ -68,7 +70,7 @@ public class ImmutableCsrMatrixTest {
     "2, ''",
   })
   public void colIndicesOfVal_zeroes(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.zeroes());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.zeroes());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -80,7 +82,7 @@ public class ImmutableCsrMatrixTest {
     "1, '0;2;3'",
   })
   public void colIndicesOfVal_rect(int idx, String payload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
     List<Integer> expected = decodeExpectedPayload(payload);
     List<Integer> actual = intoList(matrix.colIndicesOfVal(idx, k -> true));
     assertThat(actual, equalTo(expected));
@@ -92,7 +94,7 @@ public class ImmutableCsrMatrixTest {
     "1, 2,   0;3"
   })
   public void colIndicesOfVal_rect_evenAndOddValues(int idx, String evenPayload, String oddPayload) {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
 
     List<Integer> evenExpected = decodeExpectedPayload(evenPayload);
     List<Integer> evenActual = intoList(matrix.colIndicesOfVal(idx, k -> k % 2 == 0));
@@ -105,7 +107,7 @@ public class ImmutableCsrMatrixTest {
 
   @Test
   public void colIndicesOfVal_rect_unfound() {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.rect());
 
     // Here we're searching for `3` in the 0th row, but it is not there.
     assertThat(intoList(matrix.colIndicesOfVal(0, k -> k == 3)),
@@ -118,7 +120,7 @@ public class ImmutableCsrMatrixTest {
 
   @Test
   public void accessingNegativeOrBeyondBoundsIndexThrows() {
-    ImmutableCsrMatrix<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
+    StaticCsrArray<Integer> matrix = makeCsrMatrix(CsrDatasets.allEdges());
 
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
       () -> matrix.colIndicesOfVal(-1, entry -> true));
@@ -135,7 +137,7 @@ public class ImmutableCsrMatrixTest {
     int[] indptr = {0, 2, -1};
     int[] indices = {1, 3, 0, 2, 3};
     Integer[] data = {1, 2, 3, 4, 5};
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new ImmutableCsrMatrix<>(indptr, indices, data));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new StaticCsrArray<>(indptr, indices, data));
 
     assertThat(e.getMessage(), equalTo("Expected array of non-negative integers but the following indices were negative: 2"));
   }
@@ -146,7 +148,7 @@ public class ImmutableCsrMatrixTest {
     int[] indptr = {0, 2, 5};
     int[] indices = {-1, 3, 0, 2, 3};
     Integer[] data = {1, 2, 3, 4, 5};
-    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new ImmutableCsrMatrix<>(indptr, indices, data));
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new StaticCsrArray<>(indptr, indices, data));
 
     assertThat(e.getMessage(), equalTo("Expected array of non-negative integers but the following indices were negative: 0"));
   }
@@ -167,7 +169,7 @@ public class ImmutableCsrMatrixTest {
   }
 
 
-  private static <T> ImmutableCsrMatrix<T> makeCsrMatrix(CsrData<T> data) {
-    return new ImmutableCsrMatrix<>(data.getIndptr(), data.getIndices(), data.getData());
+  private static <T> StaticCsrArray<T> makeCsrMatrix(CsrData<T> data) {
+    return new StaticCsrArray<>(data.getIndptr(), data.getIndices(), data.getData());
   }
 }

@@ -1,6 +1,6 @@
-package org.monarchinitiative.phenol.graph.csr.indexer;
+package org.monarchinitiative.phenol.graph.csr.poly.indexer;
 
-import org.monarchinitiative.phenol.graph.csr.DataIndexer;
+import org.monarchinitiative.phenol.graph.csr.poly.DataIndexer;
 
 import java.util.function.IntFunction;
 

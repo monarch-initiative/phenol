@@ -1,10 +1,8 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.monarchinitiative.phenol.graph.RelationType;
 import org.monarchinitiative.phenol.graph.RelationTypes;
 
@@ -103,7 +101,5 @@ public class RelationCodecDefaultTest {
       assertThat(codec.isSet((byte) 0b100, SOME), equalTo(true));
     }
   }
-
-
 
 }

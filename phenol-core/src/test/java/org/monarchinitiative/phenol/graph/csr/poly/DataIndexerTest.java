@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.junit.jupiter.api.Test;
 

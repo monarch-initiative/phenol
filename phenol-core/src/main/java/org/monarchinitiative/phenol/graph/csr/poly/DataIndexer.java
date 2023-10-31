@@ -1,9 +1,9 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
-import org.monarchinitiative.phenol.graph.csr.indexer.DataIndexerByte;
-import org.monarchinitiative.phenol.graph.csr.indexer.DataIndexerInteger;
-import org.monarchinitiative.phenol.graph.csr.indexer.DataIndexerLong;
-import org.monarchinitiative.phenol.graph.csr.indexer.DataIndexerShort;
+import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerByte;
+import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerInteger;
+import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerLong;
+import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerShort;
 
 import java.util.function.IntFunction;
 

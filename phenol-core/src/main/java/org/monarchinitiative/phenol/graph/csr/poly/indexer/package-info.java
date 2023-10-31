@@ -10,4 +10,4 @@
  * </ul>
  * depending on the number of {@link org.monarchinitiative.phenol.graph.RelationType}s that we need to encode.
  */
-package org.monarchinitiative.phenol.graph.csr.indexer;
+package org.monarchinitiative.phenol.graph.csr.poly.indexer;

@@ -1,27 +1,28 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import org.monarchinitiative.phenol.graph.csr.util.Util;
+
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * {@linkplain ImmutableCsrMatrix} stores {@link T} entries and allows obtaining the column indices of items
+ * {@linkplain StaticCsrArray} stores {@link T} entries and allows obtaining the column indices of items
  * that match a provided predicate.
  *
  * @param <T> entry type.
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
-public class ImmutableCsrMatrix<T> {
+public class StaticCsrArray<T> {
+
+  // TODO - implement byte matrix.
 
   private final int[] indptr;
   private final int[] indices;
   private final T[] data;
 
-  public ImmutableCsrMatrix(int[] indptr, int[] indices, T[] data) {
-    this.indptr = checkSequenceOfNonNegativeInts(indptr);
-    this.indices = checkSequenceOfNonNegativeInts(indices);
+  public StaticCsrArray(int[] indptr, int[] indices, T[] data) {
+    this.indptr = Util.checkSequenceOfNonNegativeInts(indptr);
+    this.indices = Util.checkSequenceOfNonNegativeInts(indices);
     this.data = data;
   }
 
@@ -55,23 +56,6 @@ public class ImmutableCsrMatrix<T> {
     return new ColIterator(start, end, predicate);
   }
 
-  private static int[] checkSequenceOfNonNegativeInts(int[] a) {
-    List<String> offenders = new ArrayList<>();
-    for (int i = 0; i < a.length; i++) {
-      if (a[i] < 0) {
-        offenders.add(String.valueOf(i));
-      }
-    }
-    if (!offenders.isEmpty()) {
-      String msg = "Expected array of non-negative integers but the following indices were negative: " +
-        String.join(", ", offenders);
-
-      throw new IllegalArgumentException(msg);
-    }
-
-    return a;
-  }
-
   /**
    * <em>NOT</em> thread safe!
    */
@@ -94,7 +78,7 @@ public class ImmutableCsrMatrix<T> {
 
     @Override
     public boolean hasNext() {
-      return current >=0;
+      return current >= 0;
     }
 
     @Override

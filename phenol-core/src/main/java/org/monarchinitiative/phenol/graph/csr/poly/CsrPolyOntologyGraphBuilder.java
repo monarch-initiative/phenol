@@ -1,7 +1,9 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.*;
+import org.monarchinitiative.phenol.graph.csr.CsrData;
+import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,19 +17,19 @@ import java.util.stream.Stream;
  * A builder for {@link OntologyGraph} backed by a CSR matrix.
  *
  * @param <E> data type for storing the relationships between graph nodes.
- * @see CsrOntologyGraph
+ * @see CsrPolyOntologyGraph
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
-public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> {
+public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CsrOntologyGraphBuilder.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CsrPolyOntologyGraphBuilder.class);
 
   /**
    * Create the builder using given type for storing the edge values.
    */
-  public static <E> CsrOntologyGraphBuilder<E> builder(Class<E> clz) {
+  public static <E> CsrPolyOntologyGraphBuilder<E> builder(Class<E> clz) {
     DataIndexer<E> indexer = indexerForClass(Objects.requireNonNull(clz));
-    return new CsrOntologyGraphBuilder<>(indexer);
+    return new CsrPolyOntologyGraphBuilder<>(indexer);
   }
 
   // The casts are safe since we can only use 4 supported types, and we fail for the other types.
@@ -49,7 +51,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
   private RelationType hierarchyRelation = RelationTypes.isA();
   private final DataIndexer<E> indexer;
 
-  private CsrOntologyGraphBuilder(DataIndexer<E> indexer) {
+  private CsrPolyOntologyGraphBuilder(DataIndexer<E> indexer) {
     this.indexer = Objects.requireNonNull(indexer);
   }
 
@@ -59,7 +61,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
    * {@link RelationTypes#isA()} by default.
    */
   @Override
-  public CsrOntologyGraphBuilder<E> hierarchyRelation(RelationType relationType) {
+  public CsrPolyOntologyGraphBuilder<E> hierarchyRelation(RelationType relationType) {
     if (relationType == null)
       LOGGER.warn("Hierarchy relation type must not be null. Skipping..");
     else
@@ -68,7 +70,7 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
   }
 
   @Override
-  public CsrOntologyGraph<TermId, E> build(TermId root, Collection<? extends OntologyGraphEdge<TermId>> edges) {
+  public CsrPolyOntologyGraph<TermId, E> build(TermId root, Collection<? extends OntologyGraphEdge<TermId>> edges) {
     List<RelationType> relationTypes = edges.stream()
       .map(OntologyGraphEdge::relationType)
       .distinct()
@@ -88,12 +90,12 @@ public class CsrOntologyGraphBuilder<E> implements OntologyGraphBuilder<TermId> 
 
     LOGGER.debug("Building the adjacency matrix");
     CsrData<E> csrData = makeCsrData(nodes, edges, codec);
-    ImmutableCsrMatrix<E> adjacencyMatrix = new ImmutableCsrMatrix<>(csrData.getIndptr(), csrData.getIndices(), csrData.getData());
+    StaticCsrArray<E> adjacencyMatrix = new StaticCsrArray<>(csrData.getIndptr(), csrData.getIndices(), csrData.getData());
 
     LOGGER.debug("Assembling the ontology graph");
     Predicate<E> hierarchy = e -> codec.isSet(e, hierarchyRelation, false);
     Predicate<E> hierarchyInverted = e -> codec.isSet(e, hierarchyRelation, true);
-    return new CsrOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, hierarchy, hierarchyInverted);
+    return new CsrPolyOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, hierarchy, hierarchyInverted);
   }
 
   private CsrData<E> makeCsrData(TermId[] nodes,

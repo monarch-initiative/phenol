@@ -1,6 +1,8 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.monarchinitiative.phenol.graph.OntologyGraph;
+import org.monarchinitiative.phenol.graph.csr.ItemsNotSortedException;
+import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 
 import java.util.*;
@@ -8,32 +10,33 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * {@link OntologyGraph} backed by an adjacency matrix in CSR format.
+ * An {@link OntologyGraph} backed by an adjacency matrix in CSR format.
+ * <p>
+ * Besides implementing {@linkplain OntologyGraph}, the class supports storing graphs with multiple edge types.
  * <p>
  * The traversals are implemented using iterators to prevent unnecessary allocation.
  * <p>
- *
  * The array of nodes must be sorted and no duplicate elements must be present. An exception is thrown otherwise.
  *
  * @param <T> node type.
  * @param <E> data type for storing the relationships between graph nodes.
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
-public class CsrOntologyGraph<T, E> implements OntologyGraph<T> {
+public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
 
   private final T root;
   private final T[] nodes;
-  private final ImmutableCsrMatrix<E> adjacencyMatrix;
+  private final StaticCsrArray<E> adjacencyMatrix;
   private final Comparator<T> comparator;
   private final Predicate<E> hierarchy;
   private final Predicate<E> hierarchyInverted;
 
-  public CsrOntologyGraph(T root,
-                          T[] nodes,
-                          ImmutableCsrMatrix<E> adjacencyMatrix,
-                          Comparator<T> comparator,
-                          Predicate<E> hierarchy,
-                          Predicate<E> hierarchyInverted) {
+  public CsrPolyOntologyGraph(T root,
+                              T[] nodes,
+                              StaticCsrArray<E> adjacencyMatrix,
+                              Comparator<T> comparator,
+                              Predicate<E> hierarchy,
+                              Predicate<E> hierarchyInverted) {
     this.root = Objects.requireNonNull(root);
     this.nodes = checkSorted(Objects.requireNonNull(nodes), Objects.requireNonNull(comparator));
     this.adjacencyMatrix = Objects.requireNonNull(adjacencyMatrix);
@@ -42,7 +45,7 @@ public class CsrOntologyGraph<T, E> implements OntologyGraph<T> {
     this.hierarchyInverted = Objects.requireNonNull(hierarchyInverted);
   }
 
-  ImmutableCsrMatrix<E> adjacencyMatrix() {
+  StaticCsrArray<E> adjacencyMatrix() {
     return adjacencyMatrix;
   }
 

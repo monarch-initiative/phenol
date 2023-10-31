@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CsrOntologyGraphBuilderTest {
+public class CsrPolyOntologyGraphBuilderTest {
 
   private static final TermId ROOT = TermId.of("HP:1");
 
@@ -24,13 +24,13 @@ public class CsrOntologyGraphBuilderTest {
 
     @Test
     public void build() {
-      CsrOntologyGraphBuilder<Byte> builder = CsrOntologyGraphBuilder.builder(Byte.class);
-      CsrOntologyGraph<TermId, Byte> graph = builder.build(ROOT, OntologyGraphEdges.hierarchyEdges());
+      CsrPolyOntologyGraphBuilder<Byte> builder = CsrPolyOntologyGraphBuilder.builder(Byte.class);
+      CsrPolyOntologyGraph<TermId, Byte> graph = builder.build(ROOT, OntologyGraphEdges.hierarchyEdges());
 
       assertThat(graph.root(), equalTo(ROOT));
 
       // Check the adjacency matrix
-      ImmutableCsrMatrix<Byte> adjacencyMatrix = graph.adjacencyMatrix();
+      StaticCsrArray<Byte> adjacencyMatrix = graph.adjacencyMatrix();
       assertThat(adjacencyMatrix.indptr(), equalTo(new int[]{0, 3, 5, 7, 9, 13, 14, 15, 16, 17, 20}));
       assertThat(adjacencyMatrix.indices(), equalTo(new int[]{1, 2, 9, 0, 3, 0, 3, 1, 2, 5, 6, 7, 9, 4, 4, 4, 9, 0, 4, 8}));
       assertThat(adjacencyMatrix.data(), equalTo(new byte[]{2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2}));
@@ -42,13 +42,13 @@ public class CsrOntologyGraphBuilderTest {
 
     @Test
     public void build() {
-      CsrOntologyGraphBuilder<Byte> builder = CsrOntologyGraphBuilder.builder(Byte.class);
-      CsrOntologyGraph<TermId, Byte> graph = builder.build(ROOT, OntologyGraphEdges.makeHierarchyAndPartOfEdges());
+      CsrPolyOntologyGraphBuilder<Byte> builder = CsrPolyOntologyGraphBuilder.builder(Byte.class);
+      CsrPolyOntologyGraph<TermId, Byte> graph = builder.build(ROOT, OntologyGraphEdges.makeHierarchyAndPartOfEdges());
 
       assertThat(graph.root(), equalTo(TermId.of("HP:1")));
 
       // Check the adjacency matrix
-      ImmutableCsrMatrix<Byte> adjacencyMatrix = graph.adjacencyMatrix();
+      StaticCsrArray<Byte> adjacencyMatrix = graph.adjacencyMatrix();
 
       assertThat(adjacencyMatrix.indptr(), equalTo(new int[]{0, 3, 5, 8, 11, 15, 16, 17, 18, 19, 23, 24, 25, 26}));
       assertThat(adjacencyMatrix.indices(), equalTo(new int[]{
@@ -86,7 +86,7 @@ public class CsrOntologyGraphBuilderTest {
   @Nested
   public class TraversalTests {
 
-    private final CsrOntologyGraph<TermId, Byte> graph = buildExampleGraph();
+    private final CsrPolyOntologyGraph<TermId, Byte> graph = buildExampleGraph();
 
     @ParameterizedTest
     @CsvSource({
@@ -151,8 +151,8 @@ public class CsrOntologyGraphBuilderTest {
       iterableContainsTheExpectedItems(iterable, expected);
     }
 
-    private CsrOntologyGraph<TermId, Byte> buildExampleGraph() {
-      return CsrOntologyGraphBuilder.builder(Byte.class)
+    private CsrPolyOntologyGraph<TermId, Byte> buildExampleGraph() {
+      return CsrPolyOntologyGraphBuilder.builder(Byte.class)
         .hierarchyRelation(RelationTypes.isA())
         .build(ROOT, OntologyGraphEdges.hierarchyEdges());
     }

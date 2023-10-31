@@ -5,27 +5,27 @@ package org.monarchinitiative.phenol.graph.csr;
  * @param <T> data type
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
  */
-class CsrData<T> {
+public class CsrData<T> {
 
   private final int[] indptr;
   private final int[] indices;
   private final T[] data;
 
-  CsrData(int[] indptr, int[] indices, T[] data) {
+  public CsrData(int[] indptr, int[] indices, T[] data) {
     this.indptr = indptr;
     this.indices = indices;
     this.data = data;
   }
 
-  int[] getIndptr() {
+  public int[] getIndptr() {
     return indptr;
   }
 
-  int[] getIndices() {
+  public int[] getIndices() {
     return indices;
   }
 
-  T[] getData() {
+  public T[] getData() {
     return data;
   }
 

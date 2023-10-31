@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.graph;
 
 
-import org.monarchinitiative.phenol.graph.csr.CsrOntologyGraphBuilder;
+import org.monarchinitiative.phenol.graph.csr.poly.CsrPolyOntologyGraphBuilder;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -31,7 +31,7 @@ public class OntologyGraphBuilders {
    *
    */
   public static <E> OntologyGraphBuilder<TermId> csrBuilder(Class<E> clz) {
-    return CsrOntologyGraphBuilder.builder(clz);
+    return CsrPolyOntologyGraphBuilder.builder(clz);
   }
 
 }

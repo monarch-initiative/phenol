@@ -3,7 +3,7 @@ package org.monarchinitiative.phenol.graph.csr;
 /**
  * Some test data for testing the CSR matrix logic.
  */
-class CsrDatasets {
+public class CsrDatasets {
 
   /**
    * <pre>
@@ -13,7 +13,7 @@ class CsrDatasets {
    *  [124 126 128 130]]
    *  </pre>
    */
-  static CsrData<Integer> full() {
+  public static CsrData<Integer> full() {
     return new CsrData<>(
       new int[]{0, 4, 8, 12, 16},
       new int[]{0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
@@ -29,7 +29,7 @@ class CsrDatasets {
    *  [5 0 0 6]]
    *  </pre>
    */
-  static CsrData<Integer> allEdges() {
+  public static CsrData<Integer> allEdges() {
     return new CsrData<>(
       new int[]{0, 2, 3, 4, 6},
       new int[]{0, 3, 1, 2, 0, 3},
@@ -44,7 +44,7 @@ class CsrDatasets {
    *  [0 0 0]]
    *  </pre>
    */
-  static CsrData<Integer> zeroes() {
+  public static CsrData<Integer> zeroes() {
     return new CsrData<>(
       new int[]{0, 0, 0, 0},
       new int[]{},
@@ -58,7 +58,7 @@ class CsrDatasets {
    *  [3 0 4 5]]
    *  </pre>
    */
-  static CsrData<Integer> rect() {
+  public static CsrData<Integer> rect() {
     return new CsrData<>(
       new int[]{0, 2, 5},
       new int[]{1, 3, 0, 2, 3},

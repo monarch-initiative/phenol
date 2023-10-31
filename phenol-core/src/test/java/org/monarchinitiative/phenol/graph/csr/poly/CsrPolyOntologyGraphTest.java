@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-public class CsrOntologyGraphTest extends BaseOntologyGraphTest {
+public class CsrPolyOntologyGraphTest extends BaseOntologyGraphTest {
 
   @Test
   public void root() {
