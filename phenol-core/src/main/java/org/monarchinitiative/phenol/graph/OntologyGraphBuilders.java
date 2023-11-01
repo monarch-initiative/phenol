@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.graph;
 
 
+import org.monarchinitiative.phenol.graph.csr.mono.CsrMonoOntologyGraphBuilder;
 import org.monarchinitiative.phenol.graph.csr.poly.CsrPolyOntologyGraphBuilder;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -32,6 +33,14 @@ public class OntologyGraphBuilders {
    */
   public static <E> OntologyGraphBuilder<TermId> csrBuilder(Class<E> clz) {
     return CsrPolyOntologyGraphBuilder.builder(clz);
+  }
+
+  /**
+   * Get an {@link OntologyGraphBuilder} for building a simple graph with one edge type backed by a CSR-like
+   * data structure.
+   */
+  public static OntologyGraphBuilder<TermId> monoCsrBuilder() {
+    return CsrMonoOntologyGraphBuilder.builder();
   }
 
 }
