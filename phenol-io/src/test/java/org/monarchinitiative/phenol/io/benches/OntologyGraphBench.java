@@ -8,6 +8,7 @@ import org.openjdk.jmh.infra.Blackhole;
  * Benchmark different implementations of {@link org.monarchinitiative.phenol.graph.OntologyGraph}.
  */
 @BenchmarkMode(Mode.Throughput)
+@Warmup(iterations = 2)
 public class OntologyGraphBench {
 
   @Benchmark
@@ -78,22 +79,24 @@ public class OntologyGraphBench {
   # Run complete. Total time: 00:33:59
   Commit 6a470a0f
 
-  REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
-  why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
-  experiments, perform baseline and negative tests that provide experimental control, make sure
-  the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
-  Do not assume the numbers tell you what you want them to tell.
-
-  NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
-  extra caution when trusting the results, look into the generated code to check the benchmark still
-  works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
-  different JVMs are already problematic, the performance difference caused by different Blackhole
-  modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
-
   Benchmark                             Mode  Cnt    Score    Error  Units
   OntologyGraphBench.mono_getChildren  thrpt   25  163.773 ± 11.709  ops/s
   OntologyGraphBench.mono_getParents   thrpt   25  149.663 ±  8.890  ops/s
   OntologyGraphBench.poly_getChildren  thrpt   25  134.231 ±  7.379  ops/s
   OntologyGraphBench.poly_getParents   thrpt   25  131.846 ±  5.647  ops/s
-   */
+
+
+  # Run complete. Total time: 00:48:00
+  Commit 474ffa74
+
+  Benchmark                                Mode  Cnt    Score     Error  Units
+  OntologyGraphBench.mono_getAncestors    thrpt   25   43.154 ±   0.660  ops/s
+  OntologyGraphBench.mono_getChildren     thrpt   25  555.751 ± 129.691  ops/s
+  OntologyGraphBench.mono_getDescendants  thrpt   25   37.129 ±   0.921  ops/s
+  OntologyGraphBench.mono_getParents      thrpt   25  568.041 ±  45.601  ops/s
+  OntologyGraphBench.poly_getAncestors    thrpt   25   18.252 ±   0.686  ops/s
+  OntologyGraphBench.poly_getChildren     thrpt   25  117.166 ±  16.093  ops/s
+  OntologyGraphBench.poly_getDescendants  thrpt   25   31.324 ±   1.547  ops/s
+  OntologyGraphBench.poly_getParents      thrpt   25  124.328 ±  14.620  ops/s
+  */
 }
