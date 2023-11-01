@@ -1,9 +1,9 @@
 package org.monarchinitiative.phenol.io.benches;
 
-import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.phenol.ontology.data.impl.SimpleMinimalOntology;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 
 @State(Scope.Thread)
-public class PhenolOntologySetup {
+public class CsrPolyOntologyGraphSetup extends OntologyGraphSetup {
 
   private static final Random RANDOM = new Random(500);
 
@@ -27,7 +27,9 @@ public class PhenolOntologySetup {
   @Setup(Level.Trial)
   public void prepare() {
     Path hpoPath = SetupHpo.hpoJsonPath(Constants.HPO_VERSION);
-    ontology = MinimalOntologyLoader.loadOntology(hpoPath.toFile());
+
+    ontology = loadOntology(hpoPath, SimpleMinimalOntology.Builder.GraphImplementation.POLY);
+
     primaryTermIds = ontology.getTerms().stream()
       .map(Term::id)
       .collect(Collectors.toList());

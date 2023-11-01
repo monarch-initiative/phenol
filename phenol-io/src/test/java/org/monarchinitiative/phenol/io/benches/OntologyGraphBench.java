@@ -11,14 +11,28 @@ import org.openjdk.jmh.infra.Blackhole;
 public class OntologyGraphBench {
 
   @Benchmark
-  public void phenol_getParents(PhenolOntologySetup ontology, Blackhole blackhole) {
+  public void poly_getParents(CsrPolyOntologyGraphSetup ontology, Blackhole blackhole) {
     for (TermId termId : ontology.primaryTermIds) {
       blackhole.consume(ontology.ontology.graph().getParents(termId, false));
     }
   }
 
   @Benchmark
-  public void phenol_getChildren(PhenolOntologySetup ontology, Blackhole blackhole) {
+  public void poly_getChildren(CsrPolyOntologyGraphSetup ontology, Blackhole blackhole) {
+    for (TermId termId : ontology.primaryTermIds) {
+      blackhole.consume(ontology.ontology.graph().getChildren(termId, false));
+    }
+  }
+
+  @Benchmark
+  public void mono_getParents(CsrMonoOntologyGraphSetup ontology, Blackhole blackhole) {
+    for (TermId termId : ontology.primaryTermIds) {
+      blackhole.consume(ontology.ontology.graph().getParents(termId, false));
+    }
+  }
+
+  @Benchmark
+  public void mono_getChildren(CsrMonoOntologyGraphSetup ontology, Blackhole blackhole) {
     for (TermId termId : ontology.primaryTermIds) {
       blackhole.consume(ontology.ontology.graph().getChildren(termId, false));
     }

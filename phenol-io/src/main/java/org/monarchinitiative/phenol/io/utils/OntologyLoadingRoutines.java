@@ -1,7 +1,9 @@
-package org.monarchinitiative.phenol.io;
+package org.monarchinitiative.phenol.io.utils;
 
 import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +16,13 @@ import java.io.*;
  * @see OntologyLoader
  * @see MinimalOntologyLoader
  */
-class OntologyLoadingRoutines {
+public class OntologyLoadingRoutines {
 
   private static final Logger logger = LoggerFactory.getLogger(OntologyLoadingRoutines.class);
 
   private OntologyLoadingRoutines(){}
 
-  static GraphDocument loadGraphDocument(File file) {
+  public static GraphDocument loadGraphDocument(File file) {
     try (InputStream is = new BufferedInputStream(new FileInputStream(file))){
       return loadGraphDocument(is);
     } catch (IOException e) {
@@ -28,7 +30,7 @@ class OntologyLoadingRoutines {
     }
   }
 
-  static GraphDocument loadGraphDocument(InputStream inputStream) {
+  public static GraphDocument loadGraphDocument(InputStream inputStream) {
     // The input file might be json or obo/owl. Try to make an educated guess.
     try (InputStream bufferedStream = new BufferedInputStream(inputStream)) {
       int readlimit = 16;

@@ -3,6 +3,7 @@ package org.monarchinitiative.phenol.ontology.data.impl;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
+import org.monarchinitiative.phenol.graph.OntologyGraphBuilder;
 import org.monarchinitiative.phenol.graph.OntologyGraphBuilders;
 import org.monarchinitiative.phenol.graph.util.CompatibilityChecker;
 import org.monarchinitiative.phenol.ontology.data.*;
@@ -149,6 +150,23 @@ public class SimpleMinimalOntology implements MinimalOntology {
     private final List<Term> terms = new ArrayList<>();
     private final List<Relationship> relationships = new ArrayList<>();
     private boolean forceBuild = false;
+    private GraphImplementation graphImplementation = GraphImplementation.MONO;
+
+    /**
+     * Enum to choose the available {@link OntologyGraph} implementation.
+     */
+    public enum GraphImplementation {
+
+      /**
+       * Uses {@link OntologyGraphBuilders#csrBuilder(Class)} to build the graph.
+       */
+      POLY,
+
+      /**
+       * Uses {@link OntologyGraphBuilders#monoCsrBuilder()} to build the graph.
+       */
+      MONO
+    }
 
     private Builder() {}
 
@@ -210,6 +228,17 @@ public class SimpleMinimalOntology implements MinimalOntology {
     }
 
     /**
+     * Set the graph implementation to be used.
+     *
+     * @param graphImplementation the graph implementation to use.
+     * @return the builder.
+     */
+    public Builder graphImplementation(GraphImplementation graphImplementation) {
+      this.graphImplementation = Objects.requireNonNull(graphImplementation);
+      return this;
+    }
+
+    /**
      * Build the ontology from the provided {@code metaInfo}, {@code terms}, and {@code relationships}.
      * @return the built {@link SimpleMinimalOntology}.
      */
@@ -254,8 +283,18 @@ public class SimpleMinimalOntology implements MinimalOntology {
       }
 
       // Build the graph.
-      OntologyGraph<TermId> ontologyGraph = OntologyGraphBuilders.csrBuilder(Long.class)
-        .hierarchyRelation(hierarchyRelationshipType)
+      OntologyGraphBuilder<TermId> graphBuilder;
+      switch (graphImplementation) {
+        case MONO:
+          graphBuilder = OntologyGraphBuilders.monoCsrBuilder();
+          break;
+        case POLY:
+          graphBuilder = OntologyGraphBuilders.csrBuilder(Long.class);
+          break;
+        default:
+          throw new IllegalArgumentException();
+      }
+      OntologyGraph<TermId> ontologyGraph = graphBuilder.hierarchyRelation(hierarchyRelationshipType)
         .build(rootId, relationships);
 
       // Finally, wrap everything into the ontology!
