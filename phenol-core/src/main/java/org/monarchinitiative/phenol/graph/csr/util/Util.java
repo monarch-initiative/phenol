@@ -1,11 +1,10 @@
 package org.monarchinitiative.phenol.graph.csr.util;
 
 import org.monarchinitiative.phenol.graph.NodeNotPresentInGraphException;
+import org.monarchinitiative.phenol.graph.OntologyGraphEdge;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Util {
   private Util(){}
@@ -40,5 +39,38 @@ public class Util {
     }
 
     return a;
+  }
+
+  /**
+   * We build the CSR matrix row by row, and we need to know about all nodes that are adjacent with
+   * (have a relationship with) the node represented by the row under the construction.
+   * Here we prepare a mapping from the row index to a list of all adjacent edges.
+   */
+  public static Map<Integer, List<OntologyGraphEdge<TermId>>> findAdjacentEdges(TermId[] nodes,
+                                                                                Collection<? extends OntologyGraphEdge<TermId>> edges) {
+    Map<Integer, List<OntologyGraphEdge<TermId>>> data = new HashMap<>();
+
+    TermId lastSub = null;
+    int lastSubIdx = -1;
+
+    for (OntologyGraphEdge<TermId> edge : edges) {
+      int subIdx;
+      TermId sub = edge.subject();
+      if (sub == lastSub) {
+        subIdx = lastSubIdx;
+      } else {
+        lastSub = sub;
+        subIdx = getIndexOfUsingBinarySearch(sub, nodes, TermId::compareTo);
+        lastSubIdx = subIdx;
+      }
+
+      TermId obj = edge.object();
+      int objIdx = getIndexOfUsingBinarySearch(obj, nodes, TermId::compareTo);
+
+      data.computeIfAbsent(subIdx, x -> new ArrayList<>()).add(edge);
+      data.computeIfAbsent(objIdx, x -> new ArrayList<>()).add(edge);
+    }
+
+    return data;
   }
 }

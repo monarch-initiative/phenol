@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.*;
-import org.monarchinitiative.phenol.graph.csr.CsrData;
 import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -106,7 +105,7 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
     List<Integer> indices = new ArrayList<>();
     List<E> data = new ArrayList<>();
 
-    Map<Integer, List<OntologyGraphEdge<TermId>>> adjacentEdges = findAdjacentEdges(nodes, edges);
+    Map<Integer, List<OntologyGraphEdge<TermId>>> adjacentEdges = Util.findAdjacentEdges(nodes, edges);
 
     CsrRowBuilder<E> row = new CsrRowBuilder<>(indexer);
     for (int rowIdx = 0; rowIdx < nodes.length; rowIdx++) {
@@ -130,39 +129,6 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
     }
 
     return new CsrData<>(Util.toIntArray(indptr), Util.toIntArray(indices), data.toArray(indexer.createArray()));
-  }
-
-  /**
-   * We build the CSR matrix row by row, and we need to know about all nodes that are adjacent with
-   * (have a relationship with) the node represented by the row under the construction.
-   * Here we prepare a mapping from the row index to a list of all adjacent edges.
-   */
-  private static Map<Integer, List<OntologyGraphEdge<TermId>>> findAdjacentEdges(TermId[] nodes,
-                                                                                 Collection<? extends OntologyGraphEdge<TermId>> edges) {
-    Map<Integer, List<OntologyGraphEdge<TermId>>> data = new HashMap<>();
-
-    TermId lastSub = null;
-    int lastSubIdx = -1;
-
-    for (OntologyGraphEdge<TermId> edge : edges) {
-      int subIdx;
-      TermId sub = edge.subject();
-      if (sub == lastSub) {
-        subIdx = lastSubIdx;
-      } else {
-        lastSub = sub;
-        subIdx = Util.getIndexOfUsingBinarySearch(sub, nodes, TermId::compareTo);
-        lastSubIdx = subIdx;
-      }
-
-      TermId obj = edge.object();
-      int objIdx = Util.getIndexOfUsingBinarySearch(obj, nodes, TermId::compareTo);
-
-      data.computeIfAbsent(subIdx, x -> new ArrayList<>()).add(edge);
-      data.computeIfAbsent(objIdx, x -> new ArrayList<>()).add(edge);
-    }
-
-    return data;
   }
 
 }

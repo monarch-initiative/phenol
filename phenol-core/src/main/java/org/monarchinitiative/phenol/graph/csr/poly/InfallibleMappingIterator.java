@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.graph.csr.poly;
 
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * {@linkplain InfallibleMappingIterator} applies a {@code mapper} function to each item from the {@code base} iterator.
@@ -16,8 +17,8 @@ class InfallibleMappingIterator<T, U> implements Iterator<U> {
   private final Iterator<T> base;
   private final Function<T, U> mapper;
 
-  InfallibleMappingIterator(Iterator<T> base, Function<T, U> mapper) {
-    this.base = base;
+  InfallibleMappingIterator(Supplier<Iterator<T>> base, Function<T, U> mapper) {
+    this.base = base.get();
     this.mapper = mapper;
   }
 

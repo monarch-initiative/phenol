@@ -1,9 +1,9 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 /**
  * Some test data for testing the CSR matrix logic.
  */
-public class CsrDatasets {
+class CsrDatasets {
 
   /**
    * <pre>
@@ -13,7 +13,7 @@ public class CsrDatasets {
    *  [124 126 128 130]]
    *  </pre>
    */
-  public static CsrData<Integer> full() {
+  static CsrData<Integer> full() {
     return new CsrData<>(
       new int[]{0, 4, 8, 12, 16},
       new int[]{0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
@@ -29,7 +29,7 @@ public class CsrDatasets {
    *  [5 0 0 6]]
    *  </pre>
    */
-  public static CsrData<Integer> allEdges() {
+  static CsrData<Integer> allEdges() {
     return new CsrData<>(
       new int[]{0, 2, 3, 4, 6},
       new int[]{0, 3, 1, 2, 0, 3},
@@ -44,7 +44,7 @@ public class CsrDatasets {
    *  [0 0 0]]
    *  </pre>
    */
-  public static CsrData<Integer> zeroes() {
+  static CsrData<Integer> zeroes() {
     return new CsrData<>(
       new int[]{0, 0, 0, 0},
       new int[]{},
@@ -58,7 +58,7 @@ public class CsrDatasets {
    *  [3 0 4 5]]
    *  </pre>
    */
-  public static CsrData<Integer> rect() {
+  static CsrData<Integer> rect() {
     return new CsrData<>(
       new int[]{0, 2, 5},
       new int[]{1, 3, 0, 2, 3},

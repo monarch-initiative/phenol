@@ -3,8 +3,6 @@ package org.monarchinitiative.phenol.graph.csr.poly;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.monarchinitiative.phenol.graph.csr.CsrData;
-import org.monarchinitiative.phenol.graph.csr.CsrDatasets;
 
 import java.util.*;
 import java.util.stream.Collectors;

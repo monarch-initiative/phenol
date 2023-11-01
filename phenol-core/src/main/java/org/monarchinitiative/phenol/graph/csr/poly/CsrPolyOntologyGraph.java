@@ -7,6 +7,7 @@ import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -62,7 +63,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public Iterable<T> getChildren(T source, boolean includeSource) {
-    Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchyInverted, includeSource);
+    int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, hierarchyInverted, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -71,7 +73,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public Iterable<T> getDescendants(T source, boolean includeSource) {
-    Iterator<Integer> base = traverseGraph(source, hierarchyInverted, includeSource);
+    int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, hierarchyInverted, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -80,7 +83,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public Iterable<T> getParents(T source, boolean includeSource) {
-    Iterator<Integer> base = getNodeIndicesWithRelationship(source, hierarchy, includeSource);
+    int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, hierarchy, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -89,7 +93,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public Iterable<T> getAncestors(T source, boolean includeSource) {
-    Iterator<Integer> base = traverseGraph(source, hierarchy, includeSource);
+    int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, hierarchy, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -98,7 +103,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public boolean isLeaf(T source) {
-    return !getNodeIndicesWithRelationship(source, hierarchyInverted, false).hasNext();
+    int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    return !getNodeIndicesWithRelationship(idx, hierarchyInverted).hasNext();
   }
 
   /**
@@ -134,11 +140,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     return a;
   }
 
-  private Iterator<Integer> getNodeIndicesWithRelationship(T source,
-                                                           Predicate<E> relationship,
-                                                           boolean includeSource) {
-    int rowIdx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    return getColsWithRelationship(rowIdx, relationship, includeSource);
+  private Iterator<Integer> getNodeIndicesWithRelationship(int sourceIdx, Predicate<E> relationship) {
+    return getColsWithRelationship(sourceIdx, relationship, false);
   }
 
   private Iterator<Integer> getColsWithRelationship(int source,
@@ -152,10 +155,10 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     return nodes[idx];
   }
 
-  private Iterator<Integer> traverseGraph(T source,
+  private Iterator<Integer> traverseGraph(int sourceIdx,
                                           Predicate<E> relationship,
                                           boolean includeSource) {
-    return new TraversingIterator(source, relationship, includeSource);
+    return new TraversingIterator(sourceIdx, relationship, includeSource);
   }
 
   /**
@@ -167,11 +170,11 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     private final Deque<Integer> buffer = new ArrayDeque<>();
     private final Predicate<E> relationship;
 
-    private TraversingIterator(T source,
-                              Predicate<E> relationship,
-                              boolean includeSource) {
+    private TraversingIterator(int sourceIdx,
+                               Predicate<E> relationship,
+                               boolean includeSource) {
       this.relationship = relationship;
-      Iterator<Integer> base = getNodeIndicesWithRelationship(source, relationship, includeSource);
+      Iterator<Integer> base = getColsWithRelationship(sourceIdx, relationship, includeSource);
       while (base.hasNext()) {
         int idx = base.next();
         seen.add(idx);

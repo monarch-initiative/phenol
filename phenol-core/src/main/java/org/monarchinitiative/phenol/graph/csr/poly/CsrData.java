@@ -1,4 +1,4 @@
-package org.monarchinitiative.phenol.graph.csr;
+package org.monarchinitiative.phenol.graph.csr.poly;
 
 /**
  * A POJO for the data structures that back a CSR matrix.
