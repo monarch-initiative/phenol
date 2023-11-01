@@ -56,7 +56,9 @@ public class CsrMonoOntologyGraphBuilderTest {
       /* HP:03   */ {"HP:1"},
       /* HP:1    */ {},
     };
-    assertThatGroupsAreConsistent(graph.getNodes(), graph.getParentArray(), expectedParents);
+
+
+    assertThatGroupsAreConsistent(graph.size(), graph.getParentArray(), expectedParents);
 
     String[][] expectedChildren = {
       /* HP:01   */ {"HP:010", "HP:011"},
@@ -70,15 +72,15 @@ public class CsrMonoOntologyGraphBuilderTest {
       /* HP:03   */ {},
       /* HP:1    */ {"HP:01", "HP:02", "HP:03"},
     };
-    assertThatGroupsAreConsistent(graph.getNodes(), graph.getChildArray(), expectedChildren);
+    assertThatGroupsAreConsistent(graph.size(), graph.getChildArray(), expectedChildren);
   }
 
-  private void assertThatGroupsAreConsistent(TermId[] nodes,
+  private void assertThatGroupsAreConsistent(int size,
                                              StaticCsrArray<TermId> array,
                                              String[][] expectedCuries) {
     int[] indptr = array.getIndptr();
     TermId[] data = array.getData();
-    for (int i = 0; i < nodes.length; i++) {
+    for (int i = 0; i < size; i++) {
       int start = indptr[i];
       int end = indptr[i + 1];
       String[] curies = expectedCuries[i];

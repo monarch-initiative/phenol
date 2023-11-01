@@ -6,10 +6,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,8 +52,13 @@ public class CsrMonoOntologyGraphBuilder implements OntologyGraphBuilder<TermId>
       .toArray(TermId[]::new);
 
     CsrData<TermId> csrData = makeCsrData(nodes, hierarchyEdges);
+    Map<TermId, Integer> nodeToIdx = new HashMap<>();
+    for (int i = 0; i < nodes.length; i++) {
+      TermId node = nodes[i];
+      nodeToIdx.put(node, i);
+    }
 
-    return new CsrMonoOntologyGraph<>(root, nodes, TermId::compareTo, csrData.getParents(), csrData.getChildren());
+    return new CsrMonoOntologyGraph<>(root, nodeToIdx, csrData.getParents(), csrData.getChildren());
   }
 
   private CsrData<TermId> makeCsrData(TermId[] nodes,

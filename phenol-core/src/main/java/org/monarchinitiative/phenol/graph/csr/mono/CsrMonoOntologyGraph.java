@@ -1,7 +1,7 @@
 package org.monarchinitiative.phenol.graph.csr.mono;
 
+import org.monarchinitiative.phenol.graph.NodeNotPresentInGraphException;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
-import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 
 import java.util.*;
@@ -15,19 +15,16 @@ import java.util.*;
 public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
 
   private final T root;
-  private final T[] nodes;
-  private final Comparator<T> comparator;
+  private final Map<T, Integer> nodesToIdx;
   private final StaticCsrArray<T> parents;
   private final StaticCsrArray<T> children;
 
   CsrMonoOntologyGraph(T root,
-                       T[] nodes,
-                       Comparator<T> comparator,
+                       Map<T, Integer> nodesToIdx,
                        StaticCsrArray<T> parents,
                        StaticCsrArray<T> children) {
     this.root = Objects.requireNonNull(root);
-    this.nodes = Objects.requireNonNull(nodes);
-    this.comparator = Objects.requireNonNull(comparator);
+    this.nodesToIdx = Objects.requireNonNull(nodesToIdx);
     this.parents = Objects.requireNonNull(parents);
     this.children = Objects.requireNonNull(children);
   }
@@ -40,8 +37,11 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
     return children;
   }
 
-  T[] getNodes() {
-    return nodes;
+  private int getNodeIdx(T node) {
+    Integer idx = nodesToIdx.get(node);
+    if (idx == null)
+      throw new NodeNotPresentInGraphException(String.format("Item not found in the graph: %s", node));
+    return idx;
   }
 
   @Override
@@ -57,7 +57,7 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getDescendants(T source, boolean includeSource) {
     // Check if `source` is in the graph.
-    int intentionallyUnused = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    int intentionallyUnused = getNodeIdx(source);
 
     return new IterableIteratorWrapper<>(() -> new TraversingIterator<>(source, src -> getChildren(src, includeSource)));
   }
@@ -70,7 +70,7 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getAncestors(T source, boolean includeSource) {
     // Check if `source` is in the graph.
-    int intentionallyUnused = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    int intentionallyUnused = getNodeIdx(source);
 
     return new IterableIteratorWrapper<>(() -> new TraversingIterator<>(source, src -> getParents(src, includeSource)));
   }
@@ -78,7 +78,8 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   private Iterable<T> getImmediateNeighbors(StaticCsrArray<T> array,
                                             T source,
                                             boolean includeSource) {
-    int index = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
+    int index = getNodeIdx(source);
+
     Set<T> nodes = array.getOutgoingNodes(index);
 
     return includeSource
@@ -88,13 +89,12 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
 
   @Override
   public int size() {
-    return nodes.length;
+    return nodesToIdx.size();
   }
 
   @Override
   public Iterator<T> iterator() {
-    // TODO - can we do better here?
-    return Arrays.stream(nodes).iterator();
+    return nodesToIdx.keySet().iterator();
   }
 
 }
