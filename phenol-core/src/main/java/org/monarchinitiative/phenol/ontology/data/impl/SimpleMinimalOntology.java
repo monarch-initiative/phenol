@@ -153,7 +153,7 @@ public class SimpleMinimalOntology implements MinimalOntology {
     private GraphImplementation graphImplementation = GraphImplementation.MONO;
 
     /**
-     * Enum to choose the available {@link OntologyGraph} implementation.
+     * Enum to choose from the {@link OntologyGraph} implementations.
      */
     public enum GraphImplementation {
 
@@ -292,7 +292,7 @@ public class SimpleMinimalOntology implements MinimalOntology {
           graphBuilder = OntologyGraphBuilders.csrBuilder(Long.class);
           break;
         default:
-          throw new IllegalArgumentException();
+          throw new IllegalArgumentException(String.format("Unsupported graph implementation %s", graphImplementation));
       }
       OntologyGraph<TermId> ontologyGraph = graphBuilder.hierarchyRelation(hierarchyRelationshipType)
         .build(rootId, relationships);

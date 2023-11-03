@@ -5,7 +5,8 @@ import org.monarchinitiative.phenol.graph.csr.util.Util;
 import java.util.*;
 
 /**
- * A simple array for retrieval of adjacent graph nodes.
+ * A CSR-like data structure for retrieval of nodes {@link T} that are adjacent to a {@link T} under
+ * a <code>row</code> index.
  * <p>
  * The array is inspired by CSR format, but it does not need the column indices and stores directly
  * the {@link T} elements that represent the adjacent nodes. Since we are mostly interested in propagating relationships

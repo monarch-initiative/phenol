@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * A {@link Set} that contains an <code>item</code> and all elements of the <code>other</code> set.
+ * A utility implementation of a {@link Set} that contains
+ * an <code>item</code>, a singular instance of {@link T}, and the {@link T} elements in the <code>other</code> set.
  *
  * @param <T> – the type of elements in this set
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>

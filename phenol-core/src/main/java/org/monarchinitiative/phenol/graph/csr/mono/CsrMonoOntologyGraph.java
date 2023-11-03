@@ -8,6 +8,10 @@ import java.util.*;
 
 /**
  * An {@link OntologyGraph} that only supports one edge type and supports efficient retrieval of parent or child nodes.
+ * <p>
+ * It maintains a pair of CSR-like structures, {@link StaticCsrArray}, one for getting the parents and the other
+ * for children of a term. Both arrays are sorted to contain information for a node {@link T} under the same integer
+ * index. We get an index from a mapping.
  *
  * @param <T> type of the term/graph node.
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>

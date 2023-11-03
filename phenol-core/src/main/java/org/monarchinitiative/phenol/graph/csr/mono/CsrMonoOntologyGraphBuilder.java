@@ -51,6 +51,7 @@ public class CsrMonoOntologyGraphBuilder implements OntologyGraphBuilder<TermId>
       .sorted(TermId::compareTo)
       .toArray(TermId[]::new);
 
+    LOGGER.debug("Building CSR arrays");
     CsrData<TermId> csrData = makeCsrData(nodes, hierarchyEdges);
     Map<TermId, Integer> nodeToIdx = new HashMap<>();
     for (int i = 0; i < nodes.length; i++) {
