@@ -92,6 +92,70 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   }
 
   @Override
+  public OntologyGraph<T> extractSubgraph(T subRoot) {
+    if (subRoot.equals(root))
+      return this; // No need to extract subgraph since the subgraph equals to the graph.
+
+    // A subset of nodes for the subgraph.
+    List<T> subNodes = new ArrayList<>();
+    { // a scope to drop `seen`.
+      Set<T> seen = new HashSet<>();
+      fillNodeToIdxMap(subRoot, subNodes, seen);
+    }
+
+    Map<T, Integer> nodeToIdx = new HashMap<>();
+    for (int i = 0; i < subNodes.size(); i++)
+      nodeToIdx.put(subNodes.get(i), i);
+
+    StaticCsrArray<T> subParents = prepareSubParents(subNodes, subRoot);
+    StaticCsrArray<T> subChildren = prepareSubChildren(subNodes);
+
+    return new CsrMonoOntologyGraph<>(subRoot, nodeToIdx, subParents, subChildren);
+  }
+
+  private void fillNodeToIdxMap(T node,
+                                Collection<T> buffer,
+                                Set<T> seen) {
+    int nodeIdx = getNodeIdx(node);
+    buffer.add(node);
+    for (T child : children.getOutgoingNodes(nodeIdx))
+      if (!seen.contains(child)) {
+        fillNodeToIdxMap(child, buffer, seen);
+        seen.add(child);
+      }
+  }
+
+  private StaticCsrArray<T> prepareSubParents(List<T> nodes, T rootNode) {
+    int[] indptrs = new int[nodes.size() + 1];
+    List<T> items = new ArrayList<>();
+    for (int i = 0; i < nodes.size(); i++) {
+      T item = nodes.get(i);
+      if (item.equals(rootNode))
+        // We must filter out the parents of the root, otherwise the root wouldn't be the root, right?
+        continue;
+
+      int idx = getNodeIdx(item);
+      items.addAll(parents.getOutgoingNodes(idx));
+      indptrs[i + 1] = items.size();
+    }
+
+    return new StaticCsrArray<>(indptrs, items);
+  }
+
+  private StaticCsrArray<T> prepareSubChildren(List<T> nodes) {
+    int[] indptrs = new int[nodes.size() + 1];
+    List<T> items = new ArrayList<>();
+    for (int i = 0; i < nodes.size(); i++) {
+      T item = nodes.get(i);
+      int idx = getNodeIdx(item);
+      items.addAll(children.getOutgoingNodes(idx));
+      indptrs[i + 1] = items.size();
+    }
+
+    return new StaticCsrArray<>(indptrs, items);
+  }
+
+  @Override
   public int size() {
     return nodesToIdx.size();
   }

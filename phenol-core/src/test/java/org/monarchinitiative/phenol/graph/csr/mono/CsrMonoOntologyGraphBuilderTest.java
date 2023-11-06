@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.graph.OntologyGraphEdges;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -79,13 +81,13 @@ public class CsrMonoOntologyGraphBuilderTest {
                                              StaticCsrArray<TermId> array,
                                              String[][] expectedCuries) {
     int[] indptr = array.getIndptr();
-    TermId[] data = array.getData();
+    List<TermId> data = array.getData();
     for (int i = 0; i < size; i++) {
       int start = indptr[i];
       int end = indptr[i + 1];
       String[] curies = expectedCuries[i];
       for (int j = start; j < end; j++) {
-        String query = data[j].getValue();
+        String query = data.get(j).getValue();
         assertThat(curies, hasItemInArray(query));
       }
     }

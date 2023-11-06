@@ -387,6 +387,35 @@ public abstract class OntologyGraphTest {
 
   }
 
+  @Nested
+  public class SubOntologyClasses {
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:1;HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:01;HP:010;HP:011;HP:0110",
+      "HP:010,  HP:010;HP:0110",
+      "HP:011,  HP:011;HP:0110",
+      "HP:0110, HP:0110",
+
+      "HP:02,   HP:02;HP:020;HP:021;HP:022",
+      "HP:020,  HP:020",
+      "HP:021,  HP:021",
+      "HP:022,  HP:022",
+      "HP:03,   HP:03",
+    })
+    public void extractSubgraph(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.root(), equalTo(root));
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph, expectedIds);
+      assertThat(subgraph.size(), equalTo(expectedIds.size()));
+      assertThat(subgraph.getParents(root, false), is(emptyIterableOf(TermId.class)));
+    }
+
+  }
+
   @Test
   public void iterator() {
     List<TermId> expected = Stream.of(

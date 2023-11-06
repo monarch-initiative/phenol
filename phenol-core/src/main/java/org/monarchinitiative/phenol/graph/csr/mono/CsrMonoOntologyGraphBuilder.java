@@ -95,8 +95,8 @@ public class CsrMonoOntologyGraphBuilder implements OntologyGraphBuilder<TermId>
       childIndptr.add(children.size());
     }
 
-    StaticCsrArray<TermId> parentsArray = new StaticCsrArray<>(Util.toIntArray(parentIndptr), parents.toArray(new TermId[0]));
-    StaticCsrArray<TermId> childrenArray = new StaticCsrArray<>(Util.toIntArray(childIndptr), children.toArray(new TermId[0]));
+    StaticCsrArray<TermId> parentsArray = new StaticCsrArray<>(Util.toIntArray(parentIndptr), parents);
+    StaticCsrArray<TermId> childrenArray = new StaticCsrArray<>(Util.toIntArray(childIndptr), children);
 
     return new CsrData<>(parentsArray, childrenArray);
   }
