@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.graph.csr.poly;
 
+import java.util.List;
+
 /**
  * A POJO for the data structures that back a CSR matrix.
  * @param <T> data type
@@ -9,9 +11,9 @@ public class CsrData<T> {
 
   private final int[] indptr;
   private final int[] indices;
-  private final T[] data;
+  private final List<T> data;
 
-  public CsrData(int[] indptr, int[] indices, T[] data) {
+  public CsrData(int[] indptr, int[] indices, List<T> data) {
     this.indptr = indptr;
     this.indices = indices;
     this.data = data;
@@ -25,7 +27,7 @@ public class CsrData<T> {
     return indices;
   }
 
-  public T[] getData() {
+  public List<T> getData() {
     return data;
   }
 

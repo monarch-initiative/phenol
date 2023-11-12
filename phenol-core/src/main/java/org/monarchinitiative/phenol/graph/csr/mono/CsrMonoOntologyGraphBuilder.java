@@ -45,24 +45,24 @@ public class CsrMonoOntologyGraphBuilder implements OntologyGraphBuilder<TermId>
       .collect(Collectors.toList());
 
     LOGGER.debug("Sorting graph nodes");
-    TermId[] nodes = edges.stream()
+    List<TermId> nodes = edges.stream()
       .flatMap(e -> Stream.of(e.subject(), e.object()))
       .distinct()
       .sorted(TermId::compareTo)
-      .toArray(TermId[]::new);
+      .collect(Collectors.toList());
 
     LOGGER.debug("Building CSR arrays");
     CsrData<TermId> csrData = makeCsrData(nodes, hierarchyEdges);
     Map<TermId, Integer> nodeToIdx = new HashMap<>();
-    for (int i = 0; i < nodes.length; i++) {
-      TermId node = nodes[i];
+    for (int i = 0; i < nodes.size(); i++) {
+      TermId node = nodes.get(i);
       nodeToIdx.put(node, i);
     }
 
     return new CsrMonoOntologyGraph<>(root, nodeToIdx, csrData.getParents(), csrData.getChildren());
   }
 
-  private CsrData<TermId> makeCsrData(TermId[] nodes,
+  private CsrData<TermId> makeCsrData(List<TermId> nodes,
                                       Collection<? extends OntologyGraphEdge<TermId>> edges) {
     Map<Integer, List<OntologyGraphEdge<TermId>>> adjacentEdges = Util.findAdjacentEdges(nodes, edges);
 
@@ -74,8 +74,8 @@ public class CsrMonoOntologyGraphBuilder implements OntologyGraphBuilder<TermId>
     childIndptr.add(0);
     List<TermId> children = new ArrayList<>();
 
-    for (int rowIdx = 0; rowIdx < nodes.length; rowIdx++) {
-      TermId source = nodes[rowIdx];
+    for (int rowIdx = 0; rowIdx < nodes.size(); rowIdx++) {
+      TermId source = nodes.get(rowIdx);
       List<OntologyGraphEdge<TermId>> adjacent = adjacentEdges.getOrDefault(rowIdx, List.of());
 
       for (OntologyGraphEdge<TermId> edge : adjacent) {

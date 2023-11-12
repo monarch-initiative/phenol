@@ -134,7 +134,7 @@ public class StaticCsrArrayTest {
     // Data is the same as in CsrData.rect() but with one negative index
     int[] indptr = {0, 2, -1};
     int[] indices = {1, 3, 0, 2, 3};
-    Integer[] data = {1, 2, 3, 4, 5};
+    List<Integer> data = List.of(1, 2, 3, 4, 5);
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new StaticCsrArray<>(indptr, indices, data));
 
     assertThat(e.getMessage(), equalTo("Expected array of non-negative integers but the following indices were negative: 2"));
@@ -145,7 +145,7 @@ public class StaticCsrArrayTest {
     // Data is the same as in CsrData.rect() but with one negative index
     int[] indptr = {0, 2, 5};
     int[] indices = {-1, 3, 0, 2, 3};
-    Integer[] data = {1, 2, 3, 4, 5};
+    List<Integer> data = List.of(1, 2, 3, 4, 5);
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new StaticCsrArray<>(indptr, indices, data));
 
     assertThat(e.getMessage(), equalTo("Expected array of non-negative integers but the following indices were negative: 0"));

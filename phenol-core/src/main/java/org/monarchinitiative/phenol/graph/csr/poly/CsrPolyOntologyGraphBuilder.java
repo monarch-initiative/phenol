@@ -81,23 +81,21 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
         maxIndex, indexer.maxIdx()));
 
     LOGGER.debug("Sorting graph nodes");
-    TermId[] nodes = edges.stream()
+    List<TermId> nodes = edges.stream()
       .flatMap(e -> Stream.of(e.subject(), e.object()))
       .sorted(TermId::compareTo)
       .distinct()
-      .toArray(TermId[]::new);
+      .collect(Collectors.toList());
 
     LOGGER.debug("Building the adjacency matrix");
     CsrData<E> csrData = makeCsrData(nodes, edges, codec);
     StaticCsrArray<E> adjacencyMatrix = new StaticCsrArray<>(csrData.getIndptr(), csrData.getIndices(), csrData.getData());
 
     LOGGER.debug("Assembling the ontology graph");
-    Predicate<E> hierarchy = e -> codec.isSet(e, hierarchyRelation, false);
-    Predicate<E> hierarchyInverted = e -> codec.isSet(e, hierarchyRelation, true);
-    return new CsrPolyOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, hierarchy, hierarchyInverted);
+    return new CsrPolyOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, codec, hierarchyRelation);
   }
 
-  private CsrData<E> makeCsrData(TermId[] nodes,
+  private CsrData<E> makeCsrData(List<TermId> nodes,
                                  Collection<? extends OntologyGraphEdge<TermId>> edges,
                                  RelationCodec<E> codec) {
     List<Integer> indptr = new ArrayList<>();
@@ -108,8 +106,8 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
     Map<Integer, List<OntologyGraphEdge<TermId>>> adjacentEdges = Util.findAdjacentEdges(nodes, edges);
 
     CsrRowBuilder<E> row = new CsrRowBuilder<>(indexer);
-    for (int rowIdx = 0; rowIdx < nodes.length; rowIdx++) {
-      TermId source = nodes[rowIdx];
+    for (int rowIdx = 0; rowIdx < nodes.size(); rowIdx++) {
+      TermId source = nodes.get(rowIdx);
       List<OntologyGraphEdge<TermId>> adjacent = adjacentEdges.getOrDefault(rowIdx, List.of());
 
       for (OntologyGraphEdge<TermId> edge : adjacent) {
@@ -128,7 +126,7 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
       row.clear();
     }
 
-    return new CsrData<>(Util.toIntArray(indptr), Util.toIntArray(indices), data.toArray(indexer.createArray()));
+    return new CsrData<>(Util.toIntArray(indptr), Util.toIntArray(indices), data);
   }
 
 }

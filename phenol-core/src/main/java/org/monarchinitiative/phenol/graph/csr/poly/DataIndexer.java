@@ -5,8 +5,6 @@ import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerInteger;
 import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerLong;
 import org.monarchinitiative.phenol.graph.csr.poly.indexer.DataIndexerShort;
 
-import java.util.function.IntFunction;
-
 /**
  * @param <T> the type to use for storing the relations.
  * @author <a href="mailto:daniel.gordon.danis@protonmail.com">Daniel Danis</a>
@@ -39,7 +37,17 @@ public interface DataIndexer<T> {
    * @return the value presence of the relation encoded in the {@code n}-th slot.
    * @throws IllegalArgumentException if {@code n} is negative
    */
-  T setNthSlot(T previous, int n);
+  T set(T previous, int n);
+
+  /**
+   * Unset the relation in the {@code n}-th slot of the {@code previous} value.
+   *
+   * @param previous the previous value.
+   * @param n slot position.
+   * @return the value presence of the relation encoded in the {@code n}-th slot.
+   * @throws IllegalArgumentException if {@code n} is negative
+   */
+  T unset(T previous, int n);
 
   /**
    * Return {@code true} if the {@code n}-th slot is set or {@code false} otherwise.
@@ -50,11 +58,6 @@ public interface DataIndexer<T> {
    * @throws IllegalArgumentException if {@code n} is negative.
    */
   boolean isSet(T value, int n);
-
-  /**
-   * A function for creating an array of n values.
-   */
-  IntFunction<T[]> createArray();
 
   /**
    * Get the number of slots available in {@link T}.

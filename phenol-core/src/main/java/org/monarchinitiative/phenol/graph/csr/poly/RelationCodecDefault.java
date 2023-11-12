@@ -72,6 +72,11 @@ class RelationCodecDefault<E> implements RelationCodec<E> {
   }
 
   @Override
+  public E unset(E value, int idx) {
+    return indexer.unset(value, idx);
+  }
+
+  @Override
   public int maxIdx() {
     return maxIndex;
   }

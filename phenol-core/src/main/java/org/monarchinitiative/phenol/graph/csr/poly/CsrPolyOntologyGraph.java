@@ -1,6 +1,8 @@
 package org.monarchinitiative.phenol.graph.csr.poly;
 
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
+import org.monarchinitiative.phenol.graph.RelationType;
 import org.monarchinitiative.phenol.graph.csr.ItemsNotSortedException;
 import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
@@ -8,7 +10,6 @@ import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * An {@link OntologyGraph} backed by an adjacency matrix in CSR format.
@@ -26,24 +27,28 @@ import java.util.stream.Stream;
 public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
 
   private final T root;
-  private final T[] nodes;
+  private final List<T> nodes;
   private final StaticCsrArray<E> adjacencyMatrix;
   private final Comparator<T> comparator;
-  private final Predicate<E> hierarchy;
-  private final Predicate<E> hierarchyInverted;
+  private final RelationCodec<E> codec;
+  private final RelationType hierarchyRelation;
+  private final Predicate<E> isParentOf;
+  private final Predicate<E> isChildOf;
 
-  public CsrPolyOntologyGraph(T root,
-                              T[] nodes,
-                              StaticCsrArray<E> adjacencyMatrix,
-                              Comparator<T> comparator,
-                              Predicate<E> hierarchy,
-                              Predicate<E> hierarchyInverted) {
+  CsrPolyOntologyGraph(T root,
+                       List<T> nodes,
+                       StaticCsrArray<E> adjacencyMatrix,
+                       Comparator<T> comparator,
+                       RelationCodec<E> codec,
+                       RelationType hierarchyRelation) {
     this.root = Objects.requireNonNull(root);
     this.nodes = checkSorted(Objects.requireNonNull(nodes), Objects.requireNonNull(comparator));
     this.adjacencyMatrix = Objects.requireNonNull(adjacencyMatrix);
-    this.comparator = comparator;
-    this.hierarchy = Objects.requireNonNull(hierarchy);
-    this.hierarchyInverted = Objects.requireNonNull(hierarchyInverted);
+    this.comparator = Objects.requireNonNull(comparator);
+    this.codec = Objects.requireNonNull(codec);
+    this.hierarchyRelation = Objects.requireNonNull(hierarchyRelation);
+    this.isParentOf = e -> codec.isSet(e, hierarchyRelation, false);
+    this.isChildOf = e -> codec.isSet(e, hierarchyRelation, true);
   }
 
   StaticCsrArray<E> adjacencyMatrix() {
@@ -64,7 +69,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getChildren(T source, boolean includeSource) {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, hierarchyInverted, includeSource);
+    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, isChildOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -74,7 +79,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getDescendants(T source, boolean includeSource) {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, hierarchyInverted, includeSource);
+    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, isChildOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -84,7 +89,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getParents(T source, boolean includeSource) {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, hierarchy, includeSource);
+    Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, isParentOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -94,7 +99,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   @Override
   public Iterable<T> getAncestors(T source, boolean includeSource) {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, hierarchy, includeSource);
+    Supplier<Iterator<Integer>> base = () -> traverseGraph(idx, isParentOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
@@ -104,7 +109,119 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   @Override
   public boolean isLeaf(T source) {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
-    return !getNodeIndicesWithRelationship(idx, hierarchyInverted).hasNext();
+    return !getNodeIndicesWithRelationship(idx, isChildOf).hasNext();
+  }
+
+  @Override
+  public OntologyGraph<T> extractSubgraph(T subRoot) {
+    if (subRoot.equals(root))
+      return this; // No need to extract subgraph since the subgraph equals to the graph.
+
+    int idx = Collections.binarySearch(nodes, subRoot, comparator);
+    if (idx < 0)
+      throw new PhenolRuntimeException(String.format("%s is not in the ontology", subRoot));
+
+    List<T> subnodes = extractSubRootAndDescendantSubnodes(subRoot);
+    StaticCsrArray<E> subArray = extractSubArray(subRoot, subnodes);
+
+    return new CsrPolyOntologyGraph<>(subRoot,
+      subnodes,
+      subArray,
+      comparator,
+      codec,
+      hierarchyRelation);
+  }
+
+  private List<T> extractSubRootAndDescendantSubnodes(T subRoot) {
+    List<T> nodes = new ArrayList<>();
+    nodes.add(subRoot);
+    getDescendants(subRoot, false)
+      .forEach(nodes::add);
+    nodes.sort(comparator);
+    return List.copyOf(nodes);
+  }
+
+  private StaticCsrArray<E> extractSubArray(T subRoot, List<T> subnodes) {
+    // Extract relevant columns of the CSR adjacency matrix and unset parent relationships for the new root.
+    //
+    // We know that `this.nodes` and `subnodes` are stored in the same order, since the `subnodes` are sorted
+    // by the comparator. We also know that `subnodes` cannot be empty because we checked that `subRoot` is a graph node
+    // and, consequently, must be present in `subnodes`. If `subRoot` is a leaf, then it is the only element.
+
+    // Since we are removing columns, we will shift the columns to the left. Here we figure out the number of columns
+    // to shift for each retained column.
+    Map<Integer, Integer> shifts = calculateNodeShifts(nodes, subnodes);
+
+    // We'll put the sub array data here.
+    List<Integer> indptr = new ArrayList<>();
+    indptr.add(0);
+    List<Integer> indices = new ArrayList<>();
+    List<E> data = new ArrayList<>();
+
+    // We will unset the parent relationships for the new root under this index to ensure the new root has no parents!
+    int parentRelationshipIdx = codec.calculateBitIndex(hierarchyRelation, false);
+
+    Iterator<T> iterator = subnodes.iterator();
+    T subnode = iterator.next();
+    boolean isRoot = subnode.equals(subRoot);
+
+    for (int nodeIdx = 0; nodeIdx < nodes.size(); nodeIdx++) {
+      T node = nodes.get(nodeIdx);
+
+      if (node.equals(subnode)) { // We are keeping the node!
+        // Get delimiters of the columns of interest - a slice of column indices in `indices()` array.
+        int start = adjacencyMatrix.indptr()[nodeIdx];
+        int end = adjacencyMatrix.indptr()[nodeIdx + 1];
+
+        // Go over the columns, test if the column represents a node of interest, get the data,
+        // and unset parent relationship if the current `subnode` is the new root.
+        for (int j = start; j < end; j++) {
+          int col = adjacencyMatrix.indices()[j];
+          Integer shift = shifts.get(col);
+          if (shift != null) { // `shift` is not null if we are keeping the node.
+            indices.add(col - shift);
+
+            E datum = adjacencyMatrix.data().get(start + col);
+            if (isRoot)
+              datum = codec.unset(datum, parentRelationshipIdx);
+            data.add(datum);
+          }
+        }
+        indptr.add(data.size());
+
+        // Go to the next subnode. If there is no next subnode, then we're done!
+        if (iterator.hasNext()) {
+          subnode = iterator.next();
+          isRoot = subnode.equals(subRoot);
+        } else {
+          break;
+        }
+      }
+    }
+
+    return new StaticCsrArray<>(Util.toIntArray(indptr), Util.toIntArray(indices), data);
+  }
+
+  private static <T> Map<Integer, Integer> calculateNodeShifts(List<T> nodes, List<T> subnodes) {
+    Map<Integer, Integer> shifts = new HashMap<>(subnodes.size());
+    int nSkippedCols = 0;
+    ListIterator<T> iterator = subnodes.listIterator();
+    T subnode = iterator.next();
+    for (int i = 0; i < nodes.size(); i++) {
+      T node = nodes.get(i);
+      if (node.equals(subnode)) {
+        shifts.put(i, nSkippedCols);
+        if (iterator.hasNext()) {
+          subnode = iterator.next();
+        } else {
+          break;
+        }
+      } else {
+        nSkippedCols++;
+      }
+    }
+
+    return shifts;
   }
 
   /**
@@ -112,7 +229,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public int size() {
-    return nodes.length;
+    return nodes.size();
   }
 
   /**
@@ -120,16 +237,16 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
    */
   @Override
   public Iterator<T> iterator() {
-    return Stream.of(nodes).iterator();
+    return nodes.iterator();
   }
 
-  private static <T> T[] checkSorted(T[] a, Comparator<T> comparator) {
-    if (a.length == 0)
+  private static <T> List<T> checkSorted(List<T> a, Comparator<T> comparator) {
+    if (a.isEmpty())
       return a;
 
-    T previous = a[0];
-    for (int i = 1; i < a.length; i++) {
-      T current = a[i];
+    T previous = a.get(0);
+    for (int i = 1; i < a.size(); i++) {
+      T current = a.get(i);
       if (comparator.compare(previous, current) >= 0) {
         throw new ItemsNotSortedException(
           String.format("Unsorted sequence. Item #%d (%s) was less than #%d (%s)", i, current, i-1, previous)
@@ -152,7 +269,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   }
 
   private T getNodeForIndex(int idx) {
-    return nodes[idx];
+    return nodes.get(idx);
   }
 
   private Iterator<Integer> traverseGraph(int sourceIdx,
