@@ -19,15 +19,15 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <obographs.version>0.3.0</obographs.version>
+    <obographs.version>0.3.1</obographs.version>
     <jackson.version>2.14.3</jackson.version>
-    <guava.version>30.1-jre</guava.version>
-    <snakeyaml.version>2.0</snakeyaml.version>
+    <guava.version>[32.0.1-jre,)</guava.version>
+    <snakeyaml.version>[2.0,3.0)</snakeyaml.version>
     <jgrapht.version>1.5.2</jgrapht.version>
-    <slf4j.version>2.0.7</slf4j.version>
+    <slf4j.version>[2.0,3.0)</slf4j.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-csv.version>1.10.0</commons-csv.version>
-    <h2.version>1.4.200</h2.version>
+    <h2.version>[2.2.220,3.0)</h2.version>
     <picocli.version>4.6.3</picocli.version>
 
     <hamcrest.version>2.2</hamcrest.version>
