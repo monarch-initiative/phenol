@@ -122,7 +122,7 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
       throw new PhenolRuntimeException(String.format("%s is not in the ontology", subRoot));
 
     List<T> subnodes = extractSubRootAndDescendantSubnodes(subRoot);
-    StaticCsrArray<E> subArray = extractSubArray(subRoot, subnodes);
+    StaticCsrArray<E> subArray = extractSubArray(subnodes);
 
     return new CsrPolyOntologyGraph<>(subRoot,
       subnodes,
@@ -141,12 +141,13 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     return List.copyOf(nodes);
   }
 
-  private StaticCsrArray<E> extractSubArray(T subRoot, List<T> subnodes) {
-    // Extract relevant columns of the CSR adjacency matrix and unset parent relationships for the new root.
+  private StaticCsrArray<E> extractSubArray(List<T> subnodes) {
+    // Extract relevant columns of the CSR adjacency matrix.
     //
     // We know that `this.nodes` and `subnodes` are stored in the same order, since the `subnodes` are sorted
     // by the comparator. We also know that `subnodes` cannot be empty because we checked that `subRoot` is a graph node
-    // and, consequently, must be present in `subnodes`. If `subRoot` is a leaf, then it is the only element.
+    // and, consequently, must be present in `subnodes`. If `subRoot` is a leaf, then it is the only element
+    // of the `subnodes` list.
 
     // Since we are removing columns, we will shift the columns to the left. Here we figure out the number of columns
     // to shift for each retained column.
@@ -158,12 +159,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     List<Integer> indices = new ArrayList<>();
     List<E> data = new ArrayList<>();
 
-    // We will unset the parent relationships for the new root under this index to ensure the new root has no parents!
-    int parentRelationshipIdx = codec.calculateBitIndex(hierarchyRelation, false);
-
     Iterator<T> iterator = subnodes.iterator();
     T subnode = iterator.next();
-    boolean isRoot = subnode.equals(subRoot);
 
     for (int nodeIdx = 0; nodeIdx < nodes.size(); nodeIdx++) {
       T node = nodes.get(nodeIdx);
@@ -178,24 +175,17 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
         for (int j = start; j < end; j++) {
           int col = adjacencyMatrix.indices()[j];
           Integer shift = shifts.get(col);
-          if (shift != null) { // `shift` is not null if we are keeping the node.
-            indices.add(col - shift);
-
-            E datum = adjacencyMatrix.data().get(start + col);
-            if (isRoot)
-              datum = codec.unset(datum, parentRelationshipIdx);
-            data.add(datum);
+          if (shift != null) { // `shift` is not null if `col` corresponds to a node of interest.
+            indices.add(col - shift); // We must shift to compensate for the removed nodes.
+            data.add(adjacencyMatrix.data().get(j));
           }
         }
         indptr.add(data.size());
 
         // Go to the next subnode. If there is no next subnode, then we're done!
-        if (iterator.hasNext()) {
+        if (iterator.hasNext())
           subnode = iterator.next();
-          isRoot = subnode.equals(subRoot);
-        } else {
-          break;
-        }
+        else break;
       }
     }
 

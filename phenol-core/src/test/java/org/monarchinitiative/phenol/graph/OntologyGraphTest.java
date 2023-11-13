@@ -387,8 +387,12 @@ public abstract class OntologyGraphTest {
 
   }
 
+  /**
+   * Testing of sub-graphs returned by
+   * {@link org.monarchinitiative.phenol.ontology.data.MinimalOntology#subOntology(TermId)}.
+   */
   @Nested
-  public class SubOntologyClasses {
+  public class ExtractSubgraph {
 
     @ParameterizedTest
     @CsvSource({
@@ -404,16 +408,120 @@ public abstract class OntologyGraphTest {
       "HP:022,  HP:022",
       "HP:03,   HP:03",
     })
-    public void extractSubgraph(TermId root, String expected) {
+    public void subgraphContainsExpectedNodes(TermId root, String expected) {
       OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
 
-      assertThat(subgraph.root(), equalTo(root));
       Set<TermId> expectedIds = parsePayload(expected);
       iterableContainsTheExpectedItems(subgraph, expectedIds);
       assertThat(subgraph.size(), equalTo(expectedIds.size()));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void root(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.root(), equalTo(root));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void getParents(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
       assertThat(subgraph.getParents(root, false), is(emptyIterableOf(TermId.class)));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void getAncestors(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.getAncestors(root, false), is(emptyIterableOf(TermId.class)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:01;HP:02;HP:03",
+      "HP:01,   HP:010;HP:011",
+      "HP:010,  HP:0110",
+      "HP:011,  HP:0110",
+      "HP:0110, ''",
+
+      "HP:02,   HP:020;HP:021;HP:022",
+      "HP:020,  ''",
+      "HP:021,  ''",
+      "HP:022,  ''",
+
+      "HP:03,   ''",
+    })
+    public void getChildren(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph.getChildren(root, false), expectedIds);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:010;HP:011;HP:0110",
+      "HP:010,  HP:0110",
+      "HP:011,  HP:0110",
+      "HP:0110, ''",
+
+      "HP:02,   HP:020;HP:021;HP:022",
+      "HP:020,  ''",
+      "HP:021,  ''",
+      "HP:022,  ''",
+
+      "HP:03,   ''",
+    })
+    public void getDescendants(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph.getDescendants(root, false), expectedIds);
+    }
   }
 
   @Test

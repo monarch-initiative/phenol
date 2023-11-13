@@ -40,16 +40,6 @@ public interface DataIndexer<T> {
   T set(T previous, int n);
 
   /**
-   * Unset the relation in the {@code n}-th slot of the {@code previous} value.
-   *
-   * @param previous the previous value.
-   * @param n slot position.
-   * @return the value presence of the relation encoded in the {@code n}-th slot.
-   * @throws IllegalArgumentException if {@code n} is negative
-   */
-  T unset(T previous, int n);
-
-  /**
    * Return {@code true} if the {@code n}-th slot is set or {@code false} otherwise.
    *
    * @param value value to be checked

@@ -19,11 +19,6 @@ public class DataIndexerLong implements DataIndexer<Long> {
   }
 
   @Override
-  public Long unset(Long previous, int n) {
-    return previous & ~(1L << n);
-  }
-
-  @Override
   public boolean isSet(Long value, int n) {
     return (value & (1L << n)) > 0;
   }

@@ -23,8 +23,6 @@ interface RelationCodec<E> {
     return isSet(value, relationType, false);
   }
 
-  E unset(E value, int idx);
-
   int maxIdx();
 
 }

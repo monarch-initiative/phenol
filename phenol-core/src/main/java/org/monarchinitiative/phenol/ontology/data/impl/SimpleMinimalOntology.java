@@ -147,6 +147,7 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
     TermIdCount termIdCount = new TermIdCount(all, obsolete, all - obsolete);
 
+    // TODO - add an entry regarding sub-node being root
     return new SimpleMinimalOntology(subGraph, terms, termMap, relationships, metaInfo, termIdCount);
   }
 

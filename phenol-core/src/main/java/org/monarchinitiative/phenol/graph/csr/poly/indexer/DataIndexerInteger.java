@@ -19,11 +19,6 @@ public class DataIndexerInteger implements DataIndexer<Integer> {
   }
 
   @Override
-  public Integer unset(Integer previous, int n) {
-    return previous & ~(1 << n);
-  }
-
-  @Override
   public boolean isSet(Integer value, int n) {
     return (value & (1 << n)) > 0;
   }

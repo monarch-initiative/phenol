@@ -19,11 +19,6 @@ public class DataIndexerByte implements DataIndexer<Byte> {
   }
 
   @Override
-  public Byte unset(Byte previous, int n) {
-    return (byte) (previous & (byte) ~((1 << n)));
-  }
-
-  @Override
   public boolean isSet(Byte value, int n) {
     return (value & (1 << n)) > 0;
   }

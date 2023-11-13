@@ -19,11 +19,6 @@ public class DataIndexerShort implements DataIndexer<Short> {
   }
 
   @Override
-  public Short unset(Short previous, int n) {
-    return (short) (previous & (short) ~((1 << n)));
-  }
-
-  @Override
   public boolean isSet(Short value, int n) {
     return (value & (1 << n)) > 0;
   }
