@@ -147,8 +147,14 @@ public class SimpleMinimalOntology implements MinimalOntology {
 
     TermIdCount termIdCount = new TermIdCount(all, obsolete, all - obsolete);
 
-    // TODO - add an entry regarding sub-node being root
+    SortedMap<String, String> metaInfo = updateMetaInfo(subOntologyRoot, this.metaInfo);
     return new SimpleMinimalOntology(subGraph, terms, termMap, relationships, metaInfo, termIdCount);
+  }
+
+  private static SortedMap<String, String> updateMetaInfo(TermId subOntologyRoot, SortedMap<String, String> original) {
+    SortedMap<String, String> metaBuilder = new TreeMap<>(original);
+    metaBuilder.put("provenance", String.format("Ontology created as a subset from original ontology with root %s", subOntologyRoot.getValue()));
+    return Collections.unmodifiableSortedMap(metaBuilder);
   }
 
   @Override
