@@ -2,7 +2,6 @@ package org.monarchinitiative.phenol.graph.csr.poly;
 
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
-import org.monarchinitiative.phenol.graph.RelationType;
 import org.monarchinitiative.phenol.graph.csr.ItemsNotSortedException;
 import org.monarchinitiative.phenol.graph.csr.util.Util;
 import org.monarchinitiative.phenol.utils.IterableIteratorWrapper;
@@ -30,8 +29,6 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
   private final List<T> nodes;
   private final StaticCsrArray<E> adjacencyMatrix;
   private final Comparator<T> comparator;
-  private final RelationCodec<E> codec;
-  private final RelationType hierarchyRelation;
   private final Predicate<E> isParentOf;
   private final Predicate<E> isChildOf;
 
@@ -39,16 +36,14 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
                        List<T> nodes,
                        StaticCsrArray<E> adjacencyMatrix,
                        Comparator<T> comparator,
-                       RelationCodec<E> codec,
-                       RelationType hierarchyRelation) {
+                       Predicate<E> isParentOf,
+                       Predicate<E> isChildOf) {
     this.root = Objects.requireNonNull(root);
     this.nodes = checkSorted(Objects.requireNonNull(nodes), Objects.requireNonNull(comparator));
     this.adjacencyMatrix = Objects.requireNonNull(adjacencyMatrix);
     this.comparator = Objects.requireNonNull(comparator);
-    this.codec = Objects.requireNonNull(codec);
-    this.hierarchyRelation = Objects.requireNonNull(hierarchyRelation);
-    this.isParentOf = e -> codec.isSet(e, hierarchyRelation, false);
-    this.isChildOf = e -> codec.isSet(e, hierarchyRelation, true);
+    this.isParentOf = Objects.requireNonNull(isParentOf);
+    this.isChildOf = Objects.requireNonNull(isChildOf);
   }
 
   StaticCsrArray<E> adjacencyMatrix() {
@@ -128,8 +123,8 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
       subnodes,
       subArray,
       comparator,
-      codec,
-      hierarchyRelation);
+      isParentOf,
+      isChildOf);
   }
 
   private List<T> extractSubRootAndDescendantSubnodes(T subRoot) {

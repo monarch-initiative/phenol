@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,8 +91,11 @@ public class CsrPolyOntologyGraphBuilder<E> implements OntologyGraphBuilder<Term
     CsrData<E> csrData = makeCsrData(nodes, edges, codec);
     StaticCsrArray<E> adjacencyMatrix = new StaticCsrArray<>(csrData.getIndptr(), csrData.getIndices(), csrData.getData());
 
+    Predicate<E> isParentOf = e -> codec.isSet(e, hierarchyRelation, false);
+    Predicate<E> isChildOf = e -> codec.isSet(e, hierarchyRelation, true);
+
     LOGGER.debug("Assembling the ontology graph");
-    return new CsrPolyOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, codec, hierarchyRelation);
+    return new CsrPolyOntologyGraph<>(root, nodes, adjacencyMatrix, TermId::compareTo, isParentOf, isChildOf);
   }
 
   private CsrData<E> makeCsrData(List<TermId> nodes,
