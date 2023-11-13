@@ -113,8 +113,11 @@ public class SimpleMinimalOntologyTest {
       assertThat(subOntology.getRootTermId(), equalTo(T02));
       assertThat(subOntology.graph().root(), equalTo(T02));
 
-      assertThat(subOntology.getTerms().stream().map(Term::id).collect(Collectors.toList()),
-        containsInAnyOrder(T02, T020, T021, T022));
+      List<TermId> subTerms = subOntology.getTerms().stream()
+        .map(Term::id)
+        .sorted()
+        .collect(Collectors.toList());
+      assertThat(subTerms, equalTo(List.of(T02, T020, T021, T022)));
 
       // TODO - test relationships
 
