@@ -28,6 +28,20 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.monarchinitiative.biodownload</groupId>
+      <artifactId>biodownload</artifactId>
+      <version>1.1.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
