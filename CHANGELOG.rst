@@ -6,6 +6,18 @@ Changelog
 latest
 ------
 
+-----
+2.0.4
+-----
+
+Minor release, no breaking changes.
+
+- Fix broken implementation of `MinimalOntology.subOntology` method.
+- Simplify implementation of CSR adjacency matrix that backs `OntologyGraph` by default.
+- Improve `OntologyGraph` test coverage.
+- Add microbenchmark to benchmark the ontology loading.
+- Update dependencies, remove Guava usage.
+
 ------
 2.0.3
 ------
