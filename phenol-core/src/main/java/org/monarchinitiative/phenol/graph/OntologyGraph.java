@@ -190,6 +190,11 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
+   * Get the subgraph with {@code subRoot} as the new root node.
+   */
+  OntologyGraph<T> extractSubgraph(T subRoot);
+
+  /**
    * Get the number of nodes in the graph.
    *
    * @return the number of nodes in the graph.

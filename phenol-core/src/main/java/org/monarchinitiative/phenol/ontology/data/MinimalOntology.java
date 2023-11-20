@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 
@@ -107,6 +108,13 @@ public interface MinimalOntology extends Serializable, Versioned {
    * @return a {@linkplain Term} or an empty optional if the {@linkplain TermId} is not in the ontology.
    */
   Optional<Term> termForTermId(TermId termId);
+
+  /**
+   * Test if a {@code termId} is a term of the ontology.
+   */
+  default boolean containsTermId(TermId termId) {
+    return termForTermId(termId).isPresent();
+  }
 
   /**
    * @return {@link Map} from <code>Integer</code> edge Id to corresponding value of {@link
@@ -280,6 +288,15 @@ public interface MinimalOntology extends Serializable, Versioned {
   default int nonObsoleteTermIdCount() {
     return Math.toIntExact(nonObsoleteTermIdsStream().count());
   }
+
+  /**
+   * Construct a sub ontology, starting from the {@code subOntologyRoot}.
+   *
+   * @param subOntologyRoot a {@link TermId} to use as root of sub ontology.
+   * @return the sub ontology.
+   * @throws PhenolRuntimeException if {@code subOntologyRoot} is not in the ontology.
+   */
+  MinimalOntology subOntology(TermId subOntologyRoot);
 
   private static <T> Set<T> putIntoSet(Iterable<T> iterable) {
     if (iterable instanceof Set)

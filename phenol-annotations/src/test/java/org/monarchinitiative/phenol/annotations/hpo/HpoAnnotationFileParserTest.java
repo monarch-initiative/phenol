@@ -1,6 +1,5 @@
 package org.monarchinitiative.phenol.annotations.hpo;
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -84,14 +83,14 @@ class HpoAnnotationFileParserTest {
     }
     assertNotNull(anophthalmiaEntry);
     assertEquals(expectedFrequency,anophthalmiaEntry.getFrequencyModifier());
-    Set<String> expectedBiocuration= ImmutableSet.of("HP:probinson[2018-05-28]","HP:probinson[2019-05-28]");
+    Set<String> expectedBiocuration= Set.of("HP:probinson[2018-05-28]","HP:probinson[2019-05-28]");
     String actualBiocuration=anophthalmiaEntry.getBiocuration();
     String[] bioc=actualBiocuration.split(";");
     for (String biocurationItem : bioc) {
       assertTrue(expectedBiocuration.contains(biocurationItem));
     }
 
-    Set<String> expectedPublication=ImmutableSet.of("PMID:3214","PMID:1234");
+    Set<String> expectedPublication=Set.of("PMID:3214","PMID:1234");
     String actualPub=anophthalmiaEntry.getPublication();
     String []pubs=actualPub.split(";");
     for (String pub:pubs) {

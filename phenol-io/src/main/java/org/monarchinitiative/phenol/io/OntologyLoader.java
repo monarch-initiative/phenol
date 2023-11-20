@@ -4,6 +4,7 @@ import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.OntologyLoadingRoutines;
 import org.monarchinitiative.phenol.ontology.data.ImmutableOntology;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
