@@ -1,7 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.mpo;
 
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -15,7 +14,7 @@ public class MpAnnotationTest {
   @Test
   public void testAnnotationTypeString() {
     TermId mpId = TermId.of("MP:123");
-    Set<String> pmids = ImmutableSet.of();
+    Set<String> pmids = Set.of();
     MpAnnotation.Builder builder = new MpAnnotation.Builder(mpId,pmids).sexSpecific(MpSex.FEMALE);
     MpAnnotation annot = builder.build();
     String expected = "MP:123FEMALE_SPECIFIC_ABNORMAL";
