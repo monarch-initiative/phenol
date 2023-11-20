@@ -17,9 +17,9 @@ import java.util.*;
 class StaticCsrArray<T> {
 
   private final int[] indptr;
-  private final T[] data;
+  private final List<T> data;
 
-  StaticCsrArray(int[] indptr, T[] data) {
+  StaticCsrArray(int[] indptr, List<T> data) {
     this.indptr = Util.checkSequenceOfNonNegativeInts(indptr);
     this.data = data;
   }
@@ -28,7 +28,7 @@ class StaticCsrArray<T> {
     return indptr;
   }
 
-  T[] getData() {
+  List<T> getData() {
     return data;
   }
 
@@ -61,11 +61,11 @@ class StaticCsrArray<T> {
    */
   private static class CsrArrayIterator<T> implements Iterator<T> {
 
-    private final T[] data;
+    private final List<T> data;
     private int cursor;
     private final int end;
 
-    private CsrArrayIterator(T[] data,
+    private CsrArrayIterator(List<T> data,
                              int start,
                              int end) {
       this.data = data;
@@ -82,7 +82,7 @@ class StaticCsrArray<T> {
     @Override
     public T next() {
       try {
-        return data[cursor++];
+        return data.get(cursor++);
       } catch (IndexOutOfBoundsException e) {
         throw new NoSuchElementException();
       }

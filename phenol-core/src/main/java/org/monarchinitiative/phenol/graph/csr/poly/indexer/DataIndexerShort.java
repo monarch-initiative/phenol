@@ -2,8 +2,6 @@ package org.monarchinitiative.phenol.graph.csr.poly.indexer;
 
 import org.monarchinitiative.phenol.graph.csr.poly.DataIndexer;
 
-import java.util.function.IntFunction;
-
 public class DataIndexerShort implements DataIndexer<Short> {
 
   public static final DataIndexerShort INSTANCE = new DataIndexerShort();
@@ -16,18 +14,13 @@ public class DataIndexerShort implements DataIndexer<Short> {
   }
 
   @Override
-  public Short setNthSlot(Short previous, int n) {
+  public Short set(Short previous, int n) {
     return (short) (previous | (1 << n));
   }
 
   @Override
   public boolean isSet(Short value, int n) {
     return (value & (1 << n)) > 0;
-  }
-
-  @Override
-  public IntFunction<Short[]> createArray() {
-    return Short[]::new;
   }
 
   @Override

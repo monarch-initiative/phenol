@@ -1,5 +1,7 @@
 package org.monarchinitiative.phenol.graph.csr.poly;
 
+import java.util.List;
+
 /**
  * Some test data for testing the CSR matrix logic.
  */
@@ -17,7 +19,7 @@ class CsrDatasets {
     return new CsrData<>(
       new int[]{0, 4, 8, 12, 16},
       new int[]{0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
-      new Integer[]{100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130}
+      List.of(100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130)
     );
   }
 
@@ -33,7 +35,7 @@ class CsrDatasets {
     return new CsrData<>(
       new int[]{0, 2, 3, 4, 6},
       new int[]{0, 3, 1, 2, 0, 3},
-      new Integer[]{1, 2, 3, 4, 5, 6}
+      List.of(1, 2, 3, 4, 5, 6)
     );
   }
 
@@ -48,7 +50,7 @@ class CsrDatasets {
     return new CsrData<>(
       new int[]{0, 0, 0, 0},
       new int[]{},
-      new Integer[]{}
+      List.of()
     );
   }
 
@@ -62,7 +64,7 @@ class CsrDatasets {
     return new CsrData<>(
       new int[]{0, 2, 5},
       new int[]{1, 3, 0, 2, 3},
-      new Integer[]{1, 2, 3, 4, 5}
+      List.of(1, 2, 3, 4, 5)
     );
   }
 

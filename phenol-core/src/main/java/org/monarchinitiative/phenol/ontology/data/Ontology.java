@@ -142,12 +142,7 @@ public interface Ontology extends MinimalOntology, Serializable {
    *
    * @param subOntologyRoot {@link TermId} to use as root of sub ontology.
    * @return Freshly created sub ontology.
-   * @deprecated the method's purpose is questionable, it is non-trivial to implement, and it is very likely that all
-   * the intended functionality can be implemented by working with iterators and other methods of the {@linkplain MinimalOntology}.
-   * The method will be removed <em>without replacement</em> in <em>3.0.0</em>.
    */
-  // REMOVE(v3.0.0)
-  @Deprecated(forRemoval = true, since = "2.0.2")
   Ontology subOntology(TermId subOntologyRoot);
 
 

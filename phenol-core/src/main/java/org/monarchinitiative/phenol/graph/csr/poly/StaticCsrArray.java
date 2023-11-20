@@ -18,9 +18,9 @@ public class StaticCsrArray<T> {
 
   private final int[] indptr;
   private final int[] indices;
-  private final T[] data;
+  private final List<T> data;
 
-  public StaticCsrArray(int[] indptr, int[] indices, T[] data) {
+  public StaticCsrArray(int[] indptr, int[] indices, List<T> data) {
     this.indptr = Util.checkSequenceOfNonNegativeInts(indptr);
     this.indices = Util.checkSequenceOfNonNegativeInts(indices);
     this.data = data;
@@ -34,7 +34,7 @@ public class StaticCsrArray<T> {
     return indices;
   }
 
-  T[] data() {
+  List<T> data() {
     return data;
   }
 
@@ -92,7 +92,7 @@ public class StaticCsrArray<T> {
       while (start < end) {
         int colIdx = indices[start];
         // We can increment `start` because this is its last use in the loop.
-        if (predicate.test(data[start++]))
+        if (predicate.test(data.get(start++)))
           return colIdx;
       }
 

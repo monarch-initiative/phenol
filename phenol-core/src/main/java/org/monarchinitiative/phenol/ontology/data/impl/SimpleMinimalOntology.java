@@ -1,6 +1,7 @@
 package org.monarchinitiative.phenol.ontology.data.impl;
 
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 import org.monarchinitiative.phenol.graph.OntologyGraphBuilder;
@@ -112,6 +113,48 @@ public class SimpleMinimalOntology implements MinimalOntology {
   @Override
   public Collection<Term> getTerms() {
     return terms;
+  }
+
+  @Override
+  public MinimalOntology subOntology(TermId subOntologyRoot) {
+    if (subOntologyRoot.equals(getRootTermId()))
+      return this;
+
+    if (!containsTermId(subOntologyRoot))
+        throw new PhenolRuntimeException(String.format("%s is not in the ontology", subOntologyRoot.getValue()));
+
+    OntologyGraph<TermId> subGraph = ontologyGraph.extractSubgraph(subOntologyRoot);
+
+    List<Term> terms = new ArrayList<>();
+    Map<TermId, Term> termMap = new HashMap<>();
+    int all = 0, obsolete = 0;
+    for (TermId termId : subGraph) {
+      Optional<Term> term = termForTermId(termId);
+      if (term.isPresent()) {
+        Term t = term.get();
+        terms.add(t);
+        termMap.put(termId, t);
+
+        if (t.isObsolete())
+          obsolete++;
+
+        all++;
+      }
+    }
+
+    // TODO - implement filtering
+    RelationshipContainer relationships = this.relationships;
+
+    TermIdCount termIdCount = new TermIdCount(all, obsolete, all - obsolete);
+
+    SortedMap<String, String> metaInfo = updateMetaInfo(subOntologyRoot, this.metaInfo);
+    return new SimpleMinimalOntology(subGraph, terms, termMap, relationships, metaInfo, termIdCount);
+  }
+
+  private static SortedMap<String, String> updateMetaInfo(TermId subOntologyRoot, SortedMap<String, String> original) {
+    SortedMap<String, String> metaBuilder = new TreeMap<>(original);
+    metaBuilder.put("provenance", String.format("Ontology created as a subset from original ontology with root %s", subOntologyRoot.getValue()));
+    return Collections.unmodifiableSortedMap(metaBuilder);
   }
 
   @Override

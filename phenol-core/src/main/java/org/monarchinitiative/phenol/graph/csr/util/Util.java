@@ -9,8 +9,8 @@ import java.util.*;
 public class Util {
   private Util(){}
 
-  public static <T> int getIndexOfUsingBinarySearch(T node, T[] nodes, Comparator<T> comparator) {
-    int idx = Arrays.binarySearch(nodes, node, comparator);
+  public static <T> int getIndexOfUsingBinarySearch(T node, List<T> nodes, Comparator<T> comparator) {
+    int idx = Collections.binarySearch(nodes, node, comparator);
     if (idx >= 0)
       return idx;
     else
@@ -46,7 +46,7 @@ public class Util {
    * (have a relationship with) the node represented by the row under the construction.
    * Here we prepare a mapping from the row index to a list of all adjacent edges.
    */
-  public static Map<Integer, List<OntologyGraphEdge<TermId>>> findAdjacentEdges(TermId[] nodes,
+  public static Map<Integer, List<OntologyGraphEdge<TermId>>> findAdjacentEdges(List<TermId> nodes,
                                                                                 Collection<? extends OntologyGraphEdge<TermId>> edges) {
     Map<Integer, List<OntologyGraphEdge<TermId>>> data = new HashMap<>();
 

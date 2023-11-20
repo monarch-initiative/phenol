@@ -45,7 +45,7 @@ class CsrRowBuilder<T> {
     }
 
     T val = values.remove(workingIndex);
-    T updated = indexer.setNthSlot(val, n);
+    T updated = indexer.set(val, n);
 
     // store
     if (values.isEmpty())

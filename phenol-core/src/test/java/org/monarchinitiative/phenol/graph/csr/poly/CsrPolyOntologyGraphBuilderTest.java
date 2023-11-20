@@ -33,7 +33,8 @@ public class CsrPolyOntologyGraphBuilderTest {
       StaticCsrArray<Byte> adjacencyMatrix = graph.adjacencyMatrix();
       assertThat(adjacencyMatrix.indptr(), equalTo(new int[]{0, 3, 5, 7, 9, 13, 14, 15, 16, 17, 20}));
       assertThat(adjacencyMatrix.indices(), equalTo(new int[]{1, 2, 9, 0, 3, 0, 3, 1, 2, 5, 6, 7, 9, 4, 4, 4, 9, 0, 4, 8}));
-      assertThat(adjacencyMatrix.data(), equalTo(new byte[]{2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2}));
+      List<Byte> expected = Arrays.asList(new Byte[]{2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2});
+      assertThat(adjacencyMatrix.data(), equalTo(expected));
     }
   }
 
@@ -65,8 +66,7 @@ public class CsrPolyOntologyGraphBuilderTest {
         2,
         3,
         9}));
-      assertThat(adjacencyMatrix.data(), equalTo(new byte[]{
-        0b10, 0b10, 0b01,
+      List<Byte> expected = Arrays.asList(new Byte[]{0b10, 0b10, 0b01,
         0b1, 0b10,
         0b01, 0b10, 0b1000,
         0b1, 0b1, 0b1000,
@@ -78,7 +78,8 @@ public class CsrPolyOntologyGraphBuilderTest {
         0b10, 0b10, 0b10, 0b1000,
         0b100,
         0b100,
-        0b100}));
+        0b100});
+      assertThat(adjacencyMatrix.data(), equalTo(expected));
     }
 
   }

@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.ontology.data.impl;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -103,6 +104,26 @@ public class SimpleMinimalOntologyTest {
       assertThat(SIMPLE_MINIMAL_ONTOLOGY.getTerms().stream().map(Term::id).collect(Collectors.toList()),
         containsInAnyOrder(T1, T01, T010, T011, T0110, T02, T020, T021, T022, T03));
       assertThat(SIMPLE_MINIMAL_ONTOLOGY.getTerms().stream().noneMatch(Term::isObsolete), equalTo(true));
+    }
+
+    @Test
+    public void subOntology() {
+      MinimalOntology subOntology = SIMPLE_MINIMAL_ONTOLOGY.subOntology(T02);
+
+      assertThat(subOntology.getRootTermId(), equalTo(T02));
+      assertThat(subOntology.graph().root(), equalTo(T02));
+
+      List<TermId> subTerms = subOntology.getTerms().stream()
+        .map(Term::id)
+        .sorted()
+        .collect(Collectors.toList());
+      assertThat(subTerms, equalTo(List.of(T02, T020, T021, T022)));
+
+      // TODO - test relationships
+
+      assertThat(subOntology.getMetaInfo(), equalTo(Map.of(
+        "provenance", "Ontology created as a subset from original ontology with root HP:02",
+        "release", "1.2.3")));
     }
 
   }
