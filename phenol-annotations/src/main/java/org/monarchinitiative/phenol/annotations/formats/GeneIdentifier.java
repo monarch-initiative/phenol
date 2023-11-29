@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.monarchinitiative.phenol.ontology.data.Identified;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -22,6 +23,7 @@ public class GeneIdentifier implements Identified {
 
   /** A CURIE for the gene, such as NCBIGene:3949 */
   @Override
+  @JsonGetter
   public TermId id() {
     return id;
   }
@@ -29,6 +31,7 @@ public class GeneIdentifier implements Identified {
   /**
    * @return the symbol for the gene, e.g., LDLR
    */
+  @JsonGetter
   public String symbol() {
     return symbol;
   }
