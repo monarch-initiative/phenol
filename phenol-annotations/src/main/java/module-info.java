@@ -6,6 +6,7 @@ module org.monarchinitiative.phenol.annotations {
 
   requires java.xml;
   requires org.slf4j;
+  requires com.fasterxml.jackson.annotation;
 
     /*                                             Exports                                                              */
   exports org.monarchinitiative.phenol.annotations.analysis;
