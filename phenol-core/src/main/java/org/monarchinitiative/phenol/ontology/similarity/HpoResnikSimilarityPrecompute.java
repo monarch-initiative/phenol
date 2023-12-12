@@ -37,6 +37,8 @@ public class HpoResnikSimilarityPrecompute {
       List<TermId> list = hpo.graph().getDescendantsStream(topTerm, true)
         .distinct()
         .collect(Collectors.toList());
+      hpo.termForTermId(topTerm)
+        .ifPresent(t -> LOGGER.info("Working on {} [{}]: {} descendants", t.getName(), t.id().getValue(), list.size()));
       for (int i = 0; i < list.size(); i++) {
         // start the second iteration at i to get self-similarity
         for (int j = i; j < list.size(); j++) {
