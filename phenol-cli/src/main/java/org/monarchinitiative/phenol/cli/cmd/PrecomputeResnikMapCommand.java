@@ -7,10 +7,10 @@ import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaderOptions;
 import org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoaders;
 import org.monarchinitiative.phenol.cli.demo.MicaCalculator;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarity;
+import org.monarchinitiative.phenol.ontology.similarity.HpoResnikSimilarityPrecompute;
 import org.monarchinitiative.phenol.ontology.similarity.TermPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class PrecomputeResnikMapCommand implements Callable<Integer> {
   @Override
   public Integer call() throws Exception {
     LOGGER.info("Loading HPO from {}", hpoPath.toAbsolutePath());
-    Ontology hpo = OntologyLoader.loadOntology(hpoPath.toFile());
+    MinimalOntology hpo = MinimalOntologyLoader.loadOntology(hpoPath.toFile());
 
     LOGGER.info("Loading HPO annotations from {}", hpoaPath.toAbsolutePath());
     HpoDiseaseLoader loader = HpoDiseaseLoaders.defaultLoader(hpo, HpoDiseaseLoaderOptions.defaultOptions());
@@ -81,14 +81,13 @@ public class PrecomputeResnikMapCommand implements Callable<Integer> {
     return 0;
   }
 
-  private Map<TermId, Double> calculateTermToIc(Ontology hpo, HpoDiseases diseases) {
+  private Map<TermId, Double> calculateTermToIc(MinimalOntology hpo, HpoDiseases diseases) {
     MicaCalculator micaCalculator = new MicaCalculator(hpo, assumeAnnotated);
     return micaCalculator.calculateMica(diseases).termToIc();
   }
 
-  private static Map<TermPair, Double> assignMicaToTermPairs(Ontology hpo, Map<TermId, Double> termToIc) {
-    HpoResnikSimilarity similarity = new HpoResnikSimilarity(hpo, termToIc);
-    return similarity.getTermPairResnikSimilarityMap();
+  private static Map<TermPair, Double> assignMicaToTermPairs(MinimalOntology hpo, Map<TermId, Double> termToIc) {
+    return HpoResnikSimilarityPrecompute.precomputeSimilaritiesForTermPairs(hpo, termToIc);
   }
 
   private void writeTermPairMap(Map<TermPair, Double> termPairResnikSimilarityMap,
