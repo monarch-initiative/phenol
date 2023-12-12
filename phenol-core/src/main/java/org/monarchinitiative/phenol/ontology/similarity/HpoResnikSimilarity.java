@@ -26,8 +26,9 @@ public class HpoResnikSimilarity implements PairwiseSimilarity {
   }
 
   /**
-   * @deprecated use {@link #from(MinimalOntology, Map)} instead.
+   * @deprecated scheduled for removal in 3.0.0. Use {@link #from(MinimalOntology, Map)} instead.
    */
+  // REMOVE: 3.0.0
   @Deprecated(forRemoval = true, since = "2.0.5")
   public HpoResnikSimilarity(MinimalOntology hpo, Map<TermId, Double> termToIc) {
     this(HpoResnikSimilarityPrecompute.precomputeSimilaritiesForTermPairs(hpo, termToIc));
