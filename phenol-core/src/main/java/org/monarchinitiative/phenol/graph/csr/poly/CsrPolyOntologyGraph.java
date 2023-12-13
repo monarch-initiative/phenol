@@ -58,6 +58,12 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     return root;
   }
 
+  @Override
+  public Set<T> getChildren(T source) {
+    // Not planned to use in production.
+    throw new PhenolRuntimeException("Not implemented");
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -66,6 +72,12 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
     Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, isChildOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
+  }
+
+  @Override
+  public Iterable<T> getDescendants(T source) {
+    // Not planned to use in production.
+    throw new PhenolRuntimeException("Not implemented");
   }
 
   /**
@@ -78,6 +90,12 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
   }
 
+  @Override
+  public Set<T> getParents(T source) {
+    // Not planned to use in production.
+    throw new PhenolRuntimeException("Not implemented");
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -86,6 +104,12 @@ public class CsrPolyOntologyGraph<T, E> implements OntologyGraph<T> {
     int idx = Util.getIndexOfUsingBinarySearch(source, nodes, comparator);
     Supplier<Iterator<Integer>> base = () -> getColsWithRelationship(idx, isParentOf, includeSource);
     return new IterableIteratorWrapper<>(() -> new InfallibleMappingIterator<>(base, this::getNodeForIndex));
+  }
+
+  @Override
+  public Iterable<T> getAncestors(T source) {
+    // Not planned to use in production.
+    throw new PhenolRuntimeException("Not implemented");
   }
 
   /**
