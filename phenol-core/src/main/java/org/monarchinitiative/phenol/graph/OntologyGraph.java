@@ -72,12 +72,12 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend an existing collection with <em>children</em> of the {@code source} node.
+   * Extend a collection with <em>children</em> of the {@code source} node.
    *
    * @param source        node whose children we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param collection    the existing collection.
+   * @param collection    the collection to extend.
    */
   default void extendWithChildren(T source,
                                   boolean includeSource,
@@ -156,13 +156,13 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend a new instance of {@link C} obtained from the {@code supplier} with <em>descendants</em>
+   * Extend an instance of {@link C} obtained from the {@code supplier} with <em>descendants</em>
    * of the {@code source} node.
    *
    * @param source        node whose descendants we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param supplier      the existing collection.
+   * @param supplier      the collection supplier.
    * @param <C>           the desired collection type
    */
   default <C extends Collection<? super T>> C extendWithDescendants(T source,
@@ -174,12 +174,12 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend an existing collection with <em>descendants</em> of the {@code source} node.
+   * Extend a collection with <em>descendants</em> of the {@code source} node.
    *
    * @param source        node whose descendants we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param collection    the existing collection.
+   * @param collection    the collection to extend.
    */
   default void extendWithDescendants(T source,
                                      boolean includeSource,
@@ -187,6 +187,21 @@ public interface OntologyGraph<T> extends Iterable<T> {
     if (includeSource)
       collection.add(source);
     getDescendants(source).forEach(collection::add);
+  }
+
+  /**
+   * Extend a collection with <em>descendants</em> of the {@code source} node.
+   *
+   * @param sources       an iterable of nodes whose descendants we are interested in.
+   * @param includeSource {@code true} if the {@code source} nodes should be included in the {@linkplain Set}
+   *                      or {@code false} otherwise.
+   * @param collection    the set to extend with the descendants.
+   */
+  default void extendMultipleWithDescendants(Iterable<T> sources,
+                                             boolean includeSource,
+                                             Set<? super T> collection) {
+    for (T source : sources)
+      extendWithDescendants(source, includeSource, collection);
   }
 
   /**
@@ -278,12 +293,12 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend an existing collection with <em>parents</em> of the {@code source} node.
+   * Extend a collection with <em>parents</em> of the {@code source} node.
    *
    * @param source        node whose parents we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param collection        the existing collection.
+   * @param collection    the collection to extend.
    */
   default void extendWithParents(T source,
                                  boolean includeSource,
@@ -359,13 +374,13 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend a new instance of {@link C} obtained from the {@code supplier} with <em>ancestors</em>
+   * Extend an instance of {@link C} obtained from the {@code supplier} with <em>ancestors</em>
    * of the {@code source} node.
    *
    * @param source        node whose ancestors we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param supplier      the existing collection.
+   * @param supplier      the collection supplier.
    * @param <C>           the desired collection type
    */
   default <C extends Collection<? super T>> C extendWithAncestors(T source,
@@ -377,12 +392,12 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
-   * Extend an existing collection with <em>ancestors</em> of the {@code source} node.
+   * Extend a collection with <em>ancestors</em> of the {@code source} node.
    *
    * @param source        node whose ancestors we are interested in.
    * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Collection}
    *                      or {@code false} otherwise.
-   * @param collection        the existing collection.
+   * @param collection    the collection to extend.
    */
   default void extendWithAncestors(T source,
                                    boolean includeSource,
@@ -390,6 +405,21 @@ public interface OntologyGraph<T> extends Iterable<T> {
     if (includeSource)
       collection.add(source);
     getAncestors(source).forEach(collection::add);
+  }
+
+  /**
+   * Extend a set with <em>ancestors</em> of the {@code source} node.
+   *
+   * @param sources       an iterable of nodes whose ancestors we are interested in.
+   * @param includeSource {@code true} if the {@code source} should be included in the {@linkplain Set}
+   *                      or {@code false} otherwise.
+   * @param collection    the set to extend with the ancestors.
+   */
+  default void extendMultipleWithAncestors(Iterable<T> sources,
+                                           boolean includeSource,
+                                           Set<? super T> collection) {
+    for (T source : sources)
+      extendWithAncestors(source, includeSource, collection);
   }
 
   /**
