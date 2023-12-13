@@ -536,6 +536,25 @@ public interface OntologyGraph<T> extends Iterable<T> {
   }
 
   /**
+   * Return {@code true} if the {@code left} and {@code right} nodes are sibling nodes, i.e. if they share at least
+   * one parent node and {@code false} otherwise.
+   * <p>
+   * Note, a term is not its own sibling.
+   */
+  default boolean nodesAreSiblings(T left, T right) {
+    if (left.equals(right))
+      return false;
+
+    for (T leftParent : getParents(left)) {
+      for (T rightParent : getParents(right)) {
+        if (leftParent.equals(rightParent))
+          return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Get the subgraph with {@code subRoot} as the new root node.
    */
   OntologyGraph<T> extractSubgraph(T subRoot);

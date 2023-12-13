@@ -385,6 +385,27 @@ public abstract class OntologyGraphTest {
       assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+      "HP:01,  HP:02,  true",
+
+      "HP:020, HP:021, true",
+      "HP:021, HP:022, true",
+      "HP:022, HP:020, true",
+      "HP:03,  HP:01,  true",
+      "HP:03,  HP:02,  true",
+
+      // node is not its own sibling.
+      "HP:1,   HP:1,   false",
+      "HP:01,  HP:01,  false",
+
+      "HP:020, HP:02,  false",
+      "HP:020, HP:01,  false",
+      "HP:020, HP:010, false",
+    })
+    public void nodesAreSiblings(TermId left, TermId right, boolean expected) {
+      assertThat(graph.nodesAreSiblings(left, right), equalTo(expected));
+    }
   }
 
   /**
