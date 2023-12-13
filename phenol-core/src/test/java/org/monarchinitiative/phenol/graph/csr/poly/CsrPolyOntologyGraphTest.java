@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.graph.csr.poly;
 
+import org.junit.jupiter.api.Disabled;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 import org.monarchinitiative.phenol.graph.OntologyGraphEdges;
 import org.monarchinitiative.phenol.graph.OntologyGraphTest;
@@ -9,6 +10,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 /**
  * Check that we can use {@link CsrPolyOntologyGraph} as an {@link OntologyGraph}.
  */
+@Disabled("CsrPolyOntologyGraph is deprecated")
 public class CsrPolyOntologyGraphTest extends OntologyGraphTest {
 
 //  private static final byte C = 0b01; // child

@@ -54,12 +54,28 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   }
 
   @Override
+  public Set<T> getChildren(T source) {
+    int index = getNodeIdx(source);
+    return children.getOutgoingNodes(index);
+  }
+
+  @Override
   public Iterable<T> getChildren(T source, boolean includeSource) {
+    // TODO - remove when the parent is removed
     return getImmediateNeighbors(children, source, includeSource);
   }
 
   @Override
+  public Iterable<T> getDescendants(T source) {
+    // Check if `source` is in the graph.
+    int intentionallyUnused = getNodeIdx(source);
+
+    return new IterableIteratorWrapper<>(() -> new TraversingIterator<>(source, this::getChildren));
+  }
+
+  @Override
   public Iterable<T> getDescendants(T source, boolean includeSource) {
+    // TODO - remove when the parent is removed
     // Check if `source` is in the graph.
     int intentionallyUnused = getNodeIdx(source);
 
@@ -67,16 +83,48 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   }
 
   @Override
+  public void extendWithDescendants(T source,
+                                    boolean includeSource,
+                                    Collection<? super T> collection) {
+    // TODO: a candidate for better implementation
+    OntologyGraph.super.extendWithDescendants(source, includeSource, collection);
+  }
+
+  @Override
+  public Set<T> getParents(T source) {
+    int index = getNodeIdx(source);
+    return parents.getOutgoingNodes(index);
+  }
+
+  @Override
   public Iterable<T> getParents(T source, boolean includeSource) {
+    // TODO - remove when the parent is removed
     return getImmediateNeighbors(parents, source, includeSource);
   }
 
   @Override
+  public Iterable<T> getAncestors(T source) {
+    // Check if `source` is in the graph.
+    int intentionallyUnused = getNodeIdx(source);
+
+    return new IterableIteratorWrapper<>(() -> new TraversingIterator<>(source, this::getParents));
+  }
+
+  @Override
   public Iterable<T> getAncestors(T source, boolean includeSource) {
+    // TODO - remove when the parent is removed
     // Check if `source` is in the graph.
     int intentionallyUnused = getNodeIdx(source);
 
     return new IterableIteratorWrapper<>(() -> new TraversingIterator<>(source, src -> getParents(src, includeSource)));
+  }
+
+  @Override
+  public void extendWithAncestors(T source,
+                                  boolean includeSource,
+                                  Collection<? super T> collection) {
+    // TODO: a candidate for better implementation
+    OntologyGraph.super.extendWithAncestors(source, includeSource, collection);
   }
 
   private Iterable<T> getImmediateNeighbors(StaticCsrArray<T> array,
