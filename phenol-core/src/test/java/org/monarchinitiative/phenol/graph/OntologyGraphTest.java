@@ -50,7 +50,7 @@ public abstract class OntologyGraphTest {
       "HP:03, ''",
     })
     public void getChildren(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getChildren(source, false);
+      Iterable<TermId> iterable = graph.getChildren(source);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -63,7 +63,7 @@ public abstract class OntologyGraphTest {
       "HP:03, HP:03",
     })
     public void getChildrenIncludingTheSource(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getChildren(source, true);
+      Collection<TermId> iterable = graph.extendWithChildren(source, true);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -71,7 +71,7 @@ public abstract class OntologyGraphTest {
 
     @Test
     public void getChildrenUnknownSource() {
-      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getChildren(UNKNOWN, false));
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getChildren(UNKNOWN));
       assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
@@ -158,7 +158,7 @@ public abstract class OntologyGraphTest {
       "HP:03,   ''",
     })
     public void getDescendants(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getDescendants(source, false);
+      Iterable<TermId> iterable = graph.getDescendants(source);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -179,7 +179,7 @@ public abstract class OntologyGraphTest {
       "HP:03,   HP:03",
     })
     public void getDescendantsIncludingTheSource(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getDescendants(source, true);
+      Iterable<TermId> iterable = graph.extendWithDescendants(source, true);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -187,7 +187,7 @@ public abstract class OntologyGraphTest {
 
     @Test
     public void getDescendantsUnknownSource() {
-      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getDescendants(UNKNOWN, false));
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getDescendants(UNKNOWN));
       assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
@@ -204,7 +204,7 @@ public abstract class OntologyGraphTest {
       "HP:0110, HP:010;HP:011",
     })
     public void getParents(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getParents(source, false);
+      Iterable<TermId> iterable = graph.getParents(source);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -218,7 +218,7 @@ public abstract class OntologyGraphTest {
       "HP:0110, HP:0110;HP:010;HP:011",
     })
     public void getParentsIncludingTheSource(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getParents(source, true);
+      Iterable<TermId> iterable = graph.extendWithParents(source, true);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -226,7 +226,7 @@ public abstract class OntologyGraphTest {
 
     @Test
     public void getParentsUnknownSource() {
-      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getParents(UNKNOWN, false));
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getParents(UNKNOWN));
       assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
@@ -279,7 +279,7 @@ public abstract class OntologyGraphTest {
       "HP:03,   HP:1",
     })
     public void getAncestors(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getAncestors(source, false);
+      Iterable<TermId> iterable = graph.getAncestors(source);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -294,7 +294,7 @@ public abstract class OntologyGraphTest {
       "HP:03,   HP:03;HP:1",
     })
     public void getAncestorsIncludingTheSource(TermId source, String payload) {
-      Iterable<TermId> iterable = graph.getAncestors(source, true);
+      Iterable<TermId> iterable = graph.extendWithAncestors(source, true);
       Set<TermId> expected = parsePayload(payload);
 
       iterableContainsTheExpectedItems(iterable, expected);
@@ -331,7 +331,7 @@ public abstract class OntologyGraphTest {
 
     @Test
     public void getAncestorsUnknownSource() {
-      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getAncestors(UNKNOWN, false));
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getAncestors(UNKNOWN));
       assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
     }
 
@@ -476,7 +476,7 @@ public abstract class OntologyGraphTest {
     public void getParents(TermId root) {
       OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
 
-      assertThat(subgraph.getParents(root, false), is(emptyIterableOf(TermId.class)));
+      assertThat(subgraph.getParents(root), is(emptyIterableOf(TermId.class)));
     }
 
     @ParameterizedTest
@@ -497,7 +497,7 @@ public abstract class OntologyGraphTest {
     public void getAncestors(TermId root) {
       OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
 
-      assertThat(subgraph.getAncestors(root, false), is(emptyIterableOf(TermId.class)));
+      assertThat(subgraph.getAncestors(root), is(emptyIterableOf(TermId.class)));
     }
 
     @ParameterizedTest
@@ -519,7 +519,7 @@ public abstract class OntologyGraphTest {
       OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
 
       Set<TermId> expectedIds = parsePayload(expected);
-      iterableContainsTheExpectedItems(subgraph.getChildren(root, false), expectedIds);
+      iterableContainsTheExpectedItems(subgraph.getChildren(root), expectedIds);
     }
 
     @ParameterizedTest
@@ -541,7 +541,7 @@ public abstract class OntologyGraphTest {
       OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
 
       Set<TermId> expectedIds = parsePayload(expected);
-      iterableContainsTheExpectedItems(subgraph.getDescendants(root, false), expectedIds);
+      iterableContainsTheExpectedItems(subgraph.getDescendants(root), expectedIds);
     }
   }
 

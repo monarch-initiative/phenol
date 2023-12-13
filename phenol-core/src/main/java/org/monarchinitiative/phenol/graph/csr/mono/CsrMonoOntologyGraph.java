@@ -85,7 +85,7 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   @Override
   public void extendWithDescendants(T source,
                                     boolean includeSource,
-                                    Collection<? super T> collection) {
+                                    Collection<T> collection) {
     // TODO: a candidate for better implementation
     OntologyGraph.super.extendWithDescendants(source, includeSource, collection);
   }
@@ -122,7 +122,7 @@ public class CsrMonoOntologyGraph<T> implements OntologyGraph<T> {
   @Override
   public void extendWithAncestors(T source,
                                   boolean includeSource,
-                                  Collection<? super T> collection) {
+                                  Collection<T> collection) {
     // TODO: a candidate for better implementation
     OntologyGraph.super.extendWithAncestors(source, includeSource, collection);
   }

@@ -65,8 +65,8 @@ public interface OntologyGraph<T> extends Iterable<T> {
    *                      or {@code false} otherwise.
    * @return the collection with the child nodes.
    */
-  default Collection<? super T> extendWithChildren(T source, boolean includeSource) {
-    Collection<? super T> collection = new ArrayList<>();
+  default Collection<T> extendWithChildren(T source, boolean includeSource) {
+    Collection<T> collection = new ArrayList<>();
     extendWithChildren(source, includeSource, collection);
     return collection;
   }
@@ -81,7 +81,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendWithChildren(T source,
                                   boolean includeSource,
-                                  Collection<? super T> collection) {
+                                  Collection<T> collection) {
     if (includeSource)
       collection.add(source);
     collection.addAll(getChildren(source));
@@ -151,7 +151,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    *                      or {@code false} otherwise.
    * @return a collection with the descendant nodes.
    */
-  default Collection<? super T> extendWithDescendants(T source, boolean includeSource) {
+  default Collection<T> extendWithDescendants(T source, boolean includeSource) {
     return extendWithDescendants(source, includeSource, ArrayList::new);
   }
 
@@ -165,9 +165,9 @@ public interface OntologyGraph<T> extends Iterable<T> {
    * @param supplier      the collection supplier.
    * @param <C>           the desired collection type
    */
-  default <C extends Collection<? super T>> C extendWithDescendants(T source,
-                                                                    boolean includeSource,
-                                                                    Supplier<C> supplier) {
+  default <C extends Collection<T>> C extendWithDescendants(T source,
+                                                            boolean includeSource,
+                                                            Supplier<C> supplier) {
     C collection = supplier.get();
     extendWithDescendants(source, includeSource, collection);
     return collection;
@@ -183,7 +183,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendWithDescendants(T source,
                                      boolean includeSource,
-                                     Collection<? super T> collection) {
+                                     Collection<T> collection) {
     if (includeSource)
       collection.add(source);
     getDescendants(source).forEach(collection::add);
@@ -199,7 +199,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendMultipleWithDescendants(Iterable<T> sources,
                                              boolean includeSource,
-                                             Set<? super T> collection) {
+                                             Set<T> collection) {
     for (T source : sources)
       extendWithDescendants(source, includeSource, collection);
   }
@@ -286,8 +286,8 @@ public interface OntologyGraph<T> extends Iterable<T> {
    *                      or {@code false} otherwise.
    * @return the collection with the parent nodes.
    */
-  default Collection<? super T> extendWithParents(T source, boolean includeSource) {
-    Collection<? super T> collection = new ArrayList<>();
+  default Collection<T> extendWithParents(T source, boolean includeSource) {
+    Collection<T> collection = new ArrayList<>();
     extendWithParents(source, includeSource, collection);
     return collection;
   }
@@ -302,7 +302,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendWithParents(T source,
                                  boolean includeSource,
-                                 Collection<? super T> collection) {
+                                 Collection<T> collection) {
     if (includeSource)
       collection.add(source);
     collection.addAll(getParents(source));
@@ -369,7 +369,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    *                      or {@code false} otherwise.
    * @return a collection with the ancestors nodes.
    */
-  default Collection<? super T> extendWithAncestors(T source, boolean includeSource) {
+  default Collection<T> extendWithAncestors(T source, boolean includeSource) {
     return extendWithAncestors(source, includeSource, ArrayList::new);
   }
 
@@ -383,9 +383,9 @@ public interface OntologyGraph<T> extends Iterable<T> {
    * @param supplier      the collection supplier.
    * @param <C>           the desired collection type
    */
-  default <C extends Collection<? super T>> C extendWithAncestors(T source,
-                                                                  boolean includeSource,
-                                                                  Supplier<C> supplier) {
+  default <C extends Collection<T>> C extendWithAncestors(T source,
+                                                          boolean includeSource,
+                                                          Supplier<C> supplier) {
     C ancestors = supplier.get();
     extendWithAncestors(source, includeSource, ancestors);
     return ancestors;
@@ -401,7 +401,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendWithAncestors(T source,
                                    boolean includeSource,
-                                   Collection<? super T> collection) {
+                                   Collection<T> collection) {
     if (includeSource)
       collection.add(source);
     getAncestors(source).forEach(collection::add);
@@ -417,7 +417,7 @@ public interface OntologyGraph<T> extends Iterable<T> {
    */
   default void extendMultipleWithAncestors(Iterable<T> sources,
                                            boolean includeSource,
-                                           Set<? super T> collection) {
+                                           Set<T> collection) {
     for (T source : sources)
       extendWithAncestors(source, includeSource, collection);
   }
