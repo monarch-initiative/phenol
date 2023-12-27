@@ -7,6 +7,14 @@ latest
 ------
 
 -----
+2.0.5
+-----
+
+- extend `OntologyGraph` with convenience methods
+- audit calculation of Resnik similarity scores
+- use Jackson annotations to describe serialization of `GeneIdentifier`
+
+-----
 2.0.4
 -----
 

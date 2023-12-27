@@ -12,7 +12,7 @@ author = 'Peter N. Robinson, Sebastian Koehler, Manuel Holtgrewe, Sebastian Baue
 # The short X.Y version.
 version = '2.0'
 # The full version, including alpha/beta/rc tags.
-release = '2.0.4'
+release = '2.0.5'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
