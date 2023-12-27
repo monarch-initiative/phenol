@@ -3,7 +3,9 @@ package org.monarchinitiative.phenol.cli.demo;
 import org.monarchinitiative.phenol.annotations.constants.hpo.HpoSubOntologyRootTermIds;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotatedItem;
 import org.monarchinitiative.phenol.annotations.formats.hpo.AnnotatedItemContainer;
-import org.monarchinitiative.phenol.ontology.data.*;
+import org.monarchinitiative.phenol.ontology.data.Identified;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +45,7 @@ public class MicaCalculator {
     Set<TermId> termsAndAncestorsBuilder = new HashSet<>();
     for (AnnotatedItem item: itemContainer) {
       for (Identified annotation : item.annotations()) {
-        TermId id = annotation.id();
-        for (TermId ancestor : hpo.graph().getAncestors(id, true)) {
-          termsAndAncestorsBuilder.add(ancestor);
-        }
+        hpo.graph().extendWithAncestors(annotation.id(), true, termsAndAncestorsBuilder);
       }
 
       for (TermId tid : termsAndAncestorsBuilder) {
