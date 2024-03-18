@@ -24,6 +24,7 @@ import java.util.*;
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.7
  */
+@Deprecated(since = "3.0.0", forRemoval = true)
 public class HpoCategoryMap {
   Logger LOGGER = LoggerFactory.getLogger(HpoCategoryMap.class);
   /**

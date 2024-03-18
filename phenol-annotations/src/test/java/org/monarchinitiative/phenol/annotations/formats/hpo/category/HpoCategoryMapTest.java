@@ -15,6 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Deprecated
 @Disabled("Until the non-deterministic behavior of HpoCategoryMap is fixed")
 public class HpoCategoryMapTest {
 
@@ -134,6 +135,24 @@ public class HpoCategoryMapTest {
     catlist.forEach(System.err::println);
     assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
     assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(INHERITANCE_ID)));
+  }
+
+  /**
+   * Add terms from INHERITANCE and from LIMBS_ID and CATEGORY match
+   */
+  @Test
+  public void testCategoryExact(){
+    HpoCategoryMap categoryMap = new HpoCategoryMap();
+    TermId arachnodactyly = TermId.of("HP:0001166");
+    TermId limbs = TermId.of("HP:0040064");
+    categoryMap.addAnnotatedTerm(arachnodactyly, ontology);
+    categoryMap.addAnnotatedTerm(limbs, ontology);
+    List<HpoCategory> catlist = categoryMap.getActiveCategoryList();
+    // The terms should go to two different HpoCategory objects
+    assertEquals(1, catlist.size());
+    // Check that we LIMBS
+    catlist.forEach(System.err::println);
+    assertTrue(catlist.stream().anyMatch(cat -> cat.id().equals(LIMBS_ID)));
   }
 
   /**
