@@ -14,10 +14,11 @@ import java.util.List;
  * <p>The main use case for this class is to display a set of Terms that descend from this Category. The class
  * is intended to be used with HpoCategoryMap to display a set of terms that can belong to </p>
  *
+ * @deprecated targeted for removal in <em>3.0.0</em>, use {@link HpoCategoryLookup} instead.
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.14
  */
-@Deprecated(since = "3.0.0", forRemoval = true)
+@Deprecated(since = "2.0.6", forRemoval = true)
 public class HpoCategory implements Identified {
   /**
    * The TermId of the HPO term that corresponds to this category. For example, the HPO Term Abnormality of the
