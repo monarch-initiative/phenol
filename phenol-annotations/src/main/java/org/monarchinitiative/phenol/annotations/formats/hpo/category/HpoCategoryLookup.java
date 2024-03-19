@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 public class HpoCategoryLookup {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(HpoCategoryLookup.class);
-
   private final OntologyGraph<TermId> graph;
 
   private final Term[] categories;
