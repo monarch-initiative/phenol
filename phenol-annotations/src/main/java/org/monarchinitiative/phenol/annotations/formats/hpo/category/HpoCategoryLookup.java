@@ -33,7 +33,6 @@ public class HpoCategoryLookup {
   public Optional<Term> getPrioritizedCategory(TermId termId) {
     List<Term> categories = getCategoriesForId(termId);
     if(categories.isEmpty()){
-      LOGGER.warn("Could not find category for {}", termId);
       return Optional.empty();
     } else if (categories.stream().anyMatch(t -> t.equals(HpoCategories.NEOPLASM))) {
       return Optional.of(HpoCategories.NEOPLASM);

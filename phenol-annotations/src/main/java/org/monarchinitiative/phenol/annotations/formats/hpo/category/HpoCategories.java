@@ -45,4 +45,5 @@ public class HpoCategories {
     return categories;
   }
 
+  private HpoCategories() {}
 }
