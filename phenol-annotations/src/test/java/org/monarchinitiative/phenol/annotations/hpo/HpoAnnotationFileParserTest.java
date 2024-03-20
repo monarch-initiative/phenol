@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * See also {@link HpoAnnotationModelTest}. This class tests merging od phenotype entries and calculation of the
  * correct frequencies.
  */
-@Disabled("Disabled until we have a toy hpo.json")
+@Disabled("Until deprecation")
 class HpoAnnotationFileParserTest {
 
   private static HpoAnnotationModel smallFileOmim123456;

@@ -21,9 +21,11 @@ import java.util.*;
  * that include at least one HPO term used for annotation.
  * </p>
  *
+ * @deprecated targeted for removal in <em>3.0.0</em>, use {@link HpoCategoryLookup} instead.
  * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  * @version 0.1.7
  */
+@Deprecated(since = "2.0.6", forRemoval = true)
 public class HpoCategoryMap {
   Logger LOGGER = LoggerFactory.getLogger(HpoCategoryMap.class);
   /**

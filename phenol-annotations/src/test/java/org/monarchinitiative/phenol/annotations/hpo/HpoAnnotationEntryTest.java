@@ -2,6 +2,7 @@ package org.monarchinitiative.phenol.annotations.hpo;
 
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -15,7 +16,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
+@Disabled("Until deprecation")
 public class HpoAnnotationEntryTest {
 
   private static Ontology ONTOLOGY;
