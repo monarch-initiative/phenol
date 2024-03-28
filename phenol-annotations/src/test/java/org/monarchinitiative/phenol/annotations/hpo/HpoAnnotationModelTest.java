@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Disabled until we have a toy hpo.json")
+@Disabled("Until deprecation")
 class HpoAnnotationModelTest {
     private static HpoAnnotationModel v2sf=null;
 

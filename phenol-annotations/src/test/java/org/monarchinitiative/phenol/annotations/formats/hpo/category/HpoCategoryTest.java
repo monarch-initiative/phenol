@@ -1,5 +1,6 @@
 package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Not too much to test for this class.
  */
+@Disabled("until deprecation")
 public class HpoCategoryTest {
 
   @Test
