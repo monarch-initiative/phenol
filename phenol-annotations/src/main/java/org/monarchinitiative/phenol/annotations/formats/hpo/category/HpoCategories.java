@@ -3,6 +3,13 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+/**
+ * Static utility class for providing HPO categories for using with {@link HpoCategoryLookup}.
+ *
+ * @author Daniel Danis
+ * @author Mike Gargano
+ * @since 2.1.0
+ */
 public class HpoCategories {
   public static final Term INHERITANCE = Term.of(TermId.of("HP:0000005"), "Inheritance");
   /** Clinical course includes ONSET, Mortality, temporal, and pace of progression. */
@@ -40,7 +47,11 @@ public class HpoCategories {
     MUSCLE, NERVOUS_SYSTEM, RESPIRATORY, SKELETAL, THORACIC_CAVITY,
     VOICE, GROWTH, CONSTITUTIONAL, NEOPLASM};
 
-
+  /**
+   * Get an array of terms that represent the default HPO categories.
+   *
+   * @return the term array
+   */
   public static Term[] preset(){
     return categories;
   }

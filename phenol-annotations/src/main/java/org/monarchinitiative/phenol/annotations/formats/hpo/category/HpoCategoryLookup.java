@@ -3,8 +3,6 @@ package org.monarchinitiative.phenol.annotations.formats.hpo.category;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +10,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Assign an HPO term into a broader group represented by a high-level HPO term.
+ * <p>
+ * If a term can be assigned into more than one groups, the first group is chosen.
+ * <p>
+ * In case of one of groups corresponding to a <a href="https://hpo.jax.org/app/browse/term/HP:0002664">Neoplasm</a>,
+ * the neoplasm is chosen.
+ *
+ * @author Daniel Danis
+ * @author Mike Gargano
+ * @since 2.1.0
+ */
 public class HpoCategoryLookup {
 
   private final OntologyGraph<TermId> graph;
@@ -25,8 +35,9 @@ public class HpoCategoryLookup {
 
   /**
    * This finds the "best" category for a term. The categories do not cover all terms.
-   * @param termId
-   * @return the Term for a category
+   *
+   * @param termId of the target term
+   * @return an optional with a {@link Term} corresponding to  a category or an
    */
   public Optional<Term> getPrioritizedCategory(TermId termId) {
     List<Term> categories = getCategoriesForId(termId);
