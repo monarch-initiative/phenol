@@ -7,6 +7,13 @@ latest
 ------
 
 -----
+2.1.0
+-----
+
+- add `HpoCategoryLookup` to bin HPO terms into broad categories
+
+
+-----
 2.0.5
 -----
 
