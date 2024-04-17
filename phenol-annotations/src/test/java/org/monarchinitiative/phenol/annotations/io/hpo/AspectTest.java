@@ -19,5 +19,6 @@ public class AspectTest {
     assertThat(Aspect.fromTermId(CLINICAL_MODIFIER).get(), equalTo(Aspect.M));
     assertThat(Aspect.fromTermId(PAST_MEDICAL_HISTORY).get(), equalTo(Aspect.H));
     assertThat(Aspect.fromTermId(TermId.of("HP:0000000")).isEmpty(), equalTo(true));
+    assertThat(Aspect.H.toString(), equalTo("H"));
   }
 }
