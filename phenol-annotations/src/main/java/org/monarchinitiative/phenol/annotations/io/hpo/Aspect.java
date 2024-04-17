@@ -21,13 +21,13 @@ public enum Aspect {
   M(CLINICAL_MODIFIER),
   H(PAST_MEDICAL_HISTORY);
 
-  public final TermId termId;
-  private static final Map<String, Aspect> BY_TERMID = new HashMap<>();
+  private final TermId termId;
+  private static final Map<TermId, Aspect> BY_TERMID = new HashMap<>();
 
 
   static {
     for (Aspect e: values()) {
-      BY_TERMID.put(String.valueOf(e.termId), e);
+      BY_TERMID.put(e.termId, e);
     }
   }
 
@@ -53,10 +53,7 @@ public enum Aspect {
   }
 
   public static Optional<Aspect> fromTermId(TermId termId) {
-    if (BY_TERMID.containsKey(termId.toString())){
-      return Optional.of(BY_TERMID.get(termId.toString()));
-    }
-    return Optional.empty();
+    return Optional.ofNullable(BY_TERMID.get(termId));
   }
 
 }
