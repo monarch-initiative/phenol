@@ -2,9 +2,11 @@
 Changelog
 =========
 
-------
-latest
-------
+-----
+2.1.1
+-----
+
+- add *Past medical history* to `Aspect` enum
 
 -----
 2.1.0

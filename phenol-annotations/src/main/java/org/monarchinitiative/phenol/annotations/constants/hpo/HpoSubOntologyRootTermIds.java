@@ -25,5 +25,7 @@ public final class HpoSubOntologyRootTermIds {
   /** {@link TermId} of sub ontology "mode of inheritance" (<code>HP:0000005</code>). */
   public static final TermId MODE_OF_INHERITANCE = TermId.of("HP:0000005");
 
+  /** {@link TermId} of sub ontology Past medical history (<code>HP:0032443</code>). */
+  public static final TermId PAST_MEDICAL_HISTORY = TermId.of("HP:0032443");
   private HpoSubOntologyRootTermIds(){}
 }
