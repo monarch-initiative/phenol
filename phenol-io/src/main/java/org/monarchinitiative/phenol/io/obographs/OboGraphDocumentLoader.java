@@ -13,6 +13,8 @@ import java.nio.file.Path;
  *
  * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
  */
+// REMOVE(3.0.0)
+@Deprecated(forRemoval = true, since = "2.1.2")
 public class OboGraphDocumentLoader {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
