@@ -12,7 +12,7 @@ etc.).
 ```shell
 module load robot/1.8.3
 
-HPO=https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2022-10-05/hp.obo
+HPO=https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-06-25/hp.obo
 wget $HPO
 robot extract --input hp.obo --method BOT --term HP:0001166  convert --output arachnodactyly.hp.obo
 robot extract --input hp.obo --method TOP --term HP:0012823  convert --output clinical-modifier.hp.obo
