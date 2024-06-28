@@ -42,13 +42,13 @@ public class OntologyLoaderHpoTest {
   @Test
   public void testMetadata() {
     Map<String, String> metaInfo = hpo.getMetaInfo();
-    assertThat(metaInfo, hasEntry("release", "2021-06-08"));
-    assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/hp/releases/2021-06-08/hp.json"));
+    assertThat(metaInfo, hasEntry("release", "2024-06-25"));
+    assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/hp/releases/2024-06-25/hp.json"));
   }
 
   @Test
   public void testGetRightNumberOfTerms() {
-    assertEquals(280, hpo.nonObsoleteTermIdCount());
+    assertEquals(533, hpo.nonObsoleteTermIdCount());
   }
 
   @Test
@@ -123,6 +123,6 @@ public class OntologyLoaderHpoTest {
   public void ontologyHasVersion() {
     Optional<String> version = hpo.version();
     assertThat(version.isPresent(), equalTo(true));
-    assertThat(version.get(), equalTo("2021-06-08"));
+    assertThat(version.get(), equalTo("2024-06-25"));
   }
 }

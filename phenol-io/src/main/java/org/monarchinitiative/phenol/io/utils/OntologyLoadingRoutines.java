@@ -1,10 +1,10 @@
 package org.monarchinitiative.phenol.io.utils;
 
+import org.geneontology.obographs.core.io.OgJsonReader;
 import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
 import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class OntologyLoadingRoutines {
         logger.debug("Looks like a JSON file...");
         try {
           bufferedStream.reset();
-          return OboGraphDocumentLoader.loadJson(bufferedStream);
+          return OgJsonReader.readInputStream(bufferedStream);
         } catch (Exception e) {
           throw new PhenolRuntimeException("Error loading JSON", e);
         }

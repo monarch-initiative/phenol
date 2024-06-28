@@ -12,7 +12,7 @@ etc.).
 ```shell
 module load robot/1.8.3
 
-HPO=https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2022-10-05/hp.obo
+HPO=https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-06-25/hp.obo
 wget $HPO
 robot extract --input hp.obo --method BOT --term HP:0001166  convert --output arachnodactyly.hp.obo
 robot extract --input hp.obo --method TOP --term HP:0012823  convert --output clinical-modifier.hp.obo
@@ -43,4 +43,24 @@ robot merge --input arachnodactyly.hp.obo \
 rm *.obo
 ```
 
-This was followed by replacing the top-level `meta` element with the value we see in the file.
+This was followed by few extra steps:
+
+- replace the top-level `meta` element with the value we see in the full HP JSON file
+- insert the following node as the 1st position of the `nodes` list:
+  ```json
+  {
+    "id" : "http://purl.obolibrary.org/obo/HP_0034334",
+    "lbl" : "allelic_requirement",
+    "type" : "PROPERTY",
+    "propertyType" : "ANNOTATION",
+    "meta" : {
+      "basicPropertyValues" : [ {
+       "pred" : "http://purl.org/dc/elements/1.1/date",
+       "val" : "2022-09-04T11:14:13Z"
+      }, {
+       "pred" : "http://purl.org/dc/terms/creator",
+       "val" : "https://orcid.org/0000-0002-0736-9199"
+      } ]
+    }
+  }
+  ```

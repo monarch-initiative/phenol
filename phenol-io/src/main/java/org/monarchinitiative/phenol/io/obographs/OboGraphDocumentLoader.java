@@ -11,8 +11,13 @@ import java.nio.file.Path;
 /**
  * Loads an ontology using the obograph library.
  *
+ * @deprecated use {@link org.geneontology.obographs.core.io.OgJsonReader} instead of <code>OboGraphDocumentLoader</code>.
+ * {@code OboGraphDocumentLoader} will be removed in <em>3.0.0</em>.
  * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
  */
+// REMOVE(3.0.0)
+// Removing this class will remove the last use of `com.fasterxml.jackson` package in `phenol-io`.
+@Deprecated(forRemoval = true, since = "2.1.2")
 public class OboGraphDocumentLoader {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
