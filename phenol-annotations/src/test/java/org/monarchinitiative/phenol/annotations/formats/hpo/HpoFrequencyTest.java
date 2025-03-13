@@ -21,4 +21,22 @@ public class HpoFrequencyTest {
     assertThat((double) frequency.frequency(), closeTo(expected, 1e-6));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    "EXCLUDED,          .0",
+    "VERY_RARE,         .02",
+    "OCCASIONAL,        .18",
+    "FREQUENT,          .54",
+    "VERY_FREQUENT,     .90",
+    "OBLIGATE,         1.",
+  })
+  public void numeratorDenominator(HpoFrequency frequency, double expected) {
+    // The expected values are approximations based on `numerator` and `denominator`.
+    int numerator = frequency.numerator();
+    int denominator = frequency.denominator();
+
+    double actual = (double) numerator / denominator;
+
+    assertThat(actual, closeTo(expected, 1e-6));
+  }
 }

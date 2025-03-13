@@ -30,15 +30,15 @@ public class MinimalOntologyLoaderTest {
     @Test
     public void metaInfoIsCorrect() {
       Map<String, String> metaInfo = hpo.getMetaInfo();
-      assertThat(metaInfo, hasEntry("release", "2021-06-08"));
-      assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/hp/releases/2021-06-08/hp.json"));
+      assertThat(metaInfo, hasEntry("release", "2024-06-25"));
+      assertThat(metaInfo, hasEntry("data-version", "http://purl.obolibrary.org/obo/hp/releases/2024-06-25/hp.json"));
     }
 
     @Test
     public void versionIsParsed() {
       Optional<String> version = hpo.version();
       assertThat(version.isPresent(), equalTo(true));
-      assertThat(version.get(), equalTo("2021-06-08"));
+      assertThat(version.get(), equalTo("2024-06-25"));
     }
 
     @Test
@@ -48,9 +48,9 @@ public class MinimalOntologyLoaderTest {
 
     @Test
     public void testTheNumberOfParsedTermIds() {
-      assertThat(hpo.allTermIdsStream().count(), equalTo(381L));
-      assertThat(hpo.nonObsoleteTermIdsStream().count(), equalTo(280L));
-      assertThat(hpo.obsoleteTermIdsStream().count(), equalTo(381L - 280L));
+      assertThat(hpo.allTermIdsStream().count(), equalTo(637L));
+      assertThat(hpo.nonObsoleteTermIdsStream().count(), equalTo(533L));
+      assertThat(hpo.obsoleteTermIdsStream().count(), equalTo(637L - 533L));
     }
 
     @Test
