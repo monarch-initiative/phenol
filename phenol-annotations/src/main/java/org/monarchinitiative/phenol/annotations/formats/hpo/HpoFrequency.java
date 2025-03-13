@@ -28,9 +28,9 @@ public enum HpoFrequency implements Identified, Ratio {
   /** Frequent (30-79% of the cases). */
   FREQUENT(HpoFrequencyTermIds.FREQUENT, "Frequent", 27),
   /** Occasional (5-29% of the cases). */
-  OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", 20),
+  OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", 9),
   /** Very rare (1-4% of the cases). */
-  VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", 2),
+  VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", 1),
   /** Excluded (0% of the cases). */
   EXCLUDED(HpoFrequencyTermIds.EXCLUDED, "Excluded", 0);
 
