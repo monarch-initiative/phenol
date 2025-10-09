@@ -38,7 +38,7 @@ class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
     return GeneIdentifiers.of(identifiers);
   }
 
-  private static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
+  static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
     return line -> {
       String[] token = line.split("\t", 53);
 
