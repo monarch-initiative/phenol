@@ -40,8 +40,14 @@ class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
 
   static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
     return line -> {
-      String[] token = line.split("\t", 53);
-
+      String[] token = line.split("\t", -1);
+      if (token.length <= 18 || !token[0].startsWith("HGNC")) {
+        LOGGER.warn(
+          "Skipping malformed line: expected a line with ≥ 19 columns starting with `HGNC` but found {} columns. Line: {}",
+          token.length, line
+        );
+        return Optional.empty();
+      }
       // 1 - Entrez ID
       String id = token[18];
       if (id.isBlank()) {
