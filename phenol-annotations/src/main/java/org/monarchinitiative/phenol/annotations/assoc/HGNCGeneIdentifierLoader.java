@@ -38,12 +38,12 @@ class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
     return GeneIdentifiers.of(identifiers);
   }
 
-  static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
+  private static Function<String, Optional<GeneIdentifier>> toGeneIdentifier() {
     return line -> {
       String[] token = line.split("\t", -1);
-      if (token.length <= 18) {
+      if (token.length <= 18 || !token[0].startsWith("HGNC")) {
         LOGGER.warn(
-          "Skipping malformed line: expected ≥ 19 columns but found {}. Line: {}",
+          "Skipping malformed line: expected a line with ≥ 19 columns starting with `HGNC` but found {} columns. Line: {}",
           token.length, line
         );
         return Optional.empty();
