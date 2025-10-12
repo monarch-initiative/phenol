@@ -1,18 +1,18 @@
 package org.monarchinitiative.phenol.io;
 
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.phenol.ontology.data.TermSynonym;
 
-
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,12 +60,11 @@ public class OntologyLoaderHpoTest {
   @Test
   public void testGetNonRootTerms() {
     // outside the root there are some non-root terms in the ontology
-    Map<TermId, Term> termMap = hpo.getTermMap();
-    assertThat(termMap, hasKey(TermId.of("HP:0000006")));
-    assertThat(termMap, hasKey(TermId.of("HP:0000007")));
-    assertThat(termMap, hasKey(TermId.of("HP:0000118")));
+    assertTrue(hpo.containsTerm(TermId.of("HP:0000006")));
+    assertTrue(hpo.containsTerm(TermId.of("HP:0000007")));
+    assertTrue(hpo.containsTerm(TermId.of("HP:0000118")));
 
-    Term modeOfInheritance = termMap.get(TermId.of("HP:0000005"));
+    Term modeOfInheritance = hpo.termForTermId(TermId.of("HP:0000005")).get();
     assertThat(modeOfInheritance.getName(), is("Mode of inheritance"));
   }
 
@@ -77,7 +76,7 @@ public class OntologyLoaderHpoTest {
   @Test
   public void testModeOfInheritanceTerm() {
     TermId mode = TermId.of("HP:0000005");
-    Term moiTerm = hpo.getTermMap().get(mode);
+    Term moiTerm = hpo.termForTermId(mode).get();
     assertNotNull(moiTerm);
     List<TermSynonym> synonyms = moiTerm.getSynonyms();
     // HP:0000005 has one EXACT synonym
@@ -90,7 +89,7 @@ public class OntologyLoaderHpoTest {
   @Test
   public void testArachnodactyly() {
     TermId arachnodactylyId = TermId.of("HP:0001166");
-    Term arachnodactyly = hpo.getTermMap().get(arachnodactylyId);
+    Term arachnodactyly = hpo.termForTermId(arachnodactylyId).get();
     assertNotNull(arachnodactyly);
     assertEquals("Arachnodactyly", arachnodactyly.getName());
     // There are three synonyms, two of them are layperson
@@ -117,6 +116,14 @@ public class OntologyLoaderHpoTest {
     assertThat(syn2.getValue(), is("Spider fingers"));
     assertThat(syn2.getScope(), is(EXACT));
     assertThat(syn2.isLayperson(), is(true));
+  }
+
+  @Test
+  public void termHasCreatorAndCreationDate() {
+    Term hyperemesisGravidarum = hpo.termForTermId(TermId.of("HP:0012188")).get();
+
+    assertThat(hyperemesisGravidarum.getCreatedBy(), equalTo("https://orcid.org/0000-0002-0736-9199"));
+    assertThat(hyperemesisGravidarum.getCreationDate().get(), equalTo(Date.from(Instant.parse("2013-02-24T09:58:18Z"))));
   }
 
   @Test
