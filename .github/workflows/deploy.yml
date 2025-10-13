@@ -39,6 +39,6 @@ jobs:
         run: |
           echo $SONATYPE_USERNAME;
           echo ${{ secrets.SONATYPE_USERNAME }};
-          mvn clean deploy -DskipTests -Prelease \
+          ./mvnw clean deploy --batch-mode -DskipTests -Prelease \
             -Dusername=${{ secrets.SONATYPE_USERNAME }} \
             -Dpassword=${{ secrets.SONATYPE_PASSWORD }}
