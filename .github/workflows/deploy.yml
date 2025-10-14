@@ -34,24 +34,21 @@ jobs:
 
       - name: Setup Maven settings
         run: |
-          echo "This is it:"
-          echo ${{ secrets.SONATYPE_USERNAME }};
-          echo "Content before"
-          cat ${HOME}/.m2/settings.xml
           rm ${HOME}/.m2/settings.xml
+
           cat << EOF > ${HOME}/.m2/settings.xml
-          <settings>
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
                 <id>central</id>
                 <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                <password>${{ secrets.SONATYPE_PASSWORD }}</password>
               </server>
             </servers>
           </settings>
           EOF
-          echo "Content after"
-          cat ${HOME}/.m2/settings.xml
-          exit 1
 
       - name: Deploy to Sonatype Central
         run: |
