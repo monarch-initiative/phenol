@@ -364,9 +364,8 @@
               <extensions>true</extensions>
               <configuration>
                 <publishingServerId>central</publishingServerId>
-<!--                TODO: Enable the ⬇️ after setting up the deploy action. -->
-<!--                <autoPublish>true</autoPublish>-->
-<!--                <waitUntil>published</waitUntil>-->
+                <autoPublish>true</autoPublish>
+                <waitUntil>published</waitUntil>
               </configuration>
             </plugin>
           </plugins>
