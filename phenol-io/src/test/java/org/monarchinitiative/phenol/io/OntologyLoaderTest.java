@@ -18,11 +18,6 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Test;
 
-/**
- * A testcase that tests the codes of loading a dummy ontology built from ncit.owl.
- *
- * @author <a href="mailto:HyeongSikKim@lbl.gov">HyeongSik Kim</a>
- */
 public class OntologyLoaderTest {
 
   @Test

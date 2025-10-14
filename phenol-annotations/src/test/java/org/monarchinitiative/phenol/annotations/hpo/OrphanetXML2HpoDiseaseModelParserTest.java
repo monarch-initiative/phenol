@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Peter N Robinson
  */
-@Disabled // until we have a small HPO json with the required terms (e.g. Anopthalmia)
+@Disabled("Until deprecation")
 public class OrphanetXML2HpoDiseaseModelParserTest {
 
   private static OrphanetXML2HpoDiseaseModelParser parser;

@@ -224,21 +224,18 @@ public class OntologyAlgorithm {
   // Retrieve all ancestor terms from (sub)ontology where its new root node is rootTerm.
   // All nodes above that root node in the original ontology will be ignored.
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, Set<TermId> children, boolean includeOriginalTerm) {
-    // TODO - implement or deprecate
     Ontology subontology = ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, children, includeOriginalTerm);
   }
 
   public static Set<TermId> getAncestorTerms(Ontology ontology, TermId rootTerm, TermId child, boolean includeOriginalTerm) {
-    // TODO - implement or deprecate
     Ontology subontology = ontology.subOntology(rootTerm);
     return getAncestorTerms(subontology, child, includeOriginalTerm);
   }
 
   /**
    * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
-   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getAncestorsStream(Object, boolean)} for each child,
-   * setting {@code includeSource=true}, and concatenate the streams.
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#extendMultipleWithAncestors(Iterable, boolean, Set)}.
    * The method will be removed in <code>3.0.0</code>.
    */
   // REMOVE(3.0.0)
@@ -323,8 +320,7 @@ public class OntologyAlgorithm {
 
   /**
    * @deprecated get {@link org.monarchinitiative.phenol.graph.OntologyGraph} by calling {@link MinimalOntology#graph()}
-   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#getParentsStream(Object, boolean)} for {@code t1}
-   * and {@code t2} and search for intersecting elements.
+   * and use {@link org.monarchinitiative.phenol.graph.OntologyGraph#nodesAreSiblings(Object, Object)}.
    * The method will be removed in <code>3.0.0</code>.
    */
   // REMOVE(3.0.0)

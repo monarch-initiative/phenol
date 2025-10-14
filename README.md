@@ -14,7 +14,6 @@ associate phenotype annotation files.
 
 - **Language/Platform:** Java >=11
 - **License:** BSD 3-Clause Clear
-- **Version:** 2.0.3
 - **Authors:**
     - Sebastian Bauer
     - Peter N. Robinson
@@ -34,25 +33,25 @@ associate phenotype annotation files.
     - `phenol-cli` for performing empirical score distribution computation as a stand-alone program.
 
 ## Usage
-We recommend indicating the phenol version in the `properties` section of the pom file of the application.
+We recommend importing the `phenol` modules that are needed for your application.
 
-```
-<properties>
-  (...)
-  <phenol.version>2.0.3</phenol.version>
-</properties>
-```
+For instance:
 
-Then import the phenol modules that are needed for your application.
 ```xml
 <dependency>
     <groupId>org.monarchinitiative.phenol</groupId>
     <artifactId>phenol-core</artifactId>
     <version>${phenol.version}</version>
 </dependency>
+<dependency>
+  <groupId>org.monarchinitiative.phenol</groupId>
+  <artifactId>phenol-io</artifactId>
+<version>${phenol.version}</version>
+</dependency>
 <!-- ... and other modules -->
 ```
 
+where `${phenol.version}` corresponds to the desired version, such as `2.1.0`.
 
 ## History
 Phenol was initially forked from [ontolib]([https://github.com/Phenomics/ontolib) in February 2018, but was

@@ -10,6 +10,5 @@ module org.monarchinitiative.phenol.io {
   requires obographs.core;
   requires org.yaml.snakeyaml;
   requires com.fasterxml.jackson.databind;
-  requires com.fasterxml.jackson.datatype.guava;
   requires org.slf4j;
 }

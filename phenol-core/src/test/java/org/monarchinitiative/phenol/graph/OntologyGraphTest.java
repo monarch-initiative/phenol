@@ -1,164 +1,593 @@
 package org.monarchinitiative.phenol.graph;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-public class OntologyGraphTest extends BaseOntologyGraphTest {
+/**
+ * The test suite that checks that an implementation of {@link OntologyGraph} meets the specification.
+ */
+public abstract class OntologyGraphTest {
 
-  @ParameterizedTest
-  @CsvSource({
-    // True examples
-    "HP:01, HP:1, true",
+  private static final TermId UNKNOWN = TermId.of("HP:999");
 
-    "HP:010, HP:01, true",
-    "HP:011, HP:01, true",
-    "HP:0110, HP:011, true",
+  private OntologyGraph<TermId> graph;
 
-    "HP:02, HP:1, true",
-    "HP:020, HP:02, true",
-    "HP:021, HP:02, true",
-    "HP:022, HP:02, true",
+  /**
+   * Get an ontology graph that should be tested.
+   */
+  protected abstract OntologyGraph<TermId> getGraph();
 
-    "HP:03, HP:1, true",
-
-    // False examples
-    "HP:1, HP:1, false",
-    "HP:01, HP:02, false",
-    "HP:020, HP:01, false",
-    "HP:03, HP:0110, false",
-  })
-  public void isChildOf(TermId subject, TermId object, boolean expected) {
-    assertThat(GRAPH.isChildOf(subject, object), equalTo(expected));
+  @BeforeEach
+  public void setUp() {
+    graph = getGraph();
   }
 
   @Test
-  public void isChildOfUnknownSource() {
-    TermId ok = TermId.of("HP:01");
-    NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isChildOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
-
-    assertThat(GRAPH.isChildOf(UNKNOWN, ok), equalTo(false));
+  public void root() {
+    TermId root = graph.root();
+    assertThat(root.getValue(), equalTo("HP:1"));
   }
 
-  @ParameterizedTest
-  @CsvSource({
-    // True examples
-    "HP:010, HP:1, true",
-    "HP:011, HP:1, true",
-    "HP:0110, HP:1, true",
-    "HP:0110, HP:01, true",
+  @Nested
+  public class ChildrenTraversal {
 
-    "HP:020, HP:1, true",
-    "HP:021, HP:1, true",
-    "HP:022, HP:1, true",
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1, HP:01;HP:02;HP:03",
+      "HP:02, HP:020;HP:021;HP:022",
+      "HP:03, ''",
+    })
+    public void getChildren(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.getChildren(source);
+      Set<TermId> expected = parsePayload(payload);
 
-    // False examples
-    "HP:1, HP:1, false",
-    "HP:1, HP:01, false",
-  })
-  public void isDescendantOf(TermId subject, TermId object, boolean expected) {
-    assertThat(GRAPH.isDescendantOf(subject, object), equalTo(expected));
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1, HP:1;HP:01;HP:02;HP:03",
+      "HP:02, HP:02;HP:020;HP:021;HP:022",
+      "HP:03, HP:03",
+    })
+    public void getChildrenIncludingTheSource(TermId source, String payload) {
+      Collection<TermId> iterable = graph.extendWithChildren(source, true);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @Test
+    public void getChildrenUnknownSource() {
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getChildren(UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // True examples
+      "HP:01, HP:1, true",
+
+      "HP:010, HP:01, true",
+      "HP:011, HP:01, true",
+      "HP:0110, HP:011, true",
+
+      "HP:02, HP:1, true",
+      "HP:020, HP:02, true",
+      "HP:021, HP:02, true",
+      "HP:022, HP:02, true",
+
+      "HP:03, HP:1, true",
+
+      // False examples
+      "HP:1, HP:1, false",
+      "HP:01, HP:02, false",
+      "HP:020, HP:01, false",
+      "HP:03, HP:0110, false",
+    })
+    public void isChildOf(TermId subject, TermId object, boolean expected) {
+      assertThat(graph.isChildOf(subject, object), equalTo(expected));
+    }
+
+    @Test
+    public void isChildOfUnknownSource() {
+      TermId ok = TermId.of("HP:01");
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.isChildOf(ok, UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+
+      assertThat(graph.isChildOf(UNKNOWN, ok), equalTo(false));
+    }
   }
 
+  @Nested
+  public class DescendantTraversal {
+
+    @ParameterizedTest
+    @CsvSource({
+      // True examples
+      "HP:010, HP:1, true",
+      "HP:011, HP:1, true",
+      "HP:0110, HP:1, true",
+      "HP:0110, HP:01, true",
+
+      "HP:020, HP:1, true",
+      "HP:021, HP:1, true",
+      "HP:022, HP:1, true",
+
+      // False examples
+      "HP:1, HP:1, false",
+      "HP:1, HP:01, false",
+    })
+    public void isDescendantOf(TermId subject, TermId object, boolean expected) {
+      assertThat(graph.isDescendantOf(subject, object), equalTo(expected));
+    }
+
+    @Test
+    public void isDescendantOfUnknownSource() {
+      TermId ok = TermId.of("HP:01");
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.isDescendantOf(ok, UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+
+      assertThat(graph.isDescendantOf(UNKNOWN, ok), equalTo(false));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:010;HP:011;HP:0110",
+      "HP:010,  HP:0110",
+      "HP:011,  HP:0110",
+      "HP:0110, ''",
+
+      "HP:02,   HP:020;HP:021;HP:022",
+      "HP:020,  ''",
+      "HP:021,  ''",
+      "HP:022,  ''",
+      "HP:03,   ''",
+    })
+    public void getDescendants(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.getDescendants(source);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:1;HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:01;HP:010;HP:011;HP:0110",
+      "HP:010,  HP:010;HP:0110",
+      "HP:011,  HP:011;HP:0110",
+      "HP:0110, HP:0110",
+
+      "HP:02,   HP:02;HP:020;HP:021;HP:022",
+      "HP:020,  HP:020",
+      "HP:021,  HP:021",
+      "HP:022,  HP:022",
+      "HP:03,   HP:03",
+    })
+    public void getDescendantsIncludingTheSource(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.extendWithDescendants(source, true);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @Test
+    public void getDescendantsUnknownSource() {
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getDescendants(UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+    }
+
+  }
+
+  @Nested
+  public class ParentsTraversal {
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    ''",
+      "HP:01,   HP:1",
+      "HP:03,   HP:1",
+      "HP:0110, HP:010;HP:011",
+    })
+    public void getParents(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.getParents(source);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:1",
+      "HP:01,   HP:01;HP:1",
+      "HP:03,   HP:03;HP:1",
+      "HP:0110, HP:0110;HP:010;HP:011",
+    })
+    public void getParentsIncludingTheSource(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.extendWithParents(source, true);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @Test
+    public void getParentsUnknownSource() {
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getParents(UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // True examples
+      "HP:1, HP:01, true",
+
+      "HP:01, HP:010, true",
+      "HP:01, HP:011, true",
+      "HP:011, HP:0110, true",
+
+      "HP:1, HP:02, true",
+      "HP:02, HP:020, true",
+      "HP:02, HP:021, true",
+      "HP:02, HP:022, true",
+
+      "HP:1, HP:03, true",
+
+      // False examples
+      "HP:1, HP:1, false",
+      "HP:02, HP:01, false",
+      "HP:01, HP:020, false",
+      "HP:0110, HP:03, false",
+    })
+    public void isParentOf(TermId subject, TermId object, boolean expected) {
+      assertThat(graph.isParentOf(subject, object), equalTo(expected));
+    }
+
+    @Test
+    public void isParentOfUnknownSource() {
+      TermId ok = TermId.of("HP:01");
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.isParentOf(ok, UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+
+      assertThat(graph.isParentOf(UNKNOWN, ok), equalTo(false));
+    }
+
+  }
+
+  @Nested
+  public class AncestorTraversal {
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    ''",
+      "HP:01,   HP:1",
+      "HP:0110, HP:010;HP:011;HP:01;HP:1",
+      "HP:022,  HP:02;HP:1",
+      "HP:03,   HP:1",
+    })
+    public void getAncestors(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.getAncestors(source);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:1",
+      "HP:01,   HP:01;HP:1",
+      "HP:0110, HP:0110;HP:010;HP:011;HP:01;HP:1",
+      "HP:022,  HP:022;HP:02;HP:1",
+      "HP:03,   HP:03;HP:1",
+    })
+    public void getAncestorsIncludingTheSource(TermId source, String payload) {
+      Iterable<TermId> iterable = graph.extendWithAncestors(source, true);
+      Set<TermId> expected = parsePayload(payload);
+
+      iterableContainsTheExpectedItems(iterable, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      // True examples
+      "HP:1, HP:010, true",
+      "HP:1, HP:011, true",
+      "HP:1, HP:0110, true",
+      "HP:01, HP:0110, true",
+
+      "HP:1, HP:020, true",
+      "HP:1, HP:021, true",
+      "HP:1, HP:022, true",
+
+      // False examples
+      "HP:1, HP:1, false",
+      "HP:01, HP:1, false",
+    })
+    public void isAncestorOf(TermId subject, TermId object, boolean expected) {
+      assertThat(graph.isAncestorOf(subject, object), equalTo(expected));
+    }
+
+    @Test
+    public void isAncestorOfUnknownSource() {
+      TermId ok = TermId.of("HP:01");
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.isAncestorOf(ok, UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+
+      assertThat(graph.isAncestorOf(UNKNOWN, ok), equalTo(false));
+    }
+
+    @Test
+    public void getAncestorsUnknownSource() {
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.getAncestors(UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+    }
+
+  }
+
+  @Nested
+  public class TraversalTests {
+    @ParameterizedTest
+    @CsvSource({
+      // True examples
+      "HP:010, HP:1, true",
+      "HP:011, HP:1, true",
+      "HP:0110, HP:1, true",
+      "HP:0110, HP:01, true",
+
+      "HP:020, HP:1, true",
+      "HP:021, HP:1, true",
+      "HP:022, HP:1, true",
+
+      // False examples
+      "HP:1, HP:1, false",
+      "HP:1, HP:01, false",
+    })
+    public void existsPath(TermId subject, TermId object, boolean expected) {
+      assertThat(graph.existsPath(subject, object), equalTo(expected));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    false",
+
+      "HP:01,   false",
+      "HP:010,  false",
+      "HP:011,  false",
+      "HP:0110, true",
+
+      "HP:02,   false",
+      "HP:020,  true",
+      "HP:021,  true",
+      "HP:022,  true",
+
+      "HP:03,   true",
+    })
+    public void isLeaf(TermId source, boolean expected) {
+      assertThat(graph.isLeaf(source), equalTo(expected));
+    }
+
+    @Test
+    public void isLeaf_unknownSource() {
+      NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> graph.isLeaf(UNKNOWN));
+      assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:01,  HP:02,  true",
+
+      "HP:020, HP:021, true",
+      "HP:021, HP:022, true",
+      "HP:022, HP:020, true",
+      "HP:03,  HP:01,  true",
+      "HP:03,  HP:02,  true",
+
+      // node is not its own sibling.
+      "HP:1,   HP:1,   false",
+      "HP:01,  HP:01,  false",
+
+      "HP:020, HP:02,  false",
+      "HP:020, HP:01,  false",
+      "HP:020, HP:010, false",
+    })
+    public void nodesAreSiblings(TermId left, TermId right, boolean expected) {
+      assertThat(graph.nodesAreSiblings(left, right), equalTo(expected));
+    }
+  }
+
+  /**
+   * Testing of sub-graphs returned by
+   * {@link org.monarchinitiative.phenol.ontology.data.MinimalOntology#subOntology(TermId)}.
+   */
+  @Nested
+  public class ExtractSubgraph {
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:1;HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:01;HP:010;HP:011;HP:0110",
+      "HP:010,  HP:010;HP:0110",
+      "HP:011,  HP:011;HP:0110",
+      "HP:0110, HP:0110",
+
+      "HP:02,   HP:02;HP:020;HP:021;HP:022",
+      "HP:020,  HP:020",
+      "HP:021,  HP:021",
+      "HP:022,  HP:022",
+      "HP:03,   HP:03",
+    })
+    public void subgraphContainsExpectedNodes(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph, expectedIds);
+      assertThat(subgraph.size(), equalTo(expectedIds.size()));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void root(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.root(), equalTo(root));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void getParents(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.getParents(root), is(emptyIterableOf(TermId.class)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,",
+      "HP:01,",
+      "HP:010,",
+      "HP:011,",
+      "HP:0110,",
+
+      "HP:02",
+      "HP:020",
+      "HP:021",
+      "HP:022",
+
+      "HP:03",
+    })
+    public void getAncestors(TermId root) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      assertThat(subgraph.getAncestors(root), is(emptyIterableOf(TermId.class)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:01;HP:02;HP:03",
+      "HP:01,   HP:010;HP:011",
+      "HP:010,  HP:0110",
+      "HP:011,  HP:0110",
+      "HP:0110, ''",
+
+      "HP:02,   HP:020;HP:021;HP:022",
+      "HP:020,  ''",
+      "HP:021,  ''",
+      "HP:022,  ''",
+
+      "HP:03,   ''",
+    })
+    public void getChildren(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph.getChildren(root), expectedIds);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "HP:1,    HP:01;HP:010;HP:011;HP:0110; HP:02;HP:020;HP:021;HP:022; HP:03",
+      "HP:01,   HP:010;HP:011;HP:0110",
+      "HP:010,  HP:0110",
+      "HP:011,  HP:0110",
+      "HP:0110, ''",
+
+      "HP:02,   HP:020;HP:021;HP:022",
+      "HP:020,  ''",
+      "HP:021,  ''",
+      "HP:022,  ''",
+
+      "HP:03,   ''",
+    })
+    public void getDescendants(TermId root, String expected) {
+      OntologyGraph<TermId> subgraph = graph.extractSubgraph(root);
+
+      Set<TermId> expectedIds = parsePayload(expected);
+      iterableContainsTheExpectedItems(subgraph.getDescendants(root), expectedIds);
+    }
+  }
 
   @Test
-  public void isDescendantOfUnknownSource() {
-    TermId ok = TermId.of("HP:01");
-    NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isDescendantOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
+  public void iterator() {
+    List<TermId> expected = Stream.of(
+        "HP:01", "HP:010", "HP:011", "HP:0110",
+        "HP:02", "HP:020", "HP:021", "HP:022",
+        "HP:03", "HP:1")
+      .map(TermId::of)
+      .collect(Collectors.toList());
 
-    assertThat(GRAPH.isDescendantOf(UNKNOWN, ok), equalTo(false));
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    // True examples
-    "HP:1, HP:01, true",
-
-    "HP:01, HP:010, true",
-    "HP:01, HP:011, true",
-    "HP:011, HP:0110, true",
-
-    "HP:1, HP:02, true",
-    "HP:02, HP:020, true",
-    "HP:02, HP:021, true",
-    "HP:02, HP:022, true",
-
-    "HP:1, HP:03, true",
-
-    // False examples
-    "HP:1, HP:1, false",
-    "HP:02, HP:01, false",
-    "HP:01, HP:020, false",
-    "HP:0110, HP:03, false",
-  })
-  public void isParentOf(TermId subject, TermId object, boolean expected) {
-    assertThat(GRAPH.isParentOf(subject, object), equalTo(expected));
+    iterableContainsTheExpectedItems(graph, expected);
   }
 
   @Test
-  public void isParentOfUnknownSource() {
-    TermId ok = TermId.of("HP:01");
-    NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isParentOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
-
-    assertThat(GRAPH.isParentOf(UNKNOWN, ok), equalTo(false));
+  public void size() {
+    assertThat(graph.size(), is(10));
   }
 
-  @ParameterizedTest
-  @CsvSource({
-    // True examples
-    "HP:1, HP:010, true",
-    "HP:1, HP:011, true",
-    "HP:1, HP:0110, true",
-    "HP:01, HP:0110, true",
-
-    "HP:1, HP:020, true",
-    "HP:1, HP:021, true",
-    "HP:1, HP:022, true",
-
-    // False examples
-    "HP:1, HP:1, false",
-    "HP:01, HP:1, false",
-  })
-  public void isAncestorOf(TermId subject, TermId object, boolean expected) {
-    assertThat(GRAPH.isAncestorOf(subject, object), equalTo(expected));
+  private Set<TermId> parsePayload(String payload) {
+    return payload.isBlank()
+      ? new HashSet<>()
+      : Arrays.stream(payload.split(";"))
+      .map(String::trim)
+      .map(TermId::of)
+      .collect(Collectors.toCollection(HashSet::new));
   }
 
+  /**
+   * Test that the {@code iterator} yields a sequence of unique elements from the {@code expected} collection.
+   */
+  private static <T> void iterableContainsTheExpectedItems(Iterable<T> iterable, Collection<T> expected) {
+    List<T> list = new ArrayList<>();
+    iterable.forEach(list::add);
+    HashSet<T> set = new HashSet<>(list);
+    assertThat("The iterator must yield no duplicates", set.size(), equalTo(list.size()));
+    assertTrue(set.containsAll(expected));
+    assertThat(set, hasSize(expected.size()));
 
-  @Test
-  public void isAncestorOfUnknownSource() {
-    TermId ok = TermId.of("HP:01");
-    NodeNotPresentInGraphException e = assertThrows(NodeNotPresentInGraphException.class, () -> GRAPH.isAncestorOf(ok, UNKNOWN));
-    assertThat(e.getMessage(), equalTo("Item not found in the graph: HP:999"));
-
-    assertThat(GRAPH.isAncestorOf(UNKNOWN, ok), equalTo(false));
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    // True examples
-    "HP:010, HP:1, true",
-    "HP:011, HP:1, true",
-    "HP:0110, HP:1, true",
-    "HP:0110, HP:01, true",
-
-    "HP:020, HP:1, true",
-    "HP:021, HP:1, true",
-    "HP:022, HP:1, true",
-
-    // False examples
-    "HP:1, HP:1, false",
-    "HP:1, HP:01, false",
-  })
-  public void existsPath(TermId subject, TermId object, boolean expected) {
-    assertThat(GRAPH.existsPath(subject, object), equalTo(expected));
+    // Now let's check one more time to ensure the iterable can be actually iterated over >1 times!
+    list.clear();
+    iterable.forEach(list::add);
+    assertThat("The iterator must yield no duplicates", set.size(), equalTo(list.size()));
+    assertTrue(set.containsAll(expected));
+    assertThat(set, hasSize(expected.size()));
   }
 
 }

@@ -4,6 +4,7 @@ import org.geneontology.obographs.core.model.GraphDocument;
 import org.monarchinitiative.phenol.io.obographs.OboGraphDocumentAdaptor;
 import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
+import org.monarchinitiative.phenol.io.utils.OntologyLoadingRoutines;
 import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.RelationshipType;
 import org.monarchinitiative.phenol.ontology.data.impl.SimpleMinimalOntology;
@@ -94,6 +95,7 @@ public class MinimalOntologyLoader {
     SimpleMinimalOntology ontology = SimpleMinimalOntology.builder()
       .forceBuild(options.forceBuild())
       .hierarchyRelationshipType(RelationshipType.IS_A)
+      .graphImplementation(SimpleMinimalOntology.Builder.GraphImplementation.MONO)
       .metaInfo(graphDocumentAdaptor.getMetaInfo())
       .terms(graphDocumentAdaptor.getTerms())
       .relationships(graphDocumentAdaptor.getRelationships())

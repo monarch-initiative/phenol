@@ -2,9 +2,38 @@
 Changelog
 =========
 
-------
-latest
-------
+-----
+2.1.1
+-----
+
+- add *Past medical history* to `Aspect` enum
+
+-----
+2.1.0
+-----
+
+- add `HpoCategoryLookup` to bin HPO terms into broad categories
+
+
+-----
+2.0.5
+-----
+
+- extend `OntologyGraph` with convenience methods
+- audit calculation of Resnik similarity scores
+- use Jackson annotations to describe serialization of `GeneIdentifier`
+
+-----
+2.0.4
+-----
+
+Minor release, no breaking changes.
+
+- Fix broken implementation of `MinimalOntology.subOntology` method.
+- Simplify implementation of CSR adjacency matrix that backs `OntologyGraph` by default.
+- Improve `OntologyGraph` test coverage.
+- Add microbenchmark to benchmark the ontology loading.
+- Update dependencies, remove Guava usage.
 
 ------
 2.0.3
