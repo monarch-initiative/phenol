@@ -36,7 +36,8 @@ jobs:
         run: |
           echo "This is it:"
           echo ${{ secrets.SONATYPE_USERNAME }};
-          mkdir -p ${HOME}/.m2/settings.xml;
+          cat ${HOME}/.m2/settings.xml
+          exit 1
           cat << EOF > ${HOME}/.m2/settings.xml
           <settings>
             <servers>
