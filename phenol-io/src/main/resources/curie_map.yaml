@@ -70,6 +70,7 @@
 'OIO': 'http://www.geneontology.org/formats/oboInOwl#'  # oboInOwl: obo-specific annotation properties, like synonym types
 'OMIA' : 'http://purl.obolibrary.org/obo/OMIA_'  # OMIA: Online Mendelian Inheritance in Animals (animal diseases)
 'OMIM' : 'https://omim.org/entry/'  # OMIM: Online Mendelian Inheritance in Man (human disease and variants)
+'OMIMPS' : 'https://omim.org/phenotypicSeries/PS'  # OMIMPS: Online Mendelian Inheritance in Man Phenotypic Series (human disease and variants)
 'Orphanet' : 'http://www.orpha.net/ORDO/Orphanet_'  # Orphanet: rare diseases and orphan drugs
 'PATO': 'http://purl.obolibrary.org/obo/PATO_'  # PATO: Phenotypic Quality Ontology [y]
 'PCO': 'http://purl.obolibrary.org/obo/PCO_'  # PCO: Population and Community Ontology [y]
