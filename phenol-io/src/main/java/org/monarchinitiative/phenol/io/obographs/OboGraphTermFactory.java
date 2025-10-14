@@ -1,25 +1,21 @@
 package org.monarchinitiative.phenol.io.obographs;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.geneontology.obographs.core.model.Meta;
 import org.geneontology.obographs.core.model.Node;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.core.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.core.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.core.model.meta.XrefPropertyValue;
-import org.biopragmatics.curies.Converter;
-import org.biopragmatics.curies.Reference;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
+import org.monarchinitiative.phenol.io.utils.CurieUtilBuilder;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
@@ -31,15 +27,8 @@ import java.util.List;
 class OboGraphTermFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphTermFactory.class);
-  private static final Converter converter;
 
-  static {
-        Map<String, String> map = new HashMap<>();
-        map.put("OMIM", "https://omim.org/entry/");
-        map.put("OMIMPS", "https://omim.org/phenotypicSeries/PS");
-        map.put("Orphanet", "http://www.orpha.net/ORDO/Orphanet_");
-        converter = new Converter(map);
-    }
+  private static final CurieUtil curieUtil = CurieUtilBuilder.defaultCurieUtil();
 
   private OboGraphTermFactory(){}
 
@@ -93,12 +82,12 @@ class OboGraphTermFactory {
     List<TermId> altIds = convertToAltIds(meta.getBasicPropertyValues());
     termBuilder.altTermIds(altIds);
 
-    // 8. exactMatches
+    // 8. creation date & created by
+    findCreationDateAndCreator(termBuilder, meta.getBasicPropertyValues());
+    
+    // 9. exactMatches
     List<TermId> exactMatches = convertToExactMatchIds(meta.getBasicPropertyValues());
     termBuilder.exactMatches(exactMatches);
-    
-    // 9. creation date & created by
-    findCreationDateAndCreator(termBuilder, meta.getBasicPropertyValues());
 
     return termBuilder.build();
   }
@@ -116,8 +105,7 @@ class OboGraphTermFactory {
     for (BasicPropertyValue bpv : basicPropertyValues) {
       if ("http://www.w3.org/2004/02/skos/core#exactMatch".equals(bpv.getPred())) {
         String exactMatchValue = bpv.getVal();
-        String exactMatchId = converter.compress(exactMatchValue);
-        exactMatchIdsBuilder.add(TermId.of(exactMatchId));
+        curieUtil.getCurie(exactMatchValue).ifPresent(exactMatchIdsBuilder::add);
       }
     }
     return List.copyOf(exactMatchIdsBuilder);
