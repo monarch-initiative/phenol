@@ -37,19 +37,18 @@ jobs:
           echo "This is it:"
           echo ${{ secrets.SONATYPE_USERNAME }};
           cat ${HOME}/.m2/settings.xml
-          exit 1
-          cat << EOF > ${HOME}/.m2/settings.xml
+          cat < EOF > ${HOME}/.m2/settings.xml
           <settings>
             <servers>
               <server>
                 <id>central</id>
                 <username>${{ secrets.SONATYPE_USERNAME }}</username>
-                <password>${{ secrets.SONATYPE_PASSWORD }}</password>
               </server>
             </servers>
           </settings>
           EOF
           cat ${HOME}/.m2/settings.xml
+          exit 1
 
       - name: Deploy to Sonatype Central
         run: |
