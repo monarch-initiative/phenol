@@ -218,12 +218,13 @@ class TermDefault implements Term {
       Objects.equals(synonyms, term.synonyms) &&
       Objects.equals(createdBy, term.createdBy) &&
       Objects.equals(creationDate, term.creationDate) &&
-      Objects.equals(xrefs, term.xrefs);
+      Objects.equals(xrefs, term.xrefs) &&
+      Objects.equals(exactMatches, term.exactMatches);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, altTermIds, name, definition, databaseXrefs, comment, subsets, synonyms, obsolete, createdBy, creationDate, xrefs);
+    return Objects.hash(id, altTermIds, name, definition, databaseXrefs, comment, subsets, synonyms, obsolete, createdBy, creationDate, xrefs, exactMatches);
   }
 
   @Override
@@ -250,6 +251,8 @@ class TermDefault implements Term {
       + creationDate
       + ", xrefs="
       + xrefs
+      + ", exactMatches="
+      + exactMatches
       + "]";
   }
 
