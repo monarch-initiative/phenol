@@ -11,18 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
-      # Set up JDK
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v5
         with:
           java-version: '11'
           distribution: 'adopt'
 
-      # Cache Maven dependencies
       - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
@@ -31,14 +28,30 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Set up Maven for Sonatype and deploy to Central
-      - name: Deploy to Sonatype Central
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      - name: Import GPG key
         run: |
-          echo $SONATYPE_USERNAME;
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --armor --batch --no-tty
+
+      - name: Setup Maven settings
+        run: |
+          echo "This is it:"
           echo ${{ secrets.SONATYPE_USERNAME }};
-          ./mvnw clean deploy --batch-mode -DskipTests -Prelease \
-            -Dusername=${{ secrets.SONATYPE_USERNAME }} \
-            -Dpassword=${{ secrets.SONATYPE_PASSWORD }}
+          mkdir -p ${HOME}/.m2/settings.xml;
+          cat << EOF > ${HOME}/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+          cat ${HOME}/.m2/settings.xml
+
+      - name: Deploy to Sonatype Central
+        run: |
+          # TODO: change the phase to deploy when we're done
+          ./mvnw clean deploy --batch-mode -Prelease \
+            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }}
