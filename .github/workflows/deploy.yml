@@ -36,9 +36,9 @@ jobs:
         run: |
           echo "This is it:"
           echo ${{ secrets.SONATYPE_USERNAME }};
-          rm ${HOME}/.m2/settings.xml
           echo "Content before"
           cat ${HOME}/.m2/settings.xml
+          rm ${HOME}/.m2/settings.xml
           cat << EOF > ${HOME}/.m2/settings.xml
           <settings>
             <servers>
