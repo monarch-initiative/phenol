@@ -24,11 +24,6 @@
        <artifactId>obographs-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.biopragmatics.curies</groupId>
-      <artifactId>curies</artifactId>
-      <version>0.1.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
     </dependency>
