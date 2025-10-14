@@ -1,10 +1,9 @@
 name: Deploy to Sonatype Central
 
 on:
-  workflow_dispatch:
-#  push:
-#    tags:
-#      - 'v*'  # Trigger the workflow when a tag starting with 'v' is pushed, like v1.0.0
+  push:
+    tags:
+      - 'v*'  # Trigger the workflow when a tag starting with 'v' is pushed, like v1.0.0
 
 jobs:
   deploy:
@@ -52,6 +51,5 @@ jobs:
 
       - name: Deploy to Sonatype Central
         run: |
-          # TODO: change the phase to deploy when we're done
           ./mvnw clean deploy --batch-mode -Prelease \
             -Dgpg.keyname=${{ secrets.GPG_KEY_ID }}
