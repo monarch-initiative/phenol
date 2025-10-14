@@ -1,7 +1,5 @@
 package org.monarchinitiative.phenol.io.obographs;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.geneontology.obographs.core.model.Meta;
 import org.geneontology.obographs.core.model.Node;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
@@ -15,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
