@@ -108,6 +108,8 @@ public class OboGraphDocumentAdaptor {
         throw new PhenolRuntimeException(message);
       }
 
+      OboGraphTermFactory factory = new OboGraphTermFactory(curieUtil);
+
       Graph oboGraph = getFirstGraph(graphDocument);
 
       LOGGER.debug("Converting graph document...");
@@ -115,7 +117,7 @@ public class OboGraphDocumentAdaptor {
       // Metadata about the ontology
       this.metaInfo = convertMetaData(oboGraph.getMeta());
       LOGGER.debug("Converting nodes to terms...");
-      this.terms = convertNodesToTerms(oboGraph.getNodes());
+      this.terms = convertNodesToTerms(oboGraph.getNodes(), factory);
       LOGGER.debug("Converting edges to relationships...");
       // Mapping edges in obographs to termIds in phenol
       this.relationships = convertEdgesToRelationships(oboGraph.getEdges(), oboGraph.getNodes());
@@ -200,7 +202,7 @@ public class OboGraphDocumentAdaptor {
       }
     }
 
-    private List<Term> convertNodesToTerms(List<Node> nodes) {
+    private List<Term> convertNodesToTerms(List<Node> nodes, OboGraphTermFactory factory) {
       List<Term> termsList = new ArrayList<>();
       if (nodes == null || nodes.isEmpty()) {
         LOGGER.warn("No nodes found in loaded ontology.");
@@ -213,7 +215,7 @@ public class OboGraphDocumentAdaptor {
         if (node.getType() != null && node.getType() == Node.RDFTYPES.CLASS) {
           TermId termId = getTermIdOrNull(node.getId());
           if (termId != null) {
-            Term term = OboGraphTermFactory.constructTerm(node, termId);
+            Term term = factory.constructTerm(node, termId);
             termsList.add(term);
           }
         }

@@ -1,17 +1,21 @@
 package org.monarchinitiative.phenol.io.obographs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.geneontology.obographs.core.model.Meta;
 import org.geneontology.obographs.core.model.Node;
 import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.core.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.core.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.core.model.meta.XrefPropertyValue;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
@@ -24,9 +28,13 @@ class OboGraphTermFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphTermFactory.class);
 
-  private OboGraphTermFactory(){}
+  private final CurieUtil curieUtil;
 
-  static Term constructTerm(Node node, TermId termId) {
+  OboGraphTermFactory(CurieUtil curieUtil) {
+    this.curieUtil = Objects.requireNonNull(curieUtil);
+  }
+
+  Term constructTerm(Node node, TermId termId) {
     Term.Builder termBuilder = Term.builder(termId);
     String label = node.getLabel();
     // labels for obsolete terms ids found in the alt_id section are null
@@ -76,13 +84,33 @@ class OboGraphTermFactory {
     List<TermId> altIds = convertToAltIds(meta.getBasicPropertyValues());
     termBuilder.altTermIds(altIds);
 
+    // 8. creation date & created by
+    findCreationDateAndCreator(termBuilder, meta.getBasicPropertyValues());
 
+    // 9. exactMatches
+    List<TermId> exactMatches = convertToExactMatchIds(meta.getBasicPropertyValues());
+    termBuilder.exactMatches(exactMatches);
 
     return termBuilder.build();
   }
 
   private static String getDefinition(DefinitionPropertyValue definitionPropertyValue) {
     return (definitionPropertyValue == null)? "" : definitionPropertyValue.getVal();
+  }
+
+  private List<TermId> convertToExactMatchIds(List<BasicPropertyValue> basicPropertyValues) {
+    if (basicPropertyValues == null || basicPropertyValues.isEmpty()) {
+      return List.of();
+    }
+
+    List<TermId> exactMatchIdsBuilder = new ArrayList<>();
+    for (BasicPropertyValue bpv : basicPropertyValues) {
+      if ("http://www.w3.org/2004/02/skos/core#exactMatch".equals(bpv.getPred())) {
+        String exactMatchValue = bpv.getVal();
+        curieUtil.getCurie(exactMatchValue).ifPresent(exactMatchIdsBuilder::add);
+      }
+    }
+    return List.copyOf(exactMatchIdsBuilder);
   }
 
   private static List<SimpleXref> convertToXrefs(DefinitionPropertyValue definitionPropertyValue) {
@@ -197,6 +225,28 @@ class OboGraphTermFactory {
       }
     }
     return List.copyOf(altIdsBuilder);
+  }
+
+  private static void findCreationDateAndCreator(Term.Builder builder, List<BasicPropertyValue> basicPropertyValues) {
+    if (basicPropertyValues != null && !basicPropertyValues.isEmpty()) {
+      boolean foundDate = false;
+      boolean foundCreator = false;
+      for (BasicPropertyValue bpv : basicPropertyValues) {
+        if (foundDate && foundCreator) {
+          break;
+        }
+        // pred: http://www.geneontology.org/formats/oboInOwl#creation_date
+        //  val: 2014-06-06T07:20:42Z
+        if ("http://www.geneontology.org/formats/oboInOwl#creation_date".equals(bpv.getPred())) {
+          builder.creationDate(Date.from(Instant.parse(bpv.getVal())));
+          foundDate = true;
+        }
+        if ("http://purl.obolibrary.org/obo/terms_creator".equals(bpv.getPred())) {
+          builder.createdBy(bpv.getVal());
+          foundCreator = true;
+        }
+      }
+    }
   }
 
 }
