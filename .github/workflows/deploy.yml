@@ -1,44 +1,55 @@
 name: Deploy to Sonatype Central
 
 on:
-  workflow_dispatch:
-#  push:
-#    tags:
-#      - 'v*'  # Trigger the workflow when a tag starting with 'v' is pushed, like v1.0.0
+  push:
+    tags:
+      - 'v*'  # Trigger the workflow when a tag starting with 'v' is pushed, like v1.0.0
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
-      # Set up JDK
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v5
         with:
           java-version: '11'
           distribution: 'adopt'
 
-      # Cache Maven dependencies
       - name: Cache Maven dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Set up Maven for Sonatype and deploy to Central
-      - name: Deploy to Sonatype Central
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      - name: Import GPG key
         run: |
-          echo $SONATYPE_USERNAME;
-          echo ${{ secrets.SONATYPE_USERNAME }};
-          mvn clean deploy -DskipTests -Prelease \
-            -Dusername=${{ secrets.SONATYPE_USERNAME }} \
-            -Dpassword=${{ secrets.SONATYPE_PASSWORD }}
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --armor --batch --no-tty
+
+      - name: Setup Maven settings
+        run: |
+          rm ${HOME}/.m2/settings.xml
+
+          cat << EOF > ${HOME}/.m2/settings.xml
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.SONATYPE_USERNAME }}</username>
+                <password>${{ secrets.SONATYPE_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Deploy to Sonatype Central
+        run: |
+          ./mvnw clean deploy --batch-mode -Prelease \
+            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }}
