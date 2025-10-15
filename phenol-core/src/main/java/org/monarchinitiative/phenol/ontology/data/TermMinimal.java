@@ -86,6 +86,11 @@ class TermMinimal implements Term {
   }
 
   @Override
+  public List<TermId> getExactMatches() {
+    return List.of();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
