@@ -6,6 +6,7 @@ import org.geneontology.obographs.core.model.meta.BasicPropertyValue;
 import org.geneontology.obographs.core.model.meta.DefinitionPropertyValue;
 import org.geneontology.obographs.core.model.meta.SynonymPropertyValue;
 import org.geneontology.obographs.core.model.meta.XrefPropertyValue;
+import org.monarchinitiative.phenol.io.utils.CurieUtil;
 import org.monarchinitiative.phenol.ontology.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
@@ -26,9 +28,13 @@ class OboGraphTermFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OboGraphTermFactory.class);
 
-  private OboGraphTermFactory(){}
+  private final CurieUtil curieUtil;
 
-  static Term constructTerm(Node node, TermId termId) {
+  OboGraphTermFactory(CurieUtil curieUtil) {
+    this.curieUtil = Objects.requireNonNull(curieUtil);
+  }
+
+  Term constructTerm(Node node, TermId termId) {
     Term.Builder termBuilder = Term.builder(termId);
     String label = node.getLabel();
     // labels for obsolete terms ids found in the alt_id section are null
@@ -81,11 +87,30 @@ class OboGraphTermFactory {
     // 8. creation date & created by
     findCreationDateAndCreator(termBuilder, meta.getBasicPropertyValues());
 
+    // 9. exactMatches
+    List<TermId> exactMatches = convertToExactMatchIds(meta.getBasicPropertyValues());
+    termBuilder.exactMatches(exactMatches);
+
     return termBuilder.build();
   }
 
   private static String getDefinition(DefinitionPropertyValue definitionPropertyValue) {
     return (definitionPropertyValue == null)? "" : definitionPropertyValue.getVal();
+  }
+
+  private List<TermId> convertToExactMatchIds(List<BasicPropertyValue> basicPropertyValues) {
+    if (basicPropertyValues == null || basicPropertyValues.isEmpty()) {
+      return List.of();
+    }
+
+    List<TermId> exactMatchIdsBuilder = new ArrayList<>();
+    for (BasicPropertyValue bpv : basicPropertyValues) {
+      if ("http://www.w3.org/2004/02/skos/core#exactMatch".equals(bpv.getPred())) {
+        String exactMatchValue = bpv.getVal();
+        curieUtil.getCurie(exactMatchValue).ifPresent(exactMatchIdsBuilder::add);
+      }
+    }
+    return List.copyOf(exactMatchIdsBuilder);
   }
 
   private static List<SimpleXref> convertToXrefs(DefinitionPropertyValue definitionPropertyValue) {

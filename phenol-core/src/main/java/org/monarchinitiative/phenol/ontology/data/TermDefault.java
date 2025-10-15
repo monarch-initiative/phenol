@@ -74,6 +74,11 @@ class TermDefault implements Term {
    */
   private final List<Dbxref> xrefs;
 
+  /**
+   * The term's exact matches.
+   */
+  private final List<TermId> exactMatches;
+
   TermDefault(TermId termId,
               String name,
               List<TermId> altTermIds,
@@ -85,7 +90,8 @@ class TermDefault implements Term {
               boolean obsolete,
               String createdBy,
               Date creationDate,
-              List<Dbxref> xrefs) {
+              List<Dbxref> xrefs,
+              List<TermId> exactMatches) {
     this.id = termId;
     this.name = name;
     //other fields...
@@ -100,6 +106,7 @@ class TermDefault implements Term {
     // creation date can be null - it returns an Optional
     this.creationDate = creationDate;
     this.xrefs = xrefs;
+    this.exactMatches = exactMatches;
   }
 
   TermDefault(Term.Builder builder) {
@@ -116,6 +123,7 @@ class TermDefault implements Term {
     // creation date can be null - it returns an Optional
     this.creationDate = builder.creationDate;
     this.xrefs = List.copyOf(builder.xrefs);
+    this.exactMatches = List.copyOf(builder.exactMatches);
   }
 
   @Override
@@ -190,6 +198,11 @@ class TermDefault implements Term {
   }
 
   @Override
+  public List<TermId> getExactMatches() {
+    return exactMatches;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -205,12 +218,13 @@ class TermDefault implements Term {
       Objects.equals(synonyms, term.synonyms) &&
       Objects.equals(createdBy, term.createdBy) &&
       Objects.equals(creationDate, term.creationDate) &&
-      Objects.equals(xrefs, term.xrefs);
+      Objects.equals(xrefs, term.xrefs) &&
+      Objects.equals(exactMatches, term.exactMatches);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, altTermIds, name, definition, databaseXrefs, comment, subsets, synonyms, obsolete, createdBy, creationDate, xrefs);
+    return Objects.hash(id, altTermIds, name, definition, databaseXrefs, comment, subsets, synonyms, obsolete, createdBy, creationDate, xrefs, exactMatches);
   }
 
   @Override
@@ -237,6 +251,8 @@ class TermDefault implements Term {
       + creationDate
       + ", xrefs="
       + xrefs
+      + ", exactMatches="
+      + exactMatches
       + "]";
   }
 
