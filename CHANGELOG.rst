@@ -3,6 +3,28 @@ Changelog
 =========
 
 -----
+2.1.4
+-----
+
+- Fix parsing of the Orphanet file by @iimpulse in https://github.com/monarch-initiative/phenol/pull/484
+
+-----
+2.1.3
+-----
+
+- Fixing index out of bounds error in HGNCGeneIdentifierLoader by @pnrobinson in https://github.com/monarch-initiative/phenol/pull/477
+- Parse creator and the creation date for Term by @ielis in https://github.com/monarch-initiative/phenol/pull/479
+- Add exact matches to Term data model and parsers by @matentzn in https://github.com/monarch-initiative/phenol/pull/447
+- Setup an action for automatic deployment by @ielis in https://github.com/monarch-initiative/phenol/pull/480 and https://github.com/monarch-initiative/phenol/pull/482
+
+-----
+2.1.2
+-----
+
+- Moving to obg-reader by @iimpulse in https://github.com/monarch-initiative/phenol/pull/466
+- Fix bug in `HpoFrequency` `numerator` values by @ielis in https://github.com/monarch-initiative/phenol/pull/470
+
+-----
 2.1.1
 -----
 

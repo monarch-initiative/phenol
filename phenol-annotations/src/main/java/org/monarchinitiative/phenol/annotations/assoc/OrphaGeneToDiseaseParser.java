@@ -111,20 +111,28 @@ public class OrphaGeneToDiseaseParser {
               inOMIMReference = true;
             }
           } else if (inOMIMReference &&
-            localPart.equals(REFERENCE)) {
-            event = eventReader.nextEvent();
-            currentOmimId = event.asCharacters().getData();
-          }  else if (inDisorder &&
-            inDisorderGeneAssociation &&
-            inDisorderGeneAssociationList &&
-            inGene &&
-            localPart.equals(SYMBOL)) {
-            event = eventReader.nextEvent();
-            currentGeneSymbol = event.asCharacters().getData();
+              localPart.equals(REFERENCE)) {
+            if (eventReader.peek().isCharacters()) {
+              event = eventReader.nextEvent();
+              currentOmimId = event.asCharacters().getData();
+            } else {
+              currentOmimId = null;
+            }
+          } else if (inDisorder &&
+              inDisorderGeneAssociation &&
+              inDisorderGeneAssociationList &&
+              inGene &&
+              localPart.equals(SYMBOL)) {
+            if (eventReader.peek().isCharacters()) {
+              event = eventReader.nextEvent();
+              currentGeneSymbol = event.asCharacters().getData();
+            } else {
+              currentGeneSymbol = null;
+            }
           }
         } else if (event.isEndElement()) {
           EndElement endElement = event.asEndElement();
-          String localPart =endElement.getName().getLocalPart();
+          String localPart = endElement.getName().getLocalPart();
           if (localPart.equals(DISORDER)) {
             inDisorder = false;
           } else if (localPart.equals(GENE_LIST)) {
@@ -148,14 +156,14 @@ public class OrphaGeneToDiseaseParser {
                 Optional<GeneIdentifier> gio = geneIdentifiers.geneIdBySymbol(currentGeneSymbol);
                 if (gio.isPresent())
                   orphaDiseaseToGeneBuilder.computeIfAbsent(orphaId, k -> new HashSet<>())
-                    .add(gio.get());
+                      .add(gio.get());
                 else
                   LOGGER.warn("Could not find gene id for {}", currentGeneSymbol);
               } else {
                 for (TermId geneId : geneIds) {
                   GeneIdentifier g = GeneIdentifier.of(geneId, currentGeneSymbol);
                   orphaDiseaseToGeneBuilder.computeIfAbsent(orphaId, k -> new HashSet<>())
-                    .add(g);
+                      .add(g);
                 }
               }
             }

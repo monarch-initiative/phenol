@@ -115,7 +115,7 @@
               </ExternalReference>
               <ExternalReference id="44364">
                 <Source>OMIM</Source>
-                <Reference>613228</Reference>
+                <Reference/>
               </ExternalReference>
               <ExternalReference id="32441">
                 <Source>SwissProt</Source>
