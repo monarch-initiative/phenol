@@ -1,36 +1,24 @@
-.. _frequencies_hpo:
+# Frequencies and HPO Annotations
 
-===============================
-Frequencies and HPO Annotations
-===============================
-
-It is important to know what proportion of individuals with a given disease have a certain phenotypic feature. In general, some phenotypic features are found in all or nearly all individuals with a given disease. For instance, according to current data, all individuals with `ReNU syndrome <https://hpo.jax.org/browse/disease/OMIM:620851>`_ have `Global developmental delay <https://hpo.jax.org/browse/term/HP:0001263>`_, and the HPO database currently lists a frequency of 16/16 individuals. On the other hand, other manifestations are found in only some individuals; for instance, {target="_blank"} 
-`Low-set ears <https://hpo.jax.org/browse/term/HP:0000369>`_ were reported in 5/20 individuals. Some manifestations are only very rarely found
-`Posteriorly rotated ears <https://hpo.jax.org/browse/term/HP:0000358>`_ were reported in only 1/49 individuals.
+It is important to know what proportion of individuals with a given disease have a certain phenotypic feature. In general, some phenotypic features are found in all or nearly all individuals with a given disease. For instance, according to current data, all individuals with [ReNU syndrome](https://hpo.jax.org/browse/disease/OMIM:620851) have [Global developmental delay](https://hpo.jax.org/browse/term/HP:0001263), and the HPO database currently lists a frequency of 16/16 individuals. On the other hand, other manifestations are found in only some individuals; for instance, {target="_blank"} 
+[Low-set ears](https://hpo.jax.org/browse/term/HP:0000369) were reported in 5/20 individuals. Some manifestations are only very rarely found
+[Posteriorly rotated ears](https://hpo.jax.org/browse/term/HP:0000358) were reported in only 1/49 individuals.
 
 
-HPO Annotations
-~~~~~~~~~~~~~~~
+## How do the HPO annotations represent frequency?
 
-Phenol ingests the ``phenotype.hpoa`` file to get information about diseases including HPO Frequency information.
-See the `documentation <https://obophenotype.github.io/human-phenotype-ontology/annotations/phenotype_hpoa/>`_ for more information about this file.
-
-
-How do the HPO annotations represent frequency?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are three formats for representing frequency data in the HPO (see the `documentation <https://obophenotype.github.io/human-phenotype-ontology/annotations/frequency/>`_ for more information). For analysis, it is convenient to have a unified representation of frequency. Therefore, phenol maps data from all three formats to the same class that is intended to be used for analysis. 
 
 
 
-HpoDiseaseAnnotation
-~~~~~~~~~~~~~~~~~~~~
+### HpoDiseaseAnnotation
 
 This is a key class to understanding how frequencies are represented. The class contains an HPO term that is being associated to a disease as well as metadata for that term, including frequency data.
 
 
-Ratio 
-~~~~~
+### Ratio 
+
 
 This class represents the fact that <em>n</em> out of <em>m</em> subjects meet a condition. For instance,
  * <em>9</em> out of <em>10</em> kids love lasagna.
@@ -54,7 +42,7 @@ public interface Ratio {
 
 The parsing of frequency data from the HPOA file is performed by the parseFrequency method in the 
 ``HpoDiseaseLoaderDefault`` class that is in the phenol-annotations module in the package ``org.monarchinitiative.phenol.annotations.io.hpo``.
-Note that the class has a field called cohortSize, which is the assumed size of the cohort if we do not have that information (e.g., because we only have an HPO term annotation such as `Occasional (HP:0040283)<https://hpo.jax.org/browse/term/HP:0040283>`_).
+Note that the class has a field called cohortSize, which is the assumed size of the cohort if we do not have that information (e.g., because we only have an HPO term annotation such as [Occasional (HP:0040283)](https://hpo.jax.org/browse/term/HP:0040283).
 The frequency field is processed as follows.
 
 1. If it is empty, then we assume a ratio of 1/1
@@ -78,8 +66,8 @@ denominator = cohortSize;
 ```. 
 
 
-Gotchas
-~~~~~~~
+### Gotchas
+
 
 Parsing HPO term or Percentage poses an issue, because we do not know about the cohort size; it is not in HPOA file. So, we must make some assumptions, namely, the "typical" cohort size. The phenol library sets this to five by default. This may lead to unexpected behavior, because  5% is mapped to zero of five owing to rounding.
 
@@ -92,15 +80,14 @@ boolean salvageNegatedFrequencies = false;
 int cohortSize = 100;
 var loaderOptions = HpoDiseaseLoaderOptions.of(databasePrefixes,  salvageNegatedFrequencies, cohortSize);
 ``` 
+
 And use these options for the HpoDiseaseLoader.
 
 
+### HpoFrequency
 
 
-HpoFrequency
-~~~~~~~~~~~~
-
-HpoFrequency is an enumeration that is used to represent HPO Frequency terms such as `Occasional (HP:0040283)<https://hpo.jax.org/browse/term/HP:0040283>`_, which is used to denote HPO features that occur in  5% to 29% of individuals affected by the disease being annotated. It is used as a helper to create the Ratio for HPO Term frequencies.
+HpoFrequency is an enumeration that is used to represent HPO Frequency terms such as [Occasional (HP:0040283)](https://hpo.jax.org/browse/term/HP:0040283), which is used to denote HPO features that occur in  5% to 29% of individuals affected by the disease being annotated. It is used as a helper to create the Ratio for HPO Term frequencies.
 
 The class is an enum located in the ``phenol-annotations module`` in the package package ``org.monarchinitiative.phenol.annotations.formats.hpo``.
 
