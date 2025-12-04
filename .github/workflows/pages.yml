@@ -9,10 +9,6 @@ on:
 permissions:
   contents: write
 
-env:
-  # Path to directory that contains the cohorts, one cohort per folder.
-  NOTEBOOK_DIR: notebooks
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,10 +25,6 @@ jobs:
       - name: Install docs dependencies
         run: |
           python3 -m pip install phenopacket-store-toolkit[release] mkdocstrings[python]  mkdocs-material[imaging] mkdocs-material-extensions pillow cairosvg pymdown-extensions
-
-      - name: Generate reports
-        run: |
-          python3 -m ppktstore report collections --notebook-dir ${NOTEBOOK_DIR} --output docs/collections.md
 
       - name: Deploy docs
         run: |
