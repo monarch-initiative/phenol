@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.Set;
 
 /**
+ * <h2>OntologyLoader</h2>
  * Entry class for loading an ontology from a File or InputStream. Files can be in OWL, OBO or JSON format and will be
  * handled transparently.
  * <p>

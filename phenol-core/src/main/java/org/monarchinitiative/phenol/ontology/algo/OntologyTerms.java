@@ -18,7 +18,7 @@ import org.monarchinitiative.phenol.ontology.data.TermVisitor;
 /**
  * Helper class with static methods for navigating Ontology terms.
  *
- * <h5>Implementation Note</h5>
+ * <h2>Implementation Note</h2>
  *
  * <p>The methods simply reduce the ontology visiting to visiting vertices int he underlying graphs
  * via BFS.

@@ -14,13 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of pairwise Resnik similarity with precomputation.
+ * <h2>Implementation of pairwise Resnik similarity with precomputation.</h2>
  *
  * <p>This lies at the core of most of the more computationally expensive pairwise similarities'
  * computations. For this reason, the similarity is precomputed for all term pairs in the {@link
  * Ontology} which is computationally expensive.
  *
- * <h5>Performance Notes</h5>
+ * <h3>Performance Notes</h3>
  *
  * <p>Note that there is a performance regression here in comparison to the old code. However, the
  * other implementation used integer arrays only which assumed the limitations to terms from the

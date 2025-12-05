@@ -11,7 +11,7 @@ import org.monarchinitiative.phenol.graph.IdLabeledEdge;
 import org.monarchinitiative.phenol.graph.OntologyGraph;
 
 /**
- * Interface for ontologies without the all-ancestor-related convenience functions.
+ * <h2>Interface for ontologies without the all-ancestor-related convenience functions.</h2>
  *
  * <p>
  * Most classes will want to work with {@link Ontology} instead of {@link MinimalOntology} as the
@@ -31,7 +31,7 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
  * While {@link MinimalOntology} allows access to {@linkplain TermId}s of obsolete {@link Term}s
  * in the ontology, the obsolete {@linkplain Term}s are excluded from the underlying graph structure.
  *
- * <h5>Terms vs. Term IDs</h5>
+ * <h3>Terms vs. Term IDs</h3>
  *
  * OBO files contain lists of terms (besides other entry types). Each term has one primary
  * identifier and a (possibly empty) list of alternative IDs. Terms can also be marked as obsolete.
@@ -46,18 +46,18 @@ import org.monarchinitiative.phenol.graph.OntologyGraph;
  *       for non-obsolete, obsolete, and all term IDs.
  * </ul>
  *
- * <h5>Iterating</h5>
+ * <h3>Iterating</h3>
  *
  * For iterating over terms and term IDs <b>only</b> use the functions {@link #getTerms()},
  * {@link #nonObsoleteTermIds()}, {@link #obsoleteTermIds()}, and {@link #getTerms()}. These functions return iterables
  * with elements from this ontology.
  *
- * <h5>Ontology hierarchy</h5>
+ * <h3>Ontology hierarchy</h3>
  *
  * <p>{@linkplain MinimalOntology} provides an {@link OntologyGraph} which in turn supports traversals
  * of the ontology hierarchy.</p>
  *
- * <h5>Invariants/Properties</h5>
+ * <h3>Invariants/Properties</h3>
  *
  * <ul>
  *   <li>{@code MinimalOntology} instances have one root term (non-obsolete, having no incoming

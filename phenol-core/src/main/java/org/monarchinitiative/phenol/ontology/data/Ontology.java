@@ -6,7 +6,7 @@ import java.util.*;
 import org.monarchinitiative.phenol.utils.Sets;
 
 /**
- * Interface for most ontology implementations to implement.
+ * <h2>Interface for most ontology implementations to implement.</h2>
  *
  * <p>This interface adds functions for easy access to ancestors to {@link MinimalOntology}.
  *
@@ -130,7 +130,7 @@ public interface Ontology extends MinimalOntology, Serializable {
   /**
    * Construct and return sub ontology, starting from {@code subOntologyRoot}.
    *
-   * <h5>Sub Ontology Iteration Remark</h5>
+   * <p>Sub Ontology Iteration Remark</p>
    *
    * <p>The constructed sub ontology will use the same maps from {@link TermId} to {@code T} and
    * same edge relation maps as the original ontology. However, the functions {@link
