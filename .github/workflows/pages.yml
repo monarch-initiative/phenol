@@ -3,7 +3,8 @@ name: Deploy documentation
 on:
   push:
     branches:
-      - main, develop
+      - main
+      - develop
   workflow_dispatch:
 
 permissions:
@@ -14,9 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      # Set up Java for Javadoc generation
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # Build the project + generate Javadoc into docs/javadoc/
+      - name: Build Java project and Javadocs
+        run: |
+          run: mvn -B -U clean package -DskipTests
+
+      # Set up Python for MkDocs
       - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+
       - uses: actions/cache@v4
         with:
           key: ${{ github.ref }}
@@ -24,9 +40,14 @@ jobs:
 
       - name: Install docs dependencies
         run: |
-          python3 -m pip install phenopacket-store-toolkit[release] mkdocstrings[python]  mkdocs-material[imaging] mkdocs-material-extensions pillow cairosvg pymdown-extensions
+          python3 -m pip install \
+            phenopacket-store-toolkit[release] \
+            mkdocstrings[python] \
+            mkdocs-material[imaging] \
+            mkdocs-material-extensions \
+            pillow \
+            cairosvg \
+            pymdown-extensions
 
       - name: Deploy docs
-        run: |
-          mkdocs gh-deploy --force
-  
+        run: mkdocs gh-deploy --force
