@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Parser for GO "gene annotation file" (GAF) format.
  *
- * <p><b>Usage Example</b>
+ * <p><b>Usage Example</b></p>
  *
  * <pre>
  * String filename = "goa_human.gaf";
- * List<GoGaf21Annotation> annots = GoGeneAnnotationParser.loadAnnotations(filename);
+ * List&lt;GoGaf22Annotation&gt; annots = GoGeneAnnotationParser.loadAnnotations(filename);
  * </pre>
  *
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>

@@ -11,9 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * Model of the upper-level HPO classes. This allows a canonical view of HPO Annotation per disease
- * according to categories such as Heart, Eye, Brain etc.
- * <p>
+ * <p>Model of the upper-level HPO classes. This allows a canonical view of HPO Annotation per disease
+ * according to categories such as Heart, Eye, Brain etc.</p>
  * <p>
  * The main function takes a list of HPO terms and returns a compatible list but sorted according to the
  * categories. Client code should use {@link #addAnnotatedTerms(List, org.monarchinitiative.phenol.ontology.data.MinimalOntology)}  to initialize the

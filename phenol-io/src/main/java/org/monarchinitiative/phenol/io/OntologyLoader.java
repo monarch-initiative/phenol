@@ -23,7 +23,7 @@ import java.util.Set;
  * contains a mixture of GO, RO and BFO terms it is advisable to supply the 'GO' termId prefix otherwise there may be
  * relationships with RelationshipType.UNKNOWN. It is left to the user how best to specify what is loaded.
  *
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class OntologyLoader {
 

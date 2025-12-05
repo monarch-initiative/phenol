@@ -20,7 +20,6 @@ package org.monarchinitiative.phenol.annotations.base.temporal;
  *   <li>{@link #openStart()} is <em>before</em> (less) and {@link #openEnd()} is <em>after</em> (more)
  *   than any gestational or postnatal {@link PointInTime}.</li>
  * </ul>
- * <p>
  */
 public interface PointInTime extends TimelineAware {
 

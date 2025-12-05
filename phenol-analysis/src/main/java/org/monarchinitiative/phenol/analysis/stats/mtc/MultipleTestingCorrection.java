@@ -9,7 +9,7 @@ import java.util.List;
  * A superclass for multiple test correction...
  *
  * @author Sebastian Bauer
- * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 public interface MultipleTestingCorrection
 {

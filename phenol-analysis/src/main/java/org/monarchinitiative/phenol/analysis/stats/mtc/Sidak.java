@@ -6,6 +6,7 @@ import java.lang.Math;
 import java.util.List;
 
 /**
+ * Sidak multiple testing correction.
  * @author Sebastian Bauer
  * @author Peter Robinson (refactored)
  */

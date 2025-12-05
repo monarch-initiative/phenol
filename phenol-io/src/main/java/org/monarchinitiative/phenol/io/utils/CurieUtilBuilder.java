@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Wrapper class to help build a {@link CurieUtil} using the default mappings and / or just a subset.
  *
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class CurieUtilBuilder {
 

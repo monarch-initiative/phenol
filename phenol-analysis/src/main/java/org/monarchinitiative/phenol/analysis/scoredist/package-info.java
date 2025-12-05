@@ -6,7 +6,7 @@
  * into a table in an H2 database files. The final apps can then use the H2 database for smaller
  * file size and high query performance.
  *
- * <h4>H2 Dependency Notes</h4>
+ * <h2>H2 Dependency Notes</h2>
  *
  * <p>The class itself only uses JDBC. Thus, the phenol module does not depend on H2 via maven but
  * your calling code has to depend on H2, e.g., as follows.
