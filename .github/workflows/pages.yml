@@ -26,7 +26,7 @@ jobs:
       # Build the project + generate Javadoc into docs/javadoc/
       - name: Build Java project and Javadocs
         run: |
-          run: mvn -B -U clean package -DskipTests
+          mvn -B -U clean package -DskipTests
 
       # Set up Python for MkDocs
       - uses: actions/setup-python@v4
