@@ -168,4 +168,21 @@ public class HGNCGeneIdentifierLoaderTest {
     assertThat(opt.isEmpty(), is(true));
   }
 
+  /**
+   * The <code>location_sortable</code> column recently disappeared from the hgnc complete set file.
+   * Test that the parser can process the new format.
+   */
+  @Test
+  public void testRnaLine() throws IOException {
+    String header = "hgnc_id\tsymbol\tname\tlocus_group\tlocus_type\tstatus\tlocation\talias_symbol\talias_name\tprev_symbol\tprev_name\tgene_group\tgene_group_id\tdate_approved_reserved\tdate_symbol_changed\tdate_name_changed\tdate_modified\tentrez_id\tensembl_gene_id\tvega_id\tucsc_id\tena\trefseq_accession\tccds_id\tuniprot_ids\tpubmed_id\tmgd_id\trgd_id\tlsdb\tcosmic\tomim_id\tmirbase\thomeodb\tsnornabase\tbioparadigms_slc\torphanet\tpseudogene.org\thorde_id\tmerops\timgt\tiuphar\tkznf_gene_catalog\tmamit-trnadb\tcd\tlncrnadb\tenzyme_id\tintermediate_filament_db\trna_central_id\tlncipedia\tgtrnadb\tagr\tmane_select\tgencc\n";
+
+    HGNCGeneIdentifierLoader.ColIndices indices = HGNCGeneIdentifierLoader.findSymbolAndEntrezIdColIdx(header.split("\\t", -1));
+    String rnaGene = "HGNC:31430\tLINC00595\tlong independently transcribed non-coding RNA 595\tnon-coding RNA\tRNA, long non-coding\tApproved\t10q22.3\t\t\tC10orf101\t\"long intergenic non-protein coding RNA 595|chromosome 10 open reading frame 101\"\tLong independently transcribed non-coding RNAs\t1986\t2004-05-27\t2012-04-30\t2026-06-11\t2026-06-11\t414243\tENSG00000230417\tOTTHUMG00000018552\t\t\"AA256890|BQ082446|BQ070817\"\tNR_073447\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tURS0000D78019\t\t\tHGNC:31430\t\t\n";
+
+    Optional<GeneIdentifier> opt = HGNCGeneIdentifierLoader.toGeneIdentifier(indices).apply(rnaGene);
+    assertThat(opt.isPresent(), is(true));
+    GeneIdentifier gi = opt.get();
+    assertThat(gi.id(), equalTo(TermId.of("NCBIGene:414243")));
+    assertThat(gi.symbol(), equalTo("LINC00595"));
+  }
 }

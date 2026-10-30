@@ -6,7 +6,9 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,26 +26,9 @@ class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
     return INSTANCE;
   }
 
-  @Override
-  public GeneIdentifiers load(Reader reader) throws IOException {
-    BufferedReader br = (reader instanceof BufferedReader)
-      ? (BufferedReader) reader
-      : new BufferedReader(reader);
-
-    String[] fields = br.readLine().split("\t", -1);
-    ColIndices indices = findSymbolAndEntrezIdColIdx(fields);
-
-    List<GeneIdentifier> identifiers = br.lines()
-      .map(toGeneIdentifier(indices))
-      .flatMap(Optional::stream)
-      .collect(Collectors.toUnmodifiableList());
-
-    return GeneIdentifiers.of(identifiers);
-  }
-
   static Function<String, Optional<GeneIdentifier>> toGeneIdentifier(ColIndices indices) {
     return line -> {
-      String[] token = line.split("\t", -1);
+      String[] token = line.split("\\t", -1);
       if (token.length < indices.maxIdx || !token[indices.hgncIdx].startsWith("HGNC")) {
         LOGGER.warn(
           "Skipping malformed line: expected a line with ≥ 19 columns starting with `HGNC` but found {} columns. Line: {}",
@@ -87,6 +72,23 @@ class HGNCGeneIdentifierLoader implements GeneIdentifierLoader {
       }
     }
     throw new IOException("Could not find the col indices in the header");
+  }
+
+  @Override
+  public GeneIdentifiers load(Reader reader) throws IOException {
+    BufferedReader br = (reader instanceof BufferedReader)
+      ? (BufferedReader) reader
+      : new BufferedReader(reader);
+
+    String[] fields = br.readLine().split("\t", -1);
+    ColIndices indices = findSymbolAndEntrezIdColIdx(fields);
+
+    List<GeneIdentifier> identifiers = br.lines()
+      .map(toGeneIdentifier(indices))
+      .flatMap(Optional::stream)
+      .collect(Collectors.toUnmodifiableList());
+
+    return GeneIdentifiers.of(identifiers);
   }
 
   static class ColIndices {
