@@ -9,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
- * Implementation of pairwise Resnik similarity without precomputation.
+ * <h2>Implementation of pairwise Resnik similarity without precomputation.</h2>
  *
  * <p>This lies at the core of most of of the more computationally expensive pairwise similarities'
  * computations. See {@link PrecomputingPairwiseResnikSimilarity} for a variant where the similarity
@@ -49,7 +49,7 @@ public final class PairwiseResnikSimilarity
    * Implementation of computing similarity score between a <code>query</code> and a <code>query
    * </code>.
    *
-   * <h5>Performance Note</h5>
+   * <h3>Performance Note</h3>
    *
    * <p>This method is a performance hotspot and already well optimized. Further speedup can be
    * gained through {@link PrecomputingPairwiseResnikSimilarity}.

@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.Set;
 
 /**
+ * <h2>OntologyLoader</h2>
  * Entry class for loading an ontology from a File or InputStream. Files can be in OWL, OBO or JSON format and will be
  * handled transparently.
  * <p>
@@ -22,7 +23,7 @@ import java.util.Set;
  * contains a mixture of GO, RO and BFO terms it is advisable to supply the 'GO' termId prefix otherwise there may be
  * relationships with RelationshipType.UNKNOWN. It is left to the user how best to specify what is loaded.
  *
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class OntologyLoader {
 

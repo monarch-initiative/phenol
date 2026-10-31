@@ -268,7 +268,7 @@ public class GoGaf22Annotation implements TermAnnotation {
     @Override
     public int compareTo(TermAnnotation o) {
       if (!(o instanceof GoGaf22Annotation)) {
-        throw new PhenolRuntimeException("Can only compare GoGaf21Annotation with objects of same type");
+        throw new PhenolRuntimeException("Can only compare GoGaf22Annotation with objects of same type");
       }
       GoGaf22Annotation that = (GoGaf22Annotation) o;
 

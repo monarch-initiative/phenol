@@ -16,20 +16,20 @@ public enum HpoOnset implements Identified, TemporalInterval {
    */
   ANTENATAL_ONSET(HpoOnsetTermIds.ANTENATAL_ONSET, PointInTime.lastMenstrualPeriod(), PointInTime.birth()),
   /**
-   * Onset during embryonal period, which is defined as last menstrual period to 10 6/7 weeks of gestation (inclusive).
+   * Onset during embryonal period, which is defined as last menstrual period to 9 6/7 weeks of gestation (inclusive).
    */
-  EMBRYONAL_ONSET(HpoOnsetTermIds.EMBRYONAL_ONSET, PointInTime.lastMenstrualPeriod(), Age.gestational(11, 0)),
+  EMBRYONAL_ONSET(HpoOnsetTermIds.EMBRYONAL_ONSET, PointInTime.lastMenstrualPeriod(), Age.gestational(10, 0)),
   /**
    * Onset prior to birth but after completed 8 weeks of embryonic development
    * (corresponding to a gestational age of completed 10 weeks).
    */
-  FETAL_ONSET(HpoOnsetTermIds.FETAL_ONSET, Age.gestational(11, 0), PointInTime.birth()),
+  FETAL_ONSET(HpoOnsetTermIds.FETAL_ONSET, Age.gestational(10, 0), PointInTime.birth()),
   /**
    * This term refers to a phenotypic feature that was first observed prior to birth in the first trimester during
-   * the early fetal period, which is defined as 11 0/7 to 13 6/7 weeks of gestation (inclusive).
+   * the early fetal period, which is defined as 10 0/7 to 13 6/7 weeks of gestation (inclusive).
    */
   // Note, the end age is EXCLUDED in TemporalInterval, hence `Age.gestational(14, 0)`.
-  LATE_FIRST_TRIMESTER_ONSET(HpoOnsetTermIds.LATE_FIRST_TRIMESTER_ONSET, Age.gestational(11, 0), Age.gestational(14, 0)),
+  LATE_FIRST_TRIMESTER_ONSET(HpoOnsetTermIds.LATE_FIRST_TRIMESTER_ONSET, Age.gestational(10, 0), Age.gestational(14, 0)),
   /**
    * This term refers to a phenotypic feature that was first observed prior to birth during the second trimester,
    * which comprises the range of gestational ages from 14 0/7 weeks to 27 6/7 (inclusive).

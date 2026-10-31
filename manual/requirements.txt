@@ -1,3 +1,0 @@
-# The packages required to build the documentation.
-sphinx
-sphinx-rtd-theme

@@ -1,14 +1,14 @@
 /**
  * Computation of similarity metrics for ontologies.
  *
- * <h5>Remarks</h5>
+ * <h2>Remarks</h2>
  *
  * <p>Arguably, the most-used similarity measure for phenotype ontologies (by the authors) is Resnik
  * similarity. The other set- and information content-based similarities are implemented mostly for
  * completeness' sake. However, <i>graph-based similarity measures (GraSM)</i> have currently be
  * ignored for simplicity's sake and low expected pratical usage.
  *
- * <h5>References</h5>
+ * <h3>References</h3>
  *
  * <ul>
  *   <li>Robinson, Peter N., and Sebastian Bauer. <i>Introduction to bio-ontologies.</i> CRC Press,

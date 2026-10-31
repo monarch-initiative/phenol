@@ -3,6 +3,12 @@ Changelog
 =========
 
 -----
+2.1.5
+-----
+
+- Fix parsing the HGNC complete set file by @ielis in https://github.com/monarch-initiative/phenol/pull/491
+
+-----
 2.1.4
 -----
 

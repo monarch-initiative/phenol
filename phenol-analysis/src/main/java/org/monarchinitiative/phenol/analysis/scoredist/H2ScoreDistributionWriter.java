@@ -19,7 +19,7 @@ import org.monarchinitiative.phenol.ontology.scoredist.ScoreDistribution;
  * <p>The database will be automatically created. If it exists, the table has to be re-created or
  * object initialization will fail.
  *
- * <h4>H2 Dependency Notes</h4>
+ * <h2>H2 Dependency Notes</h2>
  *
  * <p>The class itself only uses JDBC. Thus, the ontolib module does not depend on H2 via maven but
  * your calling code has to depend on H2.

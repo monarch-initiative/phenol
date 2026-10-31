@@ -9,6 +9,5 @@
  *   <li>{@link org.monarchinitiative.phenol.annotations.assoc.DiseaseToGeneAssociationLoader} to load associations between genes and diseases, and</li>
  *   <li>{@link org.monarchinitiative.phenol.annotations.io.hpo.HpoDiseaseLoader} to create {@link org.monarchinitiative.phenol.annotations.formats.hpo.HpoDisease} with disease model definitions.</li>
  * </ul>
- * <p>
  */
 package org.monarchinitiative.phenol.annotations.assoc;

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Test utility class for providing a pre-constructed {@link Ontology} and {@link TermId}
  *
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class TestOntology {
 

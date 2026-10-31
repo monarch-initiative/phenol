@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toMap;
  * Adaptor class for converting {@link GraphDocument} instances to
  * {@link org.monarchinitiative.phenol.ontology.data.Ontology} instances.
  *
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 public class OboGraphDocumentAdaptor {
 

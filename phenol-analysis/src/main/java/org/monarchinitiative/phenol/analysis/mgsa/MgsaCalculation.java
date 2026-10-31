@@ -55,7 +55,7 @@ public class MgsaCalculation {
    * If this constructor is used, then all annotated genes are taken to be the population set.
    *
    * @param ontology       reference to Gene Ontology
-   * @param goAssociations reference to contained with GO <-> gene associations
+   * @param goAssociations reference to contained with GO to gene associations
    * @param mcmcSteps      Number of iterations of MCMC to perform
    */
   public MgsaCalculation(Ontology ontology,

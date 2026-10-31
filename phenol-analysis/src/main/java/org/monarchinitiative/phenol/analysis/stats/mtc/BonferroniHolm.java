@@ -10,7 +10,7 @@ import java.util.*;
  * correction.
  *
  * @author Sebastian Bauer
- * @author <a href="mailto:peter.robinson@jax.org>Peter Robinson</a>
+ * @author <a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
  */
 
 public class BonferroniHolm implements MultipleTestingCorrection {

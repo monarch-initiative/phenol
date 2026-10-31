@@ -13,7 +13,7 @@ import java.nio.file.Path;
  *
  * @deprecated use {@link org.geneontology.obographs.core.io.OgJsonReader} instead of <code>OboGraphDocumentLoader</code>.
  * {@code OboGraphDocumentLoader} will be removed in <em>3.0.0</em>.
- * @author Jules Jacobsen <j.jacobsen@qmul.ac.uk>
+ * @author <a href="mailto:j.jacobsen@qmul.ac.uk">Jules Jacobsen</a>
  */
 // REMOVE(3.0.0)
 // Removing this class will remove the last use of `com.fasterxml.jackson` package in `phenol-io`.
