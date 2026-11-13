@@ -15,23 +15,35 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * <b>Note:</b> we assume a cohort of 50 subjects was used to determine the feature of the frequency.
  * As such, the {@link #denominator()} value is always equal to <code>50</code>.
  *
- * @see HpoFrequencyTermIds
  * @author <a href="mailto:manuel.holtgrewe@bihealth.de">Manuel Holtgrewe</a>
  * @author <a href="mailto:sebastian.koehler@charite.de">Sebastian Koehler</a>
+ * @see HpoFrequencyTermIds
  */
 public enum HpoFrequency implements Identified, Ratio {
 
-  /** Always present (100% of the cases). */
+  /**
+   * Always present (100% of the cases).
+   */
   OBLIGATE(HpoFrequencyTermIds.OBLIGATE, "Obligate", 50),
-  /** Very frequent (80-99% of the cases). */
+  /**
+   * Very frequent (80-99% of the cases).
+   */
   VERY_FREQUENT(HpoFrequencyTermIds.VERY_FREQUENT, "Very frequent", 45),
-  /** Frequent (30-79% of the cases). */
+  /**
+   * Frequent (30-79% of the cases).
+   */
   FREQUENT(HpoFrequencyTermIds.FREQUENT, "Frequent", 27),
-  /** Occasional (5-29% of the cases). */
+  /**
+   * Occasional (5-29% of the cases).
+   */
   OCCASIONAL(HpoFrequencyTermIds.OCCASIONAL, "Occasional", 9),
-  /** Very rare (1-4% of the cases). */
+  /**
+   * Very rare (1-4% of the cases).
+   */
   VERY_RARE(HpoFrequencyTermIds.VERY_RARE, "Very rare", 1),
-  /** Excluded (0% of the cases). */
+  /**
+   * Excluded (0% of the cases).
+   */
   EXCLUDED(HpoFrequencyTermIds.EXCLUDED, "Excluded", 0);
 
   private final TermId termId;
@@ -127,6 +139,26 @@ public enum HpoFrequency implements Identified, Ratio {
         return EXCLUDED;
       default:
         throw new IllegalArgumentException("TermId " + termId + " is not a valid frequency sub ontology term ID");
+    }
+  }
+
+  public int computeNumerator(int cohortSize) {
+    if (cohortSize <= 0)
+      throw new IllegalArgumentException("cohortSize " + cohortSize + " must be positive");
+
+    var freq = Math.round(this.frequency() * cohortSize);
+    switch (this) {
+      case OBLIGATE:
+      case VERY_FREQUENT:
+      case FREQUENT:
+      case OCCASIONAL:
+      case EXCLUDED:
+        return freq;
+      case VERY_RARE:
+        /* Prevent `numerator=0` in small cohort sizes (e.g. <=5). */
+        return Math.max(1, freq);
+      default:
+        throw new IllegalStateException("Unknown value " + this);
     }
   }
 

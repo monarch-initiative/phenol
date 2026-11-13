@@ -114,7 +114,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     boolean notDone = true;
     int numerator = -1, denominator = -1;
 
-    if (frequency == null || "".equals(frequency)) {
+    if (frequency == null || frequency.isEmpty()) {
       // The empty string is assumed to represent a case study
       numerator = (isNegated) ? 0 : 1;
       denominator = 1;
@@ -124,9 +124,11 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
     // HPO term, e.g. HP:0040280 (Obligate)
     if (HPO_PATTERN.matcher(frequency).matches()) {
       HpoFrequency hpoFrequency = HpoFrequency.fromTermId(TermId.of(frequency));
-      numerator = isNegated
-        ? 0
-        : Math.round(hpoFrequency.frequency() * cohortSize);
+      if (isNegated) {
+        numerator = 0;
+      } else {
+        numerator = hpoFrequency.computeNumerator(cohortSize);
+      }
       denominator = cohortSize;
       notDone = false;
     }
