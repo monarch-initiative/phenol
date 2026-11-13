@@ -160,7 +160,7 @@ class HpoDiseaseLoaderDefault implements HpoDiseaseLoader  {
       Matcher matcher = PERCENTAGE_PATTERN.matcher(frequency);
       if (matcher.matches()) {
         float percentage = Float.parseFloat(matcher.group("value"));
-        numerator = Math.round(percentage * cohortSize / 100F);
+        numerator = PercentageUtil.computeNumerator(percentage, cohortSize);
         denominator = cohortSize;
         notDone = false;
       }
