@@ -3,6 +3,12 @@ Changelog
 =========
 
 -----
+2.1.6
+-----
+
+- Improve HPOA frequency parsing by @ielis in https://github.com/monarch-initiative/phenol/pull/493
+
+-----
 2.1.5
 -----
 
